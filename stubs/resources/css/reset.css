@@ -1,0 +1,15 @@
+label {
+    @apply font-bold;
+}
+
+a {
+    @apply cursor-pointer font-medium text-theme;
+}
+
+.tippy-box .tippy-content {
+    @apply text-xs;
+}
+
+[x-cloak] { 
+    display: none !important;
+}

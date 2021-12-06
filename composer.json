@@ -1,0 +1,35 @@
+{
+    "name": "jiannius/atom",
+    "description": "Boilerplate for Larave-Livewire",
+    "type": "library",
+    "require": {
+        "barryvdh/laravel-dompdf": "^0.9.0",
+        "doctrine/dbal": "^3.1",
+        "intervention/image": "^2.6",
+        "livewire/livewire": "^2.7",
+        "orchestra/testbench": "^6.22",
+        "rap2hpoutre/fast-excel": "^3.0",
+        "torann/geoip": "^3.0",
+        "jenssegers/agent": "^2.6"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jiannius\\Atom\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "TJ",
+            "email": "tj@jiannius.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jiannius\\Atom\\AtomServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}

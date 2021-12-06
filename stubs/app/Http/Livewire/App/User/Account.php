@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Livewire\App\User;
+
+use Livewire\Component;
+
+class Account extends Component
+{
+    protected $listeners = ['saved'];
+
+    /**
+     * Mount method
+     * 
+     * @return void
+     */
+    public function mount()
+    {
+        //
+    }
+
+    /**
+     * Rendering livewire view
+     * 
+     * @return Response
+     */
+    public function render()
+    {
+        return view('livewire.app.user.account');
+    }
+
+    /**
+     * Saved handler
+     * 
+     * @return void
+     */
+    public function saved()
+    {
+        $this->dispatchBrowserEvent('toast', ['message' => 'Account Updated', 'type' => 'success']);
+    }
+}
