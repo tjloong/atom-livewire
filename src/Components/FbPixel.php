@@ -18,9 +18,14 @@ class FbPixel extends Component
      */
     public function __construct($noscript = false)
     {
-        $settings = SiteSetting::tracking()->get();
-        $this->id = $settings->where('name', 'fbpixel_id')->first()->value;
         $this->noscript = $noscript;
+
+        if (!config('atom.static_site')) {
+            $settings = SiteSetting::tracking()->get();
+            $this->id = $settings->where('name', 'fbpixel_id')->first()->value;
+        }
+
+        if (config('atom.fbpixel_id')) $this->id = config('atom.fbpixel_id');
     }
 
     /**
