@@ -1,5 +1,5 @@
 {
-    "name": "jiannius/atom",
+    "name": "jiannius/atom-livewire",
     "description": "Boilerplate for Larave-Livewire",
     "type": "library",
     "require": {
