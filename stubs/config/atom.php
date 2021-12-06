@@ -5,4 +5,5 @@ return [
     'locales' => ['en'],
     'max_upload_size' => 8,
     'timezone' => 'Asia/Kuala_Lumpur',
+    'static_site' => true,
 ];

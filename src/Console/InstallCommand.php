@@ -40,11 +40,20 @@ class InstallCommand extends Command
         $this->info('App Settings');
         $this->newLine();
 
-        $this->replaceInFile(
-            'public const HOME = \'/home\';',
-            'public const HOME = \'/app\';',
-            app_path('Providers/RouteServiceProvider.php')
-        );
+        if (config('atom.static_site')) {
+            $this->replaceInFile(
+                'public const HOME = \'/home\';',
+                'public const HOME = \'/\';',
+                app_path('Providers/RouteServiceProvider.php')    
+            );
+        }
+        else {
+            $this->replaceInFile(
+                'public const HOME = \'/home\';',
+                'public const HOME = \'/app\';',
+                app_path('Providers/RouteServiceProvider.php')
+            );
+        }
 
         // NPM packages
         $this->info('Update node packages');

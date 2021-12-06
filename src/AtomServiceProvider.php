@@ -9,7 +9,6 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Jiannius\Atom\Console\InstallCommand;
 use Jiannius\Atom\Middleware\TrackReferer;
@@ -41,9 +40,13 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerBlade();
         $this->registerComponents();
         $this->registerMiddlewares();
-        $this->registerSmtp();
-        $this->registerRoutes();
-        $this->registerGates();
+
+        if (!config('atom.static_site')) {
+            $this->registerSmtp();
+            $this->registerRoutes();
+            $this->registerGates();
+        }
+
         $this->registerPublishing();
         $this->registerCommands();
     }
