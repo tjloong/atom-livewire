@@ -33,7 +33,7 @@ npm run dev
 
 1. Create Database
 
-First you must create a database for your project in MySQL
+    First you must create a database for your project in MySQL
 
 2. Install Laravel
 
@@ -55,7 +55,19 @@ npm install
 npm run dev
 ```
 
-4. Update .env with database name
+4. Update MailConfigServiceProvider in config/app.php
+
+```
+/*
+* Application Service Providers...
+*/
+App\Providers\AppServiceProvider::class,
+...
+...
+App\Providers\MailConfigServiceProvider::class,
+```
+
+5. Update .env with database name
 
 ```
 DB_DATABASE=<project-name>
@@ -63,7 +75,7 @@ DB_USERNAME=root
 DB_PASSWORD=password
 ```
 
-5. Run migration
+6. Run migration
 
 ```
 php artisan migrate

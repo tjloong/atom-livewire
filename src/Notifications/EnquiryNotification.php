@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Notifications;
 
-use App\Models\SiteSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
