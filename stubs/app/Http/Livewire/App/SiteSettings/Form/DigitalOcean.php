@@ -6,18 +6,17 @@ use App\Models\SiteSetting;
 use Livewire\Component;
 use Illuminate\Support\Facades\Validator;
 
-class Email extends Component
+class DigitalOcean extends Component
 {
     public $settings;
 
     protected $rules = [
-        'settings.smtp_host' => 'required',
-        'settings.smtp_port' => 'required',
-        'settings.smtp_username' => 'required',
-        'settings.smtp_password' => 'required',
-        'settings.smtp_encryption' => 'nullable',
-        'settings.notify_from' => 'required|email',
-        'settings.notify_to' => 'required|email',
+        'settings.do_spaces_key' => 'nullable',
+        'settings.do_spaces_secret' => 'required_with:settings.do_spaces_key',
+        'settings.do_spaces_region' => 'required_with:settings.do_spaces_key',
+        'settings.do_spaces_bucket' => 'required_with:settings.do_spaces_key',
+        'settings.do_spaces_endpoint' => 'required_with:settings.do_spaces_key',
+        'settings.do_spaces_cdn' => 'required_with:settings.do_spaces_key',
     ];
 
     /**
@@ -27,7 +26,7 @@ class Email extends Component
      */
     public function mount()
     {
-        SiteSetting::email()->get()->each(function($setting) {
+        SiteSetting::do()->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
     }
@@ -39,7 +38,7 @@ class Email extends Component
      */
     public function render()
     {
-        return view('livewire.app.site-settings.form.email');
+        return view('livewire.app.site-settings.form.digital-ocean');
     }
 
     /**
@@ -71,15 +70,11 @@ class Email extends Component
             ['settings' => $this->settings],
             $this->rules,
             [
-                'settings.smtp_host.required' => 'SMTP host is required.',
-                'settings.smtp_port.required' => 'SMTP port number is required.',
-                'settings.smtp_username.required' => 'SMTP username is required.',
-                'settings.smtp_password.required' => 'SMTP password is required.',
-                'settings.smtp_encryption.required' => 'SMTP encryption is required.',
-                'settings.notify_from.required' => 'Notification from email address is required.',
-                'settings.notify_from.email' => 'Invalid notification from email address.',
-                'settings.notify_to.required' => 'Notification to email address is required.',
-                'settings.notify_to.email' => 'Invalid notification to email address.',
+                'settings.do_spaces_secret.required_with' => 'DO spaces secret is required.',
+                'settings.do_spaces_region.required_with' => 'DO spaces region is required.',
+                'settings.do_spaces_bucket.required_with' => 'DO spaces bucket is required.',
+                'settings.do_spaces_endpoint.required_with' => 'DO spaces endpoint is required.',
+                'settings.do_spaces_cdn.required_with' => 'DO spaces CDN URL is required.',
             ]
         );
 

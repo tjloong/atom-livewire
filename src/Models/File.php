@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\HasOwner;
 use Jiannius\Atom\Traits\HasFilters;
+use Jiannius\Atom\Models\SiteSetting;
 
 class File extends Model
 {
@@ -42,11 +43,14 @@ class File extends Model
 
         static::deleting(function($file) {
             if ($path = $file->data->path ?? null) {
-                if (!app()->environment('production') && Str::startsWith($path, 'prod/')) {
+                if (Str::startsWith($path, 'public/uploads/')) {
+                    Storage::delete($path);
+                }
+                else if (!app()->environment('production') && (Str::startsWith($path, 'prod/') || Str::startsWith($path, 'production/'))) {
                     abort(500, 'Do not delete production file in ' . app()->environment() . ' environment!');
                 }
-                else {
-                    (self::getStorage())->delete($path);
+                else if ($disk = SiteSetting::getDoDisk()) {
+                    $disk->delete($path);
                 }
             }
         });
@@ -141,26 +145,5 @@ class File extends Model
         return $this->mime === 'youtube'
             ? 'https://img.youtube.com/vi/' . ($this->data->vid ?? '') . '/default.jpg'
             : null;
-    }
-
-    /**
-     * Get digital ocean storage instance
-     * 
-     * @return Storage
-     */
-    public static function getStorage()
-    {
-        config([
-            'filesystems.disks.do' => [
-                'driver' => 's3',
-                'key' => env('DO_SPACES_KEY'),
-                'secret' => env('DO_SPACES_SECRET'),
-                'region' => env('DO_SPACES_REGION'),
-                'bucket' => env('DO_SPACES_BUCKET'),
-                'endpoint' => env('DO_SPACES_ENDPOINT'),
-            ],
-        ]);
-
-        return Storage::disk('do');
     }
 }

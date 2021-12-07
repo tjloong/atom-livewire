@@ -33,6 +33,7 @@
             <x-button icon="trash" color="red" inverted x-on:click="$dispatch('confirm', {
                 title: 'Delete Multiple Files',
                 message: `Are you sure to delete the selected ${selected.length} files?`,
+                type: 'error',
                 onConfirmed: () => {
                     $wire.delete(selected)
                     selected = []

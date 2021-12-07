@@ -1,6 +1,6 @@
 <form wire:submit.prevent="save" class="max-w-lg">
     <x-box>
-        <x-slot name="header">Site SEO</x-slot>
+        <x-slot name="header">Site Email Configurations</x-slot>
 
         <div class="p-5">
             <x-input.text wire:model.defer="settings.smtp_host" :error="$errors->first('settings.smtp_host')" required>

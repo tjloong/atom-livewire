@@ -88,6 +88,7 @@
             <x-button color="red" icon="trash" inverted x-on:click="$dispatch('confirm', {
                 title: 'Delete File',
                 message: 'Are you sure to delete this file?',
+                type: 'error',
                 onConfirmed: () => {
                     $dispatch('close')
                     $wire.delete()

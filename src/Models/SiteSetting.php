@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 
 class SiteSetting extends Model
@@ -44,7 +45,33 @@ class SiteSetting extends Model
      */
     public function scopeEmail($query)
     {
-        return $query->whereIn('name', ['smtp_host', 'smtp_port', 'smtp_username', 'smtp_password', 'smtp_encryption', 'notify_from', 'notify_to']);
+        return $query->whereIn('name', [
+            'smtp_host', 
+            'smtp_port', 
+            'smtp_username', 
+            'smtp_password', 
+            'smtp_encryption', 
+            'notify_from', 
+            'notify_to',
+        ]);
+    }
+
+    /**
+     * Scope for digital ocean
+     * 
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeDo($query)
+    {
+        return $query->whereIn('name', [
+            'do_spaces_key',
+            'do_spaces_secret',
+            'do_spaces_region',
+            'do_spaces_bucket',
+            'do_spaces_endpoint',
+            'do_spaces_cdn',
+        ]);
     }
 
     /**
@@ -67,5 +94,34 @@ class SiteSetting extends Model
                 'mail.from.name' => config('app.name'),
             ]);
         }
+    }
+
+    /**
+     * Get digital ocean disk
+     * 
+     * @return Storage
+     */
+    public static function getDoDisk()
+    {
+        $settings = self::do()->get();
+        $key = $settings->where('name', 'do_spaces_key')->first()->value;
+        $secret = $settings->where('name', 'do_spaces_secret')->first()->value;
+
+        if ($key && $secret) {
+            config([
+                'filesystems.disks.do' => [
+                    'driver' => 's3',
+                    'key' => $key,
+                    'secret' => $secret,
+                    'region' => $settings->where('name', 'do_spaces_region')->first()->value,
+                    'bucket' => $settings->where('name', 'do_spaces_bucket')->first()->value,
+                    'endpoint' => $settings->where('name', 'do_spaces_endpoint')->first()->value,
+                ],
+            ]);
+    
+            return Storage::disk('do');
+        }
+
+        return false;
     }
 }

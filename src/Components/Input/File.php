@@ -4,6 +4,7 @@ namespace Jiannius\Atom\Components\Input;
 
 use Exception;
 use App\Models\File as FileModel;
+use App\Models\SiteSetting;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
@@ -71,15 +72,19 @@ class File extends Component
             $url = asset('storage/' . str_replace('public/', '', $path));
 
             // upload file to DO
-            try {
-                $do = FileModel::getStorage();
-                $dopath = $do->putFile(env('DO_SPACES_FOLDER'), storage_path("app/$path"), 'public');
-                $url = env('DO_SPACES_CDN') . '/' . $dopath;
-
-                // delete the local copy
-                Storage::delete($path);
-            } catch (Exception $e) {
-                logger("Unable to upload $path to Digital Ocean bucket.");
+            if ($disk = SiteSetting::getDoDisk()) {
+                try {
+                    $settings = SiteSetting::do()->get();
+                    $folder = app()->environment('production') ? 'prod' : 'staging';
+                    $dopath = $disk->putFile($folder, storage_path("app/$path"), 'public');
+                    $cdn = $settings->where('name', 'do_spaces_cdn')->first()->value;
+                    $url = $cdn . '/' . $dopath;
+    
+                    // delete the local copy
+                    Storage::delete($path);
+                } catch (Exception $e) {
+                    logger("Unable to upload $path to Digital Ocean bucket.");
+                }
             }
 
             $saved = FileModel::create([

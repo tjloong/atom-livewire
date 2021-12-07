@@ -401,6 +401,12 @@ class CreateAtomTable extends Migration
                 ['name' => 'smtp_encryption', 'value' => 'tls'],
                 ['name' => 'notify_from', 'value' => null],
                 ['name' => 'notify_to', 'value' => null],
+                ['name' => 'do_spaces_key', 'value' => null],
+                ['name' => 'do_spaces_secret', 'value' => null],
+                ['name' => 'do_spaces_region', 'value' => 'sgp1'],
+                ['name' => 'do_spaces_bucket', 'value' => null],
+                ['name' => 'do_spaces_endpoint', 'value' => null],
+                ['name' => 'do_spaces_cdn', 'value' => null],
             ]);
         }
         else {
