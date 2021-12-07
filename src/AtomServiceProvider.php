@@ -4,7 +4,6 @@ namespace Jiannius\Atom;
 
 use Livewire\Livewire;
 use App\Models\Ability;
-use App\Models\SiteSetting;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Blade;
@@ -42,7 +41,6 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerMiddlewares();
 
         if (!config('atom.static_site')) {
-            $this->registerSmtp();
             $this->registerRoutes();
             $this->registerGates();
         }
@@ -156,16 +154,6 @@ class AtomServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register smtp settings
-     * 
-     * @return void
-     */
-    public function registerSmtp()
-    {
-        SiteSetting::configureSMTP();
-    }
-
-    /**
      * Register routes
      * 
      * @return void
@@ -220,7 +208,26 @@ class AtomServiceProvider extends ServiceProvider
             __DIR__.'/../stubs/resources' => base_path('resources'),
             __DIR__.'/../stubs/.env.prod' => base_path('.env.prod'),
             __DIR__.'/../stubs/.env.staging' => base_path('.env.staging'),
+            __DIR__.'/../stubs/jsconfig.json' => base_path('jsconfig.json'),
+            __DIR__.'/../stubs/tailwind.config.js' => base_path('tailwind.config.js'),
+            __DIR__.'/../stubs/webpack.config.js' => base_path('webpack.config.js'),
+            __DIR__.'/../stubs/webpack.mix.js' => base_path('webpack.mix.js'),
         ], 'atom');
+
+        // static publishing
+        $this->publishes([
+            __DIR__.'/../stubs-static/app' => base_path('app'),
+            __DIR__.'/../stubs-static/config' => base_path('config'),
+            __DIR__.'/../stubs-static/routes' => base_path('routes'),
+            __DIR__.'/../stubs-static/storage' => base_path('storage'),
+            __DIR__.'/../stubs-static/resources' => base_path('resources'),
+            __DIR__.'/../stubs-static/.env.prod' => base_path('.env.prod'),
+            __DIR__.'/../stubs-static/.env.staging' => base_path('.env.staging'),
+            __DIR__.'/../stubs-static/jsconfig.json' => base_path('jsconfig.json'),
+            __DIR__.'/../stubs-static/tailwind.config.js' => base_path('tailwind.config.js'),
+            __DIR__.'/../stubs-static/webpack.config.js' => base_path('webpack.config.js'),
+            __DIR__.'/../stubs-static/webpack.mix.js' => base_path('webpack.mix.js'),
+        ], 'atom-static');
     }
 
     /**

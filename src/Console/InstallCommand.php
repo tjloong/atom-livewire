@@ -7,7 +7,8 @@ use Illuminate\Console\Command;
 class InstallCommand extends Command
 {
     protected $signature = 'atom:install
-                            {--force : Force publishing}';
+                            {--force : Force publishing}
+                            {--static : Static site}';
 
     protected $description = 'Install Atom';
 
@@ -28,35 +29,81 @@ class InstallCommand extends Command
      */
     public function handle()
     {
+        $this->publish();
+        $this->nodepackages();
+        $this->configs();
+
+        $this->info('Atom installation done');
+        $this->comment('Please execute "npm install && npm run dev" to build your assets.');
+    }
+
+    /**
+     * Publishing files
+     * 
+     * @return void
+     */
+    private function publish()
+    {
         $this->info('Publishing Jiannius\Atom\AtomServiceProvider');
         $this->newLine();
+
         $this->call('vendor:publish', [
             '--provider' => 'Jiannius\Atom\AtomServiceProvider',
+            '--tag' => $this->option('static') ? 'atom-static' : 'atom',
             '--force' => $this->option('force'),
         ]);
-        $this->newLine(2);
 
-        // App settings
+        $this->newLine(2);
+    }
+
+    /**
+     * Configurations
+     * 
+     * @return void
+     */
+    private function configs()
+    {
         $this->info('App Settings');
         $this->newLine();
 
-        if (config('atom.static_site')) {
-            $this->replaceInFile(
+        if ($this->option('static')) {
+            replace_in_file(
                 'public const HOME = \'/home\';',
                 'public const HOME = \'/\';',
-                app_path('Providers/RouteServiceProvider.php')    
+                app_path('Providers/RouteServiceProvider.php')
             );
         }
         else {
-            $this->replaceInFile(
+            replace_in_file(
                 'public const HOME = \'/home\';',
                 'public const HOME = \'/app\';',
                 app_path('Providers/RouteServiceProvider.php')
             );
         }
 
-        // NPM packages
+        // link storage
+        $this->call('storage:link');
+    }
+
+    /**
+     * Update node packages
+     * 
+     * @return void
+     */
+    public function nodepackages()
+    {
         $this->info('Update node packages');
+
+        // dev dependencies
+        $this->updateNodePackages(function ($packages) {
+            return [
+                'postcss-import' => '^12.0.1',
+                'postcss-nesting' => '^7.0.1',
+                'autoprefixer' => '^10.0.2',
+            ] + $packages;
+        });
+
+        // dependencies
         $this->updateNodePackages(function ($packages) {
             return [
                 '@tailwindcss/forms' => '^0.3.0',
@@ -65,36 +112,11 @@ class InstallCommand extends Command
                 'boxicons' => '^2.0.9',
                 'dayjs' => '^1.10.7',
                 'flatpickr' => '^4.6.9',
-                'postcss-import' => '^12.0.1',
-                'postcss-nesting' => '^7.0.1',
-                'tailwindcss' => '^2.1.2',
-                'autoprefixer' => '^10.0.2',
+                'tailwindcss' => '^2',
             ] + $packages;
-        });
-
-        // Webpack and tailwindcss config
-        $this->info('Copy over tailwind and webpack configs');
-        copy(__DIR__.'/../../stubs/tailwind.config.js', base_path('tailwind.config.js'));
-        copy(__DIR__.'/../../stubs/webpack.mix.js', base_path('webpack.mix.js'));
-        copy(__DIR__.'/../../stubs/webpack.config.js', base_path('webpack.config.js'));
-        copy(__DIR__.'/../../stubs/jsconfig.json', base_path('jsconfig.json'));
+        }, false);
 
         $this->newLine(2);
-        $this->info('Atom installation done');
-        $this->comment('Please execute "npm install && npm run dev" to build your assets.');
-    }
-
-    /**
-     * Replace a given string within a given file.
-     *
-     * @param  string  $search
-     * @param  string  $replace
-     * @param  string  $path
-     * @return void
-     */
-    protected function replaceInFile($search, $replace, $path)
-    {
-        file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
     }
 
     /**

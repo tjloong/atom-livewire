@@ -1,0 +1,28 @@
+.btn {
+    @apply inline-flex items-center justify-center font-medium hover:shadow;
+}
+.btn.btn-sm {
+    @apply py-1.5 px-3 rounded-md text-sm;
+}
+.btn.btn-md {
+    @apply py-2.5 px-4 rounded-md;
+}
+.btn.btn-lg {
+    @apply py-2 px-4 rounded-md text-lg;
+}
+.btn.loading {
+    @apply opacity-80 pointer-events-none;
+}
+.btn.loading .loader {
+    @apply block;
+}
+.btn.loading .icon {
+    @apply hidden;
+}
+
+.btn:not(.loading) .loader {
+    @apply hidden;
+}
+.btn:not(.loading) .icon {
+    @apply inline-block;
+}
