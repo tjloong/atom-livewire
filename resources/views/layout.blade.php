@@ -37,6 +37,6 @@
 
     @livewireScripts
     @stack('scripts')
-    <script src="{{ mix($script ?? 'js/app.js') }}" defer></script>
+    <script src="{{ $script ?? mix('js/app.js') }}" defer></script>
 </body>
 </html>
