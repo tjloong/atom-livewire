@@ -25,10 +25,6 @@
         <x-ga/>
         <x-fbpixel/>
     @endif
-
-    @livewireScripts
-    @stack('scripts')
-    <script src="{{ mix($script ?? 'js/app.js') }}" defer></script>
 </head>
 
 <body class="font-sans antialiased">
@@ -38,5 +34,9 @@
     @endif
 
     @yield('content')
+
+    @livewireScripts
+    @stack('scripts')
+    <script src="{{ mix($script ?? 'js/app.js') }}" defer></script>
 </body>
 </html>
