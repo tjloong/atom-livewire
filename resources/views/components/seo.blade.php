@@ -20,9 +20,11 @@
 <meta name="twitter:image" content="{{ $image }}">
 <meta name="twitter:image:alt" content="{{ $title }}">
 
+@if ($jsonld)
 <script type="application/ld+json">
 @json($jsonld)
 </script>
+@endif
 
 @if ($hreflang)
 <link rel="alternate" href="{{ url()->current() }}" hreflang="{{ $hreflang }}" />
