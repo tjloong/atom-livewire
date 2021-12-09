@@ -5,6 +5,7 @@
 
     <div
         x-data="inputTags(@entangle($attributes->wire('model')->value()), @js($attributes->get('options')))"
+        x-on:click.away="close()"
         wire:ignore
         class="relative"
         {{ $attributes->whereStartsWith('wire') }}
@@ -38,12 +39,7 @@
             </div>
         </div>
 
-        <div
-            x-ref="dropdown"
-            x-show="show" 
-            x-on:click.away="close()"
-            class="absolute w-full py-1 z-10"
-        >
+        <div x-ref="dropdown" class="absolute py-1 z-10 w-full hidden">
             <div class="bg-white drop-shadow rounded-md border grid divide-y max-h-[250px] overflow-auto">
                 <template x-for="opt in options" x-bind:key="opt.value">
                     <a

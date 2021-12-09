@@ -1,8 +1,6 @@
 @extends('atom::layout')
 
 @push('scripts')
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
 @endpush
 

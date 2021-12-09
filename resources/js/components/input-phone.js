@@ -2,9 +2,7 @@ export default (value, countries, code = '+60') => ({
     value,
     countries,
     code,
-    show: false,
     number: null,
-    popper: null,
 
     init () {
         if (this.value?.startsWith('+')) {
@@ -19,15 +17,18 @@ export default (value, countries, code = '+60') => ({
     },
     input () {
         this.value = this.number ? `${this.code}${this.number}` : null
+        this.close()
     },
     open () {
-        this.show = true
+        this.$refs.dropdown.classList.remove('hidden')
+        this.$refs.dropdown.classList.add('opacity-0')
 
-        if (!this.popper) {
-            setTimeout(() => this.popper = Popper.createPopper(this.$refs.input, this.$refs.dropdown), 20)
-        }
+        floatPositioning(this.$refs.input, this.$refs.dropdown, {
+            placement: 'bottom',
+            flip: true,
+        }).then(() => this.$refs.dropdown.classList.remove('opacity-0'))
     },
     close () {
-        this.show = false
+        this.$refs.dropdown.classList.add('hidden')
     },
 })

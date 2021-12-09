@@ -1,20 +1,21 @@
 export default (value, options) => ({
     value,
-    show: false,
-    popper: null,
     options: [],
+
     init () {
         this.options = options.map(opt => ({ ...opt, selected: this.value.includes(opt.value) }))
     },
     open () {
-        this.show = true
+        this.$refs.dropdown.classList.remove('hidden')
+        this.$refs.dropdown.classList.add('opacity-0')
 
-        if (!this.popper) {
-            setTimeout(() => this.popper = Popper.createPopper(this.$refs.input, this.$refs.dropdown), 20)
-        }
+        floatPositioning(this.$refs.input, this.$refs.dropdown, {
+            placement: 'bottom',
+            flip: true,
+        }).then(() => this.$refs.dropdown.classList.remove('opacity-0'))
     },
     close () {
-        this.show = false
+        this.$refs.dropdown.classList.add('hidden')
     },
     toggle (val) {
         this.options = this.options.map(opt => {

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Jiannius\Atom\Console\InstallCommand;
+use Jiannius\Atom\Middleware\IsRole;
 use Jiannius\Atom\Middleware\TrackReferer;
 
 class AtomServiceProvider extends ServiceProvider
@@ -150,6 +151,7 @@ class AtomServiceProvider extends ServiceProvider
     public function registerMiddlewares()
     {
         $router = $this->app->make(Router::class);
+        $router->aliasMiddleware('role', IsRole::class);
         $router->aliasMiddleware('referer', TrackReferer::class);
     }
 

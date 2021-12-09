@@ -5,6 +5,7 @@
 
     <div
         x-data="inputPhone($wire.get('{{ $attributes->wire('model')->value() }}'), @js($countries))"
+        x-on:click.away="close()"
         wire:ignore
         class="relative"
     >
@@ -27,9 +28,7 @@
 
         <div
             x-ref="dropdown"
-            x-show="show"
-            x-on:click.away="close()"
-            class="absolute left-0 right-0 bg-white border drop-shadow rounded-md h-56 overflow-auto text-sm"
+            class="absolute left-0 right-0 bg-white border drop-shadow rounded-md h-56 overflow-auto text-sm hidden"
         >
             <template x-for="country in countries" x-bind:key="country.name">
                 <a 
