@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Models;
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,11 +45,14 @@ class SiteSetting extends Model
     public function scopeEmail($query)
     {
         return $query->whereIn('name', [
+            'mailer',
             'smtp_host', 
             'smtp_port', 
             'smtp_username', 
             'smtp_password', 
             'smtp_encryption', 
+            'mailgun_domain',
+            'mailgun_secret',
             'notify_from', 
             'notify_to',
         ]);
@@ -83,13 +85,26 @@ class SiteSetting extends Model
     {
         try {
             $settings = self::email()->get();
+            $mailer = $settings->where('name', 'mailer')->first()->value;
+
+            if ($mailer === 'smtp') {
+                config([
+                    'mail.mailers.smtp.host' => $settings->where('name', 'smtp_host')->first()->value,
+                    'mail.mailers.smtp.port' => $settings->where('name', 'smtp_port')->first()->value,
+                    'mail.mailers.smtp.username' => $settings->where('name', 'smtp_username')->first()->value,
+                    'mail.mailers.smtp.password' => $settings->where('name', 'smtp_password')->first()->value,
+                    'mail.mailers.smtp.encryption' => $settings->where('name', 'smtp_encryption')->first()->value,    
+                ]);
+            }
+            else if ($mailer === 'mailgun') {
+                config([
+                    'services.mailgun.domain' => $settings->where('name', 'mailgun_domain')->first()->value,
+                    'services.mailgun.secret' => $settings->where('name', 'mailgun_secret')->first()->value,
+                ]);
+            }
     
             config([
-                'mail.mailers.smtp.host' => $settings->where('name', 'smtp_host')->first()->value,
-                'mail.mailers.smtp.port' => $settings->where('name', 'smtp_port')->first()->value,
-                'mail.mailers.smtp.username' => $settings->where('name', 'smtp_username')->first()->value,
-                'mail.mailers.smtp.password' => $settings->where('name', 'smtp_password')->first()->value,
-                'mail.mailers.smtp.encryption' => $settings->where('name', 'smtp_encryption')->first()->value,
+                'mail.default' => $mailer,
                 'mail.from.address' => $settings->where('name', 'notify_from')->first()->value,
                 'mail.from.name' => config('app.name'),
             ]);

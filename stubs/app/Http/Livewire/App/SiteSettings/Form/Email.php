@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire\App\SiteSettings\Form;
 
-use App\Models\SiteSetting;
 use Livewire\Component;
+use App\Models\SiteSetting;
 use Illuminate\Support\Facades\Validator;
 
 class Email extends Component
@@ -11,13 +11,16 @@ class Email extends Component
     public $settings;
 
     protected $rules = [
-        'settings.smtp_host' => 'required',
-        'settings.smtp_port' => 'required',
-        'settings.smtp_username' => 'required',
-        'settings.smtp_password' => 'required',
-        'settings.smtp_encryption' => 'nullable',
         'settings.notify_from' => 'required|email',
         'settings.notify_to' => 'required|email',
+        'settings.mailer' => 'required',
+        'settings.smtp_host' => 'required_if:settings.mailer,smtp',
+        'settings.smtp_port' => 'required_if:settings.mailer,smtp',
+        'settings.smtp_username' => 'required_if:settings.mailer,smtp',
+        'settings.smtp_password' => 'required_if:settings.mailer,smtp',
+        'settings.smtp_encryption' => 'nullable',
+        'settings.mailgun_domain' => 'required_if:settings.mailer,mailgun',
+        'settings.mailgun_secret' => 'required_if:settings.mailer,mailgun',
     ];
 
     /**
@@ -71,15 +74,15 @@ class Email extends Component
             ['settings' => $this->settings],
             $this->rules,
             [
-                'settings.smtp_host.required' => 'SMTP host is required.',
-                'settings.smtp_port.required' => 'SMTP port number is required.',
-                'settings.smtp_username.required' => 'SMTP username is required.',
-                'settings.smtp_password.required' => 'SMTP password is required.',
-                'settings.smtp_encryption.required' => 'SMTP encryption is required.',
-                'settings.notify_from.required' => 'Notification from email address is required.',
-                'settings.notify_from.email' => 'Invalid notification from email address.',
                 'settings.notify_to.required' => 'Notification to email address is required.',
                 'settings.notify_to.email' => 'Invalid notification to email address.',
+                'settings.mailer.required' => 'Email provider is required.',
+                'settings.smtp_host.required_if' => 'SMTP host is required.',
+                'settings.smtp_port.required_if' => 'SMTP port number is required.',
+                'settings.smtp_username.required_if' => 'SMTP username is required.',
+                'settings.smtp_password.required_if' => 'SMTP password is required.',
+                'settings.mailgun_domain.required_if' => 'Mailgun domain is required.',
+                'settings.mailgun_secret.required_if' => 'Mailgun secret is required.',
             ]
         );
 
