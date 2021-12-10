@@ -81,7 +81,7 @@ class SiteSetting extends Model
      */
     public static function configureSMTP()
     {
-        if (Schema::hasTable((new self())->getTable())) {
+        try {
             $settings = self::email()->get();
     
             config([
@@ -93,6 +93,9 @@ class SiteSetting extends Model
                 'mail.from.address' => $settings->where('name', 'notify_from')->first()->value,
                 'mail.from.name' => config('app.name'),
             ]);
+        } catch (\Throwable $th) {
+            logger('Unable to configure SMTP from site settings.');
+            logger($th->getMessage());
         }
     }
 
