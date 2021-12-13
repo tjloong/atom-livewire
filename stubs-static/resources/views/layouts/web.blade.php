@@ -36,8 +36,7 @@
         </div>
     </nav>
 
-    <main class="h-screen">
-        <x-fullscreen-loader/>
-        {{ $slot }}
-    </main>
+    <x-fullscreen-loader/>
+
+    {{ $slot }}
 @endsection

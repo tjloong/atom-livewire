@@ -141,6 +141,8 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('notify.alert', 'Jiannius\\Atom\\Components\\Notify\\Alert');
         Blade::component('notify.toast', 'Jiannius\\Atom\\Components\\Notify\\Toast');
         Blade::component('notify.confirm', 'Jiannius\\Atom\\Components\\Notify\\Confirm');
+
+        Blade::component('builder.hero', 'Jiannius\\Atom\\Components\\Builder\\Hero');
     }
 
     /**
