@@ -5,7 +5,7 @@
     'bottomImg' => $image && $imagePosition === 'bottom' ? $image : null,
 ])
 
-<section {{ $attributes->class(['relative']) }}>
+<div {{ $attributes->class(['relative']) }}>
     @if ($bgImg)
         <div class="absolute inset-0">
             <img src="{{ $bgImg }}" class="w-full h-full object-cover opacity-30" width="1200" height="700" alt="{{ $attributes->get('image-alt') }}">
@@ -70,4 +70,4 @@
             >
         @endif
     </div>
-</section>
+</div>
