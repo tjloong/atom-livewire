@@ -8,8 +8,8 @@ use Illuminate\View\Component;
 class Faq extends Component
 {
     public $cols;
+    public $sets;
     public $align;
-    public $items;
 
     /**
      * Contructor
@@ -17,13 +17,13 @@ class Faq extends Component
      * @return void
      */
     public function __construct(
-        $items = [],
+        $sets = [],
         $cols = '1',
         $align = null
     ) {
         $this->cols = $cols;
+        $this->sets = $this->getSets($sets);
         $this->align = $align;
-        $this->items = $this->getItems($items);
     }
 
     /**
@@ -37,15 +37,15 @@ class Faq extends Component
     }
 
     /**
-     * Get items
+     * Get faq sets
      * 
      * @return Collection
      */
-    private function getItems($items)
+    private function getSets($sets)
     {
-        return collect($items)->map(function($item) {
-            $item['excerpt'] = html_excerpt($item['answer']);
-            return (object)$item;
+        return collect($sets)->map(function($set) {
+            $set['excerpt'] = html_excerpt($set['answer']);
+            return (object)$set;
         });
     }
 }

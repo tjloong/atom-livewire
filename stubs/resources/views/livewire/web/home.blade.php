@@ -1,13 +1,6 @@
-<section class="w-full bg-gray-200 pt-[60%] relative md:pt-[40%]">
-    <div class="absolute inset-0">
-        <x-swiper :config="['loop' => true]" navigation>
-            @foreach ($banners as $banner)
-                <x-swiper.slide
-                    src="{{ $banner->image->url }}"
-                    alt="{{ $banner->image->alt }}"
-                    class="h-20"
-                />
-            @endforeach
-        </x-swiper>
-    </div>
+<section class="py-10">
+    <x-builder.faq :sets="$faq">
+        <x-slot name="title">Frequently Asked Questions</x-slot>
+        <x-slot name="subtitle">Can't find the answer you're looking for?</x-slot>
+    </x-builder.faq>
 </section>
