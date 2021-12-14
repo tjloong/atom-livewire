@@ -95,16 +95,6 @@ class Blog extends Model
      */
     public function getExcerptAttribute()
     {
-        $content = $this->content;
-        $content = strip_tags($content);
-        $content = html_entity_decode($content);
-        $content = urldecode($content);
-        $content = preg_replace('/[^A-Za-z0-9]/', ' ', $content);
-        $content = preg_replace('/ +/', ' ', $content);
-        $content = trim($content);
-        $length = Str::length($content);
-
-        if ($length > 120) return substr($content, 0, 120) . '...';
-        else return $content;
+        return html_excerpt($this->content);
     }
 }
