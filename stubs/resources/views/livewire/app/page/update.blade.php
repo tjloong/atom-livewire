@@ -1,26 +1,29 @@
-<div class="max-w-screen-xl mx-auto">
-    <x-page-header :title="$page->title" back/>
+<div class="max-w-screen-md mx-auto">
+    <x-page-header :title="$page->name" back/>
 
-    <div class="grid gap-6 md:grid-cols-12">
-        <div class="md:col-span-3">
-            <x-sidenav wire:model="tab">
-                <x-sidenav.item name="content">Page Content</x-sidenav.item>
-                <x-sidenav.item>SEO</x-sidenav.item>
-            </x-sidenav>
-        </div>
+    <form wire:submit.prevent="save">
+        <x-box>
+            <div class="p-5">
+                <x-input.field>
+                    <x-slot name="label">Page Name</x-slot>
+                    {{ $page->name }}
+                </x-input.field>
     
-        <div class="md:col-span-9">
-            <div>
-                @if ($tab === 'content')
-                    @livewire('app.page.form.content', ['page' => $page], key($tab))
-                @endif
+                <x-input.text wire:model.defer="page.title">
+                    Page Title
+                </x-input.text>
+    
+                <x-input.richtext wire:model.defer="page.content">
+                    <x-slot name="label">Page Content</x-slot>
+                    {!! $page->content !!}
+                </x-input.richtext>
             </div>
-
-            <div>
-                @if ($tab === 'seo')
-                    @livewire('app.page.form.seo', ['page' => $page], key($tab))
-                @endif
-            </div>
-        </div>
-    </div>
+    
+            <x-slot name="buttons">    
+                <x-button type="submit" color="green" icon="check">
+                    Save Page
+                </x-button>
+            </x-slot>
+        </x-box>
+    </form>
 </div>

@@ -304,14 +304,14 @@ class CreateAtomTable extends Migration
 
             DB::table('pages')->insert([
                 [
-                    'name' => 'privacy',
+                    'name' => 'Privacy',
                     'title' => 'Privacy Policy',
                     'slug' => 'privacy',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ],
                 [
-                    'name' => 'terms',
+                    'name' => 'Terms',
                     'title' => 'Terms and Conditions',
                     'slug' => 'terms',
                     'created_at' => now(),
