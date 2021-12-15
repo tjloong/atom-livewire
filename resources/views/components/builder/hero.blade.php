@@ -32,19 +32,19 @@
             {{ $align === 'right' ? 'text-right' : '' }}
         ">
             @isset($title)
-                <h1 class="text-3xl font-bold md:text-5xl {{ $text === 'light' ? 'text-gray-300' : 'text-gray-900' }}">
+                <h1 class="text-3xl font-bold md:text-5xl {{ $dark ? 'text-gray-200' : 'text-gray-900' }}">
                     {{ $title }}
                 </h1>
             @endisset
 
             @isset($subtitle)
-                <h2 class="text-xl font-semibold md:text-2xl {{ $text === 'light' ? 'text-gray-300' : 'text-gray-700' }}">
+                <h2 class="text-xl font-semibold md:text-2xl {{ $dark ? 'text-gray-200' : 'text-gray-700' }}">
                     {{ $subtitle }}
                 </h2>
             @endisset
 
             @isset($content)
-                <p class="text-lg font-medium md:text-lg {{ $text === 'light' ? 'text-gray-300' : 'text-gray-600' }}">
+                <p class="text-lg font-medium md:text-lg {{ $dark ? 'text-gray-200' : 'text-gray-600' }}">
                     {{ $content }}
                 </p>
             @endisset

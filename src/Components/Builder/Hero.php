@@ -6,8 +6,8 @@ use Illuminate\View\Component;
 
 class Hero extends Component
 {
+    public $dark;
     public $align;
-    public $text;
     public $image;
     public $imagePosition;
     
@@ -17,13 +17,13 @@ class Hero extends Component
      * @return void
      */
     public function __construct(
+        $dark = false,
         $align = 'left', 
-        $text = null,
         $image = null, 
         $imagePosition = 'bg'
     ) {
+        $this->dark = $dark;
         $this->align = $align;
-        $this->text = $text;
         $this->image = $image;
         $this->imagePosition = $imagePosition;
     }
