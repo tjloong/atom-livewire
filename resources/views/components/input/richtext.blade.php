@@ -1,37 +1,33 @@
 @props(['uid' => uniqid()])
 
-<x-input.field>
-    <x-slot name="label">{{ $label ?? null }}</x-slot>
+<x-input.field {{ $attributes->filter(fn($val, $key) => in_array($key, ['error', 'required', 'caption'])) }}>
+    @if ($slot->isNotEmpty())
+        <x-slot name="label">{{ $slot }}</x-slot>
+    @endif
 
-    <div
-        x-data="inputRichtext(@js($toolbar), '{{ $attributes->get('placeholder') }}')" 
-        data-uid="{{ $uid }}"
-        class="
-            {{ $attributes->get('class') }}
-            {{ isset($label) ? 'border border-gray-300 rounded-md ring-gray-200 hover:ring-2' : '' }}
-        "
-    >
-        <div {{ $attributes }} x-init="$watch('value', value => $dispatch('input', value))"></div>
-    
-        <div x-show="loading" class="p-4 flex items-center">
-            <x-loader/>
-            <div class="font-medium">Loading Editor</div>
-        </div>
-        
+    <div wire:ignore x-data="{ value: $wire.get('{{ $attributes->wire('model')->value() }}') }">        
         <div 
-            x-ref="ckeditor" 
-            x-show="!loading" 
-            wire-ignore
-            class="min-h-[250px] w-full prose prose-sm max-w-none"
+            x-data="inputRichtext(@js($toolbar), '{{ $attributes->get('placeholder') }}')"
+            data-uid="{{ $uid }}"
+            class="{{ $attributes->get('class') }}"
         >
-            {{ $slot }}
+            <div {{ $attributes }}>
+                <textarea x-ref="input" x-on:change="$dispatch('input', $event.target.value)" class="hidden"></textarea>
+            </div>
+
+            <div x-show="loading" class="p-4 flex items-center">
+                <x-loader/>
+                <div class="font-medium">Loading Editor</div>
+            </div>
+            
+            <div x-ref="ckeditor" x-show="!loading" wire:ignore></div>
+
+            @livewire('input.file', [
+                'uid' => $uid,
+                'title' => 'Insert Image',
+                'accept' => ['image'],
+                'sources' => ['device', 'image', 'library'],
+            ], key($uid))
         </div>
-    
-        @livewire('input.file', [
-            'uid' => $uid,
-            'title' => 'Insert Image',
-            'accept' => ['image'],
-            'sources' => ['device', 'image', 'library'],
-        ], key($uid))
     </div>
 </x-input.field>

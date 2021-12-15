@@ -6,8 +6,6 @@ use Livewire\Component;
 
 class Home extends Component
 {
-    public $banners;
-
     /**
      * Mount event
      * 
@@ -15,7 +13,7 @@ class Home extends Component
      */
     public function mount()
     {
-        $this->banners = [];
+        //
     }
 
     /**

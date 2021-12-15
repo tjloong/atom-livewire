@@ -14,15 +14,6 @@ Route::prefix('app')->middleware('auth')->group(function () {
     Route::get('dashboard',  App\Http\Livewire\App\Dashboard::class)->name('dashboard');
 
     /**
-     * Banners
-     */
-    Route::prefix('banner')->group(function () {
-        Route::get('listing',  App\Http\Livewire\App\Banner\Listing::class)->name('banner.listing');
-        Route::get('create',  App\Http\Livewire\App\Banner\Create::class)->name('banner.create');
-        Route::get('{banner}', App\Http\Livewire\App\Banner\Update::class)->name('banner.update');
-    });
-
-    /**
      * Blogs
      */
     Route::prefix('blog')->group(function () {

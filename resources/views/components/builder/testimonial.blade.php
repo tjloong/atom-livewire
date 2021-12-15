@@ -11,9 +11,11 @@
                     ? 'md:-top-10 md:-bottom-10 md:left-0 md:-mt-0 md:w-[30%]'
                     : 'md:-top-10 md:-bottom-10 md:right-0 md:-mt-0 md:mx-4 md:w-4/12' }}
             ">
-                <div class="absolute inset-0">
-                    <img src="{{ $image }}" class="w-full h-full object-cover">
-                </div>
+                @if ($image)
+                    <div class="absolute inset-0">
+                        <img src="{{ $image }}" class="w-full h-full object-cover">
+                    </div>
+                @endif
             </figure>
         @endif
 
@@ -48,14 +50,16 @@
                 {{ $imagePosition === 'top' ? 'order-first' : '' }}
             ">
                 @if ($imagePosition === 'top' || $imagePosition === 'bottom')
-                    <figure class="w-24 h-24 drop-shadow rounded-full overflow-hidden">
-                        <img 
-                            src="{{ $image }}" 
-                            class="w-full h-full object-cover"
-                            width="150" 
-                            height="150" 
-                            alt="{{ $attributes->get('image-alt') ?? 'testimonial-avatar' }}"
-                        >
+                    <figure class="w-24 h-24 drop-shadow rounded-full overflow-hidden bg-gray-100">
+                        @if ($image)
+                            <img 
+                                src="{{ $image }}" 
+                                class="w-full h-full object-cover"
+                                width="150" 
+                                height="150" 
+                                alt="{{ $attributes->get('image-alt') ?? 'testimonial-avatar' }}"
+                            >
+                        @endif
                     </figure>
                 @endif
 

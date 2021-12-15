@@ -63,6 +63,7 @@ class Settings extends Component
      */
     public function save()
     {
+        $this->blog->cover_id = $this->blog->cover_id ?: null;
         $this->blog->save();
         $this->blog->labels()->sync($this->labels);
 

@@ -22,7 +22,6 @@ class CreateAtomTable extends Migration
         $this->createLabelsTable();
         $this->createBlogsTable();
         $this->createPagesTable();
-        $this->createBannersTable();
         $this->createEnquiriesTable();
         $this->createSiteSettingsTable();
         $this->createRootUser();
@@ -321,31 +320,6 @@ class CreateAtomTable extends Migration
         }
         else {
             Schema::dropIfExists('pages');
-        }
-    }
-
-    /**
-     * Create banners table
-     * 
-     * @return void
-     */
-    public function createBannersTable($up = true)
-    {
-        if ($up) {
-            Schema::create('banners', function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->string('type')->nullable();
-                $table->string('url')->nullable();
-                $table->boolean('is_active')->nullable();
-                $table->date('start_at')->nullable();
-                $table->date('end_at')->nullable();
-                $table->unsignedBigInteger('image_id')->nullable();
-                $table->timestamps();
-            });
-        }
-        else {
-            Schema::dropIfExists('banners');
         }
     }
 

@@ -36,12 +36,6 @@ class AppServiceProvider extends ServiceProvider
                         'active' => $route === 'dashboard',
                     ],
                     [
-                        'label' => 'Banners',
-                        'icon' => 'images',
-                        'href' => route('banner.listing'),
-                        'active' => Str::startsWith($route, 'banner.'),
-                    ],
-                    [
                         'label' => 'Blogs',
                         'icon' => 'edit-alt',
                         'dropdown' => [

@@ -67,14 +67,10 @@ class Update extends Component
     {
         $this->resetValidation();
 
-        $validator = validator(
-            ['page' => $this->page],
-            $this->rules,
-            [
-                'page.title.required' => 'Page title is required.',
-                'page.title.max' => 'Page title has a maximum of 255 characters.',
-            ]
-        );
+        $validator = validator(['page' => $this->page], $this->rules, [
+            'page.title.required' => 'Page title is required.',
+            'page.title.max' => 'Page title has a maximum of 255 characters.',
+        ]);
 
         if ($validator->fails()) {
             $this->dispatchBrowserEvent('toast', 'formError');

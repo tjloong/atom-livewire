@@ -5,7 +5,6 @@ namespace Jiannius\Atom\Models;
 use Jiannius\Atom\Traits\HasSlug;
 use Jiannius\Atom\Traits\HasOwner;
 use Jiannius\Atom\Traits\HasFilters;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class Blog extends Model

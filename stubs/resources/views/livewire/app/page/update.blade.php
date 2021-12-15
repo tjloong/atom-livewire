@@ -14,8 +14,7 @@
                 </x-input.text>
     
                 <x-input.richtext wire:model.defer="page.content">
-                    <x-slot name="label">Page Content</x-slot>
-                    {!! $page->content !!}
+                    Page Content
                 </x-input.richtext>
             </div>
     

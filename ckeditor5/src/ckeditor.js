@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
+import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
@@ -27,8 +27,9 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
+import './styles.css';
 
-export default class InlineEditor extends InlineEditorBase {}
+export default class ClassicEditor extends ClassicEditorBase {}
 
 /**
  * Custom insert image plugin
@@ -55,7 +56,7 @@ class InsertImage {
 }
 
 // Plugins to include in the build.
-InlineEditor.builtinPlugins = [
+ClassicEditor.builtinPlugins = [
 	Essentials,
 	Autoformat,
 	Bold,
@@ -81,7 +82,7 @@ InlineEditor.builtinPlugins = [
 ];
 
 // Editor configuration.
-InlineEditor.defaultConfig = {
+ClassicEditor.defaultConfig = {
 	image: {
 		toolbar: [
 			'imageStyle:inline',

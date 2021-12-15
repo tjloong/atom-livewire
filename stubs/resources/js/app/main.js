@@ -5,6 +5,7 @@ import Modal from '@atom/resources/js/components/modal.js'
 import InputTags from '@atom/resources/js/components/input-tags.js'
 import InputDate from '@atom/resources/js/components/input-date.js'
 import InputPhone from '@atom/resources/js/components/input-phone.js'
+import InputImage from '@atom/resources/js/components/input-image.js'
 import InputPicker from '@atom/resources/js/components/input-picker.js'
 import InputFile from '@atom/resources/js/components/input-file.js'
 import InputFileImage from '@atom/resources/js/components/input-file-image.js'
@@ -24,6 +25,7 @@ Alpine.data('modal', Modal)
 Alpine.data('inputTags', InputTags)
 Alpine.data('inputDate', InputDate)
 Alpine.data('inputPhone', InputPhone)
+Alpine.data('inputImage', InputImage)
 Alpine.data('inputPicker', InputPicker)
 Alpine.data('inputFile', InputFile)
 Alpine.data('inputFileImage', InputFileImage)

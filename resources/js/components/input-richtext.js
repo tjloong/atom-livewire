@@ -1,10 +1,11 @@
 export default (toolbar, placeholder) => ({
-    value: null,
+    uid: null,
     file: false,
     loading: false,
 
     init () {
         this.loading = true
+        this.uid = this.$el.getAttribute('data-uid')
         ScriptLoader.load('/js/ckeditor5/ckeditor.js')
             .then(() => this.createEditor())
             .finally(() => this.loading = false)
@@ -37,16 +38,19 @@ export default (toolbar, placeholder) => ({
                 ],
             })
             .then(editor => {
-                // update value
-                this.value = editor.getData() || null
-                editor.model.document.on('change:data', () => this.value = editor.getData() || null)
+                // initial content
+                if (this.value) editor.setData(this.value)
+
+                // onchange update
+                editor.model.document.on('change:data', () => {
+                    this.$refs.input.value = editor.getData()
+                    this.$refs.input.dispatchEvent(new Event('change'))
+                })
                 
                 // insert image
                 editor.ui.view.toolbar.on('image:click', () => {
-                    const uid = this.$el.getAttribute('data-uid')
-
-                    this.$dispatch(`file-manager-${uid}-open`)
-                    window.addEventListener(`file-manager-${uid}-completed`, (event) => {
+                    this.$dispatch(`file-manager-${this.uid}-open`)
+                    window.addEventListener(`file-manager-${this.uid}-completed`, (event) => {
                         const files = event.detail
 
                         files.forEach(file => {

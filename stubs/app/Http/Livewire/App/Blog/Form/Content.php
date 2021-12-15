@@ -2,11 +2,12 @@
 
 namespace App\Http\Livewire\App\Blog\Form;
 
+use App\Models\Blog;
 use Livewire\Component;
 
 class Content extends Component
 {
-    public $blog;
+    public Blog $blog;
     public $autosavedAt;
 
     protected $rules = [
@@ -19,9 +20,9 @@ class Content extends Component
      * 
      * @return void
      */
-    public function mount($blog)
+    public function mount()
     {
-        $this->blog = $blog;
+        //
     }
 
     /**
@@ -35,23 +36,14 @@ class Content extends Component
     }
 
     /**
-     * Save blog when title is updated
-     * 
-     * @return void
-     */
-    public function updatedBlogTitle()
-    {
-        if (!$this->blog->exists && $this->blog->title) $this->autosave();
-    }
-
-    /**
      * Save blog when content is updated
      * 
      * @return void
      */
-    public function updatedBlogContent()
+    public function updatedBlogContent($val)
     {
-        if ($this->blog->exists) $this->autosave();
+        $this->autosavedAt = null;
+        if ($val && ($this->blog->exists || $this->blog->title)) $this->autosave();
     }
 
     /**
@@ -86,15 +78,11 @@ class Content extends Component
     {
         $this->resetValidation();
 
-        $validator = validator(
-            ['blog' => $this->blog],
-            $this->rules,
-            [
-                'blog.title.required' => 'Blog title is required.',
-                'blog.title.max' => 'Blog title has a maximum of 255 characters.',
-            ]
-        );
-
+        $validator = validator(['blog' => $this->blog], $this->rules, [
+            'blog.title.required' => 'Blog title is required.',
+            'blog.title.max' => 'Blog title has a maximum of 255 characters.',
+        ]);
+        
         if ($validator->fails()) {
             $this->dispatchBrowserEvent('toast', 'formError');
             $validator->validate();
