@@ -55,7 +55,13 @@ npm install
 npm run dev
 ```
 
-4. Update MailConfigServiceProvider in config/app.php
+4. Install Amazon S3 driver for file upload feature
+
+```
+composer require --with-all-dependencies league/flysystem-aws-s3-v3 "^1.0"
+```
+
+5. Update MailConfigServiceProvider in config/app.php
 
 ```
 /*
@@ -67,7 +73,7 @@ App\Providers\AppServiceProvider::class,
 App\Providers\MailConfigServiceProvider::class,
 ```
 
-5. Update .env with database name
+6. Update .env with database name
 
 ```
 DB_DATABASE=<project-name>
@@ -75,7 +81,7 @@ DB_USERNAME=root
 DB_PASSWORD=password
 ```
 
-6. Run migration
+7. Run migration
 
 ```
 php artisan migrate
