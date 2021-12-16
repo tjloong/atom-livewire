@@ -72,18 +72,19 @@ class File extends Component
             $url = asset('storage/' . str_replace('public/', '', $path));
 
             // upload file to DO
-            if ($disk = SiteSetting::getDoDisk()) {
-                try {
-                    $settings = SiteSetting::do()->get();
-                    $folder = app()->environment('production') ? 'prod' : 'staging';
-                    $dopath = $disk->putFile($folder, storage_path("app/$path"), 'public');
-                    $cdn = $settings->where('name', 'do_spaces_cdn')->first()->value;
-                    $url = $cdn . '/' . $dopath;
-    
-                    // delete the local copy
-                    Storage::delete($path);
-                } catch (Exception $e) {
-                    logger("Unable to upload $path to Digital Ocean bucket.");
+            if (SiteSetting::getSetting('filesystem') === 'do') {
+                if ($disk = SiteSetting::getDoDisk()) {
+                    try {
+                        $folder = app()->environment('production') ? 'prod' : 'staging';
+                        $dopath = $disk->putFile($folder, storage_path("app/$path"), 'public');
+                        $cdn = SiteSetting::getSetting('do_spaces_cdn');
+                        $url = $cdn . '/' . $dopath;
+        
+                        // delete the local copy
+                        Storage::delete($path);
+                    } catch (Exception $e) {
+                        logger("Unable to upload $path to Digital Ocean bucket.");
+                    }
                 }
             }
 

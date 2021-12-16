@@ -99,6 +99,22 @@ class SiteSetting extends Model
     }
 
     /**
+     * Get settings
+     * 
+     * @param string $name
+     * @param Collection $collection
+     * @return mixed
+     */
+    public static function getSetting($name, $collection = null)
+    {
+        $setting = $collection
+            ? $collection->where('name', $name)->first()
+            : self::where('name', $name)->first();
+
+        return optional($setting)->value;
+    }
+
+    /**
      * Configure SMTP
      * 
      * @return void
@@ -107,27 +123,27 @@ class SiteSetting extends Model
     {
         try {
             $settings = self::email()->get();
-            $mailer = $settings->where('name', 'mailer')->first()->value;
+            $mailer = self::getSetting('mailer', $settings);
 
             if ($mailer === 'smtp') {
                 config([
-                    'mail.mailers.smtp.host' => $settings->where('name', 'smtp_host')->first()->value,
-                    'mail.mailers.smtp.port' => $settings->where('name', 'smtp_port')->first()->value,
-                    'mail.mailers.smtp.username' => $settings->where('name', 'smtp_username')->first()->value,
-                    'mail.mailers.smtp.password' => $settings->where('name', 'smtp_password')->first()->value,
-                    'mail.mailers.smtp.encryption' => $settings->where('name', 'smtp_encryption')->first()->value,    
+                    'mail.mailers.smtp.host' => self::getSetting('smtp_host', $settings),
+                    'mail.mailers.smtp.port' => self::getSetting('smtp_port', $settings),
+                    'mail.mailers.smtp.username' => self::getSetting('smtp_username', $settings),
+                    'mail.mailers.smtp.password' => self::getSetting('smtp_password', $settings),
+                    'mail.mailers.smtp.encryption' => self::getSetting('smtp_encryption', $settings),
                 ]);
             }
             else if ($mailer === 'mailgun') {
                 config([
-                    'services.mailgun.domain' => $settings->where('name', 'mailgun_domain')->first()->value,
-                    'services.mailgun.secret' => $settings->where('name', 'mailgun_secret')->first()->value,
+                    'services.mailgun.domain' => self::getSetting('mailgun_domain', $settings),
+                    'services.mailgun.secret' => self::getSetting('mailgun_secret', $settings),
                 ]);
             }
     
             config([
                 'mail.default' => $mailer,
-                'mail.from.address' => $settings->where('name', 'notify_from')->first()->value,
+                'mail.from.address' => self::getSetting('notify_from', $settings),
                 'mail.from.name' => config('app.name'),
             ]);
         } catch (\Throwable $th) {
@@ -143,9 +159,9 @@ class SiteSetting extends Model
      */
     public static function getDoDisk()
     {
-        $settings = self::do()->get();
-        $key = $settings->where('name', 'do_spaces_key')->first()->value;
-        $secret = $settings->where('name', 'do_spaces_secret')->first()->value;
+        $settings = self::storage()->get();
+        $key = self::getSetting('do_spaces_key', $settings);
+        $secret = self::getSetting('do_spaces_secret', $settings);
 
         if ($key && $secret) {
             config([
@@ -153,9 +169,9 @@ class SiteSetting extends Model
                     'driver' => 's3',
                     'key' => $key,
                     'secret' => $secret,
-                    'region' => $settings->where('name', 'do_spaces_region')->first()->value,
-                    'bucket' => $settings->where('name', 'do_spaces_bucket')->first()->value,
-                    'endpoint' => $settings->where('name', 'do_spaces_endpoint')->first()->value,
+                    'region' => self::getSetting('do_spaces_region', $settings),
+                    'bucket' => self::getSetting('do_spaces_bucket', $settings),
+                    'endpoint' => self::getSetting('do_spaces_endpoint', $settings),
                 ],
             ]);
     

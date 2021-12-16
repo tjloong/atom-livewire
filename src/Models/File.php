@@ -43,14 +43,17 @@ class File extends Model
 
         static::deleting(function($file) {
             if ($path = $file->data->path ?? null) {
-                if (Str::startsWith($path, 'public/uploads/')) {
-                    Storage::delete($path);
-                }
-                else if (!app()->environment('production') && (Str::startsWith($path, 'prod/') || Str::startsWith($path, 'production/'))) {
+                // prevent production file delete when in local
+                if (!app()->environment('production') && (Str::startsWith($path, 'prod/') || Str::startsWith($path, 'production/'))) {
                     abort(500, 'Do not delete production file in ' . app()->environment() . ' environment!');
                 }
-                else if ($disk = SiteSetting::getDoDisk()) {
-                    $disk->delete($path);
+                // local file
+                else if (Str::startsWith($path, 'public/uploads/')) {
+                    Storage::delete($path);
+                }
+                // digital ocean spaces
+                else if (Str::startsWith($file->url, SiteSetting::getSetting('do_spaces_cdn'))) {
+                    if ($disk = SiteSetting::getDoDisk()) $disk->delete($path);
                 }
             }
         });
