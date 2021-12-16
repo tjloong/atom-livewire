@@ -32,8 +32,8 @@
         </div>
 
         <div class="text-sm font-medium {{ $dark ? 'text-gray-200' : 'text-gray-500' }}">
-            @if ($copyright)
-                © {{ date('Y') }} {{ $copyright }}
+            @if ($company)
+                © {{ date('Y') }} {{ $company }}. All right reserved.
             @endif
         </div>
     </div>

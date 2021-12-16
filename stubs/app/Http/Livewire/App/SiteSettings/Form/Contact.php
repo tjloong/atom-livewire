@@ -31,6 +31,10 @@ class Contact extends Component
         SiteSetting::contact()->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
+
+        SiteSetting::social()->get()->each(function($setting) {
+            $this->settings[$setting->name] = $setting->value;
+        });
     }
 
     /**

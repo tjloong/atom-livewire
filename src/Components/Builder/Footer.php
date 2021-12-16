@@ -2,15 +2,16 @@
 
 namespace Jiannius\Atom\Components\Builder;
 
+use App\Models\SiteSetting;
 use Illuminate\View\Component;
 
 class Footer extends Component
 {
-    public $copyright;
+    public $dark;
     public $phone;
     public $email;
-    public $dark;
     public $socials;
+    public $company;
 
     /**
      * Contructor
@@ -19,20 +20,29 @@ class Footer extends Component
      */
     public function __construct(
         $dark = false,
-        $copyright = null,
-        $phone = null,
-        $email = null,
-        $facebook = null,
-        $instagram = null,
-        $twitter = null,
-        $linkedin = null,
-        $whatsapp = null
+        $contact = [],
+        $socials = [],
+        $siteSettings = true
     ) {
-        $this->copyright = $copyright;
-        $this->phone = $phone;
-        $this->email = $email;
+        if ($siteSettings && !config('atom.static_site')) {
+            $this->company = $contact['company'] ?? SiteSetting::getSetting('company');
+            $this->phone = $contact['phone'] ?? SiteSetting::getSetting('phone');
+            $this->email = $contact['email'] ?? SiteSetting::getSetting('email');
+            $this->socials = [];
+
+            SiteSetting::social()
+                ->get()
+                ->each(fn($setting) => $this->socials[$setting->name] = $socials[$setting->name] ?? $setting->value);
+        }
+        else {
+            $this->company = $contact['company'] ?? null;
+            $this->phone = $contact['phone'] ?? null;
+            $this->email = $contact['email'] ?? null;
+            $this->socials = $socials;
+        }
+
         $this->dark = $dark;
-        $this->socials = collect(compact('facebook', 'twitter', 'instagram', 'linkedin', 'whatsapp'))->filter(fn($val) => $val);
+        $this->socials = collect($this->socials)->filter(fn($val) => $val);
     }
 
     /**

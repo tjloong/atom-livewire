@@ -28,6 +28,18 @@ class SiteSetting extends Model
             'email',
             'whatsapp',
             'address',
+        ]);
+    }
+
+    /**
+     * Scope for social media
+     * 
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeSocial($query)
+    {
+        return $query->whereIn('name', [
             'facebook',
             'twitter',
             'linkedin',

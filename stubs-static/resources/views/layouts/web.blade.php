@@ -8,4 +8,8 @@
     <x-fullscreen-loader/>
 
     {{ $slot }}
+
+    <footer>
+        <x-builder.footer/>
+    </footer>
 @endsection

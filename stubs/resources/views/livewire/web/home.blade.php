@@ -17,17 +17,4 @@
             <x-slot name="subtitle">Can't find the answer you're looking for?</x-slot>
         </x-builder.faq>
     </section>
-    
-    <footer>
-        <x-builder.footer
-            :facebook="$contact['facebook']"
-            :instagram="$contact['instagram']"
-            :twitter="$contact['twitter']"
-            :linkedin="$contact['linkedin']"
-            :whatsapp="$contact['whatsapp']"
-            :phone="$contact['phone']"
-            :email="$contact['email']"
-            copyright="{{ $contact['company'] }}. All right reserved."
-        />
-    </footer>
 </main>
