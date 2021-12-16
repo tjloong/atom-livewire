@@ -26,7 +26,7 @@
                 <x-alert>Administrator can access all modules in the system.</x-alert>
             </div>
         @else
-            @livewire('app.ability.listing', ['user' => $user], key($user->id))
+            @livewire('app.ability.listing', ['user' => $user], key('abilities'))
         @endif
     </x-box>
 
