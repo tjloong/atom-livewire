@@ -6,10 +6,10 @@ a {
     @apply cursor-pointer font-medium text-theme;
 }
 
-.tippy-box .tippy-content {
-    @apply text-xs;
-}
-
 [x-cloak] { 
     display: none !important;
+}
+
+.ck-content {
+    @apply prose prose-sm max-w-none;
 }
