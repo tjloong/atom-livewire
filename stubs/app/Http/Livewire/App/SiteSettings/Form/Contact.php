@@ -5,14 +5,20 @@ namespace App\Http\Livewire\App\SiteSettings\Form;
 use App\Models\SiteSetting;
 use Livewire\Component;
 
-class Seo extends Component
+class Contact extends Component
 {
     public $settings;
 
     protected $rules = [
-        'settings.seo_title' => 'nullable',
-        'settings.seo_description' => 'nullable',
-        'settings.seo_image' => 'nullable',
+        'settings.company' => 'nullable',
+        'settings.phone' => 'nullable',
+        'settings.email' => 'nullable',
+        'settings.whatsapp' => 'nullable',
+        'settings.address' => 'nullable',
+        'settings.facebook' => 'nullable',
+        'settings.instagram' => 'nullable',
+        'settings.twitter' => 'nullable',
+        'settings.linkedin' => 'nullable',
     ];
 
     /**
@@ -22,7 +28,7 @@ class Seo extends Component
      */
     public function mount()
     {
-        SiteSetting::seo()->get()->each(function($setting) {
+        SiteSetting::contact()->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
     }
@@ -34,7 +40,7 @@ class Seo extends Component
      */
     public function render()
     {
-        return view('livewire.app.site-settings.form.seo');
+        return view('livewire.app.site-settings.form.contact');
     }
 
     /**

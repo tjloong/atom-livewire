@@ -362,6 +362,15 @@ class CreateAtomTable extends Migration
             });
 
             DB::table('site_settings')->insert([
+                ['name' => 'company', 'value' => null],
+                ['name' => 'phone', 'value' => null],
+                ['name' => 'email', 'value' => null],
+                ['name' => 'whatsapp', 'value' => null],
+                ['name' => 'address', 'value' => null],
+                ['name' => 'facebook', 'value' => null],
+                ['name' => 'instagram', 'value' => null],
+                ['name' => 'twitter', 'value' => null],
+                ['name' => 'linkedin', 'value' => null],
                 ['name' => 'seo_title', 'value' => null],
                 ['name' => 'seo_description', 'value' => null],
                 ['name' => 'seo_image', 'value' => null],
@@ -378,6 +387,7 @@ class CreateAtomTable extends Migration
                 ['name' => 'mailgun_secret', 'value' => null],
                 ['name' => 'notify_from', 'value' => null],
                 ['name' => 'notify_to', 'value' => null],
+                ['name' => 'filesystem', 'value' => 'local'],
                 ['name' => 'do_spaces_key', 'value' => null],
                 ['name' => 'do_spaces_secret', 'value' => null],
                 ['name' => 'do_spaces_region', 'value' => 'sgp1'],

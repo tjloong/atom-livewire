@@ -15,6 +15,27 @@ class SiteSetting extends Model
     public $timestamps = false;
 
     /**
+     * Scope for contact
+     * 
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeContact($query)
+    {
+        return $query->whereIn('name', [
+            'company', 
+            'phone', 
+            'email',
+            'whatsapp',
+            'address',
+            'facebook',
+            'twitter',
+            'linkedin',
+            'instagram',
+        ]);
+    }
+
+    /**
      * Scope for seo
      * 
      * @param Builder $query
@@ -59,14 +80,15 @@ class SiteSetting extends Model
     }
 
     /**
-     * Scope for digital ocean
+     * Scope for storage
      * 
      * @param Builder $query
      * @return Builder
      */
-    public function scopeDo($query)
+    public function scopeStorage($query)
     {
         return $query->whereIn('name', [
+            'filesystem',
             'do_spaces_key',
             'do_spaces_secret',
             'do_spaces_region',

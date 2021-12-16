@@ -4,10 +4,13 @@
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
             <x-sidenav wire:model="tab">
-                <x-sidenav.item name="seo">Site SEO</x-sidenav.item>
+                <x-sidenav.item name="contact">Contact Information</x-sidenav.item>
                 <x-sidenav.item name="tracking">Site Tracking</x-sidenav.item>
-                <x-sidenav.item name="email">Email Notification</x-sidenav.item>
-                <x-sidenav.item name="do">Digital Ocean Spaces</x-sidenav.item>
+                <x-sidenav.item name="seo">Site SEO</x-sidenav.item>
+
+                <x-sidenav.item label>System</x-sidenav.item>
+                <x-sidenav.item name="email">Email Configurations</x-sidenav.item>
+                <x-sidenav.item name="storage">Storage</x-sidenav.item>
             </x-sidenav>
         </div>
 
@@ -25,14 +28,20 @@
             </div>
 
             <div>
+                @if ($tab === 'contact')
+                    @livewire('app.site-settings.form.contact', key($tab))
+                @endif
+            </div>
+
+            <div>
                 @if ($tab === 'email')
                     @livewire('app.site-settings.form.email', key($tab))
                 @endif
             </div>
 
             <div>
-                @if ($tab === 'do')
-                    @livewire('app.site-settings.form.digital-ocean', key($tab))
+                @if ($tab === 'storage')
+                    @livewire('app.site-settings.form.storage', key($tab))
                 @endif
             </div>
         </div>

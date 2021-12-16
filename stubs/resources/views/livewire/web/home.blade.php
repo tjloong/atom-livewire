@@ -20,11 +20,14 @@
     
     <footer>
         <x-builder.footer
-            facebook="https://facebook.com/jiannius"
-            instagram="https://insta.net"
-            phone="+60123223344"
-            email="hello@jiannius.com"
-            copyright="Jiannius Technologies Sdn Bhd. All right reserved."
+            :facebook="$contact['facebook']"
+            :instagram="$contact['instagram']"
+            :twitter="$contact['twitter']"
+            :linkedin="$contact['linkedin']"
+            :whatsapp="$contact['whatsapp']"
+            :phone="$contact['phone']"
+            :email="$contact['email']"
+            copyright="{{ $contact['company'] }}. All right reserved."
         />
     </footer>
 </main>

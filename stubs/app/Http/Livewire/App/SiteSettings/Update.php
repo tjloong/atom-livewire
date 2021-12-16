@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class Update extends Component
 {
-    public $tab = 'seo';
+    public $tab = 'contact';
 
     /**
      * Mount event
