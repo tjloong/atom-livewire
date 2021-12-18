@@ -39,7 +39,7 @@
         x-on:click.away="show = false"
         x-cloak
         class="
-            relative p-4 
+            relative py-2 px-4 
             {{ $sticky ? 'sticky top-0 z-10 drop-shadow' : '' }}
             {{ $attributes->get('class') ?? 'bg-white' }}
         "
@@ -49,7 +49,7 @@
                 @isset($logo)
                     {{ $logo }}
                 @else
-                    <a href="/" class="w-24 h-8 md:w-40">
+                    <a href="/" class="w-24 h-12 md:w-40">
                         <img
                             src="{{ $attributes->get('logo') ?? '/storage/img/logo.svg' }}"
                             class="w-full h-full object-contain object-left"
