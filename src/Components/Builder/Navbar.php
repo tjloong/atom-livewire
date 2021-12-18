@@ -26,8 +26,8 @@ class Navbar extends Component
     ) {
         $this->align = $align;
         $this->sticky = $sticky;
-        $this->login = $login;
-        $this->register = $register;
+        $this->login = config('static_site') ? false : $login;
+        $this->register = config('static_site') ? false : $register;
         $this->registerPlaceholder = $registerPlaceholder;
     }
 

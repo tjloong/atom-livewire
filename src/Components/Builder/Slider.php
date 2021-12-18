@@ -4,14 +4,12 @@ namespace Jiannius\Atom\Components\Builder;
 
 use Illuminate\View\Component;
 
-class Hero extends Component
+class Slider extends Component
 {
-    public $overlay;
     public $align;
     public $valign;
-    public $image;
-    public $imagePosition;
-    
+    public $overlay;
+
     /**
      * Contructor
      * 
@@ -20,15 +18,11 @@ class Hero extends Component
     public function __construct(
         $align = 'center',
         $valign = 'center',
-        $overlay = false,
-        $image = null, 
-        $imagePosition = 'bg'
+        $overlay = false
     ) {
-        $this->overlay = $overlay;
         $this->align = $align;
         $this->valign = $valign;
-        $this->image = $image;
-        $this->imagePosition = $imagePosition;
+        $this->overlay = $overlay;
     }
 
     /**
@@ -38,6 +32,6 @@ class Hero extends Component
      */
     public function render()
     {
-        return view('atom::components.builder.hero');
+        return view('atom::components.builder.slider');
     }
 }
