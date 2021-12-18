@@ -49,7 +49,7 @@
                 @isset($logo)
                     {{ $logo }}
                 @else
-                    <a href="/" class="w-24 h-12 md:w-40">
+                    <a href="/" class="w-24 h-8 md:w-40">
                         <img
                             src="{{ $attributes->get('logo') ?? '/storage/img/logo.svg' }}"
                             class="w-full h-full object-contain object-left"
