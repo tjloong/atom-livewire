@@ -39,7 +39,7 @@
         x-on:click.away="show = false"
         x-cloak
         class="
-            relative py-2 px-4 
+            relative p-4
             {{ $sticky ? 'sticky top-0 z-10 drop-shadow' : '' }}
             {{ $attributes->get('class') ?? 'bg-white' }}
         "
