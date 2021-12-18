@@ -5,7 +5,7 @@
     'bottomImg' => $image && $imagePosition === 'bottom' ? $image : null,
 ])
 
-<div class="relative h-[500px] md:h-[600px] 3xl:max-w-screen-xl 3xl:mx-auto {{ $attributes->get('bgcolor') }}">
+<div class="relative min-h-[500px] md:min-h-[600px] 3xl:max-w-screen-xl 3xl:mx-auto {{ $attributes->get('bgcolor') }}">
     @if ($attributes->has('slider'))
         <x-builder.slider :config="$attributes->get('slider')">
             {{ $slot }}
