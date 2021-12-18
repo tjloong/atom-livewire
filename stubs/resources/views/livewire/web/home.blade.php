@@ -2,10 +2,16 @@
     <section>
         <x-builder.hero
             bgcolor="bg-indigo-800"
+            valign="bottom"
+            align="right"
+            image-position="right"
             image="https://images.unsplash.com/photo-1639798124484-752f1c12bc4d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60"
         >
-            <x-slot name="title">Atomic Bomb</x-slot>
+            <x-slot name="title">
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla, dolores, excepturi maiores dolor quo.
+            </x-slot>
 
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, eveniet eaque, quibusdam blanditiis ex sapiente consequatur error non perspiciatis mollitia sunt? Consectetur amet possimus, totam facilis beatae fugiat voluptatem nihil?
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, eveniet eaque, quibusdam blanditiis ex sapiente consequatur error non perspiciatis mollitia sunt? Consectetur amet possimus, totam facilis beatae fugiat voluptatem nihil?
             
             <x-slot name="cta">
