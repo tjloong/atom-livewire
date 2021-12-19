@@ -48,13 +48,21 @@
                 {{ $align === 'right' ? 'text-right' : '' }}
             ">
                 @isset($title)
-                    <h1 class="text-3xl font-bold md:text-5xl {{ $overlay ? 'text-gray-200' : 'text-gray-900' }}">
+                    <h1 {{ $title->attributes->class([
+                        'text-3xl font-bold md:text-5xl',
+                        'text-gray-200' => $overlay ?? false,
+                        'text-gray-900' => $overlay ?? false,
+                    ]) }}>
                         {{ $title }}
                     </h1>
                 @endisset
 
                 @isset($subtitle)
-                    <h2 class="text-xl font-semibold md:text-2xl {{ $overlay ? 'text-gray-200' : 'text-gray-700' }}">
+                    <h2 {{ $subtitle->attributes->class([
+                        'text-xl font-semibold md:text-2xl',
+                        'text-gray-200' => $overlay ?? false,
+                        'text-gray-700' => $overlay ?? false,
+                    ]) }}>
                         {{ $subtitle }}
                     </h2>
                 @endisset
@@ -66,11 +74,11 @@
                 @endif
 
                 @isset($cta)
-                    <div class="
-                        inline-flex items-center space-x-3
-                        {{ $align === 'center' ? 'justify-center' : '' }}
-                        {{ $align === 'right' ? 'justify-end' : '' }}
-                    ">
+                    <div {{ $cta->attributes->class([
+                        'inline-flex items-center space-x-3',
+                        'justify-center' => $align === 'center',
+                        'justify-end' => $align === 'right',
+                    ]) }}>
                         {{ $cta }}
                     </div>
                 @endisset

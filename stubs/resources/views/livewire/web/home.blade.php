@@ -1,7 +1,6 @@
 <main class="min-h-screen">
     <section>
         <x-builder.hero
-            bgcolor="bg-indigo-800"
             valign="bottom"
             align="right"
             image-position="right"
