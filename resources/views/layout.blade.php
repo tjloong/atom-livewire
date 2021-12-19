@@ -34,7 +34,7 @@
     @endif
 </head>
 
-<body class="font-sans antialiased">
+<body class="font-{{ $fontTheme ?? 'sans' }} antialiased">
     @if ($enabled = $tracking ?? true)
         <x-gtm noscript/>
         <x-fbpixel noscript/>
