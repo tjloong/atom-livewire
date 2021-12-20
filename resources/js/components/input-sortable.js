@@ -13,19 +13,19 @@ export default (value = null, config = null) => ({
         if (!this.value) return
 
         // add identifier to each value
-        this.value = this.value.map(val => (val.id || val.uid ? val : { ...val, uid: random() }))
+        this.value = this.value.map(val => ({ ...val, sortableId: random() }))
 
         // map the item elements to value
         Array.from(this.$el.children)
-            .forEach((child, i) => child.setAttribute('data-id', this.value[i].id || this.value[i].uid))
+            .forEach((child, i) => child.setAttribute('data-sortable-id', this.value[i].sortableId))
     },
 
     input () {
         const sorted = []
 
         Array.from(this.$el.children).forEach(child => {
-            const id = child.getAttribute('data-id')
-            const value = this.value.find(val => (val.id.toString() === id))
+            const id = child.getAttribute('data-sortable-id')
+            const value = this.value.find(val => (val.sortableId === id))
             sorted.push(value)
         })
 

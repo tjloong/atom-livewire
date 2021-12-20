@@ -13,3 +13,7 @@ a {
 .ck-content {
     @apply prose prose-sm max-w-none;
 }
+
+.sortable-ghost {
+    @apply ring ring-offset-2 ring-theme ring-offset-theme-light;
+}
