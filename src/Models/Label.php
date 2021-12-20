@@ -13,6 +13,11 @@ class Label extends Model
         'name',
         'slug',
         'type',
+        'data',
+    ];
+
+    protected $casts = [
+        'data' => 'object',
     ];
 
     /**
