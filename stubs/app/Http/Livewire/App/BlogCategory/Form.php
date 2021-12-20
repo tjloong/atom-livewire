@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire\App\BlogCategory;
 
-use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
+use Illuminate\Support\Facades\Validator;
 
 class Form extends Component
 {

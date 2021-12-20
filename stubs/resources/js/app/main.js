@@ -13,6 +13,7 @@ import InputFileDevice from '@atom/resources/js/components/input-file-device.js'
 import InputFileLibrary from '@atom/resources/js/components/input-file-library.js'
 import InputFileYoutube from '@atom/resources/js/components/input-file-youtube.js'
 import InputRichtext from '@atom/resources/js/components/input-richtext.js'
+import InputSortable from '@atom/resources/js/components/input-sortable.js'
 import NotifyAlert from '@atom/resources/js/components/notify-alert.js'
 import NotifyToast from '@atom/resources/js/components/notify-toast.js'
 import NotifyConfirm from '@atom/resources/js/components/notify-confirm.js'
@@ -33,6 +34,7 @@ Alpine.data('inputFileDevice', InputFileDevice)
 Alpine.data('inputFileLibrary', InputFileLibrary)
 Alpine.data('inputFileYoutube', InputFileYoutube)
 Alpine.data('inputRichtext', InputRichtext)
+Alpine.data('inputSortable', InputSortable)
 Alpine.data('notifyAlert', NotifyAlert)
 Alpine.data('notifyToast', NotifyToast)
 Alpine.data('notifyConfirm', NotifyConfirm)
