@@ -35,7 +35,7 @@ class File extends Component
         $title = 'File Manager',
         $multiple = false,
         $sources = ['device', 'image', 'youtube', 'library'],
-        $accept = ['image', 'youtube', 'file']
+        $accept = ['image', 'video', 'youtube', 'file']
     ) {
         $this->uid = $uid ? 'file-manager-' . $uid : 'file-manager';
         $this->title = $title;
@@ -88,15 +88,15 @@ class File extends Component
                 }
             }
 
+            $data = ['path' => $dopath ?? $path];
+            if ($dimension) $data['dimension'] = $dimension;
+
             $saved = FileModel::create([
                 'name' => $meta['name'],
                 'size' => $meta['size'],
                 'mime' => $meta['mime'],
                 'url' => $url,
-                'data' => [
-                    'path' => $dopath ?? $path,
-                    'dimension' => $dimension ?? null,
-                ],
+                'data' => $data,
             ]);
 
             array_push($completed, $saved);
@@ -180,9 +180,10 @@ class File extends Component
         return FileModel::query()
             ->where(function($q) {
                 $q->when(in_array('image', $this->accept), fn($q) => $q->where('mime', 'like', 'image/%'))
+                ->when(in_array('video', $this->accept), fn($q) => $q->orWhere('mime', 'like', 'video/%'))
                 ->when(in_array('youtube', $this->accept), fn($q) => $q->orWhere('mime', 'youtube'))
                 ->when(in_array('file', $this->accept), fn($q) => $q->orWhere(
-                    fn($q) => $q->where('mime', 'not like', 'image/%')->where('mime', '<>', 'youtube')
+                    fn($q) => $q->where('mime', 'not like', 'image/%')->where('mime', 'not like', 'video/%')->where('mime', '<>', 'youtube')
                 ));
             })
             ->when($search, fn($q) => $q->search($search))
@@ -221,6 +222,7 @@ class File extends Component
         $types = [];
 
         if (in_array('image', $accept)) $types = array_merge($types, ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']);
+        if (in_array('video', $accept)) $types = array_merge($types, ['video/x-flv', 'video/mp4']);
         if (in_array('file', $accept)) {
             $types = array_merge($types, [
                 'application/pdf',
@@ -248,7 +250,7 @@ class File extends Component
         $ext = $file->extension();
 
         if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) $mime = "image/$ext";
-        else $mime = $file->getClientMimeType();
+        else $mime = $file->getMimeType();
 
         return compact('name', 'size', 'mime', 'ext');
     }

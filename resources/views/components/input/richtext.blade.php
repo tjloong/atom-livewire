@@ -24,9 +24,9 @@
 
             @livewire('input.file', [
                 'uid' => $uid,
-                'title' => 'Insert Image',
-                'accept' => ['image'],
-                'sources' => ['device', 'image', 'library'],
+                'title' => 'Insert Media',
+                'accept' => ['image', 'video', 'youtube'],
+                'sources' => ['device', 'image', 'youtube', 'library'],
             ], key($uid))
         </div>
     </div>

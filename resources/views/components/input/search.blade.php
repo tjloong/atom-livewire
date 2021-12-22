@@ -1,4 +1,4 @@
-<div class="flex items-center bg-gray-100 p-2 rounded-md space-x-1.5" x-data>
+<div class="flex items-center bg-gray-100 py-2 px-3 rounded-md space-x-1.5 drop-shadow" x-data>
     <x-icon name="search" size="18px" class="text-gray-400"/>
 
     <input

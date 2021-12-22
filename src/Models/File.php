@@ -30,6 +30,7 @@ class File extends Model
     protected $appends = [
         'type',
         'is_image',
+        'is_video',
     ];
 
     /**
@@ -86,6 +87,7 @@ class File extends Model
     {
         if ($type === 'all') return $query;
         if ($type === 'image') return $query->where('mime', 'like', 'image/%');
+        if ($type === 'video') return $query->where('mime', 'like', 'video/%');
         if ($type === 'youtube') return $query->where('mime', 'youtube');
         if ($type === 'file') {
             return $query->where(function ($q) {
@@ -102,6 +104,16 @@ class File extends Model
     public function getIsImageAttribute()
     {
         return Str::startsWith($this->mime, 'image/');
+    }
+
+    /**
+     * Get is video attribute
+     * 
+     * @return boolean
+     */
+    public function getIsVideoAttribute()
+    {
+        return Str::startsWith($this->mime, 'video/');
     }
 
     /**

@@ -257,6 +257,17 @@
                                         <div class="absolute inset-0" x-show="file.is_image">
                                             <img x-bind:src="file.url" class="w-full h-full object-cover">
                                         </div>
+
+                                        <div class="absolute inset-0" x-show="file.is_video">
+                                            <video class="w-full h-full object-cover">
+                                                <source x-bind:src="file.url"/>
+                                            </video>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <div class="w-8 h-8 bg-blue-500 rounded-full text-white flex items-center justify-center">
+                                                    <x-icon name="play" size="28px"/>
+                                                </div>
+                                            </div>
+                                        </div>
                 
                                         <div class="absolute inset-0 flex items-center justify-center" x-show="file.type === 'youtube'">
                                             <template x-if="file.data?.vid">
@@ -274,7 +285,7 @@
                                             <x-icon name="file-pdf" type="solid" size="64px"/>
                                         </div>
                 
-                                        <div class="absolute inset-0 flex items-center justify-center" x-show="!file.is_image && !['youtube', 'pdf'].includes(file.type)">
+                                        <div class="absolute inset-0 flex items-center justify-center" x-show="!file.is_image && !file.is_video && !['youtube', 'pdf'].includes(file.type)">
                                             <x-icon name="file" type="solid" size="64px"/>
                                         </div>
                 

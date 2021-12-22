@@ -12,6 +12,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
@@ -37,18 +38,18 @@ export default class ClassicEditor extends ClassicEditorBase {}
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-class InsertImage {
+class InsertMedia {
 	constructor (editor) {
-		editor.ui.componentFactory.add('insertImage', locale => {
+		editor.ui.componentFactory.add('insertMedia', locale => {
 			const view = new ButtonView(locale)
 
 			view.set({
-				label: 'Insert Image',
+				label: 'Insert Media',
 				icon: imageIcon,
 				tooltip: true,
 			})
 
-			view.on('execute', () => editor.ui.view.toolbar.fire('image:click'))
+			view.on('execute', () => editor.ui.view.toolbar.fire('insert-media:click'))
 
 			return view
 		})
@@ -63,6 +64,7 @@ ClassicEditor.builtinPlugins = [
 	Italic,
 	BlockQuote,
 	Heading,
+	GeneralHtmlSupport,
 	Image,
 	ImageCaption,
 	ImageStyle,
@@ -76,7 +78,7 @@ ClassicEditor.builtinPlugins = [
 	Table,
 	TableToolbar,
 	TextTransformation,
-	InsertImage,
+	InsertMedia,
 	FontSize,
 	FontColor,
 ];
@@ -99,5 +101,15 @@ ClassicEditor.defaultConfig = {
 			'tableRow',
 			'mergeTableCells'
 		]
+	},
+	htmlSupport: {
+		allow: [
+			{
+				name: 'video',
+				attributes: true,
+				classes: true,
+				styles: true,
+			},
+		],
 	},
 };

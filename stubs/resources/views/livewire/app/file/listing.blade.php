@@ -62,10 +62,19 @@
                                 <div class="absolute inset-0 flex items-center justify-center text-red-500">
                                     <x-icon name="youtube" type="logo" size="48px" />
                                 </div>
+                            @elseif ($file->is_video)
+                                <video class="w-full h-full object-cover">
+                                    <source src="{{ $file->url }}"/>
+                                </video>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
+                                        <x-icon name="play" size="28px"/>
+                                    </div>
+                                </div>
                             @elseif ($file->is_image)
                                 <img src="{{ $file->url }}" class="h-full w-full object-cover">
                             @elseif ($file->type === 'pdf')
-                                <x-icon name="file-pdf" size="48px"/>
+                                <x-icon name="file-pdf" type="solid" size="48px"/>
                             @else
                                 <x-icon name="file" size="48px"/>
                             @endif

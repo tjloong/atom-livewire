@@ -11,6 +11,19 @@
                 </div>
             </a>
         </figure>
+    @elseif ($file->is_video)
+        <figure class="relative rounded-md pt-[60%] shadow overflow-hidden bg-gray-100 mb-4">
+            <a class="absolute inset-0" href="{{ $file->url }}" target="_blank">
+                <video class="w-full h-full object-cover">
+                    <source src="{{ $file->url }}"/>
+                </video>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-12 h-12 bg-blue-500 rounded-full text-white flex items-center justify-center">
+                        <x-icon name="play" size="28px"/>
+                    </div>
+                </div>
+            </a>
+        </figure>
     @elseif ($file->is_image)
         <div class="mb-4">
             <a href="{{ $file->url }}" target="_blank">
