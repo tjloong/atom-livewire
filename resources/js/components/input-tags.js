@@ -27,5 +27,7 @@ export default (value, options) => ({
             .filter(opt => (opt.selected))
             .map(opt => (opt.value))
         )
+
+        this.close()
     },
 })
