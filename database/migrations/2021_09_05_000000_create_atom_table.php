@@ -236,8 +236,10 @@ class CreateAtomTable extends Migration
                 $table->string('name');
                 $table->string('slug')->nullable();
                 $table->string('type')->nullable();
-                $table->json('data')->nullable();
+                $table->unsignedBigInteger('image_id')->nullable();
                 $table->timestamps();
+
+                $table->foreign('image_id')->references('id')->on('files')->onDelete('set null');
             });
         }
         else {

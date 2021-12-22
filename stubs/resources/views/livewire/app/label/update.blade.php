@@ -1,8 +1,8 @@
 <div class="max-w-lg mx-auto">
     <x-page-header title="{{ $label->name }}" back>
         <x-button icon="trash" color="red" inverted x-on:click="$dispatch('confirm', {
-            title: 'Delete Blog Category',
-            message: 'Are you sure to delete this blog category?',
+            title: 'Delete Label',
+            message: 'Are you sure to delete this label?',
             type: 'error',
             onConfirmed: () => $wire.delete(),
         })">
@@ -10,5 +10,5 @@
         </x-button>
     </x-page-header>
 
-    @livewire('app.blog-category.form', ['label' => $label])
+    @livewire('app.label.form', ['label' => $label])
 </div>

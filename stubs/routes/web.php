@@ -23,15 +23,6 @@ Route::prefix('app')->middleware('auth')->group(function () {
     });
 
     /**
-     * Blog Categories
-     */
-    Route::prefix('blog-category')->group(function () {
-        Route::get('listing',  App\Http\Livewire\App\BlogCategory\Listing::class)->name('blog-category.listing');
-        Route::get('create',  App\Http\Livewire\App\BlogCategory\Create::class)->name('blog-category.create');
-        Route::get('{label}', App\Http\Livewire\App\BlogCategory\Update::class)->name('blog-category.update');
-    });
-
-    /**
      * Enquiries
      */
     Route::prefix('enquiry')->group(function () {
@@ -73,6 +64,15 @@ Route::prefix('app')->middleware('auth')->group(function () {
         Route::get('listing',  App\Http\Livewire\App\Team\Listing::class)->name('team.listing');
         Route::get('create',  App\Http\Livewire\App\Team\Create::class)->name('team.create');
         Route::get('{team}', App\Http\Livewire\App\Team\Update::class)->name('team.update');
+    });
+
+    /**
+     * Label
+     */
+    Route::prefix('label')->group(function () {
+        Route::get('listing',  App\Http\Livewire\App\Label\Listing::class)->name('label.listing');
+        Route::get('create',  App\Http\Livewire\App\Label\Create::class)->name('label.create');
+        Route::get('{label}', App\Http\Livewire\App\Label\Update::class)->name('label.update');
     });
 
     /**

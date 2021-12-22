@@ -13,12 +13,20 @@ class Label extends Model
         'name',
         'slug',
         'type',
-        'data',
+        'image_id',
     ];
 
     protected $casts = [
-        'data' => 'object',
+        'image_id' => 'integer',
     ];
+
+    /**
+     * Get image for label
+     */
+    public function image()
+    {
+        return $this->belongsTo(File::class);
+    }
 
     /**
      * Scope for fussy search

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\App\BlogCategory;
+namespace App\Http\Livewire\App\Label;
 
 use App\Models\Label;
 use Livewire\Component;
@@ -18,7 +18,7 @@ class Create extends Component
      */
     public function mount()
     {
-        $this->label = new Label(['type' => 'blog-category']);
+        $this->label = new Label();
     }
 
     /**
@@ -28,7 +28,7 @@ class Create extends Component
      */
     public function render()
     {
-        return view('livewire.app.blog-category.create');
+        return view('livewire.app.label.create');
     }
 
     /**
@@ -36,9 +36,9 @@ class Create extends Component
      * 
      * @return void
      */
-    public function saved()
+    public function saved($type)
     {
-        session()->flash('flash', 'Blog Category Created::success');
-        return redirect()->route('blog-category.listing');
+        session()->flash('flash', 'Label Created::success');
+        return redirect()->route('label.listing', ['tab' => $type]);
     }
 }

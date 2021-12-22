@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Livewire\App\BlogCategory;
+namespace App\Http\Livewire\App\Label;
 
+use App\Models\Label;
 use Livewire\Component;
-use Illuminate\Support\Facades\Validator;
 
 class Form extends Component
 {
-    public $label;
+    public $types;
+    public Label $label;
 
     protected $rules = [
         'label.name' => 'required|max:255',
@@ -19,9 +20,9 @@ class Form extends Component
      * 
      * @return void
      */
-    public function mount($label)
+    public function mount()
     {
-        $this->label = $label;
+        $this->getTypes();
     }
 
     /**
@@ -31,19 +32,21 @@ class Form extends Component
      */
     public function render()
     {
-        return view('livewire.app.blog-category.form');
+        return view('livewire.app.label.form');
     }
 
     /**
-     * Save blog category
+     * Save label
      * 
      * @return void
      */
     public function save()
     {
         $this->validateinputs();
+
         $this->label->save();
-        $this->emitUp('saved');
+
+        $this->emitUp('saved', $this->label->type);
     }
 
     /**
@@ -55,15 +58,30 @@ class Form extends Component
     {
         $this->resetValidation();
         
-        $validator = Validator::make(
-            ['label' => $this->label],
-            $this->rules,
-            ['label.name' => 'Category name is required.'],
-        );
+        $validator = validator(['label' => $this->label], $this->rules, [
+            'label.name' => 'Label name is required.',
+            'label.type' => 'Label type is required.',
+        ]);
 
         if ($validator->fails()) {
             $this->dispatchBrowserEvent('toast', 'formError');
             $validator->validate();
         }
+    }
+
+    /**
+     * Get types
+     * 
+     * @return void
+     */
+    private function getTypes()
+    {
+        $types = [];
+
+        foreach(Label::getTypes() as $key => $value) {
+            array_push($types, ['value' => $key, 'label' => $value]);
+        }
+
+        $this->types = $types;
     }
 }

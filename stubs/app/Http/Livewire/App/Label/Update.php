@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\App\BlogCategory;
+namespace App\Http\Livewire\App\Label;
 
 use App\Models\Label;
 use Livewire\Component;
@@ -28,7 +28,7 @@ class Update extends Component
      */
     public function render()
     {
-        return view('livewire.app.blog-category.update');
+        return view('livewire.app.label.update');
     }
 
     /**
@@ -38,18 +38,20 @@ class Update extends Component
      */
     public function saved()
     {
-        $this->dispatchBrowserEvent('toast', ['message' => 'Blog Category Updated', 'type' => 'success']);
+        $this->dispatchBrowserEvent('toast', ['message' => 'Label Updated', 'type' => 'success']);
     }
 
     /**
-     * Delete blog category
+     * Delete label
      * 
      * @return void
      */
     public function delete()
     {
         $this->label->delete();
-        session()->flash('flash', 'Blog Category Deleted');
-        return redirect()->route('blog-category.listing');
+
+        session()->flash('flash', 'Label Deleted');
+        
+        return redirect()->route('label.listing', ['tab' => $this->label->type]);
     }
 }

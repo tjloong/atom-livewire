@@ -38,18 +38,8 @@ class AppServiceProvider extends ServiceProvider
                     [
                         'label' => 'Blogs',
                         'icon' => 'edit-alt',
-                        'dropdown' => [
-                            [
-                                'label' => 'All Blogs',
-                                'href' => route('blog.listing'),
-                                'active' => Str::startsWith($route, 'blog.'),
-                            ],
-                            [
-                                'label' => 'Blog Categories',
-                                'href' => route('blog-category.listing'),
-                                'active' => Str::startsWith($route, 'blog-category.'),
-                            ],
-                        ],
+                        'href' => route('blog.listing'),
+                        'active' => Str::startsWith($route, 'blog.'),
                     ],
                     [
                         'label' => 'Enquiries',
@@ -89,6 +79,12 @@ class AppServiceProvider extends ServiceProvider
                                 'href' => route('team.listing'),
                                 'active' => Str::startsWith($route, 'team.'),
                                 'enabled' => $user->can('team.manage'),
+                            ],
+                            [
+                                'label' => 'Labels',
+                                'href' => route('label.listing'),
+                                'active' => Str::startsWith($route, 'label.'),
+                                'enabled' => $user->can('label.manage'),
                             ],
                             [
                                 'label' => 'Files',
