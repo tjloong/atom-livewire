@@ -22,7 +22,7 @@ class Label extends AtomLabel
     public static function getTypes()
     {
         return [
-            'blog-categories' => 'Blog Categories',
+            'blog-category' => 'Blog Categories',
         ];
     }
 }

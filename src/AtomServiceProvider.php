@@ -121,6 +121,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('input.picker', 'Jiannius\\Atom\\Components\\Input\\Picker');
         Blade::component('input.search', 'Jiannius\\Atom\\Components\\Input\\Search');
         Blade::component('input.select', 'Jiannius\\Atom\\Components\\Input\\Select');
+        Blade::component('input.currency', 'Jiannius\\Atom\\Components\\Input\\Currency');
         Blade::component('input.password', 'Jiannius\\Atom\\Components\\Input\\Password');
         Blade::component('input.checkbox', 'Jiannius\\Atom\\Components\\Input\\Checkbox');
         Blade::component('input.textarea', 'Jiannius\\Atom\\Components\\Input\\Textarea');

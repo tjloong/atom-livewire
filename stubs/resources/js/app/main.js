@@ -7,6 +7,7 @@ import InputDate from '@atom/resources/js/components/input-date.js'
 import InputPhone from '@atom/resources/js/components/input-phone.js'
 import InputImage from '@atom/resources/js/components/input-image.js'
 import InputPicker from '@atom/resources/js/components/input-picker.js'
+import InputCurrency from '@atom/resources/js/components/input-currency.js'
 import InputFile from '@atom/resources/js/components/input-file.js'
 import InputFileImage from '@atom/resources/js/components/input-file-image.js'
 import InputFileDevice from '@atom/resources/js/components/input-file-device.js'
@@ -28,6 +29,7 @@ Alpine.data('inputDate', InputDate)
 Alpine.data('inputPhone', InputPhone)
 Alpine.data('inputImage', InputImage)
 Alpine.data('inputPicker', InputPicker)
+Alpine.data('inputCurrency', InputCurrency)
 Alpine.data('inputFile', InputFile)
 Alpine.data('inputFileImage', InputFileImage)
 Alpine.data('inputFileDevice', InputFileDevice)
