@@ -45,7 +45,8 @@ class Button extends Component
     {
         $styles = ['btn'];
 
-        if ($this->size === 'sm') array_push($styles, 'btn-sm');
+        if ($this->size === 'xs') array_push($styles, 'btn-xs');
+        else if ($this->size === 'sm') array_push($styles, 'btn-sm');
         else if ($this->size === 'md') array_push($styles, 'btn-md');
         else if ($this->size === 'lg') array_push($styles, 'btn-lg');
 

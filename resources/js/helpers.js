@@ -76,3 +76,13 @@ global.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => 
         })
     })
 }
+
+// toggle element in array
+global.arrayToggle = (array, value) => {
+    const index = array.indexOf(value)
+
+    if (index === -1) array.push(value)
+    else array.splice(index, 1)
+
+    return array
+}

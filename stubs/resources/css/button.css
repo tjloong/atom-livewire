@@ -1,6 +1,9 @@
 .btn {
     @apply inline-flex items-center justify-center font-medium hover:shadow;
 }
+.btn.btn-xs {
+    @apply py-1 px-2 rounded text-xs;
+}
 .btn.btn-sm {
     @apply py-1.5 px-3 rounded-md text-sm;
 }

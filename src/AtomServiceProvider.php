@@ -97,6 +97,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('fbpixel', 'Jiannius\\Atom\\Components\\FbPixel');
         Blade::component('stat-box', 'Jiannius\\Atom\\Components\\StatBox');
         Blade::component('checkbox', 'Jiannius\\Atom\\Components\\Checkbox');
+        Blade::component('file-card', 'Jiannius\\Atom\\Components\\FileCard');
         Blade::component('admin-panel', 'Jiannius\\Atom\\Components\\AdminPanel');
         Blade::component('empty-state', 'Jiannius\\Atom\\Components\\EmptyState');
         Blade::component('page-header', 'Jiannius\\Atom\\Components\\PageHeader');
@@ -136,9 +137,6 @@ class AtomServiceProvider extends ServiceProvider
 
         Blade::component('sidenav', 'Jiannius\\Atom\\Components\\Sidenav\\Index');
         Blade::component('sidenav.item', 'Jiannius\\Atom\\Components\\Sidenav\\Item');
-
-        Blade::component('swiper', 'Jiannius\\Atom\\Components\\Swiper\\Index');
-        Blade::component('swiper.slide', 'Jiannius\\Atom\\Components\\Swiper\\Slide');
         
         Blade::component('notify.alert', 'Jiannius\\Atom\\Components\\Notify\\Alert');
         Blade::component('notify.toast', 'Jiannius\\Atom\\Components\\Notify\\Toast');
