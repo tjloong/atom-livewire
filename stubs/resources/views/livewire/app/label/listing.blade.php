@@ -1,6 +1,6 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header title="Labels" back="{{ route('label.listing') }}">
-        <x-button icon="plus" href="{{ route('label.create') }}">
+        <x-button icon="plus" href="{{ route('label.create', ['type' => $tab]) }}">
             New Label
         </x-button>
     </x-page-header>

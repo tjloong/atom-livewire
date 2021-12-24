@@ -8,6 +8,7 @@ use Livewire\Component;
 class Create extends Component
 {
     public $label;
+    public $type;
 
     protected $listeners = ['saved'];
 
@@ -18,7 +19,9 @@ class Create extends Component
      */
     public function mount()
     {
-        $this->label = new Label();
+        $this->label = new Label([
+            'type' => request()->query('type'),
+        ]);
     }
 
     /**

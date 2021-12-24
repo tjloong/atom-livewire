@@ -14,14 +14,16 @@
 @else
     <div class="
         relative {{ $attributes->get('bgcolor') }}
-        min-h-[500px] md:min-h-[600px] 3xl:max-w-screen-xl 3xl:mx-auto
-        flex flex-col
+        flex flex-col 3xl:max-w-screen-xl 3xl:mx-auto
+        {{ $attributes->get('size') === 'sm' ? 'min-h-[300px]' : 'min-h-[500px] md:min-h-[600px]' }}
     ">
         @if ($bgImg)
-            <div class="absolute inset-0 {{ $overlay ? 'bg-black/30' : '' }}">
-                <img src="{{ $bgImg }}" class="w-full h-full object-cover opacity-30" width="1200" height="700" alt="{{ $attributes->get('image-alt') }}">
+            <div class="absolute inset-0">
+                <img src="{{ $bgImg }}" class="w-full h-full object-cover" width="1200" height="700" alt="{{ $attributes->get('image-alt') }}">
             </div>
-        @elseif ($overlay)
+        @endif
+
+        @if ($overlay)
             <div class="absolute inset-0 bg-black/30"></div>
         @endif
 
