@@ -9,6 +9,7 @@ class Slider extends Component
     public $align;
     public $valign;
     public $overlay;
+    public $thumbsPosition;
 
     /**
      * Contructor
@@ -18,11 +19,13 @@ class Slider extends Component
     public function __construct(
         $align = 'center',
         $valign = 'center',
-        $overlay = false
+        $overlay = false,
+        $thumbsPosition = null
     ) {
         $this->align = $align;
         $this->valign = $valign;
         $this->overlay = $overlay;
+        $this->thumbsPosition = $thumbsPosition;
     }
 
     /**

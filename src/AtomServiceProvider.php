@@ -96,6 +96,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('drawer', 'Jiannius\\Atom\\Components\\Drawer');
         Blade::component('fbpixel', 'Jiannius\\Atom\\Components\\FbPixel');
         Blade::component('stat-box', 'Jiannius\\Atom\\Components\\StatBox');
+        Blade::component('dropdown', 'Jiannius\\Atom\\Components\\Dropdown');
         Blade::component('checkbox', 'Jiannius\\Atom\\Components\\Checkbox');
         Blade::component('file-card', 'Jiannius\\Atom\\Components\\FileCard');
         Blade::component('admin-panel', 'Jiannius\\Atom\\Components\\AdminPanel');
@@ -129,8 +130,6 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('input.richtext', 'Jiannius\\Atom\\Components\\Input\\Richtext');
         Blade::component('input.sortable', 'Jiannius\\Atom\\Components\\Input\\Sortable');
         Livewire::component('input.file', 'Jiannius\\Atom\\Components\\Input\\File');
-
-        Blade::component('dropdown', 'Jiannius\\Atom\\Components\\Dropdown\\Index');
         
         Blade::component('tabs', 'Jiannius\\Atom\\Components\\Tabs\\Index');
         Blade::component('tabs.tab', 'Jiannius\\Atom\\Components\\Tabs\\Tab');
