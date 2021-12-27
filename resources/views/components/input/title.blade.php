@@ -1,4 +1,4 @@
-<div x-data="{ value: $wire.get('{{ $attributes->wire('model')->value() }}') }" class="relative px-2 mb-6">
+<div x-data="{ value: $wire.get('{{ $attributes->wire('model')->value() }}') }" class="relative mb-6">
     <span x-show="!value" class="absolute text-3xl font-bold text-gray-400 pointer-events-none">
         {{ $slot }}
     </span>

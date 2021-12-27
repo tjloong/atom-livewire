@@ -11,8 +11,7 @@ class Seo extends Component
     protected $rules = [
         'blog.slug' => 'nullable',
         'blog.redirect_slug' => 'nullable',
-        'blog.seo.title' => 'nullable',
-        'blog.seo.description' => 'nullable',
+        'blog.seo' => 'nullable',
     ];
 
     /**

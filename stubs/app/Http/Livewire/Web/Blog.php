@@ -56,19 +56,25 @@ class Blog extends Component
      */
     public function render()
     {
-        return view('livewire.web.blog', [
-            'labels' => Label::query()
-                ->where('type', 'blog-category')
-                ->when($this->label, fn($q) => $q->where('id', '<>', $this->label->id))
-                ->get(),
+        $labels = Label::query()
+            ->where('type', 'blog-category')
+            ->when($this->label, fn($q) => $q->where('id', '<>', $this->label->id))
+            ->get();
 
-            'blogs' => BlogModel::query()
+        $blogs = $this->blog
+            ? null
+            : BlogModel::query()
                 ->status('published')
                 ->when($this->search, fn($q) => $q->search($this->search))
                 ->when($this->label, fn($q) => $q
                     ->whereHas('labels', fn($q) => $q->where('labels.id', $this->label->id))
                 )
-                ->paginate(30),
+                ->paginate(30);
+
+        return view('livewire.web.blog', [
+            'labels' => $labels,
+            'blogs' => $blogs,
+            'sidebar' => ($this->recents && $this->recents->count()) || $this->label || $labels->count(),
         ])->layout('layouts.web');
     }
 }

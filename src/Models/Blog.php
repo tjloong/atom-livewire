@@ -17,6 +17,7 @@ class Blog extends Model
         'title',
         'slug',
         'redirect_slug',
+        'excerpt',
         'content',
         'seo',
         'cover_id',
@@ -56,6 +57,7 @@ class Blog extends Model
     {
         return $query->where(fn($q) => $q
             ->where('title', 'like', "%$search%")
+            ->orWhere('excerpt', 'like', "%$search%")
             ->orWhere('content', 'like', "%$search%")
             ->orWhere('slug', 'like', "%$search%")
         );
@@ -85,15 +87,5 @@ class Blog extends Model
         if (!$this->published_at || $this->published_at->isFuture()) return 'draft';
 
         return 'published';
-    }
-
-    /**
-     * Get excerpt attribute
-     * 
-     * @return string
-     */
-    public function getExcerptAttribute()
-    {
-        return html_excerpt($this->content);
     }
 }

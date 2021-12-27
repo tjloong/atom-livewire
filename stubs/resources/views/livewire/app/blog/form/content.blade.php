@@ -3,6 +3,10 @@
         Blog Title
     </x-input.title>
 
+    <x-input.textarea wire:model.defer="blog.excerpt">
+        Blog Excerpt
+    </x-input.textarea>
+
     <x-input.richtext
         wire:model.debounce.500ms="blog.content"
         :error="$errors->first('blog.content')"

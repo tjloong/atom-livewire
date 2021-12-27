@@ -12,6 +12,7 @@ class Content extends Component
 
     protected $rules = [
         'blog.title' => 'required|string|max:255',
+        'blog.excerpt' => 'nullable',
         'blog.content' => 'nullable',
     ];
 
@@ -65,7 +66,9 @@ class Content extends Component
     public function save()
     {
         $this->validateinputs();
+
         $this->blog->save();
+        
         $this->emitUp('saved', $this->blog->id);
     }
 

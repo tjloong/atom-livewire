@@ -11,6 +11,7 @@ class Update extends Component
     public Blog $blog;
 
     protected $listeners = ['saved'];
+    protected $queryString = ['tab'];
 
     /**
      * Mount event

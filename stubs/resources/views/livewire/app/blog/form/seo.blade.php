@@ -13,13 +13,7 @@
                 Redirect Slug
             </x-input.slug>
 
-            <x-input.text wire:model.defer="blog.seo.title" caption="Recommended title length is 50 ~ 60 characters">
-                Meta Title
-            </x-input.text>
-
-            <x-input.textarea wire:model.defer="blog.seo.description" caption="Recommended description length is 155 ~ 160 characters">
-                Meta Description
-            </x-input.textarea>
+            <x-input.seo wire:model.defer="blog.seo"/>
         </div>
 
         <x-slot name="buttons">

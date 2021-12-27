@@ -261,6 +261,7 @@ class CreateAtomTable extends Migration
                 $table->string('title');
                 $table->string('slug')->nullable();
                 $table->string('redirect_slug')->nullable();
+                $table->text('excerpt')->nullable();
                 $table->longText('content')->nullable();
                 $table->json('seo')->nullable();
                 $table->unsignedBigInteger('cover_id')->nullable();
