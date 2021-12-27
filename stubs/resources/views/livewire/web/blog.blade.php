@@ -26,7 +26,7 @@
                 <div class="grid gap-10">
                     @if ($blog->cover)
                         <figure class="max-w-screen-md w-full bg-gray-100 rounded-md drop-shadow relative overflow-hidden">
-                            <img src="{{ $blog->cover->url }}" width="500" height="500" alt="{{ $blog->name }}" class="w-full">
+                            <img src="{{ $blog->cover->url }}" width="500" height="500" alt="{{ $blog->title }}" class="w-full">
                         </figure>
                     @endif
     

@@ -9,7 +9,7 @@
 >
     <div class="modal-bg"></div>
     <div class="modal-container" x-on:click="close()">
-        <div class="modal-content p-5" x-on:click.stop>
+        <div class="modal-content max-w-screen-sm p-5" x-on:click.stop>
             <div class="flex items-center justify-between mb-4">
                 <div class="text-lg font-bold">
                     {{ $title }}
