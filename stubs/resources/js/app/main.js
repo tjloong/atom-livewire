@@ -2,6 +2,7 @@ import 'boxicons'
 import '@atom/resources/js/helpers.js'
 import '@atom/resources/js/script-loader.js'
 import Modal from '@atom/resources/js/components/modal.js'
+import InputSeo from '@atom/resources/js/components/input-seo.js'
 import InputTags from '@atom/resources/js/components/input-tags.js'
 import InputDate from '@atom/resources/js/components/input-date.js'
 import InputPhone from '@atom/resources/js/components/input-phone.js'
@@ -24,6 +25,7 @@ import Alpine from 'alpinejs'
  
 window.Alpine = Alpine
 Alpine.data('modal', Modal)
+Alpine.data('inputSeo', InputSeo)
 Alpine.data('inputTags', InputTags)
 Alpine.data('inputDate', InputDate)
 Alpine.data('inputPhone', InputPhone)

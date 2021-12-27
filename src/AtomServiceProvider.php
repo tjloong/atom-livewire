@@ -110,6 +110,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('table.cell', 'Jiannius\\Atom\\Components\\Table\\Cell');
         Blade::component('table.button', 'Jiannius\\Atom\\Components\\Table\\Button');
         
+        Blade::component('input.seo', 'Jiannius\\Atom\\Components\\Input\\Seo');
         Blade::component('input.text', 'Jiannius\\Atom\\Components\\Input\\Text');
         Blade::component('input.tags', 'Jiannius\\Atom\\Components\\Input\\Tags');
         Blade::component('input.date', 'Jiannius\\Atom\\Components\\Input\\Date');
