@@ -1,7 +1,7 @@
 <x-input.field {{ $attributes->filter(fn($val, $key) => in_array($key, ['error', 'required', 'caption'])) }}>
-    <x-slot name="label">
-        {{ $slot }}
-    </x-slot>
+    @if ($slot->isNotEmpty())
+        <x-slot name="label">{{ $slot }}</x-slot>
+    @endif
 
     <textarea {{ 
         $attributes->merge([

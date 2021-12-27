@@ -17,7 +17,7 @@
                 x-on:click.stop
                 {{ $attributes->class([
                     'modal-content',
-                    'w-80' => !$attributes->get('class'),
+                    'max-w-lg' => !$attributes->get('class'),
                 ]) }}
             >
                 <div class="px-6 pt-4 flex items-center justify-between">
