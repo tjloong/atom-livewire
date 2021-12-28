@@ -12,6 +12,10 @@
                 <x-input.text wire:model.defer="page.title">
                     Page Title
                 </x-input.text>
+
+                <x-input.slug wire:model.defer="page.slug" prefix="/" required>
+                    Page Slug
+                </x-input.slug>
     
                 <x-input.richtext wire:model.defer="page.content">
                     Page Content

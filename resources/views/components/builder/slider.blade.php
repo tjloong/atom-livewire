@@ -1,12 +1,14 @@
 @if ($attributes->has('slide'))
     <div class="swiper-slide relative">
-        <img
-            src="{{ $attributes->get('image') }}"
-            class="w-full h-full object-cover"
-            width="1200"
-            height="500"
-            alt="{{ $attributes->get('alt') }}"
-        >
+        @if ($attributes->get('image'))
+            <img
+                src="{{ $attributes->get('image') }}"
+                class="w-full h-full object-cover"
+                width="1200"
+                height="500"
+                alt="{{ $attributes->get('alt') }}"
+            >
+        @endif
 
         <div 
             class="
@@ -19,7 +21,7 @@
         >
             <div 
                 class="
-                    max-w-screen-xl mx-auto flex flex-col gap-4
+                    max-w-screen-xl mx-auto flex flex-col gap-4 h-max
                     {{ $align === 'center' ? 'text-center' : '' }}
                     {{ $align === 'right' ? 'text-right' : '' }}
                 "

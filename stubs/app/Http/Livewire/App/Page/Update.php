@@ -12,6 +12,7 @@ class Update extends Component
     
     protected $rules = [
         'page.title' => 'required|string|max:255',
+        'page.slug' => 'required',
         'page.content' => 'nullable',
     ];
 

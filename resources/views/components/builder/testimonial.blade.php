@@ -3,7 +3,7 @@
         mx-auto relative py-10 px-6
         {{ $imagePosition === 'top' || $imagePosition === 'bottom' ? 'max-w-screen-lg' : 'max-w-screen-xl' }}
     ">
-        @if ($imagePosition === 'left' || $imagePosition === 'right')
+        @if ($image && ($imagePosition === 'left' || $imagePosition === 'right'))
             <figure class="
                 bg-gray-100 rounded-xl drop-shadow relative overflow-hidden -mt-40 mx-auto w-[300px] pt-[450px]
                 md:absolute 
@@ -11,11 +11,9 @@
                     ? 'md:-top-10 md:-bottom-10 md:left-0 md:-mt-0 md:w-[30%]'
                     : 'md:-top-10 md:-bottom-10 md:right-0 md:-mt-0 md:mx-4 md:w-4/12' }}
             ">
-                @if ($image)
-                    <div class="absolute inset-0">
-                        <img src="{{ $image }}" class="w-full h-full object-cover">
-                    </div>
-                @endif
+                <div class="absolute inset-0">
+                    <img src="{{ $image }}" class="w-full h-full object-cover">
+                </div>
             </figure>
         @endif
 
@@ -49,17 +47,15 @@
                 {{ $align === 'right' ? 'justify-end' : '' }}
                 {{ $imagePosition === 'top' ? 'order-first' : '' }}
             ">
-                @if ($imagePosition === 'top' || $imagePosition === 'bottom')
+                @if ($image && ($imagePosition === 'top' || $imagePosition === 'bottom'))
                     <figure class="w-24 h-24 drop-shadow rounded-full overflow-hidden bg-gray-100">
-                        @if ($image)
-                            <img 
-                                src="{{ $image }}" 
-                                class="w-full h-full object-cover"
-                                width="150" 
-                                height="150" 
-                                alt="{{ $attributes->get('image-alt') ?? 'testimonial-avatar' }}"
-                            >
-                        @endif
+                        <img 
+                            src="{{ $image }}" 
+                            class="w-full h-full object-cover"
+                            width="150" 
+                            height="150" 
+                            alt="{{ $attributes->get('image-alt') ?? 'testimonial-avatar' }}"
+                        >
                     </figure>
                 @endif
 
