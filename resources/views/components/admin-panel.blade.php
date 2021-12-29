@@ -31,9 +31,20 @@
         }"
     >
         <div class="flex flex-col">
-            <a href="{{ route('dashboard') }}" class="flex-shrink-0 flex items-center py-3 px-5">
-                {{ $brand }}
-            </a>
+            <div class="py-3 px-5">
+                @isset($brand)
+                    {{ $brand }}
+                @else    
+                    <a href="{{ route('dashboard') }}" class="flex-shrink-0 flex items-center gap-2">
+                        <div class="w-8 h-8">
+                            <x-atom-logo small/>
+                        </div>
+                        <div class="text-white text-lg tracking-wider">
+                            <span class="font-bold">Atom</span><span class="font-light">CMS</span>
+                        </div>
+                    </a>
+                @endisset
+            </div>
 
             <div class="flex-shrink-0 text-xs text-gray-500 py-2 px-6">
                 NAVIGATION

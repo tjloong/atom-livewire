@@ -1,6 +1,6 @@
 <div class="max-w-md mx-auto flex flex-col items-center">
     <a class="w-40 mb-10" href="/">
-        <img src="/storage/img/logo.svg" class="w-full">
+        <x-atom-logo/>
     </a>
 
     <form wire:submit.prevent="login" class="w-full">

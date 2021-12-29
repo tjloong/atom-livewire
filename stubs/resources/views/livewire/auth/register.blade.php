@@ -2,7 +2,7 @@
     @if ($isCompleted)
         <div class="flex flex-col space-y-4">
             <a href="/">
-                <img src="/storage/img/logo.svg" class="w-20">
+                <x-atom-logo/>
             </a>
     
             <div>
@@ -24,7 +24,7 @@
     @else
         <div class="flex flex-col items-center">
             <a class="w-40 mb-10" href="/">
-                <img src="/storage/img/logo.svg" class="w-full">
+                <x-atom-logo/>
             </a>
         
             <form class="mb-6" wire:submit.prevent="register">

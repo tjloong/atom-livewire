@@ -50,13 +50,11 @@
                     {{ $logo }}
                 @else
                     <a href="/" class="w-24 h-8 md:w-40">
-                        <img
-                            src="{{ $attributes->get('logo') ?? '/storage/img/logo.svg' }}"
-                            class="w-full h-full object-contain object-left"
-                            width="200px"
-                            height="100px"
-                            alt="{{ config('app.name') }} Logo"
-                        >
+                        @if ($attributes->get('logo'))
+                            <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain">
+                        @else
+                            <x-atom-logo/>
+                        @endif
                     </a>
                 @endisset
 

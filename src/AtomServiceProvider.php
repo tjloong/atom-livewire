@@ -98,6 +98,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('stat-box', 'Jiannius\\Atom\\Components\\StatBox');
         Blade::component('dropdown', 'Jiannius\\Atom\\Components\\Dropdown');
         Blade::component('checkbox', 'Jiannius\\Atom\\Components\\Checkbox');
+        Blade::component('atom-logo', 'Jiannius\\Atom\\Components\\AtomLogo');
         Blade::component('file-card', 'Jiannius\\Atom\\Components\\FileCard');
         Blade::component('admin-panel', 'Jiannius\\Atom\\Components\\AdminPanel');
         Blade::component('empty-state', 'Jiannius\\Atom\\Components\\EmptyState');
