@@ -7,7 +7,7 @@
         <option value="" selected> -- {{ $attributes->get('placeholder') ?? 'Please Select' }} -- </option>
         @foreach ($options as $opt)
             <option value="{{ $opt->value }}">
-                {{ $opt->label }}
+                {{ $opt->label ?? $opt->value }}
             </option>
         @endforeach
     </select>

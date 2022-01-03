@@ -21,14 +21,17 @@ export default (value = null, config = null) => ({
     },
 
     input () {
-        const sorted = []
+        if (!this.value) this.$dispatch('input')
+        else {
+            const sorted = []
 
-        Array.from(this.$el.children).forEach(child => {
-            const id = child.getAttribute('data-sortable-id')
-            const value = this.value.find(val => (val.sortableId === id))
-            sorted.push(value)
-        })
+            Array.from(this.$el.children).forEach(child => {
+                const id = child.getAttribute('data-sortable-id')
+                const value = this.value.find(val => (val.sortableId === id))
+                sorted.push(value)
+            })
 
-        this.$dispatch('input', sorted)
+            this.$dispatch('input', sorted)
+        }
     },
 })
