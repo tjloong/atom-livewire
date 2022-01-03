@@ -67,7 +67,7 @@
             <div 
                 x-bind:class="show ? 'grid' : 'hidden'"
                 class="
-                    justify-center md:flex-grow md:flex md:items-center
+                    justify-center md:flex-grow md:flex md:items-center md:gap-2
                     @if ($align === 'left') md:justify-start
                     @elseif ($align === 'center') md:justify-center
                     @elseif ($align === 'right') md:justify-end

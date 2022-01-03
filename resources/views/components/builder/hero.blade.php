@@ -52,8 +52,8 @@
                 @isset($title)
                     <h1 {{ $title->attributes->class([
                         'text-3xl font-bold md:text-5xl',
-                        'text-gray-200' => $overlay ?? false,
-                        'text-gray-900' => $overlay ?? false,
+                        'text-gray-200' => $overlay,
+                        'text-gray-900' => !$overlay,
                     ]) }}>
                         {{ $title }}
                     </h1>
@@ -62,8 +62,8 @@
                 @isset($subtitle)
                     <h2 {{ $subtitle->attributes->class([
                         'text-xl font-semibold md:text-2xl',
-                        'text-gray-200' => $overlay ?? false,
-                        'text-gray-700' => $overlay ?? false,
+                        'text-gray-200' => $overlay,
+                        'text-gray-700' => !$overlay,
                     ]) }}>
                         {{ $subtitle }}
                     </h2>
