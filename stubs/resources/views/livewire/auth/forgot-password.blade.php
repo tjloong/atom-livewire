@@ -1,21 +1,21 @@
-<div class="max-w-md mx-auto flex flex-col items-center">
-    <a class="w-40 mb-10" href="/">
+<div class="max-w-md mx-auto grid gap-10">
+    <a class="w-40 mx-auto" href="/">
         <x-atom-logo/>
     </a>
 
-    <form wire:submit.prevent="send" class="w-full">
+    <form wire:submit.prevent="send">
         <x-box>
-            <div class="p-5 md:p-10">
-                <div class="text-2xl font-bold mb-6">
+            <div class="grid gap-6 p-5 md:p-10">
+                <div class="text-2xl font-bold">
                     Reset Password Request
                 </div>
 
                 @if ($errors->any())
-                    <div class="mb-4 text-sm bg-red-100 text-red-800 rounded p-4">
+                    <div class="bg-red-100 text-red-800 rounded p-4 grid gap-2">
                         @foreach ($errors->all() as $error)
-                        <div class="flex">
-                            <x-icon name="x" />
-                            <div class="leading-relaxed">
+                        <div class="flex gap-2">
+                            <x-icon name="x" class="py-0.5"/>
+                            <div class="text-sm">
                                 {{ $error }}
                             </div>
                         </div>
@@ -23,12 +23,12 @@
                     </div>
                 @endif
 
-                <div class="mb-5 w-full">
+                <div>
                     <div class="font-medium text-gray-500 text-xs uppercase mb-2">Your registered email</div>
                     <input type="email" class="w-full form-input" wire:model.defer="email" required autofocus>
                 </div>
 
-                <x-button type="submit" size="md" class="w-full" wire:loading.class="loading">
+                <x-button type="submit" size="md" wire:loading.class="loading">
                     Send Request
                 </x-button>
             </div>

@@ -4,7 +4,6 @@ namespace App\Http\Livewire\Auth;
 
 use App\Models\Role;
 use App\Models\User;
-use App\Models\SiteSetting;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;

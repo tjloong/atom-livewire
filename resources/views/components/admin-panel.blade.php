@@ -159,12 +159,9 @@
                             We have sent a verification link to <span class="font-semibold">{{ request()->user()->email }}</span>, please click on the link to verify it.
                         </div>
                     </div>
-                    <a class="text-xs md:ml-8" x-on:click.prevent="$refs.form.submit()">
+                    <a href="{{ route('verification.send') }}" class="text-xs md:ml-8">
                         Resend verification link
                     </a>
-                    <form x-ref="form" method="POST" action="{{ route('verification.send') }}" class="hidden">
-                        @csrf
-                    </form>
                 </div> 
             @endif
 

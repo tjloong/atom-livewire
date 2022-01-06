@@ -1,45 +1,42 @@
 <?php
 
-use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
-if (class_exists(App\Http\Livewire\Auth\Login::class)) {
-    Route::get('login', App\Http\Livewire\Auth\Login::class)->name('login');
+use App\Http\Livewire\Auth\Login;
+use App\Http\Livewire\Auth\Register;
+use App\Http\Livewire\Auth\ResetPassword;
+use App\Http\Livewire\Auth\ForgotPassword;
+
+if (config('atom.features.auth.login') && class_exists(Login::class)) {
+    Route::get('login', Login::class)->name('login');
 }
 
-if (class_exists(App\Http\Livewire\Auth\Register::class)) {
-    Route::get('register/{slug?}', App\Http\Livewire\Auth\Register::class)->name('register');
+if (config('atom.features.auth.register') && class_exists(Register::class)) {
+    Route::get('register/{slug?}', Register::class)->name('register');
 }
 
 Route::middleware('guest')->group(function () {
-    if (class_exists(App\Http\Livewire\Auth\ForgotPassword::class)) {
-        Route::get('forgot-password', App\Http\Livewire\Auth\ForgotPassword::class)->name('password.forgot');
-    }
-
-    if (class_exists(App\Http\Livewire\Auth\ResetPassword::class)) {
-        Route::get('reset-password', App\Http\Livewire\Auth\ResetPassword::class)->name('password.reset');
+    if (config('atom.features.auth.forgot-password')) {
+        if (class_exists(ForgotPassword::class)) {
+            Route::get('forgot-password', ForgotPassword::class)->name('password.forgot');
+        }
+    
+        if (class_exists(ResetPassword::class)) {
+            Route::get('reset-password', ResetPassword::class)->name('password.reset');
+        }
     }
 });
 
 Route::middleware('auth')->group(function () {
     Route::get('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
+        return view('atom::auth.verify', ['action' => 'verified']);
+    })->middleware('signed')->name('verification.verify');
 
-        session()->flash('flash', 'Your email address is verified::success');
-        
-        return redirect(RouteServiceProvider::HOME);
-    })
-    ->middleware('signed')
-    ->name('verification.verify');
-
-    Route::post('email/notify', function () {
+    Route::get('email/notify', function () {
         request()->user()->sendEmailVerificationNotification();
-
-        session()->flash('flash', 'A new verification link has been sent to ' . request()->user()->email . '.');
-    
-        return redirect(RouteServiceProvider::HOME);
-    })
-    ->middleware('throttle:6,1')
-    ->name('verification.send');
+        return view('atom::auth.verify', ['action' => 'sent']);
+    })->middleware('throttle:6,1')->name('verification.send');
 });
 

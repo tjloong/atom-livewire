@@ -61,19 +61,7 @@ npm run dev
 composer require --with-all-dependencies league/flysystem-aws-s3-v3 "^1.0"
 ```
 
-5. Update MailConfigServiceProvider in config/app.php
-
-```
-/*
-* Application Service Providers...
-*/
-App\Providers\AppServiceProvider::class,
-...
-...
-App\Providers\MailConfigServiceProvider::class,
-```
-
-6. Update .env with database name
+5. Update .env with database name
 
 ```
 DB_DATABASE=<project-name>
@@ -81,7 +69,7 @@ DB_USERNAME=root
 DB_PASSWORD=password
 ```
 
-7. Run migration
+6. Run migration
 
 ```
 php artisan migrate

@@ -66,20 +66,11 @@ class InstallCommand extends Command
         $this->info('App Settings');
         $this->newLine();
 
-        if ($this->option('static')) {
-            replace_in_file(
-                'public const HOME = \'/home\';',
-                'public const HOME = \'/\';',
-                app_path('Providers/RouteServiceProvider.php')
-            );
-        }
-        else {
-            replace_in_file(
-                'public const HOME = \'/home\';',
-                'public const HOME = \'/app\';',
-                app_path('Providers/RouteServiceProvider.php')
-            );
-        }
+        replace_in_file(
+            'public const HOME = \'/home\';',
+            'public const HOME = \'/\';',
+            app_path('Providers/RouteServiceProvider.php')
+        );
 
         // link storage
         $this->call('storage:link');

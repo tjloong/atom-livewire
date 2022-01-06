@@ -19,4 +19,13 @@ return [
     // 'gtm_id' => null,
     // 'ga_id' => null,
     // 'fbpixel_id' => null,
+
+    'features' => [
+        'auth' => [
+            'login' => true,
+            'register' => true,
+            'forgot-password' => true,
+            'verify' => true,
+        ],
+    ],
 ];

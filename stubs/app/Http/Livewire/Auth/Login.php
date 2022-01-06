@@ -3,11 +3,8 @@
 namespace App\Http\Livewire\Auth;
 
 use Livewire\Component;
-
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 
-use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -18,17 +15,6 @@ class Login extends Component
     public $email;
     public $password;
     public $remember;
-
-    /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('livewire.auth.login')
-            ->layout('layouts.auth');
-    }
 
     /**
      * Mounted event
@@ -43,8 +29,18 @@ class Login extends Component
             request()->session()->regenerateToken();
         }
         else if (auth()->check()) {
-            return redirect(RouteServiceProvider::HOME);
+            return redirect()->route('app.home');
         }
+    }
+
+    /**
+     * Rendering livewire view
+     * 
+     * @return Response
+     */
+    public function render()
+    {
+        return view('livewire.auth.login')->layout('layouts.auth');
     }
 
     /**
@@ -78,7 +74,7 @@ class Login extends Component
 
         request()->session()->regenerate();
         
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(route('app.home'));
     }
 
     /**
@@ -94,7 +90,7 @@ class Login extends Component
             return;
         }
 
-        event(new Lockout($this));
+        // event(new Illuminate\Auth\Events\Lockout($this));
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
