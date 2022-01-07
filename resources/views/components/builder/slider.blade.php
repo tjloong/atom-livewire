@@ -83,14 +83,14 @@
     <div x-data="slider(
         @js($attributes->get('config')), 
         @js(array_merge(['direction' => 'vertical'], $attributes->get('thumbs-config') ?? []))
-    )" class="grid grid-cols-12 gap-4 w-full h-full">
-        <div class="hidden md:block md:col-span-2 {{ $thumbsPosition === 'right' ? 'order-last' : '' }}">
+    )" class="w-full h-full flex gap-4">
+        <div class="flex-shrink-0 hidden md:block {{ $thumbsPosition === 'right' ? 'order-last' : '' }}" style="width: 20%">
             <div id="swiper-thumbs" class="swiper w-full h-full">
                 <div class="swiper-wrapper">{{ $slot }}</div>
             </div>
         </div>
 
-        <div class="col-span-12 md:col-span-10">
+        <div class="flex-grow" style="width: 80%">
             <div id="swiper-slider" class="swiper w-full h-full">
                 <div class="swiper-wrapper">{{ $slot }}</div>
         
