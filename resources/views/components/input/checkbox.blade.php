@@ -1,5 +1,5 @@
 <label
-    class="inline-flex font-normal space-x-1.5"
+    class="inline-flex gap-2"
     x-data="{ show: false }"
 >
     <input
@@ -19,7 +19,9 @@
         <div class="w-3 h-3 shadow bg-theme" x-show="show"></div>
     </div>
 
-    <div class="text-sm flex items-center self-center h-full">
-        {{ $slot }}
+    <div class="flex flex-col">
+        <div class="flex-grow flex items-center font-normal">
+            {{ $slot }}
+        </div>
     </div>
 </label>

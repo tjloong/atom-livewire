@@ -1,30 +1,27 @@
-<label
-    {{ $attributes->class([
-        'radio inline-flex font-normal space-x-1.5',
-        'active' => $attributes->get('checked'),
-    ]) }}
-    x-data="{
-        toggle () {
-            document.querySelectorAll(`input[type='radio'][name='{{ $attributes->get('name') }}']`).forEach(radio => {
-                if (radio.checked) radio.parentNode.classList.add('active')
-                else radio.parentNode.classList.remove('active')
-            })
-        }
-    }"
+<label 
+    x-data="{ checked: false }"
+    x-on:radio-checked.window="checked = $event.detail.name === '{{ $attributes->get('name') }}' && $event.detail.el.isEqualNode($refs.radio)"
+    class="inline-flex gap-2"
 >
     <input
-        x-ref="radio"
         type="radio"
+        x-ref="radio"
+        x-on:change="$dispatch('radio-checked', { name: '{{ $attributes->get('name') }}', el: $event.target })"
+        x-init="checked = $el.checked"
         class="absolute opacity-0"
         {{ $attributes }}
-        x-on:change="toggle()"
     >
 
-    <div class="radio-container w-5 h-5 bg-white m-1 border-2 flex-shrink-0 flex items-center justify-center rounded">
-        <div class="radio-box w-3 h-3 shadow bg-theme"></div>
+    <div
+        x-bind:class="checked ? 'border-theme' : 'border-gray-300'"
+        class="w-5 h-5 bg-white border-2 flex-shrink-0 flex items-center justify-center rounded-full"
+    >
+        <div x-show="checked" class="w-3 h-3 drop-shadow bg-theme rounded-full"></div>
     </div>
 
-    <div class="text-sm flex items-center h-full">
-        {{ $slot }}
+    <div class="flex flex-col">
+        <div class="flex-grow flex items-center font-normal">
+            {{ $slot }}
+        </div>
     </div>
 </label>
