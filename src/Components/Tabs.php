@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Components\Tabs;
+namespace Jiannius\Atom\Components;
 
 use Illuminate\View\Component;
 
-class Tab extends Component
+class Tabs extends Component
 {
     public $active;
 
@@ -25,6 +25,6 @@ class Tab extends Component
      */
     public function render()
     {
-        return view('atom::components.tabs.tab');
+        return view('atom::components.tabs');
     }
 }

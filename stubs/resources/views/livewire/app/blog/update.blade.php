@@ -17,9 +17,9 @@
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
             <x-sidenav wire:model="tab">
-                <x-sidenav.item name="content">Blog Content</x-sidenav.item>
-                <x-sidenav.item>Settings</x-sidenav.item>
-                <x-sidenav.item>SEO</x-sidenav.item>
+                <x-sidenav item name="content">Blog Content</x-sidenav>
+                <x-sidenav item>Settings</x-sidenav>
+                <x-sidenav item>SEO</x-sidenav>
             </x-sidenav>
         </div>
     

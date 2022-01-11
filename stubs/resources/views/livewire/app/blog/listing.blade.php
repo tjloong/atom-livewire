@@ -8,9 +8,9 @@
     <x-table :total="$blogs->total()" :links="$blogs->links()">
         <x-slot name="toolbar">
             <x-tabs wire:model="filterStatus">
-                <x-tabs.tab>All</x-tabs.tab>
-                <x-tabs.tab>Published</x-tabs.tab>
-                <x-tabs.tab>Draft</x-tabs.tab>
+                <x-tabs item>All</x-tabs>
+                <x-tabs item>Published</x-tabs>
+                <x-tabs item>Draft</x-tabs>
             </x-tabs>
         </x-slot>
 

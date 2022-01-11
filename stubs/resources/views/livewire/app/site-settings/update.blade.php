@@ -4,13 +4,13 @@
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
             <x-sidenav wire:model="tab">
-                <x-sidenav.item name="contact">Contact Information</x-sidenav.item>
-                <x-sidenav.item name="tracking">Site Tracking</x-sidenav.item>
-                <x-sidenav.item name="seo">Site SEO</x-sidenav.item>
+                <x-sidenav item name="contact">Contact Information</x-sidenav>
+                <x-sidenav item name="tracking">Site Tracking</x-sidenav>
+                <x-sidenav item name="seo">Site SEO</x-sidenav>
 
-                <x-sidenav.item label>System</x-sidenav.item>
-                <x-sidenav.item name="email">Email Configurations</x-sidenav.item>
-                <x-sidenav.item name="storage">Storage</x-sidenav.item>
+                <x-sidenav item label>System</x-sidenav>
+                <x-sidenav item name="email">Email Configurations</x-sidenav>
+                <x-sidenav item name="storage">Storage</x-sidenav>
             </x-sidenav>
         </div>
 

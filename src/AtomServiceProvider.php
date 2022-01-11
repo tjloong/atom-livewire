@@ -88,6 +88,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('gtm', 'Jiannius\\Atom\\Components\\Gtm');
         Blade::component('seo', 'Jiannius\\Atom\\Components\\Seo');
         Blade::component('box', 'Jiannius\\Atom\\Components\\Box');
+        Blade::component('tabs', 'Jiannius\\Atom\\Components\\Tabs');
         Blade::component('card', 'Jiannius\\Atom\\Components\\Card');
         Blade::component('icon', 'Jiannius\\Atom\\Components\\Icon');
         Blade::component('alert', 'Jiannius\\Atom\\Components\\Alert');
@@ -98,6 +99,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('button', 'Jiannius\\Atom\\Components\\Button');
         Blade::component('drawer', 'Jiannius\\Atom\\Components\\Drawer');
         Blade::component('fbpixel', 'Jiannius\\Atom\\Components\\FbPixel');
+        Blade::component('sidenav', 'Jiannius\\Atom\\Components\\Sidenav');
         Blade::component('stat-box', 'Jiannius\\Atom\\Components\\StatBox');
         Blade::component('dropdown', 'Jiannius\\Atom\\Components\\Dropdown');
         Blade::component('checkbox', 'Jiannius\\Atom\\Components\\Checkbox');
@@ -136,12 +138,6 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('input.richtext', 'Jiannius\\Atom\\Components\\Input\\Richtext');
         Blade::component('input.sortable', 'Jiannius\\Atom\\Components\\Input\\Sortable');
         Livewire::component('input.file', 'Jiannius\\Atom\\Components\\Input\\File');
-        
-        Blade::component('tabs', 'Jiannius\\Atom\\Components\\Tabs\\Index');
-        Blade::component('tabs.tab', 'Jiannius\\Atom\\Components\\Tabs\\Tab');
-
-        Blade::component('sidenav', 'Jiannius\\Atom\\Components\\Sidenav\\Index');
-        Blade::component('sidenav.item', 'Jiannius\\Atom\\Components\\Sidenav\\Item');
         
         Blade::component('notify.alert', 'Jiannius\\Atom\\Components\\Notify\\Alert');
         Blade::component('notify.toast', 'Jiannius\\Atom\\Components\\Notify\\Toast');

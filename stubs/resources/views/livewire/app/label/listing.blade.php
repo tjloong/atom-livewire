@@ -9,7 +9,7 @@
         <div class="md:col-span-3">
             <x-sidenav wire:model="tab">
             @foreach ($types as $key => $value)
-                <x-sidenav.item name="{{ $key }}">{{ $value }}</x-sidenav.item>
+                <x-sidenav item name="{{ $key }}">{{ $value }}</x-sidenav>
             @endforeach
             </x-sidenav>
         </div>

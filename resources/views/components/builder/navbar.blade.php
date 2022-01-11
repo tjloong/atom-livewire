@@ -12,7 +12,7 @@
             x-transition
             class="
                 grid 
-                md:absolute md:z-10 md:right-0 md:w-max 
+                md:absolute md:z-10 md:w-max {{ $attributes->has('right') ? 'md:right-0' : '' }}
                 md:bg-white md:drop-shadow-md md:rounded-md md:border
                 md:py-2 md:min-w-[200px]
             "
@@ -83,7 +83,7 @@
                     class="justify-center items-center md:flex-shrink-0 md:flex md:space-x-2"
                 >
                     @auth
-                        <x-builder.navbar dropdown>
+                        <x-builder.navbar dropdown right>
                             <div class="flex items-center justify-center space-x-2">
                                 <x-icon name="user-circle"/>
                                 <div class="truncate">{{ auth()->user()->name }}</div>

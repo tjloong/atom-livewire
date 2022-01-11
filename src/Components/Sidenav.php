@@ -1,19 +1,21 @@
 <?php
 
-namespace Jiannius\Atom\Components\Sidenav;
+namespace Jiannius\Atom\Components;
 
 use Illuminate\View\Component;
 
-class Index extends Component
+class Sidenav extends Component
 {
+    public $active;
+
     /**
      * Contructor
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct($active = false)
     {
-        //
+        $this->active = $active;
     }
 
     /**
@@ -23,6 +25,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::components.sidenav.index');
+        return view('atom::components.sidenav');
     }
 }

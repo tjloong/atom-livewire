@@ -15,10 +15,10 @@
 
     <div class="flex flex-wrap items-center justify-between mb-6">
         <x-tabs wire:model="filterType" wire:loading.class="disabled">
-            <x-tabs.tab>All</x-tabs.tab>
-            <x-tabs.tab>Image</x-tabs.tab>
-            <x-tabs.tab>Youtube</x-tabs.tab>
-            <x-tabs.tab>File</x-tabs.tab>
+            <x-tabs item>All</x-tabs>
+            <x-tabs item>Image</x-tabs>
+            <x-tabs item>Youtube</x-tabs>
+            <x-tabs item>File</x-tabs>
         </x-tabs>
 
         <div x-show="selected.length" class="flex flex-wrap items-center space-x-2">

@@ -33,7 +33,7 @@
 
         <div class="text-sm font-medium {{ $dark ? 'text-gray-200' : 'text-gray-500' }}">
             @if ($company)
-                © {{ date('Y') }} {{ $company }}. All right reserved.
+                © {{ date('Y') }} {{ $company }}. All rights reserved.
             @endif
         </div>
     </div>
