@@ -6,7 +6,7 @@
             <div class="py-1 px-4 flex flex-wrap justify-between items-center">
                 <div class="my-1">
                 @if ($attributes->get('total'))
-                    <div class="text-gray-800">
+                    <div class="text-sm text-gray-800">
                         Total <span class="font-semibold">{{ $attributes->get('total') }}</span> record(s)
                     </div>
                 @endif
@@ -16,7 +16,9 @@
                 @isset($checked)
                     {{ $checked }}
                 @else
-                    <x-input.search/>
+                    @if ($showSearch)
+                        <x-input.search/>
+                    @endif
     
                     @if ($showExport)
                         <a

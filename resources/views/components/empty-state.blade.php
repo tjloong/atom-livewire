@@ -3,11 +3,21 @@
         <x-icon name="{{ $attributes->get('icon') ?? 'folder-open' }}" size="32px" class="text-gray-400"/>
     </div>
 
-    <div class="font-semibold text-lg text-gray-700">
-        {{ $attributes->get('title') ?? 'No Results' }}
-    </div>
+    <div class="grid gap-4">
+        <div class="text-center">
+            <div class="font-semibold text-lg text-gray-700">
+                {{ $attributes->get('title') ?? 'No Results' }}
+            </div>
+        
+            <div class="text-gray-400 font-medium text-center">
+                {{ $attributes->get('subtitle') ?? 'There is nothing returned from the search' }}
+            </div>
+        </div>
 
-    <div class="text-gray-400 font-medium text-center">
-        {{ $attributes->get('subtitle') ?? 'There is nothing returned from the search' }}
+        @if ($slot->isNotEmpty())
+            <div class="text-center">
+                {{ $slot }}
+            </div>
+        @endif
     </div>
 </div>

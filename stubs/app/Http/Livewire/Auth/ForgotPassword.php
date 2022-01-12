@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire\Auth;
 
+use App\Models\User;
 use Livewire\Component;
-use Illuminate\Support\Facades\Password;
 
 class ForgotPassword extends Component
 {
@@ -25,9 +25,10 @@ class ForgotPassword extends Component
      */
     public function send()
     {
-        $status = Password::sendResetLink(['email' => $this->email]);
-
-        if ($status === Password::RESET_LINK_SENT) return redirect()->route('login')->with(['flash' => __($status)]);
-        else $this->addError('email', __($status));
+        if ($user = User::where('email', $this->email)->first()) {
+            if ($status = $user->sendPasswordResetLink()) return redirect()->route('login')->with(['flash' => __($status)]);
+            else $this->addError('email', 'Unable to reset password');
+        }
+        else $this->addError('email', 'Email not found');
     }
 }

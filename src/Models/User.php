@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -71,5 +72,18 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($this->status === 'pending') {
             $this->notify(new ActivateAccountNotification());
         }
+    }
+
+    /**
+     * Send password reset link
+     * 
+     * @return void
+     */
+    public function sendPasswordResetLink()
+    {
+        $status = Password::sendResetLink(['email' => $this->email]);
+
+        if ($status === Password::RESET_LINK_SENT) return $status;
+        else return false;
     }
 }

@@ -16,17 +16,15 @@ if (config('atom.features.auth.register') && class_exists(Register::class)) {
     Route::get('register/{slug?}', Register::class)->name('register');
 }
 
-Route::middleware('guest')->group(function () {
-    if (config('atom.features.auth.forgot-password')) {
-        if (class_exists(ForgotPassword::class)) {
-            Route::get('forgot-password', ForgotPassword::class)->name('password.forgot');
-        }
-    
-        if (class_exists(ResetPassword::class)) {
-            Route::get('reset-password', ResetPassword::class)->name('password.reset');
-        }
+if (config('atom.features.auth.forgot-password')) {
+    if (class_exists(ForgotPassword::class)) {
+        Route::get('forgot-password', ForgotPassword::class)->middleware('guest')->name('password.forgot');
     }
-});
+
+    if (class_exists(ResetPassword::class)) {
+        Route::get('reset-password', ResetPassword::class)->name('password.reset');
+    }
+}
 
 Route::middleware('auth')->group(function () {
     Route::get('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {

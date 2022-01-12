@@ -6,6 +6,7 @@ use Illuminate\View\Component;
 
 class Index extends Component
 {
+    public $showSearch;
     public $showExport;
     public $showFilters;
 
@@ -14,8 +15,9 @@ class Index extends Component
      *
      * @return void
      */
-    public function __construct($export = false, $filters = false)
+    public function __construct($search = true, $export = false, $filters = false)
     {
+        $this->showSearch = $search;
         $this->showExport = $export;
         $this->showFilters = $filters;
     }
