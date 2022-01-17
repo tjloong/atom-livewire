@@ -3,9 +3,9 @@
         @if ($attributes->get('image'))
             <img
                 src="{{ $attributes->get('image') }}"
-                class="w-full h-full object-cover"
                 width="1200"
                 height="500"
+                class="{{ $attributes->get('class') ?? 'w-full h-full object-cover' }}"
                 alt="{{ $attributes->get('alt') }}"
             >
         @endif
