@@ -70,8 +70,8 @@ Route::prefix('app')->middleware('auth')->group(function () {
      * Label
      */
     Route::prefix('label')->group(function () {
-        Route::get('listing',  App\Http\Livewire\App\Label\Listing::class)->name('label.listing');
-        Route::get('create',  App\Http\Livewire\App\Label\Create::class)->name('label.create');
+        Route::get('listing/{type}',  App\Http\Livewire\App\Label\Listing::class)->name('label.listing');
+        Route::get('create/{type}',  App\Http\Livewire\App\Label\Create::class)->name('label.create');
         Route::get('{label}', App\Http\Livewire\App\Label\Update::class)->name('label.update');
     });
 

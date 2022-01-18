@@ -236,6 +236,7 @@ class CreateAtomTable extends Migration
                 $table->string('name');
                 $table->string('slug')->nullable();
                 $table->string('type')->nullable();
+                $table->integer('seq')->nullable();
                 $table->json('data')->nullable();
                 $table->unsignedBigInteger('image_id')->nullable();
                 $table->timestamps();

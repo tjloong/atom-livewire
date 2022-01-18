@@ -5,11 +5,15 @@
 
 @elseif ($attributes->has('item'))
     <a
-        x-data="{
-            name: '{{ $attributes->get('name') ?? Illuminate\Support\Str::slug($slot->toHtml()) }}',
-            get active () { return this.value === this.name },
-        }"
-        x-on:click.prevent="show = !show; (!active && $dispatch('input', name))"
+        @if ($attributes->has('href'))
+            x-data="{ active: @js(Str::is($attributes->get('href') . '*', url()->current())) }"
+        @else
+            x-data="{
+                name: @js($attributes->get('name') ?? Str::slug($slot->toHtml())),
+                get active () { return this.value === this.name },
+            }"
+            x-on:click.prevent="show = !show; (!active && $dispatch('input', name))"
+        @endif
         x-bind:class="{
             'font-bold text-theme bg-white drop-shadow border md:drop-shadow-none md:border-0': active && !show,
             'font-bold text-theme bg-white': active && show,

@@ -13,16 +13,4 @@ class Label extends AtomLabel
     {
         return $this->belongsToMany(Blog::class, 'blogs_labels', 'label_id', 'blog_id');
     }
-
-    /**
-     * Get types
-     * 
-     * @return array
-     */
-    public static function getTypes()
-    {
-        return [
-            'blog-category' => 'Blog Categories',
-        ];
-    }
 }

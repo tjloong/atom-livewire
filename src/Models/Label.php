@@ -13,11 +13,13 @@ class Label extends Model
         'name',
         'slug',
         'type',
+        'seq',
         'data',
         'image_id',
     ];
 
     protected $casts = [
+        'seq' => 'integer',
         'data' => 'object',
         'image_id' => 'integer',
     ];

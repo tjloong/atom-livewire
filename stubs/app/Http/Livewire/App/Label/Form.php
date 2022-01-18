@@ -22,7 +22,7 @@ class Form extends Component
      */
     public function mount()
     {
-        $this->getTypes();
+        //
     }
 
     /**
@@ -67,21 +67,5 @@ class Form extends Component
             $this->dispatchBrowserEvent('toast', 'formError');
             $validator->validate();
         }
-    }
-
-    /**
-     * Get types
-     * 
-     * @return void
-     */
-    private function getTypes()
-    {
-        $types = [];
-
-        foreach(Label::getTypes() as $key => $value) {
-            array_push($types, ['value' => $key, 'label' => $value]);
-        }
-
-        $this->types = $types;
     }
 }

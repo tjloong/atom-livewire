@@ -59,6 +59,8 @@ class Blog extends Component
         $labels = Label::query()
             ->where('type', 'blog-category')
             ->when($this->label, fn($q) => $q->where('id', '<>', $this->label->id))
+            ->orderBy('seq')
+            ->orderBy('name')
             ->get();
 
         $blogs = $this->blog

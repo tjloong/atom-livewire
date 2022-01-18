@@ -7,13 +7,9 @@ use Livewire\Component;
 
 class Listing extends Component
 {
-    public $tab;
+    public $type;
     public $types;
     public $labels;
-
-    protected $queryString = [
-        'tab' => ['except' => ''],
-    ];
 
     /**
      * Mount event
@@ -22,8 +18,9 @@ class Listing extends Component
      */
     public function mount()
     {
-        $this->types = Label::getTypes();
-        $this->tab = request()->query('tab') ?? array_key_first($this->types);
+        $this->types = [
+            'blog-category',
+        ];
 
         $this->getLabels();
     }
@@ -39,13 +36,15 @@ class Listing extends Component
     }
 
     /**
-     * Updated tab
+     * Updated labels
      * 
      * @return void
      */
-    public function updatedTab()
+    public function updatedLabels($labels)
     {
-        $this->getLabels();
+        foreach ($labels as $index => $label) {
+            Label::where('id', $label['id'])->update(['seq' => $index + 1]);
+        }
     }
 
     /**
@@ -56,7 +55,8 @@ class Listing extends Component
     public function getLabels()
     {
         $this->labels = Label::query()
-            ->where('type', $this->tab)
+            ->where('type', $this->type)
+            ->orderBy('seq')
             ->orderBy('name')
             ->get()
             ->toArray();

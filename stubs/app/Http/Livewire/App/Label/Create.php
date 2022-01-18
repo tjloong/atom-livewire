@@ -7,8 +7,8 @@ use Livewire\Component;
 
 class Create extends Component
 {
-    public $label;
     public $type;
+    public $label;
 
     protected $listeners = ['saved'];
 
@@ -20,7 +20,7 @@ class Create extends Component
     public function mount()
     {
         $this->label = new Label([
-            'type' => request()->query('type'),
+            'type' => $this->type,
         ]);
     }
 
@@ -39,9 +39,9 @@ class Create extends Component
      * 
      * @return void
      */
-    public function saved($type)
+    public function saved()
     {
         session()->flash('flash', 'Label Created::success');
-        return redirect()->route('label.listing', ['tab' => $type]);
+        return redirect()->route('label.listing', [$this->type]);
     }
 }
