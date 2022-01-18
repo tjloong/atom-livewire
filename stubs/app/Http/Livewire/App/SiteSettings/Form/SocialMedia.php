@@ -5,9 +5,10 @@ namespace App\Http\Livewire\App\SiteSettings\Form;
 use App\Models\SiteSetting;
 use Livewire\Component;
 
-class Contact extends Component
+class SocialMedia extends Component
 {
     public $settings;
+    public $platforms;
 
     /**
      * Mount event
@@ -16,7 +17,17 @@ class Contact extends Component
      */
     public function mount()
     {
-        SiteSetting::contact()->get()->each(function($setting) {
+        $this->platforms = [
+            'facebook',
+            'instagram',
+            'twitter',
+            'linkedin',
+            'youtube',
+            'spotify',
+            'tiktok',
+        ];
+
+        SiteSetting::social()->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
     }
@@ -28,7 +39,7 @@ class Contact extends Component
      */
     public function render()
     {
-        return view('livewire.app.site-settings.form.contact');
+        return view('livewire.app.site-settings.form.social-media');
     }
 
     /**

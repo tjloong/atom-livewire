@@ -21,22 +21,6 @@
             <x-input.textarea wire:model.defer="settings.address">
                 Address
             </x-input.textarea>
-
-            <x-input.text wire:model.defer="settings.facebook">
-                Facebook
-            </x-input.text>
-
-            <x-input.text wire:model.defer="settings.instagram">
-                Instagram
-            </x-input.text>
-
-            <x-input.text wire:model.defer="settings.twitter">
-                Twitter
-            </x-input.text>
-
-            <x-input.text wire:model.defer="settings.linkedin">
-                Linked In
-            </x-input.text>
         </div>
 
         <x-slot name="buttons">

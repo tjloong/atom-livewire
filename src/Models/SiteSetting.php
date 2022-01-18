@@ -44,6 +44,9 @@ class SiteSetting extends Model
             'twitter',
             'linkedin',
             'instagram',
+            'youtube',
+            'spotify',
+            'tiktok',
         ]);
     }
 

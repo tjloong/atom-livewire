@@ -83,7 +83,7 @@ Route::prefix('app')->middleware('auth')->group(function () {
     /**
      * Site Settings
      */
-    Route::get('site-settings', App\Http\Livewire\App\SiteSettings\Update::class)->name('site-settings.update');
+    Route::get('site-settings/{category}', App\Http\Livewire\App\SiteSettings\Update::class)->name('site-settings.update');
 });
 
 Route::get('blogs/{slug?}', App\Http\Livewire\Web\Blog::class)->name('blog.show');
