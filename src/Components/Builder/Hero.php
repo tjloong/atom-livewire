@@ -11,6 +11,8 @@ class Hero extends Component
     public $valign;
     public $image;
     public $imagePosition;
+    public $size;
+    public $bgcolor;
     
     /**
      * Contructor
@@ -22,13 +24,17 @@ class Hero extends Component
         $valign = 'center',
         $overlay = false,
         $image = null, 
-        $imagePosition = 'bg'
+        $imagePosition = 'bg',
+        $size = null,
+        $bgcolor = null
     ) {
         $this->overlay = $overlay;
         $this->align = $align;
         $this->valign = $valign;
         $this->image = $image;
         $this->imagePosition = $imagePosition;
+        $this->size = $size;
+        $this->bgcolor = $bgcolor;
     }
 
     /**
