@@ -5,8 +5,13 @@
             <h1 class="text-4xl font-extrabold">
                 {{ $blog->title }}
             </h1>
+
             <div class="text-gray-500 text-sm font-medium">
                 Posted {{ format_date($blog->published_at) }}
+            </div>
+
+            <div>
+                <x-builder.share :title="$blog->title" :url="url()->current()"/>
             </div>
         </div>
     @else

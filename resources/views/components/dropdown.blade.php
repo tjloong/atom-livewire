@@ -1,15 +1,32 @@
 @if ($attributes->has('item') && $attributes->has('href'))
-    <a href="{{ $attributes->get('href') }}" class="py-2 px-4 flex items-center gap-2 text-sm text-gray-700 hover:bg-gray-100">
+    <a 
+        href="{{ $attributes->get('href') }}" 
+        class="py-2 px-4 flex items-center gap-2 text-sm text-gray-700 hover:bg-gray-100"
+        {{ $attributes->except('href', 'icon', 'icon-type', 'icon-color') }}
+    >
         @if ($attributes->get('icon'))
-            <x-icon name="{{ $attributes->get('icon') }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="18px"/>
+            <x-icon 
+                name="{{ $attributes->get('icon') }}" 
+                type="{{ $attributes->get('icon-type') ?? 'regular' }}" 
+                size="18px"
+                class="{{ $attributes->get('icon-color') ?? '' }}"
+            />
         @endif
 
         {{ $slot }}
     </a>
 @elseif ($attributes->has('item'))
-    <div class="py-2 px-4 flex items-center gap-2 text-sm text-gray-700 hover:bg-gray-100">
+    <div
+        class="py-2 px-4 flex items-center gap-2 text-sm text-gray-700 hover:bg-gray-100"
+        {{ $attributes->except('icon', 'icon-type', 'icon-color') }}
+    >
         @if ($attributes->get('icon'))
-            <x-icon name="{{ $attributes->get('icon') }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="18px"/>
+            <x-icon 
+                name="{{ $attributes->get('icon') }}" 
+                type="{{ $attributes->get('icon-type') ?? 'regular' }}" 
+                size="18px"
+                class="{{ $attributes->get('icon-color') ?? '' }}"
+            />
         @endif
 
         {{ $slot }}

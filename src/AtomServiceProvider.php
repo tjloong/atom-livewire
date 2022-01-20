@@ -147,6 +147,7 @@ class AtomServiceProvider extends ServiceProvider
 
         Blade::component('builder.faq', 'Jiannius\\Atom\\Components\\Builder\\Faq');
         Blade::component('builder.hero', 'Jiannius\\Atom\\Components\\Builder\\Hero');
+        Blade::component('builder.share', 'Jiannius\\Atom\\Components\\Builder\\Share');
         Blade::component('builder.footer', 'Jiannius\\Atom\\Components\\Builder\\Footer');
         Blade::component('builder.slider', 'Jiannius\\Atom\\Components\\Builder\\Slider');
         Blade::component('builder.navbar', 'Jiannius\\Atom\\Components\\Builder\\Navbar');
