@@ -44,7 +44,9 @@
 
 @else
     <div
-        x-data="{ value: @entangle($attributes->wire('model')->value()), show: false }"
+        @if ($attr = $attributes->wire('model')->value()) x-data="{ value: @entangle($attr), show: false }"
+        @else x-data="{ show: false }"
+        @endif
         {{ $attributes }}
     >
         <div x-bind:class="show && 'fixed inset-0 z-20 md:static'">

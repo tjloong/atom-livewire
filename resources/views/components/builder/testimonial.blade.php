@@ -24,7 +24,7 @@
         ">
             <div class="relative py-4">
                 @if ($imagePosition === 'top' || $imagePosition === 'bottom')
-                    <div class="absolute top-0 -left-2">
+                    <div class="absolute -top-4 -left-2">
                         <x-icon name="quote-alt-left" type="solid" size="32px" class="text-gray-400 opacity-40"/>
                     </div>
                 @else
@@ -48,7 +48,7 @@
                 {{ $imagePosition === 'top' ? 'order-first' : '' }}
             ">
                 @if ($image && ($imagePosition === 'top' || $imagePosition === 'bottom'))
-                    <figure class="w-24 h-24 drop-shadow rounded-full overflow-hidden bg-gray-100">
+                    <figure class="flex-shrink-0 w-20 h-20 drop-shadow rounded-full overflow-hidden bg-gray-100 md:w-24 md:h-24">
                         <img 
                             src="{{ $image }}" 
                             class="w-full h-full object-cover"
