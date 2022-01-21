@@ -26,7 +26,6 @@ class SiteSetting extends Model
             'company', 
             'phone', 
             'email',
-            'whatsapp',
             'address',
         ]);
     }
@@ -47,6 +46,21 @@ class SiteSetting extends Model
             'youtube',
             'spotify',
             'tiktok',
+        ]);
+    }
+
+    /**
+     * Scope for whatsapp
+     * 
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeWhatsapp($query)
+    {
+        return $query->whereIn('name', [
+            'whatsapp',
+            'whatsapp_bubble',
+            'whatsapp_text',
         ]);
     }
 

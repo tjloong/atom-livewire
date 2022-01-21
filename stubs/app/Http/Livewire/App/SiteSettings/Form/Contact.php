@@ -19,6 +19,12 @@ class Contact extends Component
         SiteSetting::contact()->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
+
+        SiteSetting::whatsapp()->get()->each(function($setting) {
+            $this->settings[$setting->name] = $setting->name === 'whatsapp_bubble'
+                ? (bool)$setting->value
+                : $setting->value;
+        });
     }
 
     /**

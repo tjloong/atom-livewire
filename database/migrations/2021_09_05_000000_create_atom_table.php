@@ -371,7 +371,6 @@ class CreateAtomTable extends Migration
                 ['name' => 'company', 'value' => null],
                 ['name' => 'phone', 'value' => null],
                 ['name' => 'email', 'value' => null],
-                ['name' => 'whatsapp', 'value' => null],
                 ['name' => 'address', 'value' => null],
                 ['name' => 'facebook', 'value' => null],
                 ['name' => 'instagram', 'value' => null],
@@ -403,6 +402,9 @@ class CreateAtomTable extends Migration
                 ['name' => 'do_spaces_bucket', 'value' => null],
                 ['name' => 'do_spaces_endpoint', 'value' => null],
                 ['name' => 'do_spaces_cdn', 'value' => null],
+                ['name' => 'whatsapp', 'value' => null],
+                ['name' => 'whatsapp_bubble', 'value' => false],
+                ['name' => 'whatsapp_text', 'value' => null],
             ]);
         }
         else {
