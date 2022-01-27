@@ -15,7 +15,7 @@ class Breadcrumb extends Component
      */
     public function __construct($links = [])
     {
-        $this->links = array_filter($links);
+        $this->links = collect($links)->filter()->values()->all();
     }
 
     /**

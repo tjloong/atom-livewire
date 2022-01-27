@@ -59,21 +59,23 @@ global.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => 
         'https://unpkg.com/@floating-ui/core@0.1.2/dist/floating-ui.core.min.js',
         'https://unpkg.com/@floating-ui/dom@0.1.2/dist/floating-ui.dom.min.js',
     ]).then(() => {
-        const { computePosition, flip, shift, offset, autoPlacement } = FloatingUIDOM
+        setTimeout(() => {
+            const { computePosition, flip, shift, offset, autoPlacement } = FloatingUIDOM
 
-        const middleware = []
-        if (config.offset) middleware.push(offset(config.offset))
-        if (config.flip) middleware.push(flip())
-        if (config.shift) middleware.push(shift(config.shift))
-        if (!config.placement) middleware.push(autoPlacement())
+            const middleware = []
+            if (config.offset) middleware.push(offset(config.offset))
+            if (config.flip) middleware.push(flip())
+            if (config.shift) middleware.push(shift(config.shift))
+            if (!config.placement) middleware.push(autoPlacement())
 
-        const options = {}
-        if (config.placement) options.placement = config.placement
-        if (middleware.length) options.middleware = middleware
-        
-        computePosition(refEl, floatEl, options).then(({x, y}) => {
-            Object.assign(floatEl.style, { left: `${x}px`, top: `${y}px` })
-        })
+            const options = {}
+            if (config.placement) options.placement = config.placement
+            if (middleware.length) options.middleware = middleware
+            
+            computePosition(refEl, floatEl, options).then(({x, y}) => {
+                Object.assign(floatEl.style, { left: `${x}px`, top: `${y}px` })
+            })            
+        }, 50);
     })
 }
 
