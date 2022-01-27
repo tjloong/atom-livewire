@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Components\Builder;
 
-use App\Models\SiteSetting;
+use Jiannius\Atom\Models\SiteSetting;
 use Illuminate\View\Component;
 use Illuminate\Support\Str;
 
@@ -27,7 +27,14 @@ class Footer extends Component
         $whatsapp = [],
         $siteSettings = true
     ) {
-        if ($siteSettings && !config('atom.static_site')) {
+        if (config('atom.static_site')) {
+            $this->company = $contact['company'] ?? null;
+            $this->phone = $contact['phone'] ?? null;
+            $this->email = $contact['email'] ?? null;
+            $this->socials = $socials;
+            $this->whatsapp = $whatsapp;
+        }
+        else if ($siteSettings) {
             $this->company = $contact['company'] ?? SiteSetting::getSetting('company');
             $this->phone = $contact['phone'] ?? SiteSetting::getSetting('phone');
             $this->email = $contact['email'] ?? SiteSetting::getSetting('email');
@@ -42,13 +49,6 @@ class Footer extends Component
                 $this->whatsapp['bubble'] = (bool)SiteSetting::getSetting('whatsapp_bubble');
                 $this->whatsapp['text'] = SiteSetting::getSetting('whatsapp_text');
             }
-        }
-        else {
-            $this->company = $contact['company'] ?? null;
-            $this->phone = $contact['phone'] ?? null;
-            $this->email = $contact['email'] ?? null;
-            $this->socials = $socials;
-            $this->whatsapp = $whatsapp;
         }
 
         $this->dark = $dark;

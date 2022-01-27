@@ -1,17 +1,6 @@
-<div
-    x-data="{
-        show: false,
-        open () {
-            document.documentElement.classList.add('overflow-hidden')
-            this.show = true
-        },
-        close () {
-            document.documentElement.classList.remove('overflow-hidden')
-            this.show = false
-        },
-    }"
-    {{ $attributes->whereStartsWith('x-') }}
->
+@props(['uid' => uniqid()])
+
+<div x-data="drawer_{{ $uid }}" {{ $attributes->whereStartsWith('x-') }}>
     @isset($trigger)
         <div class="cursor-pointer" x-on:click="open()">
             {{ $trigger }}
@@ -38,3 +27,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('drawer_{{ $uid }}', () => ({
+            show: false,
+            open () {
+                document.documentElement.classList.add('overflow-hidden')
+                this.show = true
+            },
+            close () {
+                document.documentElement.classList.remove('overflow-hidden')
+                this.show = false
+            },
+        }))
+    })
+</script>

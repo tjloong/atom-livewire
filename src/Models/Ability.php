@@ -6,10 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ability extends Model
 {
-	protected $fillable = [
-		'module',
-		'name',
-	];
+	protected $guarded = [];
 
 	/**
 	 * Check enabled for user

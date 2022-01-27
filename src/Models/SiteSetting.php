@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SiteSetting extends Model
 {
-    protected $fillable = [
-        'name',
-        'value',
-    ];
+    protected $guarded = [];
 
     public $timestamps = false;
 
@@ -150,6 +147,8 @@ class SiteSetting extends Model
      */
     public static function configureSMTP()
     {
+        if (config('atom.static_site')) return;
+
         try {
             $settings = self::email()->get();
             $mailer = self::getSetting('mailer', $settings);

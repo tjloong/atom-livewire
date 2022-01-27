@@ -1,5 +1,3 @@
-@props(['uid' => uniqid()])
-
 <x-input.field {{ $attributes->filter(fn($val, $key) => in_array($key, ['error', 'required', 'caption'])) }}>
     <x-slot name="label">
         {{ $slot }}
@@ -10,7 +8,7 @@
             <input x-ref="input" type="text" x-model="value" x-on:change="$dispatch('input', value)" class="hidden">
         </div>
 
-        <div x-data="inputImage" style="width: {{ $dimension->width }}px; height: {{ $dimension->height }}px;">
+        <div x-data="imageInput" style="width: {{ $dimension->width }}px; height: {{ $dimension->height }}px;">
             <div
                 x-show="placeholder"
                 class="w-full h-full relative drop-shadow bg-gray-100 rounded-md overflow-hidden {{ $attributes->has('circle') ? 'rounded-full' : 'rounded-md' }}"
@@ -26,8 +24,8 @@
     
             <div
                 x-show="!placeholder"
-                x-on:click="$dispatch('file-manager-{{ $uid }}-open')"
-                x-on:file-manager-{{ $uid }}-completed.window="select($event.detail[0])"
+                x-on:click="$dispatch('image-input-uploader-open')"
+                x-on:image-input-uploader-completed.window="select($event.detail[0])"
                 class="w-full h-full border-4 border-dashed border-gray-400 text-gray-400 cursor-pointer flex items-center justify-center {{ $attributes->has('circle') ? 'rounded-full' : 'rounded-md' }}"
             >
                 <x-icon name="image-add" size="40px"/>
@@ -35,8 +33,8 @@
         </div>
     </div>
 
-    @livewire('input.file', [
-        'uid' => $uid,
+    @livewire('atom.file.uploader', [
+        'uid' => 'image-input-uploader',
         'title' => 'Insert Image',
         'accept' => ['image'],
         'sources' => ['device', 'image', 'library'],

@@ -4,7 +4,8 @@
     'rightImg' => $image && $imagePosition === 'right' ? $image : null,
     'bottomImg' => $image && $imagePosition === 'bottom' ? $image : null,
     'container' => '3xl:max-w-screen-xl 3xl:mx-auto ' 
-        . ($size === 'sm' ? 'min-h-[300px]' : 'min-h-[500px] md:min-h-[600px]')
+        . ($size === 'sm' ? 'min-h-[300px] ' : '')
+        . ($size === 'lg' ? 'min-h-[500px] md:min-h-[600px] ' : '')
         . $bgcolor,
 ])
 
@@ -69,7 +70,7 @@
     >
         @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
 
-        <x-builder.hero content class="flex-grow relative" :overlay="$overlay">
+        <x-builder.hero content class="flex-grow relative" :overlay="$overlay" :valign="$valign" :align="$align">
             <x-slot name="title">{{ $title ?? null }}</x-slot>
             <x-slot name="subtitle">{{ $subtitle ?? null }}</x-slot>
             <x-slot name="cta">{{ $cta ?? null }}</x-slot>
@@ -90,7 +91,7 @@
                 alt="{{ $attributes->get('image-alt') }}"
             >
     
-            <x-builder.hero content class="relative" :overlay="$overlay">
+            <x-builder.hero content class="relative" :overlay="$overlay" :valign="$valign" :align="$align">
                 <x-slot name="title">{{ $title ?? null }}</x-slot>
                 <x-slot name="subtitle">{{ $subtitle ?? null }}</x-slot>
                 <x-slot name="cta">{{ $cta ?? null }}</x-slot>
@@ -104,7 +105,7 @@
         <div class="relative grid gap-6">
             @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
 
-            <x-builder.hero content class="relative" :overlay="$overlay">
+            <x-builder.hero content class="relative" :overlay="$overlay" :valign="$valign" :align="$align">
                 <x-slot name="title">{{ $title ?? null }}</x-slot>
                 <x-slot name="subtitle">{{ $subtitle ?? null }}</x-slot>
                 <x-slot name="cta">{{ $cta ?? null }}</x-slot>
@@ -121,5 +122,17 @@
                 >
             </div>
         </div>
+    </div>
+
+@else
+    <div class="{{ $container }} relative h-px">
+        @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
+
+        <x-builder.hero content class="relative h-full" :overlay="$overlay" :valign="$valign" :align="$align">
+            <x-slot name="title">{{ $title ?? null }}</x-slot>
+            <x-slot name="subtitle">{{ $subtitle ?? null }}</x-slot>
+            <x-slot name="cta">{{ $cta ?? null }}</x-slot>
+            {{ $slot }}
+        </x-builder.hero>
     </div>
 @endif

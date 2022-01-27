@@ -1,12 +1,23 @@
-@extends('atom::layout', ['script' => mix('js/web.js')])
+@extends('atom::layout')
+
+@push('scripts')
+    <script src="{{ mix('js/web.js') }}" defer></script>
+@endpush
 
 @section('content')
     <x-builder.navbar align="right">
-        <x-builder.navbar item href="{{ route('blog.show') }}">Blogs</x-builder.navbar>
-        <x-builder.navbar item href="{{ route('contact', ['ref' => 'landing']) }}">Contact</x-builder.navbar>
+        @if (Route::has('blogs'))
+            <x-builder.navbar item href="{{ route('blogs') }}">Blogs</x-builder.navbar>
+        @endif
+
+        @if (Route::has('contact'))
+            <x-builder.navbar item href="{{ route('contact', ['ref' => 'landing']) }}">Contact</x-builder.navbar>
+        @endif
 
         <x-slot name="auth">
-            <x-builder.navbar dropdown-item href="{{ route('dashboard') }}">Go to Dashboard</x-builder.navbar>
+            @if (Route::has('dashboard'))
+                <x-builder.navbar dropdown-item href="{{ route('dashboard') }}">Go to Dashboard</x-builder.navbar>
+            @endif
         </x-slot>
     </x-builder.navbar>
 

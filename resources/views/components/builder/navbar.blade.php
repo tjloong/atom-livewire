@@ -77,7 +77,7 @@
                 {{ $slot }}
             </div>
 
-            @if ($login || $register)
+            @if ($showAuth)
                 <div 
                     x-bind:class="show ? 'grid' : 'hidden'"
                     class="justify-center items-center md:flex-shrink-0 md:flex md:space-x-2"
@@ -105,9 +105,11 @@
                             Login
                         </x-builder.navbar>
 
-                        <x-button href="{{ route('register', ['ref' => 'landing']) }}">
-                            {{ $registerPlaceholder }}
-                        </x-button>
+                        @if (Route::has('register'))
+                            <x-button href="{{ route('register', ['ref' => 'landing']) }}">
+                                {{ $registerPlaceholder }}
+                            </x-button>
+                        @endif
                     @endauth
                 </div>
             @endif

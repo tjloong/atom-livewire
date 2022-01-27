@@ -2,8 +2,8 @@
 
 namespace Jiannius\Atom\Traits;
 
-use App\Models\Role;
-use App\Models\Ability;
+use Jiannius\Atom\Models\Role;
+use Jiannius\Atom\Models\Ability;
 use Illuminate\Support\Str;
 
 /**
@@ -20,7 +20,10 @@ trait HasRole
      */
     protected function initializeHasRole()
     {
-        $this->fillable[] = 'role_id';
+        if ($this->fillable) {
+            $this->fillable[] = 'role_id';
+        }
+        
         $this->casts['role_id'] = 'integer';
     }
 

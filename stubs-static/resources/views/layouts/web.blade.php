@@ -1,8 +1,12 @@
-@extends('atom::layout', ['script' => 'js/web.js'])
+@extends('atom::layout')
+
+@push('scripts')
+    <script src="{{ mix('js/web.js') }}" defer></script>
+@endpush
 
 @section('content')
-    <x-builder.navbar>
-        <x-builder.navbar item href="{{ route('contact', ['ref' => 'landing']) }}"/>
+    <x-builder.navbar align="right">
+        <x-builder.navbar item href="{{ route('contact', ['ref' => 'landing']) }}">Contact</x-builder.navbar>
     </x-builder.navbar>
 
     <x-fullscreen-loader/>

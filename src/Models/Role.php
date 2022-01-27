@@ -3,7 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use App\Models\User;
-use App\Models\Ability;
+use Jiannius\Atom\Models\Ability;
 use Jiannius\Atom\Traits\HasSlug;
 use Jiannius\Atom\Traits\HasOwner;
 use Illuminate\Database\Eloquent\Model;
@@ -13,11 +13,7 @@ class Role extends Model
     use HasSlug;
     use HasOwner;
     
-    protected $fillable = [
-        'name',
-        'slug',
-        'scope',
-    ];
+    protected $guarded = [];
 
     /**
      * Get abilities for role

@@ -2,20 +2,11 @@
 
 namespace Jiannius\Atom\Models;
 
-use App\Models\SiteSetting;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Notification;
-use Jiannius\Atom\Notifications\EnquiryNotification;
 
 class Enquiry extends Model
 {
-    protected $fillable = [
-        'name',
-        'phone',
-        'email',
-        'message',
-        'status',
-    ];
+    protected $guarded = [];
 
     /**
      * Scope for fussy search
@@ -31,18 +22,5 @@ class Enquiry extends Model
             ->orWhere('phone', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
         );
-    }
-
-    /**
-     * Notify owner about the enquiry
-     * 
-     * @return void
-     */
-    public function notify()
-    {
-        $settings = SiteSetting::email()->get();
-        $to = $settings->where('name', 'notify_to')->first()->value;
-
-        if ($to) Notification::route('mail', $to)->notify(new EnquiryNotification($this));
     }
 }

@@ -1,31 +1,29 @@
 <?php
 
 return [
-    'app_route_prefix' => 'app',
     'locales' => ['en'],
     'max_upload_size' => 8,
     'timezone' => 'Asia/Kuala_Lumpur',
-    'static_site' => false,
-
-    // 'seo' => [
-    //     'title' => null,
-    //     'description' => null,
-    //     'image' => null,
-    //     'hreflang' => null,
-    //     'canonical' => null,
-    //     'jsonld' => null,
-    // ],
-
-    // 'gtm_id' => null,
-    // 'ga_id' => null,
-    // 'fbpixel_id' => null,
 
     'features' => [
         'auth' => [
-            'login' => true,
             'register' => true,
             'forgot-password' => true,
             'verify' => true,
         ],
+        'labels' => [
+            'blog-category',
+        ],
+        'abilities' => true,
+        'pages' => true,
+        'teams' => true,
+        'blogs' => true,
+        'enquiries' => true,
+        'messenger' => true,
+        'site_settings' => 'minimal',   // 'minimal' or 'cms'
+    ],
+
+    'models' => [
+        //
     ],
 ];

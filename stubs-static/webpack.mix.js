@@ -1,10 +1,10 @@
 const mix = require('laravel-mix');
 
-mix.js('resources/js/web/main.js', 'public/js/web.js');
+mix.js('resources/js/web.js', 'public/js/web.js');
 
 // tailwindcss
 mix.postCss('resources/css/app.css', 'public/css', [
-    require('postcss-import'),
+    require('postcss-import')({ path: ['vendor/jiannius'] }),
     require('tailwindcss'),
 ])
 

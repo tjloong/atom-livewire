@@ -45,8 +45,10 @@ trait HasOwner
      */
     protected function initializeHasOwner()
     {
-        $this->fillable[] = 'owned_by';
-        $this->fillable[] = 'created_by';
+        if ($this->fillable) {
+            $this->fillable[] = 'owned_by';
+            $this->fillable[] = 'created_by';
+        }
         
         $this->casts['owned_by'] = 'integer';
         $this->casts['created_by'] = 'integer';

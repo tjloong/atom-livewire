@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Components\Builder;
 
-use Illuminate\Support\Str;
 use Illuminate\View\Component;
 
 class Faq extends Component

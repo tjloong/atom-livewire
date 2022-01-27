@@ -1,5 +1,5 @@
 <div class="max-w-screen-xl mx-auto p-6">
-    @if ($whatsapp['number'] && $whatsapp['bubble'])
+    @if ($whatsapp && $whatsapp['number'] && $whatsapp['bubble'])
         <a 
             href="{{ $whatsapp['url'] }}"
             class="fixed bottom-10 right-10 w-20 h-20 bg-green-500 rounded-full drop-shadow z-10 flex items-center justify-center"
@@ -13,7 +13,7 @@
         <div class="grid space-y-1 order-first md:order-last">
             @if ($socials->count() > 0)
                 <div class="flex items-center justify-center space-x-2 md:justify-end">
-                    @if ($whatsapp['number'] && !$whatsapp['bubble'])
+                    @if ($whatsapp && $whatsapp['number'] && !$whatsapp['bubble'])
                         <a
                             href="{{ $whatsapp['url'] }}"
                             class="flex items-center justify-center {{ $dark ? 'text-gray-200' : 'text-gray-500' }}"

@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Traits;
 
-use App\Models\Team;
+use Jiannius\Atom\Models\Team;
 
 trait HasTeam
 {
@@ -13,6 +13,8 @@ trait HasTeam
      */
     public function teams()
     {
+        if (!enabled_feature('teams')) return;
+
         return $this->belongsToMany(Team::class, 'teams_users');
     }
 
@@ -25,6 +27,8 @@ trait HasTeam
      */
     public function scopeTeamId($query, $id)
     {
+        if (!enabled_feature('teams')) return $query;
+
         return $query->whereHas('teams', function($q) use ($id) {
             $q->whereIn('teams.id', (array)$id);
         });
@@ -37,6 +41,8 @@ trait HasTeam
      */
     public function joinTeam($id)
     {
+        if (!enabled_feature('teams')) return;
+
         $this->teams()->sync(
             $this->teams->pluck('id')->push($id)->toArray()
         );
@@ -49,6 +55,8 @@ trait HasTeam
      */
     public function leaveTeam($id)
     {
+        if (!enabled_feature('teams')) return;
+
         $this->teams()->sync(
             $this->teams()->where('teams.id', '<>', $id)->get()
                 ->pluck('id')

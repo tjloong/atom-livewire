@@ -1,13 +1,6 @@
-/* Reset */
 @import 'tailwindcss/base';
-@import 'reset';
 
-/* Components */
 @import 'tailwindcss/components';
-@import 'button';
-@import 'table';
-@import 'form';
-@import 'modal';
+@import 'atom-livewire/resources/css/atom.css';
 
-/* Utilities */
 @import 'tailwindcss/utilities';

@@ -14,13 +14,7 @@ class File extends Model
     use HasOwner;
     use HasFilters;
     
-    protected $fillable = [
-        'name',
-        'mime',
-        'size',
-        'url',
-        'data',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'size' => 'float',

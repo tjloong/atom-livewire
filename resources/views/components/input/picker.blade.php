@@ -1,4 +1,6 @@
-<div x-data="inputPicker('{{ $attributes->get('getter') }}')">
+@props(['uid' => uniqid()])
+
+<div x-data="picker_{{ $uid }}('{{ $attributes->get('getter') }}')" wire:ignore>
     @isset($trigger)
         <div class="cursor-pointer" x-on:click="open()">
             {{ $trigger }}
@@ -30,7 +32,7 @@
                 </div>
 
                 <div class="p-4">
-                    <div class="bg-gray-200 rounded-md py-2 px-4 flex items-center space-x-2">
+                    <div class="bg-gray-100 rounded-md py-2 px-3 drop-shadow flex items-center space-x-2">
                         <x-icon name="search" class="flex-shrink-0 text-gray-400" size="18px"/>
                         <input
                             x-ref="text"
@@ -105,3 +107,37 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('picker_{{ $uid }}', (getter) => ({
+            show: false,
+            text: null,
+            loading: true,
+            options: [],
+            paginator: null,
+
+            fetch (page = 1) {
+                this.loading = true
+
+                this.$wire[getter](page, this.text).then(res => {
+                    this.paginator = res
+                    this.options = page === 1 ? res.data : this.options.concat(res.data)
+                    this.loading = false
+                })
+            },
+
+            open () {
+                document.documentElement.classList.add('overflow-hidden')
+                this.show = true
+                this.fetch()
+            },
+            
+            close () {
+                document.documentElement.classList.remove('overflow-hidden')
+                this.show = false
+                this.text = null
+            },
+        }))
+    })
+</script>

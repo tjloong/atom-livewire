@@ -9,28 +9,12 @@ class Label extends Model
 {
     use HasSlug;
 
-    protected $fillable = [
-        'name',
-        'slug',
-        'type',
-        'seq',
-        'data',
-        'image_id',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'seq' => 'integer',
         'data' => 'object',
-        'image_id' => 'integer',
     ];
-
-    /**
-     * Get image for label
-     */
-    public function image()
-    {
-        return $this->belongsTo(File::class);
-    }
 
     /**
      * Scope for fussy search

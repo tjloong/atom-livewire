@@ -1,11 +1,9 @@
 <label
     class="inline-flex gap-2"
-    x-data="{ show: false }"
+    x-data="{ get show () { return this.$refs.checkbox.checked }}"
 >
     <input
         x-ref="checkbox"
-        x-on:change="show = $el.checked"
-        x-init="show = $el.checked"
         type="checkbox"
         class="hidden"
         {{ $attributes }}

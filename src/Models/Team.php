@@ -10,10 +10,7 @@ class Team extends Model
 {
     use HasOwner;
     
-    protected $fillable = [
-        'name',
-        'description',
-    ];
+    protected $guarded = [];
 
     /**
      * Get users for team

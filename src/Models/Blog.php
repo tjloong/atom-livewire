@@ -13,16 +13,7 @@ class Blog extends Model
     use HasOwner;
     use HasFilters;
 
-    protected $fillable = [
-        'title',
-        'slug',
-        'redirect_slug',
-        'excerpt',
-        'content',
-        'seo',
-        'cover_id',
-        'published_at',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'seo' => 'object',

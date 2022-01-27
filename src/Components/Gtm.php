@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Components;
 
-use App\Models\SiteSetting;
+use Jiannius\Atom\Models\SiteSetting;
 use Illuminate\View\Component;
 
 class Gtm extends Component
@@ -22,7 +22,7 @@ class Gtm extends Component
 
         if (!config('atom.static_site')) {
             $settings = SiteSetting::tracking()->get();
-            $this->id = $settings->where('name', 'gtm_id')->first()->value;
+            $this->id = $settings->where('name', 'gtm_id')->first()->value ?? null;
         }
 
         if (config('atom.gtm_id')) $this->id = config('atom.gtm_id');

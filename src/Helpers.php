@@ -2,6 +2,36 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\App;
+
+/**
+ * Get model class name
+ */
+function getModelClassName($name)
+{
+    return config('atom.models.' . $name) ?? 'Jiannius\\Atom\\Models\\' . $name;
+}
+
+/**
+ * Get model instance
+ */
+function getModel($name)
+{
+    return app(getModelClassName($name));
+}
+
+/**
+ * Check has feature
+ * 
+ * @return boolean
+ */
+function enabled_feature($feature)
+{
+    $value = config('atom.features.' . $feature);
+
+    if (is_string($value) || is_array($value)) return !empty($value);
+    else return $value;
+}
 
 /**
  * Get current route

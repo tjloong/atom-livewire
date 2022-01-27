@@ -4,15 +4,16 @@
     </div>
 
 @elseif ($attributes->has('item'))
-    <a
+    <div
         @if ($attributes->has('href'))
             x-data="{ active: @js(Str::is($attributes->get('href') . '*', url()->current())) }"
+            x-on:click="show = !show; (!active && (window.location = '{{ $attributes->get('href') }}'))"
         @else
             x-data="{
                 name: @js($attributes->get('name') ?? Str::slug($slot->toHtml())),
                 get active () { return this.value === this.name },
             }"
-            x-on:click.prevent="show = !show; (!active && $dispatch('input', name))"
+            x-on:click="show = !show; (!active && $dispatch('input', name))"
         @endif
         x-bind:class="{
             'font-bold text-theme bg-white drop-shadow border md:drop-shadow-none md:border-0': active && !show,
@@ -21,8 +22,8 @@
             'font-medium text-gray-600 hover:bg-gray-100 hover:font-bold': !active && show,
         }"
         wire:loading.class="pointer-events-none"
-        class="py-2 px-3 flex items-center space-x-2 rounded-md"
-        {{ $attributes->except('name') }}
+        class="py-2 px-3 flex items-center space-x-2 rounded-md cursor-pointer"
+        {{ $attributes->except('name', 'href') }}
     >
         @if ($attributes->has('icon'))
             <div
@@ -40,7 +41,7 @@
         <div x-show="active && !show" class="flex-shrink-0 flex items-center justify-center md:hidden">
             <x-icon name="chevron-down"/>
         </div>
-    </a>
+    </div>
 
 @else
     <div

@@ -7,22 +7,22 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
+use Jiannius\Atom\Traits\HasRole;
+use Jiannius\Atom\Traits\HasTeam;
 use Jiannius\Atom\Traits\HasOwner;
 use Jiannius\Atom\Notifications\ActivateAccountNotification;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use HasRole;
+    use HasTeam;
     use HasOwner;
+    use HasApiTokens;
     use HasFactory;
     use Notifiable;
 
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'status',
-        'email_verified_at',
-    ];
+    protected $guarded = ['password'];
 
     protected $hidden = [
         'password',

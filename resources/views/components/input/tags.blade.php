@@ -4,7 +4,10 @@
     </x-slot>
 
     <div
-        x-data="inputTags(@entangle($attributes->wire('model')->value()), @js($attributes->get('options')))"
+        x-data="tagsInput(
+            @entangle($attributes->wire('model')->value()), 
+            @js($attributes->get('options'))
+        )"
         x-on:click.away="close()"
         wire:ignore
         class="relative"
@@ -57,3 +60,41 @@
         </div>
     </div>
 </x-input.field>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('tagsInput', (value, options) => ({
+            value,
+            options: [],
+
+            init () {
+                this.options = options.map(opt => ({ ...opt, selected: this.value.includes(opt.value) }))
+            },
+            open () {
+                this.$refs.dropdown.classList.remove('hidden')
+                this.$refs.dropdown.classList.add('opacity-0')
+
+                floatPositioning(this.$refs.input, this.$refs.dropdown, {
+                    placement: 'bottom',
+                    flip: true,
+                }).then(() => this.$refs.dropdown.classList.remove('opacity-0'))
+            },
+            close () {
+                this.$refs.dropdown.classList.add('hidden')
+            },
+            toggle (val) {
+                this.options = this.options.map(opt => {
+                    if (opt.value === val.value) opt.selected = !opt.selected
+                    return opt
+                })
+
+                this.$dispatch('input', this.options
+                    .filter(opt => (opt.selected))
+                    .map(opt => (opt.value))
+                )
+
+                this.close()
+            },
+        }))
+    })
+</script>

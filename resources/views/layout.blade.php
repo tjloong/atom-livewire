@@ -47,6 +47,5 @@
     @endif
     
     @stack('scripts')
-    <script src="{{ $script ?? mix('js/app.js') }}" defer></script>
 </body>
 </html>

@@ -3,11 +3,14 @@
 namespace Jiannius\Atom\Components;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Component;
 
 class AdminPanel extends Component
 {
     public $href;
+    public $route;
+    public $params;
     public $flash;
     public $version;
     public $isActive;
@@ -20,17 +23,20 @@ class AdminPanel extends Component
      */
     public function __construct(
         $href = null,
+        $route = null,
+        $params = null,
         $active = null
     ) {
         $this->href = $href;
+        $this->route = $route;
+        $this->params = $params;
         $this->flash = $this->getFlash();
         $this->version = $this->getVersion();
-        $this->unverified = request()->user()->mustVerifyEmail && !request()->user()->hasVerifiedEmail();
+        $this->unverified = enabled_feature('auth.verify') && !request()->user()->hasVerifiedEmail();
 
         if (is_null($active)) {
-            $this->isActive = $href
-                ? Str::startsWith(url()->current(), $href)
-                : false;
+            if ($href) $this->isActive = Str::startsWith(url()->current(), $href);
+            elseif ($route && Route::has($route)) $this->isActive = Str::startsWith(url()->current(), route($route, $params));
         }
         else $this->isActive = $active;
     }

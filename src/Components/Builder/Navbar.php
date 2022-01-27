@@ -8,8 +8,7 @@ class Navbar extends Component
 {
     public $align;
     public $sticky;
-    public $login;
-    public $register;
+    public $showAuth;
     public $registerPlaceholder;
 
     /**
@@ -20,14 +19,12 @@ class Navbar extends Component
     public function __construct(
         $align = 'left',
         $sticky = false,
-        $login = true,
-        $register = true,
+        $showAuth = true,
         $registerPlaceholder = 'Sign Up'
     ) {
         $this->align = $align;
         $this->sticky = $sticky;
-        $this->login = config('atom.static_site') ? false : $login;
-        $this->register = config('atom.static_site') ? false : $register;
+        $this->showAuth = $showAuth;
         $this->registerPlaceholder = $registerPlaceholder;
     }
 

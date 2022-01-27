@@ -15,7 +15,7 @@ class Modal extends Component
      */
     public function __construct($uid = null)
     {
-        $this->uid = $uid ? ('modal-' . $uid) : 'modal';
+        $this->uid = $uid ?: 'modal';
     }
 
     /**

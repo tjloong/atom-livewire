@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Components;
 
-use App\Models\SiteSetting;
+use Jiannius\Atom\Models\SiteSetting;
 use Illuminate\View\Component;
 
 class FbPixel extends Component
@@ -22,7 +22,7 @@ class FbPixel extends Component
 
         if (!config('atom.static_site')) {
             $settings = SiteSetting::tracking()->get();
-            $this->id = $settings->where('name', 'fbpixel_id')->first()->value;
+            $this->id = $settings->where('name', 'fbpixel_id')->first()->value ?? null;
         }
 
         if (config('atom.fbpixel_id')) $this->id = config('atom.fbpixel_id');

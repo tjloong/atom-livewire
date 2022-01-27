@@ -8,8 +8,7 @@ class InstallCommand extends Command
 {
     protected $signature = 'atom:install
                             {--force : Force publishing}
-                            {--static : Static site}';
-
+                            {--static : Install static site}';
     protected $description = 'Install Atom';
 
     /**
@@ -29,10 +28,13 @@ class InstallCommand extends Command
      */
     public function handle()
     {
+        $this->info('Start Atom installation...');
+
         $this->publish();
         $this->nodepackages();
         $this->configs();
 
+        $this->newLine();
         $this->info('Atom installation done');
         $this->comment('Please execute "npm install && npm run dev" to build your assets.');
     }
@@ -44,36 +46,28 @@ class InstallCommand extends Command
      */
     private function publish()
     {
+        $this->newLine(2);
         $this->info('Publishing Jiannius\Atom\AtomServiceProvider');
-        $this->newLine();
+
+        $static = $this->option('static') ? '-static' : '';
 
         $this->call('vendor:publish', [
             '--provider' => 'Jiannius\Atom\AtomServiceProvider',
-            '--tag' => $this->option('static') ? 'atom-static' : 'atom',
+            '--tag' => 'atom-installation' . $static,
             '--force' => $this->option('force'),
         ]);
 
-        $this->newLine(2);
-    }
+        $this->call('vendor:publish', [
+            '--provider' => 'Jiannius\Atom\AtomServiceProvider',
+            '--tag' => 'atom-layouts' . $static,
+            '--force' => $this->option('force'),
+        ]);
 
-    /**
-     * Configurations
-     * 
-     * @return void
-     */
-    private function configs()
-    {
-        $this->info('App Settings');
-        $this->newLine();
-
-        replace_in_file(
-            'public const HOME = \'/home\';',
-            'public const HOME = \'/\';',
-            app_path('Providers/RouteServiceProvider.php')
-        );
-
-        // link storage
-        $this->call('storage:link');
+        $this->call('vendor:publish', [
+            '--provider' => 'Jiannius\Atom\AtomServiceProvider',
+            '--tag' => 'atom-assets' . $static,
+            '--force' => $this->option('force'),
+        ]);
     }
 
     /**
@@ -83,14 +77,15 @@ class InstallCommand extends Command
      */
     public function nodepackages()
     {
+        $this->newLine(2);
         $this->info('Update node packages');
 
         // dev dependencies
         $this->updateNodePackages(function ($packages) {
             return [
-                'postcss-import' => '^12.0.1',
-                'postcss-nesting' => '^7.0.1',
-                'autoprefixer' => '^10.0.2',
+                'postcss' => '^8.4.5',
+                'postcss-import' => '^14.0.2',
+                'postcss-nesting' => '^10.1.2'
             ] + $packages;
         });
 
@@ -106,8 +101,29 @@ class InstallCommand extends Command
                 'tailwindcss' => '^2',
             ] + $packages;
         }, false);
+    }
 
+    /**
+     * Configurations
+     * 
+     * @return void
+     */
+    private function configs()
+    {
         $this->newLine(2);
+        
+        $this->info('Configuring Route service provider...');
+        replace_in_file(
+            'public const HOME = \'/home\';',
+            'public const HOME = \'/\';',
+            app_path('Providers/RouteServiceProvider.php')
+        );
+
+        // link storage
+        if (!file_exists(public_path('storage'))) {
+            $this->info('Configuring storage link...');
+            $this->call('storage:link');
+        }
     }
 
     /**

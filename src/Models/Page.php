@@ -9,14 +9,7 @@ class Page extends Model
 {
     use HasSlug;
 
-    protected $fillable = [
-        'name',
-        'title',
-        'slug',
-        'content',
-        'seo',
-        'data',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'seo' => 'object',
