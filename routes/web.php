@@ -102,5 +102,6 @@ if (enabled_feature('blogs')) {
     Route::get('blogs/{slug?}', Jiannius\Atom\Http\Livewire\Web\Blog::class)->name('blogs');
 }
 
-Route::get('contact/{slug?}', Jiannius\Atom\Http\Livewire\Web\Contact::class)->name('contact');
+Route::get('contact', Jiannius\Atom\Http\Livewire\Web\Contact::class)->name('contact');
+Route::get('contact/thank-you', Jiannius\Atom\Http\Livewire\Web\ContactSent::class)->name('contact.sent');
 Route::get('/', Jiannius\Atom\Http\Livewire\Web\Home::class)->name('home');

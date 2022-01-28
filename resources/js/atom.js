@@ -1,5 +1,6 @@
 import './helpers.js'
 import './script-loader.js'
+import Button from './components/button'
 import FullscreenLoader from './components/fullscreen-loader'
 
 import TagsInput from './components/input/tags'
@@ -12,6 +13,7 @@ import UploaderImage from './uploader/uploader-image'
 import UploaderLibrary from './uploader/uploader-library'
 import UploaderYoutube from './uploader/uploader-youtube'
 
+Alpine.data('button', Button)
 Alpine.data('fullscreenLoader', FullscreenLoader)
 Alpine.data('tagsInput', TagsInput)
 Alpine.data('imageInput', ImageInput)

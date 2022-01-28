@@ -1,16 +1,8 @@
-<div class="max-w-screen-sm mx-auto py-20 px-4 grid gap-6">
-    <div class="text-5xl font-bold">Contact Us</div>
-
-    <div>
-        @if ($isSent)
-            <x-alert type="success">
-                You enquiry is successfully sent.
-            </x-alert>
+<main class="min-h-screen">
+    <div class="max-w-screen-sm mx-auto py-20 px-4 grid gap-6">
+        <div class="text-5xl font-bold">Contact Us</div>
     
-            <a href="/" class="text-sm flex items-center mt-4">
-                <x-icon name="left-arrow-alt"/> Back to home page
-            </a>
-        @else
+        <div>
             <form wire:submit.prevent="save">
                 <x-input.text wire:model.defer="enquiry.name" required>
                     Your Name
@@ -32,6 +24,6 @@
                     Send Enquiry
                 </x-button>
             </form>
-        @endif
+        </div>
     </div>
-</div>
+</main>

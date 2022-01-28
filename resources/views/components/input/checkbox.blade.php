@@ -12,9 +12,9 @@
     <div
         x-ref="box"
         class="w-5 h-5 bg-white m-1 border-2 flex-shrink-0 flex items-center justify-center rounded"
-        x-bind:class="show ? 'border-theme' : 'border-gray-300'"
+        x-bind:class="show ? 'border-blue-700' : 'border-gray-300'"
     >
-        <div class="w-3 h-3 shadow bg-theme" x-show="show"></div>
+        <div class="w-3 h-3 shadow bg-blue-700" x-show="show"></div>
     </div>
 
     <div class="flex flex-col">

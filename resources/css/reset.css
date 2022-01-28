@@ -3,7 +3,7 @@ label {
 }
 
 a {
-    @apply cursor-pointer font-medium text-theme;
+    @apply cursor-pointer font-medium text-blue-700;
 }
 
 [x-cloak] { 

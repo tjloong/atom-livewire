@@ -10,7 +10,6 @@ use Jiannius\Atom\Notifications\EnquiryNotification;
 
 class Contact extends Component
 {
-    public $isSent;
     public $enquiry;
 
     protected $rules = [
@@ -26,24 +25,11 @@ class Contact extends Component
      * 
      * @return void
      */
-    public function mount($slug = null)
+    public function mount()
     {
-        if ($slug === 'thank-you') $this->isSent = true;
-        else {
-            // prevent bot
-            if (!request()->query('ref')) return redirect()->route('home');
-            else {
-                $this->enquiry = enabled_feature('enquiries')
-                    ? new Enquiry(['status' => 'pending'])
-                    : [
-                        'name' => null,
-                        'phone' => null,
-                        'email' => null,
-                        'message' => null,
-                        'status' => 'pending',    
-                    ];
-            }
-        }
+        // prevent bot
+        if (!request()->query('ref')) return redirect()->route('home');
+        else $this->initEnquiry();
     }
 
     /**
@@ -79,6 +65,24 @@ class Contact extends Component
             Notification::route('mail', $mail['to'])->notify(new EnquiryNotification($mail['params']));
         }
         
-        return redirect()->route('contact', ['thank-you']);    
+        return redirect()->route('contact.sent');
+    }
+
+    /**
+     * Initialize enquiry
+     * 
+     * @return void
+     */
+    public function initEnquiry()
+    {
+        $this->enquiry = enabled_feature('enquiries')
+            ? new Enquiry(['status' => 'pending'])
+            : [
+                'name' => null,
+                'phone' => null,
+                'email' => null,
+                'message' => null,
+                'status' => 'pending',
+            ];
     }
 }

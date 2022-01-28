@@ -16,8 +16,8 @@
             x-on:click="show = !show; (!active && $dispatch('input', name))"
         @endif
         x-bind:class="{
-            'font-bold text-theme bg-white drop-shadow border md:drop-shadow-none md:border-0': active && !show,
-            'font-bold text-theme bg-white': active && show,
+            'font-bold text-theme-dark bg-theme-light drop-shadow border md:drop-shadow-none md:border-0': active && !show,
+            'font-bold text-theme-dark bg-theme-light': active && show,
             'hidden font-medium text-gray-600 hover:bg-gray-100 hover:font-bold md:block': !active && !show,
             'font-medium text-gray-600 hover:bg-gray-100 hover:font-bold': !active && show,
         }"

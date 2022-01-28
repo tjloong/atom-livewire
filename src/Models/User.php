@@ -33,6 +33,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    const ROOT_EMAIL = 'root@jiannius.com';
+
     /**
      * Model boot method
      * 

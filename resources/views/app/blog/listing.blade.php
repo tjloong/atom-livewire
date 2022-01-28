@@ -25,10 +25,12 @@
         <x-slot name="body">
         @foreach ($blogs as $blog)
             <x-table.row>
-                <x-table.cell>
-                    <a href="{{ route('blog.update', [$blog->id]) }}">
-                        {{ $blog->title }}
-                    </a>
+                <x-table.cell class="max-w-xs">
+                    <div class="grid">
+                        <a href="{{ route('blog.update', [$blog->id]) }}" class="truncate">
+                            {{ $blog->title }}
+                        </a>
+                    </div>
                 </x-table.cell>
                 <x-table.cell>
                     <x-badge>{{ $blog->status }}</x-badge>

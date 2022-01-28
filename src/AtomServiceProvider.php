@@ -363,6 +363,10 @@ class AtomServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views/auth' => resource_path('views/vendor/atom/auth'),
         ], 'atom-views-auth');
+
+        $this->publishes([
+            __DIR__.'/../resources/views/web' => resource_path('views/vendor/atom/web'),
+        ], 'atom-views-web');
     }
 
     /**

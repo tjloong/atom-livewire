@@ -30,7 +30,13 @@
         {{ $slot }}
     </a>
 @elseif ($attributes->has('item'))
-    <a {{ $attributes->merge(['class' => 'py-1.5 px-3 text-center text-gray-800 font-medium hover:text-theme']) }}>
+    <a 
+        href="{!! $attributes->get('href') !!}"
+        class="
+            py-1.5 px-3 text-center font-medium
+            {{ $attributes->get('class') ?? 'text-gray-800 hover:text-theme' }}
+        "
+    >
         {{ $slot }}
     </a>
 @else

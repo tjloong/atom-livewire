@@ -8,7 +8,9 @@
     <x-table :total="$users->total()" :links="$users->links()">
         <x-slot name="head">
             <x-table.head sort="name">Name</x-table.head>
-            <x-table.head align="right">Role</x-table.head>
+            @feature('roles')
+                <x-table.head align="right">Role</x-table.head>
+            @endfeature
         </x-slot>
 
         <x-slot name="body">
@@ -23,9 +25,11 @@
                     </div>
                 </x-table.cell>
                 
-                <x-table.cell class="text-right">
-                    {{ $user->role->name ?? null }}
-                </x-table.cell>
+                @feature('roles')
+                    <x-table.cell class="text-right">
+                        {{ $user->role->name ?? null }}
+                    </x-table.cell>
+                @endfeature
             </x-table.row>
         @endforeach
         </x-slot>

@@ -59,6 +59,7 @@ class Listing extends Component
     public function getUsers()
     {
         return User::query()
+            ->where('email', '<>', User::ROOT_EMAIL)
             ->when($this->search, fn($q) => $q->search($this->search))
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate(30);

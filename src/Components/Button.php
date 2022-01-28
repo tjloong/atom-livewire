@@ -51,18 +51,18 @@ class Button extends Component
         else if ($this->size === 'lg') array_push($styles, 'btn-lg');
 
         if ($this->inverted) {
-            if ($this->color === 'theme') array_push($styles, 'border-2 border-transparent hover:bg-theme-light hover:border-bg-theme-light text-theme');
-            else if ($this->color === 'green') array_push($styles, 'border-2 border-transparent hover:bg-green-100 hover:border-bg-green-100 text-green-500');
-            else if ($this->color === 'red') array_push($styles, 'border-2 border-transparent hover:bg-red-100 hover:border-bg-red-100 text-red-500');
-            else if ($this->color === 'blue') array_push($styles, 'border-2 border-transparent hover:bg-blue-100 hover:border-bg-blue-100 text-blue-500');
-            else if ($this->color === 'gray') array_push($styles, 'border-2 border-transparent hover:bg-gray-100 hover:border-bg-gray-100 text-gray-800');
+            if ($this->color === 'theme') array_push($styles, 'btn-inverted border-2 border-transparent hover:bg-theme-light hover:border-bg-theme-light text-theme');
+            else if ($this->color === 'green') array_push($styles, 'btn-inverted border-2 border-transparent hover:bg-green-100 hover:border-bg-green-100 text-green-500');
+            else if ($this->color === 'red') array_push($styles, 'btn-inverted border-2 border-transparent hover:bg-red-100 hover:border-bg-red-100 text-red-500');
+            else if ($this->color === 'blue') array_push($styles, 'btn-inverted border-2 border-transparent hover:bg-blue-100 hover:border-bg-blue-100 text-blue-500');
+            else if ($this->color === 'gray') array_push($styles, 'btn-inverted border-2 border-transparent hover:bg-gray-100 hover:border-bg-gray-100 text-gray-800');
         }
         else if ($this->outlined) {
-            if ($this->color === 'theme') array_push($styles, 'bg-white border-2 border-theme text-theme');
-            else if ($this->color === 'green') array_push($styles, 'bg-white border-2 border-green-500 text-green-500');
-            else if ($this->color === 'red') array_push($styles, 'bg-white border-2 border-red-500 text-red-500');
-            else if ($this->color === 'blue') array_push($styles, 'bg-white border-2 border-blue-500 text-blue-500');
-            else if ($this->color === 'gray') array_push($styles, 'bg-white border-2 border-gray-800 text-gray-800');
+            if ($this->color === 'theme') array_push($styles, 'btn-outlined bg-white border-2 border-theme text-theme');
+            else if ($this->color === 'green') array_push($styles, 'btn-outlined bg-white border-2 border-green-500 text-green-500');
+            else if ($this->color === 'red') array_push($styles, 'btn-outlined bg-white border-2 border-red-500 text-red-500');
+            else if ($this->color === 'blue') array_push($styles, 'btn-outlined bg-white border-2 border-blue-500 text-blue-500');
+            else if ($this->color === 'gray') array_push($styles, 'btn-outlined bg-white border-2 border-gray-800 text-gray-800');
         }
         else {
             if ($this->color === 'theme') array_push($styles, 'bg-theme border-2 border-theme text-white');

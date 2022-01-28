@@ -17,7 +17,7 @@ class Form extends Component
 
     protected function rules()
     {
-        return [
+        $rules = [
             'form.name' => 'required',
             'form.email' => [
                 'required',
@@ -25,8 +25,11 @@ class Form extends Component
                 Rule::unique('users', 'email')->ignore($this->user),
             ],
             'form.password' => 'nullable|min:8',
-            'form.role_id' => 'required',
         ];
+
+        if (enabled_feature('roles')) $rules['form.role_id'] = 'required';
+
+        return $rules;
     }
 
     /**
@@ -40,15 +43,18 @@ class Form extends Component
             'name' => $this->user->name,
             'email' => $this->user->email,
             'password' => null,
-            'role_id' => $this->user->role_id,
         ];
         
         $this->isSelf = $this->user->id === auth()->id();
         $this->sendVerifyEmail = false;
         $this->sendAccountActivationEmail = !$this->user->exists;
-        $this->roles = Role::assignables()->get()->map(
-            fn($role) => ['value' => $role->id, 'label' => $role->name]
-        );
+
+        if (enabled_feature('roles')) {
+            $this->form['role_id'] = $this->user->role_id;
+            $this->roles = Role::assignables()->get()->map(
+                fn($role) => ['value' => $role->id, 'label' => $role->name]
+            );
+        }
     }
 
     /**

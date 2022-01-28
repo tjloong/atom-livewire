@@ -31,7 +31,7 @@ class ViewsCommand extends Command
     public function handle()
     {
         if ($this->option('list')) {
-            $features = array_keys(config('atom.features'));
+            $features = array_merge(array_keys(config('atom.features')), ['web']);
 
             $this->newLine();
             $this->info('Available features:');
@@ -52,9 +52,5 @@ class ViewsCommand extends Command
             ]);
         }
         else $this->error('Please specify a feature to publish');
-
-
-
-        // dd($this->argument('feature'));
     }
 }

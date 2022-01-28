@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Console;
 
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -43,7 +44,7 @@ class FeaturesCommand extends Command
         $this->siteSettingsMigration();
 
         collect(array_keys(config('atom.features')))
-            ->reject(fn($name) => in_array($name, ['auth', 'site_settings']))
+            ->reject(fn($name) => in_array($name, ['auth', 'roles', 'site_settings']))
             ->each(function($name) {
                 $this->info('Configuring ' . Str::title($name) . ' feature...');
                 
@@ -133,10 +134,10 @@ class FeaturesCommand extends Command
             });
         }
 
-        if (!DB::table('users')->where('email', 'root@jiannius.com')->count()) {
+        if (!DB::table('users')->where('email', User::ROOT_EMAIL)->count()) {
             DB::table('users')->insert([
                 'name' => 'Root',
-                'email' => 'root@jiannius.com',
+                'email' => User::ROOT_EMAIL,
                 'password' => bcrypt('password'),
                 'status' => 'active',
                 'role_id' => 1,
@@ -145,6 +146,7 @@ class FeaturesCommand extends Command
                 'updated_at' => now(),
             ]);
         }
+        else DB::table('users')->where('email', User::ROOT_EMAIL)->update(['role_id' => 1]);
     }
 
     /**

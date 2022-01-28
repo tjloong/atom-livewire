@@ -18,21 +18,25 @@
                 <x-input.password wire:model.defer="form.password" error="{{ $errors->first('form.password') }}">
                     Login Password
                 </x-input.password>
-
-                <x-input.field>
-                    <x-slot name="label">My Role</x-slot>
-                    {{ $user->role->name }}
-                </x-input.field>
-            @else
-                <x-input.select
-                    wire:model.defer="form.role_id"
-                    :options="$roles"
-                    :error="$errors->first('form.role_id')"
-                    required
-                >
-                    Role
-                </x-input.select>
             @endif
+
+            @feature('roles')
+                @if ($isSelf)
+                    <x-input.field>
+                        <x-slot name="label">My Role</x-slot>
+                        {{ $user->role->name }}
+                    </x-input.field>
+                @else
+                    <x-input.select
+                        wire:model.defer="form.role_id"
+                        :options="$roles"
+                        :error="$errors->first('form.role_id')"
+                        required
+                    >
+                        Role
+                    </x-input.select>
+                @endif
+            @endfeature
 
             @if ($user->status === 'pending' || !$user->exists)
                 <x-input.checkbox wire:model="sendAccountActivationEmail">

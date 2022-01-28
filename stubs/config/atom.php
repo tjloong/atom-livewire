@@ -14,6 +14,7 @@ return [
         'labels' => [
             'blog-category',
         ],
+        'roles' => true,
         'abilities' => true,
         'pages' => true,
         'teams' => true,

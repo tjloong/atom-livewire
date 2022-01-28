@@ -42,19 +42,19 @@
     </x-page-header>
 
     <div class="grid gap-6 md:grid-cols-4">
-        <x-stat-box title="Total Articles" class="text-theme-dark">
+        <x-stat-box title="Total Articles">
             {{ $sum['blogs'] }}
         </x-stat-box>
 
-        <x-stat-box title="Total Published" class="text-theme-dark">
+        <x-stat-box title="Total Published">
             {{ $sum['published'] }}
         </x-stat-box>
 
-        <x-stat-box title="Total Enquiries" class="text-theme-dark">
+        <x-stat-box title="Total Enquiries">
             {{ $sum['enquiries'] }}
         </x-stat-box>
 
-        <x-stat-box title="Pending Enquiries" class="text-theme-dark">
+        <x-stat-box title="Pending Enquiries">
             {{ $sum['pending'] }}
         </x-stat-box>
     </div>
