@@ -269,10 +269,10 @@ class Uploader extends Component
         if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
             $img = Image::make($path);
 
-            $img->resize(1200, 1200, function ($constraint) {
+            $img->resize(1440, 1440, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
-            })->save(null, 60);
+            })->save(null, 70);
 
             clearstatcache();
 

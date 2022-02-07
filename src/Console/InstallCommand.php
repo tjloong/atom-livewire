@@ -99,7 +99,6 @@ class InstallCommand extends Command
                 'dayjs' => '^1.10.7',
                 'flatpickr' => '^4.6.9',
                 'tailwindcss' => '^2',
-                'tinycolor' => '^0.0.1',
             ] + $packages;
         }, false);
     }

@@ -115,4 +115,26 @@ if (enabled_feature('blogs')) {
 
 Route::get('contact', Jiannius\Atom\Http\Livewire\Web\Contact::class)->name('contact');
 Route::get('contact/thank-you', Jiannius\Atom\Http\Livewire\Web\ContactSent::class)->name('contact.sent');
+
+if (enabled_feature('pages')) {
+    $slugs = [];
+    $dir = resource_path('views/livewire/web/pages');
+    $pages = Jiannius\Atom\Models\Page::all();
+    $views = file_exists($dir)
+        ? Illuminate\Support\Facades\File::allFiles(resource_path('views/livewire/web/pages'))
+        : [];
+    
+    foreach ($views as $view) {
+        array_push($slugs, str_replace('.blade.php', '', $view->getFilename()));
+    }
+
+    foreach ($pages as $page) {
+        array_push($slugs, $page->slug);
+    }
+
+    Route::get('{slug}', \Jiannius\Atom\Http\Livewire\Web\Page::class)
+        ->name('page')
+        ->where(['slug' => '(' . implode('|', $slugs) . ')']);
+}
+
 Route::get('/', Jiannius\Atom\Http\Livewire\Web\Home::class)->name('home');

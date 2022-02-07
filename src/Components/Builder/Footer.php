@@ -35,9 +35,9 @@ class Footer extends Component
             $this->whatsapp = $whatsapp;
         }
         else if ($siteSettings) {
-            $this->company = $contact['company'] ?? SiteSetting::getSetting('company');
-            $this->phone = $contact['phone'] ?? SiteSetting::getSetting('phone');
-            $this->email = $contact['email'] ?? SiteSetting::getSetting('email');
+            $this->company = isset($contact['company']) ? $contact['company'] : SiteSetting::getSetting('company');
+            $this->phone = isset($contact['phone']) ? $contact['phone'] : SiteSetting::getSetting('phone');
+            $this->email = isset($contact['email']) ? $contact['email'] : SiteSetting::getSetting('email');
             $this->socials = $socials;
 
             if (!$this->socials) {
