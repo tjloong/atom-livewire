@@ -499,55 +499,46 @@ class FeaturesCommand extends Command
     }
 
     /**
-     * Toggle messenger feature
+     * Toggle tickets feature
      * 
      * @return void
      */
-    protected function toggleMessengerFeature()
+    protected function toggleTicketsFeature()
     {
         $disable = function() {
-            Schema::dropIfExists('messenger_participants');
-            Schema::dropIfExists('messenger_messages');
-            Schema::dropIfExists('messenger_threads');
+            Schema::dropIfExists('tickets_comments');
+            Schema::dropIfExists('tickets');
         };
 
         // disable
-        if (!enabled_feature('messenger')) {
+        if (!enabled_feature('tickets')) {
             call_user_func($disable);
         }
         else {
             if ($this->option('force')) call_user_func($disable);
 
-            if (!Schema::hasTable('messenger_threads')) {
-                Schema::create('messenger_threads', function ($table) {
+            if (!Schema::hasTable('tickets')) {
+                Schema::create('tickets', function ($table) {
                     $table->id();
+                    $table->string('number')->unique();
                     $table->string('subject')->nullable();
-                    $table->unsignedBigInteger('user_id')->nullable();
-                    $table->boolean('is_archived')->nullable();
+                    $table->longText('description')->nullable();
+                    $table->string('status')->nullable();
                     $table->timestamps();
+                    $table->unsignedBigInteger('created_by')->nullable();
         
-                    $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+                    $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
                 });
         
-                Schema::create('messenger_messages', function($table) {
+                Schema::create('tickets_comments', function($table) {
                     $table->id();
                     $table->text('body')->nullable();
-                    $table->unsignedBigInteger('messenger_thread_id')->nullable();
-                    $table->unsignedBigInteger('user_id')->nullable();
+                    $table->unsignedBigInteger('ticket_id')->nullable();
                     $table->timestamps();
-        
-                    $table->foreign('messenger_thread_id')->references('id')->on('messenger_threads')->onDelete('cascade');
-                    $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
-                });
+                    $table->unsignedBigInteger('created_by')->nullable();
 
-                Schema::create('messenger_participants', function($table) {
-                    $table->id();
-                    $table->unsignedBigInteger('messenger_thread_id')->nullable();
-                    $table->unsignedBigInteger('user_id')->nullable();
-                    $table->timestamps();
-
-                    $table->foreign('messenger_thread_id')->references('id')->on('messenger_threads')->onDelete('cascade');
-                    $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                    $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
+                    $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
                 });
             }
         }

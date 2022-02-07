@@ -16,6 +16,12 @@ if (!config('atom.static_site')) {
         } catch (Exception $e) {
             Route::get('register', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\Register')->name('register');
         }
+        
+        try {
+            Route::get('register/completed', 'App\\Http\\Livewire\\Auth\\RegisterCompleted')->name('register.completed');
+        } catch (Exception $e) {
+            Route::get('register/completed', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\Register')->name('register.completed');            
+        }
     }
     
     if (config('atom.features.auth.forgot-password')) {

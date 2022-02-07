@@ -33,6 +33,17 @@ if (!config('atom.static_site')) {
         }
 
         /**
+         * Tickets
+         */
+        if (enabled_feature('tickets')) {
+            Route::prefix('ticket')->group(function() {
+                Route::get('listing', Jiannius\Atom\Http\Livewire\App\Ticket\Listing::class)->name('ticket.listing');
+                Route::get('create', Jiannius\Atom\Http\Livewire\App\Ticket\Create::class)->name('ticket.create');
+                Route::get('{ticket}', Jiannius\Atom\Http\Livewire\App\Ticket\Update::class)->name('ticket.update');
+            });
+        }
+
+        /**
          * Pages
          */
         if (enabled_feature('pages')) {

@@ -13,6 +13,8 @@ import UploaderImage from './uploader/uploader-image'
 import UploaderLibrary from './uploader/uploader-library'
 import UploaderYoutube from './uploader/uploader-youtube'
 
+import Tooltip from './directives/tooltip'
+
 Alpine.data('button', Button)
 Alpine.data('fullscreenLoader', FullscreenLoader)
 Alpine.data('tagsInput', TagsInput)
@@ -24,3 +26,4 @@ Alpine.data('uploaderImage', UploaderImage)
 Alpine.data('uploaderLibrary', UploaderLibrary)
 Alpine.data('uploaderYoutube', UploaderYoutube)
 
+Alpine.directive('tooltip', Tooltip)

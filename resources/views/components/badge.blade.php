@@ -15,6 +15,7 @@
 
         'admin' => 'yellow',
         'unpaid' => 'yellow',
+        'opened' => 'yellow',
         'queueing' => 'yellow',
         'submitted' => 'yellow',
         'checked-out' => 'yellow',

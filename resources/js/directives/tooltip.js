@@ -5,20 +5,29 @@ export default ('tooltip', (el, { value, expression }) => {
     tooltipEl.innerHTML = expression
 
     el.classList.add('relative')
-    el.after(tooltipEl)
+    el.append(tooltipEl)
 
     // event
-    el.addEventListener('mouseover', () => {
-        tooltipEl.classList.remove('hidden')
+    const showTooltip = () => {
         tooltipEl.classList.add('opacity-0')
+        tooltipEl.classList.remove('hidden')
+        tooltipEl.classList.remove('opacity-80')
 
         floatPositioning(el, tooltipEl, {
             placement: value || 'top',
             offset: 6,
             flip: true,
             shift: { padding: 5 },
-        }).then(() => tooltipEl.classList.remove('opacity-0'))
-    })
+        }).then(() => {
+            tooltipEl.classList.add('opacity-80')
+            tooltipEl.classList.remove('opacity-0')
+        })
+    }
 
-    el.addEventListener('mouseout', () => tooltipEl.classList.add('hidden'))
+    const hideTooltip = () => {
+        tooltipEl.classList.add('hidden')
+    }
+
+    el.addEventListener('mouseover', () => showTooltip())
+    el.addEventListener('mouseout', () => hideTooltip())
 })

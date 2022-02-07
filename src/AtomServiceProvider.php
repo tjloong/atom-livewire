@@ -189,6 +189,12 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.enquiry.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Enquiry\\Listing');
         Livewire::component('atom.enquiry.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Enquiry\\Update');
 
+        // ticket
+        Livewire::component('atom.ticket.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Ticket\\Listing');
+        Livewire::component('atom.ticket.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Ticket\\Create');
+        Livewire::component('atom.ticket.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Ticket\\Update');
+        Livewire::component('atom.ticket.comments', 'Jiannius\\Atom\\Http\\Livewire\\App\\Ticket\\Comments');
+
         // page
         Livewire::component('atom.page.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Listing');
         Livewire::component('atom.page.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Update');
@@ -351,7 +357,7 @@ class AtomServiceProvider extends ServiceProvider
 
         $features = [
             'user', 'role', 'file', 'site-settings', 
-            'label', 'page', 'ability', 'team', 'blog', 'enquiry'
+            'label', 'page', 'ability', 'team', 'blog', 'enquiry', 'ticket',
         ];
 
         foreach ($features as $feature) {

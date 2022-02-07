@@ -27,6 +27,10 @@
                 Pages
             </x-admin-panel>
 
+            <x-admin-panel aside icon="buoy" route="ticket.listing" :active="Str::is('ticket.*', current_route())">
+                Support Tickets
+            </x-admin-panel>
+
             <x-admin-panel aside icon="cog">
                 Settings
 

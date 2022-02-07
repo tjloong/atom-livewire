@@ -43,7 +43,7 @@
                 </x-input.textarea>
 
                 <x-input.field>
-                    <x-input.checkbox wire:model.defer="settings.whatsapp_bubble">
+                    <x-input.checkbox wire:model="settings.whatsapp_bubble">
                         Use Bubble
                     </x-input.checkbox>
                 </x-input.field>

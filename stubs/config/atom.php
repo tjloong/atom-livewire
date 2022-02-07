@@ -20,7 +20,7 @@ return [
         'teams' => true,
         'blogs' => true,
         'enquiries' => true,
-        'messenger' => true,
+        'tickets' => true,
         'site_settings' => 'minimal',   // 'minimal' or 'cms'
     ],
 
