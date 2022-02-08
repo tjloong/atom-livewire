@@ -272,7 +272,7 @@ class Uploader extends Component
             $img->resize(1440, 1440, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
-            })->save(null, 70);
+            })->save();
 
             clearstatcache();
 

@@ -80,7 +80,7 @@
 
 @elseif ($leftImg || $rightImg)
     <div class="{{ $container }}">
-        <div class="relative grid gap-6 md:grid-cols-2">
+        <div class="relative grid md:grid-cols-2">
             @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
 
             <img 

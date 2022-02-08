@@ -1,12 +1,12 @@
 @props(['gridCols' => [
-    2 => 'grid-cols-2',
-    3 => 'grid-cols-3',
-    4 => 'grid-cols-4',
-    5 => 'grid-cols-5',
+    2 => 'lg:grid-cols-2',
+    3 => 'lg:grid-cols-3',
+    4 => 'lg:grid-cols-4',
+    5 => 'lg:grid-cols-5',
 ]])
 
 <div class="max-w-screen-xl mx-auto px-6 py-10">
-    <div class="grid {{ $gridCols[$cols] }}">
+    <div class="grid gap-4 {{ $gridCols[$cols] }}">
         <div class="grid gap-2">
             @if ($attributes->get('logo'))
                 <div class="w-60">
@@ -33,7 +33,7 @@
                 @endif
                 
                 @if (!empty($address))
-                    <address class="{{ $dark ? 'text-gray-100' : '' }}">{{ $address }}</address>
+                    <address class="text-sm {{ $dark ? 'text-gray-100' : '' }}">{{ $address }}</address>
                 @endif
             </div>
         </div>
