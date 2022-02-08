@@ -213,6 +213,7 @@ class FeaturesCommand extends Command
             ['name' => 'do_spaces_bucket', 'value' => null],
             ['name' => 'do_spaces_endpoint', 'value' => null],
             ['name' => 'do_spaces_cdn', 'value' => null],
+            ['name' => 'gmap_api', 'value' => 'AIzaSyBpxS4r78UhtulgcnqZIZ3KEj2cgHF5wy8'],
         ];
 
         if ($config === 'cms') {

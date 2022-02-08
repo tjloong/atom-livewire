@@ -14,6 +14,7 @@
                 <x-sidenav item label>System</x-sidenav>
                 <x-sidenav item href="{{ route('site-settings', ['email']) }}">Email Configurations</x-sidenav>
                 <x-sidenav item href="{{ route('site-settings', ['storage']) }}">Storage</x-sidenav>
+                <x-sidenav item href="{{ route('site-settings', ['gmap']) }}">Google Map</x-sidenav>
             </x-sidenav>
         </div>
 

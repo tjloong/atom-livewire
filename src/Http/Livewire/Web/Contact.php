@@ -10,7 +10,9 @@ use Jiannius\Atom\Notifications\EnquiryNotification;
 
 class Contact extends Component
 {
+    public $contact;
     public $enquiry;
+    public $gmapApi;
 
     protected $rules = [
         'enquiry.name' => 'required',
@@ -29,7 +31,16 @@ class Contact extends Component
     {
         // prevent bot
         if (!request()->query('ref')) return redirect()->route('home');
-        else $this->initEnquiry();
+        else {
+            $this->contact = [
+                'phone' => SiteSetting::getSetting('phone'),
+                'email' => SiteSetting::getSetting('email'),
+                'address' => SiteSetting::getSetting('address'),
+            ];
+
+            $this->gmapApi = SiteSetting::getSetting('gmap_api');
+            $this->initEnquiry();
+        }
     }
 
     /**

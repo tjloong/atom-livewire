@@ -242,6 +242,7 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.site-settings.form.social-media', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\SocialMedia');
         Livewire::component('atom.site-settings.form.storage', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\Storage');
         Livewire::component('atom.site-settings.form.tracking', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\Tracking');
+        Livewire::component('atom.site-settings.form.gmap', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\Gmap');
     }
 
     /**
