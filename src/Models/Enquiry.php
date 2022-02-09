@@ -8,6 +8,10 @@ class Enquiry extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'data' => 'object',
+    ];
+
     /**
      * Scope for fussy search
      * 

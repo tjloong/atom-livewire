@@ -22,6 +22,13 @@ class Contact extends Component
         'enquiry.status' => 'required',
     ];
 
+    protected $messages = [
+        'enquiry.name.required' => 'Your name is required.',
+        'enquiry.phone.required' => 'Phone number is required.',
+        'enquiry.email.required' => 'Email is required.',
+        'enquiry.message.required' => 'Message is required.',
+    ];
+
     /**
      * Mount event
      * 
@@ -58,10 +65,14 @@ class Contact extends Component
      */
     public function save()
     {
+        $this->resetValidation();
+        $this->validate();
+
         $mail = ['to' => null, 'params' => null];
 
         if (enabled_feature('enquiries')) {
-            $this->enquiry->save();
+            if (is_array($this->enquiry)) $this->enquiry = Enquiry::create($this->enquiry);
+            else $this->enquiry->save();
 
             $settings = SiteSetting::email()->get();
             $mail['to'] = $settings->where('name', 'notify_to')->first()->value;

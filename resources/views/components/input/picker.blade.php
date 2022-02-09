@@ -1,6 +1,4 @@
-@props(['uid' => uniqid()])
-
-<div x-data="picker_{{ $uid }}('{{ $attributes->get('getter') }}')" wire:ignore>
+<div x-data="pickerInput('{{ $attributes->get('getter') }}')">
     @isset($trigger)
         <div class="cursor-pointer" x-on:click="open()">
             {{ $trigger }}
@@ -108,9 +106,9 @@
     </div>
 </div>
 
-<script>
+<script wire:ignore>
     document.addEventListener('alpine:init', () => {
-        Alpine.data('picker_{{ $uid }}', (getter) => ({
+        Alpine.data('pickerInput', (getter) => ({
             show: false,
             text: null,
             loading: true,

@@ -492,6 +492,7 @@ class FeaturesCommand extends Command
                     $table->string('email')->nullable();
                     $table->longText('message')->nullable();
                     $table->longText('remark')->nullable();
+                    $table->json('data')->nullable();
                     $table->string('status')->nullable();
                     $table->timestamps();
                 });

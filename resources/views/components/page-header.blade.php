@@ -20,7 +20,7 @@
 
         <div class="self-center grid gap-1">
             @if($attributes->get('title'))
-                <div class="text-gray-800 text-xl font-bold truncate">
+                <div class="text-gray-800 font-bold truncate {{ $attributes->has('small') ? 'text-lg font-semibold' : 'text-xl font-bold' }}">
                     {{ $attributes->get('title') }}
                 </div>
             @endif

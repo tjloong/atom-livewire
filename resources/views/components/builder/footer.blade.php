@@ -2,10 +2,10 @@
     @if ($whatsapp && $whatsapp['number'] && $whatsapp['bubble'])
         <a 
             href="{{ $whatsapp['url'] }}"
-            class="fixed bottom-10 right-10 w-20 h-20 bg-green-500 rounded-full drop-shadow z-10 flex items-center justify-center"
+            class="fixed bottom-8 right-8 w-14 h-14 bg-green-500 rounded-full drop-shadow z-10 flex items-center justify-center"
             target="_blank"
         >
-            <x-icon name="whatsapp" type="logo" size="48px" class="text-white"/>
+            <x-icon name="whatsapp" type="logo" size="32px" class="text-white"/>
         </a>
     @endif
 
@@ -51,9 +51,25 @@
             @endif
         </div>
 
-        <div class="text-sm font-medium {{ $dark ? 'text-gray-200' : 'text-gray-500' }}">
+        <div class="grid gap-1">
             @if ($company)
-                © {{ date('Y') }} {{ $company }}. All rights reserved.
+                <div class="text-sm font-medium {{ $dark ? 'text-gray-200' : 'text-gray-500' }}">
+                    © {{ date('Y') }} {{ $company }}. All rights reserved.
+                </div>
+            @endif
+
+            @if ($links = $attributes->get('links'))
+                <div class="flex items-center gap-2">
+                    @foreach ($links as $i => $link)
+                        @if ($i > 0)
+                            <span class="{{ $dark ? 'text-gray-100' : 'text-gray-500' }}">|</span>
+                        @endif
+
+                        <a href="{{ $link['href'] }}" class="text-xs {{ $dark ? 'text-gray-100' : 'text-gray-500' }}">
+                            {{ $link['label'] }}
+                        </a>
+                    @endforeach
+                </div>
             @endif
         </div>
     </div>
