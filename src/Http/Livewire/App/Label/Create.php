@@ -18,7 +18,7 @@ class Create extends Component
      */
     public function mount()
     {
-        $model = getModelClassName('Label');
+        $model = get_model_class_name('Label');
         $this->label = new $model([
             'type' => $this->type,
         ]);

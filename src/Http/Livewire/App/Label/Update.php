@@ -18,7 +18,7 @@ class Update extends Component
      */
     public function mount($id)
     {
-        $this->label = getModel('Label')->findOrFail($id);
+        $this->label = get_model('Label')->findOrFail($id);
         $this->component = file_exists(resource_path('views/livewire/app/label/' . $this->label->type . '.blade.php'))
             ? 'app.label.' . $this->label->type
             : 'atom.label.form';

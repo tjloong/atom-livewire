@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 if (!config('atom.static_site')) {
+    Route::get('__export/{filename}', [Jiannius\Atom\Http\Controllers\ExportController::class, 'download'])->name('__export');
+
     Route::prefix('app')->middleware('auth')->group(function() {
         Route::get('/', fn() => redirect()->route('dashboard'))->name('app.home');
 

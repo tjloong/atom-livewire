@@ -2,12 +2,24 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
+use Rap2hpoutre\FastExcel\FastExcel;
+
+function export_to_excel($filename, $collection, $iterator = null)
+{
+    $dir = storage_path('export');
+
+    if (!File::exists($dir)) File::makeDirectory($dir);
+
+    (new FastExcel($collection))->export($dir . '/' . $filename, $iterator);
+
+    return redirect()->route('__export', [$filename]);
+}
 
 /**
  * Get model class name
  */
-function getModelClassName($name)
+function get_model_class_name($name)
 {
     return config('atom.models.' . $name) ?? 'Jiannius\\Atom\\Models\\' . $name;
 }
@@ -15,9 +27,9 @@ function getModelClassName($name)
 /**
  * Get model instance
  */
-function getModel($name)
+function get_model($name)
 {
-    return app(getModelClassName($name));
+    return app(get_model_class_name($name));
 }
 
 /**
@@ -77,6 +89,7 @@ function currency($num, $symbol = null, $bracket = true)
  */
 function format_date($date, $format = 'date', $tz = null)
 {
+    if (!$date) return $date;
     if (!$date instanceof Carbon) $date = Carbon::parse($date);
 
     $tz = $tz ?? config('atom.timezone');

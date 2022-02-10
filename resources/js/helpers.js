@@ -55,10 +55,7 @@ global.dd = console.log.bind(console)
 
 // floating element positioning
 global.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => {
-    return ScriptLoader.load([
-        'https://unpkg.com/@floating-ui/core@0.1.2/dist/floating-ui.core.min.js',
-        'https://unpkg.com/@floating-ui/dom@0.1.2/dist/floating-ui.dom.min.js',
-    ]).then(() => {
+    const positioning = () => {
         return new Promise(resolve => setTimeout(() => {
             const { computePosition, flip, shift, offset, autoPlacement } = FloatingUIDOM
 
@@ -78,7 +75,15 @@ global.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => 
 
             resolve()
         }, 50))
-    })
+    }
+
+    if (window.FloatingUIDOM !== undefined) return positioning()
+    else {
+        return ScriptLoader.load([
+            'https://unpkg.com/@floating-ui/core@0.1.2/dist/floating-ui.core.min.js',
+            'https://unpkg.com/@floating-ui/dom@0.1.2/dist/floating-ui.dom.min.js',
+        ]).then(() => (positioning()))
+    }
 }
 
 // toggle element in array

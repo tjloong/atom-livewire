@@ -12,18 +12,22 @@
                 @endif
                 </div>
     
-                <div class="flex flex-wrap items-center space-x-2 my-1">
+                <div class="flex flex-wrap items-center gap-2 my-1">
                 @isset($checked)
                     {{ $checked }}
                 @else
                     @if ($showSearch)
-                        <x-input.search/>
+                        <div class="w-60">
+                            <x-input.search/>
+                        </div>
                     @endif
     
-                    @if ($showExport)
+                    @if ($showExport && $attributes->get('total'))
                         <a
-                            tooltip="Export"
-                            class="text-lg p-1.5 m-1 rounded flex items-center justify-center text-gray-900 hover:bg-gray-100"
+                            x-data
+                            x-tooltip="Export"
+                            wire:click.prevent="export"
+                            class="p-1.5 rounded flex items-center justify-center text-gray-900 hover:bg-gray-100"
                         >
                             <x-icon name="download" size="18px" />
                         </a>
@@ -31,8 +35,9 @@
                         
                     @if ($showFilters)
                         <a
-                            tooltip="Filters"
-                            class="text-lg p-1.5 m-1 rounded flex items-center justify-center text-gray-900 hover:bg-gray-100"
+                            x-data
+                            x-tooltip="Filters"
+                            class="p-1.5 rounded flex items-center justify-center text-gray-900 hover:bg-gray-100"
                         >
                             <x-icon name="slider" size="18px" />
                         </a>

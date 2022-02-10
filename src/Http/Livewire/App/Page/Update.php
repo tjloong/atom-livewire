@@ -16,7 +16,7 @@ class Update extends Component
      */
     public function mount($id)
     {
-        $this->page = getModel('Page')->findOrFail($id);
+        $this->page = get_model('Page')->findOrFail($id);
         $this->getComponent();
     }
     
