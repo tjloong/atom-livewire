@@ -1,6 +1,8 @@
 <?php
 
+use Jiannius\Atom\Models\Page;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 if (!config('atom.static_site')) {
     Route::get('__export/{filename}', [Jiannius\Atom\Http\Controllers\ExportController::class, 'download'])->name('__export');
@@ -121,7 +123,11 @@ Route::get('contact/thank-you', Jiannius\Atom\Http\Livewire\Web\ContactSent::cla
 if (enabled_feature('pages')) {
     $slugs = [];
     $dir = resource_path('views/livewire/web/pages');
-    $pages = Jiannius\Atom\Models\Page::all();
+    
+    $pages = Schema::hasTable((new Page)->getTable())
+        ? Page::all()
+        : [];
+
     $views = file_exists($dir)
         ? Illuminate\Support\Facades\File::allFiles(resource_path('views/livewire/web/pages'))
         : [];
