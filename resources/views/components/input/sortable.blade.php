@@ -1,3 +1,4 @@
+@if (!$attributes->has('script'))
 <{{ $el }}
     x-data="sortableInput(
         @if ($attributes->wire('model')->value()) $wire.get('{{ $attributes->wire('model')->value() }}'),
@@ -10,7 +11,9 @@
 >
     {{ $slot }}
 </{{ $el }}>
+@endif
 
+@if ($attributes->has('script') || !$attributes->has('no-script'))
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('sortableInput', (value = null, config = null) => ({
@@ -52,3 +55,4 @@
         }))
     })
 </script>
+@endif
