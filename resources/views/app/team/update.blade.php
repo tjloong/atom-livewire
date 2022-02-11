@@ -21,7 +21,9 @@
                     Team Members
                 </div>
 
-                <x-input.picker wire:input="assignUser" getter="getAssignableUsers" title="Assign User">
+                <x-input.picker wire:input="assignUser" getter="getAssignableUsers">
+                    <x-slot name="title">Assign User</x-slot>
+                    
                     <x-slot name="trigger">
                         <a class="text-xs flex items-center space-x-1">
                             <x-icon name="plus" size="16px"/> Assign

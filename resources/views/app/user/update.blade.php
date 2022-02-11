@@ -48,7 +48,8 @@
             <x-slot name="header">
                 <div class="flex items-center justify-between">
                     <div>Teams</div>
-                    <x-input.picker wire:input="joinTeam" getter="getTeams" title="Join Team">
+                    <x-input.picker wire:input="joinTeam" getter="getTeams">
+                        <x-slot name="title">Join Team</x-slot>
                         <x-slot name="trigger">
                             <a class="text-xs flex items-center space-x-1">
                                 <x-icon name="plus" size="16px"/> Join

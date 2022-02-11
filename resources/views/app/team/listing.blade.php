@@ -9,18 +9,18 @@
 
     <x-table :total="$teams->total()" :links="$teams->links()">
         <x-slot name="head">
-            <x-table.head sort="name">Name</x-table.head>
-            <x-table.head align="right">Members</x-table.head>
+            <x-table head sort="name">Name</x-table>
+            <x-table head align="right">Members</x-table>
 
             @if ($user)
-                <x-table.head/>
+                <x-table head/>
             @endif
         </x-slot>
 
         <x-slot name="body">
         @foreach ($teams as $team)
-            <x-table.row>
-                <x-table.cell>
+            <x-table row>
+                <x-table cell>
                     @can('team.manage')
                         <a href="{{ route('team.update', [$team->id]) }}">
                             {{ $team->name }}
@@ -30,23 +30,23 @@
                             {{ $team->name }}
                         </div>
                     @endcan
-                </x-table.cell>
+                </x-table>
                 
-                <x-table.cell class="text-right">
+                <x-table cell class="text-right">
                     {{ $team->users_count }} {{ Illuminate\Support\Str::of('member')->plural($team->users_count) }}
-                </x-table.cell>
+                </x-table>
 
                 @if ($user)
-                    <x-table.cell width="50">
+                    <x-table cell width="50">
                         <x-table.button 
                             color="red" 
                             icon="x-circle" 
                             tooltip="Leave Team"
                             wire:click="$emitUp('leaveTeam', {{ $team->id }})"
                         />
-                    </x-table.cell>
+                    </x-table>
                 @endif
-            </x-table.row>
+            </x-table>
         @endforeach
         </x-slot>
     </x-table>

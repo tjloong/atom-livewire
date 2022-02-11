@@ -7,23 +7,23 @@
 
     <x-table :total="$roles->total()" :links="$roles->links()">
         <x-slot name="head">
-            <x-table.head sort="name">Name</x-table.head>
-            <x-table.head align="right">Users</x-table.head>
+            <x-table head sort="name">Name</x-table>
+            <x-table head align="right">Users</x-table>
         </x-slot>
 
         <x-slot name="body">
         @foreach ($roles as $role)
-            <x-table.row>
-                <x-table.cell>
+            <x-table row>
+                <x-table cell>
                     <a href="{{ route('role.update', [$role->id]) }}">
                         {{ $role->name }}
                     </a>
-                </x-table.cell>
+                </x-table>
                 
-                <x-table.cell class="text-right">
+                <x-table cell class="text-right">
                     {{ $role->users_count }} {{ \Illuminate\Support\Str::of('user')->plural($role->users_count) }}
-                </x-table.cell>
-            </x-table.row>
+                </x-table>
+            </x-table>
         @endforeach
         </x-slot>
     </x-table>

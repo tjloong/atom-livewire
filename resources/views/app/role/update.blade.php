@@ -114,7 +114,8 @@
         <x-slot name="header">
             <div class="flex items-center justify-between">
                 <div>Users</div>
-                <x-input.picker wire:input="assignUser" getter="getAssignableUsers" title="Assign User">
+                <x-input.picker wire:input="assignUser" getter="getAssignableUsers">
+                    <x-slot name="title">Assign User</x-slot>
                     <x-slot name="trigger">
                         <a class="text-xs text-theme flex items-center">
                             <x-icon name="plus" size="18px"/> Assign

@@ -6,14 +6,18 @@ use Illuminate\View\Component;
 
 class Picker extends Component
 {
+    public $getter;
+    public $labelKey;
+
     /**
      * Contructor
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct($getter, $labelKey = 'name')
     {
-        //
+        $this->getter = $getter;
+        $this->labelKey = $labelKey;
     }
 
     /**

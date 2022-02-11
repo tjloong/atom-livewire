@@ -99,6 +99,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('icon', 'Jiannius\\Atom\\Components\\Icon');
         Blade::component('alert', 'Jiannius\\Atom\\Components\\Alert');
         Blade::component('badge', 'Jiannius\\Atom\\Components\\Badge');
+        Blade::component('table', 'Jiannius\\Atom\\Components\\Table');
         Blade::component('image', 'Jiannius\\Atom\\Components\\Image');
         Blade::component('modal', 'Jiannius\\Atom\\Components\\Modal');
         Blade::component('loader', 'Jiannius\\Atom\\Components\\Loader');
@@ -115,12 +116,6 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('empty-state', 'Jiannius\\Atom\\Components\\EmptyState');
         Blade::component('page-header', 'Jiannius\\Atom\\Components\\PageHeader');
         Blade::component('fullscreen-loader', 'Jiannius\\Atom\\Components\\FullscreenLoader');
-
-        Blade::component('table', 'Jiannius\\Atom\\Components\\Table\\Index');
-        Blade::component('table.head', 'Jiannius\\Atom\\Components\\Table\\Head');
-        Blade::component('table.row', 'Jiannius\\Atom\\Components\\Table\\Row');
-        Blade::component('table.cell', 'Jiannius\\Atom\\Components\\Table\\Cell');
-        Blade::component('table.button', 'Jiannius\\Atom\\Components\\Table\\Button');
         
         Blade::component('input.seo', 'Jiannius\\Atom\\Components\\Input\\Seo');
         Blade::component('input.text', 'Jiannius\\Atom\\Components\\Input\\Text');

@@ -6,14 +6,16 @@ use Illuminate\View\Component;
 
 class Drawer extends Component
 {
+    public $uid;
+
     /**
      * Contructor
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct($uid = 'drawer')
     {
-        //
+        $this->uid = $uid;
     }
 
     /**

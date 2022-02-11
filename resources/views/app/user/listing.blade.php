@@ -7,30 +7,30 @@
 
     <x-table :total="$users->total()" :links="$users->links()">
         <x-slot name="head">
-            <x-table.head sort="name">Name</x-table.head>
+            <x-table head sort="name">Name</x-table>
             @feature('roles')
-                <x-table.head align="right">Role</x-table.head>
+                <x-table head align="right">Role</x-table>
             @endfeature
         </x-slot>
 
         <x-slot name="body">
         @foreach ($users as $user)
-            <x-table.row>
-                <x-table.cell>
+            <x-table row>
+                <x-table cell>
                     <a href="{{ route('user.update', [$user->id]) }}">
                         {{ $user->name }}
                     </a>
                     <div class="text-xs text-gray-500">
                         {{ $user->email }}
                     </div>
-                </x-table.cell>
+                </x-table>
                 
                 @feature('roles')
-                    <x-table.cell class="text-right">
+                    <x-table cell class="text-right">
                         {{ $user->role->name ?? null }}
-                    </x-table.cell>
+                    </x-table>
                 @endfeature
-            </x-table.row>
+            </x-table>
         @endforeach
         </x-slot>
 
