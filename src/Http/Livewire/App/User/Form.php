@@ -15,9 +15,18 @@ class Form extends Component
     public $sendVerifyEmail;
     public $sendAccountActivationEmail;
 
+    protected $messages = [
+        'form.name.required' => 'Name is required.',
+        'form.email.required' => 'Login email is required.',
+        'form.email.email' => 'Invalid email address.',
+        'form.email.unique' => 'Login email is already taken.',
+        'form.password.min' => 'Password must be at least 8 characters.',
+        'form.role_id.required' => 'Role is required.',
+    ];
+
     protected function rules()
     {
-        $rules = [
+        return [
             'form.name' => 'required',
             'form.email' => [
                 'required',
@@ -25,11 +34,8 @@ class Form extends Component
                 Rule::unique('users', 'email')->ignore($this->user),
             ],
             'form.password' => 'nullable|min:8',
+            'form.role_id' => 'required',
         ];
-
-        if (enabled_feature('roles')) $rules['form.role_id'] = 'required';
-
-        return $rules;
     }
 
     /**
@@ -43,6 +49,7 @@ class Form extends Component
             'name' => $this->user->name,
             'email' => $this->user->email,
             'password' => null,
+            'role_id' => $this->default_role->id,
         ];
         
         $this->isSelf = $this->user->id === auth()->id();
@@ -58,23 +65,20 @@ class Form extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Get default role property
      */
-    public function render()
+    public function getDefaultRoleProperty()
     {
-        return view('atom::app.user.form');
+        return Role::where('slug', 'administrator')->where('is_system', true)->first();
     }
 
     /**
-     * Save user
-     * 
-     * @return void
+     * Save
      */
     public function save()
     {
-        $this->validateinputs();
+        $this->resetValidation();
+        $this->validate();
 
         $verify = $this->user->exists 
             && enabled_feature('auth.verify')
@@ -104,26 +108,10 @@ class Form extends Component
     }
 
     /**
-     * Validate inputs
-     * 
-     * @return void
+     * Render
      */
-    private function validateinputs()
+    public function render()
     {
-        $this->resetValidation();
-
-        $validator = validator(['form' => $this->form], $this->rules(), [
-            'form.name.required' => 'Name is required.',
-            'form.email.required' => 'Login email is required.',
-            'form.email.email' => 'Invalid email address.',
-            'form.email.unique' => 'Login email is already taken.',
-            'form.password.min' => 'Password must be at least 8 characters.',
-            'form.role_id.required' => 'Role is required.',
-        ]);
-
-        if ($validator->fails()) {
-            $this->dispatchBrowserEvent('toast', 'formError');
-            $validator->validate();
-        }
+        return view('atom::app.user.form');
     }
 }

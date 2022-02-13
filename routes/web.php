@@ -120,7 +120,7 @@ if (enabled_feature('blogs')) {
 Route::get('contact', Jiannius\Atom\Http\Livewire\Web\Contact::class)->name('contact');
 Route::get('contact/thank-you', Jiannius\Atom\Http\Livewire\Web\ContactSent::class)->name('contact.sent');
 
-if (enabled_feature('pages')) {
+if (enabled_feature('pages') && !app()->runningInConsole()) {
     $slugs = [];
     $dir = resource_path('views/livewire/web/pages');
     
