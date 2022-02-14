@@ -3,9 +3,12 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Jiannius\Atom\Traits\HasFilters;
 
 class Enquiry extends Model
 {
+    use HasFilters;
+
     protected $guarded = [];
 
     protected $casts = [

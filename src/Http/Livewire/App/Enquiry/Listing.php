@@ -10,16 +10,32 @@ class Listing extends Component
 {
     use WithPagination;
 
-    public $search;
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
+    public $filters = ['search' => ''];
 
     protected $queryString = [
-        'search', 
+        'filters', 
         'sortBy' => ['except' => 'created_at'],
         'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
     ];
+
+    /**
+     * Get enquiries property
+     */
+    public function getEnquiriesProperty()
+    {
+        return Enquiry::filter($this->filters)->orderBy($this->sortBy, $this->sortOrder);
+    }
+
+    /**
+     * Updated filters
+     */
+    public function updatedFilters()
+    {
+        $this->resetPage();
+    }
 
     /**
      * Rendering livewire view
@@ -29,20 +45,25 @@ class Listing extends Component
     public function render()
     {
         return view('atom::app.enquiry.listing', [
-            'enquiries' => Enquiry::query()
-                ->when($this->search, fn($q) => $q->search($this->search))
-                ->orderBy($this->sortBy, $this->sortOrder)
-                ->paginate(30),
+            'enquiries' => $this->enquiries->paginate(30),
         ]);
     }
 
     /**
-     * Updating search property
-     * 
-     * @return void
+     * Export
      */
-    public function updatingSearch()
+    public function export()
     {
-        $this->resetPage();
+        $filename = 'enquiries-' . rand(1000, 9999) . '.xlsx';
+        $enquiries = $this->enquiries->get();
+
+        return export_to_excel($filename, $enquiries, fn($enquiry) => [
+            'Date' => $enquiry->created_at->toDatetimeString(),
+            'Name' => $enquiry->name,
+            'Phone' => $enquiry->phone,
+            'Email' => $enquiry->email,
+            'Message' => $enquiry->message,
+            'Status' => $enquiry->status,
+        ]);
     }
 }

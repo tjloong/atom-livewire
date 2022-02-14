@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Enquiries"/>
 
-    <x-table :total="$enquiries->total()" :links="$enquiries->links()">
+    <x-table :total="$enquiries->total()" :links="$enquiries->links()" export>
         <x-slot name="head">
             <x-table head sort="created_at">Date</x-table>
             <x-table head sort="name">Name</x-table>
