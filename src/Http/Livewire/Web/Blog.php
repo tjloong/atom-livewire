@@ -11,10 +11,10 @@ class Blog extends Component
 {
     use WithPagination;
 
-    public $blog;
-    public $label;
-    public $recents;
+    public $slug;
     public $search;
+    public $filters;
+    public $isPreview;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -25,57 +25,90 @@ class Blog extends Component
      * 
      * @return void
      */
-    public function mount($slug = null)
+    public function mount()
     {
-        $preview = auth()->user() && request()->query('preview');
-
-        if ($slug) {
-            $this->label = Label::where('type', 'blog-category')->where('slug', $slug)->first();
-
-            if (!$this->label) {
-                $this->blog = BlogModel::query()
-                    ->when(!$preview, fn($q) => $q->status('published'))
-                    ->where('slug', $slug)
-                    ->firstOrFail();
-    
-                $this->recents = BlogModel::query()
-                    ->status('published')
-                    ->where('slug', '<>', $slug)
-                    ->latest()
-                    ->take(8)
-                    ->get();
-            }
-        }
+        $this->isPreview = auth()->user() && request()->query('preview');
+        $this->filters = array_filter([optional(Label::where('slug', $this->slug)->first())->slug]);
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Get blog property
      */
-    public function render()
+    public function getBlogProperty()
     {
-        $labels = Label::query()
+        if ($this->filters) return;
+
+        return BlogModel::query()
+            ->when(!$this->isPreview, fn($q) => $q->status('published'))
+            ->where('slug', $this->slug)
+            ->first();
+    }
+
+    /**
+     * Get blogs property
+     */
+    public function getBlogsProperty()
+    {
+        if ($this->blog) return;
+        
+        return BlogModel::query()
+            ->status('published')
+            ->when($this->search, fn($q) => $q->search($this->search))
+            ->when($this->filters, fn($q) => $q
+                ->whereHas('labels', fn($q) => $q->whereIn('labels.slug', $this->filters))
+            )
+            ->paginate(30);
+    }
+
+    /**
+     * Get recents property
+     */
+    public function getRecentsProperty()
+    {
+        return BlogModel::query()
+            ->status('published')
+            ->where('slug', '<>', $this->slug)
+            ->latest()
+            ->take(8)
+            ->get();
+    }
+
+    /**
+     * Get labels property
+     */
+    public function getLabelsProperty()
+    {
+        return Label::query()
             ->where('type', 'blog-category')
-            ->when($this->label, fn($q) => $q->where('id', '<>', $this->label->id))
             ->orderBy('seq')
             ->orderBy('name')
             ->get();
+    }
 
-        $blogs = $this->blog
-            ? null
-            : BlogModel::query()
-                ->status('published')
-                ->when($this->search, fn($q) => $q->search($this->search))
-                ->when($this->label, fn($q) => $q
-                    ->whereHas('labels', fn($q) => $q->where('labels.id', $this->label->id))
-                )
-                ->paginate(30);
+    /**
+     * Get show sidebar property
+     */
+    public function getShowSidebarProperty()
+    {
+        return ($this->recents && $this->recents->count()) 
+            || $this->filters 
+            || $this->labels->count();
+    }
 
-        return view('atom::web.blog', [
-            'labels' => $labels,
-            'blogs' => $blogs,
-            'sidebar' => ($this->recents && $this->recents->count()) || $this->label || $labels->count(),
-        ])->layout('layouts.web');
+    /**
+     * Toggle filter
+     */
+    public function toggleFilter($slug)
+    {
+        if (in_array($slug, $this->filters)) $this->filters = collect($this->filters)->reject(fn($val) => $val === $slug)->values()->all();
+        else array_push($this->filters, $slug);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::web.blog')->layout('layouts.web');
     }
 }

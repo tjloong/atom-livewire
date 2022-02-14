@@ -36,19 +36,7 @@ class Settings extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.blog.form.settings');
-    }
-
-    /**
-     * Update published date when status change
-     * 
-     * @return void
+     * Updated status
      */
     public function updatedStatus()
     {
@@ -57,16 +45,25 @@ class Settings extends Component
     }
 
     /**
-     * Handle save
-     * 
-     * @return void
+     * Save
      */
     public function save()
     {
+        $this->resetValidation();
+        $this->validate();
+
         $this->blog->cover_id = $this->blog->cover_id ?: null;
         $this->blog->save();
         $this->blog->labels()->sync($this->labels);
 
         $this->emitUp('saved');
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.blog.form.settings');
     }
 }

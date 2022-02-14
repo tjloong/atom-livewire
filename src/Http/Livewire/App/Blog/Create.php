@@ -13,9 +13,7 @@ class Create extends Component
     protected $listeners = ['saved'];
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
@@ -24,23 +22,19 @@ class Create extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.blog.create');
-    }
-
-    /**
-     * Saved action
-     * 
-     * @return void
+     * Save
      */
     public function saved($id)
     {
         session()->flash('flash', 'Blog created::success');
         return redirect()->route('blog.update', [$id, 'back' => $this->back]);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.blog.create');
     }
 }

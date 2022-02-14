@@ -4,7 +4,7 @@
             @if ($slot->isNotEmpty())
                 {{ $slot }}
             @else
-                <x-button icon="share-alt" inverted>Share</x-button>
+                <x-button icon="share-alt">Share</x-button>
             @endif
         </x-slot>
     

@@ -20,9 +20,14 @@ if (!config('atom.static_site')) {
          */
         if (enabled_feature('blogs')) {
             Route::prefix('blog')->group(function () {
-                Route::get('listing', Jiannius\Atom\Http\Livewire\App\Blog\Listing::class)->name('blog.listing');
-                Route::get('create', Jiannius\Atom\Http\Livewire\App\Blog\Create::class)->name('blog.create');
-                Route::get('{blog}/{tab?}', Jiannius\Atom\Http\Livewire\App\Blog\Update::class)->name('blog.update');
+                try { Route::get('listing', App\Http\Livewire\App\Blog\Listing::class)->name('blog.listing'); }
+                catch (Exception $e) { Route::get('listing', Jiannius\Atom\Http\Livewire\App\Blog\Listing::class)->name('blog.listing'); }
+
+                try { Route::get('create', App\Http\Livewire\App\Blog\Create::class)->name('blog.create'); }
+                catch (Exception $e) { Route::get('create', Jiannius\Atom\Http\Livewire\App\Blog\Create::class)->name('blog.create'); }
+                
+                try { Route::get('{blog}/{tab?}', App\Http\Livewire\App\Blog\Update::class)->name('blog.update'); }
+                catch (Exception $e) { Route::get('{blog}/{tab?}', Jiannius\Atom\Http\Livewire\App\Blog\Update::class)->name('blog.update'); }
             });
         }
 
@@ -114,7 +119,8 @@ if (!config('atom.static_site')) {
 }
 
 if (enabled_feature('blogs')) {
-    Route::get('blogs/{slug?}', Jiannius\Atom\Http\Livewire\Web\Blog::class)->name('blogs');
+    try { Route::get('blogs/{slug?}', App\Http\Livewire\Web\Blog::class)->name('blogs'); }
+    catch (Exception $e) { Route::get('blogs/{slug?}', Jiannius\Atom\Http\Livewire\Web\Blog::class)->name('blogs'); }
 }
 
 Route::get('contact', Jiannius\Atom\Http\Livewire\Web\Contact::class)->name('contact');

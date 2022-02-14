@@ -18,7 +18,7 @@
 
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
-            <x-sidenav wire:model="tab">
+            <x-sidenav>
                 <x-sidenav item href="{{ route('blog.update', [$blog->id, 'content']) }}">Blog Content</x-sidenav>
                 <x-sidenav item href="{{ route('blog.update', [$blog->id, 'settings']) }}">Settings</x-sidenav>
                 <x-sidenav item href="{{ route('blog.update', [$blog->id, 'seo']) }}">SEO</x-sidenav>
