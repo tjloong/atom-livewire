@@ -18,8 +18,6 @@ class Share extends Component
      */
     public function __construct($sites = null)
     {
-        $this->uid = uniqid();
-
         // refer https://ellisonleao.github.io/sharer.js for available sites
         $this->sites = $sites ?? [
             'facebook',

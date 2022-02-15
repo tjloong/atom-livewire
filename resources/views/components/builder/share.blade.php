@@ -1,4 +1,4 @@
-<div x-data="share_{{ $uid }}" class="inline-block">
+<div x-data="share" class="inline-block">
     <x-dropdown right="{{ $attributes->get('right') }}">
         <x-slot name="trigger">
             @if ($slot->isNotEmpty())
@@ -26,7 +26,7 @@
 
     <script>
         document.addEventListener('alpine:init', () => {
-            Alpine.data('share_{{ $uid }}', () => ({
+            Alpine.data('share', () => ({
                 init () {
                     ScriptLoader.load('https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js').then(() => {
                         Sharer.init()

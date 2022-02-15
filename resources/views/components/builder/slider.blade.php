@@ -1,18 +1,23 @@
 @if ($attributes->has('slide'))
     <div 
-        class="swiper-slide relative {{ $attributes->get('href') ? 'cursor-pointer' : '' }}"
+        class="swiper-slide relative w-full h-full {{ $attributes->get('href') ? 'cursor-pointer' : '' }}"
         @if ($attributes->get('href'))
             x-data
             x-on:click="window.open('{{ $attributes->get('href') }}', '_blank')"
         @endif
     >
-        @if ($attributes->get('image'))
+        @if ($image['url'])
             <img
-                src="{{ $attributes->get('image') }}"
-                width="1200"
-                height="500"
-                class="{{ $attributes->get('class') ?? 'w-full h-full object-cover' }}"
+                src="{{ $image['url'] }}"
+                width="{{ $image['width'] ?? '1200' }}"
+                height="{{ $image['height'] ?? '500' }}"
+                class="{{ $attributes->get('class') }}"
                 alt="{{ $attributes->get('alt') }}"
+                style="
+                    width: {{ isset($image['width']) ? ($image['width'] . 'px') : '100%' }};
+                    height: {{ isset($image['height']) ? ($image['height'] . 'px') : '100%' }};
+                    object-fit: {{ $image['fit'] }};
+                "
             >
         @endif
 
@@ -48,27 +53,29 @@
     </div>
 
 @elseif ($attributes->has('swiper-prev'))
-    <div id="swiper-prev" class="hidden absolute top-0 bottom-0 left-0 pl-4 z-10 flex items-center justify-center">
-        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center drop-shadow">
-            <x-icon name="chevron-left" size="32px"/>
+    <div id="swiper-prev" class="hidden absolute top-0 bottom-0 left-0 z-10 flex items-center justify-center md:pl-3">
+        <div class="bg-gray-100 flex items-center justify-center drop-shadow rounded-r-md py-1 md:rounded-full md:px-1">
+            <x-icon name="chevron-left" size="32px" class="hidden md:block"/>
+            <x-icon name="chevron-left" size="20px" class="md:hidden"/>
         </div>
     </div>
 
 @elseif ($attributes->has('swiper-next'))
-    <div id="swiper-next" class="hidden absolute top-0 bottom-0 right-0 pr-4 z-10 flex items-center justify-center">
-        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center drop-shadow">
-            <x-icon name="chevron-right" size="32px"/>
+    <div id="swiper-next" class="hidden absolute top-0 bottom-0 right-0 z-10 flex items-center justify-center md:pr-3">
+        <div class="bg-gray-100 flex items-center justify-center drop-shadow rounded-l-md py-1 md:rounded-full md:px-1">
+            <x-icon name="chevron-right" size="32px" class="hidden md:block"/>
+            <x-icon name="chevron-right" size="20px" class="md:hidden"/>
         </div>
     </div>
 
-@elseif (in_array($thumbsPosition, ['top', 'bottom']))
+@elseif (in_array($thumbs['position'], ['top', 'bottom']))
     <style>
         #swiper-thumbs .swiper-slide { opacity: 0.6; }
         #swiper-thumbs .swiper-slide-thumb-active { opacity: 1; }
     </style>
 
-    <div x-data="slider(@js($attributes->get('config')), @js($attributes->get('thumbs-config')))" class="flex flex-col gap-4 w-full h-full">
-        <div class="flex-shrink-0 hidden md:block {{ $thumbsPosition === 'bottom' ? 'order-last' : '' }}" style="height: 20%">
+    <div x-data="slider(@js($config), @js($thumbs['config']))" class="flex flex-col gap-2 w-full h-full {{ $attributes->get('class') }}">
+        <div class="flex-shrink-0 {{ $thumbs['position'] === 'bottom' ? 'order-last' : '' }}" style="height: 20%">
             <div id="swiper-thumbs" class="swiper w-full h-full">
                 <div class="swiper-wrapper">{{ $slot }}</div>
             </div>
@@ -85,17 +92,23 @@
         </div>
     </div>
 
-@elseif (in_array($thumbsPosition, ['left', 'right']))
+@elseif (in_array($thumbs['position'], ['left', 'right']))
     <style>
         #swiper-thumbs .swiper-slide { opacity: 0.6; }
         #swiper-thumbs .swiper-slide-thumb-active { opacity: 1; }
     </style>
 
-    <div x-data="slider(
-        @js($attributes->get('config')), 
-        @js(array_merge(['direction' => 'vertical'], $attributes->get('thumbs-config') ?? []))
-    )" class="w-full h-full flex gap-4">
-        <div class="flex-shrink-0 hidden md:block {{ $thumbsPosition === 'right' ? 'order-last' : '' }}" style="width: 20%">
+    <div 
+        x-data="slider(@js($config), @js(array_merge(
+            ['direction' => 'vertical'], 
+            $thumbs['config'] ?? []
+        )))"
+        class="w-full h-full flex gap-2 {{ $attributes->get('class') }}"
+        @if ($thumbs['height'])
+            style="height: {{ $thumbs['height'] }}px;"
+        @endif
+    >
+        <div class="flex-shrink-0 hidden md:block {{ $thumbs['position'] === 'right' ? 'order-last' : '' }}" style="width: 20%">
             <div id="swiper-thumbs" class="swiper w-full h-full">
                 <div class="swiper-wrapper">{{ $slot }}</div>
             </div>
@@ -113,7 +126,7 @@
     </div>
 
 @else
-    <div x-data="slider(@js($attributes->get('config')))" class="w-full h-full">
+    <div x-data="slider(@js($config))" class="{{ $attributes->get('class') }}">
         <div id="swiper-slider" class="swiper w-full h-full">
             <div class="swiper-wrapper">{{ $slot }}</div>
             <div class="swiper-pagination hidden"></div>
@@ -179,7 +192,7 @@
                     if (thumbs) {
                         this.swiperThumbsConfig = {
                             enabled: slides.length > 1,
-                            spaceBetween: 16,
+                            spaceBetween: 8,
                             slidesPerView: 5,
                             ...thumbsConfig,
                         }
