@@ -21,7 +21,7 @@
             @livewire('atom.file.uploader', [
                 'uid' => 'richtext-uploader',
                 'title' => 'Insert Media',
-                'accept' => ['image', 'video', 'youtube'],
+                'accept' => ['image', 'video', 'audio', 'youtube'],
                 'sources' => ['device', 'image', 'youtube', 'library'],
             ], key(uniqid()))
         </div>
@@ -80,6 +80,13 @@
                                 }
                                 else if (file.is_video) {
                                     const html = `<video controls class="w-full min-h-[300px]"><source src="${file.url}" type="${file.mime}"></video>`
+                                    const viewFragment = editor.data.processor.toView(html)
+                                    const modelFragment = editor.data.toModel(viewFragment)
+
+                                    editor.model.insertContent(modelFragment)
+                                }
+                                else if (file.is_audio) {
+                                    const html = `<audio controls class="w-full"><source src="${file.url}" type="${file.mime}"></audio>`
                                     const viewFragment = editor.data.processor.toView(html)
                                     const modelFragment = editor.data.toModel(viewFragment)
 

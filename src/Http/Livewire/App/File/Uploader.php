@@ -35,7 +35,7 @@ class Uploader extends Component
         $title = 'File Manager',
         $multiple = false,
         $sources = ['device', 'image', 'youtube', 'library'],
-        $accept = ['image', 'video', 'youtube', 'file']
+        $accept = ['image', 'video', 'audio', 'youtube', 'file']
     ) {
         $this->uid = $uid;
         $this->title = $title;
@@ -178,14 +178,7 @@ class Uploader extends Component
     public function getFiles($page = 1, $search = null)
     {
         return File::query()
-            ->where(function($q) {
-                $q->when(in_array('image', $this->accept), fn($q) => $q->where('mime', 'like', 'image/%'))
-                ->when(in_array('video', $this->accept), fn($q) => $q->orWhere('mime', 'like', 'video/%'))
-                ->when(in_array('youtube', $this->accept), fn($q) => $q->orWhere('mime', 'youtube'))
-                ->when(in_array('file', $this->accept), fn($q) => $q->orWhere(
-                    fn($q) => $q->where('mime', 'not like', 'image/%')->where('mime', 'not like', 'video/%')->where('mime', '<>', 'youtube')
-                ));
-            })
+            ->type($this->accept)
             ->when($search, fn($q) => $q->search($search))
             ->orderBy('created_at', 'desc')
             ->paginate(50, ['*'], 'page', $page)
@@ -223,6 +216,7 @@ class Uploader extends Component
 
         if (in_array('image', $accept)) $types = array_merge($types, ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']);
         if (in_array('video', $accept)) $types = array_merge($types, ['video/x-flv', 'video/mp4']);
+        if (in_array('audio', $accept)) $types = array_merge($types, ['audio/mpeg', 'audio/ogg', 'audio/wav']);
         if (in_array('file', $accept)) {
             $types = array_merge($types, [
                 'application/pdf',

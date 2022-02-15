@@ -25,6 +25,7 @@ class File extends Model
         'type',
         'is_image',
         'is_video',
+        'is_audio',
     ];
 
     /**
@@ -77,15 +78,25 @@ class File extends Model
      * @param string $type
      * @return Builder
      */
-    public function scopeType($query, $type)
+    public function scopeType($query, $types)
     {
-        if ($type === 'all') return $query;
-        if ($type === 'image') return $query->where('mime', 'like', 'image/%');
-        if ($type === 'video') return $query->where('mime', 'like', 'video/%');
-        if ($type === 'youtube') return $query->where('mime', 'youtube');
-        if ($type === 'file') {
-            return $query->where(function ($q) {
-                $q->where('mime', 'not like', 'image/%')->where('mime', '<>', 'youtube');
+        if ($types === 'all') return $query;
+        else {
+            return $query->where(function($q) use ($types) {
+                foreach ((array)$types as $type) {
+                    if ($type === 'image') $q->orWhere('mime', 'like', 'image/%');
+                    if ($type === 'video') $q->orWhere('mime', 'like', 'video/%');
+                    if ($type === 'audio') $q->orWhere('mime', 'like', 'audio/%');
+                    if ($type === 'youtube') $q->orWhere('mime', 'youtube');
+                    if ($type === 'file') {
+                        $q->orWhere(fn($q) => $q
+                            ->where('mime', 'not like', 'image/%')
+                            ->where('mime', 'not lime', 'video/%')
+                            ->where('mime', 'not lime', 'audio/%')
+                            ->where('mime', '<>', 'youtube')
+                        );
+                    }
+                }
             });
         }
     }
@@ -108,6 +119,16 @@ class File extends Model
     public function getIsVideoAttribute()
     {
         return Str::startsWith($this->mime, 'video/');
+    }
+
+    /**
+     * Get is audio attribute
+     * 
+     * @return boolean
+     */
+    public function getIsAudioAttribute()
+    {
+        return Str::startsWith($this->mime, 'audio/');
     }
 
     /**

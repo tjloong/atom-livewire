@@ -15,11 +15,13 @@
     ])
 
     <div class="flex flex-wrap items-center justify-between mb-6">
-        <x-tabs wire:model="filterType" wire:loading.class="disabled">
+        <x-tabs wire:model="filters.type" wire:loading.class="disabled">
             <x-tabs item>All</x-tabs>
             <x-tabs item>Image</x-tabs>
-            <x-tabs item>Youtube</x-tabs>
+            <x-tabs item>Video</x-tabs>
+            <x-tabs item>Audio</x-tabs>
             <x-tabs item>File</x-tabs>
+            <x-tabs item>Youtube</x-tabs>
         </x-tabs>
 
         <div x-show="selected.length" class="flex flex-wrap items-center space-x-2">
@@ -51,65 +53,61 @@
 
     <div class="grid grid-cols-2 gap-8 mb-8 md:grid-cols-6 lg:grid-cols-8">
         @forelse ($files as $file)
-            <x-drawer title="File Details" x-on:close.window="close()">
-                <x-slot name="trigger">
-                    <figure class="relative rounded-md shadow bg-gray-200 pt-[100%] overflow-hidden mb-2" data-file-id="{{ $file->id }}">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            @if ($file->type === 'youtube')
-                                <img src="{{ $file->youtube_thumbnail }}" class="h-full w-full object-cover">
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="w-4 h-4 bg-white"></div>
+            <div x-on:click="$wire.closeFile().then(() => $wire.openFile({{ $file->id }}))" class="grid gap-1 cursor-pointer">
+                <figure class="relative rounded-md shadow bg-gray-200 pt-[100%] overflow-hidden mb-2" data-file-id="{{ $file->id }}">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        @if ($file->type === 'youtube')
+                            <img src="{{ $file->youtube_thumbnail }}" class="h-full w-full object-cover">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-4 h-4 bg-white"></div>
+                            </div>
+                            <div class="absolute inset-0 flex items-center justify-center text-red-500">
+                                <x-icon name="youtube" type="logo" size="48px" />
+                            </div>
+                        @elseif ($file->is_video)
+                            <video class="w-full h-full object-cover">
+                                <source src="{{ $file->url }}"/>
+                            </video>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
+                                    <x-icon name="play" size="28px"/>
                                 </div>
-                                <div class="absolute inset-0 flex items-center justify-center text-red-500">
-                                    <x-icon name="youtube" type="logo" size="48px" />
-                                </div>
-                            @elseif ($file->is_video)
-                                <video class="w-full h-full object-cover">
-                                    <source src="{{ $file->url }}"/>
-                                </video>
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
-                                        <x-icon name="play" size="28px"/>
-                                    </div>
-                                </div>
-                            @elseif ($file->is_image)
-                                <img src="{{ $file->url }}" class="h-full w-full object-cover">
-                            @elseif ($file->type === 'pdf')
-                                <x-icon name="file-pdf" type="solid" size="48px"/>
-                            @else
-                                <x-icon name="file" size="48px"/>
-                            @endif
-                        </div>
-
-                        <div
-                            class="absolute inset-0 bg-black opacity-50"
-                            x-show="isSelected({{ $file->id }})"
+                            </div>
+                        @elseif ($file->is_audio)
+                            <x-icon name="music" size="48px"/>
+                        @elseif ($file->is_image)
+                            <img src="{{ $file->url }}" class="h-full w-full object-cover">
+                        @elseif ($file->type === 'pdf')
+                            <x-icon name="file-pdf" type="solid" size="48px"/>
+                        @else
+                            <x-icon name="file" size="48px"/>
+                        @endif
+                    </div>
+    
+                    <div
+                        class="absolute inset-0 bg-black opacity-50"
+                        x-show="isSelected({{ $file->id }})"
+                        x-on:click.stop="select({{ $file->id }})"
+                    ></div>
+    
+                    <div class="absolute top-0 left-0 right-0 p-2 bg-gradient-to-b from-gray-500 to-transparent">
+                        <a 
+                            x-bind:class="isSelected({{ $file->id }}) ? 'text-green-500' : 'text-white'" 
                             x-on:click.stop="select({{ $file->id }})"
-                        ></div>
-
-                        <div class="absolute top-0 left-0 right-0 p-2 bg-gradient-to-b from-gray-500 to-transparent">
-                            <a 
-                                x-bind:class="isSelected({{ $file->id }}) ? 'text-green-500' : 'text-white'" 
-                                x-on:click.stop="select({{ $file->id }})"
-                            >
-                                <x-icon name="check-circle" type="solid"/>
-                            </a>
-                        </div>
-                    </figure>
-                    
-                    <div class="font-semibold truncate">
-                        {{ $file->name }}
+                        >
+                            <x-icon name="check-circle" type="solid"/>
+                        </a>
                     </div>
-                    
-                    <div class="text-xs font-semibold text-gray-500 capitalize mb-1.5">
-                        {{ $file->type }}
-                    </div>
-                </x-slot>
+                </figure>
 
-                <div>
-                    @livewire('atom.file.form', ['file' => $file], key($file->id))
+                <div class="font-semibold truncate">
+                    {{ $file->name }}
                 </div>
-            </x-drawer>
+                
+                <div class="text-xs font-semibold text-gray-500 capitalize mb-1.5">
+                    {{ $file->type }}
+                </div>
+            </div>
         @empty
             <div class="col-span-8 bg-white rounded-md shadow py-6">
                 <x-empty-state title="No Files"/>
@@ -118,6 +116,13 @@
     </div>
     
     {{ $files->links() }}
+
+    <x-drawer>
+        <x-slot name="title">File Details</x-slot>
+        @if ($openedFile)
+            @livewire('atom.file.form', ['file' => $openedFile], key('file-form'))
+        @endif
+    </x-drawer>
 
     <script>
         document.addEventListener('alpine:init', () => {

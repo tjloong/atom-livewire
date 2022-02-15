@@ -25,19 +25,7 @@ class Form extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.file.form');
-    }
-
-    /**
-     * Save file
-     * 
-     * @return void
+     * Updated file
      */
     public function updatedFile()
     {
@@ -46,14 +34,22 @@ class Form extends Component
     }
 
     /**
-     * Delete file
-     * 
-     * @return void
+     * Delete
      */
     public function delete()
     {
         $this->file->delete();
         $this->dispatchBrowserEvent('toast', ['message' => 'File Deleted']);
         $this->emitUp('deleted');
+    }
+
+    /**
+     * Rendering livewire view
+     * 
+     * @return Response
+     */
+    public function render()
+    {
+        return view('atom::app.file.form');
     }
 }

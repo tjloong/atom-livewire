@@ -116,6 +116,12 @@ ClassicEditor.defaultConfig = {
                 classes: true,
                 styles: true,
             },
+            {
+                name: 'audio',
+                attributes: true,
+                classes: true,
+                styles: true,
+            },
         ],
     },
 };

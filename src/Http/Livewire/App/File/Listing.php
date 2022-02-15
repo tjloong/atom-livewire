@@ -10,15 +10,17 @@ class Listing extends Component
 {
     use WithPagination;
 
-    public $search;
+    public $openedFile;
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
-    public $filterType = 'all';
+    public $filters = [
+        'type' => 'all',
+        'search' => '',
+    ];
 
     protected $queryString = [
-        'search' => ['except' => ''], 
+        'filters',
         'page' => ['except' => 1],
-        'filterType' => ['except' => 'all'],
     ];
 
     protected $listeners = [
@@ -29,8 +31,6 @@ class Listing extends Component
 
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
@@ -38,42 +38,56 @@ class Listing extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Get files property
      */
-    public function render()
+    public function getFilesProperty()
     {
-        return view('atom::app.file.listing', [
-            'files' => File::query()
-                ->when($this->search, fn($q) => $q->search($this->search))
-                ->filter([
-                    'type' => $this->filterType,
-                ])
-                ->orderBy($this->sortBy, $this->sortOrder)
-                ->paginate(48),
-        ]);
+        return File::query()->filter($this->filters)->orderBy($this->sortBy, $this->sortOrder);
     }
 
     /**
-     * Updating search property
-     * 
-     * @return void
+     * Updated filters
      */
-    public function updatingSearch()
+    public function updatedFilters()
     {
         $this->resetPage();
     }
 
     /**
+     * Open file
+     */
+    public function openFile($id)
+    {
+        $this->openedFile = File::find($id);
+        $this->dispatchBrowserEvent('drawer-open');
+    }
+
+    /**
+     * Close file
+     */
+    public function closeFile()
+    {
+        $this->openedFile = null;
+        $this->dispatchBrowserEvent('drawer-close');
+    }
+
+    /**
      * Delete file
-     * 
-     * @return void
      */
     public function delete($id)
     {
         File::whereIn('id', $id)->get()->each(fn($q) => $q->delete());
         
         $this->dispatchBrowserEvent('toast', ['message' => count($id) . ' Files Deleted']);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.file.listing', [
+            'files' => $this->files->paginate(48),
+        ]);
     }
 }
