@@ -5,7 +5,6 @@ import FullscreenLoader from './components/fullscreen-loader'
 
 import TagsInput from './components/input/tags'
 import ImageInput from './components/input/image'
-import RichtextInput from './components/input/richtext'
 
 import Uploader from './uploader/uploader'
 import UploaderDevice from './uploader/uploader-device'
@@ -19,7 +18,6 @@ Alpine.data('button', Button)
 Alpine.data('fullscreenLoader', FullscreenLoader)
 Alpine.data('tagsInput', TagsInput)
 Alpine.data('imageInput', ImageInput)
-Alpine.data('richtextInput', RichtextInput)
 Alpine.data('uploader', Uploader)
 Alpine.data('uploaderDevice', UploaderDevice)
 Alpine.data('uploaderImage', UploaderImage)

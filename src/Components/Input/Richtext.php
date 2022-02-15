@@ -15,7 +15,9 @@ class Richtext extends Component
      */
     public function __construct($toolbar = null)
     {
-        $this->toolbar = $toolbar ? explode(',', $toolbar) : null;
+        $this->toolbar = $toolbar
+            ? (is_array($toolbar) ? $toolbar : explode(',', $toolbar))
+            : null;
     }
 
     /**

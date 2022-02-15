@@ -17,25 +17,36 @@ class ScriptLoader
 
         scripts.forEach(script => {
             if (!this.scripts.some(val => (val.src === script.src))) {
-                this.scripts.push({ ...script, status: 'pending' })
+                this.scripts.push({ ...script, status: 'pending', uid: random() })
             }
+        })
+    }
+
+    markScriptAs (uid, status) {
+        this.scripts = this.scripts.map(script => {
+            if (script.uid === uid) return { ...script, status }
+            else return script
         })
     }
 
     fetch () {
         // js
         this.scripts.filter(script => (script.type === 'js' && script.status === 'pending')).forEach(script => {
+            this.markScriptAs(script.uid, 'fetching')
+
             const s = document.createElement('script')
             s.type = 'text/javascript'
             s.src = script.src
 
-            s.addEventListener('load', () => script.status = 'completed')
+            s.addEventListener('load', () => this.markScriptAs(script.uid, 'completed'))
 
             document.head.appendChild(s)
         })
 
         // css
         this.scripts.filter(script => (script.type === 'css' && script.status === 'pending')).forEach(script => {
+            this.markScriptAs(script.uid, 'fetching')
+
             const s = document.createElement('link')
             s.href = script.src
             s.type = 'text/css'
@@ -43,7 +54,7 @@ class ScriptLoader
 
             document.head.appendChild(s)
 
-            script.status = 'completed'
+            this.markScriptAs(script.uid, 'completed')
         })
     }
 

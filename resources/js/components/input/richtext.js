@@ -14,11 +14,12 @@ export default (toolbar, placeholder) => ({
         const defaultToolbar = [
             'heading',
             '|', 'bold', 'italic', 'fontSize', 'fontColor', 'link', 'bulletedList', 'numberedList',
-            '|', 'outdent', 'indent',
+            '|', 'alignment', 'outdent', 'indent', 'horizontalLine',
             '|', 'blockQuote', 'insertMedia', 'insertTable', 'undo', 'redo',
+            '|', 'sourceEditing',
         ]
 
-        InlineEditor.create(this.$refs.ckeditor, {
+        ClassicEditor.create(this.$refs.ckeditor, {
             placeholder: placeholder || 'Content goes here',
             toolbar: toolbar || defaultToolbar,
         }).then(editor => {
