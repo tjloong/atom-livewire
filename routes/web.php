@@ -2,10 +2,10 @@
 
 use Jiannius\Atom\Models\Page;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 
 if (!config('atom.static_site')) {
-    Route::get('__export/{filename}', [Jiannius\Atom\Http\Controllers\ExportController::class, 'download'])->name('__export');
+    define_route('__sitemap', 'SitemapController@index', '__sitemap');
+    define_route('__export/{filename}', 'ExportController@download', '__export');
 
     Route::prefix('app')->middleware('auth')->group(function() {
         Route::get('/', fn() => redirect()->route('dashboard'))->name('app.home');
@@ -127,24 +127,7 @@ Route::get('contact', Jiannius\Atom\Http\Livewire\Web\Contact::class)->name('con
 Route::get('contact/thank-you', Jiannius\Atom\Http\Livewire\Web\ContactSent::class)->name('contact.sent');
 
 if (enabled_feature('pages') && !app()->runningInConsole()) {
-    $slugs = [];
-    $dir = resource_path('views/livewire/web/pages');
-    
-    $pages = Schema::hasTable((new Page)->getTable())
-        ? Page::all()
-        : [];
-
-    $views = file_exists($dir)
-        ? Illuminate\Support\Facades\File::allFiles(resource_path('views/livewire/web/pages'))
-        : [];
-    
-    foreach ($views as $view) {
-        array_push($slugs, str_replace('.blade.php', '', $view->getFilename()));
-    }
-
-    foreach ($pages as $page) {
-        array_push($slugs, $page->slug);
-    }
+    $slugs = Page::getSlugs();
 
     Route::get('{slug}', \Jiannius\Atom\Http\Livewire\Web\Page::class)
         ->name('page')

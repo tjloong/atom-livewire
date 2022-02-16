@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 function export_to_excel($filename, $collection, $iterator = null)
@@ -43,6 +44,26 @@ function enabled_feature($feature)
 
     if (is_string($value) || is_array($value)) return !empty($value);
     else return $value;
+}
+
+/**
+ * Define route
+ */
+function define_route($path, $action, $name, $method = 'get')
+{
+    $isController = Str::is('*Controller@*', $action);
+    $namespacePrefix = $isController ? 'Jiannius\\Atom\\Http\\Controllers\\' : 'Jiannius\\Atom\\Http\\Livewire\\';
+    $tryNamespacePrefix = $isController ? 'App\\Http\\Controllers\\' : 'App\\Http\\Livewire\\';
+    $className = $isController ? substr($action, 0, strpos($action, '@')) : $action;
+    $classMethod = $isController ? str_replace('@', '', substr($action, strpos($action, '@'), strlen($action))) : null;
+    $fullClass = class_exists($tryNamespacePrefix . $className)
+        ? $tryNamespacePrefix . $className
+        : $namespacePrefix . $className;
+
+    Route::$method(
+        $path, 
+        $classMethod ? [$fullClass, $classMethod] : $fullClass
+    )->name($name);
 }
 
 /**
