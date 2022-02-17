@@ -10,12 +10,14 @@ class Listing extends Component
 {
     use WithPagination;
 
-    public $search;
     public $sortBy = 'name';
     public $sortOrder = 'asc';
+    public $filters = ['search' => ''];
+
+    protected $breadcrumb = ['home' => 'Users'];
 
     protected $queryString = [
-        'search' => ['except' => ''], 
+        'filters', 
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
         'page' => ['except' => 1],
@@ -28,40 +30,34 @@ class Listing extends Component
      */
     public function mount()
     {
-        //
+        breadcrumb(['home' => 'Users']);
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Updated filters
      */
-    public function render()
-    {
-        return view('atom::app.user.listing', ['users' => $this->getUsers()]);
-    }
-
-    /**
-     * Updating search property
-     * 
-     * @return void
-     */
-    public function updatingSearch()
+    public function updatedFilters()
     {
         $this->resetPage();
     }
 
     /**
      * Get users
-     * 
-     * @return Collection
      */
     public function getUsers()
     {
         return User::query()
             ->where('email', '<>', User::ROOT_EMAIL)
-            ->when($this->search, fn($q) => $q->search($this->search))
+            ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate(30);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.user.listing', ['users' => $this->getUsers()]);
     }
 }

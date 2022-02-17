@@ -2,14 +2,16 @@
 
 namespace Jiannius\Atom\Models;
 
-use Jiannius\Atom\Traits\HasSlug;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
+use Jiannius\Atom\Traits\HasSlug;
+use Jiannius\Atom\Traits\HasFilters;
 
 class Page extends Model
 {
     use HasSlug;
+    use HasFilters;
 
     protected $guarded = [];
 

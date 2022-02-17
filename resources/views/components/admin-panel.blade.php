@@ -118,38 +118,44 @@
                 'lg:pl-56': !toggled,
             }"
         >
-            <div class="h-12 bg-white shadow flex items-center gap-4 sticky top-0 z-10 px-4">
-                <a class="flex-shrink-0 text-gray-800 flex items-center justify-center" @click="toggled = !toggled; animate = true">
-                    <x-icon name="menu"/>
-                </a>
+            <div class="bg-white shadow sticky top-0 z-10 px-4">
+                <div class="grid divide-y">
+                    <div class="h-12 flex items-center gap-4">
+                        <a class="flex-shrink-0 text-gray-800 flex items-center justify-center" @click="toggled = !toggled; animate = true">
+                            <x-icon name="menu"/>
+                        </a>
+    
+                        <div class="flex-grow flex items-center gap-4">
+                            @isset($links)
+                                {{ $links }}
+                            @endisset
+                        </div>
+    
+                        <div class="flex-shrink-0 flex items-center gap-4">
+                            @isset($actions)
+                                {{ $actions }}
+                            @endisset
+    
+                            <x-dropdown right>
+                                <x-slot name="trigger">
+                                    <a class="flex items-center justify-center gap-2 font-medium text-gray-800" @click="open = true">
+                                        <x-icon name="user-circle"/> 
+                                        <span class="text-sm hidden md:block">{{ Str::limit(auth()->user()->name, 15) }}</span>
+                                        <x-icon name="chevron-down" class="hidden md:block" />
+                                    </a>
+                                </x-slot>
+    
+                                @isset($dropdown)
+                                    {{ $dropdown }}
+                                @endisset
+    
+                                <x-dropdown item icon="log-out" href="{{ route('login', ['logout' => 1]) }}">Logout</x-dropdown>
+                                <x-dropdown item icon="rocket">Version {{ $version }}</x-dropdown>
+                            </x-dropdown>
+                        </div>
+                    </div>
 
-                <div class="flex-grow flex items-center gap-4">
-                    @isset($links)
-                        {{ $links }}
-                    @endisset
-                </div>
-
-                <div class="flex-shrink-0 flex items-center gap-4">
-                    @isset($actions)
-                        {{ $actions }}
-                    @endisset
-
-                    <x-dropdown right>
-                        <x-slot name="trigger">
-                            <a class="flex items-center justify-center gap-2 font-medium text-gray-800" @click="open = true">
-                                <x-icon name="user-circle"/> 
-                                <span class="text-sm hidden md:block">{{ Str::limit(auth()->user()->name, 15) }}</span>
-                                <x-icon name="chevron-down" class="hidden md:block" />
-                            </a>
-                        </x-slot>
-
-                        @isset($dropdown)
-                            {{ $dropdown }}
-                        @endisset
-
-                        <x-dropdown item icon="log-out" href="{{ route('login', ['logout' => 1]) }}">Logout</x-dropdown>
-                        <x-dropdown item icon="rocket">Version {{ $version }}</x-dropdown>
-                    </x-dropdown>
+                    <x-breadcrumbs/>
                 </div>
             </div>
 

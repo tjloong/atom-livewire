@@ -13,35 +13,31 @@ class Create extends Component
     protected $listeners = ['saved'];
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
+        breadcrumb(['label' => 'Create User']);
+
         $this->user = new User([
             'role_id' => Role::where('slug', 'administrator')->where('is_system', true)->first()->id ?? null,
         ]);
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.user.create');
-    }
-
-    /**
-     * Saved action
-     * 
-     * @return void
+     * Saved
      */
     public function saved()
     {
         session()->flash('flash', 'User Created::success');
         return redirect()->route('user.listing');
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.user.create');
     }
 }

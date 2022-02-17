@@ -12,12 +12,12 @@ class Listing extends Component
     public $labels;
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount($type = null)
     {
+        breadcrumb(['home' => 'Labels']);
+        
         $this->types = config('atom.features.labels') ?? [];
 
         if (!$type) return redirect()->route('label.listing', [$this->types[0]]);

@@ -6,6 +6,52 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\FastExcel\FastExcel;
 
+function breadcrumb($data)
+{
+    $url = url()->current();
+    $isHome = isset($data['home']);
+    $crumb = array_merge([
+        'label' => $data['home'] ?? $data['label'] ?? $url,
+        'url' => $url,
+    ], parse_url($url));
+
+    if ($data === false) session()->forget('breadcrumbs');
+    else if ($isHome) session(['breadcrumbs' => [$crumb]]);
+    else {
+        $crumbs = collect(session('breadcrumbs'));
+        $exists = $crumbs
+            ->filter(fn($val) => $val['label'] === $crumb['label'] && $val['path'] === $crumb['path'])
+            ->count() > 0;
+
+        if ($exists) {
+            $index = $crumbs->search(fn($val) => $val['label'] === $crumb['label'] && $val['path'] === $crumb['path']);
+            $crumbs = $crumbs->reject(fn($val, $key) => $key > $index);
+        }
+        else {
+            $crumbs->push($crumb);
+        }
+
+        $newCrumbs = $crumbs->values()->all();
+
+        // update previous url if it's been changed
+        $prevIndex = array_key_last($newCrumbs) - 1;
+        $prevCrumb = $newCrumbs[$prevIndex];
+        $prevLatestUrl = url()->previous();
+        $prevLatestInfo = parse_url($prevLatestUrl);
+
+        if ($prevLatestInfo['path'] === $prevCrumb['path'] && $prevLatestUrl !== $prevCrumb['url']) {
+            $prevCrumb = array_merge($prevCrumb, array_merge(
+                ['url' => $prevLatestUrl],
+                $prevLatestInfo
+            ));
+
+            $newCrumbs[$prevIndex] = $prevCrumb;
+        }
+
+        session(['breadcrumbs' => $newCrumbs]);
+    }
+}
+
 function export_to_excel($filename, $collection, $iterator = null)
 {
     $dir = storage_path('export');

@@ -22,6 +22,8 @@ class Update extends Component
         $this->component = file_exists(resource_path('views/livewire/app/label/' . $this->label->type . '.blade.php'))
             ? 'app.label.' . $this->label->type
             : 'atom.label.form';
+
+        breadcrumb(['label' => $this->label->name]);
     }
 
     /**

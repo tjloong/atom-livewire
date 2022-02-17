@@ -10,41 +10,36 @@ class Update extends Component
     public $component;
     
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount($id)
     {
         $this->page = get_model('Page')->findOrFail($id);
-        $this->getComponent();
+
+        breadcrumb(['label' => $this->page->name]);
+    }
+
+    /**
+     * Get component name property
+     */
+    public function getComponentNameProperty()
+    {
+        if (file_exists(resource_path('views/livewire/app/page/' . $this->page->slug . '.blade.php'))) {
+            return 'app.page.' . $this->page->slug;
+        }
+        else if (file_exists(resource_path('views/livewire/app/page/' . $this->page->slug . '/index.blade.php'))) {
+            return 'app.page.' . $this->page->slug . '.index';
+        }
+        else {
+            return 'atom.page.form';
+        }    
     }
     
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Render
      */
     public function render()
     {
         return view('atom::app.page.update');
-    }
-
-    /**
-     * Get form component
-     * 
-     * @return void
-     */
-    public function getComponent()
-    {
-        if (file_exists(resource_path('views/livewire/app/page/' . $this->page->slug . '.blade.php'))) {
-            $this->component = 'app.page.' . $this->page->slug;
-        }
-        else if (file_exists(resource_path('views/livewire/app/page/' . $this->page->slug . '/index.blade.php'))) {
-            $this->component = 'app.page.' . $this->page->slug . '.index';
-        }
-        else {
-            $this->component = 'atom.page.form';
-        }
     }
 }

@@ -13,23 +13,25 @@ class Update extends Component
     protected $listeners = ['saved', 'leaveTeam'];
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Mount
      */
-    public function render()
+    public function mount()
     {
-        $data = [];
-
-        if (enabled_feature('teams')) $data['teams'] = Team::query()->userId($this->user->id)->get();
-
-        return view('atom::app.user.update', $data);
+        breadcrumb(['label' => $this->user->name]);
     }
 
     /**
-     * Saved action
-     * 
-     * @return void
+     * Get teams property
+     */
+    public function getTeamsProperty()
+    {
+        if (!enabled_feature('teams')) return;
+
+        return Team::userId($this->user->id)->get();
+    }
+
+    /**
+     * Saved
      */
     public function saved()
     {
@@ -37,9 +39,7 @@ class Update extends Component
     }
 
     /**
-     * Delete user
-     * 
-     * @return void
+     * Delete
      */
     public function delete()
     {
@@ -50,8 +50,6 @@ class Update extends Component
 
     /**
      * Get teams to join
-     * 
-     * @return Team
      */
     public function getTeams($page, $text = null)
     {
@@ -64,8 +62,6 @@ class Update extends Component
 
     /**
      * Join team
-     * 
-     * @return void
      */
     public function joinTeam($id)
     {
@@ -75,8 +71,6 @@ class Update extends Component
 
     /**
      * Leave team
-     * 
-     * @return void
      */
     public function leaveTeam($id)
     {
@@ -86,12 +80,18 @@ class Update extends Component
 
     /**
      * Reset abilities
-     * 
-     * @return void
      */
     public function resetAbilities()
     {
         $this->user->abilities()->detach();
         $this->dispatchBrowserEvent('toast', ['message' => 'Permissions Updated']);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.user.update', ['teams' => $this->teams]);
     }
 }

@@ -12,12 +12,12 @@ class Create extends Component
     protected $listeners = ['saved'];
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
+        breadcrumb(['label' => 'Create Label']);
+        
         $model = get_model_class_name('Label');
         $this->label = new $model([
             'type' => $this->type,

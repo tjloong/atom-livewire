@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Jiannius\Atom\Traits\HasRole;
 use Jiannius\Atom\Traits\HasTeam;
 use Jiannius\Atom\Traits\HasOwner;
+use Jiannius\Atom\Traits\HasFilters;
 use Jiannius\Atom\Notifications\ActivateAccountNotification;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -18,6 +19,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasRole;
     use HasTeam;
     use HasOwner;
+    use HasFilters;
     use HasApiTokens;
     use HasFactory;
     use Notifiable;

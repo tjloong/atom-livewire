@@ -115,6 +115,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('admin-panel', 'Jiannius\\Atom\\Components\\AdminPanel');
         Blade::component('empty-state', 'Jiannius\\Atom\\Components\\EmptyState');
         Blade::component('page-header', 'Jiannius\\Atom\\Components\\PageHeader');
+        Blade::component('breadcrumbs', 'Jiannius\\Atom\\Components\\Breadcrumbs');
         Blade::component('fullscreen-loader', 'Jiannius\\Atom\\Components\\FullscreenLoader');
         
         Blade::component('input.seo', 'Jiannius\\Atom\\Components\\Input\\Seo');

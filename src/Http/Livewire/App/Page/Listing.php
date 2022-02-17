@@ -10,39 +10,48 @@ class Listing extends Component
 {
     use WithPagination;
 
-    public $search;
     public $sortBy = 'updated_at';
     public $sortOrder = 'desc';
+    public $filters = ['search' => ''];
 
     protected $queryString = [
-        'search', 
+        'filters', 
         'sortBy' => ['except' => 'updated_at'],
         'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
     ];
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Mount
+     */
+    public function mount()
+    {
+        breadcrumb(['home' => 'Site Pages']);
+    }
+
+    /**
+     * Get pages property
+     */
+    public function getPagesProperty()
+    {
+        return Page::filter($this->filters)->orderBy($this->sortBy, $this->sortOrder);
+    }
+
+    /**
+     * Updated filters
+     */
+    public function updatedFilters()
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Render
      */
     public function render()
     {
         return view('atom::app.page.listing', [
-            'pages' => Page::query()
-                ->when($this->search, fn($q) => $q->search($this->search))
-                ->orderBy($this->sortBy, $this->sortOrder)
-                ->paginate(30),
+            'pages' => $this->pages->paginate(30),
         ]);
-    }
-
-    /**
-     * Updating search property
-     * 
-     * @return void
-     */
-    public function updatingSearch()
-    {
-        $this->resetPage();
     }
 }

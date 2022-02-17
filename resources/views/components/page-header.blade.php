@@ -4,10 +4,10 @@
             <div class="flex-shrink-0">
                 <a 
                     class="bg-gray-300 text-gray-800 rounded py-1.5 px-2 flex items-center justify-center mr-3"
-                    @if (is_string($back))
-                        href="{{ $back }}"
-                    @elseif (request()->query('back'))
+                    @if (request()->query('back'))
                         href="{{ request()->query('back') }}"
+                    @elseif (is_string($back))
+                        href="{{ $back }}"
                     @else
                         x-data
                         x-on:click.prevent="history.back()"
