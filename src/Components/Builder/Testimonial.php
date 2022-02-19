@@ -6,10 +6,10 @@ use Illuminate\View\Component;
 
 class Testimonial extends Component
 {
+    public $dark;
     public $align;
-    public $text;
     public $image;
-    public $imagePosition;
+    public $customer;
 
     /**
      * Contructor
@@ -17,15 +17,27 @@ class Testimonial extends Component
      * @return void
      */
     public function __construct(
+        $dark = false,
         $align = null,
-        $text = null,
-        $image = null, 
-        $imagePosition = "bottom"
+        $image = null,
+        $customer = null
     ) {
+        $this->dark = $dark;
         $this->align = $align;
-        $this->text = $text;
-        $this->image = $image;
-        $this->imagePosition = $imagePosition;
+
+        $this->image = [
+            'url' => is_string($image) ? $image : ($image['url'] ?? null),
+            'position' => $image['position'] ?? 'top',
+            'alt' => $image['alt'] ?? 'testimonial-avatar',
+            'circle' => $image['circle'] ?? false,
+        ];
+
+        $this->customer = [
+            'name' => is_string($customer) ? $customer : ($customer['name'] ?? null),
+            'company' => $customer['company'] ?? null,
+            'designation' => $customer['designation'] ?? null,
+            'align' => $customer['align'] ?? null,
+        ];
     }
 
     /**

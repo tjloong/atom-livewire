@@ -1,6 +1,8 @@
 @extends('atom::layout', ['noindex' => true, 'tracking' => false])
 
 @push('scripts')
+    <script src="https://unpkg.com/@floating-ui/core@0.1.2/dist/floating-ui.core.min.js"></script>
+    <script src="https://unpkg.com/@floating-ui/dom@0.1.2/dist/floating-ui.dom.min.js"></script>
     <script src="{{ mix('js/app.js') }}" defer></script>
 @endpush
 

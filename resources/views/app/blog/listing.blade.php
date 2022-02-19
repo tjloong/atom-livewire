@@ -1,13 +1,13 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Blogs">
-        <x-button icon="plus" href="{{ route('blog.create', ['back' => url()->current()]) }}">
+        <x-button icon="plus" href="{{ route('blog.create') }}">
             New Blog
         </x-button>
     </x-page-header>
 
     <x-table :total="$blogs->total()" :links="$blogs->links()">
         <x-slot name="toolbar">
-            <x-tabs wire:model="filter.status">
+            <x-tabs wire:model="filters.status">
                 <x-tabs item>All</x-tabs>
                 <x-tabs item>Published</x-tabs>
                 <x-tabs item>Draft</x-tabs>

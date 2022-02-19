@@ -1,80 +1,90 @@
-<div class="{{ $attributes->get('class') }}">
-    <div class="
-        mx-auto relative py-10 px-6
-        {{ $imagePosition === 'top' || $imagePosition === 'bottom' ? 'max-w-screen-lg' : 'max-w-screen-xl' }}
-    ">
-        @if ($image && ($imagePosition === 'left' || $imagePosition === 'right'))
-            <figure class="
-                bg-gray-100 rounded-xl drop-shadow relative overflow-hidden -mt-40 mx-auto w-[300px] pt-[450px]
-                md:absolute 
-                {{ $imagePosition === 'left' 
-                    ? 'md:-top-10 md:-bottom-10 md:left-0 md:-mt-0 md:w-[30%]'
-                    : 'md:-top-10 md:-bottom-10 md:right-0 md:-mt-0 md:mx-4 md:w-4/12' }}
-            ">
-                <div class="absolute inset-0">
-                    <img src="{{ $image }}" class="w-full h-full object-cover">
-                </div>
+@if ($attributes->has('content'))
+    <div class="grid gap-1">
+        <x-icon name="quote-alt-left" type="solid" size="{{ $attributes->has('small') ? '32px' : '64px' }}" class="text-gray-400 opacity-40"/>
+
+        <div {{ $attributes->class([
+            'text-gray-300' => $dark,
+            'text-gray-800' => !$dark,
+            'text-center' => $align === 'center',
+            'text-right' => $align === 'right',
+            'text-left' => $align === 'left' || !$align,
+        ]) }}>
+            {{ $slot }}
+        </div>
+    </div>
+
+@elseif ($attributes->has('card'))
+    <div {{ $attributes->class([
+        'flex items-center gap-4',
+        'flex-col justify-center' => $customer['align'] === 'center',
+        'justify-end' => $customer['align'] === 'right',
+        'justify-start' => $customer['align'] === 'left' || !$customer['align'],
+    ]) }}>
+        @if ($image && $image['url'])
+            <figure class="flex-shrink-0 w-20 h-20 drop-shadow rounded-full overflow-hidden bg-gray-100 md:w-24 md:h-24 {{ $customer['align'] === 'right' ? 'order-last' : 'order-first' }}">
+                <img 
+                    src="{{ $image['url'] }}" 
+                    class="w-full h-full object-cover"
+                    width="150" 
+                    height="150" 
+                    alt="{{ $image['alt'] }}"
+                >
             </figure>
         @endif
 
-        <div class="
-            flex flex-col
-            {{ $imagePosition === 'left' ? 'md:ml-[30%] md:px-6' : '' }}
-            {{ $imagePosition === 'right' ? 'md:w-8/12 md:pr-10' : '' }}
-        ">
-            <div class="relative py-4">
-                @if ($imagePosition === 'top' || $imagePosition === 'bottom')
-                    <div class="absolute -top-4 -left-2">
-                        <x-icon name="quote-alt-left" type="solid" size="32px" class="text-gray-400 opacity-40"/>
-                    </div>
-                @else
-                    <x-icon name="quote-alt-left" type="solid" size="64px" class="text-gray-400 opacity-40"/>
-                @endif
-                
-                <p class="
-                    relative 
-                    {{ $text === 'light' ? 'text-gray-300' : 'text-gray-800' }}
-                    {{ $align === 'center' ? 'text-center' : '' }}
-                    {{ $align === 'right' ? 'text-right' : '' }}
-                ">
-                    {{ $content }}
-                </p>
-            </div>
+        <div class="font-semibold {{ $dark ? 'text-gray-300' : 'text-gray-800' }}">
+            {{ $customer['name'] }}
+        </div>
 
-            <div class="
-                flex items-center space-x-4 py-4
-                {{ $align === 'center' ? 'justify-center' : '' }}
-                {{ $align === 'right' ? 'justify-end' : '' }}
-                {{ $imagePosition === 'top' ? 'order-first' : '' }}
-            ">
-                @if ($image && ($imagePosition === 'top' || $imagePosition === 'bottom'))
-                    <figure class="flex-shrink-0 w-20 h-20 drop-shadow rounded-full overflow-hidden bg-gray-100 md:w-24 md:h-24">
-                        <img 
-                            src="{{ $image }}" 
-                            class="w-full h-full object-cover"
-                            width="150" 
-                            height="150" 
-                            alt="{{ $attributes->get('image-alt') ?? 'testimonial-avatar' }}"
-                        >
-                    </figure>
-                @endif
+        @if ($customer['designation'])
+            <div class="text-sm text-gray-400 font-medium">{{ $customer['designation'] }}</div>
+        @endif
 
-                <div class="{{ $align === 'right' ? 'text-right' : '' }}">
-                    <div class="font-semibold {{ $text === 'light' ? 'text-gray-300' : 'text-gray-800' }}">
-                        {{ $name }}
-                    </div>
-                    
-                    <div class="text-sm text-gray-400 font-medium">
-                        @isset($designation)
-                            {{ $designation }}<br>
-                        @endisset
+        @if ($customer['company'])
+            <div class="text-sm text-gray-400 font-medium">{{ $customer['company'] }}</div>
+        @endif
+    </div>
 
-                        @isset($company)
-                            {{ $company }}
-                        @endisset
+@elseif (in_array($image['position'], ['left', 'right']))
+    <div class="{{ $attributes->get('class') }}">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="flex flex-wrap gap-10 md:flex-nowrap">
+                <div class="flex-shrink-0 mx-auto {{ $image['position'] === 'left' ? 'order-first' : 'order-last' }}">
+                    @if ($image['url'])
+                        <figure class="drop-shadow overflow-hidden w-60 h-60 md:w-80 md:h-80 {{ $image['circle'] ? 'rounded-full' : 'rounded-xl' }}">
+                            <img src="{{ $image['url'] }}" class="w-full h-full object-cover">
+                        </figure>
+                    @endif
+                </div>
+
+                <div class="flex-grow">
+                    <div class="grid gap-4">
+                        <x-builder.testimonial content :align="$align" :dark="$dark" class="text-2xl font-medium">
+                            {{ $slot }}
+                        </x-builder.testimonial>
+
+                        @if ($customer)
+                            <x-builder.testimonial card :customer="$customer" :dark="$dark"/>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+@elseif (in_array($image['position'], ['top', 'bottom']))
+    <div class="{{ $attributes->get('class') }}">
+        <div class="max-w-screen-lg mx-auto px-6">
+            <div class="grid gap-4">
+                <div class="{{ $image['position'] === 'top' ? 'order-first' : 'order-last' }}">
+                    <x-builder.testimonial card :customer="$customer" :dark="$dark" :image="$image"/>
+                </div>
+
+                <x-builder.testimonial content :align="$align" :dark="$dark" small>
+                    {{ $slot }}
+                </x-builder.testimonial>
+            </div>
+        </div>
+    </div>
+
+@endif

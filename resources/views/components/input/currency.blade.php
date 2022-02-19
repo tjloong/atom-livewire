@@ -11,7 +11,9 @@
         )"
         class="relative"
     >
-        <div {{ $attributes->except('error', 'required', 'caption') }} x-init="$watch('value', val => $dispatch('input', val))"></div>
+        <div {{ $attributes->except('error', 'required', 'caption') }}>
+            <input type="number" x-ref="input" x-bind:value="value" class="hidden">
+        </div>
 
         <div class="absolute top-0 bottom-0 left-0 px-4 flex items-center justify-center text-gray-400">
             {{ $attributes->get('currency') }}
@@ -20,7 +22,7 @@
             type="text"
             class="form-input w-full pl-14"
             x-bind:value="value ? value.toLocaleString('en-US') : null"
-            x-on:input="value = stringToNumber($event.target.value)"
+            x-on:input="updateValue($event.target.value)"
         >
     </div>
 </x-input.field>
@@ -38,7 +40,12 @@
                 val = parseFloat(val)
                 val = !val || !Number.isFinite(val) ? null : val
 
-                return val
+                return val || 0
+            },
+
+            updateValue (val) {
+                this.value = this.stringToNumber(val)
+                this.$nextTick(() => this.$refs.input.dispatchEvent(new Event('input', { bubbles: true })))
             },
         }))
     })

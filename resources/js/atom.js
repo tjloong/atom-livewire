@@ -3,7 +3,6 @@ import './script-loader.js'
 import Button from './components/button'
 import FullscreenLoader from './components/fullscreen-loader'
 
-import TagsInput from './components/input/tags'
 import ImageInput from './components/input/image'
 
 import Uploader from './uploader/uploader'
@@ -16,7 +15,6 @@ import Tooltip from './directives/tooltip'
 
 Alpine.data('button', Button)
 Alpine.data('fullscreenLoader', FullscreenLoader)
-Alpine.data('tagsInput', TagsInput)
 Alpine.data('imageInput', ImageInput)
 Alpine.data('uploader', Uploader)
 Alpine.data('uploaderDevice', UploaderDevice)
