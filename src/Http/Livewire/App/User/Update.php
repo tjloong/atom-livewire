@@ -17,7 +17,7 @@ class Update extends Component
      */
     public function mount()
     {
-        breadcrumb(['label' => $this->user->name]);
+        breadcrumb($this->user->name);
     }
 
     /**

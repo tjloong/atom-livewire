@@ -16,7 +16,7 @@ class Create extends Component
      */
     public function mount()
     {
-        breadcrumb(['label' => 'Create Label']);
+        breadcrumb('Create Label');
         
         $model = get_model_class_name('Label');
         $this->label = new $model([
@@ -25,23 +25,19 @@ class Create extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.label.create');
-    }
-
-    /**
-     * After saved
-     * 
-     * @return void
+     * Saved
      */
     public function saved()
     {
         session()->flash('flash', 'Label Created::success');
         return redirect()->route('label.listing', [$this->type]);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.label.create');
     }
 }

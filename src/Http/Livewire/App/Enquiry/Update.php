@@ -21,23 +21,11 @@ class Update extends Component
      */
     public function mount()
     {
-        //
+        breadcrumb($this->enquiry->name);
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.enquiry.update');
-    }
-
-    /**
-     * Save enquiry
-     * 
-     * @return void
+     * Save
      */
     public function save()
     {
@@ -46,14 +34,20 @@ class Update extends Component
     }
 
     /**
-     * Delete enquiry
-     * 
-     * @return void
+     * Delete
      */
     public function delete()
     {
         $this->enquiry->delete();
         session()->flash('flash', 'Enquiry Deleted');
         return redirect()->route('enquiry.listing');
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.enquiry.update');
     }
 }

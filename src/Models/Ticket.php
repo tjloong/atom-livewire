@@ -4,11 +4,13 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\HasOwner;
+use Jiannius\Atom\Traits\HasFilters;
 use Jiannius\Atom\Traits\HasUniqueNumber;
 
 class Ticket extends Model
 {
     use HasOwner;
+    use HasFilters;
     use HasUniqueNumber;
     
     protected $guarded = [];

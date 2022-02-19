@@ -14,8 +14,6 @@ class Listing extends Component
     public $sortOrder = 'asc';
     public $filters = ['search' => ''];
 
-    protected $breadcrumb = ['home' => 'Users'];
-
     protected $queryString = [
         'filters', 
         'sortBy' => ['except' => 'name'],
@@ -25,12 +23,21 @@ class Listing extends Component
 
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
-        breadcrumb(['home' => 'Users']);
+        breadcrumb_home('Users');
+    }
+
+    /**
+     * Get users property
+     */
+    public function getUsersProperty()
+    {
+        return User::query()
+            ->where('email', '<>', User::ROOT_EMAIL)
+            ->filter($this->filters)
+            ->orderBy($this->sortBy, $this->sortOrder);
     }
 
     /**
@@ -42,22 +49,10 @@ class Listing extends Component
     }
 
     /**
-     * Get users
-     */
-    public function getUsers()
-    {
-        return User::query()
-            ->where('email', '<>', User::ROOT_EMAIL)
-            ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(30);
-    }
-
-    /**
      * Render
      */
     public function render()
     {
-        return view('atom::app.user.listing', ['users' => $this->getUsers()]);
+        return view('atom::app.user.listing', ['users' => $this->users->paginate(30)]);
     }
 }

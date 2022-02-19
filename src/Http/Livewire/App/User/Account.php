@@ -15,7 +15,7 @@ class Account extends Component
      */
     public function mount()
     {
-        breadcrumb(['home' => 'My Account']);
+        breadcrumb_home('My Account');
     }
 
     /**

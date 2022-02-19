@@ -7,7 +7,7 @@
 
     <x-table :total="$blogs->total()" :links="$blogs->links()">
         <x-slot name="toolbar">
-            <x-tabs wire:model="filterStatus">
+            <x-tabs wire:model="filter.status">
                 <x-tabs item>All</x-tabs>
                 <x-tabs item>Published</x-tabs>
                 <x-tabs item>Draft</x-tabs>

@@ -11,58 +11,51 @@ class Listing extends Component
     use WithPagination;
 
     public $user;
-    public $search;
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
+    public $filters = [
+        'search' => '',
+    ];
 
     protected $queryString = [
-        'search', 
+        'filters', 
         'sortBy' => ['except' => 'created_at'],
-        'sortOrder' => ['except' => 'asc'],
+        'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
     ];
 
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
-        //
+        breadcrumb_home('Support Tickets');
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Get tickets property
      */
-    public function render()
+    public function getTicketsProperty()
     {
-        return view('atom::app.ticket.listing', ['tickets' => $this->getTickets()]);
+        return Ticket::query()
+            ->when($this->user, fn($q) => $q->where('created_by', $this->user->id))
+            ->filter($this->filters)
+            ->orderBy($this->sortBy, $this->sortOrder);
     }
 
     /**
-     * Updating search property
-     * 
-     * @return void
+     * Updated filters
      */
-    public function updatingSearch()
+    public function updatedFilters()
     {
         $this->resetPage();
     }
 
     /**
-     * Get tickets
-     * 
-     * @return Paginate
+     * Render
      */
-    public function getTickets()
+    public function render()
     {
-        return Ticket::query()
-            ->when($this->search, fn($q) => $q->search($this->search))
-            ->when($this->user, fn($q) => $q->where('created_by', $this->user->id))
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(30);
+        return view('atom::app.ticket.listing', ['tickets' => $this->tickets->paginate(30)]);
     }
 }

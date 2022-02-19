@@ -8,37 +8,38 @@ use Jiannius\Atom\Models\Label;
 class Listing extends Component
 {
     public $type;
-    public $types;
-    public $labels;
 
     /**
      * Mount
      */
-    public function mount($type = null)
+    public function mount()
     {
-        breadcrumb(['home' => 'Labels']);
-        
-        $this->types = config('atom.features.labels') ?? [];
+        if (!$this->type) return redirect()->route('label.listing', [$this->types[0]]);
 
-        if (!$type) return redirect()->route('label.listing', [$this->types[0]]);
-        
-        $this->getLabels();
+        breadcrumb_home('Labels');
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Get types property
      */
-    public function render()
+    public function getTypesProperty()
     {
-        return view('atom::app.label.listing');
+        return config('atom.features.labels') ?? [];
+    }
+
+    /**
+     * Get labels property
+     */
+    public function getLabelsProperty()
+    {
+        return Label::query()
+            ->where('type', $this->type)
+            ->orderBy('seq')
+            ->orderBy('name');
     }
 
     /**
      * Updated labels
-     * 
-     * @return void
      */
     public function updatedLabels($labels)
     {
@@ -48,17 +49,13 @@ class Listing extends Component
     }
 
     /**
-     * Get labels
-     * 
-     * @return array
+     * Render
      */
-    public function getLabels()
+    public function render()
     {
-        $this->labels = Label::query()
-            ->where('type', $this->type)
-            ->orderBy('seq')
-            ->orderBy('name')
-            ->get()
-            ->toArray();
+        return view('atom::app.label.listing', [
+            'types' => $this->types,
+            'labels' => $this->labels->get(),
+        ]);
     }
 }

@@ -14,10 +14,13 @@ class Form extends Component
         'label.type' => 'required',
     ];
 
+    protected $messages = [
+        'label.name' => 'Label name is required.',
+        'label.type' => 'Label type is required.',
+    ];
+
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
@@ -25,23 +28,12 @@ class Form extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.label.form');
-    }
-
-    /**
-     * Save label
-     * 
-     * @return void
+     * Save
      */
     public function save()
     {
-        $this->validateinputs();
+        $this->resetValidation();
+        $this->validate();
 
         $this->label->save();
 
@@ -49,22 +41,10 @@ class Form extends Component
     }
 
     /**
-     * Validate inputs
-     * 
-     * @return void
+     * Render
      */
-    public function validateinputs()
+    public function render()
     {
-        $this->resetValidation();
-        
-        $validator = validator(['label' => $this->label], $this->rules, [
-            'label.name' => 'Label name is required.',
-            'label.type' => 'Label type is required.',
-        ]);
-
-        if ($validator->fails()) {
-            $this->dispatchBrowserEvent('toast', 'formError');
-            $validator->validate();
-        }
+        return view('atom::app.label.form');
     }
 }

@@ -6,25 +6,35 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\FastExcel\FastExcel;
 
-function breadcrumb($data)
+/**
+ * Set breadcrumbs home
+ */
+function breadcrumb_home($label)
 {
     $url = url()->current();
-    $isHome = isset($data['home']);
-    $crumb = array_merge([
-        'label' => $data['home'] ?? $data['label'] ?? $url,
-        'url' => $url,
-    ], parse_url($url));
+    $route = current_route();
+    $crumb = array_merge(compact('label', 'url', 'route'), parse_url($url));
 
-    if ($data === false) session()->forget('breadcrumbs');
-    else if ($isHome) session(['breadcrumbs' => [$crumb]]);
+    session(['breadcrumbs' => [$crumb]]);
+}
+
+/**
+ * Add entry to breadcrumbs
+ */
+function breadcrumb($label)
+{
+    if ($label === false) session()->forget('breadcrumbs');
     else {
+        $url = url()->current();
+        $route = current_route();
+        $crumb = array_merge(compact('label', 'url', 'route'), parse_url($url));
         $crumbs = collect(session('breadcrumbs'));
         $exists = $crumbs
-            ->filter(fn($val) => $val['label'] === $crumb['label'] && $val['path'] === $crumb['path'])
+            ->filter(fn($val) => $val['label'] === $crumb['label'] && $val['route'] === $crumb['route'])
             ->count() > 0;
 
         if ($exists) {
-            $index = $crumbs->search(fn($val) => $val['label'] === $crumb['label'] && $val['path'] === $crumb['path']);
+            $index = $crumbs->search(fn($val) => $val['label'] === $crumb['label'] && $val['route'] === $crumb['route']);
             $crumbs = $crumbs->reject(fn($val, $key) => $key > $index);
         }
         else {
@@ -32,19 +42,19 @@ function breadcrumb($data)
         }
 
         $newCrumbs = $crumbs->values()->all();
-
+    
         // update previous url if it's been changed
         $prevIndex = array_key_last($newCrumbs) - 1;
         $prevCrumb = $newCrumbs[$prevIndex];
         $prevLatestUrl = url()->previous();
         $prevLatestInfo = parse_url($prevLatestUrl);
-
+    
         if ($prevLatestInfo['path'] === $prevCrumb['path'] && $prevLatestUrl !== $prevCrumb['url']) {
             $prevCrumb = array_merge($prevCrumb, array_merge(
                 ['url' => $prevLatestUrl],
                 $prevLatestInfo
             ));
-
+    
             $newCrumbs[$prevIndex] = $prevCrumb;
         }
 

@@ -16,7 +16,7 @@ class Update extends Component
     {
         $this->page = get_model('Page')->findOrFail($id);
 
-        breadcrumb(['label' => $this->page->name]);
+        breadcrumb($this->page->name);
     }
 
     /**

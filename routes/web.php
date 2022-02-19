@@ -16,7 +16,7 @@ if (!config('atom.static_site')) {
         Route::get('dashboard', Jiannius\Atom\Http\Livewire\App\Dashboard::class)->name('dashboard');
 
         /**
-         * Roles
+         * Blogs
          */
         if (enabled_feature('blogs')) {
             Route::prefix('blog')->group(function () {

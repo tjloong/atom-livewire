@@ -14,13 +14,13 @@
             @if ($key === array_key_first($breadcrumbs))
                 <a itemprop="item" href="{{ $item['url'] }}" class="flex items-center gap-2 text-gray-800 font-medium">
                     <x-icon name="home" type="solid" size="18px" class="text-gray-400"/>
-                    <span itemprop="name">{{ $item['label'] }}</span>
+                    <span itemprop="name">{{ Str::limit($item['label'], 20) }}</span>
                 </a>
             @elseif ($key === array_key_last($breadcrumbs))
-                <span itemprop="name" class="text-gray-500 font-medium">{{ $item['label'] }}</span>
+                <span itemprop="name" class="text-gray-500 font-medium">{{ Str::limit($item['label'], 20) }}</span>
             @else
                 <a itemprop="item" href="{{ $item['url'] }}" class="text-gray-800 font-medium">
-                    <span itemprop="name">{{ $item['label'] }}</span>
+                    <span itemprop="name">{{ Str::limit($item['label'], 20) }}</span>
                 </a>
             @endif
             <meta itemprop="position" content="{{ $key + 1 }}" />

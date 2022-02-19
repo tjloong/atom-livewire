@@ -10,5 +10,5 @@
         </x-button>
     </x-page-header>
 
-    @livewire($component, ['label' => $label])
+    @livewire($this->component_name, ['label' => $label])
 </div>

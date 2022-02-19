@@ -17,7 +17,7 @@ class Create extends Component
      */
     public function mount()
     {
-        breadcrumb(['label' => 'Create User']);
+        breadcrumb('Create User');
 
         $this->user = new User([
             'role_id' => Role::where('slug', 'administrator')->where('is_system', true)->first()->id ?? null,

@@ -21,29 +21,16 @@ class Create extends Component
     ];
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
+        breadcrumb('Create Ticket');
         $this->ticket = new Ticket(['status' => 'opened']);
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.ticket.create');
-    }
-
-    /**
      * Submit
-     * 
-     * @return void
      */
     public function submit()
     {
@@ -58,11 +45,17 @@ class Create extends Component
 
     /**
      * Redirect to
-     * 
-     * @return string
      */
     public function redirectTo()
     {
         return route('ticket.listing');
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.ticket.create');
     }
 }

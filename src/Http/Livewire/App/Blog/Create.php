@@ -8,7 +8,6 @@ use Jiannius\Atom\Models\Blog;
 class Create extends Component
 {
     public $blog;
-    public $back;
 
     protected $listeners = ['saved'];
 
@@ -17,7 +16,7 @@ class Create extends Component
      */
     public function mount()
     {
-        $this->back = request()->query('back');
+        breadcrumb('Create Blog');
         $this->blog = new Blog();
     }
 

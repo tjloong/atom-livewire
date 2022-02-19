@@ -12,15 +12,15 @@ class Comments extends Component
     public $ticket;
     public $content;
 
-    protected $queryString = ['page' => ['except' => 1]];
+    protected $queryString = [
+        'page' => ['except' => 1]
+    ];
 
     protected $rules = ['content' => 'required'];
     protected $messages = ['content.required' => 'Comment is required.'];
 
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
@@ -28,19 +28,15 @@ class Comments extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Get comments property
      */
-    public function render()
+    public function getCommentsPropert()
     {
-        return view('atom::app.ticket.comments', ['comments' => $this->getComments()]);
+        return $this->ticket->comments()->orderBy('created_at', 'desc');
     }
 
     /**
      * Post comment
-     * 
-     * @return void
      */
     public function submit()
     {
@@ -55,9 +51,7 @@ class Comments extends Component
     }
 
     /**
-     * Delete comment
-     * 
-     * @return void
+     * Delete
      */
     public function delete($id)
     {
@@ -68,12 +62,10 @@ class Comments extends Component
     }
 
     /**
-     * Get comments
-     * 
-     * @return Paginate
+     * Render
      */
-    public function getComments()
+    public function render()
     {
-        return $this->ticket->comments()->orderBy('created_at', 'desc')->paginate(10);
+        return view('atom::app.ticket.comments', ['comments' => $this->comments->paginate(10)]);
     }
 }

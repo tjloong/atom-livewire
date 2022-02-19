@@ -19,28 +19,14 @@ class Update extends Component
 
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
-        //
+        breadcrumb($this->ticket->number);
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.ticket.update');
-    }
-
-    /**
-     * Ticket status update handler
-     * 
-     * @return void
+     * Updated ticket status
      */
     public function updatedTicketStatus()
     {
@@ -49,9 +35,7 @@ class Update extends Component
     }
 
     /**
-     * Delete ticket
-     * 
-     * @return void
+     * Delete
      */
     public function delete()
     {
@@ -70,5 +54,13 @@ class Update extends Component
     public function redirectTo()
     {
         return route('ticket.listing');
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.ticket.update');
     }
 }

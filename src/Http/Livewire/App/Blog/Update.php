@@ -17,27 +17,15 @@ class Update extends Component
      * 
      * @return void
      */
-    public function mount($tab = null)
+    public function mount()
     {
-        if (!$tab) return redirect()->route('blog.update', [$this->blog->id, 'content']);
+        if (!$this->tab) return redirect()->route('blog.update', [$this->blog->id, 'content']);
 
-        $this->tab = $tab;
+        breadcrumb($this->blog->title);
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.blog.update');
-    }
-
-    /**
-     * Delete blog
-     * 
-     * @return void
+     * Delete
      */
     public function delete()
     {
@@ -47,12 +35,18 @@ class Update extends Component
     }
 
     /**
-     * Saved blog handler
-     * 
-     * @return void
+     * Saved
      */
     public function saved()
     {
         $this->dispatchBrowserEvent('toast', ['message' => 'Blog Updated', 'type' => 'success']);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.blog.update');
     }
 }

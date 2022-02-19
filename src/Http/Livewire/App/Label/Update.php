@@ -7,39 +7,31 @@ use Livewire\Component;
 class Update extends Component
 {
     public $label;
-    public $component;
     
     protected $listeners = ['saved'];
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount($id)
     {
         $this->label = get_model('Label')->findOrFail($id);
-        $this->component = file_exists(resource_path('views/livewire/app/label/' . $this->label->type . '.blade.php'))
+
+        breadcrumb($this->label->name);
+    }
+
+    /**
+     * Get component name property
+     */
+    public function getComponentNameProperty()
+    {
+        return file_exists(resource_path('views/livewire/app/label/' . $this->label->type . '.blade.php'))
             ? 'app.label.' . $this->label->type
             : 'atom.label.form';
-
-        breadcrumb(['label' => $this->label->name]);
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.label.update');
-    }
-
-    /**
-     * After saved
-     * 
-     * @return void
+     * Saved
      */
     public function saved()
     {
@@ -47,9 +39,7 @@ class Update extends Component
     }
 
     /**
-     * Delete label
-     * 
-     * @return void
+     * Delete
      */
     public function delete()
     {
@@ -58,5 +48,13 @@ class Update extends Component
         session()->flash('flash', 'Label Deleted');
         
         return redirect()->route('label.listing', [$this->label->type]);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.label.update');
     }
 }

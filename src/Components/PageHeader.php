@@ -33,7 +33,7 @@ class PageHeader extends Component
      */
     public function getBack()
     {
-        $breadcrumbs = session('breadcrumbs');
+        $breadcrumbs = session('breadcrumbs', []);
 
         if (count($breadcrumbs) > 1) return $breadcrumbs[array_key_last($breadcrumbs) - 1]['url'];
         else return true;

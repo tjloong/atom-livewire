@@ -22,6 +22,14 @@ class Listing extends Component
     ];
 
     /**
+     * Mount
+     */
+    public function mount()
+    {
+        breadcrumb_home('Enquiries');
+    }
+
+    /**
      * Get enquiries property
      */
     public function getEnquiriesProperty()
@@ -38,9 +46,7 @@ class Listing extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Render
      */
     public function render()
     {
