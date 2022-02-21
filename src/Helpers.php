@@ -25,7 +25,7 @@ function breadcrumb($label)
 {
     if ($label === false) session()->forget('breadcrumbs');
     else {
-        $url = url()->current();
+        $url = rtrim(url()->current(), '/');
         $route = current_route();
         $crumb = array_merge(compact('label', 'url', 'route'), parse_url($url));
         $crumbs = collect(session('breadcrumbs'));
@@ -46,10 +46,10 @@ function breadcrumb($label)
         // update previous url if it's been changed
         $prevIndex = array_key_last($newCrumbs) - 1;
         $prevCrumb = $newCrumbs[$prevIndex];
-        $prevLatestUrl = url()->previous();
+        $prevLatestUrl = rtrim(url()->previous(), '/');
         $prevLatestInfo = parse_url($prevLatestUrl);
-    
-        if ($prevLatestInfo['path'] === $prevCrumb['path'] && $prevLatestUrl !== $prevCrumb['url']) {
+
+        if ($prevLatestUrl !== $prevCrumb['url'] && $prevLatestInfo['path'] === $prevCrumb['path']) {
             $prevCrumb = array_merge($prevCrumb, array_merge(
                 ['url' => $prevLatestUrl],
                 $prevLatestInfo
