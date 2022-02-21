@@ -55,6 +55,6 @@ class Page extends Model
             array_push($slugs, $page->slug);
         }
 
-        return $slugs;
+        return array_filter($slugs);
     }
 }
