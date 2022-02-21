@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Http\Livewire\App\Page;
 
 use Livewire\Component;
+use Illuminate\Support\Str;
 
 class Update extends Component
 {
@@ -24,11 +25,13 @@ class Update extends Component
      */
     public function getComponentNameProperty()
     {
-        if (file_exists(resource_path('views/livewire/app/page/' . $this->page->slug . '.blade.php'))) {
-            return 'app.page.' . $this->page->slug;
+        $name = $this->page->slug ?? Str::slug($this->page->name);
+
+        if (file_exists(resource_path('views/livewire/app/page/' . $name . '.blade.php'))) {
+            return 'app.page.' . $name;
         }
-        else if (file_exists(resource_path('views/livewire/app/page/' . $this->page->slug . '/index.blade.php'))) {
-            return 'app.page.' . $this->page->slug . '.index';
+        else if (file_exists(resource_path('views/livewire/app/page/' . $name . '/index.blade.php'))) {
+            return 'app.page.' . $name . '.index';
         }
         else {
             return 'atom.page.form';

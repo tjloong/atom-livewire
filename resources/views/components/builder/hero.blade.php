@@ -1,8 +1,4 @@
 @props([
-    'bgImg' => $image && $imagePosition === 'bg' ? $image : null,
-    'leftImg' => $image && $imagePosition === 'left' ? $image : null,
-    'rightImg' => $image && $imagePosition === 'right' ? $image : null,
-    'bottomImg' => $image && $imagePosition === 'bottom' ? $image : null,
     'container' => '3xl:max-w-screen-xl 3xl:mx-auto ' 
         . ($size === 'sm' ? 'min-h-[300px] ' : '')
         . ($size === 'lg' ? 'min-h-[500px] md:min-h-[600px] ' : '')
@@ -63,10 +59,10 @@
         @endif
     </div>
 
-@elseif ($bgImg)
+@elseif ($image['position'] === 'bg')
     <div
         class="{{ $container }} relative bg-center bg-no-repeat bg-cover flex flex-col"
-        style="background-image: url({{ $bgImg }});"
+        style="background-image: url({{ $image['url'] }});"
     >
         @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
 
@@ -78,17 +74,17 @@
         </x-builder.hero>
     </div>
 
-@elseif ($leftImg || $rightImg)
+@elseif (in_array($image['position'], ['left', 'right']))
     <div class="{{ $container }}">
         <div class="relative grid md:grid-cols-2">
             @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
 
             <img 
-                src="{{ $leftImg ?? $rightImg }}" 
-                class="w-full h-full relative object-cover {{ $rightImg ? 'order-last' : '' }}" 
+                src="{{ $image['url'] }}" 
+                class="w-full h-full relative object-cover {{ $image['position'] === 'right' ? 'order-last' : '' }}" 
                 width="1200" 
                 height="700" 
-                alt="{{ $attributes->get('image-alt') }}"
+                alt="{{ $image['alt'] }}"
             >
     
             <x-builder.hero content class="relative" :overlay="$overlay" :valign="$valign" :align="$align">
@@ -100,7 +96,7 @@
         </div>
     </div>
 
-@elseif ($bottomImg)
+@elseif (in_array($image['position'], ['top', 'bottom']))
     <div class="{{ $container }}">
         <div class="relative grid gap-6">
             @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
@@ -112,13 +108,13 @@
                 {{ $slot }}
             </x-builder.hero>
 
-            <div class="max-w-screen-xl mx-auto px-4 relative">
+            <div class="max-w-screen-xl mx-auto px-4 relative {{ $image['position'] === 'top' ? 'order-first' : 'order-last' }}">
                 <img 
-                    src="{{ $bottomImg }}" 
+                    src="{{ $image['url'] }}" 
                     class="rounded-lg drop-shadow" 
                     width="1200" 
                     height="700" 
-                    alt="{{ $attributes->get('image-alt') }}"
+                    alt="{{ $image['alt'] }}"
                 >
             </div>
         </div>
