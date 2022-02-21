@@ -32,23 +32,25 @@
             </figure>
         @endif
 
-        <div class="font-semibold {{ $dark ? 'text-gray-300' : 'text-gray-800' }}">
-            {{ $customer['name'] }}
+        <div class="grid">
+            <div class="font-semibold {{ $dark ? 'text-gray-300' : 'text-gray-800' }}">
+                {{ $customer['name'] }}
+            </div>
+    
+            @if ($customer['designation'])
+                <div class="text-sm text-gray-400 font-medium">{{ $customer['designation'] }}</div>
+            @endif
+    
+            @if ($customer['company'])
+                <div class="text-sm text-gray-400 font-medium">{{ $customer['company'] }}</div>
+            @endif
         </div>
-
-        @if ($customer['designation'])
-            <div class="text-sm text-gray-400 font-medium">{{ $customer['designation'] }}</div>
-        @endif
-
-        @if ($customer['company'])
-            <div class="text-sm text-gray-400 font-medium">{{ $customer['company'] }}</div>
-        @endif
     </div>
 
 @elseif (in_array($image['position'], ['left', 'right']))
     <div class="{{ $attributes->get('class') }}">
         <div class="max-w-screen-xl mx-auto px-6">
-            <div class="flex flex-wrap gap-10 md:flex-nowrap">
+            <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="flex-shrink-0 mx-auto {{ $image['position'] === 'left' ? 'order-first' : 'order-last' }}">
                     @if ($image['url'])
                         <figure class="drop-shadow overflow-hidden w-60 h-60 md:w-80 md:h-80 {{ $image['circle'] ? 'rounded-full' : 'rounded-xl' }}">

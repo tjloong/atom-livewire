@@ -17,7 +17,6 @@
         <x-slot name="head">
             <x-table head sort="title">Title</x-table>
             <x-table head>Status</x-table>
-            <x-table head>Category</x-table>
             <x-table head sort="updated_at" align="right">Updated At</x-table>
             <x-table head sort="created_at" align="right">Created At</x-table>
         </x-slot>
@@ -35,7 +34,6 @@
                 <x-table cell>
                     <x-badge>{{ $blog->status }}</x-badge>
                 </x-table>
-                <x-table cell>{{ $blog->category->name ?? '--' }}</x-table>
                 <x-table cell class="text-right">{{ format_date($blog->updated_at, 'human') }}</x-table>
                 <x-table cell class="text-right">{{ format_date($blog->created_at, 'human') }}</x-table>
             </x-table>
