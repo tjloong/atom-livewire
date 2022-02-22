@@ -46,9 +46,9 @@ if (!config('atom.static_site')) {
          */
         if (enabled_feature('tickets')) {
             Route::prefix('ticket')->group(function() {
-                Route::get('listing', Jiannius\Atom\Http\Livewire\App\Ticket\Listing::class)->name('ticket.listing');
-                Route::get('create', Jiannius\Atom\Http\Livewire\App\Ticket\Create::class)->name('ticket.create');
-                Route::get('{ticket}', Jiannius\Atom\Http\Livewire\App\Ticket\Update::class)->name('ticket.update');
+                define_route('listing', 'App\\Ticket\\Listing', 'ticket.listing');
+                define_route('create', 'App\\Ticket\\Create', 'ticket.create');
+                define_route('{ticket}', 'App\\Ticket\\Update', 'ticket.update');
             });
         }
 

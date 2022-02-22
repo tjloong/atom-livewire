@@ -30,7 +30,7 @@ class Comments extends Component
     /**
      * Get comments property
      */
-    public function getCommentsPropert()
+    public function getCommentsProperty()
     {
         return $this->ticket->comments()->orderBy('created_at', 'desc');
     }
