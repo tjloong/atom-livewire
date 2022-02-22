@@ -165,6 +165,7 @@ class AtomServiceProvider extends ServiceProvider
     {
         // web
         Livewire::component('atom.web.home', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Home');
+        Livewire::component('atom.web.blog', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Blog');
         Livewire::component('atom.web.contact', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Contact');
 
         // dashboard

@@ -26,7 +26,7 @@ class Create extends Component
     public function saved($id)
     {
         session()->flash('flash', 'Blog created::success');
-        return redirect()->route('blog.update', [$id, 'back' => $this->back]);
+        return redirect()->route('blog.update', [$id]);
     }
 
     /**

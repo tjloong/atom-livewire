@@ -29,6 +29,14 @@ class Blog extends Component
     {
         $this->isPreview = auth()->user() && request()->query('preview');
         $this->filters = array_filter([optional(Label::where('slug', $this->slug)->first())->slug]);
+
+        if ($this->blog) {
+            config([
+                'atom.seo.title' => $this->blog->seo->title ?? $this->blog->title,
+                'atom.seo.description' => $this->blog->seo->description ?? html_excerpt($this->blog->excerpt ?? $this->blog->content),
+                'atom.seo.image' => $this->blog->seo->image ?? $this->blog->cover->url ?? null,
+            ]);
+        }
     }
 
     /**

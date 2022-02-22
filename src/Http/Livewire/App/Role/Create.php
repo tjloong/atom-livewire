@@ -8,7 +8,6 @@ use Jiannius\Atom\Models\Role;
 class Create extends Component
 {
     public $role;
-    public $back;
 
     protected $rules = [
         'role.name' => 'required|unique:roles,name',
@@ -22,7 +21,6 @@ class Create extends Component
      */
     public function mount()
     {
-        $this->back = request()->query('back');
         $this->role = new Role([
             'name' => null,
             'scope' => 'restrict',
@@ -48,7 +46,7 @@ class Create extends Component
     {
         $this->validateInputs();
         $this->role->save();
-        return redirect()->route('role.update', [$this->role, 'back' => $this->back]);
+        return redirect()->route('role.update', [$this->role]);
     }
 
     /**
