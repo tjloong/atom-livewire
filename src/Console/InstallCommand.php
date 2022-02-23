@@ -309,6 +309,7 @@ class InstallCommand extends Command
             ['name' => 'phone', 'value' => null],
             ['name' => 'email', 'value' => null],
             ['name' => 'address', 'value' => null],
+            ['name' => 'briefs', 'value' => null],
             ['name' => 'facebook', 'value' => null],
             ['name' => 'instagram', 'value' => null],
             ['name' => 'twitter', 'value' => null],

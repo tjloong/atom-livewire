@@ -12,18 +12,19 @@ class SiteSetting extends Model
     public $timestamps = false;
 
     /**
-     * Scope for contact
+     * Scope for profile
      * 
      * @param Builder $query
      * @return Builder
      */
-    public function scopeContact($query)
+    public function scopeProfile($query)
     {
         return $query->whereIn('name', [
             'company', 
             'phone', 
             'email',
             'address',
+            'briefs',
         ]);
     }
 

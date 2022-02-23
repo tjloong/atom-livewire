@@ -1,7 +1,5 @@
-<form wire:submit.prevent="save" class="max-w-lg">
+<form wire:submit.prevent="submit" class="max-w-lg">
     <x-box>
-        <x-slot name="header">Google Map</x-slot>
-
         <div class="p-5">
             <x-input.text wire:model.defer="settings.gmap_api">
                 Google Map API Key

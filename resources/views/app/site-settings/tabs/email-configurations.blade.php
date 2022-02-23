@@ -1,7 +1,5 @@
-<form wire:submit.prevent="save" class="max-w-lg">
+<form wire:submit.prevent="submit" class="max-w-lg">
     <x-box>
-        <x-slot name="header">Email Configurations</x-slot>
-
         <div class="p-5">
             <x-input.text wire:model.defer="settings.notify_from" :error="$errors->first('settings.notify_from')" required>
                 Send Email Notification From

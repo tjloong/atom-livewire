@@ -88,7 +88,7 @@ if (!config('atom.static_site')) {
          * Site Settings
          */
         if (enabled_feature('site_settings')) {
-            Route::get('site-settings/{category?}', Jiannius\Atom\Http\Livewire\App\SiteSettings\Update::class)->name('site-settings');
+            define_route('site-settings/{tab?}', 'App\SiteSettings\Index', 'site-settings');
         }
 
         /**

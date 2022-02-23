@@ -1,6 +1,5 @@
-<form wire:submit.prevent="save" class="max-w-lg">
+<form wire:submit.prevent="submit" class="max-w-lg">
     <x-box>
-        <x-slot name="header">Social Media</x-slot>
         <div class="p-5">
             @foreach ($platforms as $platform)
                 <x-input.text wire:model.defer="settings.{{ $platform }}">

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\SiteSettings\Form;
+namespace Jiannius\Atom\Http\Livewire\App\SiteSettings\Tabs;
 
 use Livewire\Component;
 use Jiannius\Atom\Models\SiteSetting;
@@ -11,9 +11,7 @@ class SocialMedia extends Component
     public $platforms;
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
@@ -33,26 +31,22 @@ class SocialMedia extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Submit
      */
-    public function render()
-    {
-        return view('atom::app.site-settings.form.social-media');
-    }
-
-    /**
-     * Save settings
-     * 
-     * @return void
-     */
-    public function save()
+    public function submit()
     {
         foreach ($this->settings as $key => $value) {
             SiteSetting::where('name', $key)->update(['value' => $value]);
         }
 
         $this->dispatchBrowserEvent('toast', ['message' => 'Site Settings Updated', 'type' => 'success']);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.site-settings.tabs.social-media');
     }
 }

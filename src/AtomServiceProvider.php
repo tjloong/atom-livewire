@@ -232,14 +232,15 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.file.uploader', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader');
 
         // site settings
-        Livewire::component('atom.site-settings.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Update');
-        Livewire::component('atom.site-settings.form.contact', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\Contact');
-        Livewire::component('atom.site-settings.form.email', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\Email');
-        Livewire::component('atom.site-settings.form.seo', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\Seo');
-        Livewire::component('atom.site-settings.form.social-media', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\SocialMedia');
-        Livewire::component('atom.site-settings.form.storage', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\Storage');
-        Livewire::component('atom.site-settings.form.tracking', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\Tracking');
-        Livewire::component('atom.site-settings.form.gmap', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Form\\Gmap');
+        Livewire::component('atom.site-settings.index', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Index');
+        Livewire::component('atom.site-settings.tabs.site-profile', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\SiteProfile');
+        Livewire::component('atom.site-settings.tabs.site-seo', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\SiteSeo');
+        Livewire::component('atom.site-settings.tabs.site-tracking', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\SiteTracking');
+        Livewire::component('atom.site-settings.tabs.social-media', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\SocialMedia');
+        Livewire::component('atom.site-settings.tabs.whatsapp-bubble', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\WhatsappBubble');
+        Livewire::component('atom.site-settings.tabs.email-configurations', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\EmailConfigurations');
+        Livewire::component('atom.site-settings.tabs.storage', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\Storage');
+        Livewire::component('atom.site-settings.tabs.google-map', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\GoogleMap');
     }
 
     /**

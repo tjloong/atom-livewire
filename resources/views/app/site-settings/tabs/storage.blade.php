@@ -1,7 +1,5 @@
-<form wire:submit.prevent="save" class="max-w-lg">
+<form wire:submit.prevent="submit" class="max-w-lg">
     <x-box>
-        <x-slot name="header">Storage</x-slot>
-
         <div class="p-5">
             <x-input.select 
                 wire:model="settings.filesystem" 
