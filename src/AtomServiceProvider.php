@@ -10,11 +10,8 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Jiannius\Atom\Models\Ability;
 use Jiannius\Atom\Models\SiteSetting;
-use Jiannius\Atom\Console\ViewsCommand;
-use Jiannius\Atom\Console\AssetsCommand;
-use Jiannius\Atom\Console\LayoutsCommand;
+use Jiannius\Atom\Console\RemoveCommand;
 use Jiannius\Atom\Console\InstallCommand;
-use Jiannius\Atom\Console\FeaturesCommand;
 use Jiannius\Atom\Middleware\IsRole;
 use Jiannius\Atom\Middleware\TrackReferer;
 
@@ -314,18 +311,12 @@ class AtomServiceProvider extends ServiceProvider
             __DIR__.'/../stubs-static/tailwind.config.js' => base_path('tailwind.config.js'),
             __DIR__.'/../stubs-static/webpack.config.js' => base_path('webpack.config.js'),
             __DIR__.'/../stubs-static/webpack.mix.js' => base_path('webpack.mix.js'),
-            __DIR__.'/../resources/views/errors' => resource_path('views/errors'),
-            __DIR__.'/../resources/views/vendor' => resource_path('views/vendor'),
-        ], 'atom-installation-static');
-
-        $this->publishes([
             __DIR__.'/../stubs-static/resources/views/layouts' => resource_path('views/layouts'),
-        ], 'atom-layouts-static');
-
-        $this->publishes([
             __DIR__.'/../stubs-static/resources/css' => resource_path('css'),
             __DIR__.'/../stubs-static/resources/js' => resource_path('js'),
-        ], 'atom-assets-static');
+            __DIR__.'/../resources/views/errors' => resource_path('views/errors'),
+            __DIR__.'/../resources/views/vendor' => resource_path('views/vendor'),
+        ], 'atom-install-static');
     }
 
     /**
@@ -344,37 +335,32 @@ class AtomServiceProvider extends ServiceProvider
             __DIR__.'/../stubs/tailwind.config.js' => base_path('tailwind.config.js'),
             __DIR__.'/../stubs/webpack.config.js' => base_path('webpack.config.js'),
             __DIR__.'/../stubs/webpack.mix.js' => base_path('webpack.mix.js'),
-            __DIR__.'/../resources/views/errors' => resource_path('views/errors'),
-            __DIR__.'/../resources/views/vendor' => resource_path('views/vendor'),
-        ], 'atom-installation');
-
-        $this->publishes([
             __DIR__.'/../stubs/resources/views/layouts' => resource_path('views/layouts'),
-        ], 'atom-layouts');
-
-        $this->publishes([
             __DIR__.'/../stubs/resources/css' => resource_path('css'),
             __DIR__.'/../stubs/resources/js' => resource_path('js'),
-        ], 'atom-assets');
+            __DIR__.'/../resources/views/errors' => resource_path('views/errors'),
+            __DIR__.'/../resources/views/vendor' => resource_path('views/vendor'),
+        ], 'atom-install');
 
-        $features = [
-            'user', 'role', 'file', 'site-settings', 
-            'label', 'page', 'ability', 'team', 'blog', 'enquiry', 'ticket',
-        ];
-
-        foreach ($features as $feature) {
+        foreach ([
+            'app/user', 
+            'app/role', 
+            'app/file', 
+            'app/site-settings', 
+            'app/label', 
+            'app/page', 
+            'app/ability', 
+            'app/team', 
+            'app/blog', 
+            'app/enquiry', 
+            'app/ticket',
+            'auth',
+            'web',
+        ] as $module) {
             $this->publishes([
-                __DIR__.'/../resources/views/app/' . $feature => resource_path('views/vendor/atom/app/' . $feature),
-            ], 'atom-views-' . $feature);
+                __DIR__.'/../resources/views/'.$module => resource_path('views/vendor/atom/'.$module),
+            ], 'atom-views-'.(str_replace('app/', '', $module)));
         }
-
-        $this->publishes([
-            __DIR__.'/../resources/views/auth' => resource_path('views/vendor/atom/auth'),
-        ], 'atom-views-auth');
-
-        $this->publishes([
-            __DIR__.'/../resources/views/web' => resource_path('views/vendor/atom/web'),
-        ], 'atom-views-web');
     }
 
     /**
@@ -387,11 +373,8 @@ class AtomServiceProvider extends ServiceProvider
         if (!$this->app->runningInConsole()) return;
 
         $this->commands([
-            ViewsCommand::class,
-            AssetsCommand::class,
             InstallCommand::class,
-            LayoutsCommand::class,
-            FeaturesCommand::class,
+            RemoveCommand::class,
         ]);
     }
 }

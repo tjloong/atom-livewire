@@ -4,8 +4,10 @@
 
         <div class="border rounded-md overflow-hidden drop-shadow">
             <x-builder.hero
-                image-position="right"
-                image="https://images.unsplash.com/photo-1642940792376-7819eeaa84a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxN3x8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60"
+                :image="[
+                    'url' => 'https://images.unsplash.com/photo-1642940792376-7819eeaa84a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxN3x8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60',
+                    'position' => 'right',
+                ]"
             >
                 <x-slot name="title">
                     Lorem ipsum dolor sit amet consectetur.
