@@ -12,9 +12,7 @@ use App\Models\User;
 class InstallCommand extends Command
 {
     protected $signature = 'atom:install
-                            {modules? : Modules to be installed. Separate multiple modules with comma.}
-                            {--force : Force publishing.}
-                            {--static : Install static site.}';
+                            {modules? : Modules to be installed. Separate multiple modules with comma.}';
 
     protected $description = 'Install Atom and it\'s modules.';
 
@@ -56,10 +54,7 @@ class InstallCommand extends Command
      */
     public function handle()
     {
-        if ($this->option('static')) {
-            $this->installStaticSite();
-        }
-        else if (!$this->hasRunMigrationBefore()) {
+        if (!$this->hasRunMigrationBefore()) {
             $this->newLine();
             $this->error('You have not run any migration yet. Please run the migration for the first time before installing Atom.');
             $this->newLine();
@@ -119,7 +114,6 @@ class InstallCommand extends Command
     {
         $this->newLine();
         $this->info('Installing tickets...');
-        $this->publish('atom-views-ticket');
 
         if (Schema::hasTable('tickets')) $this->warn('tickets table exists, skipped.');
         else {
@@ -162,7 +156,6 @@ class InstallCommand extends Command
     {
         $this->newLine();
         $this->info('Installing enquiries...');
-        $this->publish('atom-views-enquiry');
 
         if (Schema::hasTable('enquiries')) $this->warn('enquiries table exists, skipped.');
         else {
@@ -189,7 +182,6 @@ class InstallCommand extends Command
     {
         $this->newLine();
         $this->info('Installing blogs...');
-        $this->publish('atom-views-blog');
 
         if (!Schema::hasTable('labels')) $this->installLabels();
 
@@ -237,7 +229,6 @@ class InstallCommand extends Command
     {
         $this->newLine();
         $this->info('Installing teams...');
-        $this->publish('atom-views-team');
 
         if (Schema::hasTable('teams')) $this->warn('teams table exists, skipped.');
         else {
@@ -274,7 +265,6 @@ class InstallCommand extends Command
     {
         $this->newLine();
         $this->info('Installing pages...');
-        $this->publish('atom-views-page');
 
         if (Schema::hasTable('pages')) $this->warn('pages table exists, skipped.');
         else {
@@ -340,7 +330,6 @@ class InstallCommand extends Command
     {
         $this->newLine();
         $this->info('Installing labels...');
-        $this->publish('atom-views-label');
 
         if (Schema::hasTable('labels')) $this->warn('labels table exists, skipped.');
         else {
@@ -365,7 +354,6 @@ class InstallCommand extends Command
     {
         $this->newLine();
         $this->info('Installing abilities...');
-        $this->publish('atom-views-ability');
 
         if (Schema::hasTable('abilities')) $this->warn('abilities table exists, skipped.');
         else {
@@ -592,7 +580,11 @@ class InstallCommand extends Command
     {
         DB::table('migrations')->where('migration', $this->baseMigrationName)->delete();
 
-        $this->publish('atom-install');
+        $this->call('vendor:publish', [
+            '--provider' => AtomServiceProvider::class,
+            '--tag' => 'atom-install',
+            '--force' => true,
+        ]);
 
         // base
         $this->newLine();
@@ -621,18 +613,6 @@ class InstallCommand extends Command
     }
 
     /**
-     * Install static site
-     */
-    private function installStaticSite()
-    {
-        $this->call('vendor:publish', [
-            '--provider' => AtomServiceProvider::class,
-            '--tag' => 'atom-install-static',
-            '--force' => $this->option('force'),
-        ]);
-    }
-
-    /**
      * Check migration has run before
      */
     private function hasRunMigrationBefore()
@@ -646,18 +626,6 @@ class InstallCommand extends Command
     private function isBaseInstalled()
     {
         return DB::table('migrations')->where('migration', $this->baseMigrationName)->count() > 0;
-    }
-
-    /**
-     * Publishing files
-     */
-    private function publish($tag)
-    {
-        $this->call('vendor:publish', [
-            '--provider' => AtomServiceProvider::class,
-            '--tag' => $tag,
-            '--force' => $this->option('force'),
-        ]);
     }
 
     /**

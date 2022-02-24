@@ -105,8 +105,10 @@ function enabled_feature($feature)
 /**
  * Define route
  */
-function define_route($path, $action, $name, $method = 'get')
+function define_route($path, $action, $method = 'get')
 {
+    if (is_callable($action)) return Route::$method($path, $action);
+
     $isController = Str::is('*Controller@*', $action);
     $namespacePrefix = $isController ? 'Jiannius\\Atom\\Http\\Controllers\\' : 'Jiannius\\Atom\\Http\\Livewire\\';
     $tryNamespacePrefix = $isController ? 'App\\Http\\Controllers\\' : 'App\\Http\\Livewire\\';
@@ -116,10 +118,10 @@ function define_route($path, $action, $name, $method = 'get')
         ? $tryNamespacePrefix . $className
         : $namespacePrefix . $className;
 
-    Route::$method(
+    return Route::$method(
         $path, 
         $classMethod ? [$fullClass, $classMethod] : $fullClass
-    )->name($name);
+    );
 }
 
 /**

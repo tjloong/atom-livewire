@@ -12,6 +12,7 @@ use Jiannius\Atom\Models\Ability;
 use Jiannius\Atom\Models\SiteSetting;
 use Jiannius\Atom\Console\RemoveCommand;
 use Jiannius\Atom\Console\InstallCommand;
+use Jiannius\Atom\Console\PublishCommand;
 use Jiannius\Atom\Middleware\IsRole;
 use Jiannius\Atom\Middleware\TrackReferer;
 
@@ -376,6 +377,7 @@ class AtomServiceProvider extends ServiceProvider
         $this->commands([
             InstallCommand::class,
             RemoveCommand::class,
+            PublishCommand::class,
         ]);
     }
 }

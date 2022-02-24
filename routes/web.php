@@ -4,30 +4,25 @@ use Jiannius\Atom\Models\Page;
 use Illuminate\Support\Facades\Route;
 
 if (!config('atom.static_site')) {
-    define_route('__sitemap', 'SitemapController@index', '__sitemap');
-    define_route('__export/{filename}', 'ExportController@download', '__export');
+    define_route('__sitemap', 'SitemapController@index')->name('__sitemap');
+    define_route('__export/{filename}', 'ExportController@download')->name('__export');
 
     Route::prefix('app')->middleware('auth')->group(function() {
-        Route::get('/', fn() => redirect()->route('dashboard'))->name('app.home');
+        define_route('/', fn() => redirect()->route('dashboard'))->name('app.home');
 
         /**
          * Dashboard
          */
-        Route::get('dashboard', Jiannius\Atom\Http\Livewire\App\Dashboard::class)->name('dashboard');
+        define_route('dashboard', 'App\\Dashboard')->name('dashboard');
 
         /**
          * Blogs
          */
         if (enabled_feature('blogs')) {
             Route::prefix('blog')->group(function () {
-                try { Route::get('listing', App\Http\Livewire\App\Blog\Listing::class)->name('blog.listing'); }
-                catch (Exception $e) { Route::get('listing', Jiannius\Atom\Http\Livewire\App\Blog\Listing::class)->name('blog.listing'); }
-
-                try { Route::get('create', App\Http\Livewire\App\Blog\Create::class)->name('blog.create'); }
-                catch (Exception $e) { Route::get('create', Jiannius\Atom\Http\Livewire\App\Blog\Create::class)->name('blog.create'); }
-                
-                try { Route::get('{blog}/{tab?}', App\Http\Livewire\App\Blog\Update::class)->name('blog.update'); }
-                catch (Exception $e) { Route::get('{blog}/{tab?}', Jiannius\Atom\Http\Livewire\App\Blog\Update::class)->name('blog.update'); }
+                define_route('listing', 'App\\Blog\\Listing')->name('blog.listing');
+                define_route('create', 'App\\Blog\\Create')->name('blog.create');
+                define_route('{blog}/{tab?}', 'App\\Blog\\Update')->name('blog.update');
             });
         }
 
@@ -36,8 +31,8 @@ if (!config('atom.static_site')) {
          */
         if (enabled_feature('enquiries')) {
             Route::prefix('enquiry')->group(function () {
-                Route::get('listing',  Jiannius\Atom\Http\Livewire\App\Enquiry\Listing::class)->name('enquiry.listing');
-                Route::get('{enquiry}', Jiannius\Atom\Http\Livewire\App\Enquiry\Update::class)->name('enquiry.update');
+                define_route('listing',  'App\\Enquiry\\Listing')->name('enquiry.listing');
+                define_route('{enquiry}', 'App\\Enquiry\\Update')->name('enquiry.update');
             });
         }
 
@@ -46,9 +41,9 @@ if (!config('atom.static_site')) {
          */
         if (enabled_feature('tickets')) {
             Route::prefix('ticket')->group(function() {
-                define_route('listing', 'App\\Ticket\\Listing', 'ticket.listing');
-                define_route('create', 'App\\Ticket\\Create', 'ticket.create');
-                define_route('{ticket}', 'App\\Ticket\\Update', 'ticket.update');
+                define_route('listing', 'App\\Ticket\\Listing')->name('ticket.listing');
+                define_route('create', 'App\\Ticket\\Create')->name('ticket.create');
+                define_route('{ticket}', 'App\\Ticket\\Update')->name('ticket.update');
             });
         }
 
@@ -57,8 +52,8 @@ if (!config('atom.static_site')) {
          */
         if (enabled_feature('pages')) {
             Route::prefix('page')->group(function () {
-                Route::get('listing',  Jiannius\Atom\Http\Livewire\App\Page\Listing::class)->name('page.listing');
-                Route::get('{id}', Jiannius\Atom\Http\Livewire\App\Page\Update::class)->name('page.update');
+                define_route('listing',  'App\\Page\\Listing')->name('page.listing');
+                define_route('{id}', 'App\\Page\\Update')->name('page.update');
             });
         }
     
@@ -67,9 +62,9 @@ if (!config('atom.static_site')) {
          */
         if (enabled_feature('teams')) {
             Route::prefix('team')->group(function () {
-                Route::get('listing', Jiannius\Atom\Http\Livewire\App\Team\Listing::class)->name('team.listing');
-                Route::get('create', Jiannius\Atom\Http\Livewire\App\Team\Create::class)->name('team.create');
-                Route::get('{team}', Jiannius\Atom\Http\Livewire\App\Team\Update::class)->name('team.update');
+                define_route('listing', 'App\\Team\\Listing')->name('team.listing');
+                define_route('create', 'App\\Team\\Create')->name('team.create');
+                define_route('{team}', 'App\\Team\\Update')->name('team.update');
             });
         }
     
@@ -78,9 +73,9 @@ if (!config('atom.static_site')) {
          */
         if (enabled_feature('labels')) {
             Route::prefix('label')->group(function () {
-                Route::get('listing/{type?}', Jiannius\Atom\Http\Livewire\App\Label\Listing::class)->name('label.listing');
-                Route::get('create/{type}', Jiannius\Atom\Http\Livewire\App\Label\Create::class)->name('label.create');
-                Route::get('{id}', Jiannius\Atom\Http\Livewire\App\Label\Update::class)->name('label.update');
+                define_route('listing/{type?}', 'App\\Label\\Listing')->name('label.listing');
+                define_route('create/{type}', 'App\\Label\\Create')->name('label.create');
+                define_route('{id}', 'App\\Label\\Update')->name('label.update');
             });
         }
     
@@ -88,50 +83,45 @@ if (!config('atom.static_site')) {
          * Site Settings
          */
         if (enabled_feature('site_settings')) {
-            define_route('site-settings/{tab?}', 'App\SiteSettings\Index', 'site-settings');
+            define_route('site-settings/{tab?}', 'App\SiteSettings\Index')->name('site-settings');
         }
 
         /**
          * Roles
          */
         Route::prefix('role')->group(function () {
-            Route::get('listing', Jiannius\Atom\Http\Livewire\App\Role\Listing::class)->name('role.listing');
-            Route::get('create', Jiannius\Atom\Http\Livewire\App\Role\Create::class)->name('role.create');
-            Route::get('{role}', Jiannius\Atom\Http\Livewire\App\Role\Update::class)->name('role.update');
+            define_route('listing', 'App\\Role\\Listing')->name('role.listing');
+            define_route('create', 'App\\Role\\Create')->name('role.create');
+            define_route('{role}', 'App\\Role\\Update')->name('role.update');
         });
 
         /**
          * Users
          */
         Route::prefix('user')->group(function () {
-            Route::get('account', Jiannius\Atom\Http\Livewire\App\User\Account::class)->name('user.account');
-            Route::get('listing', Jiannius\Atom\Http\Livewire\App\User\Listing::class)->name('user.listing');
-            Route::get('create', Jiannius\Atom\Http\Livewire\App\User\Create::class)->name('user.create');
-            Route::get('{user}', Jiannius\Atom\Http\Livewire\App\User\Update::class)->name('user.update');
+            define_route('account', 'App\\User\\Account')->name('user.account');
+            define_route('listing', 'App\\User\\Listing')->name('user.listing');
+            define_route('create', 'App\\User\\Create')->name('user.create');
+            define_route('{user}', 'App\\User\\Update')->name('user.update');
         });
     
         /**
          * Files
          */
-        Route::get('files', Jiannius\Atom\Http\Livewire\App\File\Listing::class)->name('files');
+        define_route('files', 'App\\File\\Listing')->name('files');
     });
-
 }
 
 if (enabled_feature('blogs')) {
-    try { Route::get('blogs/{slug?}', App\Http\Livewire\Web\Blog::class)->name('blogs'); }
-    catch (Exception $e) { Route::get('blogs/{slug?}', Jiannius\Atom\Http\Livewire\Web\Blog::class)->name('blogs'); }
+    define_route('blogs/{slug?}', 'Web\\Blog')->name('blogs');
 }
 
-Route::get('contact', Jiannius\Atom\Http\Livewire\Web\Contact::class)->name('contact');
-Route::get('contact/thank-you', Jiannius\Atom\Http\Livewire\Web\ContactSent::class)->name('contact.sent');
+define_route('contact', 'Web\\Contact')->name('contact');
+define_route('contact/thank-you', 'Web\\ContactSent')->name('contact.sent');
 
 if (enabled_feature('pages') && !app()->runningInConsole()) {
     $slugs = Page::getSlugs();
-
-    Route::get('{slug}', \Jiannius\Atom\Http\Livewire\Web\Page::class)
-        ->name('page')
-        ->where(['slug' => '(' . implode('|', $slugs) . ')']);
+    define_route('{slug}', 'Web\Page')->name('page')->where(['slug' => '(' . implode('|', $slugs) . ')']);
 }
 
-Route::get('/', Jiannius\Atom\Http\Livewire\Web\Home::class)->name('home');
+define_route('/', 'Web\\Home')->name('home');

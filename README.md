@@ -9,8 +9,7 @@ composer create-project laravel/laravel <project-name>
 cd <project-name>
 npm install
 
-// optional if using LEMP environment
-// if using Laravel Valet or Laravel Forge, this is done automatically
+// You don't need this if using Laravel Forge or Laravel Valet
 sudo chown www-data:www-data storage -R
 sudo chmod 777 storage -R
 sudo chmod 777 bootstrap -R
@@ -20,7 +19,7 @@ sudo chmod 777 bootstrap -R
 
 ```
 composer require jiannius/atom-livewire
-php artisan atom:install --static --force
+php artisan atom:publish --static
 npm install
 npm run dev
 ```
@@ -45,8 +44,7 @@ composer create-project laravel/laravel <project-name>
 cd <project-name>
 npm install
 
-// optional if using LEMP environment
-// if using Laravel Valet or Laravel Forge, this is done automatically
+// You don't need this if using Laravel Forge or Laravel Valet
 sudo chown www-data:www-data storage -R
 sudo chmod 777 storage -R
 sudo chmod 777 bootstrap -R
@@ -60,25 +58,35 @@ DB_USERNAME=root
 DB_PASSWORD=password
 ```
 
-4. Install Atom
+4. Run migration
 
 ```
-composer require jiannius/atom-livewire
-php artisan atom:install --force
-npm install
-npm run dev
+php artisan migrate
 ```
 
 5. Install Amazon S3 driver for file upload feature
 
 ```
-composer require --with-all-dependencies league/flysystem-aws-s3-v3 "^1.0"
+composer require -W league/flysystem-aws-s3-v3 "^3.0"
 ```
 
-6. Enable features in config/atom.php
-
-7. Run Atom features installer
+6. Install Atom
 
 ```
-php artisan atom:features
+composer require jiannius/atom-livewire
+php artisan atom:install
+npm install
+npm run dev
+```
+
+7. Install modules
+
+```
+php artisan atom:install
+```
+
+8. Optional: Publish module's views for customisation.
+
+```
+php artisan atom:publish
 ```
