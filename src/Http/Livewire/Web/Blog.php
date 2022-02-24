@@ -65,7 +65,8 @@ class Blog extends Component
             ->when($this->filters, fn($q) => $q
                 ->whereHas('labels', fn($q) => $q->whereIn('labels.slug', $this->filters))
             )
-            ->latest()
+            ->orderBy('published_at', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(30);
     }
 
@@ -77,7 +78,8 @@ class Blog extends Component
         return BlogModel::query()
             ->status('published')
             ->where('slug', '<>', $this->slug)
-            ->latest()
+            ->orderBy('published_at', 'desc')
+            ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
     }
