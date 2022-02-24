@@ -65,6 +65,7 @@ class Blog extends Component
             ->when($this->filters, fn($q) => $q
                 ->whereHas('labels', fn($q) => $q->whereIn('labels.slug', $this->filters))
             )
+            ->latest()
             ->paginate(30);
     }
 
