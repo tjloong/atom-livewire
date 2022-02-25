@@ -14,6 +14,12 @@ class Update extends Component
     public $search;
     public $readonly;
 
+    protected $messages = [
+        'role.name.required' => 'Role name is required.',
+        'role.name.unique' => 'There is another role with the same name.',
+        'role.scope.required' => 'Please select a scope.',
+    ];
+
     protected function rules()
     {
         return [
@@ -27,47 +33,41 @@ class Update extends Component
 
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
+        breadcrumb($this->role->name);
+
         $this->scopes = $this->getScopes();
         $this->readonly = $this->role->exists && $this->role->is_system;
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Get users property
      */
-    public function render()
+    public function getUsersProperty()
     {
-        return view('atom::app.role.update', [
-            'users' => User::query()
-                ->when($this->search, fn($q) => $q->search($this->search))
-                ->where('role_id', $this->role->id)
-                ->orderBy('name')
-                ->get(),
-        ]);
+        return User::query()
+            ->when($this->search, fn($q) => $q->search($this->search))
+            ->where('role_id', $this->role->id)
+            ->orderBy('name');
     }
 
     /**
-     * Save role
-     * 
-     * @return void
+     * Submit
      */
-    public function save()
+    public function submit()
     {
-        $this->validateInputs();
+        $this->resetValidation();
+        $this->validate();
+
         $this->role->save();
+        
         $this->dispatchBrowserEvent('toast', ['message' => 'Role Updated', 'type' => 'success']);
     }
 
     /**
-     * Duplicate role
-     * 
-     * @return void
+     * Duplicate
      */
     public function duplicate()
     {
@@ -84,30 +84,7 @@ class Update extends Component
     }
 
     /**
-     * Validate inputs
-     * 
-     * @return void
-     */
-    public function validateInputs()
-    {
-        $this->resetValidation();
-
-        $validator = validator(['role' => $this->role], $this->rules(), [
-            'role.name.required' => 'Role name is required.',
-            'role.name.unique' => 'There is another role with the same name.',
-            'role.scope.required' => 'Please select a scope.',
-        ]);
-
-        if ($validator->fails()) {
-            $this->dispatchBrowserEvent('toast', 'formError');
-            $validator->validate();
-        }
-    }
-
-    /**
-     * Delete role
-     * 
-     * @return void
+     * Delete
      */
     public function delete()
     {
@@ -127,8 +104,6 @@ class Update extends Component
 
     /**
      * Get scopes
-     * 
-     * @return Collection
      */
     private function getScopes()
     {
@@ -141,8 +116,6 @@ class Update extends Component
 
     /**
      * Get assignable users
-     * 
-     * @return User
      */
     public function getAssignableUsers($page, $text = null)
     {
@@ -155,8 +128,6 @@ class Update extends Component
 
     /**
      * Assign user to role
-     * 
-     * @return void
      */
     public function assignUser($id)
     {
@@ -165,5 +136,15 @@ class Update extends Component
         $user->saveQuietly();
 
         $this->dispatchBrowserEvent('toast', ['message' => 'User assigned to role', 'type' => 'success']);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.role.update', [
+            'users' => $this->users->get(),
+        ]);
     }
 }

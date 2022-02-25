@@ -10,40 +10,51 @@ class Listing extends Component
 {
     use WithPagination;
 
-    public $search;
     public $sortBy = 'name';
     public $sortOrder = 'asc';
+    public $filters = ['search' => ''];
 
     protected $queryString = [
-        'search', 
+        'filters', 
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
         'page' => ['except' => 1],
     ];
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Mount
+     */
+    public function mount()
+    {
+        breadcrumb_home('Roles');
+    }
+
+    /**
+     * Get roles property
+     */
+    public function getRolesProperty()
+    {
+        return Role::query()
+            ->withCount('users')
+            ->filter($this->filters)
+            ->orderBy($this->sortBy, $this->sortOrder);
+    }
+
+    /**
+     * Updated filters
+     */
+    public function updatedFilters()
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Render
      */
     public function render()
     {
         return view('atom::app.role.listing', [
-            'roles' => Role::query()
-                ->withCount('users')
-                ->when($this->search, fn($q) => $q->search($this->search))
-                ->orderBy($this->sortBy, $this->sortOrder)
-                ->paginate(30),
+            'roles' => $this->roles->paginate(30),
         ]);
-    }
-
-    /**
-     * Updating search property
-     * 
-     * @return void
-     */
-    public function updatingSearch()
-    {
-        $this->resetPage();
     }
 }

@@ -1,7 +1,7 @@
 <div class="max-w-lg mx-auto">
     <x-page-header title="Create Role" back/>
 
-    <form wire:submit.prevent="save">
+    <form wire:submit.prevent="submit">
         <x-box>
             <div class="p-5">
                 <x-input.text wire:model.defer="role.name" :error="$errors->first('role.name')" required>

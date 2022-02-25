@@ -1,6 +1,6 @@
 <div class="max-w-screen-md mx-auto">
     <x-page-header title="Roles">
-        <x-button icon="plus" href="{{ route('role.create', ['back' => url()->current()]) }}">
+        <x-button icon="plus" href="{{ route('role.create') }}">
             New Role
         </x-button>
     </x-page-header>
@@ -21,7 +21,7 @@
                 </x-table>
                 
                 <x-table cell class="text-right">
-                    {{ $role->users_count }} {{ \Illuminate\Support\Str::of('user')->plural($role->users_count) }}
+                    {{ $role->users_count }} {{ str('user')->plural($role->users_count) }}
                 </x-table>
             </x-table>
         @endforeach

@@ -97,7 +97,7 @@
                         </template>
         
                         <template x-if="!options.length && !loading">
-                            <x-empty-state/>
+                            <x-empty-state subtitle=""/>
                         </template>
                     </div>
                 </div>

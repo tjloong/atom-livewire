@@ -14,13 +14,18 @@ class Create extends Component
         'role.scope' => 'required',
     ];
 
+    protected $messages = [
+        'role.name.required' => 'Role name is required.',
+        'role.name.unique' => 'There is another role with the same name.',
+    ];
+
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
+        breadcrumb('Create Role');
+
         $this->role = new Role([
             'name' => null,
             'scope' => 'restrict',
@@ -28,44 +33,23 @@ class Create extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Submit
      */
-    public function render()
+    public function submit()
     {
-        return view('atom::app.role.create');
-    }
+        $this->resetValidation();
+        $this->validate();
 
-    /**
-     * Save role
-     * 
-     * @return void
-     */
-    public function save()
-    {
-        $this->validateInputs();
         $this->role->save();
+
         return redirect()->route('role.update', [$this->role]);
     }
 
     /**
-     * Validate inputs
-     * 
-     * @return void
+     * Render
      */
-    public function validateInputs()
+    public function render()
     {
-        $this->resetValidation();
-
-        $validator = validator(['role' => $this->role], $this->rules, [
-            'role.name.required' => 'Role name is required.',
-            'role.name.unique' => 'There is another role with the same name.',
-        ]);
-
-        if ($validator->fails()) {
-            $this->dispatchBrowserEvent('toast', 'formError');
-            $validator->validate();
-        }
+        return view('atom::app.role.create');
     }
 }

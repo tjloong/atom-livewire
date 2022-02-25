@@ -26,7 +26,7 @@
             </div>
         </x-box>
     @else
-        <form wire:submit.prevent="save">
+        <form wire:submit.prevent="submit">
             <x-box>
                 <div class="p-5">
                     <x-input.text wire:model.defer="role.name" required>
@@ -80,7 +80,7 @@
             </div>
         </x-box>
     @else
-        <form wire:submit.prevent="save">
+        <form wire:submit.prevent="submit">
             <x-box>
                 <x-slot name="header">Data Scope</x-slot>
     
@@ -114,19 +114,21 @@
         <x-slot name="header">
             <div class="flex items-center justify-between">
                 <div>Users</div>
-                <x-input.picker wire:input="assignUser" getter="getAssignableUsers">
-                    <x-slot name="title">Assign User</x-slot>
-                    <x-slot name="trigger">
-                        <a class="text-xs text-theme flex items-center">
-                            <x-icon name="plus" size="18px"/> Assign
-                        </a>
-                    </x-slot>
-    
-                    <x-slot name="item">
-                        <div class="font-medium" x-text="opt.name"></div>
-                        <div class="text-xs text-gray-500 font-normal" x-text="opt.email"></div>
-                    </x-slot>
-                </x-input.picker>    
+
+                <div>
+                    <x-input.picker wire:input="assignUser" getter="getAssignableUsers">
+                        <x-slot name="title">Assign User</x-slot>
+                        
+                        <x-slot name="trigger">
+                            <x-button color="gray" size="xs" icon="plus">Assign</x-button>
+                        </x-slot>
+        
+                        <x-slot name="item">
+                            <div class="font-medium" x-text="opt.name"></div>
+                            <div class="text-xs text-gray-500 font-normal" x-text="opt.email"></div>
+                        </x-slot>
+                    </x-input.picker>    
+                </div>
             </div>
         </x-slot>
 
