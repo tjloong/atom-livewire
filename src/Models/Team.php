@@ -4,11 +4,13 @@ namespace Jiannius\Atom\Models;
 
 use App\Models\User;
 use Jiannius\Atom\Traits\HasOwner;
+use Jiannius\Atom\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
 {
     use HasOwner;
+    use HasFilters;
     
     protected $guarded = [];
 

@@ -19,33 +19,24 @@ class Update extends Component
 
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
-        //
+        breadcrumb($this->team->name);
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Get users property
      */
-    public function render()
+    public function getUsersProperty()
     {
-        return view('atom::app.team.update', [
-            'users' => User::query()
-                ->when($this->search, fn($q) => $q->search($this->search))
-                ->teamId($this->team->id)
-                ->get(),
-        ]);
+        return User::query()
+            ->when($this->search, fn($q) => $q->search($this->search))
+            ->teamId($this->team->id);
     }
 
     /**
-     * Saved action
-     * 
-     * @return void
+     * Saved
      */
     public function saved()
     {
@@ -53,9 +44,7 @@ class Update extends Component
     }
 
     /**
-     * Delete team
-     * 
-     * @return void
+     * Delete
      */
     public function delete()
     {
@@ -68,8 +57,6 @@ class Update extends Component
 
     /**
      * Get assignable users
-     * 
-     * @return User
      */
     public function getAssignableUsers($page, $text = null)
     {
@@ -81,8 +68,6 @@ class Update extends Component
 
     /**
      * Assign user to team
-     * 
-     * @return void
      */
     public function assignUser($id)
     {
@@ -93,13 +78,21 @@ class Update extends Component
 
     /**
      * Remove user from team
-     * 
-     * @return void
      */
     public function removeUser($id)
     {
         $user = User::find($id);
         $user->leaveTeam($this->team->id);
         $this->dispatchBrowserEvent('toast', ['message' => 'User leaved team']);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.team.update', [
+            'users' => $this->users->get(),
+        ]);
     }
 }

@@ -11,13 +11,13 @@ class Listing extends Component
     use WithPagination;
 
     public $user;
-    public $search;
-    public $fullmode;
     public $sortBy = 'name';
     public $sortOrder = 'asc';
+    public $showHeader = true;
+    public $filters = ['search' => ''];
 
     protected $queryString = [
-        'search', 
+        'filters',
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
         'page' => ['except' => 1],
@@ -25,37 +25,38 @@ class Listing extends Component
 
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
-        $this->fullmode = current_route() === 'team.listing';
+        breadcrumb_home('Teams');
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Get teams property
+     */
+    public function getTeamsProperty()
+    {
+        return Team::withCount('users')
+            ->filter($this->filters)
+            ->when($this->user, fn($q) => $q->userId($this->user->id))
+            ->orderBy($this->sortBy, $this->sortOrder);
+    }
+
+    /**
+     * Updated filters
+     */
+    public function updatedFilters()
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Render
      */
     public function render()
     {
         return view('atom::app.team.listing', [
-            'teams' => Team::withCount('users')
-                ->when($this->search, fn($q) => $q->search($this->search))
-                ->when($this->user, fn($q) => $q->userId($this->user->id))
-                ->orderBy($this->sortBy, $this->sortOrder)
-                ->paginate(30),
+            'teams' => $this->teams->paginate(30),
         ]);
-    }
-
-    /**
-     * Updating search property
-     * 
-     * @return void
-     */
-    public function updatingSearch()
-    {
-        $this->resetPage();
     }
 }

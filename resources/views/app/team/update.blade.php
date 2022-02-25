@@ -17,24 +17,24 @@
     <x-box>
         <x-slot name="header">
             <div class="flex flex-wrap items-center justify-between">
-                <div class="flex-shrink-0">
+                <div class="flex-shrink-0" x-tooltip="test">
                     Team Members
                 </div>
 
-                <x-input.picker wire:input="assignUser" getter="getAssignableUsers">
-                    <x-slot name="title">Assign User</x-slot>
-                    
-                    <x-slot name="trigger">
-                        <a class="text-xs flex items-center space-x-1">
-                            <x-icon name="plus" size="16px"/> Assign
-                        </a>
-                    </x-slot>
-            
-                    <x-slot name="item">
-                        <div class="font-medium truncate" x-text="opt.name"></div>
-                        <div class="text-xs text-gray-500" x-text="opt.email"></div>
-                    </x-slot>
-                </x-input.picker>
+                <div>
+                    <x-input.picker wire:input="assignUser" getter="getAssignableUsers">
+                        <x-slot name="title">Assign User</x-slot>
+                        
+                        <x-slot name="trigger">
+                            <x-button color="gray" size="xs" icon="plus">Assign</x-button>
+                        </x-slot>
+                
+                        <x-slot name="item">
+                            <div class="font-medium truncate" x-text="opt.name"></div>
+                            <div class="text-xs text-gray-500" x-text="opt.email"></div>
+                        </x-slot>
+                    </x-input.picker>
+                </div>
             </div>
         </x-slot>
         
@@ -42,9 +42,9 @@
             <x-input.search placeholder="Search team members"/>
         </div>
 
-        <div class="grid divide-y max-h-96 overflow-auto">
+        <div class="grid divide-y">
             @forelse($users as $user)
-                <div class="py-2 px-4 flex space-x-2 hover:bg-gray-100">
+                <div class="py-2 px-4 flex gap-2 hover:bg-gray-100">
                     <a href="{{ route('user.update', [$user]) }}" class="text-gray-800 flex-grow">
                         <div class="font-semibold">
                             {{ $user->name }}
@@ -54,7 +54,12 @@
                         </div>
                     </a>
 
-                    <a x-tooltip="Remove" wire:click="removeUser({{ $user->id }})" class="text-red-500 flex-shrink-0">
+                    <a x-tooltip="Remove" class="text-red-500 flex-shrink-0" x-on:click="$dispatch('confirm', {
+                        title: 'Remove User',
+                        message: 'Remove user from team?',
+                        type: 'error',
+                        onConfirmed: () => $wire.removeUser({{ $user->id }}),
+                    })">
                         <x-icon name="minus-circle"/>
                     </a>
                 </div>

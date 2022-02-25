@@ -1,4 +1,4 @@
-<form wire:submit.prevent="save">
+<form wire:submit.prevent="submit">
     <x-box>
         <div class="p-5">
             <x-input.text wire:model.defer="team.name" :error="$errors->first('team.name')" required>
@@ -11,7 +11,7 @@
         </div>
 
         <x-slot name="buttons">
-            <x-button type="submit" icon="check" color="green" wire:loading.class="loading">
+            <x-button type="submit" icon="check" color="green">
                 Save Team
             </x-button>
         </x-slot>

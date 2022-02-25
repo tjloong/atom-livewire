@@ -1,5 +1,5 @@
 <div class="max-w-screen-md mx-auto">
-    @if ($fullmode)
+    @if ($showHeader)
         <x-page-header title="Teams">
             <x-button icon="plus" href="{{ route('team.create') }}">
                 New Team
@@ -33,12 +33,12 @@
                 </x-table>
                 
                 <x-table cell class="text-right">
-                    {{ $team->users_count }} {{ Illuminate\Support\Str::of('member')->plural($team->users_count) }}
+                    {{ $team->users_count }} {{ str('member')->plural($team->users_count) }}
                 </x-table>
 
                 @if ($user)
                     <x-table cell width="50">
-                        <x-table.button 
+                        <x-button 
                             color="red" 
                             icon="x-circle" 
                             tooltip="Leave Team"

@@ -9,6 +9,11 @@ class Form extends Component
 {
     public $team;
 
+    protected $messages = [
+        'team.name.required' => 'Team name is required.',
+        'team.name.unique' => 'There is another team with the same name.',
+    ];
+
     protected function rules()
     {
         return [
@@ -21,9 +26,7 @@ class Form extends Component
     }
 
     /**
-     * Mount component
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
@@ -31,23 +34,12 @@ class Form extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Submit
      */
-    public function render()
+    public function submit()
     {
-        return view('atom::app.team.form');
-    }
-
-    /**
-     * Save team
-     * 
-     * @return void
-     */
-    public function save()
-    {
-        $this->validateinputs();
+        $this->resetValidation();
+        $this->validate();
 
         $this->team->save();
 
@@ -55,26 +47,10 @@ class Form extends Component
     }
 
     /**
-     * Validate inputs
-     * 
-     * @return void
+     * Render
      */
-    private function validateinputs()
+    public function render()
     {
-        $this->resetValidation();
-
-        $validator = validator(
-            ['team' => $this->team],
-            $this->rules(),
-            [
-                'team.name.required' => 'Team name is required.',
-                'team.name.unique' => 'There is another team with the same name.',
-            ]
-        );
-
-        if ($validator->fails()) {
-            $this->dispatchBrowserEvent('toast', 'formError');
-            $validator->validate();
-        }
+        return view('atom::app.team.form');
     }
 }

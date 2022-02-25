@@ -9,18 +9,13 @@ export default ('tooltip', (el, { value, expression }) => {
 
     // event
     const showTooltip = () => {
-        tooltipEl.classList.add('opacity-0')
         tooltipEl.classList.remove('hidden')
-        tooltipEl.classList.remove('opacity-80')
 
         floatPositioning(el, tooltipEl, {
             placement: value || 'top',
             offset: 6,
             flip: true,
             shift: { padding: 5 },
-        }).then(() => {
-            tooltipEl.classList.add('opacity-80')
-            tooltipEl.classList.remove('opacity-0')
         })
     }
 

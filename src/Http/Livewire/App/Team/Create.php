@@ -12,33 +12,28 @@ class Create extends Component
     protected $listeners = ['saved'];
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
+        breadcrumb('Create Team');
         $this->team = new Team();
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.team.create');
-    }
-
-    /**
-     * Saved action
-     * 
-     * @return void
+     * Saved
      */
     public function saved()
     {
         session()->flash('flash', 'Team Created::success');
         return redirect()->route('team.listing');
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.team.create');
     }
 }
