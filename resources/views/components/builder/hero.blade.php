@@ -43,9 +43,9 @@
         @endif
 
         @if($slot->isNotEmpty())
-            <p class="text-lg font-medium md:text-lg {{ $overlay ? 'text-gray-200' : 'text-gray-600' }}">
+            <div class="text-lg font-medium md:text-lg {{ $overlay ? 'text-gray-200' : 'text-gray-600' }}">
                 {{ $slot }}
-            </p>
+            </div>
         @endif
 
         @if(isset($cta) && $cta->isNotEmpty())
