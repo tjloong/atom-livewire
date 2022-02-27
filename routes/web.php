@@ -18,7 +18,7 @@ if (!config('atom.static_site')) {
         /**
          * Blogs
          */
-        if (enabled_feature('blogs')) {
+        if (enabled_module('blogs')) {
             Route::prefix('blog')->group(function () {
                 define_route('listing', 'App\\Blog\\Listing')->name('blog.listing');
                 define_route('create', 'App\\Blog\\Create')->name('blog.create');
@@ -29,7 +29,7 @@ if (!config('atom.static_site')) {
         /**
          * Enquiries
          */
-        if (enabled_feature('enquiries')) {
+        if (enabled_module('enquiries')) {
             Route::prefix('enquiry')->group(function () {
                 define_route('listing',  'App\\Enquiry\\Listing')->name('enquiry.listing');
                 define_route('{enquiry}', 'App\\Enquiry\\Update')->name('enquiry.update');
@@ -39,7 +39,7 @@ if (!config('atom.static_site')) {
         /**
          * Tickets
          */
-        if (enabled_feature('tickets')) {
+        if (enabled_module('tickets')) {
             Route::prefix('ticket')->group(function() {
                 define_route('listing', 'App\\Ticket\\Listing')->name('ticket.listing');
                 define_route('create', 'App\\Ticket\\Create')->name('ticket.create');
@@ -50,7 +50,7 @@ if (!config('atom.static_site')) {
         /**
          * Pages
          */
-        if (enabled_feature('pages')) {
+        if (enabled_module('pages')) {
             Route::prefix('page')->group(function () {
                 define_route('listing',  'App\\Page\\Listing')->name('page.listing');
                 define_route('{id}', 'App\\Page\\Update')->name('page.update');
@@ -60,41 +60,34 @@ if (!config('atom.static_site')) {
         /**
          * Teams
          */
-        if (enabled_feature('teams')) {
+        if (enabled_module('teams')) {
             Route::prefix('team')->group(function () {
                 define_route('listing', 'App\\Team\\Listing')->name('team.listing');
                 define_route('create', 'App\\Team\\Create')->name('team.create');
-                define_route('{team}', 'App\\Team\\Update')->name('team.update');
+                define_route('{id}', 'App\\Team\\Update')->name('team.update');
+            });
+        }
+        
+        /**
+         * Roles
+         */
+        if (enabled_module('roles')) {
+            Route::prefix('role')->group(function () {
+                define_route('listing', 'App\\Role\\Listing')->name('role.listing');
+                define_route('create', 'App\\Role\\Create')->name('role.create');
+                define_route('{id}', 'App\\Role\\Update')->name('role.update');
             });
         }
     
         /**
          * Label
          */
-        if (enabled_feature('labels')) {
-            Route::prefix('label')->group(function () {
-                define_route('listing/{type?}', 'App\\Label\\Listing')->name('label.listing');
-                define_route('create/{type}', 'App\\Label\\Create')->name('label.create');
-                define_route('{id}', 'App\\Label\\Update')->name('label.update');
-            });
-        }
-    
-        /**
-         * Site Settings
-         */
-        if (enabled_feature('site_settings')) {
-            define_route('site-settings/{tab?}', 'App\SiteSettings\Index')->name('site-settings');
-        }
-
-        /**
-         * Roles
-         */
-        Route::prefix('role')->group(function () {
-            define_route('listing', 'App\\Role\\Listing')->name('role.listing');
-            define_route('create', 'App\\Role\\Create')->name('role.create');
-            define_route('{role}', 'App\\Role\\Update')->name('role.update');
+        Route::prefix('label')->group(function () {
+            define_route('listing/{type?}', 'App\\Label\\Listing')->name('label.listing');
+            define_route('create/{type}', 'App\\Label\\Create')->name('label.create');
+            define_route('{id}', 'App\\Label\\Update')->name('label.update');
         });
-
+        
         /**
          * Users
          */
@@ -102,24 +95,29 @@ if (!config('atom.static_site')) {
             define_route('account', 'App\\User\\Account')->name('user.account');
             define_route('listing', 'App\\User\\Listing')->name('user.listing');
             define_route('create', 'App\\User\\Create')->name('user.create');
-            define_route('{user}', 'App\\User\\Update')->name('user.update');
+            define_route('{id}', 'App\\User\\Update')->name('user.update');
         });
-    
+        
         /**
          * Files
          */
         define_route('files', 'App\\File\\Listing')->name('files');
+    
+        /**
+         * Site Settings
+         */
+        define_route('site-settings/{tab?}', 'App\SiteSettings\Index')->name('site-settings');
     });
 }
 
-if (enabled_feature('blogs')) {
+if (enabled_module('blogs')) {
     define_route('blogs/{slug?}', 'Web\\Blog')->name('blogs');
 }
 
 define_route('contact', 'Web\\Contact')->name('contact');
 define_route('contact/thank-you', 'Web\\ContactSent')->name('contact.sent');
 
-if (enabled_feature('pages') && !app()->runningInConsole()) {
+if (enabled_module('pages') && !app()->runningInConsole()) {
     $slugs = Page::getSlugs();
     define_route('{slug}', 'Web\Page')->name('page')->where(['slug' => '(' . implode('|', $slugs) . ')']);
 }

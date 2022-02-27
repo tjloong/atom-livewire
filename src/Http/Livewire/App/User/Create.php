@@ -2,8 +2,6 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
-use App\Models\User;
-use Jiannius\Atom\Models\Role;
 use Livewire\Component;
 
 class Create extends Component
@@ -19,9 +17,7 @@ class Create extends Component
     {
         breadcrumb('Create User');
 
-        $this->user = new User([
-            'role_id' => Role::where('slug', 'administrator')->where('is_system', true)->first()->id ?? null,
-        ]);
+        $this->user = model('user');
     }
 
     /**

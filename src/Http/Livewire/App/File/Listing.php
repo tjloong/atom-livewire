@@ -4,7 +4,6 @@ namespace Jiannius\Atom\Http\Livewire\App\File;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Jiannius\Atom\Models\File;
 
 class Listing extends Component
 {
@@ -42,7 +41,7 @@ class Listing extends Component
      */
     public function getFilesProperty()
     {
-        return File::query()->filter($this->filters)->orderBy($this->sortBy, $this->sortOrder);
+        return model('file')->filter($this->filters)->orderBy($this->sortBy, $this->sortOrder);
     }
 
     /**
@@ -58,7 +57,7 @@ class Listing extends Component
      */
     public function openFile($id)
     {
-        $this->openedFile = File::find($id);
+        $this->openedFile = model('file')->find($id);
         $this->dispatchBrowserEvent('drawer-open');
     }
 
@@ -76,7 +75,7 @@ class Listing extends Component
      */
     public function delete($id)
     {
-        File::whereIn('id', $id)->get()->each(fn($q) => $q->delete());
+        model('file')->whereIn('id', $id)->get()->each(fn($q) => $q->delete());
         
         $this->dispatchBrowserEvent('toast', ['message' => count($id) . ' Files Deleted']);
     }

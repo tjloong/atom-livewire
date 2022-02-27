@@ -15,7 +15,7 @@ class Update extends Component
      */
     public function mount($id)
     {
-        $this->page = get_model('Page')->findOrFail($id);
+        $this->page = model('page')->findOrFail($id);
 
         breadcrumb($this->page->name);
     }

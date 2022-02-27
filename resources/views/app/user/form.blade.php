@@ -1,4 +1,4 @@
-<form wire:submit.prevent="save">
+<form wire:submit.prevent="submit">
     <x-box>
         <div class="p-5">
             <x-input.text wire:model.defer="form.name" :error="$errors->first('form.name')" required>
@@ -20,23 +20,58 @@
                 </x-input.password>
             @endif
 
-            @feature('roles')
+            @module('roles')
                 @if ($isSelf)
                     <x-input.field>
                         <x-slot name="label">My Role</x-slot>
-                        {{ $user->role->name }}
+                        {{ $user->role->name ?? '--' }}
                     </x-input.field>
                 @else
-                    <x-input.select
-                        wire:model.defer="form.role_id"
-                        :options="$roles"
-                        :error="$errors->first('form.role_id')"
-                        required
-                    >
+                    <x-input.select wire:model="form.role_id" :options="$roles">
                         Role
                     </x-input.select>
                 @endif
-            @endfeature
+            @endmodule
+
+            @if (!$isSelf && (
+                (enabled_module('roles') && !in_array(optional($role)->slug, ['admin', 'administrator']))
+                || !enabled_module('roles')
+            ))
+                <x-input.field>
+                    <x-slot name="label">Data Visiblity</x-slot>
+                    <div class="flex flex-col gap-2">
+                        @foreach ($visibilities as $opt)
+                            <x-input.radio name="visiblity" wire:model.defer="form.visibility" :value="$opt['value']" :checked="$form['visibility'] === $opt['value']">
+                                <div>
+                                    <div class="font-medium">{{ str()->headline($opt['value']) }}</div>
+                                    <div class="text-xs text-gray-500">{{ $opt['caption'] }}</div>
+                                </div>
+                            </x-input.radio>
+                        @endforeach
+                    </div>
+                </x-input.field>
+            @endif
+
+            @module('teams')
+                @if ($isSelf)
+                    <x-input.field>
+                        <x-slot name="label">Teams</x-slot>
+                        <div class="flex flex-wrap items-center gap-2">
+                            @forelse ($user->teams as $team)
+                                <div class="bg-gray-100 rounded-md py-1 px-2 text-xs uppercase">
+                                    {{ $team->name }}
+                                </div>
+                            @empty
+                                --
+                            @endforelse
+                        </div>
+                    </x-input.field>
+                @else
+                    <x-input.tags wire:model.defer="selectedTeams" :options="$teams">
+                        Teams
+                    </x-input.tags>
+                @endif
+            @endmodule
 
             @if ($user->status === 'pending' || !$user->exists)
                 <x-input.checkbox wire:model="sendAccountActivationEmail">

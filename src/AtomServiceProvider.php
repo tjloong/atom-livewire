@@ -8,7 +8,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
-use Jiannius\Atom\Models\Ability;
 use Jiannius\Atom\Models\SiteSetting;
 use Jiannius\Atom\Console\RemoveCommand;
 use Jiannius\Atom\Console\InstallCommand;
@@ -76,8 +75,8 @@ class AtomServiceProvider extends ServiceProvider
             });
         });
 
-        Blade::if('feature', function($value) {
-            return enabled_feature($value);
+        Blade::if('module', function($value) {
+            return enabled_module($value);
         });
     }
 
@@ -212,8 +211,8 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.role.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Role\\Update');
         Livewire::component('atom.role.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\Role\\Form');
 
-        // ability
-        Livewire::component('atom.ability.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Ability\\Listing');
+        // permission
+        Livewire::component('atom.permission.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Permission\\Listing');
 
         // team
         Livewire::component('atom.team.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Listing');
@@ -277,24 +276,25 @@ class AtomServiceProvider extends ServiceProvider
     public function registerGates()
     {
         if (config('atom.static_site')) return;
-        if (!enabled_feature('abilities')) return;
+        if (!enabled_module('permissions')) return;
 
-        Gate::before(function ($user, $action) {
-            if ($user->isRole('root')) return true;
-            if ($user->isRole('admin')) return true;
+        Gate::before(function ($user, $permission) {
+            [$module, $action] = explode('.', $permission);
+            $isActionDefined = in_array($action, config('atom.permissions.'.$module) ?? []);
 
-            $split = explode('.', $action);
-            $module = head($split);
-            $name = last($split);
-            $ability = Ability::where('module', $module)->where('name', $name)->first();
+            if (!$isActionDefined) return true;
+            if ($user->root) return true;
 
-            if (!$ability) return false;
-
-            $isForbidden = $user->abilities()->where('abilities.id', $ability->id)->wherePivot('access', 'forbid')->count() > 0;
-            $isGranted = $user->abilities()->where('abilities.id', $ability->id)->wherePivot('access', 'grant')->count() > 0;
-            $isInRole = $user->role->abilities()->where('abilities.id', $ability->id)->count() > 0;
-    
-            return !$isForbidden && ($isGranted || $isInRole);
+            if (enabled_module('roles')) {
+                return $user->permissions()->granted($permission)->count() > 0 || (
+                    !$user->permissions()->forbidden($permission)->count()
+                    && $user->role
+                    && $user->role->can($permission)
+                );
+            }
+            else {
+                return $user->permissions()->granted($permission)->count() > 0;
+            }
         });
     }
 
@@ -351,7 +351,7 @@ class AtomServiceProvider extends ServiceProvider
             'app/site-settings', 
             'app/label', 
             'app/page', 
-            'app/ability', 
+            'app/permission', 
             'app/team', 
             'app/blog', 
             'app/enquiry', 

@@ -4,16 +4,13 @@ namespace Jiannius\Atom\Http\Livewire\App\Team;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Jiannius\Atom\Models\Team;
 
 class Listing extends Component
 {
     use WithPagination;
 
-    public $user;
     public $sortBy = 'name';
     public $sortOrder = 'asc';
-    public $showHeader = true;
     public $filters = ['search' => ''];
 
     protected $queryString = [
@@ -36,9 +33,9 @@ class Listing extends Component
      */
     public function getTeamsProperty()
     {
-        return Team::withCount('users')
+        return model('team')
+            ->withCount('users')
             ->filter($this->filters)
-            ->when($this->user, fn($q) => $q->userId($this->user->id))
             ->orderBy($this->sortBy, $this->sortOrder);
     }
 

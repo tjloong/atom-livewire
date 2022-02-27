@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Jiannius\Atom\AtomServiceProvider;
@@ -15,8 +14,6 @@ class InstallCommand extends Command
                             {modules? : Modules to be installed. Separate multiple modules with comma.}';
 
     protected $description = 'Install Atom and it\'s modules.';
-
-    protected $module;
 
     protected $baseMigrationName = '0000_00_00_999999_install_atom_base';
 
@@ -77,34 +74,48 @@ class InstallCommand extends Command
             else return;
         }
         else {
-            $modules = $this->argument('modules')
-                ? explode(',', $this->argument('modules'))
-                : $this->choice('Please select modules to install', [
-                    'all',
-                    'base',
-                    'abilities',
-                    'labels',
-                    'pages',
-                    'teams',
-                    'blogs',
-                    'enquiries',
-                    'tickets',
-                ], null, null, true);
+            $modules = [
+                'base',
+                'roles',
+                'permissions',
+                'pages',
+                'teams',
+                'blogs',
+                'enquiries',
+                'tickets',
+            ];
 
-            if (in_array('all', $modules) || in_array('base', $modules)) $this->installBase();
-            if (in_array('all', $modules) || in_array('abilities', $modules)) $this->installAbilities();
-            if (in_array('all', $modules) || in_array('labels', $modules)) $this->installLabels();
-            if (in_array('all', $modules) || in_array('pages', $modules)) $this->installPages();
-            if (in_array('all', $modules) || in_array('teams', $modules)) $this->installTeams();
-            if (in_array('all', $modules) || in_array('blogs', $modules)) $this->installBlogs();
-            if (in_array('all', $modules) || in_array('enquiries', $modules)) $this->installEnquiries();
-            if (in_array('all', $modules) || in_array('tickets', $modules)) $this->installTickets();
+            $selected = $this->argument('modules')
+                ? explode(',', $this->argument('modules'))
+                : $this->choice('Please select modules to install', array_merge(['all'], $modules), null, null, true);
+
+            foreach ($modules as $module) {
+                if (in_array('all', $selected) || in_array($module, $selected)) {
+                    call_user_func([$this, str()->camel('install-'.$module)]);
+                    if ($module !== 'base') $this->markModuleEnabled($module);
+                }
+            }
 
             $this->newLine();
             $this->info('All done!');
             $this->comment('Please execute "npm install && npm run dev" to build your assets.');
             $this->newLine();
         }
+    }
+
+    /**
+     * Mark module enabled
+     */
+    private function markModuleEnabled($module)
+    {
+        $query = DB::table('site_settings')->where('name', 'modules');
+
+        $enabled = collect(json_decode($query->first()->value));
+        $enabled->push($module);
+
+        $value = $enabled->unique()->values()->all();
+
+        $query->update(['value' => json_encode($value)]);
     }
 
     /**
@@ -182,8 +193,6 @@ class InstallCommand extends Command
     {
         $this->newLine();
         $this->info('Installing blogs...');
-
-        if (!Schema::hasTable('labels')) $this->installLabels();
 
         if (Schema::hasTable('blogs')) $this->warn('blogs table exists, skipped.');
         else {
@@ -278,7 +287,7 @@ class InstallCommand extends Command
                 $table->json('data')->nullable();
                 $table->timestamps();
             });
-            $this->line('pages table installed successfully.');
+            $this->line('pages table created successfully.');
         }
 
         foreach ([
@@ -324,88 +333,75 @@ class InstallCommand extends Command
     }
 
     /**
-     * Install labels
+     * Install permissions
      */
-    private function installLabels()
+    private function installPermissions()
     {
         $this->newLine();
-        $this->info('Installing labels...');
+        $this->info('Installing permissions...');
 
-        if (Schema::hasTable('labels')) $this->warn('labels table exists, skipped.');
+        if (Schema::hasTable('users_permissions')) $this->warn('users_permissions table exists, skipped.');
         else {
-            Schema::create('labels', function ($table) {
+            Schema::create('users_permissions', function($table) {
                 $table->id();
-                $table->string('name');
-                $table->string('slug')->nullable();
-                $table->string('type')->nullable();
-                $table->integer('seq')->nullable();
-                $table->json('data')->nullable();
-                $table->timestamps();
+                $table->string('permission');
+                $table->boolean('is_granted')->nullable();
+                $table->unsignedBigInteger('user_id')->nullable();
+
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             });
+
+            $this->line('users_permissions table created successfully.');
+        }
+
+        if (Schema::hasTable('roles')) {
+            if (Schema::hasTable('roles_permissions')) $this->warn('roles_permissions table exists, skipped.');
+            else {
+                Schema::create('roles_permissions', function ($table) {
+                    $table->id();
+                    $table->string('permission');
+                    $table->boolean('is_granted')->nullable();
+                    $table->unsignedBigInteger('role_id')->nullable();
+        
+                    $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+                });
     
-            $this->line('labels table installed successfully.');
+                $this->line('roles_permissions table created successfully.');
+            }
         }
     }
 
     /**
-     * Install abilities
+     * Install roles
      */
-    private function installAbilities()
+    private function installRoles()
     {
         $this->newLine();
-        $this->info('Installing abilities...');
+        $this->info('Installing roles...');
 
-        if (Schema::hasTable('abilities')) $this->warn('abilities table exists, skipped.');
+        if (Schema::hasTable('roles')) $this->warn('roles table exists, skipped.');
         else {
-            Schema::create('abilities', function ($table) {
+            Schema::create('roles', function ($table) {
                 $table->id();
-                $table->string('module')->nullable();
                 $table->string('name')->nullable();
+                $table->string('slug')->nullable();
                 $table->timestamps();
-            });
-
-            $this->line('abilities table installed successfully.');
-        }
-
-        if (Schema::hasTable('abilities_roles')) $this->warn('abilities_roles table exists, skipped.');
-        else {
-            Schema::create('abilities_roles', function ($table) {
-                $table->id();
-                $table->unsignedBigInteger('ability_id')->nullable();
-                $table->unsignedBigInteger('role_id')->nullable();
+                $table->unsignedBigInteger('created_by')->nullable();
     
-                $table->foreign('ability_id')->references('id')->on('abilities')->onDelete('cascade');
-                $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             });
-
-            $this->line('abilities_roles table installed successfully.');
+            
+            $this->line('roles table created successfully.');
         }
 
-        if (Schema::hasTable('abilities_users')) $this->warn('abilities_users table exists, skipped.');
+        if (Schema::hasColumn('users', 'role_id')) $this->warn('users table already has role_id column, skipped.');
         else {
-            Schema::create('abilities_users', function ($table) {
-                $table->id();
-                $table->string('access')->nullable();
-                $table->unsignedBigInteger('user_id')->nullable();
-                $table->unsignedBigInteger('ability_id')->nullable();
-    
-                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-                $table->foreign('ability_id')->references('id')->on('abilities')->onDelete('cascade');
+            Schema::table('users', function ($table) {
+                $table->unsignedBigInteger('role_id')->nullable()->after('root');
+                $table->foreign('role_id')->references('id')->on('roles')->onDelete('set null');
             });
-
-            $this->line('abilities_users table installed successfully.');
+            $this->line('Added role_id column to users table.');
         }
-
-        foreach ([
-            ['module' => 'user', 'name' => 'manage'],
-        ] as $ability) {
-            if (DB::table('abilities')->where('module', $ability['module'])->where('name', $ability['name'])->count()) continue;
-            DB::table('abilities')->insert(array_merge($ability, [
-                'created_at' => now(), 
-                'updated_at' => now(),
-            ]));
-        }
-        $this->line('Added default abilities.');
     }
 
     /**
@@ -425,6 +421,7 @@ class InstallCommand extends Command
         }
 
         foreach ([
+            ['name' => 'modules', 'value' => null],
             ['name' => 'mailer', 'value' => 'smtp'],
             ['name' => 'smtp_host', 'value' => 'smtp.mailtrap.io'],
             ['name' => 'smtp_port', 'value' => '2525'],
@@ -476,6 +473,27 @@ class InstallCommand extends Command
     }
 
     /**
+     * Install labels
+     */
+    private function installLabels()
+    {
+        if (Schema::hasTable('labels')) $this->warn('labels table exists, skipped.');
+        else {
+            Schema::create('labels', function ($table) {
+                $table->id();
+                $table->string('name');
+                $table->string('slug')->nullable();
+                $table->string('type')->nullable();
+                $table->integer('seq')->nullable();
+                $table->json('data')->nullable();
+                $table->timestamps();
+            });
+    
+            $this->line('labels table installed successfully.');
+        }
+    }
+
+    /**
      * Install users
      */
     private function installUsers()
@@ -483,7 +501,23 @@ class InstallCommand extends Command
         Schema::table('users', function ($table) {
             $table->string('password')->nullable()->change();
         });
-        $this->line('users table password column is nullable now.');
+        $this->line('Made password column in users table nullable.');
+
+        if (Schema::hasColumn('users', 'root')) $this->warn('users table already has root column, skipped.');
+        else {
+            Schema::table('users', function ($table) {
+                $table->boolean('root')->nullable()->after('remember_token');
+            });
+            $this->line('Added root column to users table.');
+        }
+
+        if (Schema::hasColumn('users', 'visibility')) $this->warn('users table already has visibility column, skipped.');
+        else {
+            Schema::table('users', function ($table) {
+                $table->string('visibility')->nullable()->after('remember_token');
+            });
+            $this->line('Added visibility column to users table.');
+        }
 
         if (Schema::hasColumn('users', 'status')) $this->warn('users table already has status column, skipped.');
         else {
@@ -502,75 +536,21 @@ class InstallCommand extends Command
             $this->line('Added created_by column to users table.');
         }
         
-        if (Schema::hasColumn('users', 'role_id')) $this->warn('users table already has role_id column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->unsignedBigInteger('role_id')->nullable()->after('remember_token');
-                $table->foreign('role_id')->references('id')->on('roles')->onDelete('set null');
-            });
-            $this->line('Added role_id column to users table.');
-        }
-
-        if ($rootUser = DB::table('users')->where('email', User::ROOT_EMAIL)->first()) {
-            if (!$rootUser->role_id) {
-                DB::table('users')->where('email', User::ROOT_EMAIL)->update(['role_id' => 1]);
-                $this->line('Updated Root user role_id.');
-            }
-            else $this->warn('Root user exists, skipped.');
-        }
+        if (DB::table('users')->where('email', User::ROOT_EMAIL)->count()) $this->warn('Root user exists, skipped.');
         else {
             DB::table('users')->insert([
                 'name' => 'Root',
                 'email' => User::ROOT_EMAIL,
                 'password' => bcrypt('password'),
                 'status' => 'active',
-                'role_id' => 1,
+                'root' => true,
+                'visibility' => 'global',
                 'email_verified_at' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
             $this->line('Added Root user.');
         }
-    }
-
-    /**
-     * Install roles
-     */
-    private function installRoles()
-    {
-        if (Schema::hasTable('roles')) $this->warn('roles table exists, skipped.');
-        else {
-            Schema::create('roles', function ($table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->string('slug')->nullable();
-                $table->string('scope')->nullable();
-                $table->boolean('is_system')->nullable();
-                $table->timestamps();
-                $table->unsignedBigInteger('created_by')->nullable();
-    
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
-            });
-            
-            $this->line('roles table created successfully.');
-        }
-
-        foreach ([
-            ['slug' => 'root', 'scope' => 'root'],
-            ['slug' => 'administrator', 'scope' => 'global'],
-            ['slug' => 'restricted-user', 'scope' => 'restrict'],
-        ] as $role) {
-            if (DB::table('roles')->where('slug', $role['slug'])->where('is_system', true)->count()) continue;
-
-            DB::table('roles')->insert(array_merge($role, [
-                'name' => Str::headline($role['slug']), 
-                'is_system' => true, 
-                'created_at' => now(), 
-                'updated_at' => now(),
-            ]));
-        }
-
-        $this->line('Added default roles.');
     }
 
     /**
@@ -589,8 +569,8 @@ class InstallCommand extends Command
         // base
         $this->newLine();
         $this->info('Base installation...');
-        $this->installRoles();
         $this->installUsers();
+        $this->installLabels();
         $this->installFiles();
         $this->installSiteSettings();
         $this->updateNodePackages();

@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\App\Label;
 
 use Livewire\Component;
-use Jiannius\Atom\Models\Label;
 
 class Listing extends Component
 {
@@ -24,7 +23,7 @@ class Listing extends Component
      */
     public function getTypesProperty()
     {
-        return config('atom.features.labels') ?? [];
+        return config('atom.labels') ?? [];
     }
 
     /**
@@ -32,7 +31,7 @@ class Listing extends Component
      */
     public function getLabelsProperty()
     {
-        return Label::query()
+        return model('label')
             ->where('type', $this->type)
             ->orderBy('seq')
             ->orderBy('name');
@@ -44,7 +43,7 @@ class Listing extends Component
     public function updatedLabels($labels)
     {
         foreach ($labels as $index => $label) {
-            Label::where('id', $label['id'])->update(['seq' => $index + 1]);
+            model('label')->where('id', $label['id'])->update(['seq' => $index + 1]);
         }
     }
 

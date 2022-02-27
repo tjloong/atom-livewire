@@ -1,16 +1,18 @@
 <div class="max-w-screen-md mx-auto">
     <x-page-header title="Users">
-        <x-button icon="plus" href="{{ route('user.create') }}">
-            New User
-        </x-button>
+        @can('users.create')
+            <x-button icon="plus" href="{{ route('user.create') }}">
+                New User
+            </x-button>
+        @endcan
     </x-page-header>
 
     <x-table :total="$users->total()" :links="$users->links()">
         <x-slot name="head">
             <x-table head sort="name">Name</x-table>
-            @feature('roles')
+            @module('roles')
                 <x-table head align="right">Role</x-table>
-            @endfeature
+            @endmodule
         </x-slot>
 
         <x-slot name="body">
@@ -25,11 +27,11 @@
                     </div>
                 </x-table>
                 
-                @feature('roles')
+                @module('roles')
                     <x-table cell class="text-right">
-                        {{ $user->role->name ?? null }}
+                        {{ $user->role->name ?? '--' }}
                     </x-table>
-                @endfeature
+                @endmodule
             </x-table>
         @endforeach
         </x-slot>

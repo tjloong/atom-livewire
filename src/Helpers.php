@@ -1,7 +1,8 @@
 <?php
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -45,17 +46,18 @@ function breadcrumb($label)
     
         // update previous url if it's been changed
         $prevIndex = array_key_last($newCrumbs) - 1;
-        $prevCrumb = $newCrumbs[$prevIndex];
-        $prevLatestUrl = rtrim(url()->previous(), '/');
-        $prevLatestInfo = parse_url($prevLatestUrl);
-
-        if ($prevLatestUrl !== $prevCrumb['url'] && $prevLatestInfo['path'] === $prevCrumb['path']) {
-            $prevCrumb = array_merge($prevCrumb, array_merge(
-                ['url' => $prevLatestUrl],
-                $prevLatestInfo
-            ));
+        if ($prevCrumb = $newCrumbs[$prevIndex] ?? null) {
+            $prevLatestUrl = rtrim(url()->previous(), '/');
+            $prevLatestInfo = parse_url($prevLatestUrl);
     
-            $newCrumbs[$prevIndex] = $prevCrumb;
+            if ($prevLatestUrl !== $prevCrumb['url'] && $prevLatestInfo['path'] === $prevCrumb['path']) {
+                $prevCrumb = array_merge($prevCrumb, array_merge(
+                    ['url' => $prevLatestUrl],
+                    $prevLatestInfo
+                ));
+        
+                $newCrumbs[$prevIndex] = $prevCrumb;
+            }
         }
 
         session(['breadcrumbs' => $newCrumbs]);
@@ -74,32 +76,41 @@ function export_to_excel($filename, $collection, $iterator = null)
 }
 
 /**
- * Get model class name
+ * Make model instance
+ * 
+ * @param string $name
+ * @param boolean $instance
  */
-function get_model_class_name($name)
+function model($name)
 {
-    return config('atom.models.' . $name) ?? 'Jiannius\\Atom\\Models\\' . $name;
+    $name = str()->studly($name);
+    $try = 'App\\Models\\'.$name;
+    $fallback = 'Jiannius\\Atom\\Models\\'.$name;
+    $classname = class_exists($try) ? $try : $fallback;
+
+    return app($classname);
 }
 
 /**
- * Get model instance
- */
-function get_model($name)
-{
-    return app(get_model_class_name($name));
-}
-
-/**
- * Check has feature
+ * Check module is enabled
  * 
  * @return boolean
  */
-function enabled_feature($feature)
+function enabled_module($module)
 {
-    $value = config('atom.features.' . $feature);
+    if (app()->runningInConsole()) return true;
 
-    if (is_string($value) || is_array($value)) return !empty($value);
-    else return $value;
+    $enabled = collect(json_decode(DB::table('site_settings')->where('name', 'modules')->first()->value));
+
+    return $enabled->contains($module);
+}
+
+/**
+ * Abort module error
+ */
+function abort_module($module)
+{
+    abort(500, str()->headline($module) . ' module is not enabled.');
 }
 
 /**
@@ -109,7 +120,7 @@ function define_route($path, $action, $method = 'get')
 {
     if (is_callable($action)) return Route::$method($path, $action);
 
-    $isController = Str::is('*Controller@*', $action);
+    $isController = str()->is('*Controller@*', $action);
     $namespacePrefix = $isController ? 'Jiannius\\Atom\\Http\\Controllers\\' : 'Jiannius\\Atom\\Http\\Livewire\\';
     $tryNamespacePrefix = $isController ? 'App\\Http\\Controllers\\' : 'App\\Http\\Livewire\\';
     $className = $isController ? substr($action, 0, strpos($action, '@')) : $action;
@@ -235,8 +246,8 @@ function html_excerpt($html)
     $content = preg_replace('/[^A-Za-z0-9]/', ' ', $content);
     $content = preg_replace('/ +/', ' ', $content);
     $content = trim($content);
-    $length = Str::length($content);
+    $length = str()->length($content);
 
-    if ($length > 120) return Str::limit($content, 120);
+    if ($length > 120) return str()->limit($content, 120);
     else return $content;
 }

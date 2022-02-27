@@ -18,10 +18,8 @@ class Create extends Component
     {
         breadcrumb('Create Label');
         
-        $model = get_model_class_name('Label');
-        $this->label = new $model([
-            'type' => $this->type,
-        ]);
+        $this->label = model('label');
+        $this->label->type = $this->type;
     }
 
     /**

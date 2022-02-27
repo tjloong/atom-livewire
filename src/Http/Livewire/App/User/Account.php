@@ -9,9 +9,7 @@ class Account extends Component
     protected $listeners = ['saved'];
 
     /**
-     * Mount method
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
@@ -19,22 +17,18 @@ class Account extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::app.user.account');
-    }
-
-    /**
-     * Saved handler
-     * 
-     * @return void
+     * Saved
      */
     public function saved()
     {
         $this->dispatchBrowserEvent('toast', ['message' => 'Account Updated', 'type' => 'success']);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.user.account');
     }
 }

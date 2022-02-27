@@ -29,27 +29,40 @@ class RemoveCommand extends Command
      */
     public function handle()
     {
-        $modules = $this->choice('Please select module to remove', [
-            'abilities',
-            'labels',
+        $modules = [
+            'roles',
+            'permissions',
             'pages',
             'teams',
             'blogs',
             'enquiries',
             'tickets',
-        ], null, null, true);
+        ];
 
-        if (in_array('abilities', $modules)) $this->removeAbilities();
-        if (in_array('labels', $modules)) $this->removeLabels();
-        if (in_array('pages', $modules)) $this->removePages();
-        if (in_array('teams', $modules)) $this->removeTeams();
-        if (in_array('blogs', $modules)) $this->removeBlogs();
-        if (in_array('enquiries', $modules)) $this->removeEnquiries();
-        if (in_array('tickets', $modules)) $this->removeTickets();
+        $selected = $this->choice('Please select module to remove', $modules, null, null, true);
+
+        foreach ($modules as $module) {
+            if (in_array($module, $selected)) {
+                call_user_func([$this, str()->camel('remove-'.$module)]);
+                $this->markModuleDisabled($module);
+            }
+        }
 
         $this->newLine();
         $this->info('All done!');
         $this->newLine();
+    }
+
+    /**
+     * Mark module as disabled
+     */
+    private function markModuleDisabled($module)
+    {
+        $query = DB::table('site_settings')->where('name', 'modules');
+        $enabled = collect(json_decode($query->first()->value))->reject(fn($val) => $val === $module);
+        $value = $enabled->values()->all();
+
+        $query->update(['value' => $value ? json_encode($value) : null]);
     }
 
     /**
@@ -149,35 +162,40 @@ class RemoveCommand extends Command
     }
 
     /**
-     * Remove labels
+     * Remove permissions
      */
-    private function removeLabels()
+    private function removePermissions()
     {
         $this->newLine();
-        $this->info('Removing labels...');
+        $this->info('Removing permissions...');
 
-        Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('labels');
-        Schema::enableForeignKeyConstraints();
+        Schema::dropIfExists('users_permissions');
+        $this->line('Dropped users_permissions table.');
 
-        $this->line('Dropped labels table.');
+        Schema::dropIfExists('roles_permissions');
+        $this->line('Dropped roles_permissions table.');
     }
 
     /**
-     * Remove abilities
+     * Remove roles
      */
-    private function removeAbilities()
+    private function removeRoles()
     {
         $this->newLine();
-        $this->info('Removing abilities...');
+        $this->info('Removing roles...');
 
-        Schema::dropIfExists('abilities_users');
-        $this->line('Dropped abilities_users table.');
+        if (Schema::hasColumn('users', 'role_id')) {
+            Schema::table('users', function($table) {
+                $table->dropForeign(['role_id']);
+                $table->dropColumn('role_id');
+            });
+            $this->line('Dropped role_id column from users table.');
+        }
 
-        Schema::dropIfExists('abilities_roles');
-        $this->line('Dropped abilities_roles table.');
+        Schema::dropIfExists('roles_permissions');
+        $this->line('Dropped roles_permissions table.');
 
-        Schema::dropIfExists('abilities');
-        $this->line('Dropped abilities table.');
+        Schema::dropIfExists('roles');
+        $this->line('Dropped roles table.');
     }
 }

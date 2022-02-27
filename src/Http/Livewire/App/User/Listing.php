@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
-use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -34,8 +33,8 @@ class Listing extends Component
      */
     public function getUsersProperty()
     {
-        return User::query()
-            ->where('email', '<>', User::ROOT_EMAIL)
+        return model('user')
+            ->when(!auth()->user()->root, fn($q) => $q->where('root', false))
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
     }

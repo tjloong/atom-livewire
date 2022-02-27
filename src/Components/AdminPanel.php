@@ -32,11 +32,11 @@ class AdminPanel extends Component
         $this->params = $params;
         $this->flash = $this->getFlash();
         $this->version = $this->getVersion();
-        $this->unverified = enabled_feature('auth.verify') && !request()->user()->hasVerifiedEmail();
+        $this->unverified = config('atom.auth.verify') && !request()->user()->hasVerifiedEmail();
 
         if (is_null($active)) {
-            if ($href) $this->isActive = Str::startsWith(url()->current(), $href);
-            elseif ($route && Route::has($route)) $this->isActive = Str::startsWith(url()->current(), route($route, $params));
+            if ($href) $this->isActive = str()->startsWith(url()->current(), $href);
+            elseif ($route && Route::has($route)) $this->isActive = str()->startsWith(url()->current(), route($route, $params));
         }
         else $this->isActive = $active;
     }

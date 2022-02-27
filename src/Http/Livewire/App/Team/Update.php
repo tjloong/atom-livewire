@@ -3,12 +3,10 @@
 namespace Jiannius\Atom\Http\Livewire\App\Team;
 
 use Livewire\Component;
-use App\Models\User;
-use Jiannius\Atom\Models\Team;
 
 class Update extends Component
 {
-    public Team $team;
+    public $team;
     public $search;
     public $selectedUserId;
 
@@ -20,8 +18,9 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount($id)
     {
+        $this->team = model('team')->findOrFail($id);
         breadcrumb($this->team->name);
     }
 
@@ -30,7 +29,7 @@ class Update extends Component
      */
     public function getUsersProperty()
     {
-        return User::query()
+        return model('user')
             ->when($this->search, fn($q) => $q->search($this->search))
             ->teamId($this->team->id);
     }
@@ -56,33 +55,37 @@ class Update extends Component
     }
 
     /**
-     * Get assignable users
+     * Get users for picker
      */
-    public function getAssignableUsers($page, $text = null)
+    public function getUsersForPicker($page, $text = null)
     {
-        return User::query()
+        return model('user')
             ->when($text, fn($q) => $q->search($text))
+            ->whereDoesntHave('teams', fn($q) => $q->where('teams.id', $this->team->id))
             ->paginate(30, ['*'], 'page', $page)
             ->toArray();
     }
 
     /**
-     * Assign user to team
+     * Join team
      */
-    public function assignUser($id)
+    public function join($id)
     {
-        $user = User::find($id);
-        $user->joinTeam($this->team->id);
+        $user = model('user')->find($id);
+
+        if (!$user->teams()->find($this->team->id)) $user->teams()->attach($this->team->id);
+
         $this->dispatchBrowserEvent('toast', ['message' => 'User joined team', 'type' => 'success']);
     }
 
     /**
-     * Remove user from team
+     * Leave team
      */
-    public function removeUser($id)
+    public function leave($id)
     {
-        $user = User::find($id);
-        $user->leaveTeam($this->team->id);
+        $user = model('user')->find($id);
+        $user->teams()->detach($this->team->id);
+
         $this->dispatchBrowserEvent('toast', ['message' => 'User leaved team']);
     }
 

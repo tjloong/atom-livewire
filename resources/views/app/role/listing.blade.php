@@ -1,4 +1,4 @@
-<div class="max-w-screen-md mx-auto">
+<div class="max-w-screen-sm mx-auto">
     <x-page-header title="Roles">
         <x-button icon="plus" href="{{ route('role.create') }}">
             New Role

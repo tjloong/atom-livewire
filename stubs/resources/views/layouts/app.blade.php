@@ -17,19 +17,19 @@
         </x-slot>
 
         <x-slot name="aside">
-            <x-admin-panel aside icon="edit-alt" route="blog.listing" :active="Str::is('blog.*', current_route())">
+            <x-admin-panel aside icon="edit-alt" route="blog.listing" can="blogs.view" :active="str()->is('blog.*', current_route())">
                 Blogs
             </x-admin-panel>
 
-            <x-admin-panel aside icon="paper-plane" route="enquiry.listing" :active="Str::is('enquiry.*', current_route())">
+            <x-admin-panel aside icon="paper-plane" route="enquiry.listing" can="enquiries.manage" :active="str()->is('enquiry.*', current_route())">
                 Enquiries
             </x-admin-panel>
 
-            <x-admin-panel aside icon="file" route="page.listing" :active="Str::is('page.*', current_route())">
+            <x-admin-panel aside icon="file" route="page.listing" can="pages.manage" :active="str()->is('page.*', current_route())">
                 Pages
             </x-admin-panel>
 
-            <x-admin-panel aside icon="buoy" route="ticket.listing" :active="Str::is('ticket.*', current_route())">
+            <x-admin-panel aside icon="buoy" route="ticket.listing" can="tickets.view" :active="str()->is('ticket.*', current_route())">
                 Support Tickets
             </x-admin-panel>
 
@@ -41,19 +41,19 @@
                         My Account
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="role.listing" :active="Str::is('role.*', current_route())">
+                    <x-admin-panel aside route="role.listing" can="roles.manage" :active="str()->is('role.*', current_route())">
                         Roles
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="user.listing" :active="Str::is('user.*', current_route()) && current_route() !== 'user.account'">
+                    <x-admin-panel aside route="user.listing" can="users.manage" :active="str()->is('user.*', current_route()) && current_route() !== 'user.account'">
                         Users
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="team.listing" :active="Str::is('team.*', current_route())">
+                    <x-admin-panel aside route="team.listing" can="teams.manage" :active="str()->is('team.*', current_route())">
                         Teams
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="label.listing" :active="Str::is('label.*', current_route())">
+                    <x-admin-panel aside route="label.listing" can="labels.manage" :active="str()->is('label.*', current_route())">
                         Labels
                     </x-admin-panel>
 

@@ -15,7 +15,7 @@ class Update extends Component
      */
     public function mount($id)
     {
-        $this->label = get_model('Label')->findOrFail($id);
+        $this->label = model('label')->findOrFail($id);
 
         breadcrumb($this->label->name);
     }

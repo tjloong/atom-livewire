@@ -44,7 +44,7 @@ class PublishCommand extends Command
                     'role',
                     'team',
                     'file',
-                    'ability',
+                    'permission',
                     'site_settings',
                     'label',
                     'page',

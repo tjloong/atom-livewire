@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\App\Team;
 
 use Livewire\Component;
-use Jiannius\Atom\Models\Team;
 
 class Create extends Component
 {
@@ -17,7 +16,7 @@ class Create extends Component
     public function mount()
     {
         breadcrumb('Create Team');
-        $this->team = new Team();
+        $this->team = model('team');
     }
 
     /**

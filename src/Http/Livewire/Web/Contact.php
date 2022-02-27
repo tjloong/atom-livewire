@@ -70,7 +70,7 @@ class Contact extends Component
 
         $mail = ['to' => null, 'params' => null];
 
-        if (enabled_feature('enquiries')) {
+        if (enabled_module('enquiries')) {
             if (is_array($this->enquiry)) $this->enquiry = Enquiry::create($this->enquiry);
             else $this->enquiry->save();
 
@@ -97,7 +97,7 @@ class Contact extends Component
      */
     public function initEnquiry()
     {
-        $this->enquiry = enabled_feature('enquiries')
+        $this->enquiry = enabled_module('enquiries')
             ? new Enquiry(['status' => 'pending'])
             : [
                 'name' => null,

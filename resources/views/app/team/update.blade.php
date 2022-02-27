@@ -22,7 +22,7 @@
                 </div>
 
                 <div>
-                    <x-input.picker wire:input="assignUser" getter="getAssignableUsers">
+                    <x-input.picker wire:input="join" getter="getUsersForPicker">
                         <x-slot name="title">Assign User</x-slot>
                         
                         <x-slot name="trigger">
@@ -58,7 +58,7 @@
                         title: 'Remove User',
                         message: 'Remove user from team?',
                         type: 'error',
-                        onConfirmed: () => $wire.removeUser({{ $user->id }}),
+                        onConfirmed: () => $wire.leave({{ $user->id }}),
                     })">
                         <x-icon name="minus-circle"/>
                     </a>

@@ -32,10 +32,6 @@ trait HasOwner
                 $model->owned_by = $model->created_by;
             }
         });
-
-        static::addGlobalScope('owner', function ($query) {
-            if (auth()->hasUser()) $query->accessibleByUser();
-        });
     }
 
     /**
@@ -77,32 +73,32 @@ trait HasOwner
      * @param User $user
      * @return Builder
      */
-    public function scopeAccessibleByUser($query, $user = null)
-    {
-        if (!Schema::hasColumn($this->getTable(), 'owned_by')) return $query;
+    // public function scopeAccessibleByUser($query, $user = null)
+    // {
+    //     if (!Schema::hasColumn($this->getTable(), 'owned_by')) return $query;
 
-        $user = $user ?? auth()->user();
+    //     $user = $user ?? auth()->user();
 
-        if ($user->enabledHasRoleTrait) {
-            if ($user->isRole('root')) return $query;
+    //     if ($user->enabledHasRoleTrait) {
+    //         if ($user->isRole('root')) return $query;
 
-            $access = $user->role->access ?? null;
+    //         $access = $user->role->access ?? null;
             
-            if (!$access) abort(401);
-            else if ($access === 'global') return $query;
-            else if ($access === 'restrict') return $query->where('owned_by', $user->id);
-            else if ($access === 'team' && $user->enabledHasTeamTrait) {
-                return $query->whereHas('owner', 
-                    fn($q) => $q->teamId($user->teams->pluck('id')->toArray())
-                );
-            }
-        }
-        else {
-            return $query->where(
-                fn($q) => $q
-                    ->where(fn($q) => $q->whereNull('owned_by')->where('created_by', $user->id))
-                    ->orWhere(fn($q) => $q->whereNotNull('owned_by')->where('owned_by', $user->id))
-            );
-        }
-    }
+    //         if (!$access) abort(401);
+    //         else if ($access === 'global') return $query;
+    //         else if ($access === 'restrict') return $query->where('owned_by', $user->id);
+    //         else if ($access === 'team' && $user->enabledHasTeamTrait) {
+    //             return $query->whereHas('owner', 
+    //                 fn($q) => $q->teamId($user->teams->pluck('id')->toArray())
+    //             );
+    //         }
+    //     }
+    //     else {
+    //         return $query->where(
+    //             fn($q) => $q
+    //                 ->where(fn($q) => $q->whereNull('owned_by')->where('created_by', $user->id))
+    //                 ->orWhere(fn($q) => $q->whereNotNull('owned_by')->where('owned_by', $user->id))
+    //         );
+    //     }
+    // }
 }

@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Models;
 
 use App\Models\User;
-use Jiannius\Atom\Models\Ability;
 use Jiannius\Atom\Traits\HasSlug;
 use Jiannius\Atom\Traits\HasOwner;
 use Jiannius\Atom\Traits\HasFilters;
@@ -18,11 +17,13 @@ class Role extends Model
     protected $guarded = [];
 
     /**
-     * Get abilities for role
+     * Get permissions for role
      */
-    public function abilities()
+    public function permissions()
     {
-        return $this->belongsToMany(Ability::class, 'abilities_roles');
+        if (!enabled_module('permissions')) return;
+
+        return $this->hasMany(RolePermission::class);
     }
 
     /**
@@ -46,69 +47,18 @@ class Role extends Model
     }
 
     /**
-     * Scope for assignable role
+     * Check role is granted a permission
      * 
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeAssignables($query)
-    {
-        if (request()->user()->isRole('root')) {
-            return $query->where('is_system', true)->orWhereNull('created_by')->orWhereHas('creator', 
-                fn($q) => $q->whereHas('role', fn($q) => $q->where('scope', 'root'))
-            );
-        }
-        else {
-            return $query->where('scope', '<>', 'root')
-                ->when($this->isMultiTenant, fn($q) => $q->where('tenant_id', request()->user()->tenant_id));
-        }
-    }
-
-    /**
-     * Get is_root attribute
-     * 
+     * @param string $permission
      * @return boolean
      */
-    public function getIsRootAttribute()
+    public function can($permission)
     {
-        return $this->scope === 'root';
-    }
-
-    /**
-     * Get access_description attribute
-     * 
-     * @return object
-     */
-    public function getScopeDescriptionAttribute()
-    {
-        return self::getScopeDescription($this->scope);
-    }
-
-    /**
-     * Get scope description
-     * 
-     * @return object
-     */
-    public static function getScopeDescription($scope)
-    {
-        $descriptions = [
-            'root' => [
-                'name' => 'root',
-                'label' => 'Root',
-                'caption' => 'Can manage everthing as root',
-            ],
-            'global' => [
-                'name' => 'global',
-                'label' => 'Global',
-                'caption' => 'Can manage all records',
-            ],
-            'restrict' => [
-                'name' => 'restrict',
-                'label' => 'Restricted',
-                'caption' => 'Can only manage own records',
-            ],
-        ];
-
-        return $descriptions[$scope];
+        if (!enabled_module('permissions')) return true;
+        
+        return $this->permissions()
+            ->where('permission', $permission)
+            ->where('is_granted', true)
+            ->count() > 0;
     }
 }

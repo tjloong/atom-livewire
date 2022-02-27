@@ -3,21 +3,12 @@
 namespace Jiannius\Atom\Http\Livewire\App\Role;
 
 use Livewire\Component;
-use Jiannius\Atom\Models\Role;
 
 class Create extends Component
 {
     public $role;
 
-    protected $rules = [
-        'role.name' => 'required|unique:roles,name',
-        'role.scope' => 'required',
-    ];
-
-    protected $messages = [
-        'role.name.required' => 'Role name is required.',
-        'role.name.unique' => 'There is another role with the same name.',
-    ];
+    protected $listeners = ['saved'];
 
     /**
      * Mount
@@ -25,24 +16,15 @@ class Create extends Component
     public function mount()
     {
         breadcrumb('Create Role');
-
-        $this->role = new Role([
-            'name' => null,
-            'scope' => 'restrict',
-        ]);
+        $this->role = model('role');
     }
 
     /**
-     * Submit
+     * Saved
      */
-    public function submit()
+    public function saved($id)
     {
-        $this->resetValidation();
-        $this->validate();
-
-        $this->role->save();
-
-        return redirect()->route('role.update', [$this->role]);
+        return redirect()->route('role.update', [$id]);
     }
 
     /**
