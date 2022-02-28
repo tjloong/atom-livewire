@@ -16,7 +16,7 @@ class Update extends Component
     public function mount($id)
     {
         $this->user = model('user')->findOrFail($id);
-        breadcrumb($this->user->name);
+        breadcrumbs()->push($this->user->name);
     }
 
     /**

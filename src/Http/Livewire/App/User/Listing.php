@@ -25,7 +25,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        breadcrumb_home('Users');
+        breadcrumbs()->home('Users');
     }
 
     /**

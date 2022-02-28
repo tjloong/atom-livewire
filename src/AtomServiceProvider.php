@@ -35,9 +35,9 @@ class AtomServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'atom');
-
+        
         require_once __DIR__.'/Helpers.php';
-
+        
         $this->registerBlade();
         $this->registerComponents();
         $this->registerLivewires();
@@ -45,7 +45,7 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerGates();
         $this->registerCommands();
-
+        
         $this->registerStaticPublishing();
         $this->registerPublishing();
 
@@ -276,9 +276,10 @@ class AtomServiceProvider extends ServiceProvider
     public function registerGates()
     {
         if (config('atom.static_site')) return;
-        if (!enabled_module('permissions')) return;
-
+        
         Gate::before(function ($user, $permission) {
+            if (!enabled_module('permissions')) return true;
+            
             [$module, $action] = explode('.', $permission);
             $isActionDefined = in_array($action, config('atom.permissions.'.$module) ?? []);
 

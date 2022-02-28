@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Update Blog" back>
         @if (Route::has('blogs'))
-            <x-button color="gray" icon="show" href="{{ route('blogs', [$blog, 'preview' => true]) }}" target="_blank">
+            <x-button color="gray" icon="show" href="{{ route('blogs', [$blog->slug, 'preview' => true]) }}" target="_blank">
                 Preview
             </x-button>
         @endif

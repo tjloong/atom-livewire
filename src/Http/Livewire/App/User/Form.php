@@ -52,9 +52,12 @@ class Form extends Component
         ];
         
         $this->isSelf = $this->user->id === auth()->id();
-        $this->selectedTeams = $this->user->teams->pluck('id')->toArray();
         $this->sendVerifyEmail = false;
         $this->sendAccountActivationEmail = !$this->user->exists;
+
+        if (enabled_module('teams')) {
+            $this->selectedTeams = $this->user->teams->pluck('id')->toArray();
+        }
     }
 
     /**
@@ -62,6 +65,8 @@ class Form extends Component
      */
     public function getRoleProperty()
     {
+        if (!enabled_module('roles')) return;
+
         return model('role')->find($this->form['role_id']);
     }
 
@@ -81,6 +86,8 @@ class Form extends Component
      */
     public function getTeamsProperty()
     {
+        if (!enabled_module('teams')) return [];
+
         return model('team')->orderby('name')->get()
             ->map(fn($val) => ['value' => $val->id, 'label' => $val->name]);
     }
@@ -117,18 +124,7 @@ class Form extends Component
             && config('atom.auth.verify')
             && $this->form['email'] !== $this->user->email;
 
-        $this->user
-            ->fill(Arr::only($this->form, ['name', 'email', 'visibility', 'role_id']))
-            ->save();
-
-        $this->user->teams()->sync($this->selectedTeams);
-
-        if ($password = $this->form['password'] ? bcrypt($this->form['password']) : null) {
-            if ($this->isSelf) {
-                $this->user->password = $password;
-                $this->user->save();
-            }
-        }
+        $this->persist();        
 
         if ($verify) {
             $this->user->update(['email_verified_at' => null]);
@@ -141,6 +137,29 @@ class Form extends Component
 
         $this->sendAccountActivationEmail = false;
         $this->emitUp('saved');
+    }
+
+    /**
+     * Persist
+     */
+    public function persist()
+    {
+        $this->user->name = $this->form['name'];
+        $this->user->email = $this->form['email'];
+        $this->user->visibility = $this->form['visibility'];
+        $this->user->role_id = enabled_module('roles') ? $this->form['role_id'] : $this->user->role_id;
+        $this->user->save();
+
+        if (enabled_module('teams')) {
+            $this->user->teams()->sync($this->selectedTeams);
+        }
+
+        if ($password = $this->form['password'] ? bcrypt($this->form['password']) : null) {
+            if ($this->isSelf) {
+                $this->user->password = $password;
+                $this->user->save();
+            }
+        }
     }
 
     /**

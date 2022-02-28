@@ -21,4 +21,6 @@ return [
         'files' => ['manage'],
         'site-settings' => ['manage'],
     ],
+
+    'data_visibility' => true,
 ];

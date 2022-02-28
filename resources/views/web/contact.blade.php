@@ -29,20 +29,20 @@
                         Send us a message
                     </div>
     
-                    <form wire:submit.prevent="save">
-                        <x-input.text wire:model.defer="enquiry.name" required>
+                    <form wire:submit.prevent="submit">
+                        <x-input.text wire:model.defer="enquiry.name" :error="$errors->first('enquiry.name')" required>
                             Your Name
                         </x-input.text>
                 
-                        <x-input.phone wire:model.defer="enquiry.phone" required>
+                        <x-input.phone wire:model.defer="enquiry.phone" :error="$errors->first('enquiry.phone')" required>
                             Contact Number
                         </x-input.text>
                 
-                        <x-input.email wire:model.defer="enquiry.email" required>
+                        <x-input.email wire:model.defer="enquiry.email" :error="$errors->first('enquiry.email')" required>
                             Contact Email
                         </x-input.text>
                 
-                        <x-input.textarea wire:model.defer="enquiry.message" required>
+                        <x-input.textarea wire:model.defer="enquiry.message" :error="$errors->first('enquiry.message')" required>
                             Message
                         </x-input.textarea>
                 
@@ -56,15 +56,13 @@
         </div>
     </div>
 
-    @if ($address = $contact['address'])
-        @if ($gmapApi)
-            <iframe
-                class="w-full bg-gray-200"
-                height="450"
-                loading="lazy"
-                allowfullscreen
-                src="https://www.google.com/maps/embed/v1/place?key={{ $gmapApi }}&q={{ urlencode($address) }}">
-            </iframe>
-        @endif
+    @if ($url = $contact['gmap_url'])
+        <iframe
+            class="w-full bg-gray-200"
+            height="450"
+            loading="lazy"
+            allowfullscreen
+            src="{{ $url }}">
+        </iframe>
     @endif
 </main>

@@ -16,6 +16,20 @@ class Enquiry extends Model
     ];
 
     /**
+     * Model boot method
+     * 
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($enquiry) {
+            $enquiry->status = $enquiry->status ?? 'pending';
+        });
+    }
+
+    /**
      * Scope for fussy search
      * 
      * @param Builder $query

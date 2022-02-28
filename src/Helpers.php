@@ -2,66 +2,30 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Jiannius\Atom\Services\Breadcrumbs;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
- * Set breadcrumbs home
+ * Site settings
  */
-function breadcrumb_home($label)
+function site_settings($name, $default = null)
 {
-    $url = url()->current();
-    $route = current_route();
-    $crumb = array_merge(compact('label', 'url', 'route'), parse_url($url));
-
-    session(['breadcrumbs' => [$crumb]]);
+    if (is_string($name)) return model('site_setting')->getSetting($name) ?? $default;
+    else {
+        foreach($name as $key => $val) {
+            model('site_setting')->setSetting($key, $val);
+        }
+    }
 }
 
 /**
  * Add entry to breadcrumbs
  */
-function breadcrumb($label)
+function breadcrumbs()
 {
-    if ($label === false) session()->forget('breadcrumbs');
-    else {
-        $url = rtrim(url()->current(), '/');
-        $route = current_route();
-        $crumb = array_merge(compact('label', 'url', 'route'), parse_url($url));
-        $crumbs = collect(session('breadcrumbs'));
-        $exists = $crumbs
-            ->filter(fn($val) => $val['label'] === $crumb['label'] && $val['route'] === $crumb['route'])
-            ->count() > 0;
-
-        if ($exists) {
-            $index = $crumbs->search(fn($val) => $val['label'] === $crumb['label'] && $val['route'] === $crumb['route']);
-            $crumbs = $crumbs->reject(fn($val, $key) => $key > $index);
-        }
-        else {
-            $crumbs->push($crumb);
-        }
-
-        $newCrumbs = $crumbs->values()->all();
-    
-        // update previous url if it's been changed
-        $prevIndex = array_key_last($newCrumbs) - 1;
-        if ($prevCrumb = $newCrumbs[$prevIndex] ?? null) {
-            $prevLatestUrl = rtrim(url()->previous(), '/');
-            $prevLatestInfo = parse_url($prevLatestUrl);
-    
-            if ($prevLatestUrl !== $prevCrumb['url'] && $prevLatestInfo['path'] === $prevCrumb['path']) {
-                $prevCrumb = array_merge($prevCrumb, array_merge(
-                    ['url' => $prevLatestUrl],
-                    $prevLatestInfo
-                ));
-        
-                $newCrumbs[$prevIndex] = $prevCrumb;
-            }
-        }
-
-        session(['breadcrumbs' => $newCrumbs]);
-    }
+    return new Breadcrumbs();
 }
 
 function export_to_excel($filename, $collection, $iterator = null)

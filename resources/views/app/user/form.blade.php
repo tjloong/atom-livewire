@@ -33,7 +33,7 @@
                 @endif
             @endmodule
 
-            @if (!$isSelf && (
+            @if (!$isSelf && config('atom.data_visibility') && (
                 (enabled_module('roles') && !in_array(optional($role)->slug, ['admin', 'administrator']))
                 || !enabled_module('roles')
             ))

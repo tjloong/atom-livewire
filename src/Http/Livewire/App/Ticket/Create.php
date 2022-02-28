@@ -25,7 +25,7 @@ class Create extends Component
      */
     public function mount()
     {
-        breadcrumb('Create Ticket');
+        breadcrumbs()->push('Create Ticket');
         $this->ticket = new Ticket(['status' => 'opened']);
     }
 

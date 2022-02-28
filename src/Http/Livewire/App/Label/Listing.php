@@ -15,7 +15,7 @@ class Listing extends Component
     {
         if (!$this->type) return redirect()->route('label.listing', [$this->types[0]]);
 
-        breadcrumb_home('Labels');
+        breadcrumbs()->home('Labels');
     }
 
     /**

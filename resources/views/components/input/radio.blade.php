@@ -13,10 +13,10 @@
     >
 
     <div
-        x-bind:class="checked ? 'border-theme' : 'border-gray-300'"
+        x-bind:class="checked ? 'border-blue-700' : 'border-gray-300'"
         class="w-5 h-5 bg-white border-2 flex-shrink-0 flex items-center justify-center rounded-full"
     >
-        <div x-show="checked" class="w-3 h-3 drop-shadow bg-theme rounded-full"></div>
+        <div x-show="checked" class="w-3 h-3 drop-shadow bg-blue-700 rounded-full"></div>
     </div>
 
     <div class="flex flex-col">

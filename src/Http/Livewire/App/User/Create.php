@@ -15,7 +15,7 @@ class Create extends Component
      */
     public function mount()
     {
-        breadcrumb('Create User');
+        breadcrumbs()->push('Create User');
 
         $this->user = model('user');
     }

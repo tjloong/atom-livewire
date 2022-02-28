@@ -21,7 +21,7 @@ class Update extends Component
      */
     public function mount()
     {
-        breadcrumb($this->enquiry->name);
+        breadcrumbs()->push($this->enquiry->name);
     }
 
     /**

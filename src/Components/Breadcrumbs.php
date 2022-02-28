@@ -6,7 +6,8 @@ use Illuminate\View\Component;
 
 class Breadcrumbs extends Component
 {
-    public $breadcrumbs;
+    public $home;
+    public $trails = [];
 
     /**
      * Contructor
@@ -15,7 +16,20 @@ class Breadcrumbs extends Component
      */
     public function __construct()
     {
-        $this->breadcrumbs = session('breadcrumbs', []);
+        $home = breadcrumbs()->get('home');
+        $trails = breadcrumbs()->get('trails');
+        $fallback = breadcrumbs()->get('fallback');
+
+        if ($home && $trails) {
+            $this->home = $home;
+            $this->trails = array_filter($trails);
+        }
+        else if ($fallback) {
+            $this->home = $fallback[0];
+
+            array_shift($fallback);
+            $this->trails = array_filter($fallback);
+        }
     }
 
     /**

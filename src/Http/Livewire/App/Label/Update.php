@@ -17,7 +17,7 @@ class Update extends Component
     {
         $this->label = model('label')->findOrFail($id);
 
-        breadcrumb($this->label->name);
+        breadcrumbs()->push($this->label->name);
     }
 
     /**

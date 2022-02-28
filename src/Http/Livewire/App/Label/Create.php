@@ -16,7 +16,7 @@ class Create extends Component
      */
     public function mount()
     {
-        breadcrumb('Create Label');
+        breadcrumbs()->push('Create Label');
         
         $this->label = model('label');
         $this->label->type = $this->type;

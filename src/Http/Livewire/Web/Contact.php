@@ -4,22 +4,18 @@ namespace Jiannius\Atom\Http\Livewire\Web;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Notification;
-use Jiannius\Atom\Models\Enquiry;
-use Jiannius\Atom\Models\SiteSetting;
 use Jiannius\Atom\Notifications\EnquiryNotification;
 
 class Contact extends Component
 {
     public $contact;
     public $enquiry;
-    public $gmapApi;
 
     protected $rules = [
         'enquiry.name' => 'required',
         'enquiry.phone' => 'required',
         'enquiry.email' => 'required',
         'enquiry.message' => 'required',
-        'enquiry.status' => 'required',
     ];
 
     protected $messages = [
@@ -30,9 +26,7 @@ class Contact extends Component
     ];
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
@@ -40,30 +34,35 @@ class Contact extends Component
         if (!request()->query('ref')) return redirect()->route('home');
         else {
             $this->contact = [
-                'phone' => SiteSetting::getSetting('phone'),
-                'email' => SiteSetting::getSetting('email'),
-                'address' => SiteSetting::getSetting('address'),
+                'phone' => site_settings('phone'),
+                'email' => site_settings('email'),
+                'address' => site_settings('address'),
+                'gmap_url' => site_settings('gmap_url'),
             ];
 
-            $this->gmapApi = SiteSetting::getSetting('gmap_api');
             $this->initEnquiry();
         }
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Initialize enquiry
      */
-    public function render()
+    public function initEnquiry()
     {
-        return view('atom::web.contact')->layout('layouts.web');
+        $this->enquiry = enabled_module('enquiries')
+            ? model('enquiry')
+            : [
+                'name' => null,
+                'phone' => null,
+                'email' => null,
+                'message' => null,
+            ];
     }
 
     /**
-     * Save enquiry
+     * Submit
      */
-    public function save()
+    public function submit()
     {
         $this->resetValidation();
         $this->validate();
@@ -71,11 +70,10 @@ class Contact extends Component
         $mail = ['to' => null, 'params' => null];
 
         if (enabled_module('enquiries')) {
-            if (is_array($this->enquiry)) $this->enquiry = Enquiry::create($this->enquiry);
+            if (is_array($this->enquiry)) $this->enquiry = model('enquiry')->create($this->enquiry);
             else $this->enquiry->save();
 
-            $settings = SiteSetting::email()->get();
-            $mail['to'] = $settings->where('name', 'notify_to')->first()->value;
+            $mail['to'] = site_settings('notify_to');
             $mail['params'] = $this->enquiry;
         }
         else {
@@ -91,20 +89,10 @@ class Contact extends Component
     }
 
     /**
-     * Initialize enquiry
-     * 
-     * @return void
+     * Render
      */
-    public function initEnquiry()
+    public function render()
     {
-        $this->enquiry = enabled_module('enquiries')
-            ? new Enquiry(['status' => 'pending'])
-            : [
-                'name' => null,
-                'phone' => null,
-                'email' => null,
-                'message' => null,
-                'status' => 'pending',
-            ];
+        return view('atom::web.contact')->layout('layouts.web');
     }
 }

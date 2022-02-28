@@ -24,6 +24,7 @@ class SiteSetting extends Model
             'phone', 
             'email',
             'address',
+            'gmap_url',
             'briefs',
         ]);
     }
@@ -139,6 +140,18 @@ class SiteSetting extends Model
             : self::where('name', $name)->first();
 
         return optional($setting)->value;
+    }
+
+    /**
+     * Set settings
+     * 
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public static function setSetting($key, $value)
+    {
+        self::where('name', $key)->update(['value' => $value]);
     }
 
     /**

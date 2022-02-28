@@ -22,7 +22,7 @@ class Update extends Component
      */
     public function mount()
     {
-        breadcrumb($this->ticket->number);
+        breadcrumbs()->push($this->ticket->number);
     }
 
     /**

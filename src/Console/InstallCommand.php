@@ -308,6 +308,7 @@ class InstallCommand extends Command
             ['name' => 'phone', 'value' => null],
             ['name' => 'email', 'value' => null],
             ['name' => 'address', 'value' => null],
+            ['name' => 'gmap_url', 'value' => null],
             ['name' => 'briefs', 'value' => null],
             ['name' => 'facebook', 'value' => null],
             ['name' => 'instagram', 'value' => null],
@@ -439,7 +440,6 @@ class InstallCommand extends Command
             ['name' => 'do_spaces_bucket', 'value' => null],
             ['name' => 'do_spaces_endpoint', 'value' => null],
             ['name' => 'do_spaces_cdn', 'value' => null],
-            ['name' => 'gmap_api', 'value' => 'AIzaSyBpxS4r78UhtulgcnqZIZ3KEj2cgHF5wy8'],
         ] as $setting) {
             if (DB::table('site_settings')->where('name', $setting['name'])->count()) continue;
             DB::table('site_settings')->insert($setting);

@@ -13,7 +13,7 @@ class Dashboard extends Component
 
     public function mount()
     {
-        breadcrumb_home('Dashboard');
+        breadcrumbs()->home('Dashboard');
         
         $this->dateFrom = today()->subDays(30);
         $this->dateTo = today();

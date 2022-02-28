@@ -21,7 +21,7 @@ class Update extends Component
     {
         if (!$this->tab) return redirect()->route('blog.update', [$this->blog->id, 'content']);
 
-        breadcrumb($this->blog->title);
+        breadcrumbs()->push($this->blog->title);
     }
 
     /**

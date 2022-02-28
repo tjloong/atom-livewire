@@ -1,10 +1,8 @@
 <div class="max-w-screen-md mx-auto">
     <x-page-header title="Users">
-        @can('users.create')
-            <x-button icon="plus" href="{{ route('user.create') }}">
-                New User
-            </x-button>
-        @endcan
+        <x-button icon="plus" href="{{ route('user.create') }}">
+            New User
+        </x-button>
     </x-page-header>
 
     <x-table :total="$users->total()" :links="$users->links()">
@@ -16,24 +14,24 @@
         </x-slot>
 
         <x-slot name="body">
-        @foreach ($users as $user)
-            <x-table row>
-                <x-table cell>
-                    <a href="{{ route('user.update', [$user->id]) }}">
-                        {{ $user->name }}
-                    </a>
-                    <div class="text-xs text-gray-500">
-                        {{ $user->email }}
-                    </div>
-                </x-table>
-                
-                @module('roles')
-                    <x-table cell class="text-right">
-                        {{ $user->role->name ?? '--' }}
+            @foreach ($users as $user)
+                <x-table row>
+                    <x-table cell>
+                        <a href="{{ route('user.update', [$user->id]) }}">
+                            {{ $user->name }}
+                        </a>
+                        <div class="text-xs text-gray-500">
+                            {{ $user->email }}
+                        </div>
                     </x-table>
-                @endmodule
-            </x-table>
-        @endforeach
+                    
+                    @module('roles')
+                        <x-table cell class="text-right">
+                            {{ $user->role->name ?? '--' }}
+                        </x-table>
+                    @endmodule
+                </x-table>
+            @endforeach
         </x-slot>
 
         <x-slot name="empty">

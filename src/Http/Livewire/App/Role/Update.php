@@ -15,7 +15,7 @@ class Update extends Component
     public function mount($id)
     {
         $this->role = model('role')->findOrFail($id);
-        breadcrumb($this->role->name);
+        breadcrumbs()->push($this->role->name);
     }
 
     /**

@@ -33,7 +33,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        //
+        breadcrumbs()->flush();
     }
 
     /**

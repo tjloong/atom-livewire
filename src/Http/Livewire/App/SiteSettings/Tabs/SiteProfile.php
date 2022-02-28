@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\App\SiteSettings\Tabs;
 
 use Livewire\Component;
-use Jiannius\Atom\Models\SiteSetting;
 
 class SiteProfile extends Component
 {
@@ -14,7 +13,7 @@ class SiteProfile extends Component
      */
     public function mount()
     {
-        SiteSetting::profile()->get()->each(function($setting) {
+        model('site_setting')->profile()->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
     }
@@ -24,9 +23,7 @@ class SiteProfile extends Component
      */
     public function submit()
     {
-        foreach ($this->settings as $key => $value) {
-            SiteSetting::where('name', $key)->update(['value' => $value]);
-        }
+        site_settings($this->settings);
 
         $this->dispatchBrowserEvent('toast', ['message' => 'Site Profile Updated', 'type' => 'success']);
     }

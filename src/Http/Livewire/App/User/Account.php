@@ -13,7 +13,7 @@ class Account extends Component
      */
     public function mount()
     {
-        breadcrumb_home('My Account');
+        breadcrumbs()->flush();
     }
 
     /**

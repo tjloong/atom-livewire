@@ -29,7 +29,7 @@ class Form extends Component
      */
     public function mount()
     {
-        breadcrumb('Create Role');
+        breadcrumbs()->push('Create Role');
     }
 
     /**

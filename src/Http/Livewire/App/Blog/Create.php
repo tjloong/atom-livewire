@@ -16,7 +16,7 @@ class Create extends Component
      */
     public function mount()
     {
-        breadcrumb('Create Blog');
+        breadcrumbs()->push('Create Blog');
         $this->blog = new Blog();
     }
 

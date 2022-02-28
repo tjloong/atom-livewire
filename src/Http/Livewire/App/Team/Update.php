@@ -21,7 +21,7 @@ class Update extends Component
     public function mount($id)
     {
         $this->team = model('team')->findOrFail($id);
-        breadcrumb($this->team->name);
+        breadcrumbs()->push($this->team->name);
     }
 
     /**

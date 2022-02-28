@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\App\SiteSettings;
 
 use Livewire\Component;
-use Jiannius\Atom\Models\SiteSetting;
 
 class Index extends Component
 {
@@ -20,7 +19,7 @@ class Index extends Component
             ]);
         }
 
-        breadcrumb(false);
+        breadcrumbs()->flush();
     }
 
     /**
@@ -28,18 +27,18 @@ class Index extends Component
      */
     public function getTabsProperty()
     {
+        $settings = model('site_setting');
         $tabs = [
             'general' => array_filter([
-                SiteSetting::profile()->count() ? 'site-profile' : null,
-                SiteSetting::tracking()->count() ? 'site-tracking' : null,
-                SiteSetting::seo()->count() ? 'site-seo' : null,
-                SiteSetting::social()->count() ? 'social-media' : null,
-                SiteSetting::whatsapp()->count() ? 'whatsapp-bubble' : null,
+                $settings->profile()->count() ? 'site-profile' : null,
+                $settings->tracking()->count() ? 'site-tracking' : null,
+                $settings->seo()->count() ? 'site-seo' : null,
+                $settings->social()->count() ? 'social-media' : null,
+                $settings->whatsapp()->count() ? 'whatsapp-bubble' : null,
             ]),
             'system' => [
                 'email-configurations',
                 'storage',
-                'google-map',
             ],
         ];
 

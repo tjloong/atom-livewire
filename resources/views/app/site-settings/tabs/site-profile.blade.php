@@ -17,6 +17,10 @@
                 Address
             </x-input.textarea>
 
+            <x-input.text wire:model.defer="settings.gmap_url">
+                Google Map URL
+            </x-input.text>
+
             <x-input.textarea wire:model.defer="settings.briefs">
                 Brief Description
             </x-input.textarea>
