@@ -560,12 +560,6 @@ class InstallCommand extends Command
     {
         DB::table('migrations')->where('migration', $this->baseMigrationName)->delete();
 
-        $this->call('vendor:publish', [
-            '--provider' => AtomServiceProvider::class,
-            '--tag' => 'atom-install',
-            '--force' => true,
-        ]);
-
         // base
         $this->newLine();
         $this->info('Base installation...');

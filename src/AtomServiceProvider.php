@@ -343,7 +343,7 @@ class AtomServiceProvider extends ServiceProvider
             __DIR__.'/../stubs/resources/js' => resource_path('js'),
             __DIR__.'/../resources/views/errors' => resource_path('views/errors'),
             __DIR__.'/../resources/views/vendor' => resource_path('views/vendor'),
-        ], 'atom-install');
+        ], 'atom-base');
 
         foreach ([
             'app/user', 

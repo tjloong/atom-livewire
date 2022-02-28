@@ -40,7 +40,7 @@ class Contact extends Component
                 'gmap_url' => site_settings('gmap_url'),
             ];
 
-            $this->initEnquiry();
+            $this->enquiry = $this->initEnquiry();
         }
     }
 
@@ -49,7 +49,7 @@ class Contact extends Component
      */
     public function initEnquiry()
     {
-        $this->enquiry = enabled_module('enquiries')
+        return enabled_module('enquiries')
             ? model('enquiry')
             : [
                 'name' => null,

@@ -38,6 +38,7 @@ class PublishCommand extends Command
             $modules = $this->argument('modules')
                 ? explode(',', $this->argument('modules'))
                 : $this->choice('Please select modules to publish', [
+                    'base',
                     'web',
                     'auth',
                     'user',
@@ -57,7 +58,10 @@ class PublishCommand extends Command
 
             foreach ($modules as $module) {
                 $this->warn('Publishing '.$module.'...');
-                $this->publish('atom-views-'.$module);
+
+                if ($module === 'base') $this->publish('atom-base');
+                else $this->publish('atom-views-'.$module);
+
                 $this->newLine();
             }
 

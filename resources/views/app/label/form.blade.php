@@ -9,6 +9,10 @@
             <x-input.text wire:model.defer="label.name" :error="$errors->first('label.name')" required>
                 Label Name
             </x-input.text>
+
+            <x-input.slug wire:model.defer="label.slug" prefix="/">
+                Label Slug (Leave empty to auto generate)
+            </x-input.slug>
         </div>
 
         <x-slot name="buttons">

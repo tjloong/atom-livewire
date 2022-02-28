@@ -4,7 +4,11 @@
     </x-slot>
 
     <div
-        x-data="phoneInput($wire.get('{{ $attributes->wire('model')->value() }}'), @js($countries))"
+        x-data="phoneInput(
+            @if ($wire = $attributes->wire('model')->value()) $wire.get('{{ $wire }}'),
+            @elseif ($value = $attributes->get('value')) @js($value),
+            @endif
+        )"
         x-on:click.away="close()"
         wire:ignore
         class="relative"
@@ -30,54 +34,54 @@
             x-ref="dropdown"
             class="absolute left-0 right-0 bg-white border drop-shadow rounded-md h-56 overflow-auto text-sm hidden"
         >
-            <template x-for="country in countries" x-bind:key="country.name">
+            @foreach ($countries as $country)
                 <a 
-                    x-on:click.prevent="code = country.code; input()"
+                    x-on:click.prevent="code = '{{ $country['code'] }}'; input()"
                     class="flex items-center space-x-2 py-2 px-4 border-b hover:bg-gray-100"
+                    data-country-code="{{ $country['code'] }}"
                 >
-                    <div x-text="country.code" class="text-gray-500 w-16 flex-shrink-0"></div>
-                    <div x-text="country.name" class="font-medium text-gray-800"></div>
-                </a>
-            </template>
-        </div>
+                    <div class="text-gray-500 w-16 flex-shrink-0">{{ $country['code'] }}</div>
+                    <div class="font-medium text-gray-800">{{ $country['name'] }}</div>
+                </a>                
+            @endforeach
+        </div>        
     </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('phoneInput', (value, countries, code = '+60') => ({
+                value,
+                countries,
+                code,
+                number: null,
+    
+                init () {
+                    if (this.value?.startsWith('+')) {
+                        this.code = Array.from(this.$refs.dropdown.querySelectorAll('[data-country-code]'))
+                            .map(el => (el.getAttribute('data-country-code')))
+                            .find(code => (this.value.startsWith(code)))
+
+                        if (this.code) this.number = this.value.replace(this.code, '')
+                    }
+                    else this.number = this.value
+                },
+                input () {
+                    this.value = this.number ? `${this.code}${this.number}` : null
+                    this.close()
+                },
+                open () {
+                    this.$refs.dropdown.classList.remove('hidden')
+    
+                    floatPositioning(this.$refs.input, this.$refs.dropdown, {
+                        placement: 'bottom',
+                        flip: true,
+                    })
+                },
+                close () {
+                    this.$refs.dropdown.classList.add('hidden')
+                },
+            }))
+        })
+    </script>
 </x-input.field>
 
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('phoneInput', (value, countries, code = '+60') => ({
-            value,
-            countries,
-            code,
-            number: null,
-
-            init () {
-                if (this.value?.startsWith('+')) {
-                    const country = this.countries.find(val => (this.value.startsWith(val.code)))
-
-                    if (country) {
-                        this.code = country.code
-                        this.number = this.value.replace(country.code, '')
-                    }
-                }
-                else this.number = this.value
-            },
-            input () {
-                this.value = this.number ? `${this.code}${this.number}` : null
-                this.close()
-            },
-            open () {
-                this.$refs.dropdown.classList.remove('hidden')
-                this.$refs.dropdown.classList.add('opacity-0')
-
-                floatPositioning(this.$refs.input, this.$refs.dropdown, {
-                    placement: 'bottom',
-                    flip: true,
-                }).then(() => this.$refs.dropdown.classList.remove('opacity-0'))
-            },
-            close () {
-                this.$refs.dropdown.classList.add('hidden')
-            },
-        }))
-    })
-</script>
