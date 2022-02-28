@@ -5,7 +5,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Jiannius\Atom\Services\Breadcrumbs;
+use Jiannius\Atom\Services\Metadata;
 use Rap2hpoutre\FastExcel\FastExcel;
+
+/**
+ * Countries
+ */
+function countries()
+{
+    return Metadata::COUNTRIES;
+}
 
 /**
  * Site settings

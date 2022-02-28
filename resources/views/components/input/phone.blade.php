@@ -17,16 +17,20 @@
 
         <div x-ref="input" class="relative">
             <a
-                x-text="code"
                 x-on:click.prevent="open()"
                 class="absolute top-0 bottom-0 px-3 flex items-center justify-center text-sm text-gray-500"
-            ></a>
+            >
+                <div class="flex items-center gap-2">
+                    <img x-bind:src="flag" style="width: 18px;">
+                    <span x-text="code"></span>
+                </div>
+            </a>
 
             <input
                 x-model="number"
                 x-on:input="input"
                 type="text" 
-                class="form-input w-full px-14"
+                class="form-input w-full pl-24 pr-4"
             >
         </div>
 
@@ -34,13 +38,15 @@
             x-ref="dropdown"
             class="absolute left-0 right-0 bg-white border drop-shadow rounded-md h-56 overflow-auto text-sm hidden"
         >
-            @foreach ($countries as $country)
+            @foreach (countries() as $country)
                 <a 
-                    x-on:click.prevent="code = '{{ $country['code'] }}'; input()"
-                    class="flex items-center space-x-2 py-2 px-4 border-b hover:bg-gray-100"
-                    data-country-code="{{ $country['code'] }}"
+                    x-on:click.prevent="code = '{{ $country['dialCode'] }}'; input()"
+                    class="flex items-center gap-2 py-2 px-4 border-b hover:bg-gray-100"
+                    data-country-code="{{ $country['dialCode'] }}"
+                    data-country-flag="{{ $country['flag'] }}"
                 >
-                    <div class="text-gray-500 w-16 flex-shrink-0">{{ $country['code'] }}</div>
+                    <img src="{{ $country['flag'] }}" style="width: 18px;">
+                    <div class="text-gray-500 w-16 flex-shrink-0">{{ $country['dialCode'] }}</div>
                     <div class="font-medium text-gray-800">{{ $country['name'] }}</div>
                 </a>                
             @endforeach
@@ -49,19 +55,33 @@
 
     <script>
         document.addEventListener('alpine:init', () => {
-            Alpine.data('phoneInput', (value, countries, code = '+60') => ({
+            Alpine.data('phoneInput', (value, code = '+60') => ({
                 value,
-                countries,
                 code,
+                flag: null,
                 number: null,
+
+                get countries () {
+                    return Array.from(this.$refs.dropdown.querySelectorAll('[data-country-code]'))
+                        .map(el => ({ 
+                            code: el.getAttribute('data-country-code'), 
+                            flag: el.getAttribute('data-country-flag'),
+                        }))
+                },
+
+                get flag () {
+                    if (!this.code) return 
+                    return this.countries.find(country => (country.code === this.code)).flag
+                },
     
                 init () {
                     if (this.value?.startsWith('+')) {
-                        this.code = Array.from(this.$refs.dropdown.querySelectorAll('[data-country-code]'))
-                            .map(el => (el.getAttribute('data-country-code')))
-                            .find(code => (this.value.startsWith(code)))
+                        const code = this.countries.find(country => (this.value.startsWith(country.code)))
 
-                        if (this.code) this.number = this.value.replace(this.code, '')
+                        if (code) {
+                            this.code = code
+                            this.number = this.value.replace(code, '')
+                        }
                     }
                     else this.number = this.value
                 },
