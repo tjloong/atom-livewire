@@ -56,4 +56,16 @@
             </x-builder.faq>
         </div>
     </section>
+
+    <section class="grid gap-4">
+        <div class="text-xl font-bold">Pricing Table</div>
+
+        <div class="max-w-screen-lg mx-auto">
+            <div class="grid gap-6 md:grid-cols-2">
+                @foreach ($plans as $plan)
+                    <x-builder.pricing :plan="$plan" :prices="$plan->prices" register-ref="pricing"/>
+                @endforeach
+            </div>
+        </div>
+    </section>
 </main>

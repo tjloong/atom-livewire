@@ -3,7 +3,7 @@
         <x-atom-logo/>
     </a>
 
-    <form wire:submit.prevent="login">
+    <form wire:submit.prevent="login" class="grid gap-6">
         <x-box>
             <div class="grid gap-6 p-5 md:p-10">
                 <div class="text-2xl font-bold">

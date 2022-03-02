@@ -9,11 +9,11 @@ use Jiannius\Atom\Services\Metadata;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
- * Countries
+ * Metadata
  */
-function countries()
+function metadata()
 {
-    return Metadata::COUNTRIES;
+    return new Metadata();
 }
 
 /**
@@ -71,6 +71,7 @@ function model($name)
  */
 function enabled_module($module)
 {
+    if (config('atom.static_site')) return false;
     if (app()->runningInConsole()) return true;
 
     $enabled = collect(json_decode(DB::table('site_settings')->where('name', 'modules')->first()->value));

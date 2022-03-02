@@ -7,6 +7,7 @@ use Livewire\Component;
 class Listing extends Component
 {
     public $type;
+    public $labels;
 
     /**
      * Mount
@@ -14,6 +15,8 @@ class Listing extends Component
     public function mount()
     {
         if (!$this->type) return redirect()->route('label.listing', [$this->types[0]]);
+
+        $this->labels = $this->getLabels();
 
         breadcrumbs()->home('Labels');
     }
@@ -27,14 +30,16 @@ class Listing extends Component
     }
 
     /**
-     * Get labels property
+     * Get labels
      */
-    public function getLabelsProperty()
+    public function getLabels()
     {
         return model('label')
             ->where('type', $this->type)
             ->orderBy('seq')
-            ->orderBy('name');
+            ->orderBy('name')
+            ->get()
+            ->toArray();
     }
 
     /**
@@ -54,7 +59,6 @@ class Listing extends Component
     {
         return view('atom::app.label.listing', [
             'types' => $this->types,
-            'labels' => $this->labels->get(),
         ]);
     }
 }

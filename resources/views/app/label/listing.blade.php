@@ -15,7 +15,7 @@
         </div>
 
         <div class="md:col-span-9">
-            @if ($labels->count())
+            @if (count($labels))
                 <x-box>
                     <x-input.sortable wire:model="labels" :config="['handle' => '.sort-handle']" class="grid divide-y">
                         @foreach ($labels as $label)
@@ -24,8 +24,8 @@
                                     <x-icon name="sort-alt-2"/>
                                 </div>
                             
-                                <a href="{{ route('label.update', [$label->id]) }}" class="flex-grow py-2 px-4 hover:bg-gray-100">
-                                    {{ $label->name }}
+                                <a href="{{ route('label.update', [$label['id']]) }}" class="flex-grow py-2 px-4 hover:bg-gray-100">
+                                    {{ $label['name'] }}
                                 </a>
                             </div>
                         @endforeach

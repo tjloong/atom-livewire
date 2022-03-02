@@ -8,6 +8,7 @@ class Sortable extends Component
 {
     public $el;
     public $config;
+    public $value;
 
     /**
      * Contructor
@@ -16,10 +17,12 @@ class Sortable extends Component
      */
     public function __construct(
         $el = 'div',
-        $config = []
+        $config = [],
+        $value = null,
     ) {
         $this->el = $el;
         $this->config = $config;
+        $this->value = $value;
     }
 
     /**

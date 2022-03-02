@@ -37,6 +37,7 @@ class RemoveCommand extends Command
             'blogs',
             'enquiries',
             'tickets',
+            'plans',
         ];
 
         $selected = $this->choice('Please select module to remove', $modules, null, null, true);
@@ -63,6 +64,49 @@ class RemoveCommand extends Command
         $value = $enabled->values()->all();
 
         $query->update(['value' => $value ? json_encode($value) : null]);
+    }
+
+    /**
+     * Remove plans
+     */
+    private function removePlans()
+    {
+        $this->newLine();
+        $this->info('Removing plans...');
+
+        if (Schema::hasColumn('users', 'plan_price_id')) {
+            Schema::table('users', function($table) {
+                $table->dropForeign(['plan_price_id']);
+                $table->dropColumn('plan_price_id');
+            });
+            
+            $this->line('Dropped plan_price_id column from users table.');
+        }
+
+        $table = Schema::hasTable('tenants') ? 'tenants' : 'users';
+
+        if (Schema::hasColumn($table, 'plan_price_id')) {
+            Schema::table($table, function($table) {
+                $table->dropForeign(['plan_price_id']);
+                $table->dropColumn('plan_price_id');
+            });
+
+            $this->line('Dropped plan_price_id column from '.$table.' table.');
+        }
+
+        if (Schema::hasColumn($table, 'plan_expired_at')) {
+            Schema::table($table, function($table) {
+                $table->dropColumn('plan_expired_at');
+            });
+
+            $this->line('Dropped plan_expired_at column from '.$table.' table.');
+        }
+
+        Schema::dropIfExists('plans_prices');
+        $this->line('Dropped plans_prices table.');
+        
+        Schema::dropIfExists('plans');
+        $this->line('Dropped plans table.');
     }
 
     /**

@@ -29,6 +29,10 @@
                 Pages
             </x-admin-panel>
 
+            <x-admin-panel aside icon="food-menu" route="plan.listing" can="plan.manage" :active="str()->is('plan.*', current_route())">
+                Plans
+            </x-admin-panel>
+
             <x-admin-panel aside icon="buoy" route="ticket.listing" can="tickets.view" :active="str()->is('ticket.*', current_route())">
                 Support Tickets
             </x-admin-panel>

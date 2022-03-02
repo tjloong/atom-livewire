@@ -56,6 +56,22 @@ if (!config('atom.static_site')) {
                 define_route('{id}', 'App\\Page\\Update')->name('page.update');
             });
         }
+
+        /**
+         * Plans
+         */
+        if (enabled_module('plans')) {
+            Route::prefix('plan')->group(function() {
+                define_route('listing', 'App\\Plan\\Listing')->name('plan.listing');
+                define_route('create', 'App\\Plan\\Create')->name('plan.create');
+                define_route('{id}', 'App\\Plan\\Update')->name('plan.update');
+            });
+
+            Route::prefix('plan-price')->group(function() {
+                define_route('create/{id}', 'App\\PlanPrice\\Create')->name('plan-price.create');
+                define_route('{id}', 'App\\PlanPrice\\Update')->name('plan-price.update');
+            });
+        }
     
         /**
          * Teams

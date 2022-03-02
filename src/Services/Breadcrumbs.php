@@ -31,9 +31,8 @@ class Breadcrumbs
         $trail = $this->generateTrail($name);
         $index = $trails->search(fn($val) => $val['route'] === $trail['route']);
 
-
         if ($index === false) $trails->push($trail);
-        else $trails->reject(fn($val, $key) => $key > $index);
+        else $trails = $trails->reject(fn($val, $key) => $key > $index);
 
         $this->setTrailsToSession(array_merge($this->get(), [
             'trails' => $trails->values()->all(),

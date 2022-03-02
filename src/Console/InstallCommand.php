@@ -5,7 +5,6 @@ namespace Jiannius\Atom\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Jiannius\Atom\AtomServiceProvider;
 use App\Models\User;
 
 class InstallCommand extends Command
@@ -83,6 +82,7 @@ class InstallCommand extends Command
                 'blogs',
                 'enquiries',
                 'tickets',
+                'plans',
             ];
 
             $selected = $this->argument('modules')
@@ -116,6 +116,144 @@ class InstallCommand extends Command
         $value = $enabled->unique()->values()->all();
 
         $query->update(['value' => json_encode($value)]);
+    }
+
+    /**
+     * Install plans
+     */
+    private function installPlans()
+    {
+        $this->newLine();
+        $this->info('Installing plans...');
+
+        if (Schema::hasTable('plans')) $this->warn('plans table exists, skipped.');
+        else {
+            Schema::create('plans', function($table) {
+                $table->id();
+                $table->string('name');
+                $table->string('slug');
+                $table->text('excerpt')->nullable();
+                $table->json('features')->nullable();
+                $table->json('data')->nullable();
+                $table->boolean('is_active')->nullable();
+                $table->timestamps();
+                $table->unsignedBigInteger('created_by')->nullable();
+
+                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            });
+
+            $this->line('plans table created successfully.');
+        }
+
+        if (Schema::hasTable('plans_prices')) $this->warn('plans_prices table exists, skipped.');
+        else {
+            Schema::create('plans_prices', function ($table) {
+                $table->id();
+                $table->string('currency')->nullable();
+                $table->decimal('amount', 20, 2)->nullable();
+                $table->string('recurring')->nullable();
+                $table->string('country')->nullable();
+                $table->boolean('is_default')->nullable();
+                $table->string('stripe_id')->nullable();
+                $table->unsignedBigInteger('plan_id')->nullable();
+                $table->timestamps();
+                $table->unsignedBigInteger('created_by')->nullable();
+                
+                $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
+                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            });
+
+            $this->line('plans_prices table created successfully.');
+        }
+
+        if (Schema::hasTable('tenants')) {
+            Schema::table('tenants', function($table) {
+                $table->timestamp('plan_expired_at')->nullable()->after('logo_id');
+                $table->unsignedBigInteger('plan_price_id')->nullable()->after('logo_id');
+                $table->foreign('plan_price_id')->references('id')->on('plans_prices')->onDelete('set null');
+            });
+
+            $this->line('Added plan_price_id column to tenants table.');
+        }
+        else {
+            $after = Schema::hasColumn('users', 'role_id') ? 'role_id' : 'root';
+
+            Schema::table('users', function($table) use ($after) {
+                $table->timestamp('plan_expired_at')->nullable()->after($after);
+                $table->unsignedBigInteger('plan_price_id')->nullable()->after($after);
+                $table->foreign('plan_price_id')->references('id')->on('plans_prices')->onDelete('set null');
+            });
+
+            $this->line('Added plan_price_id column to users table.');
+        }
+
+        if (DB::table('plans')->count()) $this->warn('There are data in plans table, skipped populating dummy data.');
+        else {
+            DB::table('plans')->insert(collect([
+                [
+                    'name' => 'Starter',
+                    'slug' => 'starter',
+                    'excerpt' => 'Get started with your first few projects.',
+                    'data' => ['cta' => 'Get Started'],
+                ],
+                [
+                    'name' => 'Pro',
+                    'slug' => 'pro',
+                    'excerpt' => 'For professionals who need extra support, controls and security.',
+                    'data' => ['cta' => 'Upgrade to Pro'],
+                ],
+            ])->map(fn($val) => array_merge($val, [
+                'data' => json_encode($val['data']),
+                'features' => json_encode([
+                    'Lorem ipsum dolor sit amet 1',
+                    'Lorem ipsum dolor sit amet 2',
+                    'Lorem ipsum dolor sit amet 3',
+                    'Lorem ipsum dolor sit amet 4',
+                    'Lorem ipsum dolor sit amet 5',
+                    'Lorem ipsum dolor sit amet 6',
+                    'Lorem ipsum dolor sit amet 7',
+                    'Lorem ipsum dolor sit amet 8',
+                    'Lorem ipsum dolor sit amet 9',
+                ]),
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]))->values()->all());
+
+            DB::table('plans_prices')->insert(collect([
+                [
+                    'amount' => 50,
+                    'recurring' => 'monthly',
+                    'is_default' => true,
+                    'plan_id' => 1,
+                ],
+                [
+                    'amount' => 550,
+                    'recurring' => 'yearly',
+                    'is_default' => false,
+                    'plan_id' => 1,
+                ],
+                [
+                    'amount' => 99,
+                    'recurring' => 'monthly',
+                    'is_default' => true,
+                    'plan_id' => 2,
+                ],
+                [
+                    'amount' => 1100,
+                    'recurring' => 'yearly',
+                    'is_default' => false,
+                    'plan_id' => 2,
+                ],
+            ])->map(fn($val) => array_merge($val, [
+                'currency' => 'MYR',
+                'country' => 'MY',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]))->values()->all());
+
+            $this->line('Added dummy plans.');
+        }
     }
 
     /**

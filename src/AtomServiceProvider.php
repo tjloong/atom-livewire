@@ -127,6 +127,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('input.title', 'Jiannius\\Atom\\Components\\Input\\Title');
         Blade::component('input.phone', 'Jiannius\\Atom\\Components\\Input\\Phone');
         Blade::component('input.state', 'Jiannius\\Atom\\Components\\Input\\State');
+        Blade::component('input.amount', 'Jiannius\\Atom\\Components\\Input\\Amount');
         Blade::component('input.number', 'Jiannius\\Atom\\Components\\Input\\Number');
         Blade::component('input.picker', 'Jiannius\\Atom\\Components\\Input\\Picker');
         Blade::component('input.search', 'Jiannius\\Atom\\Components\\Input\\Search');
@@ -149,6 +150,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('builder.footer', 'Jiannius\\Atom\\Components\\Builder\\Footer');
         Blade::component('builder.slider', 'Jiannius\\Atom\\Components\\Builder\\Slider');
         Blade::component('builder.navbar', 'Jiannius\\Atom\\Components\\Builder\\Navbar');
+        Blade::component('builder.pricing', 'Jiannius\\Atom\\Components\\Builder\\Pricing');
         Blade::component('builder.prefooter', 'Jiannius\\Atom\\Components\\Builder\\Prefooter');
         Blade::component('builder.testimonial', 'Jiannius\\Atom\\Components\\Builder\\Testimonial');
     }
@@ -197,6 +199,17 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.page.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Listing');
         Livewire::component('atom.page.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Update');
         Livewire::component('atom.page.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Form');
+
+        // plan
+        Livewire::component('atom.plan.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Plan\\Listing');
+        Livewire::component('atom.plan.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Plan\\Create');
+        Livewire::component('atom.plan.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Plan\\Update');
+        Livewire::component('atom.plan.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\Plan\\Form');
+
+        // plan price
+        Livewire::component('atom.plan-price.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\PlanPrice\\Create');
+        Livewire::component('atom.plan-price.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\PlanPrice\\Update');
+        Livewire::component('atom.plan-price.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\PlanPrice\\Form');
 
         // user
         Livewire::component('atom.user.account', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Account');
@@ -357,6 +370,7 @@ class AtomServiceProvider extends ServiceProvider
             'app/blog', 
             'app/enquiry', 
             'app/ticket',
+            'app/plan',
             'auth',
             'web',
         ] as $module) {

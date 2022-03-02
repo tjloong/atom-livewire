@@ -38,15 +38,15 @@
             x-ref="dropdown"
             class="absolute left-0 right-0 bg-white border drop-shadow rounded-md h-56 overflow-auto text-sm hidden"
         >
-            @foreach (countries() as $country)
+            @foreach (metadata()->countries() as $country)
                 <a 
-                    x-on:click.prevent="code = '{{ $country['dialCode'] }}'; input()"
+                    x-on:click.prevent="code = '{{ $country['dial_code'] }}'; input()"
                     class="flex items-center gap-2 py-2 px-4 border-b hover:bg-gray-100"
-                    data-country-code="{{ $country['dialCode'] }}"
+                    data-country-code="{{ $country['dial_code'] }}"
                     data-country-flag="{{ $country['flag'] }}"
                 >
                     <img src="{{ $country['flag'] }}" style="width: 18px;">
-                    <div class="text-gray-500 w-16 flex-shrink-0">{{ $country['dialCode'] }}</div>
+                    <div class="text-gray-500 w-16 flex-shrink-0">{{ $country['dial_code'] }}</div>
                     <div class="font-medium text-gray-800">{{ $country['name'] }}</div>
                 </a>                
             @endforeach

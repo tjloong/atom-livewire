@@ -3,7 +3,7 @@
         <x-atom-logo/>
     </a>
 
-    <div>
+    <div class="grid gap-6">
         <form wire:submit.prevent="submit">
             <x-box>
                 <div class="grid gap-8 p-5 md:p-10">

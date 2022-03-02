@@ -52,6 +52,7 @@ class PublishCommand extends Command
                     'blog',
                     'enquiry',
                     'ticket',
+                    'plan',
                 ], null, null, true);
 
             $this->newLine();

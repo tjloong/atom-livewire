@@ -76,6 +76,26 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get plan price for user
+     */
+    public function plan_price()
+    {
+        if (!enabled_module('plans')) return;
+
+        return $this->belongsTo(PlanPrice::class, 'plan_price_id');
+    }
+
+    /**
+     * Get plan for user
+     */
+    public function plan()
+    {
+        if (!enabled_module('plans')) return;
+
+        return $this->hasOneThrough(Plan::class, PlanPrice::class);
+    }
+
+    /**
      * Scope for fussy search
      * 
      * @param Builder $query

@@ -2,6 +2,7 @@
 <{{ $el }}
     x-data="sortableInput(
         @if ($attributes->wire('model')->value()) $wire.get('{{ $attributes->wire('model')->value() }}'),
+        @elseif ($value) @js($value),
         @else null,
         @endif
         @js($config)
@@ -20,6 +21,11 @@
             value,
             sortable: null,
 
+            get children () {
+                return Array.from(this.$el.children)
+                    .filter(child => (!child.tagName.includes('TEMPLATE')))
+            },
+
             init () {
                 ScriptLoader.load('https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js').then(() => {
                     this.setIdentifier()
@@ -34,8 +40,7 @@
                 this.value = this.value.map(val => ({ ...val, sortableId: random() }))
 
                 // map the item elements to value
-                Array.from(this.$el.children)
-                    .forEach((child, i) => child.setAttribute('data-sortable-id', this.value[i].sortableId))
+                this.children.forEach((child, i) => child.setAttribute('data-sortable-id', this.value[i].sortableId))
             },
 
             input () {
@@ -43,7 +48,7 @@
                 else {
                     const sorted = []
 
-                    Array.from(this.$el.children).forEach(child => {
+                    this.children.forEach(child => {
                         const id = child.getAttribute('data-sortable-id')
                         const value = this.value.find(val => (val.sortableId === id))
                         sorted.push(value)

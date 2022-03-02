@@ -4,10 +4,8 @@ namespace Jiannius\Atom\Components\Input;
 
 use Illuminate\View\Component;
 
-class Currency extends Component
+class Amount extends Component
 {
-    public $countries;
-
     /**
      * Constructor
      * 
@@ -15,7 +13,7 @@ class Currency extends Component
      */
     public function __construct()
     {
-        $this->countries = collect(metadata()->countries())->filter(fn($cn) => !is_null($cn['currency_code']))->values()->all();
+        //
     }
 
     /**
@@ -25,6 +23,6 @@ class Currency extends Component
      */
     public function render()
     {
-        return view('atom::components.input.currency');
+        return view('atom::components.input.amount');
     }
 }

@@ -17,12 +17,22 @@ class Home extends Component
     }
 
     /**
+     * Get plans property
+     */
+    public function getPlansProperty()
+    {
+        return model('plan')->where('is_active', true)->get();
+    }
+
+    /**
      * Render component
      * 
      * @return void
      */
     public function render()
     {
-        return view('atom::web.home')->layout('layouts.web');
+        return view('atom::web.home', [
+            'plans' => $this->plans,
+        ])->layout('layouts.web');
     }
 }
