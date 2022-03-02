@@ -17,8 +17,12 @@ class Button extends Component
      * 
      * @return void
      */
-    public function __construct($color = 'theme', $size = 'sm', $inverted = false, $outlined = false)
-    {
+    public function __construct(
+        $color = 'theme', 
+        $size = 'sm', 
+        $inverted = false, 
+        $outlined = false
+    ) {
         $this->size = $size;
         $this->color = $color;
         $this->inverted = $inverted;

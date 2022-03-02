@@ -1,4 +1,4 @@
-@if ($attributes->get('href'))
+@if ($attributes->has('href') || $attributes->has('x-bind:href') || $attributes->get(':href'))
 <a x-data="button" {{ $attributes->merge(['class' => $styles]) }}>
     <x-loader class="mr-1.5" size="{{ $size === 'xs' ? '14px' : '18px' }}"/>
 

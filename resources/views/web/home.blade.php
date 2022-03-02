@@ -60,10 +60,17 @@
     <section class="grid gap-4">
         <div class="text-xl font-bold">Pricing Table</div>
 
-        <div class="max-w-screen-lg mx-auto">
+        <div class="max-w-screen-md mx-auto">
             <div class="grid gap-6 md:grid-cols-2">
                 @foreach ($plans as $plan)
-                    <x-builder.pricing :plan="$plan" :prices="$plan->prices" register-ref="pricing"/>
+                    <x-builder.pricing 
+                        :plan="$plan->toArray()" 
+                        :prices="$plan->prices->toArray()" 
+                        :cta="[
+                            'text' => $plan->data->cta ?? null,
+                            'href' => route('register', ['ref' => 'pricing']),
+                        ]"
+                    />
                 @endforeach
             </div>
         </div>

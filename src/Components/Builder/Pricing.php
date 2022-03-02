@@ -6,6 +6,7 @@ use Illuminate\View\Component;
 
 class Pricing extends Component
 {
+    public $cta;
     public $plan;
     public $prices;
 
@@ -16,10 +17,16 @@ class Pricing extends Component
      */
     public function __construct(
         $plan = null,
-        $prices = []
+        $prices = [],
+        $cta = null
     ) {
         $this->plan = $plan;
         $this->prices = $prices;
+
+        $this->cta = [
+            'text' => $cta['text'] ?? 'Get Started',
+            'href' => $cta['href'] ?? null,
+        ];
     }
 
     /**
