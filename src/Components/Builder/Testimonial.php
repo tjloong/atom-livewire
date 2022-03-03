@@ -26,7 +26,7 @@ class Testimonial extends Component
         $this->align = $align;
 
         $this->image = [
-            'url' => is_string($image) ? $image : ($image['url'] ?? null),
+            'url' => is_string($image) ? $image : ($image['url'] ?? 'https://via.placeholder.com/500/eeedf0?text=%20'),
             'position' => $image['position'] ?? 'top',
             'alt' => $image['alt'] ?? 'testimonial-avatar',
             'circle' => $image['circle'] ?? false,

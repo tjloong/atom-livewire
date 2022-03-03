@@ -20,7 +20,7 @@
         'justify-end' => $customer['align'] === 'right',
         'justify-start' => $customer['align'] === 'left' || !$customer['align'],
     ]) }}>
-        @if ($image && $image['url'])
+        @if (!$attributes->has('no-image') && $image && $image['url'])
             <figure class="flex-shrink-0 w-20 h-20 drop-shadow rounded-full overflow-hidden bg-gray-100 md:w-24 md:h-24 {{ $customer['align'] === 'right' ? 'order-last' : 'order-first' }}">
                 <img 
                     src="{{ $image['url'] }}" 
@@ -52,21 +52,19 @@
         <div class="max-w-screen-xl mx-auto px-6">
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="flex-shrink-0 mx-auto {{ $image['position'] === 'left' ? 'order-first' : 'order-last' }}">
-                    @if ($image['url'])
-                        <figure class="drop-shadow overflow-hidden w-60 h-60 md:w-80 md:h-80 {{ $image['circle'] ? 'rounded-full' : 'rounded-xl' }}">
-                            <img src="{{ $image['url'] }}" class="w-full h-full object-cover">
-                        </figure>
-                    @endif
+                    <figure class="drop-shadow overflow-hidden w-60 h-60 md:w-72 md:h-72 {{ $image['circle'] ? 'rounded-full' : 'rounded-xl' }}">
+                        <img src="{{ $image['url'] }}" class="w-full h-full object-cover">
+                    </figure>
                 </div>
 
                 <div class="flex-grow">
                     <div class="grid gap-4">
-                        <x-builder.testimonial content :align="$align" :dark="$dark" class="text-2xl font-medium">
+                        <x-builder.testimonial content :align="$align" :dark="$dark" class="text-lg font-medium">
                             {{ $slot }}
                         </x-builder.testimonial>
 
                         @if ($customer)
-                            <x-builder.testimonial card :customer="$customer" :dark="$dark"/>
+                            <x-builder.testimonial card :customer="$customer" :dark="$dark" no-image/>
                         @endif
                     </div>
                 </div>
