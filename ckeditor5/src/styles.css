@@ -2,6 +2,6 @@
     --ck-border-radius: 6px;
 }
 
-.ck-editor__editable {
+.ck.ck-content.ck-editor__editable {
     min-height: 250px;
 }

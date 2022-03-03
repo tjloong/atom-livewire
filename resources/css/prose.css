@@ -1,0 +1,26 @@
+.prose .image img {
+    @apply shadow rounded-md;
+}
+.prose .image figcaption {
+    @apply text-center;
+}
+
+.prose .image.image-style-align-left {
+    @apply float-left mr-4 my-2 ml-0;
+}
+
+.prose .image.image-style-align-right {
+    @apply float-right ml-4 my-2 mr-0;
+}
+
+.prose .image.image-style-align-center {
+    @apply block mx-auto;
+}
+
+.prose .image.image-style-block-align-left {
+    @apply block ml-0 mr-auto;
+}
+
+.prose .image.image-style-block-align-right {
+    @apply block mr-0 ml-auto;
+}

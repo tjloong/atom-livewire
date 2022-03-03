@@ -36,7 +36,9 @@
                             </figure>
                         @endif
         
-                        <div class="prose prose-sm max-w-none">{!! $this->blog->content !!}</div>
+                        <div class="prose prose-sm md:prose-base lg:prose-lg max-w-none">
+                            {!! $this->blog->content !!}
+                        </div>
                     </div>
                 </div>
             @else

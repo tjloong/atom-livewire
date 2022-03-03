@@ -17,6 +17,7 @@ import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtml
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
@@ -72,6 +73,7 @@ ClassicEditor.builtinPlugins = [
     Heading,
     HorizontalLine,
     Image,
+    ImageResize,
     ImageCaption,
     ImageStyle,
     ImageToolbar,
@@ -93,13 +95,16 @@ ClassicEditor.builtinPlugins = [
 ClassicEditor.defaultConfig = {
     image: {
         toolbar: [
-            'imageStyle:inline',
-            'imageStyle:block',
-            'imageStyle:side',
+            'imageStyle:alignLeft',
+            'imageStyle:alignRight',
+            '|',
+            'imageStyle:alignBlockLeft',
+            'imageStyle:alignCenter',
+            'imageStyle:alignBlockRight',
             '|',
             'toggleImageCaption',
             'imageTextAlternative'
-        ]
+        ],
     },
     table: {
         contentToolbar: [
