@@ -34,6 +34,8 @@ class Form extends Component
             ],
             'form.password' => 'nullable|min:8',
             'form.visibility' => 'nullable',
+            'form.is_active' => 'nullable',
+            'form.is_root' => 'nullable',
             'form.role_id' => 'nullable',
         ];
     }
@@ -48,6 +50,8 @@ class Form extends Component
             'email' => $this->user->email,
             'password' => null,
             'visibility' => $this->user->visibility ?? 'global',
+            'is_root' => $this->user->is_root ?? false,
+            'is_active' => $this->user->is_active ?? false,
             'role_id' => $this->user->role_id,
         ];
         
@@ -147,6 +151,8 @@ class Form extends Component
         $this->user->name = $this->form['name'];
         $this->user->email = $this->form['email'];
         $this->user->visibility = $this->form['visibility'];
+        $this->user->is_root = $this->form['is_root'];
+        $this->user->is_active = $this->form['is_active'];
         $this->user->role_id = enabled_module('roles') ? $this->form['role_id'] : $this->user->role_id;
         $this->user->save();
 

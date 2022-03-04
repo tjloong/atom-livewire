@@ -176,11 +176,9 @@ class InstallCommand extends Command
             $this->line('Added plan_price_id column to tenants table.');
         }
         else {
-            $after = Schema::hasColumn('users', 'role_id') ? 'role_id' : 'root';
-
-            Schema::table('users', function($table) use ($after) {
-                $table->timestamp('plan_expired_at')->nullable()->after($after);
-                $table->unsignedBigInteger('plan_price_id')->nullable()->after($after);
+            Schema::table('users', function($table) {
+                $table->timestamp('plan_expired_at')->nullable()->after('is_active');
+                $table->unsignedBigInteger('plan_price_id')->nullable()->after('is_active');
                 $table->foreign('plan_price_id')->references('id')->on('plans_prices')->onDelete('set null');
             });
 
@@ -536,7 +534,7 @@ class InstallCommand extends Command
         if (Schema::hasColumn('users', 'role_id')) $this->warn('users table already has role_id column, skipped.');
         else {
             Schema::table('users', function ($table) {
-                $table->unsignedBigInteger('role_id')->nullable()->after('root');
+                $table->unsignedBigInteger('role_id')->nullable()->after('is_active');
                 $table->foreign('role_id')->references('id')->on('roles')->onDelete('set null');
             });
             $this->line('Added role_id column to users table.');
@@ -641,12 +639,20 @@ class InstallCommand extends Command
         });
         $this->line('Made password column in users table nullable.');
 
-        if (Schema::hasColumn('users', 'root')) $this->warn('users table already has root column, skipped.');
+        if (Schema::hasColumn('users', 'is_active')) $this->warn('users table already has is_active column, skipped.');
         else {
             Schema::table('users', function ($table) {
-                $table->boolean('root')->nullable()->after('remember_token');
+                $table->boolean('is_active')->nullable()->after('remember_token');
             });
-            $this->line('Added root column to users table.');
+            $this->line('Added is_active column to users table.');
+        }
+
+        if (Schema::hasColumn('users', 'is_root')) $this->warn('users table already has is_root column, skipped.');
+        else {
+            Schema::table('users', function ($table) {
+                $table->boolean('is_root')->nullable()->after('remember_token');
+            });
+            $this->line('Added is_root column to users table.');
         }
 
         if (Schema::hasColumn('users', 'visibility')) $this->warn('users table already has visibility column, skipped.');
@@ -681,8 +687,9 @@ class InstallCommand extends Command
                 'email' => User::ROOT_EMAIL,
                 'password' => bcrypt('password'),
                 'status' => 'active',
-                'root' => true,
                 'visibility' => 'global',
+                'is_active' => true,
+                'is_root' => true,
                 'email_verified_at' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),

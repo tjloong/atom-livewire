@@ -18,9 +18,7 @@ class Login extends Component
     public $remember;
 
     /**
-     * Mounted event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
@@ -35,22 +33,12 @@ class Login extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::auth.login')->layout('layouts.auth');
-    }
-
-    /**
      * Attempt login
      */
     public function login()
     {
         if (app()->environment('local')) {
-            if ($user = User::where('email', $this->email)->first()) {
+            if ($user = User::where('email', $this->email)->where('is_active', true)->first()) {
                 Auth::login($user);
             }
             else {
@@ -62,7 +50,7 @@ class Login extends Component
         else {
             $this->ensureIsNotRateLimited();
 
-            if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+            if (! Auth::attempt(['email' => $this->email, 'password' => $this->password, 'is_active' => true], $this->remember)) {
                 RateLimiter::hit($this->throttleKey());
     
                 throw ValidationException::withMessages([
@@ -123,5 +111,13 @@ class Login extends Component
         if (Route::has('app.home')) return route('app.home');
 
         return '/';
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::auth.login')->layout('layouts.auth');
     }
 }

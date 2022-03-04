@@ -45,7 +45,14 @@
         </div>
 
         <div x-ref="dropdown" class="absolute py-1 z-10 w-full hidden">
-            <div class="bg-white drop-shadow rounded-md border grid divide-y max-h-[250px] overflow-auto">
+            <div x-show="!options.length" class="bg-white drop-shadow rounded-md border p-4">
+                <div class="flex items-center justify-center gap-1">
+                    <x-icon name="info-circle" class="text-gray-400" size="20px"/>
+                    <span class="font-medium text-gray-500">The list is empty</span>
+                </div>
+            </div>
+
+            <div x-show="options.length" class="bg-white drop-shadow rounded-md border grid divide-y max-h-[250px] overflow-auto">
                 <template x-for="opt in options" x-bind:key="opt.value">
                     <a
                         x-on:click.prevent="toggle(opt)"

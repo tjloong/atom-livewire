@@ -12,12 +12,16 @@
         @endif
     </x-page-header>
 
-    @livewire('atom.user.form', ['user' => $user], key($user->id))
+    <div class="grid gap-6">
+        @livewire('atom.user.form', ['user' => $user], key($user->id))
 
-    @module('permissions')
-        <x-box>
-            <x-slot name="header">User's Permissions</x-slot>
-            @livewire('atom.permission.listing', ['user' => $user], key('permissions'))
-        </x-box>
-    @endmodule
+        @module('permissions')
+            @if (!$user->is_root && $user->is_active)
+                <x-box>
+                    <x-slot name="header">User's Permissions</x-slot>
+                    @livewire('atom.permission.listing', ['user' => $user], key('permissions'))
+                </x-box>
+            @endif
+        @endmodule
+    </div>
 </div>

@@ -8,16 +8,22 @@
     <x-table :total="$users->total()" :links="$users->links()">
         <x-slot name="head">
             <x-table head sort="name">Name</x-table>
+            
             @module('roles')
                 <x-table head align="right">Role</x-table>
             @endmodule
+
+            <x-table head/>
         </x-slot>
 
         <x-slot name="body">
             @foreach ($users as $user)
                 <x-table row>
                     <x-table cell>
-                        <a href="{{ route('user.update', [$user->id]) }}">
+                        <a href="{{ $user->id === auth()->id() 
+                            ? route('user.account')
+                            : route('user.update', [$user->id]) 
+                        }}">
                             {{ $user->name }}
                         </a>
                         <div class="text-xs text-gray-500">
@@ -30,6 +36,13 @@
                             {{ $user->role->name ?? '--' }}
                         </x-table>
                     @endmodule
+
+                    <x-table cell class="text-right">
+                        @if ($user->is_root)
+                            <x-badge color="yellow">root</x-badge>
+                        @endif
+                        <x-badge>{{ $user->is_active ? 'active' : 'inactive' }}</x-badge>
+                    </x-table>
                 </x-table>
             @endforeach
         </x-slot>

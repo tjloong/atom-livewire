@@ -13,7 +13,7 @@
                 @if ($errors->any())
                     <div class="bg-red-100 text-red-800 rounded p-4 grid gap-2">
                         @foreach ($errors->all() as $error)
-                            <div class="flex items-center gap-2 text-sm">
+                            <div class="flex items-center gap-1 text-sm">
                                 <x-icon name="x"/> {{ $error }}
                             </div>
                         @endforeach

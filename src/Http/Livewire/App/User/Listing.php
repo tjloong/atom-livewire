@@ -34,7 +34,9 @@ class Listing extends Component
     public function getUsersProperty()
     {
         return model('user')
-            ->when(!auth()->user()->root, fn($q) => $q->where('root', false))
+            ->when(!auth()->user()->is_root, fn($q) => $q->where('is_root', false))
+            ->when(enabled_module('tenants') && auth()->user()->is_root, fn($q) => $q->where('is_root', true))
+            ->when(enabled_module('signups'), fn($q) => $q->doesntHave('signup'))
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
     }
