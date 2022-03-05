@@ -10,6 +10,10 @@ a {
     display: none !important;
 }
 
+[disabled] {
+    @apply cursor-not-allowed;
+}
+
 .ck-content {
     @apply prose prose-sm max-w-none;
 }

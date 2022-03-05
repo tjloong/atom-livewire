@@ -20,7 +20,7 @@ class Update extends Component
         $this->plan = $this->price->plan;
 
         breadcrumbs()->push(
-            str($this->price->recurring)->headline().' '.currency($this->price->amount, $this->price->currency)
+            currency($this->price->amount, $this->price->currency).' /'.$this->price->recurring
         );
     }
 
@@ -38,10 +38,10 @@ class Update extends Component
     public function delete()
     {
         if (enabled_module('tenants') && $this->price->tenants->count()) {
-            $this->dispatchBrowserEvent('alert', ['message' => 'There are tenants subscribed under this plan price.', 'type' => 'error']);
+            $this->dispatchBrowserEvent('alert', ['message' => 'There are tenants subscribed to this plan price.', 'type' => 'error']);
         }
-        else if ($this->price->users->count()) {
-            $this->dispatchBrowserEvent('alert', ['message' => 'There are users subscribed under this plan price.', 'type' => 'error']);
+        else if (enabled_module('signups') && $this->price->signups->count()) {
+            $this->dispatchBrowserEvent('alert', ['message' => 'There are sign-ups under this plan price.', 'type' => 'error']);
         }
         else {
             $this->price->delete();

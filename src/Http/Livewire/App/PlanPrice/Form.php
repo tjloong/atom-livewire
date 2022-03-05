@@ -10,10 +10,12 @@ class Form extends Component
     public $price;
 
     protected $rules = [
+        'price.country' => 'nullable',
         'price.currency' => 'required',
         'price.amount' => 'required|numeric',
-        'price.recurring' => 'required',
-        'price.country' => 'nullable',
+        'price.expired_after' => 'required_if:price.is_lifetime,false',
+        'price.shoutout' => 'nullable',
+        'price.is_lifetime' => 'nullable',
         'price.is_default' => 'nullable',
         'price.plan_id' => 'required',
     ];
@@ -22,7 +24,7 @@ class Form extends Component
         'price.currency.required' => 'Currency is required.',
         'price.amount.required' => 'Price is required.',
         'price.amount.numeric' => 'Invalid price.',
-        'price.recurring.required' => 'Recurring period is required.',
+        'price.expired_after.required_if' => 'Price valid period is required.',
         'price.plan_id.required' => 'Unknown plan.',
     ];
 
@@ -35,6 +37,17 @@ class Form extends Component
     }
 
     /**
+     * Get disabled property
+     */
+    public function getDisabledProperty()
+    {
+        if (enabled_module('tenants')) return $this->price->tenants()->count() > 0;
+        if (enabled_module('signups')) return $this->price->signups()->count() > 0;
+
+        return false;
+    }
+
+    /**
      * Submit
      */
     public function submit()
@@ -42,6 +55,7 @@ class Form extends Component
         $this->resetValidation();
         $this->validate();
 
+        $this->price->expired_after = $this->price->is_lifetime ? null : $this->price->expired_after;
         $this->price->save();
         
         if ($this->price->is_default) {
@@ -59,6 +73,8 @@ class Form extends Component
      */
     public function render()
     {
-        return view('atom::app.plan-price.form');
+        return view('atom::app.plan-price.form', [
+            'disabled' => $this->disabled,
+        ]);
     }
 }

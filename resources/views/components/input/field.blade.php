@@ -1,4 +1,7 @@
-<div {{ $attributes->class(['field', 'error' => $attributes->get('error')]) }}>
+<div {{ $attributes->class([
+    'field', 
+    'error' => $attributes->get('error'),
+]) }}>
     @isset($label)
         <label class="block text-xs block text-xs font-medium leading-5 text-gray-400 uppercase mb-1.5">
             {{ $label }}

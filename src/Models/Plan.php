@@ -17,7 +17,6 @@ class Plan extends Model
 
     protected $casts = [
         'features' => 'array',
-        'data' => 'object',
         'is_active' => 'boolean',
     ];
 
@@ -27,6 +26,22 @@ class Plan extends Model
     public function prices()
     {
         return $this->hasMany(PlanPrice::class);
+    }
+
+    /**
+     * Get upgradables for plan
+     */
+    public function upgradables()
+    {
+        return $this->belongsToMany(Plan::class, 'plans_upgradables', 'plan_id', 'upgradable_id');
+    }
+
+    /**
+     * Get downgradables for plan
+     */
+    public function downgradables()
+    {
+        return $this->belongsToMany(Plan::class, 'plans_downgradables', 'plan_id', 'downgradable_id');
     }
 
     /**

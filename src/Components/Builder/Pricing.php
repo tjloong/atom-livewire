@@ -9,6 +9,7 @@ class Pricing extends Component
     public $cta;
     public $plan;
     public $prices;
+    public $recurrings;
 
     /**
      * Contructor
@@ -22,6 +23,18 @@ class Pricing extends Component
     ) {
         $this->plan = $plan;
         $this->prices = $prices;
+        $this->recurrings = collect($prices)->map(function($price) {
+            $label = $price['expired_after'];
+            [$n, $unit] = explode(' ', $price['expired_after']);
+
+            if ($n <= 1) {
+                if ($unit === 'day') $label = 'daily';
+                if ($unit === 'month') $label = 'monthly';
+                if ($unit === 'year') $label = 'yearly';
+            }
+
+            return ['value' => $price['expired_after'], 'label' => $label];
+        })->values()->all();
 
         $this->cta = [
             'text' => $cta['text'] ?? 'Get Started',

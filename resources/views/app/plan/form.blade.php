@@ -17,9 +17,17 @@
                 Features
             </x-input.textarea>
 
-            <x-input.text wire:model.defer="plan.data.cta">
+            <x-input.text wire:model.defer="plan.cta">
                 CTA Text
             </x-input.text>
+
+            <x-input.tags wire:model.defer="upgradables" :options="$otherPlans">
+                Upgradable To
+            </x-input.tags>
+
+            <x-input.tags wire:model.defer="downgradables" :options="$otherPlans">
+                Downgradable To
+            </x-input.tags>
 
             <x-input.checkbox wire:model="plan.is_active">
                 Plan is active

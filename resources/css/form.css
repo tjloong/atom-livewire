@@ -33,6 +33,10 @@ a:active {
     @apply outline-none ring-2 ring-theme;
 }
 
+.form-input[disabled] {
+    @apply bg-gray-100;
+}
+
 .form-input-transparent {
     @apply appearance-none p-0 border-0 text-sm focus:ring-0;
 }

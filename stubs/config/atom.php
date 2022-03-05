@@ -5,9 +5,8 @@ return [
     'max_upload_size' => 8,
     'timezone' => 'Asia/Kuala_Lumpur',
 
-    'auth' => [
-        'register' => true,
-        'forgot-password' => true,
+    'signups' => [
+        'socialite' => ['email', 'facebook', 'google', 'linkedin'],
         'verify' => true,
     ],
 

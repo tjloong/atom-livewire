@@ -23,6 +23,18 @@ global.formatDate = (value, option) => {
     return value
 }
 
+// format currency
+global.currency = (val, symbol = null) => {
+    const config = { minimumFractionDigits: 2 }
+
+    if (symbol) {
+        config.currency = symbol
+        config.style = 'currency'
+    }
+
+    return Number(val).toLocaleString('en-US', config)
+}
+
 // device type
 global.deviceType = () => {
     const ua = navigator.userAgent

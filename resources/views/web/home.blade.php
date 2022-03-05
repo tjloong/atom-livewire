@@ -67,8 +67,10 @@
                         :plan="$plan->toArray()" 
                         :prices="$plan->prices->toArray()" 
                         :cta="[
-                            'text' => $plan->data->cta ?? null,
-                            'href' => route('register', ['ref' => 'pricing']),
+                            'text' => $plan->cta ?? null,
+                            'href' => Route::has('register')
+                                ? route('register', ['ref' => 'pricing'])
+                                : '#',
                         ]"
                     />
                 @endforeach

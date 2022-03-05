@@ -1,5 +1,5 @@
 <div 
-    x-data="pricingTable(@js($plan), @js($prices), @js($cta))"
+    x-data="pricingTable(@js($plan), @js($prices), @js($recurrings), @js($cta))"
     class="bg-white shadow rounded-lg border flex flex-col"
 >
     <div class="flex-grow p-6">
@@ -11,8 +11,8 @@
                     <div x-show="recurrings.length > 1" class="flex gap-2 items-center float-right">
                         <template x-for="(val, i) in recurrings" x-bind:key="`recurring-${i}`">
                             <div 
-                                x-text="val"
-                                x-bind:class="price.recurring === val ? 'bg-theme-dark text-white font-semibold' : 'cursor-pointer bg-gray-200'"
+                                x-text="val.label"
+                                x-bind:class="price.expired_after === val.value ? 'bg-theme-dark text-white font-semibold' : 'cursor-pointer bg-gray-200'"
                                 x-on:click="switchRecurring(val)"
                                 class="text-xs py-1 px-2 rounded"
                             ></div>
@@ -28,8 +28,8 @@
             @else
                 <div class="flex gap-2">
                     <span class="font-medium" x-text="price.currency"></span>
-                    <span class="text-4xl font-extrabold" x-text="price.amount"></span>
-                    <span class="font-medium self-end" x-text="price.recurring"></span>
+                    <span class="text-4xl font-extrabold" x-text="currency(price.amount)"></span>
+                    <span class="font-medium self-end" x-text="`/ ${price.recurring}`"></span>
                 </div>
             @endif
     
@@ -60,28 +60,25 @@
 
     <script>
         document.addEventListener('alpine:init', () => {
-            Alpine.data('pricingTable', (plan, prices, cta) => ({
+            Alpine.data('pricingTable', (plan, prices, recurrings, cta) => ({
                 cta,
                 plan,
                 prices,
-                price: prices[0],
+                recurrings,
+                price: prices.find(val => val.is_default) || prices[0],
                 
-                get recurrings () {
-                    return this.prices.map(val => (val.recurring))
-                },
-
                 get href () {
                     const href = this.cta?.href || '/'
-                    const params = { plan: this.plan.slug, recurring: this.price.recurring }
+                    const params = { plan: this.plan.slug, price: this.price.id }
                     const query = new URLSearchParams(params).toString()
 
                     return `${href}&${query}`
                 },
 
-                switchRecurring (val) {
-                    if (this.price.recurring === val) return
+                switchRecurring (recurring) {
+                    if (this.price.expired_after === recurring.value) return
 
-                    this.price = this.prices.find(price => (price.recurring === val))
+                    this.price = this.prices.find(price => (price.expired_after === recurring.value))
                 },
             }))
         })

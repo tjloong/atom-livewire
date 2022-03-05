@@ -15,8 +15,13 @@ class PlanPrice extends Model
 
     protected $casts = [
         'amount' => 'float',
+        'is_lifetime' => 'boolean',
         'is_default' => 'boolean',
         'plan_id' => 'integer',
+    ];
+
+    protected $appends = [
+        'recurring',
     ];
 
     /**
@@ -32,14 +37,35 @@ class PlanPrice extends Model
      */
     public function tenants()
     {
-        return $this->hasMany(Tenant::class);
+        if (!enabled_module('tenants')) return;
+        
+        return $this->belongsToMany(Tenant::class, 'tenants_subscriptions', 'plan_price_id', 'tenant_id');
+    }
+    
+    /**
+     * Get signups for plan price
+     */
+    public function signups()
+    {
+        if (!enabled_module('signups')) return;
+
+        return $this->belongsToMany(Signup::class, 'signups_subscriptions', 'plan_price_id', 'signup_id');
     }
 
     /**
-     * Get users for plan price
+     * Get recurring attribute
+     * 
+     * @return string
      */
-    public function users()
+    public function getRecurringAttribute()
     {
-        return $this->hasMany(User::class);
+        if ($this->is_lifetime) return 'lifetime';
+        if ($this->expired_after === '1 day') return 'day';
+        if ($this->expired_after === '1 month') return 'month';
+        if ($this->expired_after === '1 year') return 'year';
+
+        [$n, $unit] = explode(' ', $this->expired_after);
+
+        return $n.' '.(str($unit)->plural($n));
     }
 }

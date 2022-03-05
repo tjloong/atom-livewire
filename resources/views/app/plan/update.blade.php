@@ -10,51 +10,53 @@
         </x-button>
     </x-page-header>
 
-    @livewire('atom.plan.form', ['plan' => $plan], key('plan-form'))
+    <div class="grid gap-6">
+        @livewire('atom.plan.form', ['plan' => $plan], key('plan-form'))
 
-    <x-box>
-        <x-slot name="header">
-            <div class="flex items-center justify-between">
-                <div>Prices</div>
+        <x-box>
+            <x-slot name="header">
+                <div class="flex items-center justify-between">
+                    <div>Prices</div>
+    
+                    @if ($plan->prices->count())
+                        <div>
+                            <x-button href="{{ route('plan-price.create', [$plan->id]) }}" icon="plus" size="xs" color="gray">
+                                New Price
+                            </x-button>
+                        </div>
+                    @endif
+                </div>
+            </x-slot>
+    
+            <div class="grid divide-y">
+                @forelse ($plan->prices as $price)
+                    <a href="{{ route('plan-price.update', [$price->id]) }}" class="py-2 px-4 text-gray-800 hover:bg-gray-100">
+                        <div class="flex items-start justify-between">
+                            <div class="grid gap-1">
+                                <div class="flex items-center gap-1 text-base">
+                                    <div class="font-medium text-gray-500">{{ $price->currency }}</div>
+                                    <div class="font-semibold">{{ currency($price->amount) }}</div>
+                                    <div class="font-medium text-gray-500">/{{ $price->recurring }}</div>
+                                </div>
 
-                @if ($plan->prices->count())
-                    <div>
-                        <x-button href="{{ route('plan-price.create', [$plan->id]) }}" icon="plus" size="xs" color="gray">
-                            New Price
-                        </x-button>
-                    </div>
-                @endif
-            </div>
-        </x-slot>
-
-        <div class="grid divide-y">
-            @forelse ($plan->prices as $price)
-                <a href="{{ route('plan-price.update', [$price->id]) }}" class="py-2 px-4 text-gray-800 hover:bg-gray-100">
-                    <div class="flex items-start justify-between">
-                        <div class="grid gap-1">
-                            <div class="flex items-center gap-1">
-                                <div class="font-semibold">{{ str($price->recurring)->headline() }}</div>
-                                @if ($price->is_default)
-                                    <x-badge>default</x-badge>
+                                @if ($cn = optional(metadata()->countries($price->country))['name'])
+                                    <div class="text-xs text-gray-500">Available in {{ $cn }}</div>
                                 @endif
                             </div>
-                            @if ($cn = optional(metadata()->countries($price->country))['name'])
-                                <div class="text-gray-500">Available in {{ $cn }}</div>
+
+                            @if ($price->is_default)
+                                <x-badge>default</x-badge>
                             @endif
                         </div>
-                        <div class="text-base">
-                            <span class="font-light">{{ $price->currency }}</span>
-                            <span class="font-medium">{{ currency($price->amount) }}</span>
-                        </div>
-                    </div>
-                </a>
-            @empty
-                <x-empty-state title="No prices found" subtitle="No price defined for this plan">
-                    <x-button href="{{ route('plan-price.create', [$plan->id]) }}" icon="plus">
-                        Create Price
-                    </x-button>
-                </x-empty-state>
-            @endforelse
-        </div>
-    </x-box>
+                    </a>
+                @empty
+                    <x-empty-state title="No prices found" subtitle="No price defined for this plan">
+                        <x-button href="{{ route('plan-price.create', [$plan->id]) }}" icon="plus">
+                            Create Price
+                        </x-button>
+                    </x-empty-state>
+                @endforelse
+            </div>
+        </x-box>
+    </div>
 </div>

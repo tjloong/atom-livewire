@@ -3,7 +3,7 @@
         {{ $slot }}
     </x-slot>
 
-    <select {{ $attributes->class(['form-input w-full']) }}>
+    <select {{ $attributes->class(['form-input w-full disabled:cursor-not-allowed disabled:bg-gray-100']) }}>
         <option value="" selected> -- {{ $attributes->get('placeholder') ?? 'Please Select' }} -- </option>
         @foreach ($options as $opt)
             <option value="{{ $opt->value }}">
