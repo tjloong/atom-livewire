@@ -6,16 +6,16 @@ use Illuminate\View\Component;
 
 class State extends Component
 {
-    public $options;
+    public $country;
 
     /**
      * Contructor
      * 
      * @return void
      */
-    public function __construct($options = [])
+    public function __construct($country = null)
     {
-        //
+        $this->country = $country;
     }
 
     /**

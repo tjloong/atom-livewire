@@ -5,9 +5,20 @@ return [
     'max_upload_size' => 8,
     'timezone' => 'Asia/Kuala_Lumpur',
 
+    'login' => [
+        'facebook',
+        'google',
+        'linkedin',
+    ],
+
     'signups' => [
-        'socialite' => ['email', 'facebook', 'google', 'linkedin'],
         'verify' => true,
+    ],
+
+    'onboarding' => [
+        'steps' => [
+            'profile' => 'Personal Information',
+        ],
     ],
 
     'labels' => [
@@ -19,6 +30,12 @@ return [
         'labels' => ['manage'],
         'files' => ['manage'],
         'site-settings' => ['manage'],
+    ],
+
+    'site-settings' => [
+        'settings' => [
+            //
+        ],
     ],
 
     'data_visibility' => true,

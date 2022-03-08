@@ -11,6 +11,7 @@ class Button extends Component
     public $styles;
     public $inverted;
     public $outlined;
+    public $renderable;
 
     /**
      * Contructor
@@ -21,13 +22,16 @@ class Button extends Component
         $color = 'theme', 
         $size = 'sm', 
         $inverted = false, 
-        $outlined = false
+        $outlined = false,
+        $hide = null,
+        $can = null
     ) {
         $this->size = $size;
         $this->color = $color;
         $this->inverted = $inverted;
         $this->outlined = $outlined;
         $this->styles = $this->getStyles();
+        $this->renderable = !$hide && (!$can || ($can && auth()->user()->can($can)));
     }
 
     /**

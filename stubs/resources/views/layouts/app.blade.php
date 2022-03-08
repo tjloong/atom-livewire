@@ -1,8 +1,6 @@
-@extends('atom::layout', ['noindex' => true, 'tracking' => false])
+@extends('atom::layout', ['noindex' => true, 'tracking' => false, 'vendors' => ['floating-ui']])
 
 @push('scripts')
-    <script src="https://unpkg.com/@floating-ui/core@0.1.2/dist/floating-ui.core.min.js"></script>
-    <script src="https://unpkg.com/@floating-ui/dom@0.1.2/dist/floating-ui.dom.min.js"></script>
     <script src="{{ mix('js/app.js') }}" defer></script>
 @endpush
 
@@ -13,7 +11,7 @@
         </x-slot>
 
         <x-slot name="dropdown">
-            <x-dropdown item icon="user" route="user.account">My Account</x-dropdown>
+            <x-dropdown item icon="user" route="user.home">Account</x-dropdown>
         </x-slot>
 
         <x-slot name="aside">
@@ -33,6 +31,10 @@
                 Plans
             </x-admin-panel>
 
+            <x-admin-panel aside icon="user-plus" route="signup.listing" can="signup.manage" :active="str()->is('signup.*', current_route())">
+                Sign-Ups
+            </x-admin-panel>
+
             <x-admin-panel aside icon="buoy" route="ticket.listing" can="tickets.view" :active="str()->is('ticket.*', current_route())">
                 Support Tickets
             </x-admin-panel>
@@ -41,15 +43,11 @@
                 Settings
 
                 <x-slot name="subitems">
-                    <x-admin-panel aside route="user.account">
-                        My Account
-                    </x-admin-panel>
-
                     <x-admin-panel aside route="role.listing" can="roles.manage" :active="str()->is('role.*', current_route())">
                         Roles
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="user.listing" can="users.manage" :active="str()->is('user.*', current_route()) && current_route() !== 'user.account'">
+                    <x-admin-panel aside route="user.listing" can="users.manage" :active="str()->is('user.*', current_route()) && current_route() !== 'user.home'">
                         Users
                     </x-admin-panel>
 

@@ -15,7 +15,7 @@ class Index extends Component
     {
         if (!$this->tab) {
             return redirect()->route('site-settings', [
-                head($this->tabs['general']) ?? head($this->tabs['system'])
+                head($this->tabs['general'] ?? $this->tabs['system'])
             ]);
         }
 
@@ -29,13 +29,16 @@ class Index extends Component
     {
         $settings = model('site_setting');
         $tabs = [
-            'general' => array_filter([
-                $settings->profile()->count() ? 'site-profile' : null,
-                $settings->tracking()->count() ? 'site-tracking' : null,
-                $settings->seo()->count() ? 'site-seo' : null,
-                $settings->social()->count() ? 'social-media' : null,
-                $settings->whatsapp()->count() ? 'whatsapp-bubble' : null,
-            ]),
+            'general' => array_filter(array_merge(
+                [
+                    $settings->profile()->count() ? 'site-profile' : null,
+                    $settings->tracking()->count() ? 'site-tracking' : null,
+                    $settings->seo()->count() ? 'site-seo' : null,
+                    $settings->social()->count() ? 'social-media' : null,
+                    $settings->whatsapp()->count() ? 'whatsapp-bubble' : null,
+                ], 
+                config('atom.site-settings.settings', [])
+            )),
             'system' => [
                 'email-configurations',
                 'storage',

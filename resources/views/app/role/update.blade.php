@@ -10,10 +10,14 @@
         </x-button>
     </x-page-header>
 
-    @livewire('atom.role.form', ['role' => $role], key('role-form'))
-
-    <x-box>
-        <x-slot name="header">Role's Permissions</x-slot>
-        @livewire('atom.permission.listing', ['role' => $role], key('role-permissions'))
-    </x-box>
+    <div class="grid gap-6">
+        @livewire('atom.role.form', ['role' => $role], key('role-form'))
+    
+        @module('permissions')
+            <x-box>
+                <x-slot name="header">Role's Permissions</x-slot>
+                @livewire('atom.permission.listing', ['role' => $role], key('role-permissions'))
+            </x-box>
+        @endmodule
+    </div>
 </div>

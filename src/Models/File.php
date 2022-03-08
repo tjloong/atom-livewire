@@ -5,13 +5,13 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
-use Jiannius\Atom\Traits\HasOwner;
+use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Traits\HasFilters;
 use Jiannius\Atom\Models\SiteSetting;
 
 class File extends Model
 {
-    use HasOwner;
+    use HasTrace;
     use HasFilters;
     
     protected $guarded = [];

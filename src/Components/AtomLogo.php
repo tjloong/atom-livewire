@@ -14,19 +14,18 @@ class AtomLogo extends Component
      * 
      * @return void
      */
-    public function __construct($small = false)
-    {
+    public function __construct(
+        $small = false,
+        $logo = null
+    ) {
         $this->small = $small;
 
         foreach (['png', 'jpg', 'jpeg', 'svg'] as $ext) {
-            if ($small) {
-                if (file_exists(storage_path("app/public/img/logo-sm.$ext"))) {
-                    $this->logo = "logo-sm.$ext";
-                    break;
-                }
-            }
-            else if (file_exists(storage_path("app/public/img/logo.$ext"))) {
-                $this->logo = "logo.$ext";
+            $name = $logo ?? 'logo';
+            $name = ($small ? ($name.'-sm') : $name).'.'.$ext;
+
+            if (file_exists(storage_path("app/public/img/$name"))) {
+                $this->logo = $name;
                 break;
             }
         }

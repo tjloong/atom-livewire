@@ -5,13 +5,15 @@ namespace Jiannius\Atom\Http\Livewire\Auth;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
-use App\Models\User;
-use Jiannius\Atom\Models\Role;
 
 class Register extends Component
 {
     public $user;
+    public $signup;
+    public $tenant;
+
     public $form = [
+        'agree_tnc' => false,
         'agree_marketing' => true,
     ];
     
@@ -20,6 +22,7 @@ class Register extends Component
         'form.email' => 'required|email|unique:users,email',
         'form.password' => 'required|min:8',
         'form.agree_tnc' => 'accepted',
+        'form.agree_marketing' => 'nullable',
     ];
 
     protected $messages = [
@@ -36,64 +39,75 @@ class Register extends Component
 
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
-        if (auth()->user() || !request()->query('ref')) return redirect('/');
+        if (!request()->query('ref')) return redirect('/');
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::auth.register')->layout('layouts.auth');
-    }
-
-    /**
-     * Form submission
-     * 
-     * @return void
+     * Submit
      */
     public function submit()
     {
         $this->resetValidation();
         $this->validate();
 
+        if (enabled_module('tenants')) $this->createTenant();
+
         $this->createUser();
+
+        if (enabled_module('signups')) $this->createSignup();
+
         $this->registered();
 
         return redirect($this->redirectTo());
     }
 
     /**
+     * Create tenant
+     */
+    public function createTenant()
+    {
+        //
+    }
+
+    /**
      * Create user
-     * 
-     * @return User
      */
     public function createUser()
     {
-        $this->user = User::create([
+        $this->user = model('user');
+
+        $this->user->fill([
             'name' => $this->form['name'],
             'email' => $this->form['email'],
             'password' => bcrypt($this->form['password']),
-            'status' => 'active',
-            'role_id' => Role::where('slug', 'restricted-user')->where('is_system', true)->first()->id ?? null,
+            'is_root' => false,
+            'is_pending' => false,
+            'is_active' => true,
+        ]);
+
+        $this->user->save();
+    }
+
+    /**
+     * Create signup
+     */
+    public function createSignup()
+    {
+        $this->signup = $this->user->signup()->create([
+            'agree_tnc' => $this->form['agree_tnc'],
+            'agree_marketing' => $this->form['agree_marketing'],
         ]);
     }
 
     /**
      * Post registration
-     * 
-     * @return void
      */
     public function registered()
     {
-        if (config('atom.features.auth.verify')) {
+        if (config('atom.signups.verify')) {
             $this->user->sendEmailVerificationNotification();
         }
 
@@ -105,11 +119,17 @@ class Register extends Component
 
     /**
      * Redirect after registration
-     * 
-     * @return void
      */
     public function redirectTo()
     {
-        return route('register.completed');
+        return route('onboarding');
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::auth.register')->layout('layouts.auth');
     }
 }

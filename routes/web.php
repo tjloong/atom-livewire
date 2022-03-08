@@ -7,7 +7,28 @@ if (!config('atom.static_site')) {
     define_route('__sitemap', 'SitemapController@index')->name('__sitemap');
     define_route('__export/{filename}', 'ExportController@download')->name('__export');
 
-    Route::prefix('app')->middleware('auth')->group(function() {
+    /**
+     * User
+     */
+    Route::prefix('user')->middleware('auth')->group(function() {
+        define_route('/', fn() => redirect()->route('user.authentication'))->name('user.home');
+        define_route('authentication', 'User\\Authentication\\Index')->name('user.authentication');
+    });
+
+    /**
+     * Onboarding
+     */
+    if (enabled_module('signups') || enabled_module('tenants')) {
+        Route::prefix('onboarding')->middleware('auth')->group(function() {
+            define_route('/', 'Onboarding\\Index')->name('onboarding');
+            define_route('completed', 'Onboarding\\Completed')->name('onboarding.completed');
+        });
+    }
+
+    /**
+     * App
+     */
+    Route::prefix('app')->middleware(['auth', 'app-guard'])->group(function() {
         define_route('/', fn() => redirect()->route('dashboard'))->name('app.home');
 
         /**
@@ -72,6 +93,16 @@ if (!config('atom.static_site')) {
                 define_route('{id}', 'App\\PlanPrice\\Update')->name('plan-price.update');
             });
         }
+
+        /**
+         * Signups
+         */
+        if (enabled_module('signups')) {
+            Route::prefix('signup')->group(function() {
+                define_route('listing', 'App\\Signup\\Listing')->name('signup.listing');
+                define_route('{id}', 'App\\Signup\\Update')->name('signup.update');
+            });
+        }
     
         /**
          * Teams
@@ -108,7 +139,6 @@ if (!config('atom.static_site')) {
          * Users
          */
         Route::prefix('user')->group(function () {
-            define_route('account', 'App\\User\\Account')->name('user.account');
             define_route('listing', 'App\\User\\Listing')->name('user.listing');
             define_route('create', 'App\\User\\Create')->name('user.create');
             define_route('{id}', 'App\\User\\Update')->name('user.update');

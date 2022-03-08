@@ -20,15 +20,20 @@
             {{ $dropdown }}
         </div>
     </div>
+
 @elseif ($attributes->has('dropdown-item'))
     <a {{ $attributes->merge([
         'class' => '
-            py-1.5 px-3 text-center text-sm text-gray-500 font-medium hover:text-theme 
-            md:text-left md:text-gray-800 md:hover:bg-gray-100
+            inline-flex items-center gap-2
+            py-1.5 text-sm text-gray-800 font-medium hover:text-theme md:px-3 md:hover:bg-gray-100
         '
     ]) }}>
+        @if ($icon = $attributes->get('icon'))
+            <x-icon name="{{ $icon }}" size="20px" class="text-gray-400" type="{{ $attributes->get('icon-type') ?? 'regular' }}"/>
+        @endif
         {{ $slot }}
     </a>
+
 @elseif ($attributes->has('item'))
     <a 
         href="{!! $attributes->get('href') !!}"
@@ -39,86 +44,141 @@
     >
         {{ $slot }}
     </a>
+
 @else
-    <nav
+    <nav 
         x-data="{ show: false }"
-        x-on:click.away="show = false"
         x-cloak
-        class="
-            relative p-4
-            {{ $sticky ? 'sticky top-0 z-10 drop-shadow' : '' }}
-            {{ $attributes->get('class') ?? 'bg-white' }}
-        "
+        class="{{
+            collect([
+                'relative',
+                ($sticky ? 'sticky top-0 z-10' : null),
+                ($attributes->get('class') ?? 'p-4'),
+            ])->filter()->join(' ')
+        }}"
     >
-        <div class="max-w-screen-xl mx-auto grid space-y-4 md:flex md:space-y-0 md:space-x-4">
-            <div class="flex justify-between items-center">
-                @isset($logo)
-                    {{ $logo }}
-                @else
-                    <a href="/" class="w-24 h-8 md:w-40">
-                        @if ($attributes->get('logo'))
-                            <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain">
-                        @else
-                            <x-atom-logo/>
-                        @endif
-                    </a>
-                @endisset
-
-                <a x-on:click="show = !show" class="flex items-center justify-center md:hidden">
-                    <x-icon x-show="!show" name="menu"/>
-                    <x-icon x-show="show" name="x" size="30px"/>
-                </a>
-            </div>
-
-            <div 
-                x-bind:class="show ? 'grid' : 'hidden'"
-                class="
-                    justify-center md:flex-grow md:flex md:items-center md:gap-2
-                    @if ($align === 'left') md:justify-start
-                    @elseif ($align === 'center') md:justify-center
-                    @elseif ($align === 'right') md:justify-end
-                    @endif
-                "
-            >
-                {{ $slot }}
-            </div>
-
-            @if ($showAuth)
-                <div 
-                    x-bind:class="show ? 'grid' : 'hidden'"
-                    class="justify-center items-center md:flex-shrink-0 md:flex md:space-x-2"
-                >
-                    @auth
-                        <x-builder.navbar dropdown right>
-                            <div class="flex items-center justify-center space-x-2">
-                                <x-icon name="user-circle"/>
-                                <div class="truncate">{{ auth()->user()->name }}</div>
-                                <x-icon name="chevron-down"/>
-                            </div>
-
-                            <x-slot name="dropdown">
-                                @isset($auth)
-                                    {{ $auth }}
-                                @endisset
-
-                                <x-builder.navbar dropdown-item href="{{ route('login', ['logout' => true]) }}">
-                                    Logout
-                                </x-builder.navbar>
-                            </x-slot>
-                        </x-builder.navbar>
+        <div class="max-w-screen-xl mx-auto grid divide-y">
+            <div class="grid gap-4 md:flex">
+                <div class="flex justify-between items-center">
+                    @isset($logo)
+                        {{ $logo }}
                     @else
-                        <x-builder.navbar item href="{{ route('login') }}">
-                            Login
-                        </x-builder.navbar>
-
-                        @if (Route::has('register'))
-                            <x-button href="{{ route('register', ['ref' => 'landing']) }}">
-                                {{ $registerPlaceholder }}
-                            </x-button>
-                        @endif
-                    @endauth
+                        <a href="/" class="{{ $attributes->get('logo-class') ?? 'max-w-[100px] max-h-[50px] md:max-w-[150px] md:max-h-[75px]' }}">
+                            @if ($attributes->get('logo'))
+                                <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain">
+                            @else
+                                <x-atom-logo/>
+                            @endif
+                        </a>
+                    @endisset
+    
+                    <a x-on:click="show = !show" class="flex items-center justify-center text-gray-800 md:hidden">
+                        <x-icon name="menu"/>
+                    </a>
                 </div>
-            @endif
+
+                {{-- Desktop view --}}
+                <div class="flex-grow hidden gap-4 items-center justify-between md:flex">
+                    <div
+                        class="{{
+                            collect([
+                                'flex-grow flex gap-4 items-center',
+                                ($align === 'left' ? 'justify-start' : null),
+                                ($align === 'center' ? 'justify-center' : null),
+                                ($align === 'right' ? 'justify-end' : null),
+                            ])->filter()->join(' ')
+                        }}"
+                    >
+                        {{ $slot }}
+                    </div>
+
+                    @if ($showAuth)
+                        @auth
+                            <x-builder.navbar dropdown right>
+                                <div class="flex items-center justify-center gap-2">
+                                    <x-icon name="user-circle" size="20px"/>
+                                    <div>{{ str(auth()->user()->name)->limit(15) }}</div>
+                                    <x-icon name="chevron-down"/>
+                                </div>
+
+                                <x-slot name="dropdown">
+                                    @isset($auth)
+                                        {{ $auth }}
+                                    @else
+                                        <x-builder.navbar dropdown-item href="{{ route('user.home') }}" icon="user-pin">
+                                            Account
+                                        </x-builder.navbar>
+                                    @endisset
+
+                                    <x-builder.navbar dropdown-item href="{{ route('login', ['logout' => true]) }}" icon="log-out">
+                                        Logout
+                                    </x-builder.navbar>
+                                </x-slot>
+                            </x-builder.navbar>
+                        @else
+                            <div class="flex items-center gap-3">
+                                <x-builder.navbar item href="{{ route('login') }}">Login</x-builder.navbar>
+
+                                @module('signups')
+                                    <x-button href="{{ route('register', ['ref' => 'navbar']) }}">
+                                        Register
+                                    </x-button>
+                                @endmodule
+                            </div>
+                        @endauth
+                    @endif
+                </div>
+
+                {{-- Mobile view --}}
+                <div x-show="show" x-transition.opacity class="fixed inset-0 z-40 px-4 py-6">
+                    <div x-on:click="show = !show" class="absolute inset-0 bg-gray-400/50"></div>
+
+                    <div class="relative bg-white rounded-lg shadow p-4 max-h-[100%] overflow-auto">
+                        <div class="grid gap-3">
+                            {{ $slot }}
+
+                            @if ($showAuth)
+                                <div class="bg-gray-100 rounded-lg p-4">
+                                    @auth
+                                        <div class="flex-shrink-0 flex items-center gap-1">
+                                            <x-icon name="user-circle" size="20px" class="text-gray-400"/>
+                                            <div class="truncate">{{ auth()->user()->name }}</div>
+                                        </div>
+
+                                        <div class="grid text-sm mt-2">
+                                            @isset($auth)
+                                                {{ $auth }}
+                                            @else
+                                                <x-builder.navbar dropdown-item href="{{ route('user.home') }}" icon="user-pin">
+                                                    Account
+                                                </x-builder.navbar>
+                                            @endisset
+
+                                            <x-builder.navbar dropdown-item href="{{ route('login', ['logout' => 1]) }}" icon="log-out">
+                                                Logout
+                                            </x-builder.navbar>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center justify-center gap-3 text-sm">
+                                            <x-button color="gray" href="{{ route('login') }}">Login</x-button>
+                                            <x-button href="{{ route('register', ['ref' => 'navbar']) }}">Register</x-button>
+                                        </div>
+                                    @endauth
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="absolute top-4 right-2 w-8 h-8">
+                        <a
+                            x-on:click="show = false" 
+                            class="block w-full h-full rounded-full bg-white shadow flex items-center justify-center text-gray-500"
+                        >
+                            <x-icon name="x" size="28px"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 @endif

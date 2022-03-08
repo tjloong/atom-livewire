@@ -3,20 +3,47 @@
 namespace Jiannius\Atom\Http\Livewire\App;
 
 use Livewire\Component;
-use Jiannius\Atom\Models\Blog;
-use Jiannius\Atom\Models\Enquiry;
 
 class Dashboard extends Component
 {
     public $dateFrom;
     public $dateTo;
 
+    /**
+     * Mount
+     */
     public function mount()
     {
         breadcrumbs()->home('Dashboard');
         
         $this->dateFrom = today()->subDays(30);
         $this->dateTo = today();
+    }
+
+    /**
+     * Get blogs property
+     */
+    public function getBlogsProperty()
+    {
+        if (!enabled_module('blogs')) return;
+
+        return [
+            'count' => model('blog')->whereBetween('created_at', [$this->dateFrom, $this->dateTo])->count(),
+            'published' => model('blog')->whereBetween('published_at', [$this->dateFrom, $this->dateTo])->count(),
+        ];
+    }
+
+    /**
+     * Get enquiries property
+     */
+    public function getEnquiriesProperty()
+    {
+        if (!enabled_module('enquiries')) return;
+
+        return [
+            'count' => model('enquiry')->whereBetween('created_at',[$this->dateFrom, $this->dateTo])->count(),
+            'pending' => model('enquiry')->whereBetween('created_at',[$this->dateFrom, $this->dateTo])->where('status', 'pending')->count(),
+        ];
     }
 
     /**
@@ -27,12 +54,8 @@ class Dashboard extends Component
     public function render()
     {
         return view('atom::app.dashboard', [
-            'sum' => [
-                'blogs' => Blog::whereBetween('created_at', [$this->dateFrom, $this->dateTo])->count(),
-                'published' => Blog::whereBetween('published_at', [$this->dateFrom, $this->dateTo])->count(),
-                'enquiries' => Enquiry::whereBetween('created_at',[$this->dateFrom, $this->dateTo])->count(),
-                'pending' => Enquiry::whereBetween('created_at',[$this->dateFrom, $this->dateTo])->where('status', 'pending')->count(),
-            ],
+            'blogs' => $this->blogs,
+            'enquiries' => $this->enquiries,
         ]);
     }
 }

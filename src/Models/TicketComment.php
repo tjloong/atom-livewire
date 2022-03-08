@@ -4,12 +4,12 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
-use Jiannius\Atom\Traits\HasOwner;
+use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Notifications\TicketCommentNotification;
 
 class TicketComment extends Model
 {
-    use HasOwner;
+    use HasTrace;
 
     protected $table = 'tickets_comments';
     protected $guarded = [];

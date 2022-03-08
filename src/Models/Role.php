@@ -4,14 +4,14 @@ namespace Jiannius\Atom\Models;
 
 use App\Models\User;
 use Jiannius\Atom\Traits\HasSlug;
-use Jiannius\Atom\Traits\HasOwner;
+use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
     use HasSlug;
-    use HasOwner;
+    use HasTrace;
     use HasFilters;
     
     protected $guarded = [];

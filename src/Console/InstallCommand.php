@@ -33,6 +33,19 @@ class InstallCommand extends Command
         ],
     ];
 
+    protected $modules = [
+        'base',
+        'roles',
+        'permissions',
+        'signups',
+        'pages',
+        'teams',
+        'blogs',
+        'enquiries',
+        'tickets',
+        'plans',
+    ];
+
     /**
      * Create a new command instance.
      *
@@ -73,23 +86,11 @@ class InstallCommand extends Command
             else return;
         }
         else {
-            $modules = [
-                'base',
-                'roles',
-                'permissions',
-                'pages',
-                'teams',
-                'blogs',
-                'enquiries',
-                'tickets',
-                'plans',
-            ];
-
             $selected = $this->argument('modules')
                 ? explode(',', $this->argument('modules'))
-                : $this->choice('Please select modules to install', array_merge(['all'], $modules), null, null, true);
+                : $this->choice('Please select modules to install', array_merge(['all'], $this->modules), null, null, true);
 
-            foreach ($modules as $module) {
+            foreach ($this->modules as $module) {
                 if (in_array('all', $selected) || in_array($module, $selected)) {
                     call_user_func([$this, str()->camel('install-'.$module)]);
                     if ($module !== 'base') $this->markModuleEnabled($module);
@@ -558,6 +559,45 @@ class InstallCommand extends Command
     }
 
     /**
+     * Install signups
+     */
+    private function installSignups()
+    {
+        $this->newLine();
+        $this->info('Installing signups...');
+
+        if (Schema::hasTable('signups')) $this->warn('signups table exists, skipped.');
+        else {
+            Schema::create('signups', function($table) {
+                $table->id();
+                $table->string('phone')->nullable();
+                $table->string('email')->nullable();
+                $table->text('address')->nullable();
+                $table->string('city')->nullable();
+                $table->string('state')->nullable();
+                $table->string('country')->nullable();
+                $table->string('postcode')->nullable();
+                $table->string('gender')->nullable();
+                $table->date('dob')->nullable();
+                $table->boolean('agree_tnc')->nullable();
+                $table->boolean('agree_marketing')->nullable();
+                $table->foreignId('user_id')->nullable();
+                $table->timestamp('onboarded_at')->nullable();
+                $table->timestamps();
+                $table->timestamp('blocked_at')->nullable();
+                $table->foreignId('blocked_by')->nullable();
+
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                $table->foreign('blocked_by')->references('id')->on('users')->onDelete('set null');
+            });
+
+            $this->line('signups table created successfully.');
+        }
+
+        if (Schema::hasTable('plans')) $this->installPlans('signups');
+    }
+
+    /**
      * Install permissions
      */
     private function installPermissions()
@@ -735,6 +775,14 @@ class InstallCommand extends Command
             $this->line('Added is_active column to users table.');
         }
 
+        if (Schema::hasColumn('users', 'is_pending')) $this->warn('users table already has is_pending column, skipped.');
+        else {
+            Schema::table('users', function ($table) {
+                $table->boolean('is_pending')->nullable()->after('remember_token');
+            });
+            $this->line('Added is_pending column to users table.');
+        }
+
         if (Schema::hasColumn('users', 'is_root')) $this->warn('users table already has is_root column, skipped.');
         else {
             Schema::table('users', function ($table) {
@@ -750,22 +798,31 @@ class InstallCommand extends Command
             });
             $this->line('Added visibility column to users table.');
         }
-
-        if (Schema::hasColumn('users', 'status')) $this->warn('users table already has status column, skipped.');
+        
+        if (Schema::hasColumn('users', 'deleted_at')) $this->warn('users table already has deleted_at column, skipped.');
         else {
             Schema::table('users', function ($table) {
-                $table->string('status')->nullable()->after('password');
+                $table->timestamp('deleted_at')->nullable();
             });
-            $this->line('Added status column to users table.');
+            $this->line('Added deleted_at column to users table.');
         }
         
         if (Schema::hasColumn('users', 'created_by')) $this->warn('users table already has created_by column, skipped.');
         else {
             Schema::table('users', function ($table) {
-                $table->unsignedBigInteger('created_by')->nullable();
+                $table->foreignId('created_by')->nullable();
                 $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             });
             $this->line('Added created_by column to users table.');
+        }
+        
+        if (Schema::hasColumn('users', 'deleted_by')) $this->warn('users table already has deleted_by column, skipped.');
+        else {
+            Schema::table('users', function ($table) {
+                $table->foreignId('deleted_by')->nullable();
+                $table->foreign('deleted_by')->references('id')->on('users')->onDelete('set null');
+            });
+            $this->line('Added deleted_by column to users table.');
         }
         
         if (DB::table('users')->where('email', User::ROOT_EMAIL)->count()) $this->warn('Root user exists, skipped.');
@@ -774,8 +831,8 @@ class InstallCommand extends Command
                 'name' => 'Root',
                 'email' => User::ROOT_EMAIL,
                 'password' => bcrypt('password'),
-                'status' => 'active',
                 'visibility' => 'global',
+                'is_pending' => false,
                 'is_active' => true,
                 'is_root' => true,
                 'email_verified_at' => now(),

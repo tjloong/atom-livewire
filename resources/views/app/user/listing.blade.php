@@ -20,15 +20,19 @@
             @foreach ($users as $user)
                 <x-table row>
                     <x-table cell>
-                        <a href="{{ $user->id === auth()->id() 
-                            ? route('user.account')
-                            : route('user.update', [$user->id]) 
-                        }}">
-                            {{ $user->name }}
-                        </a>
-                        <div class="text-xs text-gray-500">
-                            {{ $user->email }}
-                        </div>
+                        @if ($user->id === auth()->id())
+                            <div class="flex items-center gap-1">
+                                <span>{{ $user->name }}</span>
+                                <span class="text-xs text-gray-500">(You)</span>
+                            </div>
+                        @else
+                            <a href="{{ route('user.update', [$user->id]) }}">
+                                {{ $user->name }}
+                            </a>
+                            <div class="text-xs text-gray-500">
+                                {{ $user->email }}
+                            </div>
+                        @endif
                     </x-table>
                     
                     @module('roles')
@@ -41,7 +45,7 @@
                         @if ($user->is_root)
                             <x-badge color="yellow">root</x-badge>
                         @endif
-                        <x-badge>{{ $user->is_active ? 'active' : 'inactive' }}</x-badge>
+                        <x-badge>{{ $user->status }}</x-badge>
                     </x-table>
                 </x-table>
             @endforeach

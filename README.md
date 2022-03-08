@@ -64,29 +64,29 @@ DB_PASSWORD=password
 php artisan migrate
 ```
 
-5. Install Amazon S3 driver for file upload feature
+5. Composer install Amazon S3 driver for file upload feature
 
 ```
 composer require -W league/flysystem-aws-s3-v3 "^3.0"
 ```
 
-6. Install Atom
+6. Composer install Atom
 
 ```
 composer require jiannius/atom-livewire
-php artisan atom:install
+php artisan atom:publish base --force
 npm install
 npm run dev
 ```
 
-7. Install modules
+7. Install Atom base
 
 ```
 php artisan atom:install
 ```
 
-8. Optional: Publish module's views for customisation.
+8. Run atom:install again to install Atom's modules
 
 ```
-php artisan atom:publish
+php artisan atom:install
 ```

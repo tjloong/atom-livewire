@@ -1,37 +1,42 @@
-@if ($attributes->has('label'))
-    <div class="text-xs text-gray-400 font-medium uppercase pt-4 pb-2 px-3">
-        {{ $slot }}
-    </div>
-
-@elseif ($attributes->has('item'))
+@if ($attributes->has('item'))
     <div
         @if ($attributes->has('href'))
-            x-data="{ active: @js(Str::is($attributes->get('href') . '*', url()->current())) }"
+            x-data="{ active: @js(str()->is($attributes->get('href') . '*', url()->current())) }"
             x-on:click="show = !show; (!active && (window.location = '{{ $attributes->get('href') }}'))"
         @else
             x-data="{
-                name: @js($attributes->get('name') ?? Str::slug($slot->toHtml())),
+                name: @js($attributes->get('name') ?? str()->slug($slot->toHtml())),
                 get active () { return this.value === this.name },
             }"
             x-on:click="show = !show; (!active && $dispatch('input', name))"
         @endif
-        x-bind:class="{
-            'font-bold text-theme-dark bg-theme-light drop-shadow border md:drop-shadow-none md:border-0': active && !show,
-            'font-bold text-theme-dark bg-theme-light': active && show,
-            'hidden font-medium text-gray-600 hover:bg-gray-100 hover:font-bold md:block': !active && !show,
-            'font-medium text-gray-600 hover:bg-gray-100 hover:font-bold': !active && show,
-        }"
+        x-bind:class="active
+            ? 'font-bold text-theme-dark bg-theme-light rounded-l rounded-r md:border-r-2 md:border-theme-dark md:bg-gray-200 md:rounded-r-none'
+            : ('font-medium text-gray-600 hover:font-bold md:flex ' + (!show && 'hidden'))
+        "
         wire:loading.class="pointer-events-none"
-        class="py-2 px-3 flex items-center space-x-2 rounded-md cursor-pointer"
+        class="py-2 px-3 flex items-center gap-2 cursor-pointer"
         {{ $attributes->except('name', 'href') }}
     >
-        @if ($attributes->has('icon'))
+        @if ($icon = $attributes->get('icon') ?? null)
             <div
                 x-bind:class="active ? 'text-theme' : 'text-gray-400'"
                 class="flex-shrink-0 flex items-center justify-center"
             >
-                <x-icon name="{{ $attributes->get('icon') }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="20px"/>
+                <x-icon 
+                    name="{{ $icon }}" 
+                    type="{{ $attributes->get('icon-type') ?? 'regular' }}" 
+                    size="18px"
+                />
             </div>
+        @elseif ($attributes->has('bullet'))
+            <div
+                x-bind:class="active 
+                    ? 'w-2 h-2 bg-theme-dark ring-2 ring-offset-2 ring-theme mr-1' 
+                    : 'w-3 h-3 border-2 border-gray-400'
+                "
+                class="flex-shrink-0 rounded-full"
+            ></div>
         @endif
 
         <div class="flex-grow">
@@ -40,6 +45,19 @@
 
         <div x-show="active && !show" class="flex-shrink-0 flex items-center justify-center md:hidden">
             <x-icon name="chevron-down"/>
+        </div>
+    </div>
+
+@elseif ($attributes->has('group'))
+    <div class="grid gap-2 mb-4">
+        @if ($group = $attributes->get('group') ?? null)
+            <div x-bind:class="!show && 'hidden md:block'" class="text-xs text-gray-400 font-medium uppercase px-3">
+                {{ $group }}
+            </div>
+        @endif
+
+        <div>
+            {{ $slot }}
         </div>
     </div>
 
@@ -58,8 +76,7 @@
             >
                 <div
                     x-on:click.stop
-                    x-bind:class="show && 'divide-y bg-white rounded-md drop-shadow max-w-sm mx-auto md:bg-transparent md:divide-none md:drop-shadow-none'" 
-                    class="grid"
+                    x-bind:class="show && 'bg-white rounded-md shadow max-w-sm mx-auto p-4 md:bg-transparent md:shadow-none md:max-w-none md:p-0'"
                 >
                     {{ $slot }}
                 </div>

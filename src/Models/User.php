@@ -4,45 +4,45 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
-use Jiannius\Atom\Traits\HasOwner;
+use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Traits\HasFilters;
 use Jiannius\Atom\Notifications\ActivateAccountNotification;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasOwner;
-    use HasFilters;
-    use HasApiTokens;
-    use HasFactory;
     use Notifiable;
+    use SoftDeletes;
+    use HasFactory;
+    use HasApiTokens;
+    use HasTrace;
+    use HasFilters;
 
     protected $guarded = ['password'];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
-        'root' => 'boolean',
+        'is_root' => 'boolean',
+        'is_pending' => 'boolean',
+        'is_active' => 'boolean',
         'email_verified_at' => 'datetime',
     ];
 
     const ROOT_EMAIL = 'root@jiannius.com';
 
     /**
-     * Model boot method
-     * 
-     * @return void
+     * Get signup for user
      */
-    protected static function boot()
+    public function signup()
     {
-        parent::boot();
+        if (!enabled_module('signups')) return;
 
-        static::saving(function ($user) {
-            $user->status = $user->status ?? 'pending';
-        });
+        return $this->hasOne(Signup::class);
     }
 
     /**
@@ -104,9 +104,11 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function scopeSearch($query, $search)
     {
-        return $query->where(fn($q) => 
-            $q->where('name', 'like', "%$search%")
-            ->orWhere('email', 'like', "%$search%")        
+        return $query->where(fn($q) => $q
+            ->where('name', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->when(enabled_module('signups'), fn($q) => $q->whereHas('signup', fn($q) => $q->search($search)))
+            ->when(enabled_module('tenants'), fn($q) => $q->whereHas('tenant', fn($q) => $q->where('tenants.name', 'like', "%$search%")))
         );
     }
 
@@ -139,6 +141,19 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get status attribute
+     * 
+     * @return string
+     */
+    public function getStatusAttribute()
+    {
+        if (!$this->is_active) return 'inactive';
+        if ($this->is_pending) return 'pending';
+
+        return 'active';
+    }
+
+    /**
      * Check user is role
      * 
      * @param mixed $names
@@ -156,6 +171,21 @@ class User extends Authenticatable implements MustVerifyEmail
             else if (str()->endsWith($name, '*')) return str()->startsWith($this->role->slug, $substr);
             else return $this->role->slug === $name;
         })->count() > 0;
+    }
+
+    /**
+     * Check user can access app portal
+     * 
+     * @return boolean
+     */
+    public function canAccessApp()
+    {
+        if ($this->is_root) return true;
+
+        if (enabled_module('signups')) return empty($this->signup);
+        if (enabled_module('tenants')) return !empty($this->tenant);
+
+        return false;
     }
 
     /**

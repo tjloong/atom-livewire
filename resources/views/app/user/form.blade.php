@@ -42,20 +42,29 @@
                         </x-input.field>
                     @endmodule
                 @else
-                    <div class="grid gap-2">
-                        @if ($user->exists && $user->is_root)
-                            <x-input.checkbox wire:model="form.is_root" disabled>
-                                This is a root user
-                            </x-input.checkbox>
-                        @elseif (auth()->user()->is_root && !$user->exists)
-                            <x-input.checkbox wire:model="form.is_root">
-                                This is a root user
-                            </x-input.checkbox>
-                        @endif
+                    <div class="grid gap-4">
+                        <div class="grid gap-2">
+                            @if ($user->exists && $user->is_root)
+                                <x-input.checkbox wire:model="form.is_root" disabled>
+                                    This is a root user
+                                </x-input.checkbox>
+                            @elseif (auth()->user()->is_root && !$user->exists)
+                                <x-input.checkbox wire:model="form.is_root">
+                                    This is a root user
+                                </x-input.checkbox>
+                            @endif
 
-                        <x-input.checkbox wire:model="form.is_active">
-                            This user is active
-                        </x-input.checkbox>
+                            <x-input.checkbox wire:model="form.is_active">
+                                This user is active
+                            </x-input.checkbox>
+                        </div>
+
+                        @if ($user->exists && $user->is_pending)
+                            <div class="flex items-center gap-1">
+                                <x-icon name="info-circle" class="text-gray-400" size="20px"/>
+                                <div class="text-sm font-medium text-gray-500">User account is pending for activation.</div>
+                            </div>
+                        @endif
                     </div>
                 @endif                    
             </div>

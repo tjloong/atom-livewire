@@ -3,7 +3,6 @@
 namespace Jiannius\Atom;
 
 use Livewire\Livewire;
-use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Blade;
@@ -12,8 +11,9 @@ use Jiannius\Atom\Models\SiteSetting;
 use Jiannius\Atom\Console\RemoveCommand;
 use Jiannius\Atom\Console\InstallCommand;
 use Jiannius\Atom\Console\PublishCommand;
-use Jiannius\Atom\Middleware\IsRole;
-use Jiannius\Atom\Middleware\TrackReferer;
+use Jiannius\Atom\Http\Middleware\IsRole;
+use Jiannius\Atom\Http\Middleware\TrackReferer;
+use Jiannius\Atom\Http\Middleware\AppGuard;
 
 class AtomServiceProvider extends ServiceProvider
 {
@@ -128,6 +128,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('input.phone', 'Jiannius\\Atom\\Components\\Input\\Phone');
         Blade::component('input.state', 'Jiannius\\Atom\\Components\\Input\\State');
         Blade::component('input.amount', 'Jiannius\\Atom\\Components\\Input\\Amount');
+        Blade::component('input.gender', 'Jiannius\\Atom\\Components\\Input\\Gender');
         Blade::component('input.number', 'Jiannius\\Atom\\Components\\Input\\Number');
         Blade::component('input.picker', 'Jiannius\\Atom\\Components\\Input\\Picker');
         Blade::component('input.search', 'Jiannius\\Atom\\Components\\Input\\Search');
@@ -176,6 +177,14 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.auth.register-form', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\RegisterForm');
         Livewire::component('atom.auth.reset-password', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\ResetPassword');
         Livewire::component('atom.auth.forgot-password', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\ForgotPassword');
+
+        // user
+        Livewire::component('atom.user.authentication.profile', 'Jiannius\\Atom\\Http\\Livewire\\User\\Authentication\\Profile');
+        Livewire::component('atom.user.authentication.password', 'Jiannius\\Atom\\Http\\Livewire\\User\\Authentication\\Password');
+
+        // onboarding
+        Livewire::component('atom.onboarding', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Index');
+        Livewire::component('atom.onboarding.profile', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Profile');
         
         // blog
         Livewire::component('atom.blog.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Create');
@@ -212,7 +221,6 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.plan-price.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\PlanPrice\\Form');
 
         // user
-        Livewire::component('atom.user.account', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Account');
         Livewire::component('atom.user.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Listing');
         Livewire::component('atom.user.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Create');
         Livewire::component('atom.user.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Update');
@@ -226,6 +234,10 @@ class AtomServiceProvider extends ServiceProvider
 
         // permission
         Livewire::component('atom.permission.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Permission\\Listing');
+
+        // signup
+        Livewire::component('atom.signup.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Signup\\Listing');
+        Livewire::component('atom.signup.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Signup\\Update');
 
         // team
         Livewire::component('atom.team.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Listing');
@@ -245,15 +257,15 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.file.uploader', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader');
 
         // site settings
-        Livewire::component('atom.site-settings.index', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Index');
-        Livewire::component('atom.site-settings.tabs.site-profile', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\SiteProfile');
-        Livewire::component('atom.site-settings.tabs.site-seo', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\SiteSeo');
-        Livewire::component('atom.site-settings.tabs.site-tracking', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\SiteTracking');
-        Livewire::component('atom.site-settings.tabs.social-media', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\SocialMedia');
-        Livewire::component('atom.site-settings.tabs.whatsapp-bubble', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\WhatsappBubble');
-        Livewire::component('atom.site-settings.tabs.email-configurations', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\EmailConfigurations');
-        Livewire::component('atom.site-settings.tabs.storage', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\Storage');
-        Livewire::component('atom.site-settings.tabs.google-map', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Tabs\\GoogleMap');
+        Livewire::component('atom.app.site-settings.index', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Index');
+        Livewire::component('atom.app.site-settings.site-profile', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\SiteProfile');
+        Livewire::component('atom.app.site-settings.site-seo', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\SiteSeo');
+        Livewire::component('atom.app.site-settings.site-tracking', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\SiteTracking');
+        Livewire::component('atom.app.site-settings.social-media', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\SocialMedia');
+        Livewire::component('atom.app.site-settings.whatsapp-bubble', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\WhatsappBubble');
+        Livewire::component('atom.app.site-settings.email-configurations', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\EmailConfigurations');
+        Livewire::component('atom.app.site-settings.storage', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Storage');
+        Livewire::component('atom.app.site-settings.google-map', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\GoogleMap');
     }
 
     /**
@@ -263,9 +275,10 @@ class AtomServiceProvider extends ServiceProvider
      */
     public function registerMiddlewares()
     {
-        $router = $this->app->make(Router::class);
+        $router = app('router');
         $router->aliasMiddleware('role', IsRole::class);
         $router->aliasMiddleware('referer', TrackReferer::class);
+        $router->aliasMiddleware('app-guard', AppGuard::class);
     }
 
     /**

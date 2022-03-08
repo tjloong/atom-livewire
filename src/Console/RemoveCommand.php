@@ -12,6 +12,18 @@ class RemoveCommand extends Command
 
     protected $description = 'Remove installed modules.';
 
+    protected $modules = [
+        'roles',
+        'permissions',
+        'signups',
+        'pages',
+        'teams',
+        'blogs',
+        'enquiries',
+        'tickets',
+        'plans',
+    ];
+
     /**
      * Create a new command instance.
      *
@@ -29,20 +41,9 @@ class RemoveCommand extends Command
      */
     public function handle()
     {
-        $modules = [
-            'roles',
-            'permissions',
-            'pages',
-            'teams',
-            'blogs',
-            'enquiries',
-            'tickets',
-            'plans',
-        ];
+        $selected = $this->choice('Please select module to remove', $this->modules, null, null, true);
 
-        $selected = $this->choice('Please select module to remove', $modules, null, null, true);
-
-        foreach ($modules as $module) {
+        foreach ($this->modules as $module) {
             if (in_array($module, $selected)) {
                 call_user_func([$this, str()->camel('remove-'.$module)]);
                 $this->markModuleDisabled($module);
@@ -74,33 +75,17 @@ class RemoveCommand extends Command
         $this->newLine();
         $this->info('Removing plans...');
 
-        if (Schema::hasColumn('users', 'plan_price_id')) {
-            Schema::table('users', function($table) {
-                $table->dropForeign(['plan_price_id']);
-                $table->dropColumn('plan_price_id');
-            });
-            
-            $this->line('Dropped plan_price_id column from users table.');
-        }
+        Schema::dropIfExists('signups_subscriptions');
+        $this->line('Dropped signups_subscriptions table.');
 
-        $table = Schema::hasTable('tenants') ? 'tenants' : 'users';
+        Schema::dropIfExists('tenants_subscriptions');
+        $this->line('Dropped tenants_subscriptions table.');
 
-        if (Schema::hasColumn($table, 'plan_price_id')) {
-            Schema::table($table, function($table) {
-                $table->dropForeign(['plan_price_id']);
-                $table->dropColumn('plan_price_id');
-            });
+        Schema::dropIfExists('plans_upgradables');
+        $this->line('Dropped plans_upgradables table.');
 
-            $this->line('Dropped plan_price_id column from '.$table.' table.');
-        }
-
-        if (Schema::hasColumn($table, 'plan_expired_at')) {
-            Schema::table($table, function($table) {
-                $table->dropColumn('plan_expired_at');
-            });
-
-            $this->line('Dropped plan_expired_at column from '.$table.' table.');
-        }
+        Schema::dropIfExists('plans_downgradables');
+        $this->line('Dropped plans_downgradables table.');
 
         Schema::dropIfExists('plans_prices');
         $this->line('Dropped plans_prices table.');
@@ -203,6 +188,21 @@ class RemoveCommand extends Command
         }
 
         $this->line('Deleted site settings for pages.');
+    }
+
+    /**
+     * Remove signups
+     */
+    private function removeSignups()
+    {
+        $this->newLine();
+        $this->info('Removing signups...');
+
+        Schema::dropIfExists('signups_subscriptions');
+        $this->line('Dropped signups_subscriptions table.');
+
+        Schema::dropIfExists('signups');
+        $this->line('Dropped signups table.');
     }
 
     /**

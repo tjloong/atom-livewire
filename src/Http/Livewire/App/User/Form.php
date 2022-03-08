@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
 use Livewire\Component;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 
 class Form extends Component
@@ -34,6 +33,7 @@ class Form extends Component
             ],
             'form.password' => 'nullable|min:8',
             'form.visibility' => 'nullable',
+            'form.is_pending' => 'nullable',
             'form.is_active' => 'nullable',
             'form.is_root' => 'nullable',
             'form.role_id' => 'nullable',
@@ -52,8 +52,10 @@ class Form extends Component
             'visibility' => $this->user->visibility ?? 'global',
             'is_root' => $this->user->is_root ?? false,
             'is_active' => $this->user->is_active ?? false,
-            'role_id' => $this->user->role_id,
+            'is_pending' => $this->user->is_pending ?? false,
         ];
+
+        if (enabled_module('roles')) $this->form['role_id'] = $this->user->role_id ?? null;
         
         $this->isSelf = $this->user->id === auth()->id();
         $this->sendVerifyEmail = false;
@@ -125,7 +127,7 @@ class Form extends Component
         $this->validate();
 
         $verify = $this->user->exists 
-            && config('atom.auth.verify')
+            && config('atom.signups.verify')
             && $this->form['email'] !== $this->user->email;
 
         $this->persist();        
@@ -153,7 +155,12 @@ class Form extends Component
         $this->user->visibility = $this->form['visibility'];
         $this->user->is_root = $this->form['is_root'];
         $this->user->is_active = $this->form['is_active'];
-        $this->user->role_id = enabled_module('roles') ? $this->form['role_id'] : $this->user->role_id;
+        $this->user->is_pending = $this->form['is_pending'];
+
+        if (enabled_module('roles')) {
+            $this->user->role_id = $this->form['role_id'];
+        }
+
         $this->user->save();
 
         if (enabled_module('teams')) {

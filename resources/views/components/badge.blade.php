@@ -40,6 +40,7 @@
         'published' => 'green',
 
         'blocked' => 'black',
+        'trashed' => 'black',
     ],
 ])
 

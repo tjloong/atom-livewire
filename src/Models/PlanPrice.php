@@ -2,12 +2,12 @@
 
 namespace Jiannius\Atom\Models;
 
-use Jiannius\Atom\Traits\HasOwner;
+use Jiannius\Atom\Traits\HasTrace;
 use Illuminate\Database\Eloquent\Model;
 
 class PlanPrice extends Model
 {
-    use HasOwner;
+    use HasTrace;
     
     protected $table = 'plans_prices';
 

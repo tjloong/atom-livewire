@@ -27,11 +27,13 @@
                     Save
                 </x-button>
 
-                @if ($role->exists)
-                    <x-button icon="copy" color="gray" wire:click="duplicate">
-                        Duplicate
-                    </x-button>
-                @endif
+                @module('permissions')
+                    @if ($role->exists)
+                        <x-button icon="copy" color="gray" wire:click="duplicate">
+                            Duplicate
+                        </x-button>
+                    @endif
+                @endmodule
             </div>
         </x-slot>
     </x-box>

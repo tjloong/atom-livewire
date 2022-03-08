@@ -9,6 +9,20 @@ use Jiannius\Atom\Services\Metadata;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
+ * Get livewire component
+ */
+function get_livewire_component($name, $path = null)
+{
+    if (!$path) return $name;
+
+    $dotted = implode('.', explode('/', $path));
+    $backslashed = implode('\\', collect(explode('/', $path))->map(fn($str) => str($str)->studly())->values()->all());
+
+    if (class_exists('App\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly())) return "app.{$dotted}.{$name}";
+    else if (class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly())) return "atom.{$dotted}.{$name}";
+}
+
+/**
  * Metadata
  */
 function metadata()

@@ -9,21 +9,20 @@ if (!config('atom.static_site')) {
     define_route('reset-password', 'Auth\\ResetPassword')->name('password.reset');
 
     if (enabled_module('signups')) {
-        define_route('register', 'Auth\\Register')->name('register');
-        define_route('register/completed', 'Auth\\RegisterCompleted')->name('register.completed');
+        define_route('register', 'Auth\\Register')->middleware('guest')->name('register');
+    }
 
-        if (config('atom.signups.verify')) {
-            Route::middleware('auth')->group(function () {
-                define_route('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-                    $request->fulfill();
-                    return view('atom::auth.verify', ['action' => 'verified']);
-                })->middleware('signed')->name('verification.verify');
-        
-                define_route('email/notify', function () {
-                    request()->user()->sendEmailVerificationNotification();
-                    return view('atom::auth.verify', ['action' => 'sent']);
-                })->middleware('throttle:6,1')->name('verification.send');
-            });
-        }
+    if (config('atom.signups.verify')) {
+        Route::middleware('auth')->group(function () {
+            define_route('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+                $request->fulfill();
+                return view('atom::auth.verify', ['action' => 'verified']);
+            })->middleware('signed')->name('verification.verify');
+    
+            define_route('email/notify', function () {
+                request()->user()->sendEmailVerificationNotification();
+                return view('atom::auth.verify', ['action' => 'sent']);
+            })->middleware('throttle:6,1')->name('verification.send');
+        });
     }
 }

@@ -15,8 +15,10 @@
         @endif
 
         <x-slot name="auth">
-            @if (Route::has('dashboard'))
-                <x-builder.navbar dropdown-item href="{{ route('dashboard') }}">Go to Dashboard</x-builder.navbar>
+            @if (auth()->user()->canAccessApp())
+                <x-builder.navbar dropdown-item href="{{ route('app.home') }}" icon="home">Back to App</x-builder.navbar>
+            @else
+                <x-builder.navbar dropdown-item href="{{ route('user.home') }}" icon="user-pin">Account</x-builder.navbar>
             @endif
         </x-slot>
     </x-builder.navbar>

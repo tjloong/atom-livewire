@@ -14,7 +14,7 @@
                     <div class="grid gap-4">
                         <div>
                             <x-input.text wire:model.defer="form.name" required>
-                                Your Full Name
+                                Your Name
                             </x-input.text>
         
                             <x-input.email wire:model.defer="form.email" required>

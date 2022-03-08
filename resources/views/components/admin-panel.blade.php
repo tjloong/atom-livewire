@@ -123,47 +123,24 @@
                 'lg:pl-56': !toggled,
             }"
         >
-            <div class="bg-white shadow sticky top-0 z-10 px-4">
-                <div class="grid divide-y">
-                    <div class="h-12 flex items-center gap-4">
+            <x-builder.navbar class="bg-white py-2 px-4 shadow" breadcrumbs>
+                <x-slot name="logo">
+                    <div class="flex items-center gap-2">
+                        <div class="h-[40px] md:hidden">
+                            <x-atom-logo small/>
+                        </div>
+
                         <a class="flex-shrink-0 text-gray-800 flex items-center justify-center" @click="toggled = !toggled; animate = true">
-                            <x-icon name="menu"/>
+                            <x-icon name="dots-vertical"/>
                         </a>
-    
-                        <div class="flex-grow flex items-center gap-4">
-                            @isset($links)
-                                {{ $links }}
-                            @endisset
-                        </div>
-    
-                        <div class="flex-shrink-0 flex items-center gap-4">
-                            @isset($actions)
-                                {{ $actions }}
-                            @endisset
-    
-                            <x-dropdown right>
-                                <x-slot name="trigger">
-                                    <a class="flex items-center justify-center gap-2 font-medium text-gray-800" @click="open = true">
-                                        <x-icon name="user-circle"/> 
-                                        <span class="text-sm hidden md:block">{{ Str::limit(auth()->user()->name, 15) }}</span>
-                                        <x-icon name="chevron-down" class="hidden md:block" />
-                                    </a>
-                                </x-slot>
-    
-                                @isset($dropdown)
-                                    {{ $dropdown }}
-                                @endisset
-    
-                                <x-dropdown item icon="log-out" href="{{ route('login', ['logout' => 1]) }}">Logout</x-dropdown>
-                                <x-dropdown item icon="rocket">Version {{ $version }}</x-dropdown>
-                            </x-dropdown>
-                        </div>
                     </div>
+                </x-slot>
 
-                    <x-breadcrumbs/>
-                </div>
-            </div>
+                {{ $links }}
+            </x-builder.navbar>
 
+            <x-breadcrumbs class="bg-white py-1 px-4 shadow"/>
+        
             @if ($unverified)
                 <div class="py-3 px-4 bg-yellow-100 shadow" x-data>
                     <div class="md:flex md:items-center md:space-x-2">

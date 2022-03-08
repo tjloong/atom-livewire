@@ -57,24 +57,26 @@
         </div>
     </section>
 
-    <section class="grid gap-4">
-        <div class="text-xl font-bold">Pricing Table</div>
+    @if ($plans)
+        <section class="grid gap-4">
+            <div class="text-xl font-bold">Pricing Table</div>
 
-        <div class="max-w-screen-md mx-auto">
-            <div class="grid gap-6 md:grid-cols-2">
-                @foreach ($plans as $plan)
-                    <x-builder.pricing 
-                        :plan="$plan->toArray()" 
-                        :prices="$plan->prices->toArray()" 
-                        :cta="[
-                            'text' => $plan->cta ?? null,
-                            'href' => Route::has('register')
-                                ? route('register', ['ref' => 'pricing'])
-                                : '#',
-                        ]"
-                    />
-                @endforeach
+            <div class="max-w-screen-md mx-auto">
+                <div class="grid gap-6 md:grid-cols-2">
+                    @foreach ($plans as $plan)
+                        <x-builder.pricing 
+                            :plan="$plan->toArray()" 
+                            :prices="$plan->prices->toArray()" 
+                            :cta="[
+                                'text' => $plan->cta ?? null,
+                                'href' => Route::has('register')
+                                    ? route('register', ['ref' => 'pricing'])
+                                    : '#',
+                            ]"
+                        />
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 </main>

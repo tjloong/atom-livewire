@@ -46,6 +46,20 @@
         @livewireScripts
     @endif
     
+    {{-- Vendor scripts --}}
+    @foreach ([
+        'floating-ui' => [
+            'https://unpkg.com/@floating-ui/core@0.1.2/dist/floating-ui.core.min.js',
+            'https://unpkg.com/@floating-ui/dom@0.1.2/dist/floating-ui.dom.min.js',
+        ],
+    ] as $key => $scripts)
+        @if (in_array($key, $vendors ?? []))
+            @foreach ((array)$scripts as $script)
+                <script src="{{ $script }}"></script>
+            @endforeach
+        @endif
+    @endforeach
+
     @stack('scripts')
 </body>
 </html>
