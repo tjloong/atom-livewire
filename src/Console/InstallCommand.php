@@ -134,14 +134,13 @@ class InstallCommand extends Command
                     $table->id();
                     $table->string('name');
                     $table->string('slug');
+                    $table->unsignedInteger('trial')->nullable();
                     $table->text('excerpt')->nullable();
                     $table->json('features')->nullable();
                     $table->string('cta')->nullable();
                     $table->boolean('is_active')->nullable();
                     $table->timestamps();
-                    $table->unsignedBigInteger('created_by')->nullable();
-    
-                    $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+                    $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
                 });
     
                 $this->line('plans table created successfully.');
@@ -159,12 +158,9 @@ class InstallCommand extends Command
                     $table->boolean('is_lifetime')->nullable();
                     $table->boolean('is_default')->nullable();
                     $table->string('stripe_id')->nullable();
-                    $table->unsignedBigInteger('plan_id')->nullable();
+                    $table->foreignId('plan_id')->constrained()->onDelete('cascade');
                     $table->timestamps();
-                    $table->unsignedBigInteger('created_by')->nullable();
-                    
-                    $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
-                    $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+                    $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
                 });
     
                 $this->line('plans_prices table created successfully.');
@@ -174,8 +170,8 @@ class InstallCommand extends Command
             else {
                 Schema::create('plans_upgradables', function($table) {
                     $table->id();
-                    $table->unsignedBigInteger('plan_id');
-                    $table->unsignedBigInteger('upgradable_id');
+                    $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+                    $table->foreignId('upgradable_id')->constrained('plans')->onDelete('cascade');
                 });
             }
     
@@ -183,8 +179,8 @@ class InstallCommand extends Command
             else {
                 Schema::create('plans_downgradables', function($table) {
                     $table->id();
-                    $table->unsignedBigInteger('plan_id');
-                    $table->unsignedBigInteger('downgradable_id');
+                    $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+                    $table->foreignId('downgradable_id')->constrained('plans')->onDelete('cascade');
                 });
             }
         }
@@ -192,41 +188,36 @@ class InstallCommand extends Command
         // tenants subscriptions
         if (!$action || $action === 'tenants') {
             if (Schema::hasTable('tenants')) {
-                if (Schema::hasTable('tenants_subscriptions')) $this->warn('tenants_subscriptions table exists, skipped.');
+                if (Schema::hasTable('tenants_orders')) $this->warn('tenants_orders table exists, skipped.');
                 else {
-                    Schema::create('tenants_subscriptions', function($table) {
-                        $table->id();
-                        $table->string('currency')->nullable();
-                        $table->decimal('amount', 20, 2)->nullable();
-                        $table->timestamp('start_at')->nullable();
-                        $table->timestamp('expired_at')->nullable();
-                        $table->unsignedBigInteger('tenant_id');
-                        $table->unsignedBigInteger('plan_price_id');
-                        $table->timestamps();
-
-                        $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
-                        $table->foreign('plan_price_id')->references('id')->on('plans_prices')->onDelete('set null');
-                    });
-                    $this->line('tenants_subscriptions table created successfully.');
-                }
-
-                if (Schema::hasTable('tenants_subscriptions_orders')) $this->warn('tenants_subscriptions_orders table exists, skipped.');
-                else {
-                    Schema::create('tenants_subscriptions_orders', function($table) {
+                    Schema::create('tenants_orders', function($table) {
                         $table->id();
                         $table->string('number')->unique();
                         $table->decimal('grand_total', 20, 2)->nullable();
                         $table->string('status')->nullable();
                         $table->string('gateway')->nullable();
                         $table->json('data')->nullable();
-                        $table->unsignedBigInteger('tenant_id')->nullable();
-                        $table->unsignedBigInteger('tenant_subscription_id')->nullable();
+                        $table->foreignId('tenant_id')->nullable()->constrained()->onDelete('cascade');
                         $table->timestamps();
-
-                        $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
-                        $table->foreign('tenant_subscription_id')->references('id')->on('tenants_subscriptions')->onDelete('set null');
                     });
-                    $this->line('tenants_subscriptions_orders table created successfully.');
+                    $this->line('tenants_orders table created successfully.');
+                }
+
+                if (Schema::hasTable('tenants_subscriptions')) $this->warn('tenants_subscriptions table exists, skipped.');
+                else {
+                    Schema::create('tenants_subscriptions', function($table) {
+                        $table->id();
+                        $table->string('currency')->nullable();
+                        $table->decimal('amount', 20, 2)->nullable();
+                        $table->boolean('is_trial')->nullable();
+                        $table->timestamp('start_at')->nullable();
+                        $table->timestamp('expired_at')->nullable();
+                        $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+                        $table->foreignId('tenant_order_id')->constrained('tenants_orders')->onDelete('cascade');
+                        $table->foreignId('plan_price_id')->nullable()->constrained('plans_prices')->onDelete('set null');
+                        $table->timestamps();
+                    });
+                    $this->line('tenants_subscriptions table created successfully.');
                 }
             }
         }
@@ -234,41 +225,36 @@ class InstallCommand extends Command
         // signups subscriptions
         if (!$action || $action === 'signups') {
             if (Schema::hasTable('signups')) {
-                if (Schema::hasTable('signups_subscriptions')) $this->warn('signups_subscriptions table exists, skipped.');
+                if (Schema::hasTable('signups_orders')) $this->warn('signups_orders table exists, skipped.');
                 else {
-                    Schema::create('signups_subscriptions', function($table) {
-                        $table->id();
-                        $table->string('currency')->nullable();
-                        $table->decimal('amount', 20, 2)->nullable();
-                        $table->timestamp('start_at')->nullable();
-                        $table->timestamp('expired_at')->nullable();
-                        $table->unsignedBigInteger('signup_id');
-                        $table->unsignedBigInteger('plan_price_id');
-                        $table->timestamps();
-
-                        $table->foreign('signup_id')->references('id')->on('signups')->onDelete('cascade');
-                        $table->foreign('plan_price_id')->references('id')->on('plans_prices')->onDelete('set null');
-                    });
-                    $this->line('signups_subscriptions table created successfully.');
-                }
-
-                if (Schema::hasTable('signups_subscriptions_orders')) $this->warn('signups_subscriptions_orders table exists, skipped.');
-                else {
-                    Schema::create('signups_subscriptions_orders', function($table) {
+                    Schema::create('signups_orders', function($table) {
                         $table->id();
                         $table->string('number')->unique();
                         $table->decimal('grand_total', 20, 2)->nullable();
                         $table->string('status')->nullable();
                         $table->string('gateway')->nullable();
                         $table->json('data')->nullable();
-                        $table->unsignedBigInteger('signup_id')->nullable();
-                        $table->unsignedBigInteger('signup_subscription_id')->nullable();
+                        $table->foreignId('signup_id')->nullable()->constrained()->onDelete('cascade');
                         $table->timestamps();
-
-                        $table->foreign('signup_id')->references('id')->on('signups')->onDelete('cascade');
-                        $table->foreign('signup_subscription_id')->references('id')->on('signups_subscriptions')->onDelete('set null');
                     });
-                    $this->line('signups_subscriptions_orders table created successfully.');
+                    $this->line('signups_orders table created successfully.');
+                }
+
+                if (Schema::hasTable('signups_subscriptions')) $this->warn('signups_subscriptions table exists, skipped.');
+                else {
+                    Schema::create('signups_subscriptions', function($table) {
+                        $table->id();
+                        $table->string('currency')->nullable();
+                        $table->decimal('amount', 20, 2)->nullable();
+                        $table->boolean('is_trial')->nullable();
+                        $table->timestamp('start_at')->nullable();
+                        $table->timestamp('expired_at')->nullable();
+                        $table->foreignId('signup_id')->constrained()->onDelete('cascade');
+                        $table->foreignId('signup_order_id')->constrained('signups_orders')->onDelete('cascade');
+                        $table->foreignId('plan_price_id')->nullable()->constrained('plans_prices')->onDelete('set null');
+                        $table->timestamps();
+                    });
+                    $this->line('signups_subscriptions table created successfully.');
                 }
             }
         }
@@ -288,6 +274,7 @@ class InstallCommand extends Command
                 ],
             ])->map(fn($val) => array_merge($val, [
                 'slug' => str($val['name'])->slug(),
+                'trial' => 14,
                 'features' => json_encode([
                     'Lorem ipsum dolor sit amet 1',
                     'Lorem ipsum dolor sit amet 2',

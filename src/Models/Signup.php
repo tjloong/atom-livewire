@@ -27,7 +27,23 @@ class Signup extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class)->withTrashed();
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get orders for signup
+     */
+    public function orders()
+    {
+        return $this->hasMany(SignupOrder::class);
+    }
+
+    /**
+     * Get subscriptions for signup
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(SignupSubscription::class);
     }
 
     /**

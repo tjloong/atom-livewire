@@ -1,6 +1,8 @@
 <div 
-    x-data="pricingTable(@js($plan), @js($prices), @js($recurrings), @js($cta))"
-    class="bg-white shadow rounded-lg border flex flex-col"
+    @if (count($prices))
+        x-data="{ recurring: '{{ head($prices)['recurring'] }}' }"
+    @endif
+    class="bg-white shadow rounded-lg border overflow-hidden flex flex-col"
 >
     <div class="flex-grow p-6">
         <div class="flex flex-col gap-6 h-full">
@@ -8,44 +10,53 @@
                 {{ $header }}
             @else
                 <div>
-                    <div x-show="recurrings.length > 1" class="flex gap-2 items-center float-right">
-                        <template x-for="(val, i) in recurrings" x-bind:key="`recurring-${i}`">
-                            <div 
-                                x-text="val.label"
-                                x-bind:class="price.expired_after === val.value ? 'bg-theme-dark text-white font-semibold' : 'cursor-pointer bg-gray-200'"
-                                x-on:click="switchRecurring(val)"
-                                class="text-xs py-1 px-2 rounded"
-                            ></div>
-                        </template>
-                    </div>
-            
-                    <div class="font-semibold text-xl" x-text="plan.name"></div>
+                    @if (count($prices))
+                        <div class="flex gap-2 items-center float-right">
+                            @foreach ($prices as $prc)
+                                <div 
+                                    x-bind:class="recurring === '{{ $prc['recurring'] }}' ? 'bg-theme-dark text-white font-semibold' : 'cursor-pointer bg-gray-200'"
+                                    x-on:click="recurring = '{{ $prc['recurring'] }}'"
+                                    class="text-xs py-1 px-2 rounded"
+                                >
+                                    {{ $prc['recurring'] }}
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                    <div class="font-semibold text-xl">{{ $plan['name'] }}</div>
                 </div>
             @endif
     
             @isset($price)
                 {{ $price }}
             @else
-                <div class="flex gap-2">
-                    <span class="font-medium" x-text="price.currency"></span>
-                    <span class="text-4xl font-extrabold" x-text="currency(price.amount)"></span>
-                    <span class="font-medium self-end" x-text="`/ ${price.recurring}`"></span>
+                <div class="grid gap-1">
+                    @foreach ($prices as $prc)
+                        <div x-show="recurring === '{{ $prc['recurring'] }}'" class="flex gap-2">
+                            <span class="font-medium">{{ $prc['currency'] }}</span>
+                            <span class="text-4xl font-extrabold">{{ currency($prc['amount']) }}</span>
+                            <span class="font-medium self-end">{{ $prc['recurring'] }}</span>
+                        </div>
+                    @endforeach
+                    
+                    @if ($trial)
+                        <div class="text-sm text-gray-500 font-medium">{{ $trial }} {{ str('Day')->plural($trial) }} Trial</div>
+                    @endif
                 </div>
             @endif
     
             @isset($body)
                 {{ $body }}
             @else
-                <div class="text-gray-500 font-medium" x-text="plan.excerpt"></div>
+                <div class="text-gray-500 font-medium">{{ $plan['excerpt'] }}</div>
         
                 <div class="flex-grow">
                     <div class="grid gap-2">
-                        <template x-for="(feature, i) in plan.features" x-bind:key="`feature-${i}`">
+                        @foreach ($plan['features'] as $feat)
                             <div class="flex gap-2 items-center">
-                                <x-icon name="check" color="green"/>
-                                <div x-text="feature"></div>
+                                <x-icon name="check" color="green"/> {{ $feat }}
                             </div>
-                        </template>
+                        @endforeach
                     </div>
                 </div>
             @endif
@@ -53,34 +64,29 @@
     </div>
 
     <div class="flex-shrink-0 bg-gray-100 p-6">
-        <x-button x-bind:href="href" size="md" class="w-full">
-            {{ $cta['text'] }}
-        </x-button>
+        @foreach ($prices as $prc)
+            <div x-show="recurring === '{{ $prc['recurring'] }}'">
+                @if ($subscribed = $prc['is_subscribed'] ?? false)
+                    <div class="text-gray-500 font-medium flex items-center gap-1">
+                        <x-icon name="check"/> Currently Subscribed
+                    </div>
+                @else
+                    <x-button 
+                        href="{{ 
+                            $cta['href']
+                            .(strpos($cta['href'], '?') ? '&' : '?')
+                            .http_build_query(['plan' => $plan['slug'], 'price' => $prc['id']])
+                        }}" 
+                        size="md" 
+                        class="w-full" 
+                        :color="$cta['color']" 
+                        :icon="$cta['icon']" 
+                        :icon-type="$cta['icon_type']"
+                    >
+                        {{ $cta['text'] }}
+                    </x-button>
+                @endif
+            </div>
+        @endforeach
     </div>
-
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('pricingTable', (plan, prices, recurrings, cta) => ({
-                cta,
-                plan,
-                prices,
-                recurrings,
-                price: prices.find(val => val.is_default) || prices[0],
-                
-                get href () {
-                    const href = this.cta?.href || '/'
-                    const params = { plan: this.plan.slug, price: this.price.id }
-                    const query = new URLSearchParams(params).toString()
-
-                    return `${href}&${query}`
-                },
-
-                switchRecurring (recurring) {
-                    if (this.price.expired_after === recurring.value) return
-
-                    this.price = this.prices.find(price => (price.expired_after === recurring.value))
-                },
-            }))
-        })
-    </script>
 </div>

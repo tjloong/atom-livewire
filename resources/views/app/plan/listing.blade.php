@@ -11,7 +11,12 @@
                 <x-box class="hover:border-theme">
                     <div class="p-4 grid gap-2">
                         <div class="flex justify-between gap-2">
-                            <div class="text-base font-semibold">{{ $plan->name }}</div>
+                            <div>
+                                <div class="text-base font-semibold">{{ $plan->name }}</div>
+                                @if ($plan->trial)
+                                    <div class="text-sm font-medium text-gray-500">{{ $plan->trial }} Days Trial</div>
+                                @endif
+                            </div>
                             <div class="flex-shrink-0">
                                 <x-badge>{{ $plan->is_active ? 'active' : 'inactive' }}</x-badge>
                             </div>

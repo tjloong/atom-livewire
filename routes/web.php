@@ -8,7 +8,7 @@ if (!config('atom.static_site')) {
     define_route('__export/{filename}', 'ExportController@download')->name('__export');
 
     /**
-     * User
+     * User Portal
      */
     Route::prefix('user')->middleware('auth')->group(function() {
         define_route('/', fn() => redirect()->route('user.authentication'))->name('user.home');
@@ -16,7 +16,7 @@ if (!config('atom.static_site')) {
     });
 
     /**
-     * Onboarding
+     * Onboarding Portal
      */
     if (enabled_module('signups') || enabled_module('tenants')) {
         Route::prefix('onboarding')->middleware('auth')->group(function() {
@@ -26,7 +26,17 @@ if (!config('atom.static_site')) {
     }
 
     /**
-     * App
+     * Billing Portal
+     */
+    if (enabled_module('plans')) {
+        Route::prefix('billing')->middleware('auth')->group(function() {
+            define_route('/', 'Billing\\Index')->name('billing');
+            define_route('checkout', 'Billing\\Checkout')->name('billing.checkout');
+        });
+    }
+
+    /**
+     * App Portal
      */
     Route::prefix('app')->middleware(['auth', 'app-guard'])->group(function() {
         define_route('/', fn() => redirect()->route('dashboard'))->name('app.home');

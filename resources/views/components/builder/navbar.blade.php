@@ -102,17 +102,35 @@
                                 </div>
 
                                 <x-slot name="dropdown">
-                                    @isset($auth)
-                                        {{ $auth }}
-                                    @else
-                                        <x-builder.navbar dropdown-item href="{{ route('user.home') }}" icon="user-pin">
-                                            Account
-                                        </x-builder.navbar>
-                                    @endisset
+                                    <div class="grid divide-y gap-3">
+                                        <div class="grid">
+                                            <x-builder.navbar dropdown-item href="{{ route('user.home') }}" icon="user-pin">
+                                                Account
+                                            </x-builder.navbar>
 
-                                    <x-builder.navbar dropdown-item href="{{ route('login', ['logout' => true]) }}" icon="log-out">
-                                        Logout
-                                    </x-builder.navbar>
+                                            @module('plans')
+                                                <x-builder.navbar dropdown-item href="{{ route('billing') }}" icon="dollar-circle">
+                                                    Billing
+                                                </x-builder.navbar>
+                                            @endmodule
+
+                                            @isset($auth)
+                                                {{ $auth }}
+                                            @endisset
+                                        </div>
+    
+                                        <div class="grid pt-2">
+                                            @if ($attributes->has('back-to-app') && auth()->user()->canAccessApp())
+                                                <x-builder.navbar dropdown-item href="{{ Route::has('app.home') ? route('app.home') : route('home') }}" icon="home-alt">
+                                                    Back to App
+                                                </x-builder.navbar>
+                                            @endif
+
+                                            <x-builder.navbar dropdown-item href="{{ route('login', ['logout' => true]) }}" icon="log-out">
+                                                Logout
+                                            </x-builder.navbar>
+                                        </div>
+                                    </div>
                                 </x-slot>
                             </x-builder.navbar>
                         @else
@@ -146,14 +164,20 @@
                                         </div>
 
                                         <div class="grid text-sm mt-2">
+                                            <x-builder.navbar dropdown-item href="{{ route('user.home') }}" icon="user-pin">
+                                                Account
+                                            </x-builder.navbar>
+
+                                            @module('plans')
+                                                <x-builder.navbar dropdown-item href="{{ route('billing') }}" icon="dollar-circle">
+                                                    Billing
+                                                </x-builder.navbar>
+                                            @endmodule
+
                                             @isset($auth)
                                                 {{ $auth }}
-                                            @else
-                                                <x-builder.navbar dropdown-item href="{{ route('user.home') }}" icon="user-pin">
-                                                    Account
-                                                </x-builder.navbar>
                                             @endisset
-
+    
                                             <x-builder.navbar dropdown-item href="{{ route('login', ['logout' => 1]) }}" icon="log-out">
                                                 Logout
                                             </x-builder.navbar>

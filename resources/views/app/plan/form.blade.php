@@ -9,6 +9,10 @@
                 Slug (Leave empty to auto generate)
             </x-input.slug>
 
+            <x-input.number wire:model.defer="plan.trial" unit="days">
+                Trial Period
+            </x-input.number>
+
             <x-input.text wire:model.defer="plan.excerpt">
                 Excerpt
             </x-input.text>

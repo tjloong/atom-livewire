@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cookie;
 
 class Register extends Component
 {
+    public $plan;
     public $user;
     public $signup;
     public $tenant;
@@ -43,6 +44,8 @@ class Register extends Component
     public function mount()
     {
         if (!request()->query('ref')) return redirect('/');
+
+        $this->plan = request()->query('plan');
     }
 
     /**
@@ -122,6 +125,10 @@ class Register extends Component
      */
     public function redirectTo()
     {
+        if (enabled_module('plans') && model('plan')->where('is_active', true)->count()) {
+            return route('billing', ['plan' => $this->plan]);
+        }
+
         return route('onboarding');
     }
 

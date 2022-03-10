@@ -9,7 +9,7 @@ class Pricing extends Component
     public $cta;
     public $plan;
     public $prices;
-    public $recurrings;
+    public $trial;
 
     /**
      * Contructor
@@ -19,26 +19,19 @@ class Pricing extends Component
     public function __construct(
         $plan = null,
         $prices = [],
+        $trial = null,
         $cta = null
     ) {
         $this->plan = $plan;
         $this->prices = $prices;
-        $this->recurrings = collect($prices)->map(function($price) {
-            $label = $price['expired_after'];
-            [$n, $unit] = explode(' ', $price['expired_after']);
-
-            if ($n <= 1) {
-                if ($unit === 'day') $label = 'daily';
-                if ($unit === 'month') $label = 'monthly';
-                if ($unit === 'year') $label = 'yearly';
-            }
-
-            return ['value' => $price['expired_after'], 'label' => $label];
-        })->values()->all();
-
+        $this->trial = $trial;
         $this->cta = [
             'text' => $cta['text'] ?? 'Get Started',
             'href' => $cta['href'] ?? null,
+            'color' => $cta['color'] ?? 'theme',
+            'icon' => $cta['icon'] ?? null,
+            'icon_type' => $cta['icon_type'] ?? null,
+            'disabled' => $cta['disabled'] ?? false,
         ];
     }
 

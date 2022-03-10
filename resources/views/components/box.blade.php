@@ -1,4 +1,4 @@
-<div {{ $attributes->merge(['class' => 'box bg-white rounded-md border shadow']) }}">
+<div {{ $attributes->merge(['class' => 'box bg-white rounded-md border shadow overflow-hidden']) }}">
     <div class="p-1">
         @isset($header)
         <div class="pt-3 pb-4 px-3 border-b font-bold text-base">

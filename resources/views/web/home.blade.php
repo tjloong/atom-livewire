@@ -2,7 +2,7 @@
     <section class="grid gap-4">
         <div class="text-xl font-bold">Hero</div>
 
-        <div class="border rounded-md overflow-hidden drop-shadow">
+        <div class="border rounded-md overflow-hidden shadow">
             <x-builder.hero
                 :image="[
                     'url' => 'https://images.unsplash.com/photo-1642940792376-7819eeaa84a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxN3x8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60',
@@ -27,7 +27,7 @@
     <section class="grid gap-4">
         <div class="text-xl font-bold">Hero Slider</div>
 
-        <div class="border rounded-md overflow-hidden drop-shadow">
+        <div class="border rounded-md overflow-hidden shadow">
             <x-builder.hero slider>
                 <x-builder.slider slide image="https://images.unsplash.com/photo-1642887896814-0818d2d2ee2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMnx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60"/>
                 <x-builder.slider slide image="https://images.unsplash.com/photo-1642783632165-e13d344adc1d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzNHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60"/>
@@ -40,7 +40,7 @@
     <section class="grid gap-4">
         <div class="text-xl font-bold">FAQ</div>
 
-        <div class="border rounded-md drop-shadow">
+        <div class="border rounded-md shadow">
             <x-builder.faq :sets="[
                 [
                     'question' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
@@ -66,7 +66,8 @@
                     @foreach ($plans as $plan)
                         <x-builder.pricing 
                             :plan="$plan->toArray()" 
-                            :prices="$plan->prices->toArray()" 
+                            :prices="$plan->prices->toArray()"
+                            :trial="$plan->trial"
                             :cta="[
                                 'text' => $plan->cta ?? null,
                                 'href' => Route::has('register')

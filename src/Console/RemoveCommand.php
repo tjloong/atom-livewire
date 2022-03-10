@@ -78,8 +78,14 @@ class RemoveCommand extends Command
         Schema::dropIfExists('signups_subscriptions');
         $this->line('Dropped signups_subscriptions table.');
 
+        Schema::dropIfExists('signups_orders');
+        $this->line('Dropped signups_orders table.');
+        
         Schema::dropIfExists('tenants_subscriptions');
         $this->line('Dropped tenants_subscriptions table.');
+
+        Schema::dropIfExists('tenants_orders');
+        $this->line('Dropped tenants_orders table.');
 
         Schema::dropIfExists('plans_upgradables');
         $this->line('Dropped plans_upgradables table.');

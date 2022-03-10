@@ -9,6 +9,16 @@ use Jiannius\Atom\Services\Metadata;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
+ * Get home route
+ */
+function home()
+{
+    if (Route::has('app.home')) return route('app.home');
+
+    return route('home');
+}
+
+/**
  * Get livewire component
  */
 function get_livewire_component($name, $path = null)

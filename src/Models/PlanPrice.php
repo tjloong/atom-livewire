@@ -60,9 +60,9 @@ class PlanPrice extends Model
     public function getRecurringAttribute()
     {
         if ($this->is_lifetime) return 'lifetime';
-        if ($this->expired_after === '1 day') return 'day';
-        if ($this->expired_after === '1 month') return 'month';
-        if ($this->expired_after === '1 year') return 'year';
+        if ($this->expired_after === '1 day') return 'daily';
+        if ($this->expired_after === '1 month') return 'monthly';
+        if ($this->expired_after === '1 year') return 'yearly';
 
         [$n, $unit] = explode(' ', $this->expired_after);
 

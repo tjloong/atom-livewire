@@ -16,6 +16,7 @@ class Plan extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'trial' => 'integer',
         'features' => 'array',
         'is_active' => 'boolean',
     ];

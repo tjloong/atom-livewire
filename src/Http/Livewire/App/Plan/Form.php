@@ -25,6 +25,7 @@ class Form extends Component
                 Rule::unique('plans', 'name')->ignore($this->plan),
             ],
             'plan.slug' => 'nullable',
+            'plan.trial' => 'nullable',
             'plan.excerpt' => 'nullable',
             'plan.cta' => 'nullable',
             'plan.is_active' => 'nullable',

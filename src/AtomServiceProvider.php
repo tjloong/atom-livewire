@@ -171,20 +171,25 @@ class AtomServiceProvider extends ServiceProvider
         // dashboard
         Livewire::component('atom.dashboard', 'Jiannius\\Atom\\Http\\Livewire\\App\\Dashboard');
 
-        // auth
+        // auth portal
         Livewire::component('atom.auth.login', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\Login');
         Livewire::component('atom.auth.register', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\Register');
         Livewire::component('atom.auth.register-form', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\RegisterForm');
         Livewire::component('atom.auth.reset-password', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\ResetPassword');
         Livewire::component('atom.auth.forgot-password', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\ForgotPassword');
 
-        // user
+        // user portal
         Livewire::component('atom.user.authentication.profile', 'Jiannius\\Atom\\Http\\Livewire\\User\\Authentication\\Profile');
         Livewire::component('atom.user.authentication.password', 'Jiannius\\Atom\\Http\\Livewire\\User\\Authentication\\Password');
 
-        // onboarding
+        // onboarding portal
         Livewire::component('atom.onboarding', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Index');
         Livewire::component('atom.onboarding.profile', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Profile');
+
+        // billing portal
+        Livewire::component('atom.billing', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Index');
+        Livewire::component('atom.billing.plans', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Plans');
+        Livewire::component('atom.billing.subscriptions', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Subscriptions');
         
         // blog
         Livewire::component('atom.blog.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Create');
