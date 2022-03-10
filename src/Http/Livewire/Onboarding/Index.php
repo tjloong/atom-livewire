@@ -8,8 +8,7 @@ class Index extends Component
 {
     public $tab;
     public $tabs;
-    public $signup;
-    public $tenant;
+    public $account;
 
     protected $listeners = ['next'];
 
@@ -18,8 +17,7 @@ class Index extends Component
      */
     public function mount()
     {
-        if (enabled_module('signups')) $this->signup = auth()->user()->signup;
-        if (enabled_module('tenants')) $this->tenant = auth()->user()->tenant;
+        $this->account = auth()->user()->account;
         
         $this->tabs = collect(config('atom.onboarding.steps', []))->map(fn($label, $key) => [
             'value' => $key,
@@ -48,9 +46,7 @@ class Index extends Component
 
         if ($next) $this->tab = $next['value'];
         else {
-            optional($this->signup)->onboard();
-            optional($this->tenant)->onboard();
-            
+            $this->account->onboard();
             return redirect()->route('onboarding.completed');
         }
     }

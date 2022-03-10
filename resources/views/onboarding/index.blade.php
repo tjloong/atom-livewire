@@ -19,7 +19,7 @@
 
     <div class="md:col-span-9">
         @if ($component = get_livewire_component($tab, 'onboarding'))
-            @livewire($component, compact('signup', 'tenant'), key($tab))
+            @livewire($component, compact('account'), key($tab))
         @endif
     </div>
 </div>

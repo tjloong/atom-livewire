@@ -21,6 +21,10 @@ return [
         ],
     ],
 
+    'users' => [
+        'data_visibility' => true,
+    ],
+
     'labels' => [
         'blog-category',
     ],
@@ -37,6 +41,4 @@ return [
             //
         ],
     ],
-
-    'data_visibility' => true,
 ];

@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Cookie;
 
 class Register extends Component
 {
+    public $ref;
     public $plan;
     public $user;
-    public $signup;
-    public $tenant;
+    public $account;
 
     public $form = [
         'agree_tnc' => false,
@@ -45,6 +45,7 @@ class Register extends Component
     {
         if (!request()->query('ref')) return redirect('/');
 
+        $this->ref = request()->query('ref');
         $this->plan = request()->query('plan');
     }
 
@@ -56,23 +57,28 @@ class Register extends Component
         $this->resetValidation();
         $this->validate();
 
-        if (enabled_module('tenants')) $this->createTenant();
+        if (enabled_module('signups')) {
+            $this->createAccount();
+            $this->accountMetadata();
+        }
 
         $this->createUser();
-
-        if (enabled_module('signups')) $this->createSignup();
-
         $this->registered();
 
         return redirect($this->redirectTo());
     }
 
     /**
-     * Create tenant
+     * Create account
      */
-    public function createTenant()
+    public function createAccount()
     {
-        //
+        $this->account = model('account')->create([
+            'name' => $this->form['name'],
+            'email' => $this->form['email'],
+            'agree_tnc' => $this->form['agree_tnc'],
+            'agree_marketing' => $this->form['agree_marketing'],
+        ]);
     }
 
     /**
@@ -82,27 +88,29 @@ class Register extends Component
     {
         $this->user = model('user');
 
-        $this->user->fill([
-            'name' => $this->form['name'],
-            'email' => $this->form['email'],
-            'password' => bcrypt($this->form['password']),
-            'is_root' => false,
-            'is_pending' => false,
-            'is_active' => true,
-        ]);
+        $this->user->name = $this->form['name'];
+        $this->user->email = $this->form['email'];
+        $this->user->password = bcrypt($this->form['password']);
+        $this->user->is_root = false;
+        $this->user->is_pending = false;
+        $this->user->is_active = true;
+
+        if ($this->account) $this->user->account_id = $this->account->id;
 
         $this->user->save();
     }
 
     /**
-     * Create signup
+     * Update account metadata
      */
-    public function createSignup()
+    public function accountMetadata()
     {
-        $this->signup = $this->user->signup()->create([
-            'agree_tnc' => $this->form['agree_tnc'],
-            'agree_marketing' => $this->form['agree_marketing'],
-        ]);
+        $this->account->data = [
+            'register_geo' => geoip()->getLocation()->toArray(),
+            'register_channel' => $this->ref,
+        ];
+
+        $this->account->save();
     }
 
     /**

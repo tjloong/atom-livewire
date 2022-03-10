@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Signup;
+namespace Jiannius\Atom\Http\Livewire\App\Account;
 
 use Livewire\Component;
 
@@ -22,8 +22,8 @@ class Update extends Component
      */
     public function block()
     {
-        $this->user->signup->block();
-        $this->dispatchBrowserEvent('toast', ['message' => 'Sign-Up Blocked']);
+        $this->user->account->block();
+        $this->dispatchBrowserEvent('toast', ['message' => 'Account Blocked']);
     }
 
     /**
@@ -31,8 +31,8 @@ class Update extends Component
      */
     public function unblock()
     {
-        $this->user->signup->unblock();
-        $this->dispatchBrowserEvent('toast', ['message' => 'Sign-Up Unblocked']);
+        $this->user->account->unblock();
+        $this->dispatchBrowserEvent('toast', ['message' => 'Account Unblocked']);
     }
 
     /**
@@ -42,9 +42,9 @@ class Update extends Component
     {
         $this->user->delete();
         
-        session()->flash('flash', 'Sign-Up Deleted');
+        session()->flash('flash', 'Account Deleted');
 
-        return redirect()->route('signup.listing');
+        return redirect()->route('account.listing');
     }
 
     /**
@@ -52,6 +52,6 @@ class Update extends Component
      */
     public function render()
     {
-        return view('atom::app.signup.update');
+        return view('atom::app.account.update');
     }
 }

@@ -30,19 +30,20 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_root' => 'boolean',
         'is_pending' => 'boolean',
         'is_active' => 'boolean',
+        'account_id' => 'integer',
         'email_verified_at' => 'datetime',
     ];
 
     const ROOT_EMAIL = 'root@jiannius.com';
 
     /**
-     * Get signup for user
+     * Get account for user
      */
-    public function signup()
+    public function account()
     {
         if (!enabled_module('signups')) return;
 
-        return $this->hasOne(Signup::class);
+        return $this->belongsTo(Account::class);
     }
 
     /**
@@ -87,8 +88,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
-            ->when(enabled_module('signups'), fn($q) => $q->whereHas('signup', fn($q) => $q->search($search)))
-            ->when(enabled_module('tenants'), fn($q) => $q->whereHas('tenant', fn($q) => $q->where('tenants.name', 'like', "%$search%")))
+            ->when(enabled_module('signups'), fn($q) => $q->whereHas('account', fn($q) => $q->search($search)))
         );
     }
 
@@ -154,21 +154,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Check user can access app portal
-     * 
-     * @return boolean
-     */
-    public function canAccessApp()
-    {
-        if ($this->is_root) return true;
-
-        if (enabled_module('signups')) return empty($this->signup);
-        if (enabled_module('tenants')) return !empty($this->tenant);
-
-        return false;
-    }
-
-    /**
      * Invite user to activate account
      * 
      * @return void
@@ -191,5 +176,25 @@ class User extends Authenticatable implements MustVerifyEmail
 
         if ($status === Password::RESET_LINK_SENT) return $status;
         else return false;
+    }
+
+    /**
+     * Check user can access app portal
+     * 
+     * @return boolean
+     */
+    public function canAccessAppPortal()
+    {
+        return empty($this->account);
+    }
+
+    /**
+     * Check user can access billing portal
+     * 
+     * @return boolean
+     */
+    public function canAccessBillingPortal()
+    {
+        return !$this->is_root;
     }
 }

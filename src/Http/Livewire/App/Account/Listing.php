@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Signup;
+namespace Jiannius\Atom\Http\Livewire\App\Account;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -25,7 +25,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        breadcrumbs()->home('Sign-Ups');
+        breadcrumbs()->home('Accounts');
     }
 
     /**
@@ -34,7 +34,7 @@ class Listing extends Component
     public function getUsersProperty()
     {
         return model('user')
-            ->whereHas('signup', fn($q) => $q->filter($this->filters))
+            ->whereHas('account', fn($q) => $q->filter($this->filters))
             ->orderBy($this->sortBy, $this->sortOrder);
     }
 
@@ -51,7 +51,7 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.signup.listing', [
+        return view('atom::app.account.listing', [
             'users' => $this->users->paginate(30),
         ]);
     }
@@ -61,16 +61,18 @@ class Listing extends Component
      */
     public function export()
     {
-        $filename = 'signups-' . rand(1000, 9999) . '.xlsx';
+        $filename = 'accounts-' . rand(1000, 9999) . '.xlsx';
         $users = $this->users->get();
 
         return export_to_excel($filename, $users, fn($user) => [
             'Date' => $user->created_at->toDatetimeString(),
             'Name' => $user->name,
-            'Phone' => $user->signup->phone,
-            'Email' => $user->email ?? $user->signup->email,
-            'Status' => $user->signup->status,
-            'Blocked Date' => optional($user->signup->blocked_at)->toDatetimeString(),
+            'Phone' => $user->account->phone,
+            'Email' => $user->email ?? $user->account->email,
+            'Agreed to T&C' => $user->account->agree_tnc ? 'Yes' : 'No',
+            'Agreed to Marketing' => $user->account->agree_marketing ? 'Yes' : 'No',
+            'Status' => $user->account->status,
+            'Blocked Date' => optional($user->account->blocked_at)->toDatetimeString(),
         ]);
     }
 }

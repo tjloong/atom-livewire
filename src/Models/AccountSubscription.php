@@ -5,11 +5,11 @@ namespace Jiannius\Atom\Models;
 use Jiannius\Atom\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 
-class SignupSubscription extends Model
+class AccountSubscription extends Model
 {
     use HasFilters;
     
-    protected $table = 'signups_subscriptions';
+    protected $table = 'accounts_subscriptions';
     
     protected $guarded = [];
 
@@ -18,17 +18,17 @@ class SignupSubscription extends Model
         'is_trial' => 'boolean',
         'start_at' => 'datetime',
         'expired_at' => 'datetime',
-        'signup_id' => 'integer',
-        'signup_order_id' => 'integer',
+        'account_id' => 'integer',
+        'account_order_id' => 'integer',
         'plan_price_id' => 'integer',
     ];
 
     /**
-     * Get signup for subscription
+     * Get account for subscription
      */
-    public function signup()
+    public function account()
     {
-        return $this->belongsTo(Signup::class);
+        return $this->belongsTo(Account::class);
     }
 
     /**
@@ -36,7 +36,7 @@ class SignupSubscription extends Model
      */
     public function order()
     {
-        return $this->belongsTo(SignupOrder::class, 'signup_order_id');
+        return $this->belongsTo(AccountOrder::class, 'account_order_id');
     }
 
     /**
@@ -68,7 +68,7 @@ class SignupSubscription extends Model
             ->whereHas('plan_price', fn($q) => $q
                 ->whereHas('plan', fn($q) => $q->search($search))
             )
-            ->whereHas('signup', fn($q) => $q->search($search))
+            ->whereHas('account', fn($q) => $q->search($search))
         );
     }
 

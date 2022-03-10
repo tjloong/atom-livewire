@@ -10,10 +10,6 @@
             <a href="/" class="text-gray-800">Go To Site</a>
         </x-slot>
 
-        <x-slot name="dropdown">
-            <x-dropdown item icon="user" route="user.home">Account</x-dropdown>
-        </x-slot>
-
         <x-slot name="aside">
             <x-admin-panel aside icon="edit-alt" route="blog.listing" can="blogs.view" :active="str()->is('blog.*', current_route())">
                 Blogs
@@ -31,8 +27,8 @@
                 Plans
             </x-admin-panel>
 
-            <x-admin-panel aside icon="user-plus" route="signup.listing" can="signup.manage" :active="str()->is('signup.*', current_route())">
-                Sign-Ups
+            <x-admin-panel aside icon="user-plus" route="account.listing" can="account.manage" :active="str()->is('account.*', current_route())">
+                Accounts
             </x-admin-panel>
 
             <x-admin-panel aside icon="buoy" route="ticket.listing" can="tickets.view" :active="str()->is('ticket.*', current_route())">

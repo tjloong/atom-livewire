@@ -7,7 +7,7 @@ use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 
-class Signup extends Model
+class Account extends Model
 {
     use HasTrace;
     use HasFilters;
@@ -16,34 +16,34 @@ class Signup extends Model
 
     protected $casts = [
         'dob' => 'date',
+        'data' => 'object',
         'agree_tnc' => 'boolean',
         'agree_marketing' => 'boolean',
-        'user_id' => 'integer',
         'onboarded_at' => 'datetime',
     ];
 
     /**
-     * Get user for signup
+     * Get user for account
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
     }
 
     /**
-     * Get orders for signup
+     * Get orders for account
      */
     public function orders()
     {
-        return $this->hasMany(SignupOrder::class);
+        return $this->hasMany(AccountOrder::class);
     }
 
     /**
-     * Get subscriptions for signup
+     * Get subscriptions for account
      */
     public function subscriptions()
     {
-        return $this->hasMany(SignupSubscription::class);
+        return $this->hasMany(AccountSubscription::class);
     }
 
     /**
@@ -56,6 +56,7 @@ class Signup extends Model
     public function scopeSearch($query, $search)
     {
         return $query->where(fn($q) => $q
+            ->where('name', 'like', "%$search%")
             ->where('phone', 'like', "%$search%")
             ->where('email', 'like', "%$search%")
         );
@@ -69,13 +70,12 @@ class Signup extends Model
     public function getStatusAttribute()
     {
         if ($this->blocked()) return 'blocked';
-        if ($this->user->trashed()) return 'trashed';
 
         return 'active';
     }
 
     /**
-     * Onboard signup
+     * Onboard account
      * 
      * @return void
      */
@@ -86,7 +86,7 @@ class Signup extends Model
     }
 
     /**
-     * Check signup is onboarded
+     * Check account is onboarded
      * 
      * @return boolean
      */

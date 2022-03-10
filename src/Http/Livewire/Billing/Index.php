@@ -13,7 +13,7 @@ class Index extends Component
      */
     public function mount()
     {
-        $this->user = auth()->user();
+        //
     }
 
     /**
@@ -21,12 +21,11 @@ class Index extends Component
      */
     public function getSubscriptionsProperty()
     {
-        if (enabled_module('signups')) $entity = $this->user->signup;
-        else if (enabled_module('tenants')) $entity = $this->user->tenant;
+        $account = auth()->user()->account;
 
-        $subscriptions = optional($entity)->subscriptions();
-
-        return $subscriptions ? $subscriptions->status('active')->get() : [];
+        return $account
+            ? $account->subscriptions()->status('active')->get()
+            : collect([]);
     }
 
     /**

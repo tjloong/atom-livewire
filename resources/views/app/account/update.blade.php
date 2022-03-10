@@ -1,11 +1,11 @@
 <div class="max-w-lg mx-auto">
     <x-page-header :title="$user->name" back>
         <x-button inverted icon="trash" color="red" 
-            can="signup.delete"
-            :hide="$user->signup->status === 'trashed'"
+            can="account.delete"
+            :hide="$user->account->status === 'trashed'"
             x-on:click="$dispatch('confirm', {
-                title: 'Delete Sign-Up',
-                message: 'Are you sure to delete this sign-up?',
+                title: 'Delete Account',
+                message: 'Are you sure to delete this account?',
                 type: 'error',
                 onConfirmed: () => $wire.delete()
             })"
@@ -22,26 +22,26 @@
                 <div class="grid gap-1">
                     <div>{{ $user->name }}</div>
 
-                    @if ($user->signup->status === 'blocked')
+                    @if ($user->account->status === 'blocked')
                         <div class="flex gap-2">
                             <div class="text-red-500 text-xs flex gap-1">
                                 <x-icon name="error-circle" size="16px" class="flex-shrink-0"/>
-                                <div>Blocked at {{ format_date($user->signup->blocked_at, 'datetime') }} by {{ $user->signup->blocked_by_user->name ?? 'Unknown' }}</div>
+                                <div>Blocked at {{ format_date($user->account->blocked_at, 'datetime') }} by {{ $user->account->blocked_by_user->name ?? 'Unknown' }}</div>
                             </div>
 
                             <a class="text-xs flex-shrink-0" x-on:click="$dispatch('confirm', {
-                                title: 'Unblock User',
-                                message: 'Are you sure to unblock this signed-up user?',
+                                title: 'Unblock Account',
+                                message: 'Are you sure to unblock this account?',
                                 onConfirmed: () => $wire.unblock(),
                             })">
                                 Unblock
                             </a>
                         </div>
-                    @elseif ($user->signup->status !== 'trashed')
-                        @can('signup.block')
+                    @elseif ($user->account->status !== 'trashed')
+                        @can('account.block')
                             <a class="text-red-500 flex items-center gap-1 text-xs font-medium" x-on:click="$dispatch('confirm', {
-                                title: 'Block User',
-                                message: 'Are you sure to block this signed-up user?',
+                                title: 'Block Account',
+                                message: 'Are you sure to block this account?',
                                 type: 'error',
                                 onConfirmed: () => $wire.block(),
                             })">
@@ -54,22 +54,22 @@
 
             <x-input.field>
                 <x-slot name="label">Email</x-slot>
-                {{ $user->signup->email ?? $user->email ?? '--' }}
+                {{ $user->account->email ?? $user->email ?? '--' }}
             </x-input.field>
 
             <x-input.field>
                 <x-slot name="label">Phone</x-slot>
-                {{ $user->signup->phone ?? '--' }}
+                {{ $user->account->phone ?? '--' }}
             </x-input.field>
 
             <x-input.field>
                 <x-slot name="label">Agreed to T&C/Privacy Policy</x-slot>
-                {{ $user->signup->agree_tnc ? 'Yes' : 'No' }}
+                {{ $user->account->agree_tnc ? 'Yes' : 'No' }}
             </x-input.field>
 
             <x-input.field>
                 <x-slot name="label">Agreed to receiving promotions and marketing</x-slot>
-                {{ $user->signup->agree_marketing ? 'Yes' : 'No' }}
+                {{ $user->account->agree_marketing ? 'Yes' : 'No' }}
             </x-input.field>
 
             <x-input.field>
@@ -79,7 +79,7 @@
 
             <x-input.field>
                 <x-slot name="label">Status</x-slot>
-                <x-badge>{{ $user->signup->status }}</x-badge>
+                <x-badge>{{ $user->account->status }}</x-badge>
             </x-input.field>
         </div>
     </x-box>

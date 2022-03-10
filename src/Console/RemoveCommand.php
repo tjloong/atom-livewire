@@ -75,11 +75,11 @@ class RemoveCommand extends Command
         $this->newLine();
         $this->info('Removing plans...');
 
-        Schema::dropIfExists('signups_subscriptions');
-        $this->line('Dropped signups_subscriptions table.');
+        Schema::dropIfExists('accounts_subscriptions');
+        $this->line('Dropped accounts_subscriptions table.');
 
-        Schema::dropIfExists('signups_orders');
-        $this->line('Dropped signups_orders table.');
+        Schema::dropIfExists('accounts_orders');
+        $this->line('Dropped accounts_orders table.');
         
         Schema::dropIfExists('tenants_subscriptions');
         $this->line('Dropped tenants_subscriptions table.');
@@ -202,13 +202,13 @@ class RemoveCommand extends Command
     private function removeSignups()
     {
         $this->newLine();
-        $this->info('Removing signups...');
+        $this->info('Removing signups module...');
 
-        Schema::dropIfExists('signups_subscriptions');
-        $this->line('Dropped signups_subscriptions table.');
+        Schema::dropIfExists('accounts_subscriptions');
+        $this->line('Dropped accounts_subscriptions table.');
 
-        Schema::dropIfExists('signups');
-        $this->line('Dropped signups table.');
+        Schema::dropIfExists('accounts');
+        $this->line('Dropped accounts table.');
     }
 
     /**

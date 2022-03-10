@@ -36,7 +36,7 @@
                                 <div class="flex items-center gap-1 text-base">
                                     <div class="font-medium text-gray-500">{{ $price->currency }}</div>
                                     <div class="font-semibold">{{ currency($price->amount) }}</div>
-                                    <div class="font-medium text-gray-500">/{{ $price->recurring }}</div>
+                                    <div class="font-medium text-gray-500">{{ $price->recurring }}</div>
                                 </div>
 
                                 @if ($cn = optional(metadata()->countries($price->country))['name'])

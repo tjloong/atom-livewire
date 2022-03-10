@@ -5,26 +5,26 @@ namespace Jiannius\Atom\Models;
 use Jiannius\Atom\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 
-class SignupOrder extends Model
+class AccountOrder extends Model
 {
     use HasFilters;
 
-    protected $table = 'signups_orders';
+    protected $table = 'accounts_orders';
     
     protected $guarded = [];
 
     protected $casts = [
         'grand_total' => 'float',
         'data' => 'object',
-        'signup_id' => 'integer',
+        'account_id' => 'integer',
     ];
 
     /**
-     * Get signup for order
+     * Get account for order
      */
-    public function signup()
+    public function account()
     {
-        return $this->belongsTo(Signup::class);
+        return $this->belongsTo(Account::class);
     }
 
     /**
@@ -32,7 +32,7 @@ class SignupOrder extends Model
      */
     public function subscriptions()
     {
-        return $this->hasMany(SignupSubscription::class, 'signup_order_id');
+        return $this->hasMany(AccountSubscription::class, 'account_order_id');
     }
 
     /**
@@ -45,7 +45,7 @@ class SignupOrder extends Model
     public function scopeSearch($query, $search)
     {
         return $query->where(fn($q) => $q
-            ->whereHas('signup', fn($q) => $q->search($search))
+            ->whereHas('account', fn($q) => $q->search($search))
         );
     }
 }

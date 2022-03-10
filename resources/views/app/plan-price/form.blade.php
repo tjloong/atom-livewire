@@ -11,11 +11,11 @@
                 Available for Country
             </x-input.country>
 
-            <x-input.currency wire:model="price.currency" required :error="$errors->first('price.currency')" :disabled="$disabled">
+            <x-input.currency wire:model="price.currency" required :error="$errors->first('price.currency')" :disabled="$readonly">
                 Currency
             </x-input.currency>
 
-            <x-input.number wire:model.defer="price.amount" required :error="$errors->first('price.amount')" :disabled="$disabled">
+            <x-input.number wire:model.defer="price.amount" required :error="$errors->first('price.amount')" :disabled="$readonly">
                 Price
             </x-input.number>
 
@@ -23,10 +23,10 @@
                 <x-slot name="label">Expired After</x-slot>
                 <div class="grid gap-1">
                     <div x-data="{ isLifetime: @entangle('price.is_lifetime') }" x-show="!isLifetime">
-                        <x-input.number wire:model.defer="price.expired_after" :units="['day', 'month', 'year']" :disabled="$disabled"/>
+                        <x-input.number wire:model.defer="price.expired_after" :units="['day', 'month', 'year']" :disabled="$readonly"/>
                     </div>
 
-                    <x-input.checkbox wire:model="price.is_lifetime" :disabled="$disabled">
+                    <x-input.checkbox wire:model="price.is_lifetime" :disabled="$readonly">
                         Valid for lifetime
                     </x-input.checkbox>
                 </div>
@@ -42,17 +42,10 @@
                 </x-input.checkbox>
             </x-input.field>
 
-            @module('tenants')
-                <a class="flex items-center gap-1">
-                    <x-icon name="info-circle" class="text-gray-400" size="20px"/>
-                    {{ $price->tenants->count() }} {{ str('tenant')->plural($price->tenants->count()) }} subscribed to this price.
-                </a>
-            @endmodule
-
             @module('signups')
                 <a class="flex items-center gap-1">
                     <x-icon name="info-circle" class="text-gray-400" size="20px"/>
-                    {{ $price->signups->count() }} {{ str('user')->plural($price->signups->count()) }} subscribed to this price.
+                    {{ $price->accounts->count() }} {{ str('user')->plural($price->accounts->count()) }} subscribed to this price.
                 </a>
             @endmodule
         </div>

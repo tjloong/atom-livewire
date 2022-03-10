@@ -43,13 +43,13 @@ class PlanPrice extends Model
     }
     
     /**
-     * Get signups for plan price
+     * Get accounts for plan price
      */
-    public function signups()
+    public function accounts()
     {
         if (!enabled_module('signups')) return;
 
-        return $this->belongsToMany(Signup::class, 'signups_subscriptions', 'plan_price_id', 'signup_id');
+        return $this->belongsToMany(Account::class, 'accounts_subscriptions', 'plan_price_id', 'account_id');
     }
 
     /**

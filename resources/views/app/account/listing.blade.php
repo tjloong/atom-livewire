@@ -1,10 +1,10 @@
 <div class="max-w-screen-xl mx-auto">
-    <x-page-header title="Sign-Ups"/>
+    <x-page-header title="Accounts"/>
 
     <x-table :total="$users->total()" :links="$users->links()" export>
         <x-slot name="head">
             <x-table head sort="created_at">Date</x-table>
-            <x-table head sort="name">Sign-Up</x-table>
+            <x-table head sort="name">Name</x-table>
             <x-table head>Contact</x-table>
             
             @module('plans')
@@ -23,31 +23,35 @@
                     </x-table>
 
                     <x-table cell>
-                        <a href="{{ route('signup.update', [$user->id]) }}">
+                        <a href="{{ route('account.update', [$user->id]) }}">
                             {{ $user->name }}
                         </a>
                     </x-table>
 
                     <x-table cell>
-                        @foreach (array_filter([$user->email ?? $user->signup->email, $user->signup->phone]) as $contact)
+                        @foreach (array_filter([$user->email ?? $user->account->email, $user->account->phone]) as $contact)
                             <div>{{ $contact }}</div>
                         @endforeach
                     </x-table>
 
                     @module('plans')
-                        <x-table cell>
-                            <div class="flex flex-wrap items-center gap-1">
-                                @foreach ($user->signup->subscriptions as $subscription)
-                                    <span class="py-0.5 px-2 bg-gray-100 rounded text-xs uppercase">
-                                        {{ str($subscription->plan->name)->limit(15) }}
-                                    </span>
-                                @endforeach
-                            </div>
+                        <x-table cell class="text-right">
+                            @if ($user->account->subscriptions->count())
+                                <div class="flex flex-wrap items-center justify-end gap-1">
+                                    @foreach ($user->account->subscriptions as $subscription)
+                                        <span class="py-0.5 px-2 bg-gray-100 rounded text-xs uppercase">
+                                            {{ str($subscription->plan->name)->limit(15) }}
+                                        </span>
+                                    @endforeach
+                                </div>                                
+                            @else
+                                --                             
+                            @endif
                         </x-table>
                     @endmodule
 
                     <x-table cell class="text-right">
-                        <x-badge>{{ $user->signup->status }}</x-badge>
+                        <x-badge>{{ $user->account->status }}</x-badge>
                     </x-table>
                 </x-table>
             @endforeach

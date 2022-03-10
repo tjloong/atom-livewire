@@ -29,7 +29,7 @@ if (!config('atom.static_site')) {
      * Billing Portal
      */
     if (enabled_module('plans')) {
-        Route::prefix('billing')->middleware('auth')->group(function() {
+        Route::prefix('billing')->middleware(['auth', 'billing-portal-guard'])->group(function() {
             define_route('/', 'Billing\\Index')->name('billing');
             define_route('checkout', 'Billing\\Checkout')->name('billing.checkout');
         });
@@ -38,7 +38,7 @@ if (!config('atom.static_site')) {
     /**
      * App Portal
      */
-    Route::prefix('app')->middleware(['auth', 'app-guard'])->group(function() {
+    Route::prefix('app')->middleware(['auth', 'app-portal-guard'])->group(function() {
         define_route('/', fn() => redirect()->route('dashboard'))->name('app.home');
 
         /**
@@ -105,12 +105,12 @@ if (!config('atom.static_site')) {
         }
 
         /**
-         * Signups
+         * Accounts
          */
         if (enabled_module('signups')) {
-            Route::prefix('signup')->group(function() {
-                define_route('listing', 'App\\Signup\\Listing')->name('signup.listing');
-                define_route('{id}', 'App\\Signup\\Update')->name('signup.update');
+            Route::prefix('account')->group(function() {
+                define_route('listing', 'App\\Account\\Listing')->name('account.listing');
+                define_route('{id}', 'App\\Account\\Update')->name('account.update');
             });
         }
     

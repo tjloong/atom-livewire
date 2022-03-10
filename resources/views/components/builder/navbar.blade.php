@@ -78,11 +78,11 @@
                 </div>
 
                 {{-- Desktop view --}}
-                <div class="flex-grow hidden gap-4 items-center justify-between md:flex">
+                <div class="flex-grow hidden gap-3 items-center justify-between md:flex">
                     <div
                         class="{{
                             collect([
-                                'flex-grow flex gap-4 items-center',
+                                'flex-grow flex gap-3 items-center',
                                 ($align === 'left' ? 'justify-start' : null),
                                 ($align === 'center' ? 'justify-center' : null),
                                 ($align === 'right' ? 'justify-end' : null),
@@ -109,9 +109,11 @@
                                             </x-builder.navbar>
 
                                             @module('plans')
-                                                <x-builder.navbar dropdown-item href="{{ route('billing') }}" icon="dollar-circle">
-                                                    Billing
-                                                </x-builder.navbar>
+                                                @if (auth()->user()->canAccessBillingPortal())
+                                                    <x-builder.navbar dropdown-item href="{{ route('billing') }}" icon="dollar-circle">
+                                                        Billing
+                                                    </x-builder.navbar>
+                                                @endif
                                             @endmodule
 
                                             @isset($auth)
@@ -120,7 +122,7 @@
                                         </div>
     
                                         <div class="grid pt-2">
-                                            @if ($attributes->has('back-to-app') && auth()->user()->canAccessApp())
+                                            @if ($attributes->has('back-to-app') && auth()->user()->canAccessAppPortal())
                                                 <x-builder.navbar dropdown-item href="{{ Route::has('app.home') ? route('app.home') : route('home') }}" icon="home-alt">
                                                     Back to App
                                                 </x-builder.navbar>
@@ -169,15 +171,23 @@
                                             </x-builder.navbar>
 
                                             @module('plans')
-                                                <x-builder.navbar dropdown-item href="{{ route('billing') }}" icon="dollar-circle">
-                                                    Billing
-                                                </x-builder.navbar>
+                                                @if (auth()->user()->canAccessBillingPortal())
+                                                    <x-builder.navbar dropdown-item href="{{ route('billing') }}" icon="dollar-circle">
+                                                        Billing
+                                                    </x-builder.navbar>
+                                                @endif
                                             @endmodule
 
                                             @isset($auth)
                                                 {{ $auth }}
                                             @endisset
     
+                                            @if ($attributes->has('back-to-app') && auth()->user()->canAccessAppPortal())
+                                                <x-builder.navbar dropdown-item href="{{ Route::has('app.home') ? route('app.home') : route('home') }}" icon="home-alt">
+                                                    Back to App
+                                                </x-builder.navbar>
+                                            @endif
+
                                             <x-builder.navbar dropdown-item href="{{ route('login', ['logout' => 1]) }}" icon="log-out">
                                                 Logout
                                             </x-builder.navbar>
@@ -185,7 +195,9 @@
                                     @else
                                         <div class="flex items-center justify-center gap-3 text-sm">
                                             <x-button color="gray" href="{{ route('login') }}">Login</x-button>
-                                            <x-button href="{{ route('register', ['ref' => 'navbar']) }}">Register</x-button>
+                                            @module('signups')
+                                                <x-button href="{{ route('register', ['ref' => 'navbar']) }}">Register</x-button>
+                                            @endmodule
                                         </div>
                                     @endauth
                                 </div>

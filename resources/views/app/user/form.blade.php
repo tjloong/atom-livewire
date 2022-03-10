@@ -72,7 +72,7 @@
             @if (!$isSelf && $form['is_active'])
                 <div class="p-5">
                     @if (!$form['is_root'])
-                        @if (config('atom.data_visibility'))
+                        @if (config('atom.user.data_visibility'))
                             <x-input.field>
                                 <x-slot name="label">Data Visiblity</x-slot>
                                 <div class="flex flex-col gap-2">

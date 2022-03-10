@@ -13,7 +13,8 @@ use Jiannius\Atom\Console\InstallCommand;
 use Jiannius\Atom\Console\PublishCommand;
 use Jiannius\Atom\Http\Middleware\IsRole;
 use Jiannius\Atom\Http\Middleware\TrackReferer;
-use Jiannius\Atom\Http\Middleware\AppGuard;
+use Jiannius\Atom\Http\Middleware\AppPortalGuard;
+use Jiannius\Atom\Http\Middleware\BillingPortalGuard;
 
 class AtomServiceProvider extends ServiceProvider
 {
@@ -240,9 +241,9 @@ class AtomServiceProvider extends ServiceProvider
         // permission
         Livewire::component('atom.permission.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Permission\\Listing');
 
-        // signup
-        Livewire::component('atom.signup.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Signup\\Listing');
-        Livewire::component('atom.signup.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Signup\\Update');
+        // account
+        Livewire::component('atom.account.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Listing');
+        Livewire::component('atom.account.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Update');
 
         // team
         Livewire::component('atom.team.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Listing');
@@ -283,7 +284,8 @@ class AtomServiceProvider extends ServiceProvider
         $router = app('router');
         $router->aliasMiddleware('role', IsRole::class);
         $router->aliasMiddleware('referer', TrackReferer::class);
-        $router->aliasMiddleware('app-guard', AppGuard::class);
+        $router->aliasMiddleware('app-portal-guard', AppPortalGuard::class);
+        $router->aliasMiddleware('billing-portal-guard', BillingPortalGuard::class);
     }
 
     /**

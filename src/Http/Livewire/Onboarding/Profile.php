@@ -6,22 +6,25 @@ use Livewire\Component;
 
 class Profile extends Component
 {
-    public $signup;
+    public $account;
 
     protected $rules = [
-        'signup.email' => 'required|email|nullable',
-        'signup.phone' => 'required',
-        'signup.gender' => 'required',
-        'signup.dob' => 'nullable',
-        'signup.address' => 'nullable',
-        'signup.city' => 'nullable',
-        'signup.postcode' => 'nullable',
-        'signup.state' => 'nullable',
-        'signup.country' => 'nullable',
+        'account.name' => 'required|string|max:255',
+        'account.email' => 'required|email|nullable',
+        'account.phone' => 'required',
+        'account.gender' => 'required',
+        'account.dob' => 'nullable',
+        'account.address' => 'nullable',
+        'account.city' => 'nullable',
+        'account.postcode' => 'nullable',
+        'account.state' => 'nullable',
+        'account.country' => 'nullable',
     ];
 
     protected $messages = [
-        'signup.email.email' => 'Invalid email address.',
+        'account.name.required' => 'Name is required.',
+        'account.name.string' => 'Invalid name',
+        'account.email.email' => 'Invalid email address.',
     ];
 
     /**
@@ -29,7 +32,7 @@ class Profile extends Component
      */
     public function mount()
     {
-        $this->signup->email = $this->signup->email ?? $this->signup->user->email;
+        //
     }
 
     /**
@@ -40,7 +43,8 @@ class Profile extends Component
         $this->resetValidation();
         $this->validate();
 
-        $this->signup->save();
+        $this->account->save();
+        
         $this->emitUp('next');
         $this->dispatchBrowserEvent('toast', ['message' => 'Profile Updated', 'type' => 'success']);
     }
