@@ -41,7 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function account()
     {
-        if (!enabled_module('signups')) return;
+        if (!enabled_module('accounts')) return;
 
         return $this->belongsTo(Account::class);
     }
@@ -88,7 +88,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
-            ->when(enabled_module('signups'), fn($q) => $q->whereHas('account', fn($q) => $q->search($search)))
+            ->when(enabled_module('accounts'), fn($q) => $q->whereHas('account', fn($q) => $q->search($search)))
         );
     }
 

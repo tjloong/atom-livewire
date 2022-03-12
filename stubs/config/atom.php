@@ -11,8 +11,11 @@ return [
         'linkedin',
     ],
 
-    'signups' => [
+    'accounts' => [
         'verify' => true,
+        'sidenavs' => [
+            'profile' => 'Profile',
+        ],
     ],
 
     'onboarding' => [
@@ -23,6 +26,14 @@ return [
 
     'users' => [
         'data_visibility' => true,
+    ],
+
+    'blogs' => [
+        'sidenavs' => [
+            'content' => 'Content',
+            'seo' => 'SEO',
+            'settings' => 'Settings',
+        ],
     ],
 
     'labels' => [
@@ -37,7 +48,7 @@ return [
     ],
 
     'site-settings' => [
-        'settings' => [
+        'sidenavs' => [
             //
         ],
     ],

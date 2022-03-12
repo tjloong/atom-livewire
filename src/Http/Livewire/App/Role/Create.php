@@ -24,7 +24,7 @@ class Create extends Component
      */
     public function saved($id)
     {
-        return redirect()->route('role.update', [$id]);
+        return redirect()->route('app.role.update', [$id]);
     }
 
     /**

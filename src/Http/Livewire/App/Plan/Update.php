@@ -29,7 +29,7 @@ class Update extends Component
 
         session()->flash('flash', 'Plan Deleted');
         
-        return redirect()->route('plan.listing');
+        return redirect()->route('app.plan.listing');
     }
 
     /**

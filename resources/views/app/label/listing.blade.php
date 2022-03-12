@@ -1,6 +1,6 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header title="Labels">
-        <x-button icon="plus" href="{{ route('label.create', compact('type')) }}">
+        <x-button icon="plus" href="{{ route('app.label.create', compact('type')) }}">
             New Label
         </x-button>
     </x-page-header>
@@ -9,7 +9,7 @@
         <div class="md:col-span-3">
             <x-sidenav>
                 @foreach ($types as $val)
-                    <x-sidenav item href="{{ route('label.listing', [$val]) }}">{{ Str::headline($val) }}</x-sidenav>
+                    <x-sidenav item href="{{ route('app.label.listing', [$val]) }}">{{ Str::headline($val) }}</x-sidenav>
                 @endforeach
             </x-sidenav>
         </div>
@@ -24,7 +24,7 @@
                                     <x-icon name="sort-alt-2"/>
                                 </div>
                             
-                                <a href="{{ route('label.update', [$label['id']]) }}" class="flex-grow py-2 px-4 hover:bg-gray-100">
+                                <a href="{{ route('app.label.update', [$label['id']]) }}" class="flex-grow py-2 px-4 hover:bg-gray-100">
                                     {{ $label['name'] }}
                                 </a>
                             </div>

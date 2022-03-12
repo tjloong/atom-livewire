@@ -14,7 +14,7 @@ class Index extends Component
     public function mount()
     {
         if (!$this->tab) {
-            return redirect()->route('site-settings', [
+            return redirect()->route('app.site-settings', [
                 head($this->tabs['general'] ?? $this->tabs['system'])
             ]);
         }
@@ -37,7 +37,7 @@ class Index extends Component
                     $settings->social()->count() ? 'social-media' : null,
                     $settings->whatsapp()->count() ? 'whatsapp-bubble' : null,
                 ], 
-                config('atom.site-settings.settings', [])
+                config('atom.site-settings.sidenavs', [])
             )),
             'system' => [
                 'email-configurations',
@@ -46,18 +46,6 @@ class Index extends Component
         ];
 
         return array_filter($tabs);
-    }
-
-    /**
-     * Get component name property
-     */
-    public function getComponentNameProperty()
-    {
-        $path = app_path('Http/Livewire/App/SiteSettings/Tabs/'.str()->studly($this->tab).'.php');
-
-        return file_exists($path)
-            ? 'app.site-settings.tabs.'.$this->tab
-            : 'atom.site-settings.tabs.'.$this->tab;
     }
 
     /**

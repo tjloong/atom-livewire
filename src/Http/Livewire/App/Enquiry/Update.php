@@ -3,11 +3,10 @@
 namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
 use Livewire\Component;
-use Jiannius\Atom\Models\Enquiry;
 
 class Update extends Component
 {
-    public Enquiry $enquiry;
+    public $enquiry;
 
     protected $rules = [
         'enquiry.remark' => 'nullable',
@@ -15,19 +14,18 @@ class Update extends Component
     ];
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
-    public function mount()
+    public function mount($id)
     {
+        $this->enquiry = model('enquiry')->findOrFail($id);
         breadcrumbs()->push($this->enquiry->name);
     }
 
     /**
-     * Save
+     * Submit
      */
-    public function save()
+    public function submit()
     {
         $this->enquiry->save();
         $this->dispatchBrowserEvent('toast', ['message' => 'Enquiry Updated', 'type' => 'success']);
@@ -40,7 +38,7 @@ class Update extends Component
     {
         $this->enquiry->delete();
         session()->flash('flash', 'Enquiry Deleted');
-        return redirect()->route('enquiry.listing');
+        return redirect()->route('app.enquiry.listing');
     }
 
     /**

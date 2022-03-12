@@ -9,8 +9,10 @@ class Index extends Component
     public $tab;
     public $tabs;
     public $account;
+    public $redirect;
 
     protected $listeners = ['next'];
+    protected $queryString = ['redirect'];
 
     /**
      * Mount
@@ -47,8 +49,16 @@ class Index extends Component
         if ($next) $this->tab = $next['value'];
         else {
             $this->account->onboard();
-            return redirect()->route('onboarding.completed');
+            return redirect($this->redirectTo());
         }
+    }
+
+    /**
+     * Redirect to
+     */
+    public function redirectTo()
+    {
+        return $this->redirect ?? route('onboarding.completed');
     }
 
     /**

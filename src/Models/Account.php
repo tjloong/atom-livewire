@@ -23,9 +23,9 @@ class Account extends Model
     ];
 
     /**
-     * Get user for account
+     * Get users for account
      */
-    public function user()
+    public function users()
     {
         return $this->hasMany(User::class);
     }

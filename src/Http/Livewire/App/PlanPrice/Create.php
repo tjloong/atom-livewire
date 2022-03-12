@@ -29,7 +29,7 @@ class Create extends Component
      */
     public function saved()
     {
-        return redirect()->route('plan.update', [$this->plan->id]);
+        return redirect()->route('app.plan.update', [$this->plan->id]);
     }
 
     /**

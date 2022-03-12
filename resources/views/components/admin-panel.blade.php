@@ -91,7 +91,7 @@
                     @isset($brand)
                         {{ $brand }}
                     @else    
-                        <a href="{{ route('dashboard') }}" class="flex-shrink-0 flex items-center gap-2">
+                        <a href="{{ route('app.dashboard') }}" class="flex-shrink-0 flex items-center gap-2">
                             <div class="w-8 h-8">
                                 <x-atom-logo small/>
                             </div>

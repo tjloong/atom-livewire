@@ -4,7 +4,6 @@ namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Jiannius\Atom\Models\Enquiry;
 
 class Listing extends Component
 {
@@ -34,7 +33,9 @@ class Listing extends Component
      */
     public function getEnquiriesProperty()
     {
-        return Enquiry::filter($this->filters)->orderBy($this->sortBy, $this->sortOrder);
+        return model('enquiry')
+            ->filter($this->filters)
+            ->orderBy($this->sortBy, $this->sortOrder);
     }
 
     /**

@@ -24,8 +24,9 @@
 @elseif ($attributes->has('dropdown-item'))
     <a {{ $attributes->merge([
         'class' => '
-            inline-flex items-center gap-2
-            py-1.5 text-sm text-gray-800 font-medium hover:text-theme md:px-3 md:hover:bg-gray-100
+            inline-flex items-center justify-center gap-2
+            py-1.5 text-sm text-gray-800 font-medium hover:text-theme 
+            md:px-3 md:hover:bg-gray-100 md:justify-start
         '
     ]) }}>
         @if ($icon = $attributes->get('icon'))
@@ -104,7 +105,7 @@
                                 <x-slot name="dropdown">
                                     <div class="grid divide-y gap-3">
                                         <div class="grid">
-                                            <x-builder.navbar dropdown-item href="{{ route('user.home') }}" icon="user-pin">
+                                            <x-builder.navbar dropdown-item href="{{ route('account.home') }}" icon="user-pin">
                                                 Account
                                             </x-builder.navbar>
 
@@ -139,7 +140,7 @@
                             <div class="flex items-center gap-3">
                                 <x-builder.navbar item href="{{ route('login') }}">Login</x-builder.navbar>
 
-                                @module('signups')
+                                @module('accounts')
                                     <x-button href="{{ route('register', ['ref' => 'navbar']) }}">
                                         Register
                                     </x-button>
@@ -166,7 +167,7 @@
                                         </div>
 
                                         <div class="grid text-sm mt-2">
-                                            <x-builder.navbar dropdown-item href="{{ route('user.home') }}" icon="user-pin">
+                                            <x-builder.navbar dropdown-item href="{{ route('account.home') }}" icon="user-pin">
                                                 Account
                                             </x-builder.navbar>
 
@@ -195,7 +196,7 @@
                                     @else
                                         <div class="flex items-center justify-center gap-3 text-sm">
                                             <x-button color="gray" href="{{ route('login') }}">Login</x-button>
-                                            @module('signups')
+                                            @module('accounts')
                                                 <x-button href="{{ route('register', ['ref' => 'navbar']) }}">Register</x-button>
                                             @endmodule
                                         </div>

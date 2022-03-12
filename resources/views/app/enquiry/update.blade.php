@@ -10,7 +10,7 @@
         </x-button>
     </x-page-header>
 
-    <form wire:submit.prevent="save">
+    <form wire:submit.prevent="submit">
         <x-box>
             <div class="p-5">
                 <x-input.field>

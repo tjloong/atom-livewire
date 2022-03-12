@@ -1,13 +1,13 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header title="Plans">
-        <x-button icon="plus" href="{{ route('plan.create') }}">
+        <x-button icon="plus" href="{{ route('app.plan.create') }}">
             New Plan
         </x-button>
     </x-page-header>
 
     <div class="grid gap-4 md:grid-cols-3">
         @forelse ($plans as $plan)
-            <a href="{{ route('plan.update', [$plan->id]) }}">
+            <a href="{{ route('app.plan.update', [$plan->id]) }}">
                 <x-box class="hover:border-theme">
                     <div class="p-4 grid gap-2">
                         <div class="flex justify-between gap-2">

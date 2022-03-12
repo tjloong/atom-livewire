@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\App\Blog;
 
 use Livewire\Component;
-use Jiannius\Atom\Models\Blog;
 
 class Create extends Component
 {
@@ -16,8 +15,8 @@ class Create extends Component
      */
     public function mount()
     {
+        $this->blog = model('blog');
         breadcrumbs()->push('Create Blog');
-        $this->blog = new Blog();
     }
 
     /**
@@ -26,7 +25,7 @@ class Create extends Component
     public function saved($id)
     {
         session()->flash('flash', 'Blog created::success');
-        return redirect()->route('blog.update', [$id]);
+        return redirect()->route('app.blog.update', [$id]);
     }
 
     /**

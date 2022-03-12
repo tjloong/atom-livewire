@@ -4,7 +4,6 @@ namespace Jiannius\Atom\Http\Livewire\App\Blog;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Jiannius\Atom\Models\Blog;
 
 class Listing extends Component
 {
@@ -37,7 +36,9 @@ class Listing extends Component
      */
     public function getBlogsProperty()
     {
-        return Blog::filter($this->filters)->orderBy($this->sortBy, $this->sortOrder);
+        return model('blog')
+            ->filter($this->filters)
+            ->orderBy($this->sortBy, $this->sortOrder);
     }
 
     /**

@@ -8,11 +8,11 @@ if (!config('atom.static_site')) {
     define_route('forgot-password', 'Auth\\ForgotPassword')->middleware('guest')->name('password.forgot');
     define_route('reset-password', 'Auth\\ResetPassword')->name('password.reset');
 
-    if (enabled_module('signups')) {
+    if (enabled_module('accounts')) {
         define_route('register', 'Auth\\Register')->middleware('guest')->name('register');
     }
 
-    if (config('atom.signups.verify')) {
+    if (config('atom.accounts.verify')) {
         Route::middleware('auth')->group(function () {
             define_route('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
                 $request->fulfill();

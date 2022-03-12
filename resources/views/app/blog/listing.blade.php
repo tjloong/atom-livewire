@@ -1,6 +1,6 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Blogs">
-        <x-button icon="plus" href="{{ route('blog.create') }}">
+        <x-button icon="plus" href="{{ route('app.blog.create') }}">
             New Blog
         </x-button>
     </x-page-header>
@@ -26,7 +26,7 @@
             <x-table row>
                 <x-table cell class="max-w-xs">
                     <div class="grid">
-                        <a href="{{ route('blog.update', [$blog->id]) }}" class="truncate">
+                        <a href="{{ route('app.blog.update', [$blog->id]) }}" class="truncate">
                             {{ $blog->title }}
                         </a>
                     </div>

@@ -1,18 +1,26 @@
-<div {{ $attributes->class([
-    'p-4 rounded-md flex space-x-2',
-    $color->bg,
-]) }}>
-    <x-icon name="{{ $icon }}" class="{{ $color->icon }} flex-shrink-0"/>
-    
-    <div class="self-center flex-grow">
-        @isset($title)
-            <div class="{{ $color->title }} font-semibold mb-1.5">
-                {{ $title }}
+@if ($errors)
+    <div {{ $attributes->class(['p-4 rounded-md grid gap-1', $color->bg])->except('errors') }}>
+        @foreach ($errors as $error)
+            <div class="flex items-center gap-2">
+                <x-icon :name="$icon" class="{{ $color->icon }} flex-shrink-0" size="20px"/>
+                <div class="{{ $color->text }} font-medium">{{ $error }}</div>
             </div>
-        @endisset
+        @endforeach
+    </div>
+@else
+    <div {{ $attributes->class(['p-4 rounded-md flex gap-2', $color->bg])->except('errors') }}>
+        <x-icon name="{{ $icon }}" class="{{ $color->icon }} flex-shrink-0"/>
+        
+        <div class="self-center flex-grow">
+            @isset($title)
+                <div class="{{ $color->title }} font-semibold mb-1.5">
+                    {{ $title }}
+                </div>
+            @endisset
 
-        <div class="{{ $color->text }} font-medium">
-            {{ $slot }}
+            <div class="{{ $color->text }} font-medium">
+                {{ $slot }}
+            </div>
         </div>
     </div>
-</div>
+@endif

@@ -44,7 +44,7 @@ class Update extends Component
         else {
             $this->role->delete();
             session()->flash('flash', 'Role deleted');
-            return redirect()->route('role.listing');
+            return redirect()->route('app.role.listing');
         }
     }
 

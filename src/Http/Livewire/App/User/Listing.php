@@ -35,7 +35,7 @@ class Listing extends Component
     {
         return model('user')
             ->when(!auth()->user()->is_root, fn($q) => $q->where('is_root', false))
-            ->when(enabled_module('signups'), fn($q) => $q->doesntHave('account'))
+            ->when(enabled_module('accounts'), fn($q) => $q->doesntHave('account'))
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
     }

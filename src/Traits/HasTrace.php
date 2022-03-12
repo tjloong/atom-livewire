@@ -19,7 +19,7 @@ trait HasTrace
         static::creating(function ($model) {
             $table = $model->getTable();
 
-            if (auth()->hasUser()) {
+            if (auth()->id()) {
                 if (Schema::hasColumn($table, 'owned_by')) $model->owned_by = auth()->id();
                 if (Schema::hasColumn($table, 'created_by')) $model->created_by = auth()->id();
             }
@@ -28,7 +28,7 @@ trait HasTrace
         static::updating(function ($model) {
             $table = $model->getTable();
 
-            if (auth()->hasUser() && Schema::hasColumn($table, 'owned_by') && !$model->owned_by) {
+            if (auth()->id() && Schema::hasColumn($table, 'owned_by') && !$model->owned_by) {
                 $model->owned_by = $model->created_by;
             }
         });
@@ -36,7 +36,7 @@ trait HasTrace
         static::deleted(function ($model) {
             $table = $model->getTable();
 
-            if (auth()->hasUser() && Schema::hasColumn($table, 'deleted_by') && $model->exists) {
+            if (auth()->id() && Schema::hasColumn($table, 'deleted_by') && $model->exists) {
                 $model->deleted_by = auth()->id();
                 $model->save();
             }

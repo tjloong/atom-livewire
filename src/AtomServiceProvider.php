@@ -169,9 +169,6 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.web.blog', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Blog');
         Livewire::component('atom.web.contact', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Contact');
 
-        // dashboard
-        Livewire::component('atom.dashboard', 'Jiannius\\Atom\\Http\\Livewire\\App\\Dashboard');
-
         // auth portal
         Livewire::component('atom.auth.login', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\Login');
         Livewire::component('atom.auth.register', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\Register');
@@ -180,8 +177,8 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.auth.forgot-password', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\ForgotPassword');
 
         // user portal
-        Livewire::component('atom.user.authentication.profile', 'Jiannius\\Atom\\Http\\Livewire\\User\\Authentication\\Profile');
-        Livewire::component('atom.user.authentication.password', 'Jiannius\\Atom\\Http\\Livewire\\User\\Authentication\\Password');
+        Livewire::component('atom.account.authentication.profile', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Profile');
+        Livewire::component('atom.account.authentication.password', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Password');
 
         // onboarding portal
         Livewire::component('atom.onboarding', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Index');
@@ -191,29 +188,32 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.billing', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Index');
         Livewire::component('atom.billing.plans', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Plans');
         Livewire::component('atom.billing.subscriptions', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Subscriptions');
-        
+
+        // ticket portal
+        Livewire::component('atom.ticketing.listing', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Listing');
+        Livewire::component('atom.ticketing.create', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Create');
+        Livewire::component('atom.ticketing.update', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Update');
+        Livewire::component('atom.ticketing.comments', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Comments');
+
+        // dashboard
+        Livewire::component('atom.dashboard', 'Jiannius\\Atom\\Http\\Livewire\\App\\Dashboard');
+
         // blog
-        Livewire::component('atom.blog.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Create');
-        Livewire::component('atom.blog.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Listing');
-        Livewire::component('atom.blog.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Update');
-        Livewire::component('atom.blog.form.content', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Form\\Content');
-        Livewire::component('atom.blog.form.seo', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Form\\Seo');
-        Livewire::component('atom.blog.form.settings', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Form\\Settings');
+        Livewire::component('atom.app.blog.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Create');
+        Livewire::component('atom.app.blog.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Listing');
+        Livewire::component('atom.app.blog.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Update\\Index');
+        Livewire::component('atom.app.blog.update.content', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Update\\Content');
+        Livewire::component('atom.app.blog.update.seo', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Update\\Seo');
+        Livewire::component('atom.app.blog.update.settings', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Update\\Settings');
 
         // enquiry
-        Livewire::component('atom.enquiry.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Enquiry\\Listing');
-        Livewire::component('atom.enquiry.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Enquiry\\Update');
-
-        // ticket
-        Livewire::component('atom.ticket.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Ticket\\Listing');
-        Livewire::component('atom.ticket.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Ticket\\Create');
-        Livewire::component('atom.ticket.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Ticket\\Update');
-        Livewire::component('atom.ticket.comments', 'Jiannius\\Atom\\Http\\Livewire\\App\\Ticket\\Comments');
+        Livewire::component('atom.app.enquiry.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Enquiry\\Listing');
+        Livewire::component('atom.app.enquiry.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Enquiry\\Update');
 
         // page
-        Livewire::component('atom.page.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Listing');
-        Livewire::component('atom.page.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Update');
-        Livewire::component('atom.page.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Form');
+        Livewire::component('atom.app.page.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Listing');
+        Livewire::component('atom.app.page.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Update\\Index');
+        Livewire::component('atom.app.page.update.content', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Update\\Content');
 
         // plan
         Livewire::component('atom.plan.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Plan\\Listing');
@@ -242,8 +242,9 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.permission.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Permission\\Listing');
 
         // account
-        Livewire::component('atom.account.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Listing');
-        Livewire::component('atom.account.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Update');
+        Livewire::component('atom.app.account.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Listing');
+        Livewire::component('atom.app.account.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Update\\Index');
+        Livewire::component('atom.app.account.update.profile', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Update\\Profile');
 
         // team
         Livewire::component('atom.team.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Listing');
@@ -389,14 +390,16 @@ class AtomServiceProvider extends ServiceProvider
             'app/team', 
             'app/blog', 
             'app/enquiry', 
-            'app/ticket',
             'app/plan',
-            'auth',
             'web',
+            'auth',
+            'account',
+            'ticketing',
+            'onboarding',
         ] as $module) {
             $this->publishes([
                 __DIR__.'/../resources/views/'.$module => resource_path('views/vendor/atom/'.$module),
-            ], 'atom-views-'.(str_replace('app/', '', $module)));
+            ], 'atom-views-'.(str_replace('app/', 'app-', $module)));
         }
     }
 

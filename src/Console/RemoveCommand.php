@@ -15,12 +15,12 @@ class RemoveCommand extends Command
     protected $modules = [
         'roles',
         'permissions',
-        'signups',
+        'accounts',
         'pages',
         'teams',
         'blogs',
         'enquiries',
-        'tickets',
+        'ticketing',
         'plans',
     ];
 
@@ -101,12 +101,12 @@ class RemoveCommand extends Command
     }
 
     /**
-     * Remvoe tickets
+     * Remvoe ticketing
      */
-    private function removeTickets()
+    private function removeTicketing()
     {
         $this->newLine();
-        $this->info('Removing tickets...');
+        $this->info('Removing ticketing module...');
 
         Schema::dropIfExists('tickets_comments');
         $this->line('Dropped tickets_comments table.');
@@ -197,12 +197,12 @@ class RemoveCommand extends Command
     }
 
     /**
-     * Remove signups
+     * Remove accounts
      */
-    private function removeSignups()
+    private function removeAccounts()
     {
         $this->newLine();
-        $this->info('Removing signups module...');
+        $this->info('Removing accounts module...');
 
         Schema::dropIfExists('accounts_subscriptions');
         $this->line('Dropped accounts_subscriptions table.');

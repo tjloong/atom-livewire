@@ -4,7 +4,6 @@ namespace Jiannius\Atom\Http\Livewire\App\Page;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Jiannius\Atom\Models\Page;
 
 class Listing extends Component
 {
@@ -34,7 +33,9 @@ class Listing extends Component
      */
     public function getPagesProperty()
     {
-        return Page::filter($this->filters)->orderBy($this->sortBy, $this->sortOrder);
+        return model('page')
+            ->filter($this->filters)
+            ->orderBy($this->sortBy, $this->sortOrder);
     }
 
     /**

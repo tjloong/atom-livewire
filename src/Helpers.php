@@ -9,11 +9,15 @@ use Jiannius\Atom\Services\Metadata;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
- * Get home route
+ * Get app route
  */
-function home()
+function app_route()
 {
-    if (Route::has('app.home')) return route('app.home');
+    if (auth()->check()) {
+        if (auth()->user()->canAccessAppPortal() && Route::has('app.home')) return route('app.home');
+        
+        return route('account.home');
+    }
 
     return route('home');
 }
@@ -28,8 +32,18 @@ function get_livewire_component($name, $path = null)
     $dotted = implode('.', explode('/', $path));
     $backslashed = implode('\\', collect(explode('/', $path))->map(fn($str) => str($str)->studly())->values()->all());
 
-    if (class_exists('App\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly())) return "app.{$dotted}.{$name}";
-    else if (class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly())) return "atom.{$dotted}.{$name}";
+    if (
+        class_exists('App\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly())
+        || class_exists('App\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly().'\\Index')
+    ) {
+        return "{$dotted}.{$name}";
+    }
+    else if (
+        class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly())
+        || class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly().'\\Index')
+    ) {
+        return "atom.{$dotted}.{$name}";
+    }
 }
 
 /**

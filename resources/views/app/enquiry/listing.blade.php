@@ -20,7 +20,7 @@
                     </div>
                 </x-table>
                 <x-table cell>
-                    <a href="{{ route('enquiry.update', [$enquiry]) }}">
+                    <a href="{{ route('app.enquiry.update', [$enquiry]) }}">
                         {{ $enquiry->name }}
                     </a>
                 </x-table>

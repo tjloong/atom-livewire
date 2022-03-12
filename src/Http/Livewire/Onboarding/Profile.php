@@ -54,6 +54,6 @@ class Profile extends Component
      */
     public function render()
     {
-        return view('atom::onboarding.profile', ['countries' => metadata()->countries()]);
+        return view('atom::onboarding.profile');
     }
 }

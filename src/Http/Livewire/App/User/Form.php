@@ -127,7 +127,7 @@ class Form extends Component
         $this->validate();
 
         $verify = $this->user->exists 
-            && config('atom.signups.verify')
+            && config('atom.accounts.verify')
             && $this->form['email'] !== $this->user->email;
 
         $this->persist();        

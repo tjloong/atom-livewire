@@ -68,7 +68,7 @@ class Form extends Component
 
         session()->flash('flash', 'Role Duplicated::success');
 
-        return redirect()->route('role.update', [$newrole->id]);
+        return redirect()->route('app.role.update', [$newrole->id]);
     }
 
     /**

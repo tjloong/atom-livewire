@@ -51,7 +51,7 @@ class Update extends Component
         
         session()->flash('flash', 'Team Deleted');
 
-        return redirect()->route('team.listing');
+        return redirect()->route('app.team.listing');
     }
 
     /**
@@ -61,7 +61,7 @@ class Update extends Component
     {
         return model('user')
             ->when($text, fn($q) => $q->search($text))
-            ->when(enabled_module('signups'), fn($q) => $q->doesntHave('account'))
+            ->when(enabled_module('accounts'), fn($q) => $q->doesntHave('account'))
             ->whereDoesntHave('teams', fn($q) => $q->where('teams.id', $this->team->id))
             ->paginate(30, ['*'], 'page', $page)
             ->toArray();

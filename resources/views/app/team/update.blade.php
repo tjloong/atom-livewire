@@ -46,7 +46,7 @@
             <div class="grid divide-y">
                 @forelse($users as $user)
                     <div class="py-2 px-4 flex gap-2 hover:bg-gray-100">
-                        <a href="{{ route('user.update', [$user]) }}" class="text-gray-800 flex-grow">
+                        <a href="{{ route('app.user.update', [$user]) }}" class="text-gray-800 flex-grow">
                             <div class="font-semibold">
                                 {{ $user->name }}
                             </div>

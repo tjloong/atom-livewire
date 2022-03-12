@@ -12,6 +12,7 @@ class Register extends Component
     public $plan;
     public $user;
     public $account;
+    public $redirect;
 
     public $form = [
         'agree_tnc' => false,
@@ -38,14 +39,15 @@ class Register extends Component
         'form.agree_tnc.accepted' => 'Please accept the terms and conditions to proceed.',
     ];
 
+    protected $queryString = ['ref', 'redirect'];
+
     /**
      * Mount
      */
     public function mount()
     {
-        if (!request()->query('ref')) return redirect('/');
+        if (!$this->ref) return redirect('/');
 
-        $this->ref = request()->query('ref');
         $this->plan = request()->query('plan');
     }
 
@@ -57,7 +59,7 @@ class Register extends Component
         $this->resetValidation();
         $this->validate();
 
-        if (enabled_module('signups')) {
+        if (enabled_module('accounts')) {
             $this->createAccount();
             $this->accountMetadata();
         }
@@ -118,7 +120,7 @@ class Register extends Component
      */
     public function registered()
     {
-        if (config('atom.signups.verify')) {
+        if (config('atom.accounts.verify')) {
             $this->user->sendEmailVerificationNotification();
         }
 
@@ -137,7 +139,10 @@ class Register extends Component
             return route('billing', ['plan' => $this->plan]);
         }
 
-        return route('onboarding');
+        return route('onboarding', $this->redirect
+            ? ['redirect' => $this->redirect]
+            : []
+        );
     }
 
     /**

@@ -12,7 +12,7 @@
         @foreach ($pages as $page)
             <x-table row>
                 <x-table cell>
-                    <a href="{{ route('page.update', [$page]) }}">
+                    <a href="{{ route('app.page.update', [$page]) }}">
                         {{ $page->name }}
                     </a>
                 </x-table>

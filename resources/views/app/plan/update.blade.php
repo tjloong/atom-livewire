@@ -20,7 +20,7 @@
     
                     @if ($plan->prices->count())
                         <div>
-                            <x-button href="{{ route('plan-price.create', [$plan->id]) }}" icon="plus" size="xs" color="gray">
+                            <x-button href="{{ route('app.plan-price.create', [$plan->id]) }}" icon="plus" size="xs" color="gray">
                                 New Price
                             </x-button>
                         </div>
@@ -30,7 +30,7 @@
     
             <div class="grid divide-y">
                 @forelse ($plan->prices as $price)
-                    <a href="{{ route('plan-price.update', [$price->id]) }}" class="py-2 px-4 text-gray-800 hover:bg-gray-100">
+                    <a href="{{ route('app.plan-price.update', [$price->id]) }}" class="py-2 px-4 text-gray-800 hover:bg-gray-100">
                         <div class="flex items-start justify-between">
                             <div class="grid gap-1">
                                 <div class="flex items-center gap-1 text-base">
@@ -51,7 +51,7 @@
                     </a>
                 @empty
                     <x-empty-state title="No prices found" subtitle="No price defined for this plan">
-                        <x-button href="{{ route('plan-price.create', [$plan->id]) }}" icon="plus">
+                        <x-button href="{{ route('app.plan-price.create', [$plan->id]) }}" icon="plus">
                             Create Price
                         </x-button>
                     </x-empty-state>

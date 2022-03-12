@@ -11,23 +11,27 @@
         </x-slot>
 
         <x-slot name="aside">
-            <x-admin-panel aside icon="edit-alt" route="blog.listing" can="blogs.view" :active="str()->is('blog.*', current_route())">
+            <x-admin-panel aside icon="home-smile" route="app.dashboard">
+                Dashboard
+            </x-admin-panel>
+
+            <x-admin-panel aside icon="edit-alt" route="app.blog.listing" can="blogs.view" :active="str()->is('app.blog.*', current_route())">
                 Blogs
             </x-admin-panel>
 
-            <x-admin-panel aside icon="paper-plane" route="enquiry.listing" can="enquiries.manage" :active="str()->is('enquiry.*', current_route())">
+            <x-admin-panel aside icon="paper-plane" route="app.enquiry.listing" can="enquiries.manage" :active="str()->is('app.enquiry.*', current_route())">
                 Enquiries
             </x-admin-panel>
 
-            <x-admin-panel aside icon="file" route="page.listing" can="pages.manage" :active="str()->is('page.*', current_route())">
+            <x-admin-panel aside icon="file" route="app.page.listing" can="pages.manage" :active="str()->is('app.page.*', current_route())">
                 Pages
             </x-admin-panel>
 
-            <x-admin-panel aside icon="food-menu" route="plan.listing" can="plan.manage" :active="str()->is('plan.*', current_route())">
+            <x-admin-panel aside icon="food-menu" route="app.plan.listing" can="plan.manage" :active="str()->is('app.plan.*', current_route())">
                 Plans
             </x-admin-panel>
 
-            <x-admin-panel aside icon="user-plus" route="account.listing" can="account.manage" :active="str()->is('account.*', current_route())">
+            <x-admin-panel aside icon="user-plus" route="app.account.listing" can="account.manage" :active="str()->is('app.account.*', current_route())">
                 Accounts
             </x-admin-panel>
 
@@ -39,27 +43,27 @@
                 Settings
 
                 <x-slot name="subitems">
-                    <x-admin-panel aside route="role.listing" can="roles.manage" :active="str()->is('role.*', current_route())">
+                    <x-admin-panel aside route="app.role.listing" can="roles.manage" :active="str()->is('app.role.*', current_route())">
                         Roles
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="user.listing" can="users.manage" :active="str()->is('user.*', current_route()) && current_route() !== 'user.home'">
+                    <x-admin-panel aside route="app.user.listing" can="users.manage" :active="str()->is('app.user.*', current_route())">
                         Users
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="team.listing" can="teams.manage" :active="str()->is('team.*', current_route())">
+                    <x-admin-panel aside route="app.team.listing" can="teams.manage" :active="str()->is('app.team.*', current_route())">
                         Teams
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="label.listing" can="labels.manage" :active="str()->is('label.*', current_route())">
+                    <x-admin-panel aside route="app.label.listing" can="labels.manage" :active="str()->is('app.label.*', current_route())">
                         Labels
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="files">
+                    <x-admin-panel aside route="app.files">
                         Files
                     </x-admin-panel>
 
-                    <x-admin-panel aside route="site-settings">
+                    <x-admin-panel aside route="app.site-settings">
                         Site Settings
                     </x-admin-panel>
                 </x-slot>

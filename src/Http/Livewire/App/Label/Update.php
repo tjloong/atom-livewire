@@ -47,7 +47,7 @@ class Update extends Component
 
         session()->flash('flash', 'Label Deleted');
         
-        return redirect()->route('label.listing', [$this->label->type]);
+        return redirect()->route('app.label.listing', [$this->label->type]);
     }
 
     /**

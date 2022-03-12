@@ -7,7 +7,7 @@
                     <x-sidenav :group="$group">
                         @foreach ($items as $key => $item)
                             <x-sidenav item
-                                href="{{ route('site-settings', [is_numeric($key) ? $item : $key]) }}"
+                                href="{{ route('app.site-settings', [is_numeric($key) ? $item : $key]) }}"
                             >
                                 {{ str($item)->headline() }}
                             </x-sidenav>

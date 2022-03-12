@@ -37,7 +37,7 @@ class Update extends Component
      */
     public function delete()
     {
-        if (enabled_module('signups') && $this->price->accounts->count()) {
+        if (enabled_module('accounts') && $this->price->accounts->count()) {
             $this->dispatchBrowserEvent('alert', ['message' => 'There are subscribers under this plan price.', 'type' => 'error']);
         }
         else {
@@ -45,7 +45,7 @@ class Update extends Component
 
             session()->flash('flash', 'Plan Price Deleted');
 
-            return redirect()->route('plan.update', [$this->plan->id]);
+            return redirect()->route('app.plan.update', [$this->plan->id]);
         }
     }
 

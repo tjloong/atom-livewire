@@ -1,6 +1,6 @@
 <div class="max-w-screen-md mx-auto">
     <x-page-header title="Users">
-        <x-button icon="plus" href="{{ route('user.create') }}">
+        <x-button icon="plus" href="{{ route('app.user.create') }}">
             New User
         </x-button>
     </x-page-header>
@@ -26,7 +26,7 @@
                                 <span class="text-xs text-gray-500">(You)</span>
                             </div>
                         @else
-                            <a href="{{ route('user.update', [$user->id]) }}">
+                            <a href="{{ route('app.user.update', [$user->id]) }}">
                                 {{ $user->name }}
                             </a>
                             <div class="text-xs text-gray-500">

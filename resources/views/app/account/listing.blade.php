@@ -1,5 +1,5 @@
 <div class="max-w-screen-xl mx-auto">
-    <x-page-header title="Accounts"/>
+    <x-page-header :title="$title"/>
 
     <x-table :total="$users->total()" :links="$users->links()" export>
         <x-slot name="head">
@@ -23,7 +23,7 @@
                     </x-table>
 
                     <x-table cell>
-                        <a href="{{ route('account.update', [$user->id]) }}">
+                        <a href="{{ route('app.account.update', [$user->id]) }}">
                             {{ $user->name }}
                         </a>
                     </x-table>

@@ -25,7 +25,7 @@ class Create extends Component
     public function saved()
     {
         session()->flash('flash', 'Team Created::success');
-        return redirect()->route('team.listing');
+        return redirect()->route('app.team.listing');
     }
 
     /**

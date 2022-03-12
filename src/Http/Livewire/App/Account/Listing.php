@@ -9,6 +9,7 @@ class Listing extends Component
 {
     use WithPagination;
 
+    public $title = 'Accounts';
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
     public $filters = ['search' => ''];
@@ -25,7 +26,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        breadcrumbs()->home('Accounts');
+        breadcrumbs()->home($this->title);
     }
 
     /**

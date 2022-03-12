@@ -1,6 +1,6 @@
 <div class="max-w-screen-md mx-auto">
     <x-page-header title="Teams">
-        <x-button icon="plus" href="{{ route('team.create') }}">
+        <x-button icon="plus" href="{{ route('app.team.create') }}">
             New Team
         </x-button>
     </x-page-header>
@@ -15,7 +15,7 @@
             @foreach ($teams as $team)
                 <x-table row>
                     <x-table cell>
-                        <a href="{{ route('team.update', [$team->id]) }}">
+                        <a href="{{ route('app.team.update', [$team->id]) }}">
                             {{ $team->name }}
                         </a>
                         <div class="font-medium text-gray-500">

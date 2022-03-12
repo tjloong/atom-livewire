@@ -36,7 +36,7 @@ class Update extends Component
 
         session()->flash('flash', 'User deleted');
 
-        return redirect()->route('user.listing');
+        return redirect()->route('app.user.listing');
     }
 
     /**

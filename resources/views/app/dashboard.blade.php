@@ -44,21 +44,21 @@
     <div class="grid gap-6 md:grid-cols-4">
         @if ($blogs)
             <x-stat-box title="Total Articles">
-                {{ $blogs->count }}
+                {{ $blogs['count'] }}
             </x-stat-box>
 
             <x-stat-box title="Total Published">
-                {{ $blogs->published }}
+                {{ $blogs['published'] }}
             </x-stat-box>
         @endif
 
         @if ($enquiries)
             <x-stat-box title="Total Enquiries">
-                {{ $enquiries->count }}
+                {{ $enquiries['count'] }}
             </x-stat-box>
 
             <x-stat-box title="Pending Enquiries">
-                {{ $enquiries->pending }}
+                {{ $enquiries['pending'] }}
             </x-stat-box>
         @endif
     </div>

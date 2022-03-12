@@ -14,7 +14,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        if (!$this->type) return redirect()->route('label.listing', [$this->types[0]]);
+        if (!$this->type) return redirect()->route('app.label.listing', [$this->types[0]]);
 
         $this->labels = $this->getLabels();
 

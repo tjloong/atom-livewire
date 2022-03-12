@@ -9,15 +9,19 @@ class Alert extends Component
     public $type;
     public $icon;
     public $color;
+    public $errors;
 
     /**
      * Contructor
      * 
      * @return void
      */
-    public function __construct($type = 'info')
-    {
-        $this->type = $type;
+    public function __construct(
+        $type = 'info',
+        $errors = null,
+    ) {
+        $this->errors = $errors;
+        $this->type = $errors ? 'error' : $type;
         $this->icon = $this->getIcon();
         $this->color = $this->getColor();
     }

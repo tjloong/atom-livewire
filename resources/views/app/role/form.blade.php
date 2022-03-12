@@ -9,7 +9,7 @@
                 <div class="flex items-center gap-1">
                     <x-icon name="info-circle" size="16px" class="text-gray-400"/>
                     @if ($count > 0)
-                        <a href="{{ route('user.listing', ['filters' => ['role' => $role->id]]) }}" class="text-xs font-medium">
+                        <a href="{{ route('app.user.listing', ['filters' => ['role' => $role->id]]) }}" class="text-xs font-medium">
                             {{ $count }} {{ str('user')->plural($count)}} assigned to this role.
                         </a>
                     @else

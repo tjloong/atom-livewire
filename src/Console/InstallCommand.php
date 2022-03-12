@@ -37,13 +37,13 @@ class InstallCommand extends Command
         'base',
         'roles',
         'permissions',
-        'signups',
+        'accounts',
         'taxes',
         'pages',
         'teams',
         'blogs',
         'enquiries',
-        'tickets',
+        'ticketing',
         'plans',
     ];
 
@@ -305,12 +305,12 @@ class InstallCommand extends Command
     }
 
     /**
-     * Install tickets
+     * Install ticketing
      */
-    private function installTickets()
+    private function installTicketing()
     {
         $this->newLine();
-        $this->info('Installing tickets...');
+        $this->info('Installing ticketing module...');
 
         if (Schema::hasTable('tickets')) $this->warn('tickets table exists, skipped.');
         else {
@@ -321,9 +321,7 @@ class InstallCommand extends Command
                 $table->longText('description')->nullable();
                 $table->string('status')->nullable();
                 $table->timestamps();
-                $table->unsignedBigInteger('created_by')->nullable();
-    
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
             });
 
             $this->line('tickets table created successfully.');
@@ -334,12 +332,9 @@ class InstallCommand extends Command
             Schema::create('tickets_comments', function($table) {
                 $table->id();
                 $table->text('body')->nullable();
-                $table->unsignedBigInteger('ticket_id')->nullable();
+                $table->foreignId('ticket_id')->nullable()->constrained()->onDelete('cascade');
                 $table->timestamps();
-                $table->unsignedBigInteger('created_by')->nullable();
-
-                $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
             });
 
             $this->line('tickets_comments table created successfully.');
@@ -546,12 +541,12 @@ class InstallCommand extends Command
     }
 
     /**
-     * Install signups
+     * Install accounts
      */
-    private function installSignups()
+    private function installAccounts()
     {
         $this->newLine();
-        $this->info('Installing signups module...');
+        $this->info('Installing accounts module...');
 
         if (Schema::hasTable('accounts')) $this->warn('accounts table exists, skipped.');
         else {
