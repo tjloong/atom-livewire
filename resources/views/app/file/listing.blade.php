@@ -104,7 +104,7 @@
                     {{ $file->name }}
                 </div>
                 
-                <div class="text-xs font-semibold text-gray-500 capitalize mb-1.5">
+                <div class="text-sm font-semibold text-gray-500 capitalize mb-1.5">
                     {{ $file->type }}
                 </div>
             </div>

@@ -6,6 +6,7 @@ use Illuminate\View\Component;
 
 class Navbar extends Component
 {
+    public $lang;
     public $align;
     public $sticky;
     public $showAuth;
@@ -20,8 +21,10 @@ class Navbar extends Component
         $align = 'left',
         $sticky = false,
         $showAuth = true,
-        $registerPlaceholder = 'Sign Up'
+        $registerPlaceholder = 'Sign Up',
+        $lang = null
     ) {
+        $this->lang = $lang;
         $this->align = $align;
         $this->sticky = $sticky;
         $this->showAuth = $showAuth;

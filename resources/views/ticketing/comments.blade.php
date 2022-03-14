@@ -6,7 +6,7 @@
             @foreach ($comments as $comment)
                 <div class="p-4 grid gap-2">
                     <div class="flex items-center justify-between gap-4">
-                        <div class="text-xs font-medium">
+                        <div class="text-sm font-medium">
                             {{ $comment->created_by_user->name }} - <span class="text-gray-400">{{ format_date($comment->created_at, 'datetime') }}</span>
                         </div>
 

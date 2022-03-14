@@ -16,7 +16,7 @@
                                 <div 
                                     x-bind:class="recurring === '{{ $prc['recurring'] }}' ? 'bg-theme-dark text-white font-semibold' : 'cursor-pointer bg-gray-200'"
                                     x-on:click="recurring = '{{ $prc['recurring'] }}'"
-                                    class="text-xs py-1 px-2 rounded"
+                                    class="text-sm py-1 px-2 rounded"
                                 >
                                     {{ $prc['recurring'] }}
                                 </div>

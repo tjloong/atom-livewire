@@ -12,7 +12,7 @@
                     <div class="p-4 grid gap-2">
                         <div class="flex justify-between gap-2">
                             <div>
-                                <div class="text-base font-semibold">{{ $plan->name }}</div>
+                                <div class="font-semibold">{{ $plan->name }}</div>
                                 @if ($plan->trial)
                                     <div class="text-sm font-medium text-gray-500">{{ $plan->trial }} Days Trial</div>
                                 @endif

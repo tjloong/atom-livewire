@@ -5,7 +5,7 @@
 
     @if ($attributes->has('transparent'))
         <div class="relative" x-data>
-            <input type="text" x-ref="input" class="w-full text-sm border-0 p-0 pr-10 focus:ring-0" {{ $attributes }}>
+            <input type="text" x-ref="input" class="w-full border-0 p-0 pr-10 focus:ring-0" {{ $attributes }}>
             <a class="absolute top-0 right-0 bottom-0 flex justify-center items-center text-gray-400" x-on:click.prevent="$refs.input.select()">
                 <x-icon name="pencil" size="18px"/>
             </a>

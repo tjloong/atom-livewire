@@ -44,7 +44,7 @@
                                 x-model="text"
                                 x-on:input.debounce="fetch()"
                                 type="text"
-                                class="text-sm leading-tight w-full appearance-none bg-transparent p-0 border-0 focus:ring-0"
+                                class="leading-tight w-full appearance-none bg-transparent p-0 border-0 focus:ring-0"
                                 placeholder="Search"
                             >
                             <template x-if="text">
@@ -60,7 +60,7 @@
                             <div>
                                 <div class="mb-4">
                                     <template x-for="opt in options" x-bind:key="opt.id">
-                                        <div x-on:click="pick(opt)" class="cursor-pointer py-2 px-4 border-t text-sm hover:bg-gray-100">
+                                        <div x-on:click="pick(opt)" class="cursor-pointer py-2 px-4 border-t hover:bg-gray-100">
                                             @isset($item) {{ $item }}
                                             @else <span class="font-medium" x-text="opt[labelKey]"></span>
                                             @endif

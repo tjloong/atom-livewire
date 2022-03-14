@@ -19,7 +19,7 @@
                 <x-table row>
                     <x-table cell>
                         {{ format_date($ticket->created_at) }}
-                        <div class="text-xs text-gray-400">
+                        <div class="text-sm text-gray-400">
                             {{ format_date($ticket->created_at, 'time') }}
                         </div>
                     </x-table>
@@ -32,7 +32,7 @@
                         <a href="{{ route('ticketing.update', [$ticket->id]) }}">
                             {{ str($ticket->subject)->limit(50) }}
                         </a>
-                        <div class="text-xs text-gray-400">
+                        <div class="text-sm text-gray-400">
                             {{ str($ticket->description)->limit(80) }}
                         </div>
                     </x-table>

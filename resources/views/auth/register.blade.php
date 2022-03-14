@@ -54,7 +54,7 @@
                     @if ($errors->any())
                         <div class="bg-red-100 text-red-800 rounded p-4 grid gap-2">
                             @foreach ($errors->all() as $error)
-                                <div class="flex items-center gap-1 text-sm">
+                                <div class="flex items-center gap-1">
                                     <x-icon name="x"/> {{ $error }}
                                 </div>
                             @endforeach
@@ -68,7 +68,7 @@
             </x-box>
         </form>
         
-        <div class="text-center text-sm">
+        <div class="text-center">
             Have an account? 
             <a href="{{ route('login') }}">
                 Sign In

@@ -1,17 +1,17 @@
 .btn {
-    @apply inline-flex items-center justify-center font-medium hover:shadow;
+    @apply inline-flex items-center justify-center font-medium py-1.5 px-3 rounded-md hover:shadow;
 }
 .btn.btn-xs {
     @apply py-1 px-2 rounded text-xs;
 }
 .btn.btn-sm {
-    @apply py-1.5 px-3 rounded-md text-sm;
+    @apply py-1 px-2 rounded-md text-sm;
 }
 .btn.btn-md {
-    @apply py-2.5 px-4 rounded-md;
+    @apply py-2 px-4 rounded-md text-lg;
 }
 .btn.btn-lg {
-    @apply py-2 px-4 rounded-md text-lg;
+    @apply py-2.5 px-4 rounded-md text-xl;
 }
 .btn.loading {
     @apply opacity-80 pointer-events-none;

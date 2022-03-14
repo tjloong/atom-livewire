@@ -75,7 +75,7 @@
                             <div x-show="status === 'uploading'" class="p-10 flex items-center justify-center">
                                 <div class="py-2 px-4 w-full bg-gray-600 rounded-md drop-shadow relative overflow-hidden">
                                     <div class="absolute top-0 left-0 bottom-0 bg-green-500" x-bind:style="{ width: `${progress}%` }"></div>
-                                    <div class="text-sm font-medium text-white text-center relative">
+                                    <div class="font-medium text-white text-center relative">
                                         <span x-show="progress >= 100">Processing...</span>
                                         <span x-show="progress < 100">Uploading...</template>
                                     </div>
@@ -298,7 +298,7 @@
                                             </div>
                     
                                             <div class="absolute bottom-0 left-0 right-0 px-2 pb-2 pt-4 text-white bg-gradient-to-t from-black to-transparent opacity-80 overflow-hidden">
-                                                <div class="truncate text-xs" x-text="file.name"></div>
+                                                <div class="truncate text-sm" x-text="file.name"></div>
                                             </div>
                                         </div>
                                     </template>

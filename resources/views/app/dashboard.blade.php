@@ -3,9 +3,9 @@
         <x-dropdown right>
             <x-slot name="trigger">
                 <a class="flex items-center bg-gray-200 py-2 px-3 rounded-md space-x-2 text-gray-800">
-                    <x-icon name="calendar" size="18px" class="text-gray-500"/>
+                    <x-icon name="calendar" class="text-gray-500"/>
         
-                    <div class="flex-grow flex items-center text-sm space-x-2">
+                    <div class="flex-grow flex items-center space-x-2">
                         @if ($dateFrom && $dateTo)
                             <span>{{ format_date($dateFrom) }}</span>
                             <x-icon name="right-arrow-alt"/>

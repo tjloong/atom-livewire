@@ -11,7 +11,7 @@
                 </div>
 
                 @if (session('flash'))
-                    <div class="text-sm bg-blue-100 text-blue-800 rounded p-4">
+                    <div class="bg-blue-100 text-blue-800 rounded p-4">
                         {{ session('flash') }}
                     </div>
                 @endif
@@ -19,7 +19,7 @@
                 @if ($errors->any())
                     <div class="bg-red-100 text-red-800 rounded p-4 grid gap-2">
                         @foreach ($errors->all() as $error)
-                            <div class="flex items-center gap-1 text-sm">
+                            <div class="flex items-center gap-1">
                                 <x-icon name="x"/> {{ $error }}
                             </div>
                         @endforeach
@@ -28,18 +28,18 @@
 
                 <div class="grid gap-4">
                     <div>
-                        <div class="font-medium text-gray-500 text-xs uppercase mb-2">Email</div>
+                        <div class="font-medium text-gray-500 text-sm uppercase mb-2">Email</div>
                         <input type="text" wire:model.defer="email" class="w-full form-input" tabindex="1" required autofocus>
                     </div>
     
                     <div>
                         <div class="flex justify-between mb-2">
-                            <div class="font-medium text-gray-500 text-xs uppercase">
+                            <div class="font-medium text-gray-500 text-sm uppercase">
                                 Password
                             </div>
     
                             @if (Route::has('password.forgot'))
-                                <a href="{{ route('password.forgot') }}" class="text-theme font-medium text-xs">
+                                <a href="{{ route('password.forgot') }}" class="text-theme font-medium text-sm">
                                     Forgot Password?
                                 </a>
                             @endif
@@ -55,7 +55,7 @@
         </x-box>
 
         @if (Route::has('register'))
-            <div class="text-sm">
+            <div>
                 Don't have an account? 
         
                 <a href="{{ route('register', ['ref' => 'page-login']) }}" class="inline-flex items-center">

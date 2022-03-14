@@ -8,6 +8,7 @@
     <x-seo :noindex="$noindex ?? false"/>
 
     <link rel="shortcut icon" href="{{ $favicon ?? asset('storage/img/favicon.png') }}">
+    <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'>
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
     @if (isset($gfont) && $gfont !== false)

@@ -13,7 +13,7 @@
     <div class="min-h-screen bg-gray-100">
         <x-builder.navbar logo-class="h-[40px]" align="right" :show-auth="false">
             @notroute('onboarding.completed')
-                <a href="{{ route('app.home') }}" class="text-sm flex items-center gap-1">
+                <a href="{{ route('app.home') }}" class="flex items-center gap-1">
                     <x-icon name="left-arrow-alt" size="20px"/>
                     I'll do this later
                 </a>

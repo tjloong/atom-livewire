@@ -1,3 +1,7 @@
+html {
+    font-size: 14px;
+}
+
 label {
     @apply font-bold;
 }
@@ -15,7 +19,7 @@ a {
 }
 
 .ck-content {
-    @apply prose prose-sm max-w-none;
+    @apply prose max-w-none;
 }
 .ck-widget.html-object-embed {
     @apply w-full;

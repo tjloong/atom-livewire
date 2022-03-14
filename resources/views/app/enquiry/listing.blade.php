@@ -15,7 +15,7 @@
             <x-table row>
                 <x-table cell>
                     {{ format_date($enquiry->created_at) }}
-                    <div class="text-xs text-gray-500">
+                    <div class="text-gray-500">
                         {{ format_date($enquiry->created_at, 'time') }}
                     </div>
                 </x-table>

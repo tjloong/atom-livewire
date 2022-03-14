@@ -13,15 +13,15 @@
     </div>
 
 @elseif ($attributes->has('content'))
-    <div class="
-        max-w-screen-lg mx-auto flex flex-col gap-8 py-12 px-6
-        {{ $valign === 'top' ? 'justify-start' : '' }}
-        {{ $valign === 'center' ? 'justify-center' : '' }}
-        {{ $valign === 'bottom' ? 'justify-end' : '' }}
-        {{ $align === 'center' ? 'text-center' : '' }} 
-        {{ $align === 'right' ? 'text-right' : '' }}
-        {{ $attributes->get('class') }}
-    ">
+    <div class="{{ collect([
+        'max-w-screen-lg mx-auto flex flex-col gap-8 py-12 px-6 w-full',
+        $valign === 'top' ? 'justify-start' : null,
+        $valign === 'center' ? 'justify-center' : null,
+        $valign === 'bottom' ? 'justify-end' : null,
+        $align === 'center' ? 'text-center' : null,
+        $align === 'right' ? 'text-right' : null,
+        $attributes->get('class'),
+    ])->filter()->join(' ') }}">
         @if(isset($title) && $title->isNotEmpty())
             <h1 {{ $title->attributes->class([
                 'text-3xl font-bold md:text-5xl',
@@ -61,7 +61,7 @@
 
 @elseif ($image['position'] === 'bg')
     <div
-        class="{{ $container }} relative bg-center bg-no-repeat bg-cover flex flex-col"
+        class="{{ $container }} relative bg-center bg-no-repeat bg-cover flex flex-col {{ $attributes->get('class') }}"
         style="background-image: url({{ $image['url'] }});"
     >
         @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
@@ -75,7 +75,7 @@
     </div>
 
 @elseif (in_array($image['position'], ['left', 'right']))
-    <div class="{{ $container }}">
+    <div class="{{ $container }} {{ $attributes->get('class') }}">
         <div class="relative grid md:grid-cols-2">
             @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
 
@@ -97,7 +97,7 @@
     </div>
 
 @elseif (in_array($image['position'], ['top', 'bottom']))
-    <div class="{{ $container }}">
+    <div class="{{ $container }} {{ $attributes->get('class') }}">
         <div class="relative grid gap-6">
             @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
 

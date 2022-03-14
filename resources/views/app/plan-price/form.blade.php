@@ -4,7 +4,7 @@
             <x-input.field>
                 <x-slot name="label">Plan</x-slot>
                 <div class="font-semibold">{{ $plan->name }}</div>
-                <div class="text-sm font-medium text-gray-500">{{ $plan->excerpt }}</div>
+                <div class="font-medium text-gray-500">{{ $plan->excerpt }}</div>
             </x-input.field>
 
             <x-input.country wire:model="price.country">

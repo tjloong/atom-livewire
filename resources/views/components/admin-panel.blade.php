@@ -60,7 +60,7 @@
     <x-fullscreen-loader/>
 
     <div 
-        class="min-h-screen bg-gray-50 text-sm" 
+        class="min-h-screen bg-gray-50" 
         x-data="{ toggled: false, animate: false }"
         @if ($flash)
             x-init="$dispatch('toast', { message: '{{ $flash->message }}', type: '{{ $flash->type }}' })"
@@ -103,7 +103,7 @@
                 </div>
 
                 <div class="flex-grow overflow-y-auto overflow-x-hidden">
-                    <div class="text-xs text-gray-500 py-2 px-6">
+                    <div class="text-sm text-gray-500 py-2 px-6">
                         NAVIGATION
                     </div>
 
@@ -123,7 +123,7 @@
                 'lg:pl-56': !toggled,
             }"
         >
-            <x-builder.navbar class="bg-white py-2 px-4 shadow" breadcrumbs>
+            <x-builder.navbar class="bg-white py-2 px-4 shadow">
                 <x-slot name="logo">
                     <div class="flex items-center gap-2">
                         <div class="h-[40px] md:hidden">
@@ -149,7 +149,7 @@
                             We have sent a verification link to <span class="font-semibold">{{ request()->user()->email }}</span>, please click on the link to verify it.
                         </div>
                     </div>
-                    <a href="{{ route('verification.send') }}" class="text-xs md:ml-8">
+                    <a href="{{ route('verification.send') }}" class="text-sm md:ml-8">
                         Resend verification link
                     </a>
                 </div> 

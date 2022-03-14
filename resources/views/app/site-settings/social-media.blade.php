@@ -6,8 +6,8 @@
             @foreach ($platforms as $platform)
                 <x-input.text wire:model.defer="settings.{{ $platform }}">
                     <div class="flex items-center gap-1">
-                        <x-icon name="{{ $platform }}" type="logo" size="20px"/>
-                        <div>{{ Str::headline($platform) }}</div>
+                        <x-icon name="{{ $platform }}" type="logo" size="xs"/>
+                        <div>{{ str($platform)->headline() }}</div>
                     </div>
                 </x-input.text>
             @endforeach

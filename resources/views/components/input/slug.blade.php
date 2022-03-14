@@ -18,7 +18,7 @@
             x-on:focus="active = true"
             x-on:blur="active = false"
             type="text"
-            class="p-0 border-0 text-sm w-full appearance-none px-3 focus:ring-0"
+            class="p-0 border-0 w-full appearance-none px-3 focus:ring-0"
             {{ $attributes->except(['error', 'required', 'caption', 'prefix']) }}
         >
     </div>

@@ -13,7 +13,7 @@
                 @if ($errors->any())
                     <div class="bg-red-100 text-red-800 rounded p-4 grid gap-2">
                         @foreach ($errors->all() as $error)
-                            <div class="flex items-center gap-1 text-sm">
+                            <div class="flex items-center gap-1">
                                 <x-icon name="x"/> {{ $error }}
                             </div>
                         @endforeach
@@ -21,7 +21,7 @@
                 @endif
 
                 <div>
-                    <div class="font-medium text-gray-500 text-xs uppercase mb-2">Your registered email</div>
+                    <div class="font-medium text-gray-500 text-sm uppercase mb-2">Your registered email</div>
                     <input type="email" class="w-full form-input" wire:model.defer="email" required autofocus>
                 </div>
 
@@ -31,7 +31,7 @@
             </div>
         </x-box>
 
-        <div class="text-sm mt-4">
+        <div class="mt-4">
             <a href="{{ route('login') }}" class="flex items-center">
                 <x-icon name="left-arrow-alt"></x-icon> Back to login
             </a>

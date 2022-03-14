@@ -3,7 +3,7 @@
         <th x-data="sortableTableHead('{{ $attributes->get('sort') }}')" x-bind:class="{ 'font-medium underline': isSorted() }">
             <a
                 {{ $attributes->class([
-                    'text-gray-900 flex items-center space-x-1',
+                    'text-gray-600 flex items-center gap-1',
                     'justify-end' => $attributes->get('align') === 'right',
                     'justify-start' => $attributes->get('align') === 'left',
                     'justify-center' => $attributes->get('align') === 'center',
@@ -11,11 +11,8 @@
                 x-on:click.prevent="sort()"
             >
                 <div>{{ $slot }}</div>
-                <x-icon
-                    x-bind:name="$wire.get('sortOrder') === 'desc' ? 'chevron-up' : 'chevron-down'" 
-                    x-show="isSorted()"
-                    size="18px"
-                />
+                <div x-show="isSorted() && $wire.get('sortOrder') === 'desc'"><x-icon name="chevron-up" size="xs"/></div>
+                <div x-show="isSorted() && $wire.get('sortOrder') === 'asc'"><x-icon name="chevron-down" size="xs"/></div>
             </a>
         </th>
 
@@ -57,7 +54,7 @@
                 <div class="py-1 px-4 flex flex-wrap justify-between items-center">
                     <div class="my-1">
                     @if ($attributes->get('total'))
-                        <div class="text-sm text-gray-800">
+                        <div class="text-gray-800">
                             Total <span class="font-semibold">{{ $attributes->get('total') }}</span> record(s)
                         </div>
                     @endif
@@ -68,13 +65,13 @@
                         {{ $checked }}
                     @else
                         @if ($showSearch)
-                            <div class="w-60 rounded-md bg-gray-100 drop-shadow flex items-center gap-2 px-2 py-1.5">
-                                <x-icon name="search" class="text-gray-500" size="16px"/>
+                            <div class="w-60 rounded-md bg-gray-100 shadow flex items-center gap-2 px-2 py-1.5">
+                                <x-icon name="search" class="text-gray-500" size="xs"/>
                                 <div class="flex-grow">
                                     <input 
                                         type="text"
                                         wire:model.debounce.500ms="filters.search"
-                                        class="w-full bg-transparent appearance-none border-0 text-sm p-0 focus:ring-0"
+                                        class="w-full bg-transparent appearance-none border-0 p-0 focus:ring-0"
                                         placeholder="Search"
                                     >
                                 </div>
@@ -83,7 +80,7 @@
                                     x-on:click.prevent="$wire.set('filters.search', null)" 
                                     class="flex items-center justify-center text-gray-800"
                                 >
-                                    <x-icon name="x" size="16px"/>
+                                    <x-icon name="x" size="xs"/>
                                 </a>
                             </div>
                         @endif

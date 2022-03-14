@@ -11,7 +11,7 @@
             x-show="open"
             x-transition
             class="
-                grid 
+                grid
                 md:absolute md:z-10 md:w-max {{ $attributes->has('right') ? 'md:right-0' : '' }}
                 md:bg-white md:drop-shadow-md md:rounded-md md:border
                 md:py-2 md:min-w-[200px]
@@ -25,7 +25,7 @@
     <a {{ $attributes->merge([
         'class' => '
             inline-flex items-center justify-center gap-2
-            py-1.5 text-sm text-gray-800 font-medium hover:text-theme 
+            py-1.5 text-gray-800 font-medium hover:text-theme 
             md:px-3 md:hover:bg-gray-100 md:justify-start
         '
     ]) }}>
@@ -91,14 +91,20 @@
                         }}"
                     >
                         {{ $slot }}
+
+                        @if ($lang)
+                            <a>
+                                <x-icon name="language"/>
+                            </a>
+                        @endif
                     </div>
 
                     @if ($showAuth)
                         @auth
                             <x-builder.navbar dropdown right>
                                 <div class="flex items-center justify-center gap-2">
-                                    <x-icon name="user-circle" size="20px"/>
-                                    <div>{{ str(auth()->user()->name)->limit(15) }}</div>
+                                    <x-icon name="user-circle"/>
+                                    <div class="flex-grow">{{ str(auth()->user()->name)->limit(15) }}</div>
                                     <x-icon name="chevron-down"/>
                                 </div>
 
@@ -161,12 +167,12 @@
                             @if ($showAuth)
                                 <div class="bg-gray-100 rounded-lg p-4">
                                     @auth
-                                        <div class="flex-shrink-0 flex items-center gap-1">
-                                            <x-icon name="user-circle" size="20px" class="text-gray-400"/>
+                                        <div class="flex-shrink-0 flex items-center justify-center gap-1">
+                                            <x-icon name="user-circle" class="text-gray-400"/>
                                             <div class="truncate">{{ auth()->user()->name }}</div>
                                         </div>
 
-                                        <div class="grid text-sm mt-2">
+                                        <div class="grid mt-2">
                                             <x-builder.navbar dropdown-item href="{{ route('account.home') }}" icon="user-pin">
                                                 Account
                                             </x-builder.navbar>
@@ -194,7 +200,7 @@
                                             </x-builder.navbar>
                                         </div>
                                     @else
-                                        <div class="flex items-center justify-center gap-3 text-sm">
+                                        <div class="flex items-center justify-center gap-3">
                                             <x-button color="gray" href="{{ route('login') }}">Login</x-button>
                                             @module('accounts')
                                                 <x-button href="{{ route('register', ['ref' => 'navbar']) }}">Register</x-button>

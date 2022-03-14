@@ -20,8 +20,8 @@
             </div>
 
             <div class="flex-grow self-center">
-                <div class="font-semibold text-sm" x-show="title" x-text="title"></div>
-                <div class="text-gray-500 font-medium text-sm" x-text="message"></div>
+                <div class="font-semibold" x-show="title" x-text="title"></div>
+                <div class="text-gray-500 font-medium" x-text="message"></div>
             </div>
         </div>
     </div>

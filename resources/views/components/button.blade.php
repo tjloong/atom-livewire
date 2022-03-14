@@ -1,21 +1,25 @@
 @if ($renderable)
     @if ($attributes->has('href') || $attributes->has('x-bind:href') || $attributes->get(':href'))
-        <a x-data="button" {{ $attributes->merge(['class' => $styles]) }}>
-            <x-loader class="mr-1.5" size="{{ $size === 'xs' ? '14px' : '18px' }}"/>
+        <a x-data="button" {{ 
+            $attributes->class([$styles, 'flex items-center gap-2'])
+        }}>
+            <x-loader size="{{ $size === 'xs' ? '14px' : '18px' }}"/>
 
             @if ($attributes->get('icon'))
-                <x-icon name="{{ $attributes->get('icon') }}" class="icon mr-1.5" size="{{ $size === 'xs' ? '14px' : '18px' }}"/>
+                <x-icon name="{{ $attributes->get('icon') }}" :size="$iconSize"/>
             @endif
 
             {{ $slot }}
         </a>
 
     @else
-        <button x-data="button" {{ $attributes->merge(['type' => 'button', 'class' => $styles]) }}>
-            <x-loader class="mr-1.5" size="{{ $size === 'xs' ? '14px' : '18px' }}"/>
+        <button x-data="button" {{ 
+            $attributes->class([$styles, 'flex items-center gap-2'])->merge(['type' => 'button'])
+        }}>
+            <x-loader size="{{ $size === 'xs' ? '14px' : '18px' }}"/>
 
             @if ($attributes->get('icon'))
-                <x-icon name="{{ $attributes->get('icon') }}" class="icon mr-1.5" size="{{ $size === 'xs' ? '14px' : '18px' }}"/>
+                <x-icon name="{{ $attributes->get('icon') }}" :size="$iconSize"/>
             @endif
 
             {{ $slot }}

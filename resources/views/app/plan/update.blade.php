@@ -40,7 +40,7 @@
                                 </div>
 
                                 @if ($cn = optional(metadata()->countries($price->country))['name'])
-                                    <div class="text-xs text-gray-500">Available in {{ $cn }}</div>
+                                    <div class="text-sm text-gray-500">Available in {{ $cn }}</div>
                                 @endif
                             </div>
 

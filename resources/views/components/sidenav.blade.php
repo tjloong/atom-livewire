@@ -51,7 +51,7 @@
 @elseif ($attributes->has('group'))
     <div class="grid gap-2 mb-4">
         @if ($group = $attributes->get('group') ?? null)
-            <div x-bind:class="!show && 'hidden md:block'" class="text-xs text-gray-400 font-medium uppercase px-3">
+            <div x-bind:class="!show && 'hidden md:block'" class="text-sm text-gray-400 font-medium uppercase px-3">
                 {{ $group }}
             </div>
         @endif

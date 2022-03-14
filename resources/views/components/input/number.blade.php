@@ -1,6 +1,6 @@
 @props([
     'class' => [
-        'transparent' => 'w-full text-sm border-0 p-0 pr-10 focus:ring-0',
+        'transparent' => 'w-full border-0 p-0 pr-10 focus:ring-0',
         'normal' => 'form-input w-full',
     ],
 ])
@@ -15,7 +15,7 @@
             <div class="relative">
                 <input type="number" class="{{ $class['normal'] }}" {{ $attributes->except(['unit', 'units']) }}>
                 <div class="absolute top-0 bottom-0 right-8 flex items-center justify-center">
-                    <div class="text-sm font-medium text-gray-600">{{ $units }}</div>
+                    <div class="font-medium text-gray-600">{{ $units }}</div>
                 </div>
             </div>
 
@@ -44,7 +44,7 @@
                 <div class="absolute top-0 bottom-0 right-8 flex items-center justify-center">
                     <select 
                         x-model="unit"
-                        class="bg-gray-100 rounded-md text-xs text-gray-600 font-medium uppercase py-0.5 px-2 border-0 min-w-[100px]"
+                        class="bg-gray-100 rounded-md text-sm text-gray-600 font-medium uppercase py-0.5 px-2 border-0 min-w-[100px]"
                         @if ($attributes->get('disabled')) disabled @endif
                     >
                         @foreach ($units as $unit)

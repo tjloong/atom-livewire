@@ -32,7 +32,7 @@
                             <x-slot name="label">My Teams</x-slot>
                             <div class="flex flex-wrap items-center gap-2">
                                 @forelse ($user->teams as $team)
-                                    <div class="bg-gray-100 rounded-md py-1 px-2 text-xs uppercase">
+                                    <div class="bg-gray-100 rounded-md py-1 px-2 text-sm uppercase">
                                         {{ $team->name }}
                                     </div>
                                 @empty
@@ -62,7 +62,7 @@
                         @if ($user->exists && $user->is_pending)
                             <div class="flex items-center gap-1">
                                 <x-icon name="info-circle" class="text-gray-400" size="20px"/>
-                                <div class="text-sm font-medium text-gray-500">User account is pending for activation.</div>
+                                <div class="font-medium text-gray-500">User account is pending for activation.</div>
                             </div>
                         @endif
                     </div>
@@ -80,7 +80,7 @@
                                         <x-input.radio name="visiblity" wire:model.defer="form.visibility" :value="$opt['value']" :checked="$form['visibility'] === $opt['value']">
                                             <div>
                                                 <div class="font-medium">{{ str()->headline($opt['value']) }}</div>
-                                                <div class="text-xs text-gray-500">{{ $opt['caption'] }}</div>
+                                                <div class="text-sm text-gray-500">{{ $opt['caption'] }}</div>
                                             </div>
                                         </x-input.radio>
                                     @endforeach

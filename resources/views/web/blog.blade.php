@@ -7,7 +7,7 @@
                     {{ $this->blog->title }}
                 </h1>
     
-                <div class="text-gray-500 text-sm font-medium">
+                <div class="text-gray-500 font-medium">
                     Posted {{ format_date($this->blog->published_at) }}
                 </div>
     
@@ -92,7 +92,7 @@
                                             {{ html_excerpt($blog->excerpt ?? $blog->content) }}
                                         </div>
     
-                                        <div class="text-gray-500 text-xs">
+                                        <div class="text-gray-500 text-sm">
                                             {{ format_date($blog->published_at) }}
                                         </div>
                                     </a>
@@ -112,7 +112,7 @@
                                             <a 
                                                 wire:click="toggleFilter('{{ $label->slug }}')"
                                                 class="
-                                                    inline-block py-1.5 px-3 rounded-md text-sm font-medium border-2
+                                                    inline-block py-1.5 px-3 rounded-md font-medium border-2
                                                     {{ collect($filters)->contains($label->slug) 
                                                         ? 'border-theme bg-theme text-white' 
                                                         : 'border-gray-400 bg-white text-gray-500' }}

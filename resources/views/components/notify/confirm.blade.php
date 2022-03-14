@@ -15,10 +15,10 @@
 
                 <div class="flex-grow self-center">
                     <div class="space-y-2 mb-4">
-                        <div class="font-semibold mb-2" x-show="config.title" x-text="config.title"></div>
-                        <div class="text-sm text-gray-500" x-text="config.message"></div>
+                        <div class="font-semibold text-lg mb-2" x-show="config.title" x-text="config.title"></div>
+                        <div class="text-gray-500" x-text="config.message"></div>
                     </div>
-                    <div class="flex items-center space-x-2 text-sm">
+                    <div class="flex items-center space-x-2">
                         <a class="py-1.5 px-3 font-medium rounded-md" x-bind:class="buttonColors[config.type]" x-on:click.prevent="confirmed()">
                             Confirm
                         </a>

@@ -23,13 +23,13 @@
                         @if ($user->id === auth()->id())
                             <div class="flex items-center gap-1">
                                 <span>{{ $user->name }}</span>
-                                <span class="text-xs text-gray-500">(You)</span>
+                                <span class="text-gray-500">(You)</span>
                             </div>
                         @else
                             <a href="{{ route('app.user.update', [$user->id]) }}">
                                 {{ $user->name }}
                             </a>
-                            <div class="text-xs text-gray-500">
+                            <div class="text-gray-500">
                                 {{ $user->email }}
                             </div>
                         @endif

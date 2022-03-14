@@ -3,7 +3,7 @@
         @if ($back)
             <div class="flex-shrink-0">
                 <a 
-                    class="bg-gray-300 text-gray-800 rounded py-1.5 px-2 flex items-center justify-center mr-3"
+                    class="bg-gray-300 text-gray-800 rounded py-1 px-2 flex items-center justify-center mr-3"
                     @if (request()->query('back'))
                         href="{{ request()->query('back') }}"
                     @elseif (is_string($back))
@@ -20,13 +20,13 @@
 
         <div class="self-center grid gap-1">
             @if($attributes->get('title'))
-                <div class="text-gray-800 font-bold truncate {{ $attributes->has('small') ? 'text-lg font-semibold' : 'text-xl font-bold' }}">
+                <div class="text-gray-800 font-bold truncate {{ $attributes->has('small') ? 'text-xl font-semibold' : 'text-2xl font-bold' }}">
                     {{ $attributes->get('title') }}
                 </div>
             @endif
     
             @if($attributes->get('subtitle'))
-                <div class="text-gray-600 font-light text-sm">
+                <div class="text-gray-600 font-light">
                     {{ $attributes->get('subtitle') }}
                 </div>
             @endif

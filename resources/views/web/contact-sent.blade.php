@@ -6,7 +6,7 @@
                 You enquiry is successfully sent.
             </x-alert>
     
-            <a href="/" class="text-sm flex items-center mt-4">
+            <a href="/" class="flex items-center mt-4">
                 <x-icon name="left-arrow-alt"/> Back to Home
             </a>
         </div>

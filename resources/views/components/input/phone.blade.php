@@ -18,7 +18,7 @@
         <div x-ref="input" class="relative">
             <a
                 x-on:click.prevent="open()"
-                class="absolute top-0 bottom-0 px-3 flex items-center justify-center text-sm text-gray-500"
+                class="absolute top-0 bottom-0 px-3 flex items-center justify-center text-gray-500"
             >
                 <div class="flex items-center gap-2">
                     <img x-bind:src="flag" style="width: 18px;">
@@ -36,7 +36,7 @@
 
         <div
             x-ref="dropdown"
-            class="absolute left-0 right-0 bg-white border drop-shadow rounded-md h-56 overflow-auto text-sm hidden"
+            class="absolute left-0 right-0 bg-white border drop-shadow rounded-md h-56 overflow-auto hidden"
         >
             @foreach (metadata()->countries() as $country)
                 <a 

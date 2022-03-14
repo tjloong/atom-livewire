@@ -33,7 +33,7 @@
                     </div>
                 </figure>
             </a>
-            <a class="text-xs" href="{{ $file->url }}" target="_blank">
+            <a class="text-sm" href="{{ $file->url }}" target="_blank">
                 View full image
             </a>
         </div>

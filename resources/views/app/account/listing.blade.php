@@ -19,7 +19,7 @@
                 <x-table row>
                     <x-table cell>
                         {{ format_date($user->created_at) }}
-                        <div class="text-xs font-medium text-gray-500">{{ format_date($user->created_at, 'time') }}</div>
+                        <div class="font-medium text-gray-500">{{ format_date($user->created_at, 'time') }}</div>
                     </x-table>
 
                     <x-table cell>
@@ -39,7 +39,7 @@
                             @if ($user->account->subscriptions->count())
                                 <div class="flex flex-wrap items-center justify-end gap-1">
                                     @foreach ($user->account->subscriptions as $subscription)
-                                        <span class="py-0.5 px-2 bg-gray-100 rounded text-xs uppercase">
+                                        <span class="py-0.5 px-2 bg-gray-100 rounded text-sm uppercase">
                                             {{ str($subscription->plan->name)->limit(15) }}
                                         </span>
                                     @endforeach

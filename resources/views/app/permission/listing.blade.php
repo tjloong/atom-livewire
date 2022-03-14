@@ -21,7 +21,7 @@
                                 <div>
                                     <div class="font-medium">{{ str()->headline($action['name']) }}</div>
                                     @if ($user && $action['is_granted'] && $action['is_granted_by_role'])
-                                        <div class="text-xs text-gray-500">Granted by role</div>
+                                        <div class="text-sm text-gray-500">Granted by role</div>
                                     @endif
                                 </div>
                             </a>

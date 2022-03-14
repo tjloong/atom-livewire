@@ -20,7 +20,7 @@ a:active {
 }
 
 .form-input {
-    @apply appearance-none py-1.5 px-3 border border-gray-300 rounded-md leading-normal bg-white text-sm;
+    @apply appearance-none py-1.5 px-3 border border-gray-300 rounded-md leading-normal bg-white;
 }
 
 .form-input:hover {
@@ -38,17 +38,21 @@ a:active {
 }
 
 .form-input-transparent {
-    @apply appearance-none p-0 border-0 text-sm focus:ring-0;
+    @apply appearance-none p-0 border-0 focus:ring-0;
 }
 
 .field {
     @apply w-full;
 }
 .field:not(:last-child) {
-    @apply mb-4;
+    @apply mb-6;
 }
 .field.error .form-input {
     @apply border-red-500 ring-2 ring-red-200;
+}
+.field > label {
+    @apply block font-medium leading-5 text-gray-400 uppercase mb-2;
+    font-size: 12px;
 }
 
 label.radio .radio-box {

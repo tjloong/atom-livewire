@@ -3,7 +3,7 @@
 
     <input
         type="text"
-        class="w-full appearance-none text-sm p-0 border-0 bg-transparent focus:ring-0"
+        class="w-full appearance-none p-0 border-0 bg-transparent focus:ring-0"
         wire:model.debounce.250ms="search"
         {{ $attributes->merge(['placeholder' => 'Search']) }}
     >

@@ -35,7 +35,7 @@
             @endif
 
             @if ($phone || $email)
-                <div class="text-sm md:text-right">
+                <div class="md:text-right">
                     @if ($phone)
                         <a href="tel: {{ $phone }}" class="{{ $dark ? 'text-gray-300' : 'text-gray-500' }} font-light">{{ $phone }}</a>
                     @endif
@@ -53,7 +53,7 @@
 
         <div class="grid gap-1">
             @if ($company)
-                <div class="text-sm font-medium {{ $dark ? 'text-gray-200' : 'text-gray-500' }}">
+                <div class="font-medium {{ $dark ? 'text-gray-200' : 'text-gray-500' }}">
                     © {{ date('Y') }} {{ $company }}. All rights reserved.
                 </div>
             @endif
@@ -65,7 +65,7 @@
                             <span class="{{ $dark ? 'text-gray-100' : 'text-gray-500' }}">|</span>
                         @endif
 
-                        <a href="{{ $link['href'] }}" class="text-xs {{ $dark ? 'text-gray-100' : 'text-gray-500' }}">
+                        <a href="{{ $link['href'] }}" class="text-sm {{ $dark ? 'text-gray-100' : 'text-gray-500' }}">
                             {{ $link['label'] }}
                         </a>
                     @endforeach

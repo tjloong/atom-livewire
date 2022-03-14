@@ -1,6 +1,6 @@
 @if ($attributes->has('separator'))
     <li class="flex items-center justify-center text-gray-500">
-        <x-icon name="chevron-right" size="20px"/>
+        <x-icon name="chevron-right"/>
     </li>
 
 @elseif ($item = $attributes->get('item'))
@@ -9,8 +9,8 @@
             <x-icon 
                 name="{{ $attributes->get('icon') }}" 
                 type="{{ $attributes->get('icon-type') ?? 'regular' }}" 
-                size="18px" 
                 class="text-gray-400"
+                size="xs"
             />
         @endif
 
@@ -25,12 +25,12 @@
 
 @elseif ($home && $trails)
     <ol
-        class="flex items-center gap-2 text-sm {{ $attributes->get('class') }}"
+        class="flex items-center gap-2 {{ $attributes->get('class') }}"
         itemscope
         itemtype="https://schema.org/BreadcrumbList"
     >
         @if ($home)
-            <x-breadcrumbs :item="$home" icon="home" icon-type="solid"/>
+            <x-breadcrumbs :item="$home" icon="house"/>
             @if (count($trails)) <x-breadcrumbs separator/> @endif
         @endif
 

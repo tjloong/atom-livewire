@@ -1,7 +1,7 @@
 <div class="grid gap-6 md:grid-cols-12">
     @if ($this->tabs->count() > 1)
         <div class="md:col-span-3">
-            <x-sidenav wire:model="tab" class="text-sm">
+            <x-sidenav wire:model="tab">
                 @foreach ($this->tabs as $item)
                     <x-sidenav item name="{{ $item['value'] }}">
                         <div class="flex items-center gap-2">

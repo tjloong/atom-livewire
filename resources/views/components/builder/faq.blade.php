@@ -37,11 +37,11 @@
                     <x-icon x-bind:name="show ? 'chevron-up' : 'chevron-down'" size="24px" class="text-gray-400"/>
                 </div>
                 
-                <div x-show="show" class="text-sm text-gray-500 font-medium prose prose-sm max-w-none">
+                <div x-show="show" class="text-gray-500 font-medium prose prose-sm max-w-none">
                     {!! $set->answer !!}
                 </div>
 
-                <div x-show="!show" class="text-sm text-gray-500 font-medium">
+                <div x-show="!show" class="text-gray-500 font-medium">
                     {{ $set->excerpt }}
                 </div>
             </div>

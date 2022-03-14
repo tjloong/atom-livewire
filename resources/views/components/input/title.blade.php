@@ -11,6 +11,6 @@
         {{ $attributes }}
     >
     @if ($attributes->has('error'))
-        <div class="text-sm font-medium text-red-500 mt-2">{{ $attributes->get('error') }}</div>
+        <div class="font-medium text-red-500 mt-2">{{ $attributes->get('error') }}</div>
     @endif
 </div>

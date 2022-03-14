@@ -8,7 +8,7 @@
                     <div class="flex flex-wrap justify-between gap-4">
                         <div>
                             <div class="font-bold">{{ $plan->name }}</div>
-                            <div class="flex gap-1 text-sm font-medium">
+                            <div class="flex gap-1 font-medium">
                                 <div>{{ str($price->recurring)->headline() }}</div>
                                 @if ($plan->trial)
                                     <div class="text-gray-500">
@@ -31,7 +31,7 @@
                 </x-slot>
             </x-box>
         
-            <a href="{{ route('billing') }}" class="text-gray-500 font-medium flex items-center gap-1 text-sm">
+            <a href="{{ route('billing') }}" class="text-gray-500 font-medium flex items-center gap-1">
                 <x-icon name="left-arrow-alt"/> Back to Plans
             </a>
         </div>

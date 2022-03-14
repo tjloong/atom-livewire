@@ -28,7 +28,7 @@
                 <div class="bg-gray-200 rounded border border-gray-300 flex items-center m-1 leading-tight">
                     <div
                         x-text="val.label"
-                        class="text-gray-800 font-medium text-xs max-w-[150px] truncate py-1 pl-2"
+                        class="text-gray-800 font-medium text-sm max-w-[150px] truncate py-1 pl-2"
                     ></div>
                     <a x-on:click.stop="toggle(val)" class="flex items-center justify-center px-1.5 text-gray-400">
                         <x-icon name="x" size="18px"/>
@@ -36,7 +36,7 @@
                 </div>
             </template>
 
-            <div class="text-gray-400 text-sm py-px px-1.5 flex-grow flex items-center">
+            <div class="text-gray-400 py-px px-1.5 flex-grow flex items-center">
                 <div class="flex-grow">
                     {{ $attributes->get('placeholder') ?? 'Please select' }}
                 </div>

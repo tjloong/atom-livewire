@@ -32,7 +32,7 @@
                     
                             <x-slot name="item">
                                 <div class="font-medium truncate" x-text="opt.name"></div>
-                                <div class="text-xs text-gray-500" x-text="opt.email"></div>
+                                <div class="text-sm text-gray-500" x-text="opt.email"></div>
                             </x-slot>
                         </x-input.picker>
                     </div>
@@ -50,7 +50,7 @@
                             <div class="font-semibold">
                                 {{ $user->name }}
                             </div>
-                            <div class="text-xs text-gray-400 font-medium">
+                            <div class="text-sm text-gray-400 font-medium">
                                 {{ $user->email }}
                             </div>
                         </a>

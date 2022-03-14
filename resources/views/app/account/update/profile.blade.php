@@ -8,12 +8,12 @@
 
                 @if ($user->account->status === 'blocked')
                     <div class="flex gap-2">
-                        <div class="text-red-500 text-xs flex gap-1">
+                        <div class="text-red-500 text-sm flex gap-1">
                             <x-icon name="error-circle" size="16px" class="flex-shrink-0"/>
                             <div>Blocked at {{ format_date($user->account->blocked_at, 'datetime') }} by {{ $user->account->blocked_by_user->name ?? 'Unknown' }}</div>
                         </div>
 
-                        <a class="text-xs flex-shrink-0" x-on:click="$dispatch('confirm', {
+                        <a class="text-sm flex-shrink-0" x-on:click="$dispatch('confirm', {
                             title: 'Unblock Account',
                             message: 'Are you sure to unblock this account?',
                             onConfirmed: () => $wire.unblock(),
@@ -23,7 +23,7 @@
                     </div>
                 @elseif ($user->account->status !== 'trashed')
                     @can('account.block')
-                        <a class="text-red-500 flex items-center gap-1 text-xs font-medium" x-on:click="$dispatch('confirm', {
+                        <a class="text-red-500 flex items-center gap-1 text-sm font-medium" x-on:click="$dispatch('confirm', {
                             title: 'Block Account',
                             message: 'Are you sure to block this account?',
                             type: 'error',

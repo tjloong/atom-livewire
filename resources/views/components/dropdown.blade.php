@@ -2,7 +2,7 @@
     @if ($href || ($route && Route::has($route)))
         <a 
             href="{{ $href ?: route($route, $params) }}" 
-            class="py-2 px-4 flex items-center gap-2 text-sm text-gray-700 hover:bg-gray-100"
+            class="py-2 px-4 flex items-center gap-2 text-gray-700 hover:bg-gray-100"
             {{ $attributes->except('href', 'icon', 'icon-type', 'icon-color') }}
         >
             @if ($attributes->get('icon'))
@@ -18,7 +18,7 @@
         </a>
     @else
         <div
-            class="py-2 px-4 flex items-center gap-2 text-sm text-gray-700 hover:bg-gray-100"
+            class="py-2 px-4 flex items-center gap-2 text-gray-700 hover:bg-gray-100"
             {{ $attributes->except('icon', 'icon-type', 'icon-color') }}
         >
             @if ($attributes->get('icon'))

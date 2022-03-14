@@ -11,6 +11,7 @@ class Button extends Component
     public $styles;
     public $inverted;
     public $outlined;
+    public $iconSize;
     public $renderable;
 
     /**
@@ -20,7 +21,7 @@ class Button extends Component
      */
     public function __construct(
         $color = 'theme', 
-        $size = 'sm', 
+        $size = null, 
         $inverted = false, 
         $outlined = false,
         $hide = null,
@@ -28,6 +29,7 @@ class Button extends Component
     ) {
         $this->size = $size;
         $this->color = $color;
+        $this->iconSize = $this->getIconSize();
         $this->inverted = $inverted;
         $this->outlined = $outlined;
         $this->styles = $this->getStyles();
@@ -81,5 +83,21 @@ class Button extends Component
         }
 
         return implode(' ', $styles);
+    }
+
+    /**
+     * Get icon size
+     */
+    public function getIconSize()
+    {
+        $sizes = [
+            'xs' => '10px',
+            'sm' => '12px',
+            'base' => '14px',
+            'md' => '16px',
+            'lg' => '18px',
+        ];
+
+        return $sizes[$this->size ?? 'base'];
     }
 }
