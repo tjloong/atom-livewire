@@ -12,5 +12,6 @@ table tbody tr:not(:last-child) {
     @apply border-b;
 }
 table tbody td {
-    @apply py-3 px-4 text-sm whitespace-nowrap;
+    @apply py-3 px-4 whitespace-nowrap;
+    font-size: 13px;
 }

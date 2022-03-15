@@ -33,7 +33,7 @@ class Index extends Component
         
         session()->flash('flash', 'Account Deleted');
 
-        return redirect()->route('account.listing');
+        return redirect()->route('app.account.listing');
     }
 
     /**

@@ -6,6 +6,7 @@ use Illuminate\View\Component;
 
 class Navbar extends Component
 {
+    public $home;
     public $lang;
     public $align;
     public $sticky;
@@ -29,6 +30,23 @@ class Navbar extends Component
         $this->sticky = $sticky;
         $this->showAuth = $showAuth;
         $this->registerPlaceholder = $registerPlaceholder;
+        $this->home = $this->getHomeUrl();
+    }
+
+    /**
+     * Get home url
+     */
+    public function getHomeUrl()
+    {
+        if (
+            !request()->is('app') 
+            && !request()->is('app/') 
+            && !request()->is('app/*') 
+            && auth()->id()
+            && auth()->user()->canAccessAppPortal()
+        ) return route('app.home');
+
+        return null;
     }
 
     /**

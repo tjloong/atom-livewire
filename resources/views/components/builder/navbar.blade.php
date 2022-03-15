@@ -111,17 +111,15 @@
                                 <x-slot name="dropdown">
                                     <div class="grid divide-y gap-3">
                                         <div class="grid">
-                                            <x-builder.navbar dropdown-item href="{{ route('account') }}" icon="user-pin">
+                                            <x-builder.navbar dropdown-item :href="route('account.home')" icon="user-pin">
                                                 Account
                                             </x-builder.navbar>
 
-                                            @module('plans')
-                                                @if (auth()->user()->canAccessBillingPortal())
-                                                    <x-builder.navbar dropdown-item href="{{ route('billing') }}" icon="dollar-circle">
-                                                        Billing
-                                                    </x-builder.navbar>
-                                                @endif
-                                            @endmodule
+                                            @if (auth()->user()->canAccessBillingPortal())
+                                                <x-builder.navbar dropdown-item :href="route('billing')" icon="dollar-circle">
+                                                    Billing
+                                                </x-builder.navbar>
+                                            @endif
 
                                             @isset($auth)
                                                 {{ $auth }}
@@ -129,13 +127,13 @@
                                         </div>
     
                                         <div class="grid pt-2">
-                                            @if ($attributes->has('back-to-app'))
-                                                <x-builder.navbar dropdown-item href="{{ Route::has('app.home') ? route('app.home') : route('home') }}" icon="home-alt">
-                                                    Back to Home
+                                            @if ($home)
+                                                <x-builder.navbar dropdown-item href="{{ $home }}" icon="home-alt">
+                                                    Back to App
                                                 </x-builder.navbar>
                                             @endif
 
-                                            <x-builder.navbar dropdown-item href="{{ route('login', ['logout' => true]) }}" icon="log-out">
+                                            <x-builder.navbar dropdown-item :href="route('login', ['logout' => true])" icon="log-out">
                                                 Logout
                                             </x-builder.navbar>
                                         </div>
@@ -173,37 +171,35 @@
                                         </div>
 
                                         <div class="grid mt-2">
-                                            <x-builder.navbar dropdown-item href="{{ route('account') }}" icon="user-pin">
+                                            <x-builder.navbar dropdown-item :href="route('account.home')" icon="user-pin">
                                                 Account
                                             </x-builder.navbar>
 
-                                            @module('plans')
-                                                @if (auth()->user()->canAccessBillingPortal())
-                                                    <x-builder.navbar dropdown-item href="{{ route('billing') }}" icon="dollar-circle">
-                                                        Billing
-                                                    </x-builder.navbar>
-                                                @endif
-                                            @endmodule
+                                            @if (auth()->user()->canAccessBillingPortal())
+                                                <x-builder.navbar dropdown-item :href="route('billing')" icon="dollar-circle">
+                                                    Billing
+                                                </x-builder.navbar>
+                                            @endif
 
                                             @isset($auth)
                                                 {{ $auth }}
                                             @endisset
     
-                                            @if ($attributes->has('back-to-app'))
-                                                <x-builder.navbar dropdown-item href="{{ Route::has('app.home') ? route('app.home') : route('home') }}" icon="home-alt">
-                                                    Back to Home
+                                            @if ($home)
+                                                <x-builder.navbar dropdown-item :href="$home" icon="home-alt">
+                                                    Back to App
                                                 </x-builder.navbar>
                                             @endif
 
-                                            <x-builder.navbar dropdown-item href="{{ route('login', ['logout' => 1]) }}" icon="log-out">
+                                            <x-builder.navbar dropdown-item :href="route('login', ['logout' => 1])" icon="log-out">
                                                 Logout
                                             </x-builder.navbar>
                                         </div>
                                     @else
                                         <div class="flex items-center justify-center gap-3">
-                                            <x-button color="gray" href="{{ route('login') }}">Login</x-button>
+                                            <x-button color="gray" :href="route('login')">Login</x-button>
                                             @module('accounts')
-                                                <x-button href="{{ route('register', ['ref' => 'navbar']) }}">Register</x-button>
+                                                <x-button :href="route('register', ['ref' => 'navbar'])">Register</x-button>
                                             @endmodule
                                         </div>
                                     @endauth

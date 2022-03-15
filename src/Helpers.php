@@ -14,7 +14,7 @@ function app_route()
     if (auth()->check()) {
         if (auth()->user()->canAccessAppPortal() && Route::has('app.home')) return route('app.home');
         
-        return route('account');
+        return route('account.home');
     }
 
     return route('home');
@@ -23,8 +23,9 @@ function app_route()
 /**
  * Get livewire component
  */
-function get_livewire_component($name, $path = null)
+function get_livewire_component($name = null, $path = null)
 {
+    if (!$name) return null;
     if (!$path) return $name;
 
     $dotted = implode('.', explode('/', $path));

@@ -15,7 +15,7 @@
             : ('font-medium text-gray-600 hover:font-bold md:flex ' + (!show && 'hidden'))
         "
         wire:loading.class="pointer-events-none"
-        class="py-2 px-3 flex items-center gap-2 cursor-pointer"
+        class="py-2 px-3 flex items-center gap-2 cursor-pointer last:mb-4"
         {{ $attributes->except('name', 'href') }}
     >
         @if ($icon = $attributes->get('icon') ?? null)
@@ -49,7 +49,7 @@
     </div>
 
 @elseif ($attributes->has('group'))
-    <div class="grid gap-2 mb-4">
+    <div class="grid gap-2">
         @if ($group = $attributes->get('group') ?? null)
             <div x-bind:class="!show && 'hidden md:block'" class="text-sm text-gray-400 font-medium uppercase px-3">
                 {{ $group }}

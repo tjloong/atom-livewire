@@ -15,9 +15,8 @@ class PageHeader extends Component
      */
     public function __construct($back = false)
     {
-        $this->back = $back === false
-            ? false
-            : (optional(breadcrumbs()->previous())['url'] ?? true);
+        if (is_string($back) || is_bool($back)) $this->back = $back;
+        else $this->back = (optional(breadcrumbs()->previous())['url'] ?? true);
     }
 
     /**

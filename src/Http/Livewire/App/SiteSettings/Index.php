@@ -14,9 +14,7 @@ class Index extends Component
     public function mount()
     {
         if (!$this->tab) {
-            return redirect()->route('app.site-settings', [
-                head($this->tabs['general'] ?? $this->tabs['system'])
-            ]);
+            return redirect()->route('app.site-settings', [$this->tabs->first()->tabs->first()->slug]);
         }
 
         breadcrumbs()->flush();
@@ -28,24 +26,31 @@ class Index extends Component
     public function getTabsProperty()
     {
         $settings = model('site_setting');
-        $tabs = [
-            'general' => array_filter(array_merge(
-                [
-                    $settings->profile()->count() ? 'site-profile' : null,
-                    $settings->tracking()->count() ? 'site-tracking' : null,
-                    $settings->seo()->count() ? 'site-seo' : null,
-                    $settings->social()->count() ? 'social-media' : null,
-                    $settings->whatsapp()->count() ? 'whatsapp-bubble' : null,
-                ], 
-                config('atom.site-settings.sidenavs', [])
-            )),
-            'system' => [
-                'email-configurations',
-                'storage',
-            ],
-        ];
 
-        return array_filter($tabs);
+        $tabs = collect(json_decode(json_encode(
+            [
+                ['group' => 'General', 'tabs' => array_filter(array_merge(
+                    [
+                        $settings->profile()->count() ? ['slug' => 'site-profile'] : null,
+                        $settings->tracking()->count() ? ['slug' => 'site-tracking'] : null,
+                        $settings->seo()->count() ? ['slug' => 'site-seo'] : null,
+                        $settings->social()->count() ? ['slug' => 'social-media'] : null,
+                        $settings->whatsapp()->count() ? ['slug' => 'whatsapp-bubble'] : null,
+                    ], 
+                ))],
+                ['group' => 'System', 'tabs' => [
+                    ['slug' => 'email-configurations'],
+                    ['slug' => 'storage'],
+                ]],
+            ]
+        )))
+            ->map(function($val) {
+                $val->tabs = collect($val->tabs);
+                return $val;
+            })
+            ->filter(fn($val) => $val->tabs->count());
+
+        return $tabs;
     }
 
     /**

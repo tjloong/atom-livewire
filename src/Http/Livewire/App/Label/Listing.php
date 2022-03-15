@@ -26,7 +26,7 @@ class Listing extends Component
      */
     public function getTypesProperty()
     {
-        return config('atom.labels') ?? [];
+        return config('atom.app.labels') ?? [];
     }
 
     /**

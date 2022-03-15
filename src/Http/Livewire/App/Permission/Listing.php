@@ -24,7 +24,7 @@ class Listing extends Component
     {
         $permissions = [];
 
-        foreach (config('atom.permissions') as $module => $actions) {
+        foreach (config('atom.app.permissions') as $module => $actions) {
             $permissions[$module] = collect($actions)->map(function($action) use ($module) {
                 $ability = $module.'.'.$action;
                 $permission = ['name' => $action];

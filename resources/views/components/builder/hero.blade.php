@@ -34,7 +34,7 @@
 
         @if(isset($subtitle) && $subtitle->isNotEmpty())
             <h2 {{ $subtitle->attributes->class([
-                'text-xl font-semibold md:text-2xl',
+                'text-2xl font-semibold',
                 'text-gray-200' => $overlay,
                 'text-gray-700' => !$overlay,
             ]) }}>
@@ -43,7 +43,7 @@
         @endif
 
         @if($slot->isNotEmpty())
-            <div class="text-lg font-medium md:text-lg {{ $overlay ? 'text-gray-200' : 'text-gray-600' }}">
+            <div class="text-lg font-medium {{ $overlay ? 'text-gray-200' : 'text-gray-600' }}">
                 {{ $slot }}
             </div>
         @endif

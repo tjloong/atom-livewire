@@ -1,5 +1,8 @@
 <div class="max-w-screen-xl mx-auto">
-    <x-page-header title="Support Tickets">
+    <x-page-header 
+        title="Support Tickets" 
+        :back="auth()->user()->canAccessAppPortal() ? route('app.home') : route('account.home')"
+    >
         <x-button icon="plus" href="{{ route('ticketing.create') }}">
             New Ticket
         </x-button>

@@ -19,8 +19,10 @@
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
             <x-sidenav>
-                @foreach ($tabs as $key => $val)
-                    <x-sidenav item href="{{ route('app.blog.update', [$blog->id, $key]) }}">{{ $val }}</x-sidenav>
+                @foreach ($this->tabs as $val)
+                    <x-sidenav item :href="route('app.blog.update', [$blog->id, $val->slug])">
+                        {{ $val->label ?? str()->headline($val->slug) }}
+                    </x-sidenav>
                 @endforeach
             </x-sidenav>
         </div>

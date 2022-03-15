@@ -317,7 +317,7 @@ class AtomServiceProvider extends ServiceProvider
             if (!enabled_module('permissions')) return true;
             
             [$module, $action] = explode('.', $permission);
-            $isActionDefined = in_array($action, config('atom.permissions.'.$module) ?? []);
+            $isActionDefined = in_array($action, config('atom.app.permissions.'.$module) ?? []);
 
             if (!$isActionDefined) return true;
             if ($user->is_root) return true;

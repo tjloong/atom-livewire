@@ -11,7 +11,7 @@
         </x-slot>
 
         <x-slot name="aside">
-            <x-admin-panel aside icon="home-smile" route="app.dashboard">
+            <x-admin-panel aside icon="chart-line" route="app.dashboard">
                 Dashboard
             </x-admin-panel>
 

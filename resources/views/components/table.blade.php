@@ -151,7 +151,7 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <x-button color="gray" icon="refresh" size="xs" wire:click="resetFilters">
+                    <x-button color="gray" icon="refresh" size="sm" wire:click="resetFilters">
                         Reset Filters
                     </x-button>
                 </div>

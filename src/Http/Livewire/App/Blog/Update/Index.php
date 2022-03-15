@@ -7,7 +7,6 @@ use Livewire\Component;
 class Index extends Component
 {
     public $tab;
-    public $tabs;
     public $blog;
 
     protected $listeners = ['saved'];
@@ -18,12 +17,23 @@ class Index extends Component
     public function mount($id, $tab = null)
     {
         $this->blog = model('blog')->findOrFail($id);
-        $this->tabs = config('atom.blogs.sidenavs');
 
-        if (!$tab) return redirect()->route('app.blog.update', [$id, head(array_keys($this->tabs))]);
+        if (!$tab) return redirect()->route('app.blog.update', [$id, $this->tabs->first()->slug]);
         else $this->tab = $tab;
 
         breadcrumbs()->push($this->blog->title);
+    }
+
+    /**
+     * Get tabs property
+     */
+    public function getTabsProperty()
+    {
+        return collect(json_decode(json_encode([
+            ['slug' => 'content', 'label' => 'Blog Content'],
+            ['slug' => 'seo', 'label' => 'SEO'],
+            ['slug' => 'settings', 'label' => 'Settings'],
+        ])));
     }
 
     /**

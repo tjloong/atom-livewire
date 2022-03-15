@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -185,6 +186,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function canAccessAppPortal()
     {
+        if (!Route::has('app.home')) return false;
+
         return empty($this->account);
     }
 
@@ -195,6 +198,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function canAccessBillingPortal()
     {
-        return !$this->is_root;
+        return Route::has('billing') && !$this->is_root;
     }
 }

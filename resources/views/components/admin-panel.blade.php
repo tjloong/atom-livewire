@@ -8,7 +8,7 @@
             <a href="{{ $href ?: route($route, $params) }}" class="pl-2" {{ $isActive ? 'data-active' : '' }}>
                 <div
                     class="
-                        flex items-center gap-2 rounded-l-md px-4 py-2.5 text-white
+                        flex items-center gap-3 rounded-l-md px-4 py-2.5 text-white
                         {{ $isActive ? 'font-semibold bg-white/20 border-r-8 border-theme' : 'font-medium hover:bg-white/10' }}
                     "
                 >
@@ -27,7 +27,7 @@
                 <div x-on:click="open = true" class="cursor-pointer pl-2">
                     <div
                         x-bind:class="active && 'bg-white/10'"
-                        class="flex items-center gap-2 rounded-l-md px-4 py-2.5 text-white"
+                        class="flex items-center gap-3 rounded-l-md px-4 py-2.5 text-white"
                     >
                         @if ($attributes->get('icon'))
                             <x-icon name="{{ $attributes->get('icon') }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="20px"/>

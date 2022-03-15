@@ -11,45 +11,39 @@ return [
         'linkedin',
     ],
 
+    /**
+     * Account Portal
+     */
     'accounts' => [
         'verify' => true,
-        'sidenavs' => [
-            'profile' => 'Profile',
-        ],
     ],
 
+    /**
+     * Onboarding Portal
+     */
     'onboarding' => [
         'steps' => [
             'profile' => 'Personal Information',
         ],
     ],
 
-    'users' => [
-        'data_visibility' => true,
-    ],
-
-    'blogs' => [
-        'sidenavs' => [
-            'content' => 'Content',
-            'seo' => 'SEO',
-            'settings' => 'Settings',
+    /**
+     * App Portal
+     */
+    'app' => [
+        'users' => [
+            'data_visibility' => true,
         ],
-    ],
-
-    'labels' => [
-        'blog-category',
-    ],
     
-    'permissions' => [
-        'users' => ['manage'],
-        'labels' => ['manage'],
-        'files' => ['manage'],
-        'site-settings' => ['manage'],
-    ],
-
-    'site-settings' => [
-        'sidenavs' => [
-            //
+        'labels' => [
+            'blog-category',
+        ],
+        
+        'permissions' => [
+            'users' => ['manage'],
+            'labels' => ['manage'],
+            'files' => ['manage'],
+            'site-settings' => ['manage'],
         ],
     ],
 ];
