@@ -246,7 +246,7 @@ class AtomServiceProvider extends ServiceProvider
         // account
         Livewire::component('atom.app.account.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Listing');
         Livewire::component('atom.app.account.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Update\\Index');
-        Livewire::component('atom.app.account.update.profile', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Update\\Profile');
+        Livewire::component('atom.app.account.update.overview', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Update\\Overview');
 
         // team
         Livewire::component('atom.team.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Listing');

@@ -20,7 +20,7 @@ class Index extends Component
     public function mount()
     {
         $this->account = auth()->user()->account;
-        
+
         $this->tabs = collect(config('atom.onboarding.steps', []))->map(fn($label, $key) => [
             'value' => $key,
             'label' => $label,

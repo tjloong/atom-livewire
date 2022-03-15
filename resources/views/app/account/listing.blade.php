@@ -3,7 +3,7 @@
 
     <x-table :total="$users->total()" :links="$users->links()" export>
         <x-slot name="head">
-            <x-table head sort="created_at">Date</x-table>
+            <x-table head sort="created_at">Join Date</x-table>
             <x-table head sort="name">Name</x-table>
             <x-table head>Contact</x-table>
             
