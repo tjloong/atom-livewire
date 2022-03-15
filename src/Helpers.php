@@ -4,8 +4,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
-use Jiannius\Atom\Services\Breadcrumbs;
-use Jiannius\Atom\Services\Metadata;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
@@ -16,7 +14,7 @@ function app_route()
     if (auth()->check()) {
         if (auth()->user()->canAccessAppPortal() && Route::has('app.home')) return route('app.home');
         
-        return route('account.home');
+        return route('account');
     }
 
     return route('home');
@@ -49,9 +47,54 @@ function get_livewire_component($name, $path = null)
 /**
  * Metadata
  */
-function metadata()
+function metadata($method = null, $args = null)
 {
-    return new Metadata();
+    $classes = [
+        'try' => 'App\\Services\\Metadata',
+        'use' => 'Jiannius\\Atom\\Services\\Metadata',
+    ];
+
+    $class = class_exists($classes['try'])
+        ? $classes['try']
+        : $classes['use'];
+
+    $instance = app($class);
+
+    if ($method) {
+        $methodName = str()->camel($method);
+        return $instance->$methodName($args);
+    }
+    else return $instance;
+}
+
+/**
+ * Breadcrumbs
+ */
+function breadcrumbs()
+{
+    $classes = [
+        'try' => 'App\\Services\\Breadcrumbs',
+        'use' => 'Jiannius\\Atom\\Services\\Breadcrumbs',
+    ];
+
+    $class = class_exists($classes['try'])
+        ? $classes['try']
+        : $classes['use'];
+
+    return app($class);
+}
+
+/**
+ * Get tabs array from atom config
+ */
+function get_tabs_from_config($config)
+{
+    return collect(config($config, []))
+        ->map(fn($val, $key) => is_array($val)
+            ? ['group' => $key, 'tabs' => collect($val)->map(fn($subval, $subkey) => ['value' => $subkey, 'label' => $subval])]
+            : ['value' => $key, 'label' => $val]
+        )
+        ->values();
 }
 
 /**
@@ -65,14 +108,6 @@ function site_settings($name, $default = null)
             model('site_setting')->setSetting($key, $val);
         }
     }
-}
-
-/**
- * Add entry to breadcrumbs
- */
-function breadcrumbs()
-{
-    return new Breadcrumbs();
 }
 
 function export_to_excel($filename, $collection, $iterator = null)

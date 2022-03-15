@@ -76,11 +76,11 @@
     
                 init () {
                     if (this.value?.startsWith('+')) {
-                        const code = this.countries.find(country => (this.value.startsWith(country.code)))
+                        const country = this.countries.find(val => (this.value.startsWith(val.code)))
 
-                        if (code) {
-                            this.code = code
-                            this.number = this.value.replace(code, '')
+                        if (country) {
+                            this.code = country.code
+                            this.number = this.value.replace(country.code, '')
                         }
                     }
                     else this.number = this.value

@@ -111,7 +111,7 @@
                                 <x-slot name="dropdown">
                                     <div class="grid divide-y gap-3">
                                         <div class="grid">
-                                            <x-builder.navbar dropdown-item href="{{ route('account.home') }}" icon="user-pin">
+                                            <x-builder.navbar dropdown-item href="{{ route('account') }}" icon="user-pin">
                                                 Account
                                             </x-builder.navbar>
 
@@ -129,9 +129,9 @@
                                         </div>
     
                                         <div class="grid pt-2">
-                                            @if ($attributes->has('back-to-app') && auth()->user()->canAccessAppPortal())
+                                            @if ($attributes->has('back-to-app'))
                                                 <x-builder.navbar dropdown-item href="{{ Route::has('app.home') ? route('app.home') : route('home') }}" icon="home-alt">
-                                                    Back to App
+                                                    Back to Home
                                                 </x-builder.navbar>
                                             @endif
 
@@ -173,7 +173,7 @@
                                         </div>
 
                                         <div class="grid mt-2">
-                                            <x-builder.navbar dropdown-item href="{{ route('account.home') }}" icon="user-pin">
+                                            <x-builder.navbar dropdown-item href="{{ route('account') }}" icon="user-pin">
                                                 Account
                                             </x-builder.navbar>
 
@@ -189,9 +189,9 @@
                                                 {{ $auth }}
                                             @endisset
     
-                                            @if ($attributes->has('back-to-app') && auth()->user()->canAccessAppPortal())
+                                            @if ($attributes->has('back-to-app'))
                                                 <x-builder.navbar dropdown-item href="{{ Route::has('app.home') ? route('app.home') : route('home') }}" icon="home-alt">
-                                                    Back to App
+                                                    Back to Home
                                                 </x-builder.navbar>
                                             @endif
 
