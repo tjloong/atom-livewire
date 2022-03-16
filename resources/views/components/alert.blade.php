@@ -13,7 +13,7 @@
         
         <div class="self-center flex-grow">
             @isset($title)
-                <div class="{{ $color->title }} font-semibold mb-1.5">
+                <div class="{{ $color->title }} text-lg font-semibold mb-1.5">
                     {{ $title }}
                 </div>
             @endisset

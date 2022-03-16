@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header :title="$title"/>
 
-    <x-table :total="$users->total()" :links="$users->links()" export>
+    <x-table :total="$accounts->total()" :links="$accounts->links()" export>
         <x-slot name="head">
             <x-table head sort="created_at">Join Date</x-table>
             <x-table head sort="name">Name</x-table>
@@ -15,30 +15,30 @@
         </x-slot>
 
         <x-slot name="body">
-            @foreach ($users as $user)
+            @foreach ($accounts as $account)
                 <x-table row>
                     <x-table cell>
-                        {{ format_date($user->created_at) }}
-                        <div class="font-medium text-gray-500">{{ format_date($user->created_at, 'time') }}</div>
+                        {{ format_date($account->created_at) }}
+                        <div class="font-medium text-gray-500">{{ format_date($account->created_at, 'time') }}</div>
                     </x-table>
 
                     <x-table cell>
-                        <a href="{{ route('app.account.update', [$user->id]) }}">
-                            {{ $user->name }}
+                        <a href="{{ route('app.account.update', [$account->id]) }}">
+                            {{ $account->name }}
                         </a>
                     </x-table>
 
                     <x-table cell>
-                        @foreach (array_filter([$user->email ?? $user->account->email, $user->account->phone]) as $contact)
+                        @foreach (array_filter([$account->email, $account->phone]) as $contact)
                             <div>{{ $contact }}</div>
                         @endforeach
                     </x-table>
 
                     @module('plans')
                         <x-table cell class="text-right">
-                            @if ($user->account->subscriptions->count())
+                            @if ($account->subscriptions->count())
                                 <div class="flex flex-wrap items-center justify-end gap-1">
-                                    @foreach ($user->account->subscriptions as $subscription)
+                                    @foreach ($account->subscriptions as $subscription)
                                         <span class="py-0.5 px-2 bg-gray-100 rounded text-sm uppercase">
                                             {{ str($subscription->plan->name)->limit(15) }}
                                         </span>
@@ -51,7 +51,7 @@
                     @endmodule
 
                     <x-table cell class="text-right">
-                        <x-badge>{{ $user->account->status }}</x-badge>
+                        <x-badge>{{ $account->status }}</x-badge>
                     </x-table>
                 </x-table>
             @endforeach

@@ -91,11 +91,11 @@ class Button extends Component
     public function getIconSize()
     {
         $sizes = [
-            'xs' => '10px',
-            'sm' => '12px',
-            'base' => '14px',
-            'md' => '16px',
-            'lg' => '18px',
+            'xs' => '12px',
+            'sm' => '14px',
+            'base' => '16px',
+            'md' => '18px',
+            'lg' => '20px',
         ];
 
         return $sizes[$this->size ?? 'base'];

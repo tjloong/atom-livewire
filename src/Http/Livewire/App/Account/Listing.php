@@ -30,12 +30,12 @@ class Listing extends Component
     }
 
     /**
-     * Get users property
+     * Get accounts property
      */
-    public function getUsersProperty()
+    public function getAccountsProperty()
     {
-        return model('user')
-            ->whereHas('account', fn($q) => $q->filter($this->filters))
+        return model('account')
+            ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
     }
 
@@ -53,7 +53,7 @@ class Listing extends Component
     public function render()
     {
         return view('atom::app.account.listing', [
-            'users' => $this->users->paginate(30),
+            'accounts' => $this->accounts->paginate(30),
         ]);
     }
 
@@ -63,17 +63,17 @@ class Listing extends Component
     public function export()
     {
         $filename = 'accounts-' . rand(1000, 9999) . '.xlsx';
-        $users = $this->users->get();
+        $accounts = $this->accounts->get();
 
-        return export_to_excel($filename, $users, fn($user) => [
-            'Date' => $user->created_at->toDatetimeString(),
-            'Name' => $user->name,
-            'Phone' => $user->account->phone,
-            'Email' => $user->email ?? $user->account->email,
-            'Agreed to T&C' => $user->account->agree_tnc ? 'Yes' : 'No',
-            'Agreed to Marketing' => $user->account->agree_marketing ? 'Yes' : 'No',
-            'Status' => $user->account->status,
-            'Blocked Date' => optional($user->account->blocked_at)->toDatetimeString(),
+        return export_to_excel($filename, $accounts, fn($account) => [
+            'Date' => $account->created_at->toDatetimeString(),
+            'Name' => $account->name,
+            'Phone' => $account->phone,
+            'Email' => $account->email,
+            'Agreed to T&C' => $account->agree_tnc ? 'Yes' : 'No',
+            'Agreed to Marketing' => $account->agree_marketing ? 'Yes' : 'No',
+            'Status' => $account->status,
+            'Blocked Date' => optional($account->blocked_at)->toDatetimeString(),
         ]);
     }
 }

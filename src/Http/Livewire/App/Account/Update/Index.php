@@ -7,16 +7,14 @@ use Livewire\Component;
 class Index extends Component
 {
     public $tab;
-    public $user;
-
-    protected $listeners = ['refresh' => '$refresh'];
+    public $account;
 
     /**
      * Mount
      */
     public function mount($id)
     {
-        $this->user = model('user')->findOrFail($id);
+        $this->account = model('account')->findOrFail($id);
 
         if (!$this->tab) {
             $nav = $this->navs->first();
@@ -25,7 +23,7 @@ class Index extends Component
             return redirect()->route('app.account.update', [$id, $tab]);
         }
 
-        breadcrumbs()->push($this->user->name);
+        breadcrumbs()->push($this->account->name);
     }
 
     /**
@@ -56,7 +54,7 @@ class Index extends Component
      */
     public function block()
     {
-        $this->user->account->block();
+        $this->account->block();
     }
 
     /**
@@ -64,7 +62,7 @@ class Index extends Component
      */
     public function unblock()
     {
-        $this->user->account->unblock();
+        $this->account->unblock();
     }
 
     /**
@@ -72,7 +70,7 @@ class Index extends Component
      */
     public function delete()
     {
-        $this->user->delete();
+        $this->account->delete();
         
         session()->flash('flash', 'Account Deleted');
 

@@ -36,8 +36,10 @@
         'success' => 'green',
         'invoiced' => 'green',
         'verified' => 'green',
+        'certified' => 'green',
         'delivered' => 'green',
         'published' => 'green',
+        'completed' => 'green',
 
         'blocked' => 'black',
         'trashed' => 'black',

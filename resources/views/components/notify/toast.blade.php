@@ -14,8 +14,17 @@
         </a>
         <div class="flex space-x-2">
             <div class="flex-shrink-0">
-                <div class="w-7 h-7 rounded-full flex items-center justify-center" x-bind:class="iconBgColors[type]">
-                    <x-icon x-bind:name="icons[type]" size="18px" x-bind:class="iconTextColors[type]"/>
+                <div x-show="type === 'info'" class="w-7 h-7 rounded-full flex bg-blue-100">
+                    <x-icon name="info-circle" class="text-blue-400 m-auto" size="xs"/>
+                </div>
+                <div x-show="type === 'error'" class="w-7 h-7 rounded-full flex bg-red-100">
+                    <x-icon name="error" class="text-red-400 m-auto" size="xs"/>
+                </div>
+                <div x-show="type === 'warning'" class="w-7 h-7 rounded-full flex bg-yellow-100">
+                    <x-icon name="error" class="text-yellow-400 m-auto" size="xs"/>
+                </div>
+                <div x-show="type === 'success'" class="w-7 h-7 rounded-full flex bg-green-100">
+                    <x-icon name="check" class="text-green-400 m-auto" size="xs"/>
                 </div>
             </div>
 
@@ -36,24 +45,6 @@
             message: null,
             duration: 5000,
             type: 'info',
-            icons: {
-                'info': 'info-circle',
-                'error': 'error',
-                'warning': 'error',
-                'success': 'check',
-            },
-            iconBgColors: {
-                info: 'bg-blue-100',
-                error: 'bg-red-100',
-                warning: 'bg-yellow-100',
-                success: 'bg-green-100',
-            },
-            iconTextColors: {
-                info: 'text-blue-400',
-                error: 'text-red-400',
-                warning: 'text-yellow-400',
-                success: 'text-green-400',
-            },
             setContent (config) {
                 if (config === 'formError') this.message = 'Whoops! Something went wrong.'
                 else {

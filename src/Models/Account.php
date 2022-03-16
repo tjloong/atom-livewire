@@ -6,11 +6,13 @@ use App\Models\User;
 use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Account extends Model
 {
     use HasTrace;
     use HasFilters;
+    use SoftDeletes;
     
     protected $guarded = [];
 
@@ -27,7 +29,7 @@ class Account extends Model
      */
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class)->withTrashed();
     }
 
     /**

@@ -3,8 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
 use Livewire\Component;
-use App\Models\User;
-
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -37,28 +35,30 @@ class Login extends Component
      */
     public function login()
     {
-        if (app()->environment('local')) {
-            if ($user = User::where('email', $this->email)->where('is_active', true)->first()) {
-                Auth::login($user);
-            }
+        $user = model('user')
+            ->where('email', $this->email)
+            ->where('is_active', true)
+            ->where(fn($q) => $q
+                ->doesntHave('account')
+                ->orWhereHas('account', fn($q) => $q->whereNull('deleted_at')->whereNull('blocked_at'))
+            )
+            ->first();
+
+        if ($user) {
+            if (app()->environment('local')) Auth::login($user);
             else {
-                throw ValidationException::withMessages([
-                    'email' => __('auth.failed'),
-                ]);    
+                $this->ensureIsNotRateLimited();
+        
+                if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+                    RateLimiter::hit($this->throttleKey());
+                    throw ValidationException::withMessages(['email' => __('auth.failed')]);
+                }
+
+                RateLimiter::clear($this->throttleKey());
             }
         }
         else {
-            $this->ensureIsNotRateLimited();
-
-            if (! Auth::attempt(['email' => $this->email, 'password' => $this->password, 'is_active' => true], $this->remember)) {
-                RateLimiter::hit($this->throttleKey());
-    
-                throw ValidationException::withMessages([
-                    'email' => __('auth.failed'),
-                ]);
-            }
-    
-            RateLimiter::clear($this->throttleKey());
+            throw ValidationException::withMessages(['email' => __('auth.failed')]);
         }
 
         request()->session()->regenerate();

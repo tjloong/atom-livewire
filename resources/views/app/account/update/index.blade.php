@@ -1,7 +1,7 @@
 <div class="max-w-screen-lg mx-auto">
-    <x-page-header :title="$user->account->name ?? $user->name" back>
+    <x-page-header :title="$account->name" back>
         <div class="flex items-center gap-2">
-            @if ($user->account->status === 'blocked')
+            @if ($account->status === 'blocked')
                 <x-button inverted icon="play" x-on:click="$dispatch('confirm', {
                     title: 'Unblock Account',
                     message: 'Are you sure to unblock this account?',
@@ -9,7 +9,7 @@
                 })">
                     Unblock
                 </x-button>
-            @elseif ($user->account->status !== 'trashed')
+            @elseif ($account->status !== 'trashed')
                 @can('account.block')
                     <x-button inverted icon="block" color="red" x-on:click="$dispatch('confirm', {
                         title: 'Block Account',
@@ -24,7 +24,7 @@
 
             <x-button inverted icon="trash" color="red" 
                 can="account.delete"
-                :hide="$user->account->status === 'trashed'"
+                :hide="$account->status === 'trashed'"
                 x-on:click="$dispatch('confirm', {
                     title: 'Delete Account',
                     message: 'Are you sure to delete this account?',
@@ -44,13 +44,13 @@
                     @if(property_exists($nav, 'group'))
                         <x-sidenav :group="$nav->group">
                             @foreach ($nav->tabs as $val)
-                                <x-sidenav item :href="route('app.account.update', [$user->id, $val->slug])">
+                                <x-sidenav item :href="route('app.account.update', [$account->id, $val->slug])">
                                     {{ $val->label ?? str($val->slug)->headline() }}
                                 </x-sidenav>
                             @endforeach
                         </x-sidenav>
                     @else
-                        <x-sidenav item :href="route('app.account.update', [$user->id, $nav->slug])">
+                        <x-sidenav item :href="route('app.account.update', [$account->id, $nav->slug])">
                             {{ $nav->label ?? str($nav->slug)->headline() }}
                         </x-sidenav>
                     @endif
@@ -60,7 +60,7 @@
 
         <div class="md:col-span-9">
             @if ($component = get_livewire_component($tab, 'app/account/update'))
-                @livewire($component, compact('user'))
+                @livewire($component, compact('account'))
             @endif
         </div>
     </div>

@@ -44,7 +44,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('accounts')) return;
 
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Account::class)->withTrashed();
     }
 
     /**

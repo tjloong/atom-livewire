@@ -567,7 +567,9 @@ class InstallCommand extends Command
                 $table->boolean('agree_marketing')->nullable();
                 $table->timestamp('onboarded_at')->nullable();
                 $table->timestamps();
+                $table->timestamp('deleted_at')->nullable();
                 $table->timestamp('blocked_at')->nullable();
+                $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
                 $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
             });
 

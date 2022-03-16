@@ -8,8 +8,17 @@
         <div class="relative p-4">
             <div class="max-w-lg mx-auto bg-white rounded-md border p-4 shadow-lg flex space-x-3 min-w-[400px]">
                 <div class="flex-shrink-0">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center" x-bind:class="iconBgColors[config.type]">
-                        <x-icon x-bind:name="icons[config.type]" x-bind:class="iconTextColors[config.type]"/>
+                    <div x-show="config.type === 'info'" class="w-10 h-10 rounded-full flex bg-blue-100">
+                        <x-icon name="info-circle" class="text-blue-400 m-auto" size="xs"/>
+                    </div>
+                    <div x-show="config.type === 'error'" class="w-10 h-10 rounded-full flex bg-red-100">
+                        <x-icon name="error" class="text-red-400 m-auto" size="xs"/>
+                    </div>
+                    <div x-show="config.type === 'warning'" class="w-10 h-10 rounded-full flex bg-yellow-100">
+                        <x-icon name="error" class="text-yellow-400 m-auto" size="xs"/>
+                    </div>
+                    <div x-show="config.type === 'success'" class="w-10 h-10 rounded-full flex bg-green-100">
+                        <x-icon name="check" class="text-green-400 m-auto" size="xs"/>
                     </div>
                 </div>
 
@@ -41,24 +50,6 @@
                 title: null,
                 message: null,
                 type: 'info',
-            },
-            icons: {
-                'info': 'info-circle',
-                'error': 'error',
-                'warning': 'error',
-                'success': 'check',
-            },
-            iconBgColors: {
-                info: 'bg-blue-100',
-                error: 'bg-red-100',
-                warning: 'bg-yellow-100',
-                success: 'bg-green-100',
-            },
-            iconTextColors: {
-                info: 'text-blue-400',
-                error: 'text-red-400',
-                warning: 'text-yellow-400',
-                success: 'text-green-400',
             },
             buttonColors: {
                 info: 'bg-blue-500 text-white',
