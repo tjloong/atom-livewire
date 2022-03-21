@@ -3,7 +3,7 @@ table {
 }
 table thead th {
     @apply py-2 px-4 bg-gray-100 font-medium uppercase text-left border-b border-gray-200 leading-6 tracking-wider;
-    font-size: 11px;
+    font-size: 12px;
 }
 table tbody {
     @apply bg-white;

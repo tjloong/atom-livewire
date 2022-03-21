@@ -1,12 +1,16 @@
 @if ($attributes->has('item'))
     <div
         @if ($attributes->has('href'))
-            x-data="{ active: @js(str()->is($attributes->get('href') . '*', url()->current())) }"
+            @if ($attributes->has('active')) x-data="{ active: @js($attributes->get('active')) }"
+            @else x-data="{ active: @js(str()->is($attributes->get('href') . '*', url()->current())) }"
+            @endif
             x-on:click="show = !show; (!active && (window.location = '{{ $attributes->get('href') }}'))"
         @else
             x-data="{
                 name: @js($attributes->get('name') ?? str()->slug($slot->toHtml())),
-                get active () { return this.value === this.name },
+                @if ($attributes->has('active')) active: @js($attributes->get('active')),
+                @else get active () { return this.value === this.name },
+                @endif
             }"
             x-on:click="show = !show; (!active && $dispatch('input', name))"
         @endif

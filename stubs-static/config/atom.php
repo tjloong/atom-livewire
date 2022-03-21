@@ -4,6 +4,9 @@ return [
     'locales' => ['en'],
     'timezone' => 'Asia/Kuala_Lumpur',
     'static_site' => true,
+    'gtm_id' => null,
+    'ga_id' => null,
+    'fbpixel_id' => null,
 
     'seo' => [
         'title' => null,
@@ -14,7 +17,11 @@ return [
         'jsonld' => null,
     ],
 
-    'gtm_id' => null,
-    'ga_id' => null,
-    'fbpixel_id' => null,
+    'contact' => [
+        'company' => null,
+        'phone' => null,
+        'email' => null,
+        'address' => null,
+        'gmap_url' => null,
+    ],
 ];

@@ -11,37 +11,30 @@ use Rap2hpoutre\FastExcel\FastExcel;
  */
 function app_route()
 {
-    if (auth()->check()) {
-        if (auth()->user()->canAccessAppPortal() && Route::has('app.home')) return route('app.home');
-        
-        return route('account.home');
-    }
-
-    return route('home');
+    return Route::has('app.home') ? route('app.home') : route('page');
 }
 
 /**
- * Get livewire component
+ * Get livewire component name
  */
-function get_livewire_component($name = null, $path = null)
+function livewire_name($path = null)
 {
-    if (!$name) return null;
-    if (!$path) return $name;
+    if (!$path) return;
 
     $dotted = implode('.', explode('/', $path));
-    $backslashed = implode('\\', collect(explode('/', $path))->map(fn($str) => str($str)->studly())->values()->all());
+    $slashed = collect(explode('/', $path))->map(fn($str) => str()->studly($str))->filter()->join('\\');
 
     if (
-        class_exists('App\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly())
-        || class_exists('App\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly().'\\Index')
+        class_exists('App\\Http\\Livewire\\'.$slashed)
+        || class_exists('App\\Http\\Livewire\\'.$slashed.'\\Index')
     ) {
-        return "{$dotted}.{$name}";
+        return $dotted;
     }
     else if (
-        class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly())
-        || class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$backslashed.'\\'.str($name)->studly().'\\Index')
+        class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$slashed)
+        || class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$slashed.'\\Index')
     ) {
-        return "atom.{$dotted}.{$name}";
+        return "atom.{$dotted}";
     }
 }
 
@@ -164,9 +157,10 @@ function abort_module($module)
 /**
  * Define route
  */
-function define_route($path, $action, $method = 'get')
+function define_route($path = null, $action = null, $method = 'get')
 {
-    if (is_callable($action)) return Route::$method($path, $action);
+    if (!$path && !$action) return app('router');
+    if (is_callable($action)) return app('router')->$method($path, $action);
 
     $isController = str()->is('*Controller@*', $action);
     $namespacePrefix = $isController ? 'Jiannius\\Atom\\Http\\Controllers\\' : 'Jiannius\\Atom\\Http\\Livewire\\';
@@ -177,7 +171,7 @@ function define_route($path, $action, $method = 'get')
         ? $tryNamespacePrefix . $className
         : $namespacePrefix . $className;
 
-    return Route::$method(
+    return app('router')->$method(
         $path, 
         $classMethod ? [$fullClass, $classMethod] : $fullClass
     );

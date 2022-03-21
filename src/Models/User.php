@@ -28,10 +28,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
-        'is_root' => 'boolean',
-        'is_pending' => 'boolean',
-        'is_active' => 'boolean',
         'account_id' => 'integer',
+        'activated_at' => 'datetime',
         'email_verified_at' => 'datetime',
     ];
 
@@ -42,9 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function account()
     {
-        if (!enabled_module('accounts')) return;
-
-        return $this->belongsTo(Account::class)->withTrashed();
+        return $this->belongsTo(get_class(model('account')));
     }
 
     /**
@@ -54,7 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('roles')) return;
 
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(get_class(model('role')));
     }
 
     /**
@@ -64,7 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('permissions')) return;
 
-        return $this->hasMany(UserPermission::class);
+        return $this->hasMany(get_class(model('user_permission')));
     }
     
     /**
@@ -74,7 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('teams')) return;
 
-        return $this->belongsToMany(Team::class, 'teams_users');
+        return $this->belongsToMany(get_class(model('team')), 'teams_users');
     }
 
     /**
@@ -89,7 +85,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
-            ->when(enabled_module('accounts'), fn($q) => $q->whereHas('account', fn($q) => $q->search($search)))
+            ->orWhereHas('account', fn($q) => $q->search($search))
         );
     }
 
@@ -128,10 +124,21 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getStatusAttribute()
     {
-        if (!$this->is_active) return 'inactive';
-        if ($this->is_pending) return 'pending';
+        if ($this->trashed()) return 'trashed';
+        if ($this->blocked()) return 'blocked';
+        
+        if ($this->activated_at) return 'active';
+        else return 'inactive';
+    }
 
-        return 'active';
+    /**
+     * Check user is root
+     * 
+     * @return boolean
+     */
+    public function isRoot()
+    {
+        return $this->account->type === 'root';
     }
 
     /**
@@ -161,7 +168,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function sendAccountActivation()
     {
-        if ($this->status === 'pending') {
+        if ($this->status === 'inactive') {
             $this->notify(new ActivateAccountNotification());
         }
     }
@@ -186,9 +193,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function canAccessAppPortal()
     {
-        if (!Route::has('app.home')) return false;
-
-        return empty($this->account);
+        return Route::has('app.home') && in_array($this->account->type, [
+            'root',
+            'system',
+        ]);
     }
 
     /**
@@ -198,6 +206,38 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function canAccessBillingPortal()
     {
-        return Route::has('billing') && !$this->is_root;
+        return Route::has('billing') 
+            && model('plan')->whereIsActive(true)->count() > 0
+            && in_array($this->account->type, [
+                'root',
+                'signup',
+            ]);
+    }
+
+    /**
+     * Check user can access ticketing portal
+     * 
+     * @return boolean
+     */
+    public function canAccessTicketingPortal()
+    {
+        return Route::has('ticketing.listing') && in_array($this->account->type, [
+            'root',
+            'signup',
+            'system',
+        ]);
+    }
+
+    /**
+     * Check user can access onboarding portal
+     * 
+     * @return boolean
+     */
+    public function canAccessOnboardingPortal()
+    {
+        return Route::has('onboarding') && in_array($this->account->type, [
+            'root',
+            'signup',
+        ]);
     }
 }

@@ -2,19 +2,7 @@
     <div class="flex-grow flex my-1">
         @if ($back)
             <div class="flex-shrink-0">
-                <a 
-                    class="bg-gray-300 text-gray-800 rounded py-1 px-2 flex items-center justify-center mr-3"
-                    @if (request()->query('back'))
-                        href="{{ request()->query('back') }}"
-                    @elseif (is_string($back))
-                        href="{{ $back }}"
-                    @else
-                        x-data
-                        x-on:click.prevent="history.back()"
-                    @endif
-                >
-                    <x-icon name="left-arrow-alt"/>
-                </a>
+                <x-back-button :href="request()->query('back') ?? (is_string($back) ? $back : null)"/>
             </div>
         @endif
 

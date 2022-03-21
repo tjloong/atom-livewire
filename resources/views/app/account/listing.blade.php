@@ -29,7 +29,7 @@
                     </x-table>
 
                     <x-table cell>
-                        @foreach (array_filter([$account->email, $account->phone]) as $contact)
+                        @foreach (array_filter([$account->email, $account->phone ?? null]) as $contact)
                             <div>{{ $contact }}</div>
                         @endforeach
                     </x-table>

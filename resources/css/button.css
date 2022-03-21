@@ -1,5 +1,5 @@
 .btn {
-    @apply inline-flex items-center justify-center font-medium py-1.5 px-3 rounded-md hover:shadow;
+    @apply inline-flex items-center justify-center font-medium text-base py-1.5 px-3 rounded-md hover:shadow;
 }
 .btn.btn-xs {
     @apply py-1 px-2 rounded text-xs;

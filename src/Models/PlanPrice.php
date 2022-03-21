@@ -31,24 +31,12 @@ class PlanPrice extends Model
     {
         return $this->belongsTo(Plan::class);
     }
-
-    /**
-     * Get tenants for plan price
-     */
-    public function tenants()
-    {
-        if (!enabled_module('tenants')) return;
-        
-        return $this->belongsToMany(Tenant::class, 'tenants_subscriptions', 'plan_price_id', 'tenant_id');
-    }
     
     /**
      * Get accounts for plan price
      */
     public function accounts()
     {
-        if (!enabled_module('accounts')) return;
-
         return $this->belongsToMany(Account::class, 'accounts_subscriptions', 'plan_price_id', 'account_id');
     }
 

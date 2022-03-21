@@ -6,16 +6,14 @@ use Illuminate\View\Component;
 
 class Sidenav extends Component
 {
-    public $active;
-
     /**
      * Contructor
      * 
      * @return void
      */
-    public function __construct($active = false)
+    public function __construct()
     {
-        $this->active = $active;
+        //
     }
 
     /**

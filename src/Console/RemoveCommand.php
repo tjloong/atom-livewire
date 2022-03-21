@@ -15,7 +15,6 @@ class RemoveCommand extends Command
     protected $modules = [
         'roles',
         'permissions',
-        'accounts',
         'pages',
         'teams',
         'blogs',
@@ -80,12 +79,6 @@ class RemoveCommand extends Command
 
         Schema::dropIfExists('accounts_orders');
         $this->line('Dropped accounts_orders table.');
-        
-        Schema::dropIfExists('tenants_subscriptions');
-        $this->line('Dropped tenants_subscriptions table.');
-
-        Schema::dropIfExists('tenants_orders');
-        $this->line('Dropped tenants_orders table.');
 
         Schema::dropIfExists('plans_upgradables');
         $this->line('Dropped plans_upgradables table.');
@@ -194,21 +187,6 @@ class RemoveCommand extends Command
         }
 
         $this->line('Deleted site settings for pages.');
-    }
-
-    /**
-     * Remove accounts
-     */
-    private function removeAccounts()
-    {
-        $this->newLine();
-        $this->info('Removing accounts module...');
-
-        Schema::dropIfExists('accounts_subscriptions');
-        $this->line('Dropped accounts_subscriptions table.');
-
-        Schema::dropIfExists('accounts');
-        $this->line('Dropped accounts table.');
     }
 
     /**

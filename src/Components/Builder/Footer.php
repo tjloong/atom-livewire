@@ -28,9 +28,9 @@ class Footer extends Component
         $siteSettings = true
     ) {
         if (config('atom.static_site')) {
-            $this->company = $contact['company'] ?? null;
-            $this->phone = $contact['phone'] ?? null;
-            $this->email = $contact['email'] ?? null;
+            $this->company = $contact['company'] ?? config('atom.contact.company');
+            $this->phone = $contact['phone'] ?? config('atom.contact.phone');
+            $this->email = $contact['email'] ?? config('atom.contact.email');
             $this->socials = $socials;
             $this->whatsapp = $whatsapp;
         }

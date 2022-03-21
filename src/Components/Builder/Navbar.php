@@ -6,11 +6,11 @@ use Illuminate\View\Component;
 
 class Navbar extends Component
 {
-    public $home;
-    public $lang;
+    public $fixed;
     public $align;
     public $sticky;
     public $showAuth;
+    public $backToApp;
     public $registerPlaceholder;
 
     /**
@@ -20,33 +20,21 @@ class Navbar extends Component
      */
     public function __construct(
         $align = 'left',
+        $fixed = false,
         $sticky = false,
         $showAuth = true,
-        $registerPlaceholder = 'Sign Up',
-        $lang = null
+        $registerPlaceholder = 'Sign Up'
     ) {
-        $this->lang = $lang;
+        $this->fixed = $fixed;
         $this->align = $align;
         $this->sticky = $sticky;
         $this->showAuth = $showAuth;
         $this->registerPlaceholder = $registerPlaceholder;
-        $this->home = $this->getHomeUrl();
-    }
-
-    /**
-     * Get home url
-     */
-    public function getHomeUrl()
-    {
-        if (
-            !request()->is('app') 
+        $this->backToApp = !request()->is('app') 
             && !request()->is('app/') 
             && !request()->is('app/*') 
-            && auth()->id()
-            && auth()->user()->canAccessAppPortal()
-        ) return route('app.home');
-
-        return null;
+            && auth()->check()
+            && auth()->user()->canAccessAppPortal();
     }
 
     /**

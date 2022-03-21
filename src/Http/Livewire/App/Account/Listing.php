@@ -35,6 +35,7 @@ class Listing extends Component
     public function getAccountsProperty()
     {
         return model('account')
+            ->where('type', 'signup')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
     }
@@ -68,7 +69,6 @@ class Listing extends Component
         return export_to_excel($filename, $accounts, fn($account) => [
             'Date' => $account->created_at->toDatetimeString(),
             'Name' => $account->name,
-            'Phone' => $account->phone,
             'Email' => $account->email,
             'Agreed to T&C' => $account->agree_tnc ? 'Yes' : 'No',
             'Agreed to Marketing' => $account->agree_marketing ? 'Yes' : 'No',

@@ -18,8 +18,7 @@ class Create extends Component
         breadcrumbs()->push('Create User');
 
         $this->user = model('user');
-        $this->user->is_pending = true;
-        $this->user->is_active = true;
+        $this->user->account_id = auth()->user()->account_id;
     }
 
     /**

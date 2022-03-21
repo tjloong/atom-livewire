@@ -16,6 +16,10 @@
                     </div>
                 @endif
 
+                @if (!empty($address))
+                    <address class="not-italic {{ $dark ? 'text-gray-100' : '' }}">{{ $address }}</address>
+                @endif
+
                 <div class="grid gap-2">
                     @if (!empty($phone))
                         <div class="flex items-center gap-2 {{ $dark ? 'text-gray-100' : '' }}">
@@ -28,13 +32,6 @@
                         <div class="flex items-center gap-2 {{ $dark ? 'text-gray-100' : '' }}">
                             <x-icon name="envelope" size="xs"/>
                             <a href="mailto: {{ $email }}" class="font-medium {{ $dark ? 'text-gray-100' : '' }}">{{ $email }}</a>
-                        </div>
-                    @endif
-
-                    @if (!empty($address))
-                        <div class="flex items-center gap-2 {{ $dark ? 'text-gray-100' : '' }}">
-                            <x-icon name="location-dot" size="xs"/>
-                            <address class="not-italic {{ $dark ? 'text-gray-100' : '' }}">{{ $address }}</address>
                         </div>
                     @endif
                 </div>

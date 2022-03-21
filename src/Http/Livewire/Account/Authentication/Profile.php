@@ -27,6 +27,11 @@ class Profile extends Component
         $this->resetValidation();
         $this->validate();
 
+        if ($this->user->isDirty('name')) {
+            $this->user->account->name = $this->user->name;
+            $this->user->account->saveQuietly();
+        }
+
         $this->user->save();
 
         $this->dispatchBrowserEvent('toast', ['message' => 'Updated Profile Information', 'type' => 'success']);

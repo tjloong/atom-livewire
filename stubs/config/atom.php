@@ -16,6 +16,7 @@ return [
      */
     'accounts' => [
         'verify' => true,
+        'register' => true,
     ],
 
     /**

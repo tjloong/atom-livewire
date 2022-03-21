@@ -15,13 +15,13 @@
     {{ $slot }}
 
     @if ($attributes->get('caption'))
-        <div class="text-sm text-gray-700 mt-1">
+        <div class="text-sm text-gray-700 mt-1.5">
             {{ $attributes->get('caption') }}
         </div>
     @endif
 
     @if ($attributes->get('error'))
-        <div class="text-sm text-red-500 font-medium mt-1">
+        <div class="text-sm text-red-500 font-medium mt-1.5">
             {{ $attributes->get('error') }}
         </div>
     @endif

@@ -18,28 +18,40 @@ class Register extends Component
         'agree_tnc' => false,
         'agree_marketing' => true,
     ];
+
+    protected $queryString = ['ref', 'plan', 'redirect'];
     
-    protected $rules = [
-        'form.name' => 'required|string|max:255',
-        'form.email' => 'required|email|unique:users,email',
-        'form.password' => 'required|min:8',
-        'form.agree_tnc' => 'accepted',
-        'form.agree_marketing' => 'nullable',
-    ];
+    /**
+     * Validation rules
+     */
+    protected function rules() 
+    {
+        return [
+            'form.name' => 'required|string|max:255',
+            'form.email' => 'required|email|unique:users,email',
+            'form.password' => 'required|min:8',
+            'form.agree_tnc' => 'accepted',
+            'form.agree_marketing' => 'nullable',
+        ];
+    }
 
-    protected $messages = [
-        'form.name.required' => 'Name is required.',
-        'form.name.string' => 'Invalid name.',
-        'form.name.max' => 'Name has exceeded maximum characters allowed.',
-        'form.email.required' => 'Login email is required.',
-        'form.email.email' => 'Invalid email.',
-        'form.email.unique' => 'This login email has been taken.',
-        'form.password.required' => 'Login password is required.',
-        'form.password.min' => 'Login password must be at least 8 characters.',
-        'form.agree_tnc.accepted' => 'Please accept the terms and conditions to proceed.',
-    ];
-
-    protected $queryString = ['ref', 'redirect'];
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'form.name.required' => __('Name is required.'),
+            'form.name.string' => __('Invalid name.'),
+            'form.name.max' => __('Name has exceeded maximum characters allowed.'),
+            'form.email.required' => __('Login email is required.'),
+            'form.email.email' => __('Invalid email.'),
+            'form.email.unique' => __('This login email has been taken.'),
+            'form.password.required' => __('Login password is required.'),
+            'form.password.min' => __('Login password must be at least 8 characters.'),
+            'form.agree_tnc.accepted' => __('Please accept the terms and conditions to proceed.'),
+        ];
+    }
 
     /**
      * Mount
@@ -47,8 +59,6 @@ class Register extends Component
     public function mount()
     {
         if (!$this->ref) return redirect('/');
-
-        $this->plan = request()->query('plan');
     }
 
     /**
@@ -59,11 +69,7 @@ class Register extends Component
         $this->resetValidation();
         $this->validate();
 
-        if (enabled_module('accounts')) {
-            $this->createAccount();
-            $this->accountMetadata();
-        }
-
+        $this->createAccount();
         $this->createUser();
         $this->registered();
 
@@ -76,10 +82,17 @@ class Register extends Component
     public function createAccount()
     {
         $this->account = model('account')->create([
+            'type' => 'signup',
             'name' => $this->form['name'],
             'email' => $this->form['email'],
             'agree_tnc' => $this->form['agree_tnc'],
             'agree_marketing' => $this->form['agree_marketing'],
+            'data' => $this->accountMetadata(),
+        ]);
+
+        $this->account->setting()->create([
+            'timezone' => config('atom.timezone'), 
+            'locale' => head(config('atom.locales', [])) ?? null,
         ]);
     }
 
@@ -89,30 +102,24 @@ class Register extends Component
     public function createUser()
     {
         $this->user = model('user');
-
         $this->user->name = $this->form['name'];
         $this->user->email = $this->form['email'];
         $this->user->password = bcrypt($this->form['password']);
-        $this->user->is_root = false;
-        $this->user->is_pending = false;
-        $this->user->is_active = true;
-
-        if ($this->account) $this->user->account_id = $this->account->id;
+        $this->user->activated_at = now();
+        $this->user->account_id = $this->account->id;
 
         $this->user->save();
     }
 
     /**
-     * Update account metadata
+     * Get account metadata
      */
     public function accountMetadata()
     {
-        $this->account->data = [
+        return [
             'register_geo' => geoip()->getLocation()->toArray(),
             'register_channel' => $this->ref,
         ];
-
-        $this->account->save();
     }
 
     /**
@@ -135,14 +142,10 @@ class Register extends Component
      */
     public function redirectTo()
     {
-        if (enabled_module('plans') && model('plan')->where('is_active', true)->count()) {
-            return route('billing', ['plan' => $this->plan]);
-        }
+        if ($this->user->canAccessBillingPortal()) return route('billing', ['plan' => $this->plan]);
+        if ($this->user->canAccessOnboardingPortal()) return route('onboarding', array_filter(['redirect' => $this->redirect]));
 
-        return route('onboarding', $this->redirect
-            ? ['redirect' => $this->redirect]
-            : []
-        );
+        return route('page');
     }
 
     /**

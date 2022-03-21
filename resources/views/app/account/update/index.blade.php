@@ -59,7 +59,7 @@
         </div>
 
         <div class="md:col-span-9">
-            @if ($component = get_livewire_component($tab, 'app/account/update'))
+            @if ($component = livewire_name('app/account/update/'.$slug))
                 @livewire($component, compact('account'))
             @endif
         </div>

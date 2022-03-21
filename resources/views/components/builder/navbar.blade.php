@@ -1,11 +1,11 @@
 @if ($attributes->has('dropdown'))
     <div x-data="{ open: false }" x-on:click.away="open = false" class="relative">
-        <a 
+        <div
             x-on:click.prevent="open = true"
-            {{ $attributes->merge(['class' => 'block py-1.5 px-3 text-center text-gray-800 font-medium hover:text-theme']) }}
+            {{ $attributes->merge(['class' => 'block py-1.5 px-3 text-center cursor-pointer font-medium hover:text-theme']) }}
         >
             {{ $slot }}
-        </a>
+        </div>
 
         <div
             x-show="open"
@@ -46,13 +46,28 @@
         {{ $slot }}
     </a>
 
+@elseif ($attributes->has('locales-dropdown'))
+    <x-builder.navbar dropdown right>
+        <div class="flex">
+            <x-icon name="language" class="m-auto"/>
+        </div>
+
+        <x-slot name="dropdown">
+            @foreach (config('atom.locales') as $locale)
+                <x-builder.navbar dropdown-item :href="'/'.$locale">
+                    {{ metadata('locales', $locale)->name }}
+                </x-builder.navbar>
+            @endforeach
+        </x-slot>
+    </x-builder.navbar>
+
 @else
     <nav 
         x-data="{ show: false }"
         x-cloak
         class="{{
             collect([
-                'relative',
+                ($fixed ? 'fixed top-0 left-0 right-0 z-10' : 'relative'),
                 ($sticky ? 'sticky top-0 z-10' : null),
                 ($attributes->get('class') ?? 'p-4'),
             ])->filter()->join(' ')
@@ -64,7 +79,7 @@
                     @isset($logo)
                         {{ $logo }}
                     @else
-                        <a href="/" class="{{ $attributes->get('logo-class') ?? 'max-w-[100px] max-h-[50px] md:max-w-[150px] md:max-h-[75px]' }}">
+                        <a href="/" class="{{ $attributes->get('class.logo') ?? 'max-w-[100px] max-h-[50px] md:max-w-[150px] md:max-h-[75px]' }}">
                             @if ($attributes->get('logo'))
                                 <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain">
                             @else
@@ -73,8 +88,8 @@
                         </a>
                     @endisset
     
-                    <a x-on:click="show = !show" class="flex items-center justify-center text-gray-800 md:hidden">
-                        <x-icon name="menu"/>
+                    <a x-on:click="show = !show" class="flex items-center justify-center text-gray-400 md:hidden">
+                        <x-icon name="menu" size="md"/>
                     </a>
                 </div>
 
@@ -92,10 +107,10 @@
                     >
                         {{ $slot }}
 
-                        @if ($lang)
-                            <a>
-                                <x-icon name="language"/>
-                            </a>
+                        @if ($attributes->has('locales') && count(config('atom.locales', [])) > 1)
+                            <div class="{{ $attributes->get('class.locales') ?? 'text-gray-800' }}">
+                                <x-builder.navbar locales-dropdown/>
+                            </div>
                         @endif
                     </div>
 
@@ -127,8 +142,8 @@
                                         </div>
     
                                         <div class="grid pt-2">
-                                            @if ($home)
-                                                <x-builder.navbar dropdown-item href="{{ $home }}" icon="home-alt">
+                                            @if ($backToApp)
+                                                <x-builder.navbar dropdown-item :href="app_route()" icon="home-alt">
                                                     Back to App
                                                 </x-builder.navbar>
                                             @endif
@@ -140,15 +155,17 @@
                                     </div>
                                 </x-slot>
                             </x-builder.navbar>
-                        @else
+                        @elseif (Route::has('login') || Route::has('register'))
                             <div class="flex items-center gap-3">
-                                <x-builder.navbar item href="{{ route('login') }}">Login</x-builder.navbar>
+                                @if (Route::has('login'))
+                                    <x-builder.navbar item href="{{ route('login') }}">Login</x-builder.navbar>
+                                @endif
 
-                                @module('accounts')
+                                @if (Route::has('register'))
                                     <x-button href="{{ route('register', ['ref' => 'navbar']) }}">
                                         Register
                                     </x-button>
-                                @endmodule
+                                @endif
                             </div>
                         @endauth
                     @endif
@@ -162,9 +179,13 @@
                         <div class="grid gap-3">
                             {{ $slot }}
 
+                            @if ($attributes->has('locales') && count(config('atom.locales', [])) > 1)
+                                <x-builder.navbar locales-dropdown/>
+                            @endif
+
                             @if ($showAuth)
-                                <div class="bg-gray-100 rounded-lg p-4">
-                                    @auth
+                                @auth
+                                    <div class="bg-gray-100 rounded-lg p-4">
                                         <div class="flex-shrink-0 flex items-center justify-center gap-1">
                                             <x-icon name="user-circle" class="text-gray-400"/>
                                             <div class="truncate">{{ auth()->user()->name }}</div>
@@ -185,8 +206,8 @@
                                                 {{ $auth }}
                                             @endisset
     
-                                            @if ($home)
-                                                <x-builder.navbar dropdown-item :href="$home" icon="home-alt">
+                                            @if ($backToApp)
+                                                <x-builder.navbar dropdown-item :href="app_route()" icon="home-alt">
                                                     Back to App
                                                 </x-builder.navbar>
                                             @endif
@@ -195,15 +216,20 @@
                                                 Logout
                                             </x-builder.navbar>
                                         </div>
-                                    @else
+                                    </div>
+                                @elseif (Route::has('login') || Route::has('register'))
+                                    <div class="bg-gray-100 rounded-lg p-4">
                                         <div class="flex items-center justify-center gap-3">
-                                            <x-button color="gray" :href="route('login')">Login</x-button>
-                                            @module('accounts')
+                                            @if (Route::has('login'))
+                                                <x-button color="gray" :href="route('login')">Login</x-button>
+                                            @endif
+
+                                            @if (Route::has('register'))
                                                 <x-button :href="route('register', ['ref' => 'navbar'])">Register</x-button>
-                                            @endmodule
+                                            @endif
                                         </div>
-                                    @endauth
-                                </div>
+                                    </div>
+                                @endauth
                             @endif
                         </div>
                     </div>

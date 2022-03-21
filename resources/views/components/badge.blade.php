@@ -13,6 +13,7 @@
         'error' => 'red',
         'failed' => 'red',
 
+        'new' => 'yellow',
         'admin' => 'yellow',
         'unpaid' => 'yellow',
         'opened' => 'yellow',
@@ -40,6 +41,7 @@
         'delivered' => 'green',
         'published' => 'green',
         'completed' => 'green',
+        'onboarded' => 'green',
 
         'blocked' => 'black',
         'trashed' => 'black',

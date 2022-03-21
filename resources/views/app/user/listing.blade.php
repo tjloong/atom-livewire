@@ -9,6 +9,10 @@
         <x-slot name="head">
             <x-table head sort="name">Name</x-table>
             
+            @if (auth()->user()->isRoot())
+                <x-table head>Type</x-table>
+            @endif
+            
             @module('roles')
                 <x-table head align="right">Role</x-table>
             @endmodule
@@ -21,19 +25,24 @@
                 <x-table row>
                     <x-table cell>
                         @if ($user->id === auth()->id())
-                            <div class="flex items-center gap-1">
-                                <span>{{ $user->name }}</span>
-                                <span class="text-gray-500">(You)</span>
-                            </div>
+                            <span>{{ $user->name }} (You)</span>
                         @else
-                            <a href="{{ route('app.user.update', [$user->id]) }}">
-                                {{ $user->name }}
-                            </a>
-                            <div class="text-gray-500">
-                                {{ $user->email }}
+                            <div>
+                                <a href="{{ route('app.user.update', [$user->id]) }}">
+                                    {{ $user->name }}
+                                </a>
+                                <div class="text-gray-500">
+                                    {{ $user->email }}
+                                </div>
                             </div>
                         @endif
                     </x-table>
+
+                    @if (auth()->user()->isRoot())
+                        <x-table cell>
+                            {{ $user->account->type }}
+                        </x-table>
+                    @endif
                     
                     @module('roles')
                         <x-table cell class="text-right">
@@ -42,9 +51,6 @@
                     @endmodule
 
                     <x-table cell class="text-right">
-                        @if ($user->is_root)
-                            <x-badge color="yellow">root</x-badge>
-                        @endif
                         <x-badge>{{ $user->status }}</x-badge>
                     </x-table>
                 </x-table>

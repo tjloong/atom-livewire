@@ -1,14 +1,14 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Web;
+namespace Jiannius\Atom\Http\Livewire\Web\Pages\Contact;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Notifications\EnquiryNotification;
 
-class Contact extends Component
+class Index extends Component
 {
-    public $contact;
+    public $ref;
     public $enquiry;
 
     protected $rules = [
@@ -25,31 +25,14 @@ class Contact extends Component
         'enquiry.message.required' => 'Message is required.',
     ];
 
+    protected $queryString = ['ref'];
+
     /**
      * Mount
      */
     public function mount()
     {
-        // prevent bot
-        if (!request()->query('ref')) return redirect()->route('home');
-        else {
-            $this->contact = [
-                'phone' => site_settings('phone'),
-                'email' => site_settings('email'),
-                'address' => site_settings('address'),
-                'gmap_url' => site_settings('gmap_url'),
-            ];
-
-            $this->enquiry = $this->initEnquiry();
-        }
-    }
-
-    /**
-     * Initialize enquiry
-     */
-    public function initEnquiry()
-    {
-        return enabled_module('enquiries')
+        $this->enquiry = enabled_module('enquiries')
             ? model('enquiry')
             : [
                 'name' => null,
@@ -57,6 +40,31 @@ class Contact extends Component
                 'email' => null,
                 'message' => null,
             ];
+    }
+
+    /**
+     * Prevent bot
+     */
+    public function dehydrate()
+    {
+        if (!$this->ref) return redirect('/');
+    }
+
+    /**
+     * Get contact property
+     */
+    public function getContactProperty()
+    {
+        $contact = config('atom.static_site')
+            ? config('atom.contact')
+            : [
+                'phone' => site_settings('phone'),
+                'email' => site_settings('email'),
+                'address' => site_settings('address'),
+                'gmap_url' => site_settings('gmap_url'),
+            ];
+
+        return array_filter($contact);
     }
 
     /**
@@ -93,6 +101,8 @@ class Contact extends Component
      */
     public function render()
     {
-        return view('atom::web.contact')->layout('layouts.web');
+        return view('atom::web.pages.contact.index', [
+            'contact' => $this->contact,
+        ])->layout('layouts.web');
     }
 }

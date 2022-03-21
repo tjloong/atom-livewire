@@ -20,7 +20,7 @@
     @endif
 
     <div class="{{ $this->tabs->count() > 1 ? 'md:col-span-9' : 'md:col-span-12' }}">
-        @if ($component = get_livewire_component($tab, 'onboarding'))
+        @if ($component = livewire_name('onboarding/'.$tab))
             @livewire($component, compact('account'), key($tab))
         @endif
     </div>

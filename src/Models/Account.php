@@ -17,7 +17,6 @@ class Account extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'dob' => 'date',
         'data' => 'object',
         'agree_tnc' => 'boolean',
         'agree_marketing' => 'boolean',
@@ -29,7 +28,15 @@ class Account extends Model
      */
     public function users()
     {
-        return $this->hasMany(User::class)->withTrashed();
+        return $this->hasMany(User::class);
+    }
+
+    /**
+     * Get setting for account
+     */
+    public function setting()
+    {
+        return $this->hasOne(AccountSetting::class);
     }
 
     /**
@@ -59,7 +66,6 @@ class Account extends Model
     {
         return $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
-            ->where('phone', 'like', "%$search%")
             ->where('email', 'like', "%$search%")
         );
     }
@@ -71,7 +77,13 @@ class Account extends Model
      */
     public function getStatusAttribute()
     {
+        if ($this->trashed()) return 'trashed';
         if ($this->blocked()) return 'blocked';
+
+        if ($this->type === 'signup') {
+            if ($this->onboarded_at) return 'onboarded';
+            else return 'new';
+        }
 
         return 'active';
     }
@@ -85,15 +97,5 @@ class Account extends Model
     {
         $this->onboarded_at = now();
         $this->saveQuietly();
-    }
-
-    /**
-     * Check account is onboarded
-     * 
-     * @return boolean
-     */
-    public function onboarded()
-    {
-        return !empty($this->onboarded_at);
     }
 }

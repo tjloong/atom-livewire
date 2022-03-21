@@ -31,14 +31,9 @@
                             </div>
                         </div>
     
-                        @if (
-                            !auth()->user()->account
-                            || (enabled_module('accounts') && auth()->user()->account->subscriptions->count() > 0)
-                        )
-                            <a href="{{ app_route() }}" class="flex items-center gap-1 text-gray-500 font-medium">
-                                <x-icon name="left-arrow-alt"/> Back to Home
-                            </a>
-                        @endif
+                        <a href="{{ app_route() }}" class="flex items-center gap-1 text-gray-500 font-medium">
+                            <x-icon name="left-arrow-alt"/> Back to Home
+                        </a>
                     </div>
                 </div>
     

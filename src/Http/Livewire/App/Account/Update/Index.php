@@ -6,21 +6,21 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    public $tab;
+    public $slug;
     public $account;
 
     /**
      * Mount
      */
-    public function mount($id)
+    public function mount($account)
     {
-        $this->account = model('account')->findOrFail($id);
+        $this->account = model('account')->findOrFail($account);
 
-        if (!$this->tab) {
+        if (!$this->slug) {
             $nav = $this->navs->first();
-            $tab = isset($nav->tabs) ? $nav->tabs->first()->slug : $nav->slug;
+            $slug = isset($nav->tabs) ? $nav->tabs->first()->slug : $nav->slug;
 
-            return redirect()->route('app.account.update', [$id, $tab]);
+            return redirect()->route('app.account.update', [$account, $slug]);
         }
 
         breadcrumbs()->push($this->account->name);
@@ -55,6 +55,8 @@ class Index extends Component
     public function block()
     {
         $this->account->block();
+
+        return redirect()->route('app.account.listing');
     }
 
     /**
@@ -63,6 +65,8 @@ class Index extends Component
     public function unblock()
     {
         $this->account->unblock();
+
+        return redirect()->route('app.account.listing');
     }
 
     /**

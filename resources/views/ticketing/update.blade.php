@@ -23,15 +23,11 @@
             </x-input.field>
 
             @if (
-                auth()->user()->is_root
-                || (enabled_module('permissions') && auth()->user()->can('ticketing.update'))
-                || (enabled_module('roles') && auth()->user()->isRole(['admin', 'administrator']))
-                || (
-                    !enabled_module('roles') 
-                    && !enabled_module('permissions') 
-                    && enabled_module('accounts')
-                    && !auth()->user()->account
-                )
+                (enabled_module('permissions') && auth()->user()->can('ticketing.status'))
+                || (enabled_module('roles') && auth()->user()->isRole('admin'))
+                || (!enabled_module('roles') && !enabled_module('permissions') && (
+                    auth()->user()->isRoot() || auth()->user()->account->type === 'system'
+                ))
             )
                 <x-input.select
                     wire:model="ticket.status"

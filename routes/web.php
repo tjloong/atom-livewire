@@ -1,8 +1,10 @@
 <?php
 
-use Jiannius\Atom\Models\Page;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Application
+ */
 if (!config('atom.static_site')) {
     define_route('__sitemap', 'SitemapController@index')->name('__sitemap');
     define_route('__export/{filename}', 'ExportController@download')->name('__export');
@@ -18,8 +20,8 @@ if (!config('atom.static_site')) {
     /**
      * Onboarding Portal
      */
-    if (enabled_module('accounts')) {
-        Route::prefix('onboarding')->middleware('auth')->group(function() {
+    if (config('atom.accounts.register')) {
+        Route::prefix('onboarding')->middleware(['auth', 'portal-guard'])->group(function() {
             define_route('/', 'Onboarding\\Index')->name('onboarding');
             define_route('completed', 'Onboarding\\Completed')->name('onboarding.completed');
         });
@@ -29,7 +31,7 @@ if (!config('atom.static_site')) {
      * Billing Portal
      */
     if (enabled_module('plans')) {
-        Route::prefix('billing')->middleware(['auth', 'billing-portal-guard'])->group(function() {
+        Route::prefix('billing')->middleware(['auth', 'portal-guard'])->group(function() {
             define_route('/', 'Billing\\Index')->name('billing');
             define_route('checkout', 'Billing\\Checkout')->name('billing.checkout');
         });
@@ -39,7 +41,7 @@ if (!config('atom.static_site')) {
      * Ticketing Portal
      */
     if (enabled_module('ticketing')) {
-        Route::prefix('ticketing')->as('ticketing.')->group(function() {
+        Route::prefix('ticketing')->middleware(['auth', 'portal-guard'])->as('ticketing.')->group(function() {
             define_route('listing', 'Ticketing\\Listing')->name('listing');
             define_route('create', 'Ticketing\\Create')->name('create');
             define_route('{id}', 'Ticketing\\Update')->name('update');
@@ -49,7 +51,7 @@ if (!config('atom.static_site')) {
     /**
      * App Portal
      */
-    Route::prefix('app')->middleware(['auth', 'app-portal-guard'])->group(function() {
+    Route::prefix('app')->middleware(['auth', 'portal-guard'])->group(function() {
         define_route('/', fn() => redirect()->route('app.dashboard'))->name('app.home');
 
         /**
@@ -107,10 +109,10 @@ if (!config('atom.static_site')) {
         /**
          * Accounts
          */
-        if (enabled_module('accounts')) {
+        if (config('atom.accounts.register')) {
             Route::prefix('account')->as('app.account.')->group(function() {
                 define_route('listing', 'App\\Account\\Listing')->name('listing');
-                define_route('{id}/{tab?}', 'App\\Account\\Update\\Index')->name('update');
+                define_route('{account}/{slug?}', 'App\\Account\\Update\\Index')->name('update')->where(['slug' => '.*']);
             });
         }
     
@@ -151,7 +153,7 @@ if (!config('atom.static_site')) {
         Route::prefix('user')->as('app.user.')->group(function () {
             define_route('listing', 'App\\User\\Listing')->name('listing');
             define_route('create', 'App\\User\\Create')->name('create');
-            define_route('{id}', 'App\\User\\Update')->name('update');
+            define_route('{user}', 'App\\User\\Update')->name('update');
         });
         
         /**
@@ -166,16 +168,27 @@ if (!config('atom.static_site')) {
     });
 }
 
-if (enabled_module('blogs')) {
-    define_route('blogs/{slug?}', 'Web\\Blog')->name('blogs');
-}
-
-define_route('contact', 'Web\\Contact')->name('contact');
-define_route('contact/thank-you', 'Web\\ContactSent')->name('contact.sent');
-
-if (enabled_module('pages') && !app()->runningInConsole()) {
-    $slugs = Page::getSlugs();
-    define_route('{slug}', 'Web\Page')->name('page')->where(['slug' => '(' . implode('|', $slugs) . ')']);
-}
-
-define_route('/', 'Web\\Home')->name('home');
+/**
+ * Web
+ */
+// A catch all route after the app is booted
+// so this route will be register after the consuming app's routes
+app()->booted(function() {
+    define_route('{slug?}', 'Web\\Index')
+        ->middleware('web')
+        ->name('page')
+        // slugs to exclude
+        ->where(['slug' => '^(?!'.implode('|', [
+            'livewire',
+            'account',
+            'onboarding',
+            'billing',
+            'ticketing',
+            'login',
+            'register',
+            'forgot-password',
+            'reset-password',
+            'email',
+            '__',
+        ]).').*$']);
+});

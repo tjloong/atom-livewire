@@ -10,7 +10,9 @@ use App\Models\User;
 class InstallCommand extends Command
 {
     protected $signature = 'atom:install
-                            {modules? : Modules to be installed. Separate multiple modules with comma.}';
+                            {modules? : Modules to be installed. Separate multiple modules with comma.}
+                            {--static : Install static site.}
+                            {--force : Force publishing.}';
 
     protected $description = 'Install Atom and it\'s modules.';
 
@@ -26,7 +28,6 @@ class InstallCommand extends Command
             '@tailwindcss/forms' => '^0.3.0',
             '@tailwindcss/typography' => '^0.3.0',
             'alpinejs' => '^3.4.2',
-            'boxicons' => '^2.0.9',
             'dayjs' => '^1.10.7',
             'flatpickr' => '^4.6.9',
             'tailwindcss' => '^2',
@@ -37,7 +38,6 @@ class InstallCommand extends Command
         'base',
         'roles',
         'permissions',
-        'accounts',
         'taxes',
         'pages',
         'teams',
@@ -64,44 +64,49 @@ class InstallCommand extends Command
      */
     public function handle()
     {
-        if (!$this->hasRunMigrationBefore()) {
-            $this->newLine();
-            $this->error('You have not run any migration yet. Please run the migration for the first time before installing Atom.');
-            $this->newLine();
-            return;
-        }
-        else if (!$this->isBaseInstalled() && (
-            !$this->argument('modules') ||
-            !in_array('base', explode(',', $this->argument('modules')))
-        )) {
-            $this->newLine();
-
-            if ($this->confirm('You must install the base first before other modules can be installed. Proceed?', true)) {
-                $this->installBase();
-
-                $this->newLine();
-                $this->info('Base installation done!');
-                $this->comment('Please run atom:install again to install modules.');
-                $this->newLine();
-            }
-            else return;
+        if ($this->option('static')) {
+            $this->installStatic();
         }
         else {
-            $selected = $this->argument('modules')
-                ? explode(',', $this->argument('modules'))
-                : $this->choice('Please select modules to install', array_merge(['all'], $this->modules), null, null, true);
-
-            foreach ($this->modules as $module) {
-                if (in_array('all', $selected) || in_array($module, $selected)) {
-                    call_user_func([$this, str()->camel('install-'.$module)]);
-                    if ($module !== 'base') $this->markModuleEnabled($module);
-                }
+            if (!$this->hasRunMigrationBefore()) {
+                $this->newLine();
+                $this->error('You have not run any migration yet. Please run the migration for the first time before installing Atom.');
+                $this->newLine();
+                return;
             }
-
-            $this->newLine();
-            $this->info('All done!');
-            $this->comment('Please execute "npm install && npm run dev" to build your assets.');
-            $this->newLine();
+            else if (!$this->isBaseInstalled() && (
+                !$this->argument('modules') ||
+                !in_array('base', explode(',', $this->argument('modules')))
+            )) {
+                $this->newLine();
+    
+                if ($this->confirm('You must install the base first before other modules can be installed. Proceed?', true)) {
+                    $this->installBase();
+    
+                    $this->newLine();
+                    $this->info('Base installation done!');
+                    $this->comment('Please run atom:install again to install modules.');
+                    $this->newLine();
+                }
+                else return;
+            }
+            else {
+                $selected = $this->argument('modules')
+                    ? explode(',', $this->argument('modules'))
+                    : $this->choice('Please select modules to install', array_merge(['all'], $this->modules), null, null, true);
+    
+                foreach ($this->modules as $module) {
+                    if (in_array('all', $selected) || in_array($module, $selected)) {
+                        call_user_func([$this, str()->camel('install-'.$module)]);
+                        if ($module !== 'base') $this->markModuleEnabled($module);
+                    }
+                }
+    
+                $this->newLine();
+                $this->info('All done!');
+                $this->comment('Please execute "npm install && npm run dev" to build your assets.');
+                $this->newLine();
+            }
         }
     }
 
@@ -123,114 +128,107 @@ class InstallCommand extends Command
     /**
      * Install plans
      */
-    private function installPlans($action = null)
+    private function installPlans()
     {
         $this->newLine();
         $this->info('Installing plans module...');
 
         $this->installTaxes();
 
-        if (!$action) {
-            if (Schema::hasTable('plans')) $this->warn('plans table exists, skipped.');
-            else {
-                Schema::create('plans', function($table) {
-                    $table->id();
-                    $table->string('name');
-                    $table->string('slug');
-                    $table->unsignedInteger('trial')->nullable();
-                    $table->text('excerpt')->nullable();
-                    $table->json('features')->nullable();
-                    $table->string('cta')->nullable();
-                    $table->boolean('is_active')->nullable();
-                    $table->timestamps();
-                    $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-                });
+        if (Schema::hasTable('plans')) $this->warn('plans table exists, skipped.');
+        else {
+            Schema::create('plans', function($table) {
+                $table->id();
+                $table->string('name');
+                $table->string('slug');
+                $table->unsignedInteger('trial')->nullable();
+                $table->text('excerpt')->nullable();
+                $table->json('features')->nullable();
+                $table->string('cta')->nullable();
+                $table->boolean('is_active')->nullable();
+                $table->timestamps();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+
+            $this->line('plans table created successfully.');
+        }
     
-                $this->line('plans table created successfully.');
-            }
+        if (Schema::hasTable('plans_prices')) $this->warn('plans_prices table exists, skipped.');
+        else {
+            Schema::create('plans_prices', function ($table) {
+                $table->id();
+                $table->string('currency')->nullable();
+                $table->decimal('amount', 20, 2)->nullable();
+                $table->decimal('discount', 20, 2)->nullable();
+                $table->string('country')->nullable();
+                $table->string('shoutout')->nullable();
+                $table->string('expired_after')->nullable();
+                $table->boolean('is_lifetime')->nullable();
+                $table->boolean('is_default')->nullable();
+                $table->string('stripe_id')->nullable();
+                $table->foreignId('tax_id')->nullable()->constrained()->onDelete('set null');
+                $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+                $table->timestamps();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+
+            $this->line('plans_prices table created successfully.');
+        }
     
-            if (Schema::hasTable('plans_prices')) $this->warn('plans_prices table exists, skipped.');
-            else {
-                Schema::create('plans_prices', function ($table) {
-                    $table->id();
-                    $table->string('currency')->nullable();
-                    $table->decimal('amount', 20, 2)->nullable();
-                    $table->decimal('discount', 20, 2)->nullable();
-                    $table->string('country')->nullable();
-                    $table->string('shoutout')->nullable();
-                    $table->string('expired_after')->nullable();
-                    $table->boolean('is_lifetime')->nullable();
-                    $table->boolean('is_default')->nullable();
-                    $table->string('stripe_id')->nullable();
-                    $table->foreignId('tax_id')->nullable()->constrained()->onDelete('set null');
-                    $table->foreignId('plan_id')->constrained()->onDelete('cascade');
-                    $table->timestamps();
-                    $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-                });
-    
-                $this->line('plans_prices table created successfully.');
-            }
-    
-            if (Schema::hasTable('plans_upgradables')) $this->warn('plans_upgradables table exists, skipped');
-            else {
-                Schema::create('plans_upgradables', function($table) {
-                    $table->id();
-                    $table->foreignId('plan_id')->constrained()->onDelete('cascade');
-                    $table->foreignId('upgradable_id')->constrained('plans')->onDelete('cascade');
-                });
-            }
-    
-            if (Schema::hasTable('plans_downgradables')) $this->warn('plans_downgradables table exists, skipped');
-            else {
-                Schema::create('plans_downgradables', function($table) {
-                    $table->id();
-                    $table->foreignId('plan_id')->constrained()->onDelete('cascade');
-                    $table->foreignId('downgradable_id')->constrained('plans')->onDelete('cascade');
-                });
-            }
+        if (Schema::hasTable('plans_upgradables')) $this->warn('plans_upgradables table exists, skipped');
+        else {
+            Schema::create('plans_upgradables', function($table) {
+                $table->id();
+                $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+                $table->foreignId('upgradable_id')->constrained('plans')->onDelete('cascade');
+            });
         }
 
-        // accounts subscriptions
-        if (!$action || $action === 'accounts') {
-            if (Schema::hasTable('accounts')) {
-                if (Schema::hasTable('accounts_orders')) $this->warn('accounts_orders table exists, skipped.');
-                else {
-                    Schema::create('accounts_orders', function($table) {
-                        $table->id();
-                        $table->string('order_number')->unique();
-                        $table->string('invoice_number')->unique()->nullable();
-                        $table->string('receipt_number')->unique()->nullable();
-                        $table->decimal('grand_total', 20, 2)->nullable();
-                        $table->string('status')->nullable();
-                        $table->string('gateway')->nullable();
-                        $table->json('data')->nullable();
-                        $table->foreignId('account_id')->nullable()->constrained()->onDelete('cascade');
-                        $table->timestamps();
-                    });
+        if (Schema::hasTable('plans_downgradables')) $this->warn('plans_downgradables table exists, skipped');
+        else {
+            Schema::create('plans_downgradables', function($table) {
+                $table->id();
+                $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+                $table->foreignId('downgradable_id')->constrained('plans')->onDelete('cascade');
+            });
+        }
 
-                    $this->line('accounts_orders table created successfully.');
-                }
+        if (Schema::hasTable('accounts_orders')) $this->warn('accounts_orders table exists, skipped.');
+        else {
+            Schema::create('accounts_orders', function($table) {
+                $table->id();
+                $table->string('order_number')->unique();
+                $table->string('invoice_number')->unique()->nullable();
+                $table->string('receipt_number')->unique()->nullable();
+                $table->decimal('grand_total', 20, 2)->nullable();
+                $table->string('status')->nullable();
+                $table->string('gateway')->nullable();
+                $table->json('data')->nullable();
+                $table->foreignId('account_id')->nullable()->constrained()->onDelete('cascade');
+                $table->timestamps();
+            });
 
-                if (Schema::hasTable('accounts_subscriptions')) $this->warn('accounts_subscriptions table exists, skipped.');
-                else {
-                    Schema::create('accounts_subscriptions', function($table) {
-                        $table->id();
-                        $table->string('currency')->nullable();
-                        $table->decimal('amount', 20, 2)->nullable();
-                        $table->decimal('discounted_amount', 20, 2)->nullable();
-                        $table->decimal('grand_total', 20, 2)->nullable();
-                        $table->boolean('is_trial')->nullable();
-                        $table->timestamp('start_at')->nullable();
-                        $table->timestamp('expired_at')->nullable();
-                        $table->foreignId('account_id')->constrained()->onDelete('cascade');
-                        $table->foreignId('account_order_id')->constrained('accounts_orders')->onDelete('cascade');
-                        $table->foreignId('plan_price_id')->nullable()->constrained('plans_prices')->onDelete('set null');
-                        $table->timestamps();
-                    });
+            $this->line('accounts_orders table created successfully.');
+        }
 
-                    $this->line('accounts_subscriptions table created successfully.');
-                }
-            }
+        if (Schema::hasTable('accounts_subscriptions')) $this->warn('accounts_subscriptions table exists, skipped.');
+        else {
+            Schema::create('accounts_subscriptions', function($table) {
+                $table->id();
+                $table->string('currency')->nullable();
+                $table->decimal('amount', 20, 2)->nullable();
+                $table->decimal('discounted_amount', 20, 2)->nullable();
+                $table->decimal('grand_total', 20, 2)->nullable();
+                $table->boolean('is_trial')->nullable();
+                $table->timestamp('start_at')->nullable();
+                $table->timestamp('expired_at')->nullable();
+                $table->foreignId('account_id')->constrained()->onDelete('cascade');
+                $table->foreignId('account_order_id')->constrained('accounts_orders')->onDelete('cascade');
+                $table->foreignId('plan_price_id')->nullable()->constrained('plans_prices')->onDelete('set null');
+                $table->timestamps();
+            });
+
+            $this->line('accounts_subscriptions table created successfully.');
         }
 
         if (DB::table('plans')->count()) $this->warn('There are data in plans table, skipped populating dummy data.');
@@ -541,66 +539,6 @@ class InstallCommand extends Command
     }
 
     /**
-     * Install accounts
-     */
-    private function installAccounts()
-    {
-        $this->newLine();
-        $this->info('Installing accounts module...');
-
-        if (Schema::hasTable('accounts')) $this->warn('accounts table exists, skipped.');
-        else {
-            Schema::create('accounts', function($table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->string('phone')->nullable();
-                $table->string('email')->nullable();
-                $table->text('address')->nullable();
-                $table->string('city')->nullable();
-                $table->string('state')->nullable();
-                $table->string('country')->nullable();
-                $table->string('postcode')->nullable();
-                $table->string('gender')->nullable();
-                $table->date('dob')->nullable();
-                $table->json('data')->nullable();
-                $table->boolean('agree_tnc')->nullable();
-                $table->boolean('agree_marketing')->nullable();
-                $table->timestamp('onboarded_at')->nullable();
-                $table->timestamps();
-                $table->timestamp('deleted_at')->nullable();
-                $table->timestamp('blocked_at')->nullable();
-                $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
-                $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-
-            $this->line('accounts table created successfully.');
-        }
-
-        if (Schema::hasTable('accounts_settings')) $this->warn('accounts_settings table exists, skipped.');
-        else {
-            Schema::create('accounts_settings', function($table) {
-                $table->id();
-                $table->string('timezone')->nullable();
-                $table->foreignId('account_id')->constrained()->onDelete('cascade');
-                $table->timestamps();
-            });
-
-            $this->line('accounts_settings table created successfully.');
-        }
-
-        if (Schema::hasColumn('users', 'account_id')) $this->warn('users table already has account_id column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->foreignId('account_id')->nullable()->after('is_active');
-                $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
-            });
-            $this->line('Added account_id column to users table.');
-        }
-
-        if (Schema::hasTable('plans')) $this->installPlans('accounts');
-    }
-
-    /**
      * Install permissions
      */
     private function installPermissions()
@@ -677,6 +615,9 @@ class InstallCommand extends Command
      */
     private function installSiteSettings()
     {
+        $this->newLine();
+        $this->info('Installing site settings module...');
+
         if (Schema::hasTable('site_settings')) $this->warn('site_settings table exists, skipped.');
         else {
             Schema::create('site_settings', function ($table) {
@@ -720,6 +661,9 @@ class InstallCommand extends Command
      */
     private function installFiles()
     {
+        $this->newLine();
+        $this->info('Installing files module...');
+
         if (Schema::hasTable('files')) $this->warn('files table exists, skipped.');
         else {
             Schema::create('files', function ($table) {
@@ -744,6 +688,9 @@ class InstallCommand extends Command
      */
     private function installLabels()
     {
+        $this->newLine();
+        $this->info('Installing labels module...');
+
         if (Schema::hasTable('labels')) $this->warn('labels table exists, skipped.');
         else {
             Schema::create('labels', function ($table) {
@@ -765,33 +712,29 @@ class InstallCommand extends Command
      */
     private function installUsers()
     {
+        $this->newLine();
+        $this->info('Installing users module...');
+
         Schema::table('users', function ($table) {
             $table->string('password')->nullable()->change();
         });
         $this->line('Made password column in users table nullable.');
 
-        if (Schema::hasColumn('users', 'is_active')) $this->warn('users table already has is_active column, skipped.');
+        if (Schema::hasColumn('users', 'activated_at')) $this->warn('users table already has activated_at column, skipped.');
         else {
             Schema::table('users', function ($table) {
-                $table->boolean('is_active')->nullable()->after('remember_token');
+                $table->timestamp('activated_at')->nullable()->after('remember_token');
             });
-            $this->line('Added is_active column to users table.');
+            $this->line('Added activated_at column to users table.');
         }
 
-        if (Schema::hasColumn('users', 'is_pending')) $this->warn('users table already has is_pending column, skipped.');
+        if (Schema::hasColumn('users', 'account_id')) $this->warn('users table already has account_id column, skipped.');
         else {
             Schema::table('users', function ($table) {
-                $table->boolean('is_pending')->nullable()->after('remember_token');
+                $table->foreignId('account_id')->nullable()->after('remember_token');
+                $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
             });
-            $this->line('Added is_pending column to users table.');
-        }
-
-        if (Schema::hasColumn('users', 'is_root')) $this->warn('users table already has is_root column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->boolean('is_root')->nullable()->after('remember_token');
-            });
-            $this->line('Added is_root column to users table.');
+            $this->line('Added account_id column to users table.');
         }
 
         if (Schema::hasColumn('users', 'visibility')) $this->warn('users table already has visibility column, skipped.');
@@ -801,7 +744,15 @@ class InstallCommand extends Command
             });
             $this->line('Added visibility column to users table.');
         }
-        
+
+        if (Schema::hasColumn('users', 'blocked_at')) $this->warn('users table already has blocked_at column, skipped.');
+        else {
+            Schema::table('users', function ($table) {
+                $table->timestamp('blocked_at')->nullable();
+            });
+            $this->line('Added blocked_at column to users table.');
+        }
+
         if (Schema::hasColumn('users', 'deleted_at')) $this->warn('users table already has deleted_at column, skipped.');
         else {
             Schema::table('users', function ($table) {
@@ -819,6 +770,15 @@ class InstallCommand extends Command
             $this->line('Added created_by column to users table.');
         }
         
+        if (Schema::hasColumn('users', 'blocked_by')) $this->warn('users table already has blocked_by column, skipped.');
+        else {
+            Schema::table('users', function ($table) {
+                $table->foreignId('blocked_by')->nullable();
+                $table->foreign('blocked_by')->references('id')->on('users')->onDelete('set null');
+            });
+            $this->line('Added blocked_by column to users table.');
+        }
+        
         if (Schema::hasColumn('users', 'deleted_by')) $this->warn('users table already has deleted_by column, skipped.');
         else {
             Schema::table('users', function ($table) {
@@ -830,19 +790,70 @@ class InstallCommand extends Command
         
         if (DB::table('users')->where('email', User::ROOT_EMAIL)->count()) $this->warn('Root user exists, skipped.');
         else {
+            $accountId = DB::table('accounts')->insert([
+                'type' => 'root',
+                'name' => 'Root',
+                'email' => User::ROOT_EMAIL,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
             DB::table('users')->insert([
                 'name' => 'Root',
                 'email' => User::ROOT_EMAIL,
                 'password' => bcrypt('password'),
                 'visibility' => 'global',
-                'is_pending' => false,
-                'is_active' => true,
-                'is_root' => true,
+                'account_id' => $accountId,
                 'email_verified_at' => now(),
+                'activated_at' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
             $this->line('Added Root user.');
+        }
+    }
+
+    /**
+     * Install accounts
+     */
+    private function installAccounts()
+    {
+        $this->newLine();
+        $this->info('Installing accounts module...');
+
+        if (Schema::hasTable('accounts')) $this->warn('accounts table exists, skipped.');
+        else {
+            Schema::create('accounts', function($table) {
+                $table->id();
+                $table->string('type');
+                $table->string('name')->nullable();
+                $table->string('email')->nullable();
+                $table->string('phone')->nullable();
+                $table->json('data')->nullable();
+                $table->boolean('agree_tnc')->nullable();
+                $table->boolean('agree_marketing')->nullable();
+                $table->timestamp('onboarded_at')->nullable();
+                $table->timestamps();
+                $table->timestamp('deleted_at')->nullable();
+                $table->timestamp('blocked_at')->nullable();
+                $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+
+            $this->line('accounts table created successfully.');
+        }
+
+        if (Schema::hasTable('accounts_settings')) $this->warn('accounts_settings table exists, skipped.');
+        else {
+            Schema::create('accounts_settings', function($table) {
+                $table->id();
+                $table->string('timezone')->nullable();
+                $table->string('locale')->nullable();
+                $table->foreignId('account_id')->constrained()->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            $this->line('accounts_settings table created successfully.');
         }
     }
 
@@ -853,30 +864,42 @@ class InstallCommand extends Command
     {
         DB::table('migrations')->where('migration', $this->baseMigrationName)->delete();
 
-        // base
         $this->newLine();
         $this->info('Base installation...');
+
+        $this->call('atom:publish', [
+            'modules' => 'base',
+            '--force' => $this->option('force'),
+        ]);
+
+        $this->installAccounts();
         $this->installUsers();
         $this->installLabels();
         $this->installFiles();
         $this->installSiteSettings();
         $this->updateNodePackages();
-
-        replace_in_file(
-            'public const HOME = \'/home\';',
-            'public const HOME = \'/\';',
-            app_path('Providers/RouteServiceProvider.php')
-        );
-        $this->line('Updated HOME constant in RouteServiceProvider.php');
-
-        if (!file_exists(public_path('storage'))) {
-            $this->call('storage:link');
-        }
+        $this->updateHomeRoute();
+        $this->linkStorage();
 
         DB::table('migrations')->insert([
             'migration' => $this->baseMigrationName,
             'batch' => (DB::table('migrations')->max('batch') ?? 1) + 1,
         ]);
+    }
+
+    /**
+     * Install static site
+     */
+    private function installStatic()
+    {
+        $this->call('atom:publish', [
+            '--static' => true,
+            '--force' => $this->option('force'),
+        ]);
+
+        $this->updateNodePackages();
+        $this->updateHomeRoute();
+        $this->linkStorage();
     }
 
     /**
@@ -913,6 +936,30 @@ class InstallCommand extends Command
             return $this->node['dependencies'] + $packages;
         }, false);
         $this->line('Updated dependencies in package.json');
+    }
+
+    /**
+     * Update home route
+     */
+    private function updateHomeRoute()
+    {
+        replace_in_file(
+            'public const HOME = \'/home\';',
+            'public const HOME = \'/\';',
+            app_path('Providers/RouteServiceProvider.php')
+        );
+
+        $this->line('Updated HOME constant in RouteServiceProvider.php');
+    }
+
+    /**
+     * Link storage folder
+     */
+    private function linkStorage()
+    {
+        if (!file_exists(public_path('storage'))) {
+            $this->call('storage:link');
+        }
     }
 
     /**

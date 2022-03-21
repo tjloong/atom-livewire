@@ -13,9 +13,9 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($id)
+    public function mount($user)
     {
-        $this->user = model('user')->findOrFail($id);
+        $this->user = model('user')->findOrFail($user);
         breadcrumbs()->push($this->user->name);
     }
 
@@ -25,6 +25,26 @@ class Update extends Component
     public function saved()
     {
         $this->dispatchBrowserEvent('toast', ['message' => 'User Updated', 'type' => 'success']);
+    }
+
+    /**
+     * Block
+     */
+    public function block()
+    {
+        $this->user->block();
+
+        return redirect()->route('app.user.listing');
+    }
+
+    /**
+     * Unblock
+     */
+    public function unblock()
+    {
+        $this->user->unblock();
+        
+        return redirect()->route('app.user.listing');
     }
 
     /**

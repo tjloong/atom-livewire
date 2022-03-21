@@ -37,7 +37,7 @@ class Update extends Component
      */
     public function delete()
     {
-        if (enabled_module('accounts') && $this->price->accounts->count()) {
+        if ($this->price->accounts->count()) {
             $this->dispatchBrowserEvent('alert', ['message' => 'There are subscribers under this plan price.', 'type' => 'error']);
         }
         else {

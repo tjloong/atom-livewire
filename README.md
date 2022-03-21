@@ -19,7 +19,7 @@ sudo chmod 777 bootstrap -R
 
 ```
 composer require jiannius/atom-livewire
-php artisan atom:publish --static
+php artisan atom:install --static --force
 npm install
 npm run dev
 ```
@@ -74,18 +74,12 @@ composer require -W league/flysystem-aws-s3-v3 "^3.0"
 
 ```
 composer require jiannius/atom-livewire
-php artisan atom:publish base --force
+php artisan atom:install --force
 npm install
 npm run dev
 ```
 
-7. Install Atom base
-
-```
-php artisan atom:install
-```
-
-8. Run atom:install again to install Atom's modules
+7. Run atom:install again to install Atom's modules
 
 ```
 php artisan atom:install

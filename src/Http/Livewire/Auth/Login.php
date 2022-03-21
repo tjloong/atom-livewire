@@ -5,7 +5,6 @@ namespace Jiannius\Atom\Http\Livewire\Auth;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
@@ -24,6 +23,8 @@ class Login extends Component
             auth()->logout();
             request()->session()->invalidate();
             request()->session()->regenerateToken();
+
+            return redirect()->route('page');
         }
         else if (auth()->check()) {
             return redirect($this->redirectTo());
@@ -37,11 +38,9 @@ class Login extends Component
     {
         $user = model('user')
             ->where('email', $this->email)
-            ->where('is_active', true)
-            ->where(fn($q) => $q
-                ->doesntHave('account')
-                ->orWhereHas('account', fn($q) => $q->whereNull('deleted_at')->whereNull('blocked_at'))
-            )
+            ->whereNotNull('activated_at')
+            ->whereNull('blocked_at')
+            ->whereHas('account', fn($q) => $q->whereNull('blocked_at'))
             ->first();
 
         if ($user) {
@@ -108,9 +107,7 @@ class Login extends Component
      */
     private function redirectTo()
     {
-        if (Route::has('app.home')) return route('app.home');
-
-        return '/';
+        return app_route();
     }
 
     /**

@@ -28,7 +28,7 @@
         </div>
     
         <div class="md:col-span-9">
-            @if ($component = get_livewire_component($tab, 'app/blog/update'))
+            @if ($component = livewire_name('app/blog/update/'.$tab))
                 @livewire($component, compact('blog'), key($tab))
             @endif
         </div>

@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Web;
+namespace Jiannius\Atom\Http\Livewire\Web\Pages\Contact;
 
 use Livewire\Component;
 
-class ContactSent extends Component
+class ThankYou extends Component
 {
     /**
      * Mount event
@@ -23,6 +23,6 @@ class ContactSent extends Component
      */
     public function render()
     {
-        return view('atom::web.contact-sent')->layout('layouts.web');
+        return view('atom::web.pages.contact.thank-you')->layout('layouts.web');
     }
 }

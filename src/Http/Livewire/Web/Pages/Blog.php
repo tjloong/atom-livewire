@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Web;
+namespace Jiannius\Atom\Http\Livewire\Web\Pages;
 
 use Livewire\Component;
 use Livewire\WithPagination;

@@ -61,7 +61,7 @@ class Update extends Component
     {
         return model('user')
             ->when($text, fn($q) => $q->search($text))
-            ->when(enabled_module('accounts'), fn($q) => $q->doesntHave('account'))
+            ->where('account_id', auth()->user()->account_id)
             ->whereDoesntHave('teams', fn($q) => $q->where('teams.id', $this->team->id))
             ->paginate(30, ['*'], 'page', $page)
             ->toArray();

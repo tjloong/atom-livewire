@@ -10,14 +10,15 @@
     <x-notify.confirm/>
     <x-fullscreen-loader/>
 
-    <div class="min-h-screen bg-gray-100">
-        <div class="max-w-screen-lg mx-auto">
-            <x-builder.navbar logo-class="h-[40px]"/>
+    <x-builder.navbar class="bg-white shadow py-2" class.logo="h-[40px]"/>
 
-            <main class="grid gap-6 p-4 md:px-4 md:py-10">
+    <div class="min-h-screen bg-gray-100">
+        <main class="max-w-screen-lg mx-auto py-10 px-6">
+            <div class="grid gap-6">
                 <h1 class="text-2xl font-bold">Account Settings</h1>
+
                 {{ $slot }}
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
 @endsection

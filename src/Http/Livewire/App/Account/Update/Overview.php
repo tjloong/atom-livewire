@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class Overview extends Component
 {
-    public $user;
+    public $account;
     
     /**
      * Render

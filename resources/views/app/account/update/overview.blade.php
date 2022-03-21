@@ -23,11 +23,6 @@
         </x-input.field>
 
         <x-input.field>
-            <x-slot name="label">Phone</x-slot>
-            {{ $account->phone ?? '--' }}
-        </x-input.field>
-
-        <x-input.field>
             <x-slot name="label">Agreed to T&C/Privacy Policy</x-slot>
             {{ $account->agree_tnc ? 'Yes' : 'No' }}
         </x-input.field>
@@ -38,7 +33,7 @@
         </x-input.field>
 
         <x-input.field>
-            <x-slot name="label">Sign-up Date</x-slot>
+            <x-slot name="label">Join Date</x-slot>
             {{ format_date($account->created_at, 'datetime') }}
         </x-input.field>
 

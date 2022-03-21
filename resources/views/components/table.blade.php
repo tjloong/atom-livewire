@@ -38,7 +38,7 @@
     </tr>
 
 @elseif ($attributes->has('cell'))
-    <td {{ $attributes }}>
+    <td {{ $attributes->class(['align-top']) }}>
         {{ $slot }}
     </td>
 
@@ -51,6 +51,12 @@
     <div class="flex flex-col space-y-4">
         <div class="relative shadow rounded-lg border-b border-gray-200 w-full bg-white overflow-hidden">
             <div class="rounded-t-lg">
+                @isset($header)
+                    <div class="border-b p-4 font-bold text-lg">
+                        {{ $header }}
+                    </div>
+                @endisset
+
                 <div class="py-1 px-4 flex flex-wrap justify-between items-center">
                     <div class="my-1">
                     @if ($attributes->get('total'))
@@ -76,6 +82,7 @@
                                     >
                                 </div>
                                 <a 
+                                    x-data
                                     x-show="$wire.get('filters.search')" 
                                     x-on:click.prevent="$wire.set('filters.search', null)" 
                                     class="flex items-center justify-center text-gray-800"

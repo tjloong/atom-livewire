@@ -24,10 +24,10 @@ class Prefooter extends Component
         $siteSettings = true
     ) {
         if (config('atom.static_site')) {
-            $this->phone = $contact['phone'] ?? null;
-            $this->email = $contact['email'] ?? null;
-            $this->address = $contact['address'] ?? null;
-            $this->briefs = $contact['briefs'] ?? null;
+            $this->phone = $contact['phone'] ?? config('atom.contact.phone');
+            $this->email = $contact['email'] ?? config('atom.contact.email');
+            $this->address = $contact['address'] ?? config('atom.contact.address');
+            $this->briefs = $contact['briefs'] ?? config('atom.contact.briefs');
         }
         else if ($siteSettings) {
             $this->phone = isset($contact['phone']) ? $contact['phone'] : SiteSetting::getSetting('phone');

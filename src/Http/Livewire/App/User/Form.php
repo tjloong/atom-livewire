@@ -8,35 +8,42 @@ use Illuminate\Validation\Rule;
 class Form extends Component
 {
     public $user;
-    public $form;
-    public $isSelf;
     public $selectedTeams;
-    public $sendVerifyEmail;
     public $sendAccountActivationEmail;
 
-    protected $messages = [
-        'form.name.required' => 'Name is required.',
-        'form.email.required' => 'Login email is required.',
-        'form.email.email' => 'Invalid email address.',
-        'form.email.unique' => 'Login email is already taken.',
-        'form.password.min' => 'Password must be at least 8 characters.',
-    ];
-
+    /**
+     * Validation rules
+     */
     protected function rules()
     {
-        return [
-            'form.name' => 'required',
-            'form.email' => [
+        $rules = [
+            'user.name' => 'required',
+            'user.email' => [
                 'required',
                 'email',
                 Rule::unique('users', 'email')->ignore($this->user),
             ],
-            'form.password' => 'nullable|min:8',
-            'form.visibility' => 'nullable',
-            'form.is_pending' => 'nullable',
-            'form.is_active' => 'nullable',
-            'form.is_root' => 'nullable',
-            'form.role_id' => 'nullable',
+            'user.visibility' => 'nullable',
+            'user.activated_at' => 'nullable',
+            'user.account_id' => 'required',
+        ];
+
+        if (enabled_module('roles')) $rules['role_id'] = 'nullable';
+
+        return $rules;
+    }
+
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'user.name.required' => __('Name is required.'),
+            'user.email.required' => __('Login email is required.'),
+            'user.email.email' => __('Invalid email address.'),
+            'user.email.unique' => __('Login email is already taken.'),
+            'user.account_id.required' => __('Unknown account'),
         ];
     }
 
@@ -45,20 +52,6 @@ class Form extends Component
      */
     public function mount()
     {
-        $this->form = [
-            'name' => $this->user->name,
-            'email' => $this->user->email,
-            'password' => null,
-            'visibility' => $this->user->visibility ?? 'global',
-            'is_root' => $this->user->is_root ?? false,
-            'is_active' => $this->user->is_active ?? false,
-            'is_pending' => $this->user->is_pending ?? false,
-        ];
-
-        if (enabled_module('roles')) $this->form['role_id'] = $this->user->role_id ?? null;
-        
-        $this->isSelf = $this->user->id === auth()->id();
-        $this->sendVerifyEmail = false;
         $this->sendAccountActivationEmail = !$this->user->exists;
 
         if (enabled_module('teams')) {
@@ -73,7 +66,7 @@ class Form extends Component
     {
         if (!enabled_module('roles')) return;
 
-        return model('role')->find($this->form['role_id']);
+        return model('role')->find($this->user->role_id);
     }
 
     /**
@@ -111,14 +104,6 @@ class Form extends Component
     }
 
     /**
-     * Updated form.role_id
-     */
-    public function updatedFormRoleId($value)
-    {
-        if (empty($value)) $this->form['role_id'] = null;
-    }
-
-    /**
      * Submit
      */
     public function submit()
@@ -126,13 +111,13 @@ class Form extends Component
         $this->resetValidation();
         $this->validate();
 
-        $verify = $this->user->exists 
+        $sendVerifyEmail = $this->user->exists 
             && config('atom.accounts.verify')
-            && $this->form['email'] !== $this->user->email;
+            && $this->user->isDirty('email');
 
         $this->persist();        
 
-        if ($verify) {
+        if ($sendVerifyEmail) {
             $this->user->update(['email_verified_at' => null]);
             $this->user->sendEmailVerificationNotification();
         }
@@ -150,28 +135,10 @@ class Form extends Component
      */
     public function persist()
     {
-        $this->user->name = $this->form['name'];
-        $this->user->email = $this->form['email'];
-        $this->user->visibility = $this->form['visibility'];
-        $this->user->is_root = $this->form['is_root'];
-        $this->user->is_active = $this->form['is_active'];
-        $this->user->is_pending = $this->form['is_pending'];
-
-        if (enabled_module('roles')) {
-            $this->user->role_id = $this->form['role_id'];
-        }
-
         $this->user->save();
 
         if (enabled_module('teams')) {
             $this->user->teams()->sync($this->selectedTeams);
-        }
-
-        if ($password = $this->form['password'] ? bcrypt($this->form['password']) : null) {
-            if ($this->isSelf) {
-                $this->user->password = $password;
-                $this->user->save();
-            }
         }
     }
 

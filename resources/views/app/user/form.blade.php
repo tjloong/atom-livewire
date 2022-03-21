@@ -2,114 +2,85 @@
     <x-box>
         <div class="grid divide-y">
             <div class="p-5">
-                <x-input.text wire:model.defer="form.name" :error="$errors->first('form.name')" required>
+                <x-input.text wire:model.defer="user.name" :error="$errors->first('user.name')" required>
                     Name
                 </x-input.text>
     
                 <x-input.email
-                    wire:model.defer="form.email"
-                    :error="$errors->first('form.email')"
+                    wire:model.defer="user.email"
+                    :error="$errors->first('user.email')"
                     required
-                    :caption="$isSelf ? 'You will need to verify your email again if you change this.' : ''"
+                    :caption="$user->exists ? 'User will need to verify the email again if you change this.' : ''"
                 >
                     Login Email
                 </x-input.email>
+
+                @if ($user->exists)
+                    <x-input.field>
+                        <x-slot name="label">Status</x-slot>
+                        <x-badge>{{ $user->status }}</x-badge>
+                    </x-input.field>
+                @endif
+
+                @root
+                    <x-input.field>
+                        <x-slot name="label">User Type</x-slot>
+                        {{ str($user->account->type)->headline() }}
+                    </x-input.field>
+                @endroot
     
-                @if ($isSelf)
-                    <x-input.password wire:model.defer="form.password" error="{{ $errors->first('form.password') }}">
-                        Login Password
-                    </x-input.password>
-                
-                    @module('roles')
+                @if ($user->exists && $user->status === 'inactive')
+                    <x-alert icon="info-circle">
+                        User account is pending for activation.
+                    </x-alert>
+                @endif
+            </div>
+
+            @if (!$user->isRoot() && (
+                config('atom.app.user.data_visibility')
+                || enabled_module('roles')
+                || enabled_module('teams')
+            ))
+                <div class="p-5">
+                    @if (config('atom.app.user.data_visibility'))
                         <x-input.field>
-                            <x-slot name="label">My Role</x-slot>
-                            {{ $user->role->name ?? '--' }}
+                            <x-slot name="label">Data Visiblity</x-slot>
+                            <div class="flex flex-col gap-2">
+                                @foreach ($visibilities as $opt)
+                                    <x-input.radio name="visiblity" wire:model.defer="user.visibility" :value="$opt['value']" :checked="$user->visibility === $opt['value']">
+                                        <div>
+                                            <div class="font-medium">{{ str()->headline($opt['value']) }}</div>
+                                            <div class="text-sm text-gray-500">{{ $opt['caption'] }}</div>
+                                        </div>
+                                    </x-input.radio>
+                                @endforeach
+                            </div>
                         </x-input.field>
+                    @endif
+
+                    @module('roles')
+                        <x-input.select wire:model="user.role_id" :options="$roles">
+                            Role
+                        </x-input.select>
                     @endmodule
 
                     @module('teams')
-                        <x-input.field>
-                            <x-slot name="label">My Teams</x-slot>
-                            <div class="flex flex-wrap items-center gap-2">
-                                @forelse ($user->teams as $team)
-                                    <div class="bg-gray-100 rounded-md py-1 px-2 text-sm uppercase">
-                                        {{ $team->name }}
-                                    </div>
-                                @empty
-                                    --
-                                @endforelse
-                            </div>
-                        </x-input.field>
+                        <x-input.tags wire:model.defer="selectedTeams" :options="$teams">
+                            Teams
+                        </x-input.tags>
                     @endmodule
-                @else
-                    <div class="grid gap-4">
-                        <div class="grid gap-2">
-                            @if ($user->exists && $user->is_root)
-                                <x-input.checkbox wire:model="form.is_root" disabled>
-                                    This is a root user
-                                </x-input.checkbox>
-                            @elseif (auth()->user()->is_root && !$user->exists)
-                                <x-input.checkbox wire:model="form.is_root">
-                                    This is a root user
-                                </x-input.checkbox>
-                            @endif
-
-                            <x-input.checkbox wire:model="form.is_active">
-                                This user is active
-                            </x-input.checkbox>
-                        </div>
-
-                        @if ($user->exists && $user->is_pending)
-                            <div class="flex items-center gap-1">
-                                <x-icon name="info-circle" class="text-gray-400" size="20px"/>
-                                <div class="font-medium text-gray-500">User account is pending for activation.</div>
-                            </div>
-                        @endif
-                    </div>
-                @endif                    
-            </div>
-
-            @if (!$isSelf && $form['is_active'])
+                </div>
+            @endif
+                    
+            @if ($user->status === 'inactive' || !$user->exists)
                 <div class="p-5">
-                    @if (!$form['is_root'])
-                        @if (config('atom.app.user.data_visibility'))
-                            <x-input.field>
-                                <x-slot name="label">Data Visiblity</x-slot>
-                                <div class="flex flex-col gap-2">
-                                    @foreach ($visibilities as $opt)
-                                        <x-input.radio name="visiblity" wire:model.defer="form.visibility" :value="$opt['value']" :checked="$form['visibility'] === $opt['value']">
-                                            <div>
-                                                <div class="font-medium">{{ str()->headline($opt['value']) }}</div>
-                                                <div class="text-sm text-gray-500">{{ $opt['caption'] }}</div>
-                                            </div>
-                                        </x-input.radio>
-                                    @endforeach
-                                </div>
-                            </x-input.field>
+                    <x-input.checkbox wire:model="sendAccountActivationEmail">
+                        @if ($user->exists)
+                            Resend account activation email to user
+                        @else
+                            Send account activation email to user
                         @endif
-
-                        @module('roles')
-                            <x-input.select wire:model="form.role_id" :options="$roles">
-                                Role
-                            </x-input.select>
-                        @endmodule
-
-                        @module('teams')
-                            <x-input.tags wire:model.defer="selectedTeams" :options="$teams">
-                                Teams
-                            </x-input.tags>
-                        @endmodule
-                    @endif
-
-                    @if ($user->status === 'pending' || !$user->exists)
-                        <x-input.checkbox wire:model="sendAccountActivationEmail">
-                            @if ($user->status === 'pending')
-                                Resend account activation email to user
-                            @else
-                                Send account activation email to user
-                            @endif
-                        </x-input.checkbox>
-                    @endif
+                    </x-input.checkbox>
                 </div>
             @endif
         </div>

@@ -1,15 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Web;
+namespace Jiannius\Atom\Http\Livewire\Web\Pages;
 
 use Livewire\Component;
 
-class Home extends Component
+class Index extends Component
 {
     /**
      * Mount
-     * 
-     * @return void
      */
     public function mount()
     {
@@ -27,13 +25,11 @@ class Home extends Component
     }
 
     /**
-     * Render component
-     * 
-     * @return void
+     * Render
      */
     public function render()
     {
-        return view('atom::web.home', [
+        return view('atom::web.pages.index', [
             'plans' => $this->plans,
         ])->layout('layouts.web');
     }

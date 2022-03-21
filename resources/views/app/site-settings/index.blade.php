@@ -23,7 +23,7 @@
 
         <div class="md:col-span-9">
             <div class="grid gap-6">
-                @if ($component = get_livewire_component($tab, 'app/site-settings'))
+                @if ($component = livewire_name('app/site-settings/'.$tab))
                     @livewire($component, key($tab))
                 @endif
             </div>

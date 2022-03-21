@@ -42,12 +42,10 @@
                 </x-input.checkbox>
             </x-input.field>
 
-            @module('accounts')
-                <a class="flex items-center gap-1">
-                    <x-icon name="info-circle" class="text-gray-400" size="20px"/>
-                    {{ $price->accounts->count() }} {{ str('user')->plural($price->accounts->count()) }} subscribed to this price.
-                </a>
-            @endmodule
+            <a class="flex items-center gap-1">
+                <x-icon name="info-circle" class="text-gray-400" size="20px"/>
+                {{ $price->accounts->count() }} {{ str('user')->plural($price->accounts->count()) }} subscribed to this price.
+            </a>
         </div>
 
         <x-slot name="buttons">

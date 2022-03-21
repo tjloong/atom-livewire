@@ -30,4 +30,18 @@ class Metadata
 
         return collect($states)->sortBy('code')->values()->all();
     }
+
+    /**
+     * Get locales
+     */
+    public function locales($code = null)
+    {
+        $locales = collect(json_decode(json_encode([
+            ['code' => 'en', 'name' => 'English'],
+            ['code' => 'bm', 'name' => 'Bahasa Melayu'],
+            ['code' => 'zh', 'name' => '中文'],
+        ])));
+
+        return $code ? $locales->where('code', $code)->first() : $locales;
+    }
 }

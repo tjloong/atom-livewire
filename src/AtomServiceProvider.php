@@ -12,9 +12,8 @@ use Jiannius\Atom\Console\RemoveCommand;
 use Jiannius\Atom\Console\InstallCommand;
 use Jiannius\Atom\Console\PublishCommand;
 use Jiannius\Atom\Http\Middleware\IsRole;
+use Jiannius\Atom\Http\Middleware\PortalGuard;
 use Jiannius\Atom\Http\Middleware\TrackReferer;
-use Jiannius\Atom\Http\Middleware\AppPortalGuard;
-use Jiannius\Atom\Http\Middleware\BillingPortalGuard;
 
 class AtomServiceProvider extends ServiceProvider
 {
@@ -79,6 +78,10 @@ class AtomServiceProvider extends ServiceProvider
         Blade::if('module', function($value) {
             return enabled_module($value);
         });
+
+        Blade::if('root', function() {
+            return auth()->user()->isRoot();
+        });
     }
 
     /**
@@ -110,6 +113,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('checkbox', 'Jiannius\\Atom\\Components\\Checkbox');
         Blade::component('atom-logo', 'Jiannius\\Atom\\Components\\AtomLogo');
         Blade::component('file-card', 'Jiannius\\Atom\\Components\\FileCard');
+        Blade::component('back-button', 'Jiannius\\Atom\\Components\\BackButton');
         Blade::component('admin-panel', 'Jiannius\\Atom\\Components\\AdminPanel');
         Blade::component('empty-state', 'Jiannius\\Atom\\Components\\EmptyState');
         Blade::component('page-header', 'Jiannius\\Atom\\Components\\PageHeader');
@@ -165,9 +169,10 @@ class AtomServiceProvider extends ServiceProvider
     public function registerLivewires()
     {
         // web
-        Livewire::component('atom.web.home', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Home');
-        Livewire::component('atom.web.blog', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Blog');
-        Livewire::component('atom.web.contact', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Contact');
+        Livewire::component('atom.web.pages.index', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Index');
+        Livewire::component('atom.web.pages.blog', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Blog');
+        Livewire::component('atom.web.pages.contact', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Contact\\Index');
+        Livewire::component('atom.web.pages.contact.thank-you', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Contact\\ThankYou');
 
         // auth portal
         Livewire::component('atom.auth.login', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\Login');
@@ -287,8 +292,7 @@ class AtomServiceProvider extends ServiceProvider
         $router = app('router');
         $router->aliasMiddleware('role', IsRole::class);
         $router->aliasMiddleware('referer', TrackReferer::class);
-        $router->aliasMiddleware('app-portal-guard', AppPortalGuard::class);
-        $router->aliasMiddleware('billing-portal-guard', BillingPortalGuard::class);
+        $router->aliasMiddleware('portal-guard', PortalGuard::class);
     }
 
     /**
