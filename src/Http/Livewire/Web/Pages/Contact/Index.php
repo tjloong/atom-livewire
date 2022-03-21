@@ -93,7 +93,7 @@ class Index extends Component
             Notification::route('mail', $mail['to'])->notify(new EnquiryNotification($mail['params']));
         }
         
-        return redirect()->route('contact.sent');
+        return redirect()->route('page', ['contact/thank-you']);
     }
 
     /**
