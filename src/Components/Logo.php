@@ -39,19 +39,27 @@ class Logo extends Component
      */
     public function getSrc()
     {
-        if (!$this->name) return $this->sources[$this->small ? 'atom-sm' : 'atom'];
-
-        $src = collect(['svg', 'png', 'jpg', 'jpeg'])->map(function($ext) {
-            if (file_exists(storage_path("app/public/img/logo-$this->name.$ext"))) {
-                return asset("storage/img/logo-$this->name.$ext");
+        $filename = $this->name ?? ($this->small ? 'logo-sm' : 'logo');
+        
+        $src = collect(['svg', 'png', 'jpg', 'jpeg'])->map(function($ext) use ($filename) {
+            if (str($filename)->startsWith('logo')) {
+                if (file_exists(storage_path("app/public/img/$filename.$ext"))) {
+                    return asset("storage/img/$filename.$ext");
+                }
             }
-            else if (file_exists(storage_path("app/public/app/logo/$this->name.$ext"))) {
-                return asset("storage/img/logo/$this->name.$ext");
+            else if (file_exists(storage_path("app/public/img/logo-$filename.$ext"))) {
+                return asset("storage/img/logo-$filename.$ext");
+            }
+            else if (file_exists(storage_path("app/public/app/logo/$filename.$ext"))) {
+                return asset("storage/img/logo/$filename.$ext");
             }
             else return null;
         })->filter()->first();
-
-        return $src ?? $this->sources[$this->name] ?? null;
+        
+        return $src
+            ?? $this->sources[$this->name] 
+            ?? $this->sources[$this->small ? 'atom-sm' : 'atom']
+            ?? null;
     }
 
     /**

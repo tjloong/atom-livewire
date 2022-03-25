@@ -83,7 +83,7 @@
                             @if ($attributes->get('logo'))
                                 <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain">
                             @else
-                                <x-logo class="w-full"/>
+                                <x-logo class="w-full h-full"/>
                             @endif
                         </a>
                     @endisset
