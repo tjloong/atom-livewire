@@ -127,6 +127,22 @@ class SiteSetting extends Model
     }
 
     /**
+     * Scope for ozopay
+     * 
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOzopay($query)
+    {
+        return $query->whereIn('name', [
+            'ozopay_tid',
+            'ozopay_secret',
+        ]);
+    }
+
+
+
+    /**
      * Get settings
      * 
      * @param string $name

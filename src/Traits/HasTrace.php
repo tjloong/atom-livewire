@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Traits;
 
-use App\Models\User;
 use Illuminate\Support\Facades\Schema;
 
 trait HasTrace
@@ -19,26 +18,32 @@ trait HasTrace
         static::creating(function ($model) {
             $table = $model->getTable();
 
-            if (auth()->id()) {
-                if (Schema::hasColumn($table, 'owned_by')) $model->owned_by = auth()->id();
-                if (Schema::hasColumn($table, 'created_by')) $model->created_by = auth()->id();
+            if ($id = auth()->user()->id ?? null) {
+                if (Schema::hasColumn($table, 'owned_by')) $model->owned_by = $id;
+                if (Schema::hasColumn($table, 'created_by')) $model->created_by = $id;
+                if (Schema::hasColumn($table, 'updated_by')) $model->updated_by = $id;
             }
         });
 
         static::updating(function ($model) {
             $table = $model->getTable();
 
-            if (auth()->id() && Schema::hasColumn($table, 'owned_by') && !$model->owned_by) {
-                $model->owned_by = $model->created_by;
+            if ($id = auth()->user()->id ?? null) {
+                if (Schema::hasColumn($table, 'updated_by')) $model->updated_by = $id;
+                if (Schema::hasColumn($table, 'owned_by') && !$model->owned_by) {
+                    $model->owned_by = $model->created_by;
+                }
             }
         });
 
         static::deleted(function ($model) {
             $table = $model->getTable();
 
-            if (auth()->id() && Schema::hasColumn($table, 'deleted_by') && $model->exists) {
-                $model->deleted_by = auth()->id();
-                $model->save();
+            if (Schema::hasColumn($table, 'deleted_by') && $model->exists) {
+                if ($id = auth()->user()->id ?? null) {
+                    $model->deleted_by = $id;
+                    $model->save();
+                }
             }
         });
     }
@@ -52,6 +57,7 @@ trait HasTrace
     {
         $this->casts['owned_by'] = 'integer';
         $this->casts['created_by'] = 'integer';
+        $this->casts['updated_by'] = 'integer';
         $this->casts['deleted_by'] = 'integer';
         $this->casts['blocked_by'] = 'integer';
         $this->casts['blocked_at'] = 'datetime';
@@ -62,7 +68,7 @@ trait HasTrace
      */
     public function owned_by_user()
     {
-        return $this->belongsTo(User::class, 'owned_by');
+        return $this->belongsTo(get_class(model('user')), 'owned_by');
     }
 
     /**
@@ -70,7 +76,15 @@ trait HasTrace
      */
     public function created_by_user()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(get_class(model('user')), 'created_by');
+    }
+
+    /**
+     * Get updated_by_user for model
+     */
+    public function updated_by_user()
+    {
+        return $this->belongsTo(get_class(model('user')), 'updated_by');
     }
 
     /**
@@ -78,7 +92,7 @@ trait HasTrace
      */
     public function deleted_by_user()
     {
-        return $this->belongsTo(User::class, 'deleted_by');
+        return $this->belongsTo(get_class(model('user')), 'deleted_by');
     }
 
     /**
@@ -86,7 +100,7 @@ trait HasTrace
      */
     public function blocked_by_user()
     {
-        return $this->belongsTo(User::class, 'blocked_by');
+        return $this->belongsTo(get_class(model('user')), 'blocked_by');
     }
 
     /**

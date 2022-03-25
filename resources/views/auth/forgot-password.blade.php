@@ -1,6 +1,6 @@
 <div class="max-w-md mx-auto grid gap-10">
-    <a class="w-40 mx-auto" href="/">
-        <x-atom-logo/>
+    <a class="mx-auto" href="/">
+        <x-logo class="w-40"/>
     </a>
 
     <form wire:submit.prevent="send">

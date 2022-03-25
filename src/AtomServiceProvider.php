@@ -35,7 +35,8 @@ class AtomServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'atom');
-        
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'atom');
+
         require_once __DIR__.'/Helpers.php';
         
         $this->registerBlade();
@@ -98,6 +99,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('tabs', 'Jiannius\\Atom\\Components\\Tabs');
         Blade::component('card', 'Jiannius\\Atom\\Components\\Card');
         Blade::component('icon', 'Jiannius\\Atom\\Components\\Icon');
+        Blade::component('logo', 'Jiannius\\Atom\\Components\\Logo');
         Blade::component('alert', 'Jiannius\\Atom\\Components\\Alert');
         Blade::component('badge', 'Jiannius\\Atom\\Components\\Badge');
         Blade::component('table', 'Jiannius\\Atom\\Components\\Table');
@@ -111,13 +113,13 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('stat-box', 'Jiannius\\Atom\\Components\\StatBox');
         Blade::component('dropdown', 'Jiannius\\Atom\\Components\\Dropdown');
         Blade::component('checkbox', 'Jiannius\\Atom\\Components\\Checkbox');
-        Blade::component('atom-logo', 'Jiannius\\Atom\\Components\\AtomLogo');
         Blade::component('file-card', 'Jiannius\\Atom\\Components\\FileCard');
         Blade::component('back-button', 'Jiannius\\Atom\\Components\\BackButton');
         Blade::component('admin-panel', 'Jiannius\\Atom\\Components\\AdminPanel');
         Blade::component('empty-state', 'Jiannius\\Atom\\Components\\EmptyState');
         Blade::component('page-header', 'Jiannius\\Atom\\Components\\PageHeader');
         Blade::component('breadcrumbs', 'Jiannius\\Atom\\Components\\Breadcrumbs');
+        Blade::component('payment-gateway', 'Jiannius\\Atom\\Components\\PaymentGateway');
         Blade::component('fullscreen-loader', 'Jiannius\\Atom\\Components\\FullscreenLoader');
         
         Blade::component('input.seo', 'Jiannius\\Atom\\Components\\Input\\Seo');
@@ -279,7 +281,7 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.app.site-settings.whatsapp-bubble', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\WhatsappBubble');
         Livewire::component('atom.app.site-settings.email-configurations', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\EmailConfigurations');
         Livewire::component('atom.app.site-settings.storage', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Storage');
-        Livewire::component('atom.app.site-settings.google-map', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\GoogleMap');
+        Livewire::component('atom.app.site-settings.ozopay', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Ozopay');
     }
 
     /**

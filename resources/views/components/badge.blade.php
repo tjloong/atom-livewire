@@ -52,7 +52,7 @@
     'px-2 inline-flex text-sm leading-6 font-semibold rounded-full',
     $attributes->get('color')
         ? $colors[$attributes->get('color')]
-        : ($colors[$status[$slot->toHtml()] ?? 'gray'])
+        : ($colors[$status[strtolower($slot->toHtml())] ?? 'gray'])
 ]) }} class=" bg-gray-100 text-gray-800">
-    {{ $slot }}
+    {{ strtolower($slot) }}
 </span>

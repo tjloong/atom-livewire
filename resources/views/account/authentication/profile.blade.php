@@ -4,7 +4,7 @@
 
         <div class="p-5">
             <x-input.text wire:model.defer="user.name" :error="$errors->first('user.name')" required>
-                Your Name
+                Login Name
             </x-input.text>
 
             <x-input.email wire:model.defer="user.email" :error="$errors->first('user.email')" required>

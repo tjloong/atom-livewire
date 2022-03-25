@@ -29,19 +29,18 @@ class Index extends Component
 
         $tabs = collect(json_decode(json_encode(
             [
-                ['group' => 'General', 'tabs' => array_filter(array_merge(
-                    [
-                        $settings->profile()->count() ? ['slug' => 'site-profile'] : null,
-                        $settings->tracking()->count() ? ['slug' => 'site-tracking'] : null,
-                        $settings->seo()->count() ? ['slug' => 'site-seo'] : null,
-                        $settings->social()->count() ? ['slug' => 'social-media'] : null,
-                        $settings->whatsapp()->count() ? ['slug' => 'whatsapp-bubble'] : null,
-                    ], 
-                ))],
-                ['group' => 'System', 'tabs' => [
+                ['group' => 'General', 'tabs' => array_filter([
+                    $settings->profile()->count() ? ['slug' => 'site-profile'] : null,
+                    $settings->tracking()->count() ? ['slug' => 'site-tracking'] : null,
+                    $settings->seo()->count() ? ['slug' => 'site-seo'] : null,
+                    $settings->social()->count() ? ['slug' => 'social-media'] : null,
+                    $settings->whatsapp()->count() ? ['slug' => 'whatsapp-bubble'] : null,
+                ])],
+                ['group' => 'System', 'tabs' => array_filter([
                     ['slug' => 'email-configurations'],
                     ['slug' => 'storage'],
-                ]],
+                    in_array('ozopay', config('atom.payment_gateway', [])) ? ['slug' => 'ozopay'] : null,
+                ])],
             ]
         )))
             ->map(function($val) {

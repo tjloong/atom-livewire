@@ -83,7 +83,7 @@
                             this.number = this.value.replace(country.code, '')
                         }
                     }
-                    else this.number = this.value
+                    else this.number = this.value || null
                 },
                 input () {
                     this.value = this.number ? `${this.code}${this.number}` : null

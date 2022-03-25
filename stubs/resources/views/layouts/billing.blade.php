@@ -15,9 +15,7 @@
             <div class="grid gap-6 md:grid-cols-12 md:py-5">
                 <div class="md:col-span-3">
                     <div class="grid gap-6">
-                        <div class="h-[50px] w-[120px]">
-                            <x-atom-logo/>
-                        </div>
+                        <x-logo class="h-[50px] w-[120px]"/>
     
                         <h1 class="text-xl font-semibold">
                             Billing Management

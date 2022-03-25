@@ -5,9 +5,7 @@
                 @isset($logo)
                     {{ $logo }}
                 @elseif ($attributes->has('logo'))
-                    <div class="w-40">
-                        <x-atom-logo class="w-full h-full object-contain {{ $dark ? 'brightness-0 invert' : '' }}"/>
-                    </div>
+                    <x-logo class="w-40 {{ $dark ? 'brightness-0 invert' : '' }}"/>
                 @endif
 
                 @if (!empty($briefs))

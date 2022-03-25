@@ -159,3 +159,76 @@ class Index extends AtomBlogIndex
 ```
 
 Atom will then auto discover your component within the app/Http/Livewire/App/Blog/Update folder. Make sure the component follow the namespace convention.
+
+### Payment Gateway
+
+1. To enable payment gateway, add the provider in config/atom.php
+
+```
+// config/atom.php
+...
+'payment_gateway' => ['ozopay'];
+```
+
+2. Exclude the redirect and webhook route from CSRF checking.
+
+```
+// app/Http/Middleware/VerifyCsrfToken.php
+
+protected $exclude = [
+    '__ozopay/*',
+    '__gkash/*',
+    '__stripe/*',
+];
+```
+
+3. Configure config/session.php same site settings to null. This is to allow POST from another provider.
+
+```
+// config/session.php
+...
+'same_site' => null,
+```
+
+4. Use the payment gateway component to show the payment method selection box.
+
+```
+<x-payment-gateway
+    callback="createPayment"
+    :providers="['ozopay']"
+    :endpoints="[
+        'ozopay' => 'https://uatpayment.ozopay.com/PaymentEntry/PaymentOption',
+    ]"
+    :value="[
+        'email' => $contribution->socso_account->email,
+        'phone' => $contribution->socso_account->phone,
+        'address' => implode(', ', [$contribution->socso_account->address_1, $contribution->socso_account->address_2]),
+        'city' => $contribution->socso_account->city,
+        'postcode' => $contribution->socso_account->postcode,
+        'state' => metadata()->socso('state', $contribution->socso_account->state),
+        'country' => 'MY',
+        'currency' => 'MYR',
+        'amount' => $this->total,
+    ]"
+/>
+```
+
+5. Create a fulfillment job in app/Jobs for each provider. Below are the class name for each providers:
+    - Ozopay: app/Jobs/OzopayFulfillment.php
+
+```
+// app/Jobs/OzopayFulfillment.php
+
+...
+protected $params; // will contains the response from provider
+
+public function __construct($params)
+{
+    $this->params = $params;
+}
+
+public function handle()
+{
+    // handle fulfillment
+}
+```

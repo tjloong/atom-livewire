@@ -18,7 +18,7 @@
         </x-input.field>
 
         <x-input.field>
-            <x-slot name="label">Email</x-slot>
+            <x-slot name="label">Login Email</x-slot>
             {{ $account->email ?? '--' }}
         </x-input.field>
 

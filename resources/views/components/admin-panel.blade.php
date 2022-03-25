@@ -92,9 +92,8 @@
                         {{ $brand }}
                     @else    
                         <a href="{{ route('app.dashboard') }}" class="flex-shrink-0 flex items-center gap-2">
-                            <div class="w-8 h-8">
-                                <x-atom-logo small/>
-                            </div>
+                            <x-logo class="w-8 h-8" small/>
+                            
                             <div class="text-white text-lg tracking-wider">
                                 <span class="font-bold">Atom</span><span class="font-light">CMS</span>
                             </div>
@@ -126,9 +125,7 @@
             <x-builder.navbar class="bg-white py-2 px-4 shadow">
                 <x-slot name="logo">
                     <div class="flex items-center gap-2">
-                        <div class="h-[40px] md:hidden">
-                            <x-atom-logo small/>
-                        </div>
+                        <x-logo class="h-[40px] md:hidden" small/>
 
                         <a class="flex-shrink-0 text-gray-800 flex items-center justify-center" @click="toggled = !toggled; animate = true">
                             <x-icon name="dots-vertical"/>

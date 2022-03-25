@@ -15,8 +15,8 @@
 <body>
     <div class="min-h-screen bg-gray-100 pt-28 pb-20 px-6">
         <div class="max-w-lg mx-auto flex flex-col space-y-4">
-            <a href="/" class="w-20">
-                <x-atom-logo/>
+            <a href="/">
+                <x-logo class="w-20"/>
             </a>
 
             @if ($code === 503)

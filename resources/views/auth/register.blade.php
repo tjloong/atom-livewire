@@ -1,6 +1,6 @@
 <div class="max-w-md mx-auto grid gap-10">
-    <a class="w-40 mx-auto" href="/">
-        <x-atom-logo/>
+    <a class="mx-auto" href="/">
+        <x-logo class="w-40"/>
     </a>
 
     <div class="grid gap-6">
@@ -13,16 +13,16 @@
         
                     <div class="grid gap-4">
                         <div>
-                            <x-input.text wire:model.defer="form.name" required>
-                                Your Name
+                            <x-input.text wire:model.defer="form.name" :error="$errors->first('form.name')" required>
+                                {{ __('Your Name') }}
                             </x-input.text>
-        
-                            <x-input.email wire:model.defer="form.email" required>
-                                Login Email
+
+                            <x-input.email wire:model.defer="form.email" :error="$errors->first('form.email')" required>
+                                {{ __('Login Email') }}
                             </x-input.email>
         
-                            <x-input.password wire:model.defer="form.password" required>
-                                Login Password
+                            <x-input.password wire:model.defer="form.password" :error="$errors->first('form.password')" required>
+                                {{ __('Login Password') }}
                             </x-input.password>
                         </div>
         
@@ -30,12 +30,12 @@
                             <div>
                                 <x-input.checkbox wire:model="form.agree_tnc">
                                     <div class="text-gray-500">
-                                        By signing up, I have read and agreed to the app's
+                                        {{ __('By signing up, I have read and agreed to the app\'s') }}
                                         <a href="/terms" target="_blank">
-                                            terms and conditions
-                                        </a> and 
+                                            {{ __('terms and conditions') }}
+                                        </a> {{ __('and') }} 
                                         <a href="/privacy" target="_blank">
-                                            privacy policy
+                                            {{ __('privacy policy') }}
                                         </a>.
                                     </div>
                                 </x-input.checkbox>
@@ -44,34 +44,28 @@
                             <div>
                                 <x-input.checkbox wire:model="form.agree_marketing">
                                     <div class="text-gray-500">
-                                        I agree to be part of the app's database for future newsletter, marketing and promotions opportunities.
+                                        {{ __('I agree to be part of the app\'s database for future newsletter, marketing and promotions opportunities.') }}
                                     </div>
                                 </x-input.checkbox>
                             </div>
                         </div>
                     </div>
-
-                    @if ($errors->any())
-                        <div class="bg-red-100 text-red-800 rounded p-4 grid gap-2">
-                            @foreach ($errors->all() as $error)
-                                <div class="flex items-center gap-1">
-                                    <x-icon name="x"/> {{ $error }}
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
         
+                    @if ($errors->has('form.agree_tnc'))
+                        <x-alert type="error">{{ $errors->first('form.agree_tnc') }}</x-alert>
+                    @endif
+
                     <x-button type="submit" size="md">
-                        Create Account
+                        {{ __('Create Account') }}
                     </x-button>
                 </div>
             </x-box>
         </form>
         
         <div class="text-center">
-            Have an account? 
+            {{ __('Have an account?') }}
             <a href="{{ route('login') }}">
-                Sign In
+                {{ __('Sign In') }}
             </a>
         </div>
     </div>

@@ -2,13 +2,24 @@
 
 use Illuminate\Support\Facades\Route;
 
+define_route('__sitemap', 'SitemapController@index')->name('__sitemap');
+define_route('__export/{filename}', 'ExportController@download')->name('__export');
+
+/**
+ * Ozopay
+ */
+if (in_array('ozopay', config('atom.payment_gateway'))) {
+    define_route()->prefix('__ozopay')->as('__ozopay.')->group(function() {
+        define_route('sign', 'OzopayController@sign', 'post')->name('sign');
+        define_route('redirect', 'OzopayController@redirect', 'post')->name('redirect');
+        define_route('webhook', 'OzopayController@webhook', 'post')->name('webhook');
+    });
+}
+
 /**
  * Application
  */
 if (!config('atom.static_site')) {
-    define_route('__sitemap', 'SitemapController@index')->name('__sitemap');
-    define_route('__export/{filename}', 'ExportController@download')->name('__export');
-
     /**
      * Account Portal
      */

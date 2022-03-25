@@ -69,13 +69,29 @@ class Breadcrumbs
     }
 
     /**
+     * Replace current trail
+     */
+    public function replace($name)
+    {
+        $trails = $this->get('trails');
+        array_pop($trails);
+
+        $this->setTrailsToSession(array_merge($this->get(), [
+            'trails' => $trails,
+        ]));
+
+        return $this->push($name);
+    }
+
+    /**
      * Get previous trail
      */
     public function previous()
     {
         $trails = $this->get('trails');
 
-        if (count($trails) <= 1) return $this->get('home');
+        if (!$trails) return null;
+        else if (count($trails) <= 1) return $this->get('home');
         else return $trails[array_key_last($trails) - 1] ?? null;
     }
 

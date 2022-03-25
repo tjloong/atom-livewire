@@ -29,3 +29,7 @@
 .btn:not(.loading) .icon {
     @apply inline-block;
 }
+
+.btn[disabled] {
+    @apply opacity-80;
+}

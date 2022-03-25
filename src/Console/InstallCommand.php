@@ -648,6 +648,8 @@ class InstallCommand extends Command
             ['name' => 'do_spaces_bucket', 'value' => null],
             ['name' => 'do_spaces_endpoint', 'value' => null],
             ['name' => 'do_spaces_cdn', 'value' => null],
+            ['name' => 'ozopay_tid', 'value' => null],
+            ['name' => 'ozopay_secret', 'value' => null],
         ] as $setting) {
             if (DB::table('site_settings')->where('name', $setting['name'])->count()) continue;
             DB::table('site_settings')->insert($setting);
