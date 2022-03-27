@@ -48,7 +48,7 @@
                             Message
                         </x-input.textarea>
                 
-                        <x-button type="submit" size="md" icon="paper-plane" class="w-full">
+                        <x-button type="submit" size="md" icon="paper-plane" block>
                             Send Enquiry
                         </x-button>
                     </form>

@@ -1,6 +1,5 @@
 import './helpers.js'
 import './script-loader.js'
-import Button from './components/button'
 import FullscreenLoader from './components/fullscreen-loader'
 
 import ImageInput from './components/input/image'
@@ -13,7 +12,6 @@ import UploaderYoutube from './uploader/uploader-youtube'
 
 import Tooltip from './directives/tooltip'
 
-Alpine.data('button', Button)
 Alpine.data('fullscreenLoader', FullscreenLoader)
 Alpine.data('imageInput', ImageInput)
 Alpine.data('uploader', Uploader)
