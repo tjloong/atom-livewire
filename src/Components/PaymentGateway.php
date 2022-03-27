@@ -22,6 +22,7 @@ class PaymentGateway extends Component
     public $endpoints = [
         'ozopay' => [
             'local' => 'https://uatpayment.ozopay.com/PaymentEntry/PaymentOption',
+            'staging' => 'https://uatpayment.ozopay.com/PaymentEntry/PaymentOption',
         ],
     ];
 
