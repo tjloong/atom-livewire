@@ -116,7 +116,7 @@
             Alpine.data('ozopay', (value, callback = null) => ({
                 value,
                 errors: {},
-                loading: true,
+                loading: false,
 
                 validated () {
                     this.errors = {}
