@@ -323,8 +323,10 @@
                                 </a>
                             </template>
                     
-                            <x-button color="green" icon="check" class="mt-4" x-on:click="submit()" wire:loading.class="loading" x-show="getSelected().length">
-                                Select (<span x-text="getSelected().length"></span>)
+                            <x-button color="green" icon="check" x-on:click="submit()" wire:loading.class="loading" x-show="getSelected().length">
+                                <span>
+                                    Select (<span x-text="getSelected().length"></span>)
+                                </span>
                             </x-button>
                         </div>
                     @endif

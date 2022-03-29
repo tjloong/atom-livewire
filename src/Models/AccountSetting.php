@@ -9,8 +9,6 @@ class AccountSetting extends Model
 {
     use HasFilters;
     
-    protected $table = 'accounts_settings';
-
     protected $guarded = [];
 
     protected $casts = [

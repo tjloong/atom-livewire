@@ -11,7 +11,6 @@ class TicketComment extends Model
 {
     use HasTrace;
 
-    protected $table = 'tickets_comments';
     protected $guarded = [];
 
     /**

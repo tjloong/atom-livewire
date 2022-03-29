@@ -52,6 +52,7 @@
                 this.show = true
             },
             close () {
+                if (this.config.onClose) this.config.onClose()
                 this.show = false
             },
         }))

@@ -34,7 +34,7 @@ class Blog extends Model
      */
     public function labels()
     {
-        return $this->belongsToMany(Label::class, 'blogs_labels', 'blog_id', 'label_id');
+        return $this->belongsToMany(Label::class, 'blog_labels');
     }
 
     /**

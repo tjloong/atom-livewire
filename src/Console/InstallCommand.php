@@ -325,9 +325,9 @@ class InstallCommand extends Command
             $this->line('tickets table created successfully.');
         }
 
-        if (Schema::hasTable('tickets_comments')) $this->warn('tickets_comments table exists, skipped.');
+        if (Schema::hasTable('ticket_comments')) $this->warn('ticket_comments table exists, skipped.');
         else {
-            Schema::create('tickets_comments', function($table) {
+            Schema::create('ticket_comments', function($table) {
                 $table->id();
                 $table->text('body')->nullable();
                 $table->foreignId('ticket_id')->nullable()->constrained()->onDelete('cascade');
@@ -335,7 +335,7 @@ class InstallCommand extends Command
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
             });
 
-            $this->line('tickets_comments table created successfully.');
+            $this->line('ticket_comments table created successfully.');
         }
     }
 
@@ -395,9 +395,9 @@ class InstallCommand extends Command
             $this->line('blogs table created successfully.');
         }
 
-        if (Schema::hasTable('blogs_labels')) $this->warn('blogs_labels table exists, skipped.');
+        if (Schema::hasTable('blog_labels')) $this->warn('blog_labels table exists, skipped.');
         else {
-            Schema::create('blogs_labels', function ($table) {
+            Schema::create('blog_labels', function ($table) {
                 $table->id();
                 $table->unsignedBigInteger('blog_id');
                 $table->unsignedBigInteger('label_id');
@@ -406,7 +406,7 @@ class InstallCommand extends Command
                 $table->foreign('label_id')->references('id')->on('labels')->onDelete('cascade');
             });
 
-            $this->line('blogs_labels table created successfully.');
+            $this->line('blog_labels table created successfully.');
         }
     }
 
@@ -845,9 +845,9 @@ class InstallCommand extends Command
             $this->line('accounts table created successfully.');
         }
 
-        if (Schema::hasTable('accounts_settings')) $this->warn('accounts_settings table exists, skipped.');
+        if (Schema::hasTable('account_settings')) $this->warn('account_settings table exists, skipped.');
         else {
-            Schema::create('accounts_settings', function($table) {
+            Schema::create('account_settings', function($table) {
                 $table->id();
                 $table->string('timezone')->nullable();
                 $table->string('locale')->nullable();
@@ -855,7 +855,7 @@ class InstallCommand extends Command
                 $table->timestamps();
             });
 
-            $this->line('accounts_settings table created successfully.');
+            $this->line('account_settings table created successfully.');
         }
     }
 

@@ -97,7 +97,7 @@ if (!config('atom.static_site')) {
         if (enabled_module('pages')) {
             Route::prefix('page')->as('app.page.')->group(function () {
                 define_route('listing',  'App\\Page\\Listing')->name('listing');
-                define_route('{id}', 'App\\Page\\Update\\Index')->name('update');
+                define_route('{id}/{tab?}', 'App\\Page\\Update\\Index')->name('update');
             });
         }
 

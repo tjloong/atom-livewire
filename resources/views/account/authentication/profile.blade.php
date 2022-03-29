@@ -1,6 +1,6 @@
 <form wire:submit.prevent="submit">
     <x-box>
-        <x-slot name="header">Change Profile Information</x-slot>
+        <x-slot name="header">Change Login Information</x-slot>
 
         <div class="p-5">
             <x-input.text wire:model.defer="user.name" :error="$errors->first('user.name')" required>

@@ -18,10 +18,10 @@
         @else
             <div class="flex flex-wrap items-end justify-between gap-4">
                 <h1 class="text-5xl font-extrabold flex-shrink-0">
-                    Blogs
+                    {{ $title }}
                 </h1>
                 <div class="max-w-md">
-                    <x-input.search wire:model.debounce.500ms="search" placeholder="Search Blog"/>
+                    <x-input.search wire:model.debounce.500ms="search" placeholder="Search {{ str($title)->plural() }}"/>
                 </div>
             </div>
         @endif
@@ -60,7 +60,11 @@
                                 </a>
                             @empty
                                 <div class="md:col-span-3">
-                                    <x-empty-state icon="news"/>
+                                    <x-empty-state 
+                                        icon="news" 
+                                        title="No {{ str($title)->plural() }} found"
+                                        subtitle=""
+                                    />
                                 </div>
                             @endforelse
                         </div>

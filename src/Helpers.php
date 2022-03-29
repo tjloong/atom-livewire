@@ -24,18 +24,10 @@ function livewire_name($path = null)
     $dotted = implode('.', explode('/', $path));
     $slashed = collect(explode('/', $path))->map(fn($str) => str()->studly($str))->filter()->join('\\');
 
-    if (
-        class_exists('App\\Http\\Livewire\\'.$slashed)
-        || class_exists('App\\Http\\Livewire\\'.$slashed.'\\Index')
-    ) {
-        return $dotted;
-    }
-    else if (
-        class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$slashed)
-        || class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$slashed.'\\Index')
-    ) {
-        return "atom.{$dotted}";
-    }
+    if (class_exists('App\\Http\\Livewire\\'.$slashed)) return $dotted;
+    else if (class_exists('App\\Http\\Livewire\\'.$slashed.'\\Index')) return $dotted.'.index';
+    else if (class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$slashed)) return "atom.{$dotted}";
+    else if (class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$slashed.'\\Index')) return "atom.{$dotted}.index";
 }
 
 /**

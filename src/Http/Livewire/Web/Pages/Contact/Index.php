@@ -11,21 +11,33 @@ class Index extends Component
     public $ref;
     public $enquiry;
 
-    protected $rules = [
-        'enquiry.name' => 'required',
-        'enquiry.phone' => 'required',
-        'enquiry.email' => 'required',
-        'enquiry.message' => 'required',
-    ];
-
-    protected $messages = [
-        'enquiry.name.required' => 'Your name is required.',
-        'enquiry.phone.required' => 'Phone number is required.',
-        'enquiry.email.required' => 'Email is required.',
-        'enquiry.message.required' => 'Message is required.',
-    ];
-
     protected $queryString = ['ref'];
+
+    /**
+     * Validation rules
+     */
+    protected function rules()
+    {
+        return [
+            'enquiry.name' => 'required',
+            'enquiry.phone' => 'required',
+            'enquiry.email' => 'required',
+            'enquiry.message' => 'required',
+        ];
+    }
+
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'enquiry.name.required' => 'Your name is required.',
+            'enquiry.phone.required' => 'Phone number is required.',
+            'enquiry.email.required' => 'Email is required.',
+            'enquiry.message.required' => 'Message is required.',
+        ];
+    }
 
     /**
      * Mount
@@ -101,8 +113,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::web.pages.contact.index', [
-            'contact' => $this->contact,
-        ])->layout('layouts.web');
+        return view('atom::web.pages.contact.index')->layout('layouts.web');
     }
 }

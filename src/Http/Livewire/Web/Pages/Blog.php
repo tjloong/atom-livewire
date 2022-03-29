@@ -11,6 +11,7 @@ class Blog extends Component
 {
     use WithPagination;
 
+    public $title = 'Blogs';
     public $slug;
     public $search;
     public $filters;
@@ -120,6 +121,6 @@ class Blog extends Component
      */
     public function render()
     {
-        return view('atom::web.blog')->layout('layouts.web');
+        return view('atom::web.pages.blog')->layout('layouts.web');
     }
 }

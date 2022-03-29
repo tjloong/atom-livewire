@@ -24,9 +24,7 @@ return [
      * Onboarding Portal
      */
     'onboarding' => [
-        'steps' => [
-            'profile' => 'Personal Information',
-        ],
+        'steps' => [],
     ],
 
     /**

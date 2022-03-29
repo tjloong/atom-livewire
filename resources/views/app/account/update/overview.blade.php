@@ -38,6 +38,16 @@
         </x-input.field>
 
         <x-input.field>
+            <x-slot name="label">Registered IP Address</x-slot>
+            {{ $account->data->register_geo->ip ?? '--' }}
+        </x-input.field>
+
+        <x-input.field>
+            <x-slot name="label">Registered From Country</x-slot>
+            {{ $account->data->register_geo->country ?? '--' }}
+        </x-input.field>
+
+        <x-input.field>
             <x-slot name="label">Status</x-slot>
             <x-badge>{{ $account->status }}</x-badge>
         </x-input.field>
