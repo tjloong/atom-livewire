@@ -24,3 +24,11 @@
 .prose .image.image-style-block-align-right {
     @apply block mr-0 ml-auto;
 }
+
+.prose strong {
+    color: inherit;
+}
+
+.prose ol > li:before {
+    color: inherit;
+}

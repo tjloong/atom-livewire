@@ -1,11 +1,11 @@
 <div>
     @if ($page)
         <div class="max-w-screen-lg mx-auto px-6 py-20">
-            <div class="text-3xl font-bold mb-6">
+            <div class="text-4xl font-bold mb-6">
                 {{ $page->title }}
             </div>
             
-            <div class="prose max-w-none">
+            <div class="prose max-w-none md:prose-lg">
                 {!! $page->content !!}
             </div>
         </div>    

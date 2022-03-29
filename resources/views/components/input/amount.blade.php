@@ -12,7 +12,7 @@
         class="relative"
     >
         <div {{ $attributes->except('error', 'required', 'caption') }}>
-            <input type="number" x-ref="input" x-bind:value="value" class="hidden">
+            <input type="number" x-ref="input" x-bind:value="value" step="any" class="hidden">
         </div>
 
         @if ($attributes->has('prefix'))
