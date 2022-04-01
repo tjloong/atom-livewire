@@ -159,7 +159,6 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('builder.slider', 'Jiannius\\Atom\\Components\\Builder\\Slider');
         Blade::component('builder.navbar', 'Jiannius\\Atom\\Components\\Builder\\Navbar');
         Blade::component('builder.pricing', 'Jiannius\\Atom\\Components\\Builder\\Pricing');
-        Blade::component('builder.prefooter', 'Jiannius\\Atom\\Components\\Builder\\Prefooter');
         Blade::component('builder.testimonial', 'Jiannius\\Atom\\Components\\Builder\\Testimonial');
     }
 
@@ -173,7 +172,7 @@ class AtomServiceProvider extends ServiceProvider
         // web
         Livewire::component('atom.web.pages.index', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Index');
         Livewire::component('atom.web.pages.blog', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Blog');
-        Livewire::component('atom.web.pages.contact', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Contact\\Index');
+        Livewire::component('atom.web.pages.contact.index', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Contact\\Index');
         Livewire::component('atom.web.pages.contact.thank-you', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Contact\\ThankYou');
 
         // auth portal

@@ -2,18 +2,16 @@
 
 namespace Jiannius\Atom\Components\Builder;
 
-use Jiannius\Atom\Models\SiteSetting;
 use Illuminate\View\Component;
-use Illuminate\Support\Str;
 
 class Footer extends Component
 {
     public $dark;
-    public $phone;
-    public $email;
-    public $socials;
+    public $color;
     public $company;
+    public $socials;
     public $whatsapp;
+    public $briefs;
 
     /**
      * Contructor
@@ -22,42 +20,76 @@ class Footer extends Component
      */
     public function __construct(
         $dark = false,
-        $contact = [],
-        $socials = [],
-        $whatsapp = [],
+        $briefs = null,
+        $company = [],
+        $socials = null,
+        $whatsapp = null,
         $siteSettings = true
     ) {
-        if (config('atom.static_site')) {
-            $this->company = $contact['company'] ?? config('atom.contact.company');
-            $this->phone = $contact['phone'] ?? config('atom.contact.phone');
-            $this->email = $contact['email'] ?? config('atom.contact.email');
-            $this->socials = $socials;
-            $this->whatsapp = $whatsapp;
-        }
-        else if ($siteSettings) {
-            $this->company = isset($contact['company']) ? $contact['company'] : SiteSetting::getSetting('company');
-            $this->phone = isset($contact['phone']) ? $contact['phone'] : SiteSetting::getSetting('phone');
-            $this->email = isset($contact['email']) ? $contact['email'] : SiteSetting::getSetting('email');
-            $this->socials = $socials;
-
-            if (!$this->socials) {
-                SiteSetting::social()->get()->each(fn($setting) => $this->socials[$setting->name] = $setting->value);
-            }
-
-            if (!$this->whatsapp) {
-                $this->whatsapp['number'] = Str::replace('+', '', SiteSetting::getSetting('whatsapp'));
-                $this->whatsapp['bubble'] = (bool)SiteSetting::getSetting('whatsapp_bubble');
-                $this->whatsapp['text'] = SiteSetting::getSetting('whatsapp_text');
-            }
-        }
-
         $this->dark = $dark;
-        $this->socials = collect($this->socials)->filter(fn($val) => $val);
+        $this->color = (object)[
+            'text' => $dark ? 'text-gray-100' : 'text-gray-800',
+        ];
+
+        // default values
+        $default = $this->getDefaultValues($siteSettings);
+
+        $this->briefs = $briefs ?? $default->briefs;
+
+        $this->company = [
+            'name' => isset($company['name']) ? $company['name'] : $default->company,
+            'phone' => isset($company['phone']) ? $company['phone'] : $default->phone,
+            'email' => isset($company['email']) ? $company['email'] : $default->email,
+            'address' => isset($company['address']) ? $company['address'] : $default->address,
+        ];
+
+        $this->socials = $socials ?? $default->socials;
+        $this->whatsapp = $whatsapp ?? $default->whatsapp;
 
         if ($this->whatsapp) {
             $this->whatsapp['url'] = 'https://wa.me/' . $this->whatsapp['number'];
             if (!empty($this->whatsapp['text'])) $this->whatsapp['url'] .= '?text=' . urlencode($this->whatsapp['text']);
         }
+    }
+
+    /**
+     * Get default values
+     */
+    public function getDefaultValues($useSiteSettings = true)
+    {
+        if (config('atom.static_site')) {
+            return (object)[
+                'company' => config('atom.company.name'),
+                'phone' => config('atom.company.phone'),
+                'email' => config('atom.company.email'),
+                'address' => config('atom.company.address'),
+                'briefs' => config('atom.company.briefs'),
+                'socials' => config('atom.company.social_media'),
+                'whatsapp' => config('atom.company.whatsapp'),
+            ];
+        }
+        else if ($useSiteSettings) {
+            return (object)[
+                'company' => site_settings('company'),
+                'phone' => site_settings('phone'),
+                'email' => site_settings('email'),
+                'address' => site_settings('address'),
+                'briefs' => site_settings('briefs'),
+    
+                'socials' => model('site_setting')->social()->get()
+                        ->mapWithKeys(fn($val) => [$val->name => $val->value])
+                        ->filter()
+                        ->all(),
+                
+                'whatsapp' => [
+                    'number' => str()->replace('+', '', site_settings('whatsapp')),
+                    'bubble' => (bool)site_settings('whatsapp_bubble'),
+                    'text' => site_settings('whatsapp_text'),
+                ],
+            ];
+        }
+
+        return (object)[];
     }
 
     /**

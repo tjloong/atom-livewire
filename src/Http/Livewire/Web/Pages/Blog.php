@@ -4,15 +4,11 @@ namespace Jiannius\Atom\Http\Livewire\Web\Pages;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Jiannius\Atom\Models\Label;
-use Jiannius\Atom\Models\Blog as BlogModel;
 
 class Blog extends Component
 {
     use WithPagination;
 
-    public $title = 'Blogs';
-    public $slug;
     public $search;
     public $filters;
     public $isPreview;
@@ -29,7 +25,7 @@ class Blog extends Component
     public function mount()
     {
         $this->isPreview = auth()->user() && request()->query('preview');
-        $this->filters = array_filter([optional(Label::where('slug', $this->slug)->first())->slug]);
+        $this->filters = array_filter([optional(model('label')->where('slug', $this->slug)->first())->slug]);
 
         if ($this->blog) {
             config([
@@ -41,13 +37,27 @@ class Blog extends Component
     }
 
     /**
+     * Get slug property
+     */
+    public function getSlugProperty()
+    {
+        $slug = request()->route('slug');
+
+        if ($slug === 'blog' || $slug === 'blog/') return null;
+
+        $split = explode('/', $slug);
+
+        return end($split);
+    }
+
+    /**
      * Get blog property
      */
     public function getBlogProperty()
     {
         if ($this->filters) return;
 
-        return BlogModel::query()
+        return model('blog')
             ->when(!$this->isPreview, fn($q) => $q->status('published'))
             ->where('slug', $this->slug)
             ->first();
@@ -60,7 +70,7 @@ class Blog extends Component
     {
         if ($this->blog) return;
         
-        return BlogModel::query()
+        return model('blog')
             ->status('published')
             ->when($this->search, fn($q) => $q->search($this->search))
             ->when($this->filters, fn($q) => $q
@@ -76,7 +86,7 @@ class Blog extends Component
      */
     public function getRecentsProperty()
     {
-        return BlogModel::query()
+        return model('blog')
             ->status('published')
             ->where('slug', '<>', $this->slug)
             ->orderBy('published_at', 'desc')
@@ -90,7 +100,7 @@ class Blog extends Component
      */
     public function getLabelsProperty()
     {
-        return Label::query()
+        return model('label')
             ->where('type', 'blog-category')
             ->orderBy('seq')
             ->orderBy('name')

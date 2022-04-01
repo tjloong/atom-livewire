@@ -24,7 +24,7 @@
                 </div>
             </x-input.field>
 
-            <x-input.tags wire:model.defer="labels" :options="$this->labels">
+            <x-input.tags wire:model.defer="selectedLabels" :options="$this->labels">
                 Categories
             </x-input.tags>
         </div>

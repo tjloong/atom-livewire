@@ -18,10 +18,10 @@
         @else
             <div class="flex flex-wrap items-end justify-between gap-4">
                 <h1 class="text-5xl font-extrabold flex-shrink-0">
-                    {{ $title }}
+                    {{ $this->title ?? $title ?? 'Blogs' }}
                 </h1>
                 <div class="max-w-md">
-                    <x-input.search wire:model.debounce.500ms="search" placeholder="Search {{ str($title)->plural() }}"/>
+                    <x-input.search wire:model.debounce.500ms="search" placeholder="Search {{ str($this->title ?? $title ?? 'Blogs')->plural() }}"/>
                 </div>
             </div>
         @endif
@@ -46,7 +46,7 @@
                     <div class="grid gap-10">
                         <div class="grid gap-6 md:grid-cols-3">
                             @forelse ($this->blogs as $blog)
-                                <a href="{{ route('blogs', [$blog->slug]) }}" class="text-gray-800">
+                                <a href="{{ route('page', ['blog/'.$blog->slug]) }}" class="text-gray-800">
                                     <x-card :image="$blog->cover->url ?? null" :alt="$blog->cover->data->alt ?? $blog->title">
                                         <div class="p-4">
                                             <div class="text-lg font-bold truncate mb-2">
@@ -62,7 +62,7 @@
                                 <div class="md:col-span-3">
                                     <x-empty-state 
                                         icon="news" 
-                                        title="No {{ str($title)->plural() }} found"
+                                        title="No {{ str($this->title ?? $title ?? 'blogs')->plural()->lower() }} found"
                                         subtitle=""
                                     />
                                 </div>
@@ -85,7 +85,7 @@
     
                                 @foreach ($this->recents as $blog)
                                     <a 
-                                        href="{{ route('blogs', [$blog->slug]) }}" 
+                                        href="{{ route('page', ['blog/'.$blog->slug]) }}" 
                                         class="grid gap-1 bg-white border p-4 rounded-md drop-shadow text-gray-800"
                                     >
                                         <div class="font-bold truncate">
