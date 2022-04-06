@@ -158,12 +158,14 @@
                         @elseif (Route::has('login') || Route::has('register'))
                             <div class="flex items-center gap-3">
                                 @if (Route::has('login'))
-                                    <x-builder.navbar item href="{{ route('login') }}">Login</x-builder.navbar>
+                                    <x-builder.navbar item href="{{ route('login') }}">
+                                        {{ $loginPlaceholder }}
+                                    </x-builder.navbar>
                                 @endif
 
                                 @if (Route::has('register'))
                                     <x-button href="{{ route('register', ['ref' => 'navbar']) }}">
-                                        Register
+                                        {{ $registerPlaceholder }}
                                     </x-button>
                                 @endif
                             </div>
@@ -221,11 +223,15 @@
                                     <div class="bg-gray-100 rounded-lg p-4">
                                         <div class="flex items-center justify-center gap-3">
                                             @if (Route::has('login'))
-                                                <x-button color="gray" :href="route('login')">Login</x-button>
+                                                <x-button color="gray" :href="route('login')">
+                                                    {{ $loginPlaceholder }}
+                                                </x-button>
                                             @endif
 
                                             @if (Route::has('register'))
-                                                <x-button :href="route('register', ['ref' => 'navbar'])">Register</x-button>
+                                                <x-button :href="route('register', ['ref' => 'navbar'])">
+                                                    {{ $registerPlaceholder }}
+                                                </x-button>
                                             @endif
                                         </div>
                                     </div>

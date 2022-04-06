@@ -11,6 +11,7 @@ class Navbar extends Component
     public $sticky;
     public $showAuth;
     public $backToApp;
+    public $loginPlaceholder;
     public $registerPlaceholder;
 
     /**
@@ -23,12 +24,14 @@ class Navbar extends Component
         $fixed = false,
         $sticky = false,
         $showAuth = true,
-        $registerPlaceholder = 'Sign Up'
+        $loginPlaceholder = 'Login',
+        $registerPlaceholder = 'Register'
     ) {
         $this->fixed = $fixed;
         $this->align = $align;
         $this->sticky = $sticky;
         $this->showAuth = $showAuth;
+        $this->loginPlaceholder = $loginPlaceholder;
         $this->registerPlaceholder = $registerPlaceholder;
         $this->backToApp = !request()->is('app') 
             && !request()->is('app/') 
