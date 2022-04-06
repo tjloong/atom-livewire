@@ -32,10 +32,10 @@ class Index extends Component
     protected function messages()
     {
         return [
-            'enquiry.name.required' => 'Your name is required.',
-            'enquiry.phone.required' => 'Phone number is required.',
-            'enquiry.email.required' => 'Email is required.',
-            'enquiry.message.required' => 'Message is required.',
+            'enquiry.name.required' => __('Your name is required.'),
+            'enquiry.phone.required' => __('Phone number is required.'),
+            'enquiry.email.required' => __('Email is required.'),
+            'enquiry.message.required' => __('Message is required.'),
         ];
     }
 

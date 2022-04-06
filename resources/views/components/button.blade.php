@@ -6,6 +6,7 @@
     @endphp
 
     <{{ $el }}
+        x-data
         {{ $attributes
             ->class([
                 $config->styles->size,

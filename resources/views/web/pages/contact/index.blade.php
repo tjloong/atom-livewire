@@ -38,11 +38,11 @@
                 
                         <x-input.phone wire:model.defer="enquiry.phone" :error="$errors->first('enquiry.phone')" required>
                             Contact Number
-                        </x-input.text>
+                        </x-input.phone>
                 
                         <x-input.email wire:model.defer="enquiry.email" :error="$errors->first('enquiry.email')" required>
                             Contact Email
-                        </x-input.text>
+                        </x-input.email>
                 
                         <x-input.textarea wire:model.defer="enquiry.message" :error="$errors->first('enquiry.message')" required>
                             Message

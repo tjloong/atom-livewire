@@ -4,17 +4,13 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
     mode: 'jit',
     
-    darkMode: false, // or 'media' or 'class'
-    
-    purge: {
-        content: [
-            './resources/**/*.blade.php',
-            './resources/**/*.js',
-            './vendor/jiannius/atom-livewire/resources/**/*.js',
-            './vendor/jiannius/atom-livewire/resources/**/*.blade.php',
-            './vendor/jiannius/atom-livewire/src/Components/**/*.php',
-        ],
-    },
+    content: [
+        './resources/**/*.blade.php',
+        './resources/**/*.js',
+        './vendor/jiannius/atom-livewire/resources/**/*.js',
+        './vendor/jiannius/atom-livewire/resources/**/*.blade.php',
+        './vendor/jiannius/atom-livewire/src/Components/**/*.php',
+    ],
     
     theme: {
         screens: {
@@ -43,12 +39,6 @@ module.exports = {
                 outline: '0 0 0 2px ' + theme('colors.blueGray.500'),
             }),
             fill: theme => theme('colors'),
-        },
-    },
-
-    variants: {
-        extend: {
-            fill: ['focus', 'group-hover'],
         },
     },
     

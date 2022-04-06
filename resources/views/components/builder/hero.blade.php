@@ -14,7 +14,7 @@
 
 @elseif ($attributes->has('content'))
     <div class="{{ collect([
-        'max-w-screen-lg mx-auto flex flex-col gap-8 py-12 px-6 w-full',
+        'max-w-screen-xl mx-auto flex flex-col gap-8 py-12 px-6 w-full',
         $valign === 'top' ? 'justify-start' : null,
         $valign === 'center' ? 'justify-center' : null,
         $valign === 'bottom' ? 'justify-end' : null,
@@ -24,9 +24,10 @@
     ])->filter()->join(' ') }}">
         @if(isset($title) && $title->isNotEmpty())
             <h1 {{ $title->attributes->class([
-                'text-3xl font-bold md:text-5xl',
-                'text-gray-200' => $overlay,
-                'text-gray-900' => !$overlay,
+                $title->attributes->get('class'),
+                'text-3xl font-bold md:text-5xl' => !$title->attributes->get('class'),
+                'text-gray-200' => !$title->attributes->get('class') && $overlay,
+                'text-gray-900' => !$title->attributes->get('class') && !$overlay,
             ]) }}>
                 {{ $title }}
             </h1>
@@ -34,9 +35,10 @@
 
         @if(isset($subtitle) && $subtitle->isNotEmpty())
             <h2 {{ $subtitle->attributes->class([
-                'text-2xl font-semibold',
-                'text-gray-200' => $overlay,
-                'text-gray-700' => !$overlay,
+                $subtitle->attributes->get('class'),
+                'text-2xl font-semibold' => !$subtitle->attributes->get('class'),
+                'text-gray-200' => !$subtitle->attributes->get('class') && $overlay,
+                'text-gray-700' => !$subtitle->attributes->get('class') && !$overlay,
             ]) }}>
                 {{ $subtitle }}
             </h2>
@@ -50,9 +52,10 @@
 
         @if(isset($cta) && $cta->isNotEmpty())
             <div {{ $cta->attributes->class([
-                'inline-flex items-center space-x-3',
-                'justify-center' => $align === 'center',
-                'justify-end' => $align === 'right',
+                $cta->attributes->get('class'),
+                'inline-flex items-center space-x-3' => !$cta->attributes->get('class'),
+                'justify-center' => !$cta->attributes->get('class') && $align === 'center',
+                'justify-end' => !$cta->attributes->get('class') && $align === 'right',
             ]) }}>
                 {{ $cta }}
             </div>
@@ -66,19 +69,12 @@
     >
         @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
 
-        <x-builder.hero content class="flex-grow relative" :overlay="$overlay" :valign="$valign" :align="$align">
-            <x-slot name="title">{{ $title ?? null }}</x-slot>
-            <x-slot name="subtitle">{{ $subtitle ?? null }}</x-slot>
-            <x-slot name="cta">{{ $cta ?? null }}</x-slot>
-            {{ $slot }}
-        </x-builder.hero>
+        {{ $slot }}
     </div>
 
 @elseif (in_array($image['position'], ['left', 'right']))
     <div class="{{ $container }} {{ $attributes->get('class') }}">
-        <div class="relative grid md:grid-cols-2">
-            @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
-
+        <div class="relative grid gap-8 md:grid-cols-2">
             <img 
                 src="{{ $image['url'] }}" 
                 class="w-full h-full relative object-cover {{ $image['position'] === 'right' ? 'order-last' : '' }}" 
@@ -87,26 +83,14 @@
                 alt="{{ $image['alt'] }}"
             >
     
-            <x-builder.hero content class="relative" :overlay="$overlay" :valign="$valign" :align="$align">
-                <x-slot name="title">{{ $title ?? null }}</x-slot>
-                <x-slot name="subtitle">{{ $subtitle ?? null }}</x-slot>
-                <x-slot name="cta">{{ $cta ?? null }}</x-slot>
-                {{ $slot }}
-            </x-builder.hero>
+            {{ $slot }}
         </div>
     </div>
 
 @elseif (in_array($image['position'], ['top', 'bottom']))
     <div class="{{ $container }} {{ $attributes->get('class') }}">
         <div class="relative grid gap-6">
-            @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
-
-            <x-builder.hero content class="relative" :overlay="$overlay" :valign="$valign" :align="$align">
-                <x-slot name="title">{{ $title ?? null }}</x-slot>
-                <x-slot name="subtitle">{{ $subtitle ?? null }}</x-slot>
-                <x-slot name="cta">{{ $cta ?? null }}</x-slot>
-                {{ $slot }}
-            </x-builder.hero>
+            {{ $slot }}
 
             <div class="max-w-screen-xl mx-auto px-4 relative {{ $image['position'] === 'top' ? 'order-first' : 'order-last' }}">
                 <img 
@@ -124,11 +108,6 @@
     <div class="{{ $container }} relative h-px">
         @if ($overlay) <div class="absolute inset-0 bg-black/30"></div> @endif
 
-        <x-builder.hero content class="relative h-full" :overlay="$overlay" :valign="$valign" :align="$align">
-            <x-slot name="title">{{ $title ?? null }}</x-slot>
-            <x-slot name="subtitle">{{ $subtitle ?? null }}</x-slot>
-            <x-slot name="cta">{{ $cta ?? null }}</x-slot>
-            {{ $slot }}
-        </x-builder.hero>
+        {{ $slot }}
     </div>
 @endif
