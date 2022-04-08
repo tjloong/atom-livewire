@@ -16,12 +16,10 @@ class Form extends Component
 
     /**
      * Mount
-     * 
-     * @return void
      */
-    public function mount()
+    public function mount($fileId)
     {
-        //
+        $this->file = model('file')->find($fileId);
     }
 
     /**
@@ -34,19 +32,7 @@ class Form extends Component
     }
 
     /**
-     * Delete
-     */
-    public function delete()
-    {
-        $this->file->delete();
-        $this->dispatchBrowserEvent('toast', ['message' => 'File Deleted']);
-        $this->emitUp('deleted');
-    }
-
-    /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Rendering
      */
     public function render()
     {

@@ -191,6 +191,18 @@ function locale_url($url)
 }
 
 /**
+ * Get youtube vid
+ */
+function youtube_vid($url)
+{
+    $regex = '/(?<=(?:v|i)=)[a-zA-Z0-9-]+(?=&)|(?<=(?:v|i)\/)[^&\n]+|(?<=embed\/)[^"&\n]+|(?<=(?:v|i)=)[^&\n]+|(?<=youtu.be\/)[^&\n]+/';
+
+    preg_match($regex, $url, $matches);
+
+    return $matches[0];
+}
+
+/**
  * Format number to currency
  *
  * @return string

@@ -2,12 +2,13 @@
 
 namespace Jiannius\Atom\Models;
 
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
+use Intervention\Image\ImageManagerStatic as Image;
 use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Traits\HasFilters;
-use Jiannius\Atom\Models\SiteSetting;
 
 class File extends Model
 {
@@ -38,18 +39,21 @@ class File extends Model
         parent::boot();
 
         static::deleting(function($file) {
-            if ($path = $file->data->path ?? null) {
+            $path = $file->data->path ?? null;
+            $provider = $file->data->provider ?? 'local';
+
+            if ($path) {
                 // prevent production file delete when in local
-                if (!app()->environment('production') && (Str::startsWith($path, 'prod/') || Str::startsWith($path, 'production/'))) {
+                if (!app()->environment('production') && (str()->startsWith($path, 'prod/') || str()->startsWith($path, 'production/'))) {
                     abort(500, 'Do not delete production file in ' . app()->environment() . ' environment!');
                 }
-                // local file
-                else if (Str::startsWith($path, 'public/uploads/')) {
-                    Storage::delete($path);
-                }
                 // digital ocean spaces
-                else if (Str::startsWith($file->url, SiteSetting::getSetting('do_spaces_cdn'))) {
-                    if ($disk = SiteSetting::getDoDisk()) $disk->delete($path);
+                else if ($provider === 'do') {
+                    if ($disk = model('site_setting')->getDoDisk()) $disk->delete($path);
+                }
+                // local file
+                else {
+                    Storage::delete($path);
                 }
             }
         });
@@ -175,5 +179,135 @@ class File extends Model
         return $this->mime === 'youtube'
             ? 'https://img.youtube.com/vi/' . ($this->data->vid ?? '') . '/default.jpg'
             : null;
+    }
+
+    /**
+     * Get url
+     */
+    public function getUrl()
+    {
+        $path = $this->data->path ?? null;
+        $isPublic = !$path || str($path)->is('public/*');
+
+        if ($isPublic) return $path ? Storage::url($path) : $this->url;
+        else return route('__file', [$this->id]);
+    }
+
+    /**
+     * Store file
+     */
+    public static function store($file, $location = 'public/uploads')
+    {
+        $isPublic = str($location)->is('public/*');
+        $provider = 'local';
+        $dimension = self::compress($file);
+        $path = $file->store($location);
+        $meta = self::getFileMeta($file);
+        $url = $isPublic ? asset('storage/' . str_replace('public/', '', $path)) : null;
+
+        // upload file to DO
+        if (site_settings('filesystem') === 'do') {
+            if ($disk = model('site_setting')->getDoDisk()) {
+                try {
+                    $folder = app()->environment('production') ? 'prod' : 'staging';
+                    $dopath = $disk->putFile($folder, storage_path("app/$path"), $isPublic ? 'public' : 'private');
+                    $cdn = site_settings('do_spaces_cdn');
+                    $url = $cdn . '/' . $dopath;
+                    $provider = 'do';
+    
+                    // delete the local copy
+                    Storage::delete($path);
+                } catch (Exception $e) {
+                    logger("Unable to upload $path to Digital Ocean bucket.");
+                }
+            }
+        }
+
+        $file = model('file');
+        $file->name = $meta['name'];
+        $file->size = $meta['size'];
+        $file->mime = $meta['mime'];
+        $file->url = $url;
+
+        $file->data = [
+            'path' => $dopath ?? $path,
+            'provider' => $provider,
+            'dimension' => $dimension,
+        ];
+
+        $file->save();
+
+        return $file;
+    }
+
+    /**
+     * Store image url
+     */
+    public static function storeImageUrl($url)
+    {
+        $img = Image::make($url);
+        $mime = $img->mime();
+
+        $file = model('file');
+        $file->name = $url;
+        $file->mime = $mime;
+        $file->url = $url;
+        $file->data = ['dimension' => $img->width() . 'x' . $img->height()];
+        $file->save();
+
+        return $file;
+    }
+
+    /**
+     * Store youtube url
+     */
+    public static function storeYoutubeUrl($url)
+    {
+        $file = model('file');
+        $file->name = $url;
+        $file->mime = 'youtube';
+        $file->url = 'https://www.youtube.com/embed/' . $url;
+        $file->data = ['vid' => $url];
+        $file->save();
+
+        return $file;
+    }
+
+    /**
+     * Get file meta
+     */
+    public static function getFileMeta($file)
+    {
+        $name = $file->getClientOriginalName();
+        $size = round($file->getSize()/1024/1024, 5);
+        $ext = $file->extension();
+
+        if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) $mime = "image/$ext";
+        else $mime = $file->getMimeType();
+
+        return compact('name', 'size', 'mime', 'ext');
+    }
+
+    /**
+     * Compress files
+     */
+    public static function compress($file)
+    {
+        $path = $file->path();
+        $ext = $file->extension();
+
+        // resize image
+        if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $img = Image::make($path);
+
+            $img->resize(1440, 1440, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save();
+
+            clearstatcache();
+
+            return $img->width() . 'x' . $img->height();
+        }
     }
 }

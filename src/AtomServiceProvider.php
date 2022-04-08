@@ -106,6 +106,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('image', 'Jiannius\\Atom\\Components\\Image');
         Blade::component('modal', 'Jiannius\\Atom\\Components\\Modal');
         Blade::component('loader', 'Jiannius\\Atom\\Components\\Loader');
+        Blade::component('notify', 'Jiannius\\Atom\\Components\\Notify');
         Blade::component('button', 'Jiannius\\Atom\\Components\\Button');
         Blade::component('drawer', 'Jiannius\\Atom\\Components\\Drawer');
         Blade::component('fbpixel', 'Jiannius\\Atom\\Components\\FbPixel');
@@ -117,15 +118,16 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('back-button', 'Jiannius\\Atom\\Components\\BackButton');
         Blade::component('admin-panel', 'Jiannius\\Atom\\Components\\AdminPanel');
         Blade::component('empty-state', 'Jiannius\\Atom\\Components\\EmptyState');
+        Blade::component('alpine-data', 'Jiannius\\Atom\\Components\\AlpineData');
         Blade::component('page-header', 'Jiannius\\Atom\\Components\\PageHeader');
         Blade::component('breadcrumbs', 'Jiannius\\Atom\\Components\\Breadcrumbs');
         Blade::component('payment-gateway', 'Jiannius\\Atom\\Components\\PaymentGateway');
-        Blade::component('fullscreen-loader', 'Jiannius\\Atom\\Components\\FullscreenLoader');
         
         Blade::component('input.seo', 'Jiannius\\Atom\\Components\\Input\\Seo');
         Blade::component('input.text', 'Jiannius\\Atom\\Components\\Input\\Text');
         Blade::component('input.tags', 'Jiannius\\Atom\\Components\\Input\\Tags');
         Blade::component('input.date', 'Jiannius\\Atom\\Components\\Input\\Date');
+        Blade::component('input.file', 'Jiannius\\Atom\\Components\\Input\\File');
         Blade::component('input.slug', 'Jiannius\\Atom\\Components\\Input\\Slug');
         Blade::component('input.email', 'Jiannius\\Atom\\Components\\Input\\Email');
         Blade::component('input.field', 'Jiannius\\Atom\\Components\\Input\\Field');
@@ -148,10 +150,6 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('input.richtext', 'Jiannius\\Atom\\Components\\Input\\Richtext');
         Blade::component('input.sortable', 'Jiannius\\Atom\\Components\\Input\\Sortable');
         
-        Blade::component('notify.alert', 'Jiannius\\Atom\\Components\\Notify\\Alert');
-        Blade::component('notify.toast', 'Jiannius\\Atom\\Components\\Notify\\Toast');
-        Blade::component('notify.confirm', 'Jiannius\\Atom\\Components\\Notify\\Confirm');
-
         Blade::component('builder.faq', 'Jiannius\\Atom\\Components\\Builder\\Faq');
         Blade::component('builder.hero', 'Jiannius\\Atom\\Components\\Builder\\Hero');
         Blade::component('builder.share', 'Jiannius\\Atom\\Components\\Builder\\Share');
@@ -267,9 +265,13 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.label.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\Label\\Form');
 
         // file
-        Livewire::component('atom.file.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Form');
-        Livewire::component('atom.file.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Listing');
-        Livewire::component('atom.file.uploader', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader');
+        Livewire::component('atom.app.file.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Form');
+        Livewire::component('atom.app.file.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Listing');
+        Livewire::component('atom.app.file.uploader', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Index');
+        Livewire::component('atom.app.file.uploader.device', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Device');
+        Livewire::component('atom.app.file.uploader.web-image', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\WebImage');
+        Livewire::component('atom.app.file.uploader.youtube', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Youtube');
+        Livewire::component('atom.app.file.uploader.library', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Library');
 
         // site settings
         Livewire::component('atom.app.site-settings.index', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Index');

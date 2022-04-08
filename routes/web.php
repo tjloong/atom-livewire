@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 define_route('__sitemap', 'SitemapController@index')->name('__sitemap');
 define_route('__export/{filename}', 'ExportController@download')->name('__export');
+define_route('__file/{id}', 'FileController@index')->name('__file');
+define_route('__file/download/{id}', 'FileController@download')->name('__file.download');
 
 /**
  * Ozopay

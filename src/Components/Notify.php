@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Components\Notify;
+namespace Jiannius\Atom\Components;
 
 use Illuminate\View\Component;
 
-class Alert extends Component
+class Notify extends Component
 {
     /**
      * Contructor
@@ -23,6 +23,6 @@ class Alert extends Component
      */
     public function render()
     {
-        return view('atom::components.notify.alert');
+        return view('atom::components.notify');
     }
 }

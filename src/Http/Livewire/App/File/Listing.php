@@ -9,7 +9,8 @@ class Listing extends Component
 {
     use WithPagination;
 
-    public $openedFile;
+    public $open = false;
+    public $selected = [];
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
     public $filters = [
@@ -23,8 +24,8 @@ class Listing extends Component
     ];
 
     protected $listeners = [
+        'delete',
         'saved' => '$refresh',
-        'deleted' => '$refresh',
         'uploader-completed' => '$refresh',
     ];
 
@@ -41,7 +42,10 @@ class Listing extends Component
      */
     public function getFilesProperty()
     {
-        return model('file')->filter($this->filters)->orderBy($this->sortBy, $this->sortOrder);
+        return model('file')
+            ->filter($this->filters)
+            ->orderBy($this->sortBy, $this->sortOrder)
+            ->paginate(48);
     }
 
     /**
@@ -53,31 +57,54 @@ class Listing extends Component
     }
 
     /**
-     * Open file
+     * Updated open
      */
-    public function openFile($id)
+    public function updatedOpen()
     {
-        $this->openedFile = model('file')->find($id);
-        $this->dispatchBrowserEvent('drawer-open');
+        $this->toggleDrawer();
     }
 
     /**
-     * Close file
+     * Toggle drawer
      */
-    public function closeFile()
+    public function toggleDrawer()
     {
-        $this->openedFile = null;
-        $this->dispatchBrowserEvent('drawer-close');
+        if ($this->open) $this->dispatchBrowserEvent('drawer-open');
+        else $this->dispatchBrowserEvent('drawer-close');        
+    }
+
+    /**
+     * Select
+     */
+    public function select($id)
+    {
+        if ($id === 'all') {
+            $this->selected = collect($this->files->items())->pluck('id')->toArray();
+        }
+        else if (in_array($id, $this->selected)) {
+            $this->selected = collect($this->selected)->reject(fn($val) => $val === $id)->values()->all();
+        }
+        else {
+            array_push($this->selected, $id);
+        }
     }
 
     /**
      * Delete file
      */
-    public function delete($id)
+    public function delete($id = null)
     {
-        model('file')->whereIn('id', $id)->get()->each(fn($q) => $q->delete());
+        if ($id) {
+            optional(model('file')->find($id))->delete();
+            $this->dispatchBrowserEvent('toast', ['message' => 'File Deleted']);
+        }
+        else {
+            model('file')->whereIn('id', $this->selected)->get()->each(fn($q) => $q->delete());
+            $this->dispatchBrowserEvent('toast', ['message' => count($this->selected).' Files Deleted']);
+        }
         
-        $this->dispatchBrowserEvent('toast', ['message' => count($id) . ' Files Deleted']);
+        $this->open = false;
+        $this->toggleDrawer();
     }
 
     /**
@@ -85,8 +112,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.file.listing', [
-            'files' => $this->files->paginate(48),
-        ]);
+        return view('atom::app.file.listing');
     }
 }

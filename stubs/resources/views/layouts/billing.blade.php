@@ -5,10 +5,9 @@
 @endpush
 
 @section('content')
-    <x-notify.alert/>
-    <x-notify.toast/>
-    <x-notify.confirm/>
-    <x-fullscreen-loader/>
+    <x-alpine-data/>
+    <x-notify/>
+    <x-loader/>
 
     <div class="bg-gray-100 p-5 min-h-screen">
         <main class="max-w-screen-xl mx-auto">

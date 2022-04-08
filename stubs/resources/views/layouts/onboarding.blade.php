@@ -5,10 +5,9 @@
 @endpush
 
 @section('content')
-    <x-notify.alert/>
-    <x-notify.toast/>
-    <x-notify.confirm/>
-    <x-fullscreen-loader/>
+    <x-alpine-data/>
+    <x-notify/>
+    <x-loader/>
 
     <div class="min-h-screen bg-gray-100">
         <x-builder.navbar logo-class="h-[40px]" align="right" :show-auth="false">

@@ -1,7 +1,7 @@
 <div>
     @if ($file->type === 'youtube')
         <figure class="relative rounded-md pt-[60%] shadow overflow-hidden bg-gray-100 mb-4">
-            <a class="absolute inset-0" href="{{ $file->url }}" target="_blank">
+            <a class="absolute inset-0" href="{{ $file->getUrl() }}" target="_blank">
                 <img src="{{ $file->youtube_thumbnail }}" class="w-full h-full object-cover">
                 <div class="absolute inset-0 flex items-center justify-center">
                     <div class="w-8 h-8 bg-white"></div>
@@ -13,9 +13,9 @@
         </figure>
     @elseif ($file->is_video)
         <figure class="relative rounded-md pt-[60%] shadow overflow-hidden bg-gray-100 mb-4">
-            <a class="absolute inset-0" href="{{ $file->url }}" target="_blank">
+            <a class="absolute inset-0" href="{{ $file->getUrl() }}" target="_blank">
                 <video class="w-full h-full object-cover">
-                    <source src="{{ $file->url }}"/>
+                    <source src="{{ $file->getUrl() }}"/>
                 </video>
                 <div class="absolute inset-0 flex items-center justify-center">
                     <div class="w-12 h-12 bg-blue-500 rounded-full text-white flex items-center justify-center">
@@ -26,14 +26,14 @@
         </figure>
     @elseif ($file->is_image)
         <div class="mb-4">
-            <a href="{{ $file->url }}" target="_blank">
+            <a href="{{ $file->getUrl() }}" target="_blank">
                 <figure class="relative rounded-md pt-[60%] shadow overflow-hidden bg-gray-100 mb-1.5">
                     <div class="absolute inset-0">
-                        <img src="{{ $file->url }}" class="h-full w-full object-cover">
+                        <img src="{{ $file->getUrl() }}" class="h-full w-full object-cover">
                     </div>
                 </figure>
             </a>
-            <a class="text-sm" href="{{ $file->url }}" target="_blank">
+            <a class="text-sm" href="{{ $file->getUrl() }}" target="_blank">
                 View full image
             </a>
         </div>
@@ -58,8 +58,8 @@
                 @endif
             </x-slot>
     
-            <a class="block truncate" href="{{ $file->url }}" target="_blank">
-                {{ $file->url }}
+            <a class="block truncate" href="{{ $file->getUrl() }}" target="_blank">
+                {{ $file->getUrl() }}
             </a>
         </x-input.field>
 
@@ -91,7 +91,7 @@
     <div class="flex flex-wrap space-x-2">
         @if ($file->type !== 'youtube')
             <div class="my-1">
-                <x-button icon="download" href="{{ $file->url }}" target="_blank">
+                <x-button icon="download" href="{{ $file->getUrl() }}" target="_blank">
                     Download
                 </x-button>
             </div>
@@ -102,10 +102,7 @@
                 title: 'Delete File',
                 message: 'Are you sure to delete this file?',
                 type: 'error',
-                onConfirmed: () => {
-                    $dispatch('close')
-                    $wire.delete()
-                },
+                onConfirmed: () => $wire.emitUp('delete', {{ $file->id }}),
             })">
                 Delete
             </x-button>

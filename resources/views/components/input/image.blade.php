@@ -33,10 +33,10 @@
         </div>
     </div>
 
-    @livewire('atom.file.uploader', [
+    @livewire('atom.app.file.uploader', [
         'uid' => 'image-input-uploader',
         'title' => 'Insert Image',
         'accept' => ['image'],
-        'sources' => ['device', 'image', 'library'],
+        'sources' => ['device', 'web-image', 'library'],
     ])
 </x-input.field>

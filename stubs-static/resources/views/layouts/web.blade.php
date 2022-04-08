@@ -9,7 +9,7 @@
         <x-builder.navbar item href="{{ route('contact', ['ref' => 'landing']) }}">Contact</x-builder.navbar>
     </x-builder.navbar>
 
-    <x-fullscreen-loader/>
+    <x-loader/>
 
     {{ $slot }}
 

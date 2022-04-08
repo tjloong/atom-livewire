@@ -15,7 +15,7 @@
         @endif
     </x-builder.navbar>
 
-    <x-fullscreen-loader/>
+    <x-loader/>
     
     {{ $slot }}
 

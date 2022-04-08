@@ -5,10 +5,9 @@
 @endpush
 
 @section('content')
-    <x-notify.alert/>
-    <x-notify.toast/>
-    <x-notify.confirm/>
-    <x-fullscreen-loader/>
+    <x-alpine-data/>
+    <x-notify/>
+    <x-loader/>
 
     <x-builder.navbar class="bg-white shadow py-2" class.logo="h-[40px]"/>
 

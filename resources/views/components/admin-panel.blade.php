@@ -54,10 +54,9 @@
 
 {{-- admin panel --}}
 @else
-    <x-notify.alert/>
-    <x-notify.toast/>
-    <x-notify.confirm/>
-    <x-fullscreen-loader/>
+    <x-alpine-data/>
+    <x-notify/>
+    <x-loader/>
 
     <div 
         class="min-h-screen bg-gray-50" 

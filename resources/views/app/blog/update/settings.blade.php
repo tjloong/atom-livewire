@@ -5,7 +5,7 @@
                 Blog Settings
             </x-slot>
 
-            <x-input.image wire:model="blog.cover_id" dimension="150x100" :placeholder="$blog->cover->url ?? null">
+            <x-input.image wire:model="blog.cover_id" dimension="150x100" :placeholder="$blog->cover->getUrl() ?? null">
                 Cover
             </x-input.image>
 

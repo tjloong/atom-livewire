@@ -52,56 +52,5 @@
             @endforeach
         </div>        
     </div>
-
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('phoneInput', (value, code = '+60') => ({
-                value,
-                code,
-                flag: null,
-                number: null,
-
-                get countries () {
-                    return Array.from(this.$refs.dropdown.querySelectorAll('[data-country-code]'))
-                        .map(el => ({ 
-                            code: el.getAttribute('data-country-code'), 
-                            flag: el.getAttribute('data-country-flag'),
-                        }))
-                },
-
-                get flag () {
-                    if (!this.code) return 
-                    return this.countries.find(country => (country.code === this.code)).flag
-                },
-    
-                init () {
-                    if (this.value?.startsWith('+')) {
-                        const country = this.countries.find(val => (this.value.startsWith(val.code)))
-
-                        if (country) {
-                            this.code = country.code
-                            this.number = this.value.replace(country.code, '')
-                        }
-                    }
-                    else this.number = this.value || null
-                },
-                input () {
-                    this.value = this.number ? `${this.code}${this.number}` : null
-                    this.close()
-                },
-                open () {
-                    this.$refs.dropdown.classList.remove('hidden')
-    
-                    floatPositioning(this.$refs.input, this.$refs.dropdown, {
-                        placement: 'bottom',
-                        flip: true,
-                    })
-                },
-                close () {
-                    this.$refs.dropdown.classList.add('hidden')
-                },
-            }))
-        })
-    </script>
 </x-input.field>
 
