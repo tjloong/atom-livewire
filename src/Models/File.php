@@ -149,6 +149,20 @@ class File extends Model
     }
 
     /**
+     * Get url attribute
+     * 
+     * @return string
+     */
+    public function getUrlAttribute($url)
+    {
+        $path = $this->data->path ?? null;
+        $isPublic = !$path || str($path)->is('public/*');
+
+        if ($isPublic) return $path ? Storage::url($path) : $url;
+        else return route('__file', [$this->id]);
+    }
+
+    /**
      * Get file type attribute
      * 
      * @return string
@@ -179,18 +193,6 @@ class File extends Model
         return $this->mime === 'youtube'
             ? 'https://img.youtube.com/vi/' . ($this->data->vid ?? '') . '/default.jpg'
             : null;
-    }
-
-    /**
-     * Get url
-     */
-    public function getUrl()
-    {
-        $path = $this->data->path ?? null;
-        $isPublic = !$path || str($path)->is('public/*');
-
-        if ($isPublic) return $path ? Storage::url($path) : $this->url;
-        else return route('__file', [$this->id]);
     }
 
     /**

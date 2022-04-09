@@ -73,7 +73,7 @@
                                 </div>
                             @elseif ($file->is_video)
                                 <video class="w-full h-full object-cover">
-                                    <source src="{{ $file->getUrl() }}"/>
+                                    <source src="{{ $file->url }}"/>
                                 </video>
                                 <div class="absolute inset-0 flex items-center justify-center">
                                     <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
@@ -83,7 +83,7 @@
                             @elseif ($file->is_audio)
                                 <x-icon name="music" size="48px"/>
                             @elseif ($file->is_image)
-                                <img src="{{ $file->getUrl() }}" class="h-full w-full object-cover">
+                                <img src="{{ $file->url }}" class="h-full w-full object-cover">
                             @elseif ($file->type === 'pdf')
                                 <x-icon name="file-pdf" type="solid" size="48px"/>
                             @else

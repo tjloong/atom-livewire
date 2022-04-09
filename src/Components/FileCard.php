@@ -12,8 +12,6 @@ class FileCard extends Component
 
     /**
      * Constructor
-     * 
-     * @return void
      */
     public function __construct(
         $url,
@@ -24,21 +22,9 @@ class FileCard extends Component
     }
 
     /**
-     * Render component
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::components.file-card');
-    }
-
-    /**
      * Get file type
-     * 
-     * @return string
      */
-    private function getType($mime)
+    public function getType($mime)
     {
         if ($mime === 'youtube') return 'youtube';
         else if (Str::startsWith($mime, 'image/')) return 'image';
@@ -47,7 +33,10 @@ class FileCard extends Component
         else return 'file';
     }
 
-    private function getUrl($url)
+    /**
+     * Get url
+     */
+    public function getUrl($url)
     {
         if ($this->type === 'youtube') {
             $vid = Str::replace('https://www.youtube.com/embed/', '', $url);
@@ -55,5 +44,13 @@ class FileCard extends Component
         }
 
         return $url;
+    }
+
+    /**
+     * Render component
+     */
+    public function render()
+    {
+        return view('atom::components.file-card');
     }
 }

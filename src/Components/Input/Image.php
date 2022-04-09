@@ -11,8 +11,6 @@ class Image extends Component
 
     /**
      * Contructor
-     * 
-     * @return void
      */
     public function __construct($dimension = '100x100', $placeholder = null)
     {
@@ -21,19 +19,7 @@ class Image extends Component
     }
 
     /**
-     * Render component
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::components.input.image');
-    }
-
-    /**
      * Get dimension
-     * 
-     * @return array
      */
     public function getDimension($default)
     {
@@ -42,5 +28,13 @@ class Image extends Component
         $height = $split[1];
 
         return (object)compact('width', 'height');
+    }
+
+    /**
+     * Render component
+     */
+    public function render()
+    {
+        return view('atom::components.input.image');
     }
 }

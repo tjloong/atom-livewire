@@ -23,12 +23,12 @@
             <div wire:click="select({{ $file->id }})" class="rounded-md shadow overflow-hidden pt-[100%] relative cursor-pointer bg-gray-100">
                 @if ($file->is_image)
                     <div class="absolute inset-0">
-                        <img src="{{ $file->getUrl() }}" class="w-full h-full object-cover">
+                        <img src="{{ $file->url }}" class="w-full h-full object-cover">
                     </div>
                 @elseif ($file->is_video)
                     <div class="absolute inset-0">
                         <video class="w-full h-full object-cover">
-                            <source src="{{ $file->getUrl() }}"/>
+                            <source src="{{ $file->url }}"/>
                         </video>
                         <div class="absolute inset-0 flex items-center justify-center">
                             <div class="w-8 h-8 bg-blue-500 rounded-full text-white flex items-center justify-center">

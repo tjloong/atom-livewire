@@ -32,7 +32,7 @@
                     <div class="grid gap-10">
                         @if ($this->blog->cover)
                             <figure class="max-w-screen-md w-full bg-gray-100 rounded-md drop-shadow relative overflow-hidden">
-                                <img src="{{ $this->blog->cover->getUrl() }}" width="500" height="500" alt="{{ $this->blog->title }}" class="w-full">
+                                <img src="{{ $this->blog->cover->url }}" width="500" height="500" alt="{{ $this->blog->title }}" class="w-full">
                             </figure>
                         @endif
         
@@ -47,7 +47,7 @@
                         <div class="grid gap-6 md:grid-cols-3">
                             @forelse ($this->blogs as $blog)
                                 <a href="{{ route('page', ['blog/'.$blog->slug]) }}" class="text-gray-800">
-                                    <x-card :image="$blog->cover->getUrl() ?? null" :alt="$blog->cover->data->alt ?? $blog->title">
+                                    <x-card :image="$blog->cover->url ?? null" :alt="$blog->cover->data->alt ?? $blog->title">
                                         <div class="p-4">
                                             <div class="text-lg font-bold truncate mb-2">
                                                 {{ $blog->title }}

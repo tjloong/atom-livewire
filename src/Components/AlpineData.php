@@ -15,6 +15,7 @@ class AlpineData extends Component
      */
     public function __construct($scripts = [
         'phone-input',
+        'image-input',
         'richtext-input',
     ]) {
         $this->scripts = array_filter($scripts);
