@@ -15,10 +15,10 @@ class File extends Component
      * @return void
      */
     public function __construct(
-        $max = 5,
+        $max = null,
         $multiple = false
     ) {
-        $this->max = $max;
+        $this->max = $max ?? config('atom.max_upload_size');
         $this->multiple = $multiple;
     }
 
