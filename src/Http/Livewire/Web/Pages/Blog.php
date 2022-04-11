@@ -91,7 +91,7 @@ class Blog extends Component
             ->where('slug', '<>', $this->slug)
             ->orderBy('published_at', 'desc')
             ->orderBy('created_at', 'desc')
-            ->take(8)
+            ->take(6)
             ->get();
     }
 

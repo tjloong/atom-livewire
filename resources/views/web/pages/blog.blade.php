@@ -77,33 +77,6 @@
             @if ($this->showSidebar)
                 <div class="md:col-span-3">
                     <div class="grid gap-10">
-                        @if ($this->recents && $this->recents->count())
-                            <div class="grid gap-4">
-                                <div class="text-sm font-semibold text-gray-400 uppercase">
-                                    Most Recent
-                                </div>
-    
-                                @foreach ($this->recents as $blog)
-                                    <a 
-                                        href="{{ route('page', ['blog/'.$blog->slug]) }}" 
-                                        class="grid gap-1 bg-white border p-4 rounded-md drop-shadow text-gray-800"
-                                    >
-                                        <div class="font-bold truncate">
-                                            {{ $blog->title }}
-                                        </div>
-    
-                                        <div class="text-gray-400 text-sm font-medium">
-                                            {{ html_excerpt($blog->excerpt ?? $blog->content) }}
-                                        </div>
-    
-                                        <div class="text-gray-500 text-sm">
-                                            {{ format_date($blog->published_at) }}
-                                        </div>
-                                    </a>
-                                @endforeach
-                            </div>
-                        @endif
-    
                         @if ($this->labels->count())
                             <div class="grid gap-4">
                                 <div class="text-sm font-semibold text-gray-400 uppercase">
@@ -130,6 +103,33 @@
                                         </div>
                                     @endforeach
                                 </div>
+                            </div>
+                        @endif
+
+                        @if ($this->recents && $this->recents->count())
+                            <div class="grid gap-4">
+                                <div class="text-sm font-semibold text-gray-400 uppercase">
+                                    Most Recent
+                                </div>
+    
+                                @foreach ($this->recents as $blog)
+                                    <a 
+                                        href="{{ route('page', ['blog/'.$blog->slug]) }}" 
+                                        class="grid gap-1 bg-white border p-4 rounded-md drop-shadow text-gray-800"
+                                    >
+                                        <div class="font-bold truncate">
+                                            {{ $blog->title }}
+                                        </div>
+    
+                                        <div class="text-gray-400 text-sm font-medium">
+                                            {{ html_excerpt($blog->excerpt ?? $blog->content) }}
+                                        </div>
+    
+                                        <div class="text-gray-500 text-sm">
+                                            {{ format_date($blog->published_at) }}
+                                        </div>
+                                    </a>
+                                @endforeach
                             </div>
                         @endif
                     </div>
