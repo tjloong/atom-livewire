@@ -45,8 +45,9 @@ if (!config('atom.static_site')) {
      */
     if (enabled_module('plans')) {
         Route::prefix('billing')->middleware(['auth', 'portal-guard'])->group(function() {
-            define_route('/', 'Billing\\Index')->name('billing');
-            define_route('checkout', 'Billing\\Checkout')->name('billing.checkout');
+            define_route('/', 'Billing\Index')->name('billing');
+            define_route('plans', 'Billing\Plans')->name('billing.plans');
+            define_route('checkout', 'Billing\Checkout')->name('billing.checkout');
         });
     }
 

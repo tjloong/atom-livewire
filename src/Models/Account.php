@@ -28,31 +28,39 @@ class Account extends Model
      */
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(get_class(model('user')));
     }
 
     /**
-     * Get setting for account
+     * Get account setting for account
      */
-    public function setting()
+    public function accountSetting()
     {
-        return $this->hasOne(AccountSetting::class);
+        return $this->hasOne(get_class(model('account_setting')));
     }
 
     /**
-     * Get orders for account
+     * Get account subscriptions for account
      */
-    public function orders()
+    public function accountSubscriptions()
     {
-        return $this->hasMany(AccountOrder::class);
+        return $this->hasMany(get_class(model('account_subscription')));
     }
 
     /**
-     * Get subscriptions for account
+     * Get account orders for account
      */
-    public function subscriptions()
+    public function accountOrders()
     {
-        return $this->hasMany(AccountSubscription::class);
+        return $this->hasMany(get_class(model('account_order')));
+    }
+
+    /**
+     * Get account payments for account
+     */
+    public function accountPayments()
+    {
+        return $this->hasMany(get_class(model('account_payment')));
     }
 
     /**
@@ -97,5 +105,32 @@ class Account extends Model
     {
         $this->onboarded_at = now();
         $this->saveQuietly();
+    }
+
+    /**
+     * Check account has plan
+     */
+    public function hasPlan($id)
+    {
+        if (!enabled_module('plans')) return false;
+
+        return $this->accountSubscriptions()->status('active')
+            ->when(is_numeric($id), 
+                fn($q) => $q->whereHas('planPrice', fn($q) => $q->where('plan_prices.plan_id', $id)),
+                fn($q) => $q->whereHas('planPrice', fn($q) => $q->whereHas('plan', fn($q) => 
+                    $q->where('plans.slug', $id)
+                ))
+            )
+            ->count() > 0;
+    }
+
+    /**
+     * Check account has plan price
+     */
+    public function hasPlanPrice($id)
+    {
+        if (!enabled_module('plans')) return false;
+        
+        return $this->accountSubscriptions()->status('active')->where('plan_price_id', $id)->count() > 0;
     }
 }

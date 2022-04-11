@@ -111,7 +111,7 @@
                     </div>
                 </div>
             @empty
-                <div class="col-span-8 bg-white rounded-md shadow py-6">
+                <div class="col-span-8">
                     <x-empty-state title="No Files"/>
                 </div>
             @endforelse

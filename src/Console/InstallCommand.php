@@ -142,6 +142,7 @@ class InstallCommand extends Command
                 $table->string('name');
                 $table->string('slug');
                 $table->unsignedInteger('trial')->nullable();
+                $table->string('payment_description')->nullable();
                 $table->text('excerpt')->nullable();
                 $table->json('features')->nullable();
                 $table->string('cta')->nullable();
@@ -153,9 +154,9 @@ class InstallCommand extends Command
             $this->line('plans table created successfully.');
         }
     
-        if (Schema::hasTable('plans_prices')) $this->warn('plans_prices table exists, skipped.');
+        if (Schema::hasTable('plan_prices')) $this->warn('plan_prices table exists, skipped.');
         else {
-            Schema::create('plans_prices', function ($table) {
+            Schema::create('plan_prices', function ($table) {
                 $table->id();
                 $table->string('currency')->nullable();
                 $table->decimal('amount', 20, 2)->nullable();
@@ -165,70 +166,96 @@ class InstallCommand extends Command
                 $table->string('expired_after')->nullable();
                 $table->boolean('is_lifetime')->nullable();
                 $table->boolean('is_default')->nullable();
-                $table->string('stripe_id')->nullable();
+                $table->string('stripe_price_id')->nullable();
                 $table->foreignId('tax_id')->nullable()->constrained()->onDelete('set null');
                 $table->foreignId('plan_id')->constrained()->onDelete('cascade');
                 $table->timestamps();
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             });
 
-            $this->line('plans_prices table created successfully.');
+            $this->line('plan_prices table created successfully.');
         }
     
-        if (Schema::hasTable('plans_upgradables')) $this->warn('plans_upgradables table exists, skipped');
+        if (Schema::hasTable('plan_upgradables')) $this->warn('plan_upgradables table exists, skipped');
         else {
-            Schema::create('plans_upgradables', function($table) {
+            Schema::create('plan_upgradables', function($table) {
                 $table->id();
                 $table->foreignId('plan_id')->constrained()->onDelete('cascade');
                 $table->foreignId('upgradable_id')->constrained('plans')->onDelete('cascade');
             });
         }
 
-        if (Schema::hasTable('plans_downgradables')) $this->warn('plans_downgradables table exists, skipped');
+        if (Schema::hasTable('plan_downgradables')) $this->warn('plan_downgradables table exists, skipped');
         else {
-            Schema::create('plans_downgradables', function($table) {
+            Schema::create('plan_downgradables', function($table) {
                 $table->id();
                 $table->foreignId('plan_id')->constrained()->onDelete('cascade');
                 $table->foreignId('downgradable_id')->constrained('plans')->onDelete('cascade');
             });
         }
 
-        if (Schema::hasTable('accounts_orders')) $this->warn('accounts_orders table exists, skipped.');
+        if (Schema::hasTable('account_orders')) $this->warn('account_orders table exists, skipped.');
         else {
-            Schema::create('accounts_orders', function($table) {
+            Schema::create('account_orders', function($table) {
                 $table->id();
-                $table->string('order_number')->unique();
-                $table->string('invoice_number')->unique()->nullable();
-                $table->string('receipt_number')->unique()->nullable();
-                $table->decimal('grand_total', 20, 2)->nullable();
-                $table->string('status')->nullable();
-                $table->string('gateway')->nullable();
-                $table->json('data')->nullable();
-                $table->foreignId('account_id')->nullable()->constrained()->onDelete('cascade');
+                $table->string('number')->nullable()->unique();
+                $table->string('currency')->nullable();
+                $table->decimal('amount', 20, 2)->nullable();
+                $table->foreignId('account_id')->constrained()->onDelete('cascade');
                 $table->timestamps();
             });
 
-            $this->line('accounts_orders table created successfully.');
+            $this->line('account_orders table created successfully.');
         }
 
-        if (Schema::hasTable('accounts_subscriptions')) $this->warn('accounts_subscriptions table exists, skipped.');
+        if (Schema::hasTable('account_order_items')) $this->warn('account_order_items table exists, skipped.');
         else {
-            Schema::create('accounts_subscriptions', function($table) {
+            Schema::create('account_order_items', function($table) {
                 $table->id();
+                $table->string('name')->nullable();
                 $table->string('currency')->nullable();
                 $table->decimal('amount', 20, 2)->nullable();
                 $table->decimal('discounted_amount', 20, 2)->nullable();
                 $table->decimal('grand_total', 20, 2)->nullable();
+                $table->foreignId('account_order_id')->constrained()->onDelete('cascade');
+                $table->foreignId('plan_price_id')->nullable()->constrained()->onDelete('set null');
+                $table->timestamps();
+            });
+
+            $this->line('account_order_items table created successfully.');
+        }
+
+        if (Schema::hasTable('account_payments')) $this->warn('account_payments table exists, skipped.');
+        else {
+            Schema::create('account_payments', function($table) {
+                $table->id();
+                $table->string('number')->nullable()->unique();
+                $table->string('currency')->nullable();
+                $table->decimal('amount', 20, 2)->nullable();
+                $table->string('status')->nullable();
+                $table->json('data')->nullable();
+                $table->foreignId('account_id')->constrained()->onDelete('cascade');
+                $table->foreignId('account_order_id')->nullable()->constrained()->onDelete('set null');
+                $table->timestamps();
+            });
+
+            $this->line('account_payments table created successfully.');
+        }
+
+        if (Schema::hasTable('account_subscriptions')) $this->warn('account_subscriptions table exists, skipped.');
+        else {
+            Schema::create('account_subscriptions', function($table) {
+                $table->id();
                 $table->boolean('is_trial')->nullable();
                 $table->timestamp('start_at')->nullable();
                 $table->timestamp('expired_at')->nullable();
                 $table->foreignId('account_id')->constrained()->onDelete('cascade');
-                $table->foreignId('account_order_id')->constrained('accounts_orders')->onDelete('cascade');
-                $table->foreignId('plan_price_id')->nullable()->constrained('plans_prices')->onDelete('set null');
+                $table->foreignId('account_order_item_id')->nullable()->constrained()->onDelete('set null');
+                $table->foreignId('plan_price_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamps();
             });
 
-            $this->line('accounts_subscriptions table created successfully.');
+            $this->line('account_subscriptions table created successfully.');
         }
 
         if (DB::table('plans')->count()) $this->warn('There are data in plans table, skipped populating dummy data.');
@@ -237,11 +264,13 @@ class InstallCommand extends Command
                 [
                     'name' => 'Starter',
                     'excerpt' => 'Get started with your first few projects.',
+                    'payment_description' => 'Atom Starter Plan',
                     'cta' => 'Get Started',
                 ],
                 [
                     'name' => 'Pro',
                     'excerpt' => 'For professionals who need extra support, controls and security.',
+                    'payment_description' => 'Atom Pro Plan',
                     'cta' => 'Upgrade to Pro',
                 ],
             ])->map(fn($val) => array_merge($val, [
@@ -263,7 +292,7 @@ class InstallCommand extends Command
                 'updated_at' => now(),
             ]))->values()->all());
 
-            DB::table('plans_prices')->insert(collect([
+            DB::table('plan_prices')->insert(collect([
                 [
                     'amount' => 50,
                     'expired_after' => '1 month',

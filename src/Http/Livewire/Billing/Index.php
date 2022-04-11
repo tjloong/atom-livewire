@@ -6,14 +6,12 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    public $user;
-
     /**
      * Mount
      */
     public function mount()
     {
-        //
+        if (!$this->subscriptions->count()) return redirect()->route('billing.plans');
     }
 
     /**
@@ -21,21 +19,8 @@ class Index extends Component
      */
     public function getSubscriptionsProperty()
     {
-        $account = auth()->user()->account;
-
-        return $account
-            ? $account->subscriptions()->status('active')->get()
-            : collect([]);
-    }
-
-    /**
-     * Get plans property
-     */
-    public function getPlansProperty()
-    {
-        return model('plan')
-            ->where('is_active', true)
-            ->orderBy('id')
+        return auth()->user()->account->accountSubscriptions()
+            ->status('active')
             ->get();
     }
 
@@ -44,9 +29,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::billing.index', [
-            'plans' => $this->plans,
-            'subscriptions' => $this->subscriptions,
-        ])->layout('layouts.billing');
+        return view('atom::billing.index')->layout('layouts.billing');
     }
 }

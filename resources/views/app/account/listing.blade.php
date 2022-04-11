@@ -40,7 +40,7 @@
                                 <div class="flex flex-wrap items-center justify-end gap-1">
                                     @foreach ($account->subscriptions as $subscription)
                                         <span class="py-0.5 px-2 bg-gray-100 rounded text-sm uppercase">
-                                            {{ str($subscription->plan->name)->limit(15) }}
+                                            {{ str($subscription->planPrice->plan->name)->limit(15) }}
                                         </span>
                                     @endforeach
                                 </div>                                

@@ -6,10 +6,10 @@
     </x-page-header>
 
     <div class="grid gap-4 md:grid-cols-3">
-        @forelse ($plans as $plan)
-            <a href="{{ route('app.plan.update', [$plan->id]) }}">
-                <x-box class="hover:border-theme">
-                    <div class="p-4 grid gap-2">
+        @forelse ($this->plans as $plan)
+            <div class="border shadow rounded-md bg-white hover:border-theme">
+                <a href="{{ route('app.plan.update', [$plan->id]) }}" class="block p-4">
+                    <div class="grid gap-2">
                         <div class="flex justify-between gap-2">
                             <div>
                                 <div class="font-semibold">{{ $plan->name }}</div>
@@ -31,8 +31,8 @@
                             @endforeach
                         </div>
                     </div>
-                </x-box>
-            </a>
+                </a>
+            </div>
         @empty
             <div class="md:col-span-3">
                 <x-empty-state title="No plan found"/>

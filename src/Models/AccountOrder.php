@@ -2,50 +2,49 @@
 
 namespace Jiannius\Atom\Models;
 
-use Jiannius\Atom\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Jiannius\Atom\Traits\HasUniqueNumber;
 
 class AccountOrder extends Model
 {
-    use HasFilters;
+    use HasUniqueNumber;
 
-    protected $table = 'accounts_orders';
-    
     protected $guarded = [];
 
     protected $casts = [
-        'grand_total' => 'float',
-        'data' => 'object',
+        'amount' => 'float',
         'account_id' => 'integer',
     ];
 
     /**
-     * Get account for order
+     * Get account for account order
      */
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(get_class(model('account')));
     }
 
     /**
-     * Get subscriptions for order
+     * Get account order items for account order
      */
-    public function subscriptions()
+    public function accountOrderItems()
     {
-        return $this->hasMany(AccountSubscription::class, 'account_order_id');
+        return $this->hasMany(get_class(model('account_order_item')));
     }
 
     /**
-     * Scope for fussy search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
+     * Get account subscriptions for account order
      */
-    public function scopeSearch($query, $search)
+    public function accountSubscriptions()
     {
-        return $query->where(fn($q) => $q
-            ->whereHas('account', fn($q) => $q->search($search))
-        );
+        return $this->hasMany(get_class(model('account_subscription')));
+    }
+
+    /**
+     * Get account payments for account order
+     */
+    public function accountPayments()
+    {
+        return $this->hasMany(get_class(model('account_payment')));
     }
 }

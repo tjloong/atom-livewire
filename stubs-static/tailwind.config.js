@@ -23,11 +23,16 @@ module.exports = {
         },
         extend: {
             colors: {
-                theme: {
+                'theme': {
                     light: '#ede0ff',
                     DEFAULT: '#9f5afd',
                     dark: '#3b028a',
                 },
+                'theme-inverted': {
+                    light: '#ffffff',
+                    DEFAULT: '#ffffff',
+                    dark: '#ffffff',
+                }
             },
             borderColor: theme => ({
                 DEFAULT: theme('colors.gray.200', 'currentColor'),

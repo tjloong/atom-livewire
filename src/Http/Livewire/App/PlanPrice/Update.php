@@ -19,9 +19,7 @@ class Update extends Component
         $this->price = model('plan-price')->findOrFail($id);
         $this->plan = $this->price->plan;
 
-        breadcrumbs()->push(
-            currency($this->price->amount, $this->price->currency).' '.$this->price->recurring
-        );
+        breadcrumbs()->push($this->price->name);
     }
 
     /**

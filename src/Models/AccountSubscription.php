@@ -9,50 +9,39 @@ class AccountSubscription extends Model
 {
     use HasFilters;
     
-    protected $table = 'accounts_subscriptions';
-    
     protected $guarded = [];
 
     protected $casts = [
-        'amount' => 'float',
         'is_trial' => 'boolean',
         'start_at' => 'datetime',
         'expired_at' => 'datetime',
         'account_id' => 'integer',
-        'account_order_id' => 'integer',
+        'account_order_item_id' => 'integer',
         'plan_price_id' => 'integer',
     ];
 
     /**
-     * Get account for subscription
+     * Get account for account subscription
      */
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(get_class(model('account')));
     }
 
     /**
-     * Get order for subscription
+     * Get account order item for account subscription
      */
-    public function order()
+    public function accountOrderItem()
     {
-        return $this->belongsTo(AccountOrder::class, 'account_order_id');
+        return $this->belongsTo(get_class(model('account_order_item')));
     }
 
     /**
-     * Get plan price for subscription
+     * Get plan price for account subscription
      */
-    public function plan_price()
+    public function planPrice()
     {
-        return $this->belongsTo(PlanPrice::class, 'plan_price_id');
-    }
-
-    /**
-     * Get plan for subscription
-     */
-    public function plan()
-    {
-        return $this->hasOneThrough(Plan::class, PlanPrice::class);
+        return $this->belongsTo(get_class(model('plan_price')));
     }
 
     /**

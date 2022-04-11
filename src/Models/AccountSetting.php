@@ -16,10 +16,10 @@ class AccountSetting extends Model
     ];
 
     /**
-     * Get account for account settings
+     * Get account for account setting
      */
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(get_class(model('account')));
     }
 }

@@ -10,6 +10,7 @@ class Register extends Component
 {
     public $ref;
     public $plan;
+    public $price;
     public $user;
     public $account;
     public $redirect;
@@ -19,7 +20,7 @@ class Register extends Component
         'agree_marketing' => true,
     ];
 
-    protected $queryString = ['ref', 'plan', 'redirect'];
+    protected $queryString = ['ref', 'plan', 'price', 'redirect'];
     
     /**
      * Validation rules
@@ -90,7 +91,7 @@ class Register extends Component
             'data' => $this->accountMetadata(),
         ]);
 
-        $this->account->setting()->create([
+        $this->account->accountSetting()->create([
             'timezone' => config('atom.timezone'), 
             'locale' => head(config('atom.locales', [])) ?? null,
         ]);
@@ -142,8 +143,17 @@ class Register extends Component
      */
     public function redirectTo()
     {
-        if ($this->user->canAccessBillingPortal()) return route('billing', ['plan' => $this->plan]);
-        if ($this->user->canAccessOnboardingPortal()) return route('onboarding', array_filter(['redirect' => $this->redirect]));
+        if ($this->user->canAccessBillingPortal()) {
+            if ($this->plan && $this->price) {
+                return route('billing.checkout', ['plan' => $this->plan, 'price' => $this->price]);
+            }
+            else {
+                return route('billing.plans');
+            }
+        }
+        else if ($this->user->canAccessOnboardingPortal()) {
+            return route('onboarding', array_filter(['redirect' => $this->redirect]));
+        }
 
         return route('page');
     }

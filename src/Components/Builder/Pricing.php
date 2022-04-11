@@ -6,10 +6,10 @@ use Illuminate\View\Component;
 
 class Pricing extends Component
 {
-    public $cta;
     public $plan;
     public $prices;
     public $trial;
+    public $variants;
 
     /**
      * Contructor
@@ -20,19 +20,11 @@ class Pricing extends Component
         $plan = null,
         $prices = [],
         $trial = null,
-        $cta = null
     ) {
         $this->plan = $plan;
         $this->prices = $prices;
         $this->trial = $trial;
-        $this->cta = [
-            'text' => $cta['text'] ?? 'Get Started',
-            'href' => $cta['href'] ?? null,
-            'color' => $cta['color'] ?? 'theme',
-            'icon' => $cta['icon'] ?? null,
-            'icon_type' => $cta['icon_type'] ?? null,
-            'disabled' => $cta['disabled'] ?? false,
-        ];
+        $this->variants = collect($this->prices)->pluck('recurring')->filter()->toArray();
     }
 
     /**

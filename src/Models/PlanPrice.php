@@ -9,8 +9,6 @@ class PlanPrice extends Model
 {
     use HasTrace;
     
-    protected $table = 'plans_prices';
-
     protected $guarded = [];
 
     protected $casts = [
@@ -20,16 +18,12 @@ class PlanPrice extends Model
         'plan_id' => 'integer',
     ];
 
-    protected $appends = [
-        'recurring',
-    ];
-
     /**
      * Get plan for plan price
      */
     public function plan()
     {
-        return $this->belongsTo(Plan::class);
+        return $this->belongsTo(get_class(model('plan')));
     }
     
     /**
@@ -37,13 +31,19 @@ class PlanPrice extends Model
      */
     public function accounts()
     {
-        return $this->belongsToMany(Account::class, 'accounts_subscriptions', 'plan_price_id', 'account_id');
+        return $this->belongsToMany(get_class(model('account')), 'account_subscriptions', 'plan_price_id', 'account_id');
+    }
+
+    /**
+     * Get name attribute
+     */
+    public function getNameAttribute()
+    {
+        return currency($this->amount, $this->currency).' '.$this->recurring;
     }
 
     /**
      * Get recurring attribute
-     * 
-     * @return string
      */
     public function getRecurringAttribute()
     {

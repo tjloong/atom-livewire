@@ -35,7 +35,8 @@ class Listing extends Component
     {
         return model('plan')
             ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder);
+            ->orderBy($this->sortBy, $this->sortOrder)
+            ->paginate(30);
     }
 
     /**
@@ -51,8 +52,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.plan.listing', [
-            'plans' => $this->plans->paginate(30),
-        ]);
+        return view('atom::app.plan.listing');
     }
 }

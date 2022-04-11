@@ -1,7 +1,5 @@
-<div 
-    @if (count($prices))
-        x-data="{ recurring: '{{ head($prices)['recurring'] }}' }"
-    @endif
+<div
+    x-data="{ variant: @js(head($variants)) }"
     class="bg-white shadow rounded-lg border overflow-hidden flex flex-col"
 >
     <div class="flex-grow p-6">
@@ -10,19 +8,20 @@
                 {{ $header }}
             @else
                 <div>
-                    @if (count($prices))
+                    @if (count($variants) > 1)
                         <div class="flex gap-2 items-center float-right">
-                            @foreach ($prices as $prc)
+                            @foreach ($variants as $var)
                                 <div 
-                                    x-bind:class="recurring === '{{ $prc['recurring'] }}' ? 'bg-theme-dark text-white font-semibold' : 'cursor-pointer bg-gray-200'"
-                                    x-on:click="recurring = '{{ $prc['recurring'] }}'"
+                                    x-bind:class="variant === '{{ $var }}' ? 'bg-theme-dark text-white font-semibold' : 'cursor-pointer bg-gray-200'"
+                                    x-on:click="variant = '{{ $var }}'"
                                     class="text-sm py-1 px-2 rounded"
                                 >
-                                    {{ $prc['recurring'] }}
+                                    {{ $var }}
                                 </div>
                             @endforeach
                         </div>
                     @endif
+
                     <div class="font-semibold text-xl">{{ $plan['name'] }}</div>
                 </div>
             @endif
@@ -31,11 +30,11 @@
                 {{ $price }}
             @else
                 <div class="grid gap-1">
-                    @foreach ($prices as $prc)
-                        <div x-show="recurring === '{{ $prc['recurring'] }}'" class="flex gap-2">
-                            <span class="font-medium">{{ $prc['currency'] }}</span>
-                            <span class="text-4xl font-extrabold">{{ currency($prc['amount']) }}</span>
-                            <span class="font-medium self-end">{{ $prc['recurring'] }}</span>
+                    @foreach ($prices as $val)
+                        <div x-show="variant === '{{ $val['recurring'] }}'" class="flex gap-2">
+                            <span class="font-medium">{{ $val['currency'] }}</span>
+                            <span class="text-4xl font-extrabold">{{ currency($val['amount']) }}</span>
+                            <span class="font-medium self-end">{{ $val['recurring'] }}</span>
                         </div>
                     @endforeach
                     
@@ -50,43 +49,24 @@
             @else
                 <div class="text-gray-500 font-medium">{{ $plan['excerpt'] }}</div>
         
-                <div class="flex-grow">
-                    <div class="grid gap-2">
-                        @foreach ($plan['features'] as $feat)
-                            <div class="flex gap-2 items-center">
-                                <x-icon name="check" color="green"/> {{ $feat }}
-                            </div>
-                        @endforeach
+                @if ($feats = $plan['features'] ?? null)
+                    <div class="flex-grow">
+                        <div class="grid gap-2">
+                            @foreach ($feats as $feat)
+                                <div class="flex gap-2 items-center">
+                                    <x-icon name="check" class="text-green-500" size="16px"/> {{ $feat }}
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
+                @endif
             @endif
         </div>
     </div>
 
-    <div class="flex-shrink-0 bg-gray-100 p-6">
-        @foreach ($prices as $prc)
-            <div x-show="recurring === '{{ $prc['recurring'] }}'">
-                @if ($subscribed = $prc['is_subscribed'] ?? false)
-                    <div class="text-gray-500 font-medium flex items-center gap-1">
-                        <x-icon name="check"/> Currently Subscribed
-                    </div>
-                @else
-                    <x-button 
-                        href="{{ 
-                            $cta['href']
-                            .(strpos($cta['href'], '?') ? '&' : '?')
-                            .http_build_query(['plan' => $plan['slug'], 'price' => $prc['id']])
-                        }}" 
-                        size="md" 
-                        class="w-full" 
-                        :color="$cta['color']" 
-                        :icon="$cta['icon']" 
-                        :icon-type="$cta['icon_type']"
-                    >
-                        {{ $cta['text'] }}
-                    </x-button>
-                @endif
-            </div>
-        @endforeach
-    </div>
+    @isset($cta)
+        <div class="flex-shrink-0 bg-gray-100 p-6">
+            {{ $cta }}
+        </div>
+    @endisset
 </div>

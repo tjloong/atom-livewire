@@ -9,17 +9,23 @@
                     'position' => 'right',
                 ]"
             >
-                <x-slot name="title">
-                    Lorem ipsum dolor sit amet consectetur.
-                </x-slot>
-    
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, eveniet eaque, quibusdam blanditiis ex sapiente consequatur error non perspiciatis mollitia sunt? Consectetur amet possimus, totam facilis beatae fugiat voluptatem nihil?
-                
-                <x-slot name="cta">
-                    <x-button>
-                        Get Started
-                    </x-button>
-                </x-slot>
+                <div class="grow">
+                    <div class="grid gap-6 p-6">
+                        <h1 class="text-3xl font-bold">
+                            Lorem ipsum dolor sit amet consectetur.
+                        </h1>
+
+                        <h2 class="text-lg font-medium">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, eveniet eaque, quibusdam blanditiis ex sapiente consequatur error non perspiciatis mollitia sunt? Consectetur amet possimus, totam facilis beatae fugiat voluptatem nihil?
+                        </h2>
+
+                        <div>
+                            <x-button>
+                                Get Started
+                            </x-button>
+                        </div>
+                    </div>
+                </div>
             </x-builder.hero>
         </div>
     </section>
@@ -57,24 +63,32 @@
         </div>
     </section>
 
-    @if ($plans)
+    @if ($this->plans)
         <section class="grid gap-4">
             <div class="text-xl font-bold">Pricing Table</div>
 
             <div class="max-w-screen-md mx-auto">
                 <div class="grid gap-6 md:grid-cols-2">
-                    @foreach ($plans as $plan)
+                    @foreach ($this->plans as $plan)
                         <x-builder.pricing 
                             :plan="$plan->toArray()" 
-                            :prices="$plan->prices->toArray()"
+                            :prices="$plan->prices->map(fn($price) => $price->append('recurring'))->toArray()"
                             :trial="$plan->trial"
-                            :cta="[
-                                'text' => $plan->cta ?? null,
-                                'href' => Route::has('register')
-                                    ? route('register', ['ref' => 'pricing'])
-                                    : '#',
-                            ]"
-                        />
+                        >
+                            <x-slot:cta>
+                                @foreach ($plan->prices as $price)
+                                    <x-button 
+                                        x-show="variant === '{{ $price->recurring }}'"
+                                        block
+                                        :href="Route::has('register') 
+                                            ? route('register', ['ref' => 'pricing', 'plan' => $plan->slug, 'price' => $price->id]) 
+                                            : '#'" 
+                                        size="md">
+                                        {{ $plan->cta }}
+                                    </x-button>
+                                @endforeach
+                            </x-slot:cta>
+                        </x-builder.pricing>
                     @endforeach
                 </div>
             </div>

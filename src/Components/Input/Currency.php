@@ -15,7 +15,7 @@ class Currency extends Component
      */
     public function __construct()
     {
-        $this->countries = collect(metadata()->countries())->filter(fn($cn) => !is_null($cn['currency_code']))->values()->all();
+        $this->countries = collect(metadata()->countries())->filter(fn($cn) => !empty($cn['currency_code']))->values()->all();
     }
 
     /**

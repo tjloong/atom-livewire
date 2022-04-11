@@ -29,8 +29,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::web.pages.index', [
-            'plans' => $this->plans,
-        ])->layout('layouts.web');
+        return view('atom::web.pages.index')->layout('layouts.web');
     }
 }

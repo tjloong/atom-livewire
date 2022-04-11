@@ -13,7 +13,7 @@ class Form extends Component
         'price.country' => 'nullable',
         'price.currency' => 'required',
         'price.amount' => 'required|numeric',
-        'price.discount' => 'numeric|max:100',
+        'price.discount' => 'nullable|numeric|max:100',
         'price.expired_after' => 'required_if:price.is_lifetime,false',
         'price.shoutout' => 'nullable',
         'price.is_lifetime' => 'nullable',
@@ -74,8 +74,6 @@ class Form extends Component
      */
     public function render()
     {
-        return view('atom::app.plan-price.form', [
-            'readonly' => $this->readonly,
-        ]);
+        return view('atom::app.plan-price.form');
     }
 }

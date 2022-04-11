@@ -193,7 +193,7 @@ class AtomServiceProvider extends ServiceProvider
         // billing portal
         Livewire::component('atom.billing', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Index');
         Livewire::component('atom.billing.plans', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Plans');
-        Livewire::component('atom.billing.subscriptions', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Subscriptions');
+        Livewire::component('atom.billing.checkout', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Checkout');
 
         // ticket portal
         Livewire::component('atom.ticketing.listing', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Listing');

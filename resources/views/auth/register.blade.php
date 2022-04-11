@@ -29,14 +29,19 @@
                         <div class="grid gap-4 text-sm">
                             <div>
                                 <x-input.checkbox wire:model="form.agree_tnc">
-                                    <div class="text-gray-500">
-                                        {{ __('By signing up, I have read and agreed to the app\'s') }}
-                                        <a href="/terms" target="_blank">
-                                            {{ __('terms and conditions') }}
-                                        </a> {{ __('and') }} 
-                                        <a href="/privacy" target="_blank">
-                                            {{ __('privacy policy') }}
-                                        </a>.
+                                    <div class="grid gap-2">
+                                        <div class="text-gray-500">
+                                            {{ __('By signing up, I have read and agreed to the app\'s terms & conditions and privacy policy.') }}
+                                        </div>
+    
+                                        <div class="flex gap-2">
+                                            <a href="/terms" target="_blank">
+                                                {{ __('Terms & Conditions') }}
+                                            </a> | 
+                                            <a href="/privacy" target="_blank">
+                                                {{ __('Privacy Policy') }}
+                                            </a>
+                                        </div>
                                     </div>
                                 </x-input.checkbox>
                             </div>

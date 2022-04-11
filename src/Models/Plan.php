@@ -26,7 +26,7 @@ class Plan extends Model
      */
     public function prices()
     {
-        return $this->hasMany(PlanPrice::class);
+        return $this->hasMany(get_class(model('plan_price')));
     }
 
     /**
@@ -34,7 +34,7 @@ class Plan extends Model
      */
     public function upgradables()
     {
-        return $this->belongsToMany(Plan::class, 'plans_upgradables', 'plan_id', 'upgradable_id');
+        return $this->belongsToMany(get_class(model('plan')), 'plan_upgradables', 'plan_id', 'upgradable_id');
     }
 
     /**
@@ -42,7 +42,7 @@ class Plan extends Model
      */
     public function downgradables()
     {
-        return $this->belongsToMany(Plan::class, 'plans_downgradables', 'plan_id', 'downgradable_id');
+        return $this->belongsToMany(get_class(model('plan')), 'plan_downgradables', 'plan_id', 'downgradable_id');
     }
 
     /**
