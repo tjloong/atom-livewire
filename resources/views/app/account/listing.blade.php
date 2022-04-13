@@ -1,5 +1,5 @@
 <div class="max-w-screen-xl mx-auto">
-    <x-page-header :title="$title"/>
+    <x-page-header :title="$this->title"/>
 
     <x-table :total="$accounts->total()" :links="$accounts->links()" export>
         <x-slot name="head">

@@ -16,21 +16,10 @@ class PortalGuard
      */
     public function handle(Request $request, Closure $next)
     {
-        foreach ([
-            'app', 
-            'billing', 
-            'ticketing', 
-            'onboarding',
-        ] as $prefix) {
-            if ((
-                $request->is($prefix) 
-                || $request->is($prefix.'/') 
-                || $request->is($prefix.'/*')
-            ) && $request->user()) {
-                $method = str()->studly('can-access-'.$prefix.'-portal');
-                if (!$request->user()->$method()) return redirect()->route('page');
-            }
-        }
+        $paths = explode('/', $request->path());
+        $portal = head($paths);
+
+        if (!$request->user()->canAccessPortal($portal)) return redirect()->route('page');
 
         return $next($request);
     }

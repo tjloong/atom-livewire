@@ -143,7 +143,7 @@ class Register extends Component
      */
     public function redirectTo()
     {
-        if ($this->user->canAccessBillingPortal()) {
+        if ($this->user->canAccessPortal('billing')) {
             if ($this->plan && $this->price) {
                 return route('billing.checkout', ['plan' => $this->plan, 'price' => $this->price]);
             }
@@ -151,7 +151,7 @@ class Register extends Component
                 return route('billing.plans');
             }
         }
-        else if ($this->user->canAccessOnboardingPortal()) {
+        else if ($this->user->canAccessPortal('onboarding')) {
             return route('onboarding', array_filter(['redirect' => $this->redirect]));
         }
 

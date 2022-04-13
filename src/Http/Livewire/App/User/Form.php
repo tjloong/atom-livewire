@@ -25,7 +25,7 @@ class Form extends Component
             ],
             'user.visibility' => 'nullable',
             'user.activated_at' => 'nullable',
-            'user.account_id' => 'required',
+            'user.account_id' => 'nullable',
         ];
 
         if (enabled_module('roles')) $rules['role_id'] = 'nullable';
@@ -43,7 +43,6 @@ class Form extends Component
             'user.email.required' => __('Login email is required.'),
             'user.email.email' => __('Invalid email address.'),
             'user.email.unique' => __('Login email is already taken.'),
-            'user.account_id.required' => __('Unknown account'),
         ];
     }
 
@@ -127,7 +126,8 @@ class Form extends Component
         }
 
         $this->sendAccountActivationEmail = false;
-        $this->emitUp('saved');
+        
+        $this->emitUp('saved', $this->user->id);
     }
 
     /**

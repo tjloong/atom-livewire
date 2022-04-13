@@ -22,7 +22,7 @@ trait HasUniqueNumber
                 while ($duplicated) {
                     $prefix = $model->getUniqueNumberPrefix();
                     $random = rand(100000, 999999);
-                    $number = $prefix . '-' . $random;
+                    $number = implode('-', array_filter([$prefix, $random]));
                     $duplicated = DB::table($table)->where('number', $number)->count() > 0;
                 }
 

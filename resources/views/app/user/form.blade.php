@@ -3,7 +3,7 @@
         <div class="grid divide-y">
             <div class="p-5">
                 <x-input.text wire:model.defer="user.name" :error="$errors->first('user.name')" required>
-                    Name
+                    {{ __('Login Name') }}
                 </x-input.text>
     
                 <x-input.email
@@ -12,31 +12,33 @@
                     required
                     :caption="$user->exists ? 'User will need to verify the email again if you change this.' : ''"
                 >
-                    Login Email
+                    {{ __('Login Email') }}
                 </x-input.email>
 
                 @if ($user->exists)
                     <x-input.field>
-                        <x-slot name="label">Status</x-slot>
+                        <x-slot:label>{{ __('Status') }}</x-slot:label>
                         <x-badge>{{ $user->status }}</x-badge>
                     </x-input.field>
                 @endif
 
                 @root
-                    <x-input.field>
-                        <x-slot name="label">User Type</x-slot>
-                        {{ str($user->account->type)->headline() }}
-                    </x-input.field>
+                    @if ($user->account)
+                        <x-input.field>
+                            <x-slot:label>{{ __('Account Type') }}</x-slot:label>
+                            {{ str($user->account->type)->headline() }}
+                        </x-input.field>
+                    @endif
                 @endroot
     
                 @if ($user->exists && $user->status === 'inactive')
                     <x-alert icon="info-circle">
-                        User account is pending for activation.
+                        {{ __('User account is pending for activation.') }}
                     </x-alert>
                 @endif
             </div>
 
-            @if (!$user->isRoot() && (
+            @if (!$user->isAccountType('root') && (
                 config('atom.app.user.data_visibility')
                 || enabled_module('roles')
                 || enabled_module('teams')
@@ -44,7 +46,7 @@
                 <div class="p-5">
                     @if (config('atom.app.user.data_visibility'))
                         <x-input.field>
-                            <x-slot name="label">Data Visiblity</x-slot>
+                            <x-slot:label>{{ __('Data Visiblity') }}</x-slot:label>
                             <div class="flex flex-col gap-2">
                                 @foreach ($visibilities as $opt)
                                     <x-input.radio name="visiblity" wire:model.defer="user.visibility" :value="$opt['value']" :checked="$user->visibility === $opt['value']">
@@ -60,13 +62,13 @@
 
                     @module('roles')
                         <x-input.select wire:model="user.role_id" :options="$roles">
-                            Role
+                            {{ __('Role') }}
                         </x-input.select>
                     @endmodule
 
                     @module('teams')
                         <x-input.tags wire:model.defer="selectedTeams" :options="$teams">
-                            Teams
+                            {{ __('Teams') }}
                         </x-input.tags>
                     @endmodule
                 </div>
@@ -76,9 +78,9 @@
                 <div class="p-5">
                     <x-input.checkbox wire:model="sendAccountActivationEmail">
                         @if ($user->exists)
-                            Resend account activation email to user
+                            {{ __('Resend account activation email to user') }}
                         @else
-                            Send account activation email to user
+                            {{ __('Send account activation email to user') }}
                         @endif
                     </x-input.checkbox>
                 </div>
@@ -87,7 +89,7 @@
 
         <x-slot name="buttons">
             <x-button type="submit" icon="check" color="green">
-                Save User
+                {{ __('Save User') }}
             </x-button>
         </x-slot>
     </x-box>

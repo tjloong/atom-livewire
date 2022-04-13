@@ -51,7 +51,7 @@
     <div class="flex flex-col space-y-4">
         <div class="relative shadow rounded-lg border-b border-gray-200 w-full bg-white overflow-hidden">
             <div class="rounded-t-lg">
-                @isset($header)
+                @if (isset($header) && $header->isNotEmpty())
                     <div class="border-b p-4 font-bold text-lg">
                         {{ $header }}
                     </div>

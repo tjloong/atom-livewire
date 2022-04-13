@@ -3,16 +3,16 @@
         @if ($user->id !== auth()->id())
             @if ($user->status === 'blocked')
                 <x-button color="gray" icon="play" x-on:click="$dispatch('confirm', {
-                    title: 'Unblock User',
-                    message: 'Are you sure to unblock this user?',
+                    title: '{{ __('Unblock User') }}',
+                    message: '{{ __('Are you sure to unblock this user?') }}',
                     onConfirmed: () => $wire.unblock(),
                 })">
                     Unblock
                 </x-button>
             @else
                 <x-button inverted color="red" icon="block" x-on:click="$dispatch('confirm', {
-                    title: 'Block User',
-                    message: 'Are you sure to block this user?',
+                    title: '{{ __('Block User') }}',
+                    message: '{{ __('Are you sure to block this user?') }}',
                     onConfirmed: () => $wire.block(),
                 })">
                     Block
@@ -20,8 +20,8 @@
             @endif
 
             <x-button inverted icon="trash" color="red" x-on:click="$dispatch('confirm', {
-                title: 'Delete User',
-                message: 'Are you sure to delete this user?',
+                title: '{{ __('Delete User') }}',
+                message: '{{ __('Are you sure to delete this user?') }}',
                 type: 'error',
                 onConfirmed: () => $wire.delete(),    
             })">
@@ -31,7 +31,26 @@
     </x-page-header>
 
     <div class="grid gap-6">
-        @livewire('atom.user.form', ['user' => $user], key($user->id))
+        @if ($user->account_id !== auth()->user()->account_id)
+            <x-box>
+                <div class="p-5">
+                    <x-input.field>
+                        <x-slot:label>{{ __('Account Name') }}</x-slot:label>
+                        <div class="text-lg font-bold">{{ $user->account->name }}</div>
+                        <div class="font-medium text-gray-500">
+                            @if ($email = $user->account->email)
+                                {{ $email }}<br>
+                            @endif
+                            @if ($phone = $user->account->phone)
+                                {{ $phone }}<br>
+                            @endif
+                        </div>
+                    </x-input.field>
+                </div>
+            </x-box>
+        @endif
+        
+        @livewire('atom.app.user.form', ['user' => $user], key($user->id))
 
         @module('permissions')
             @if (!$user->is_root && $user->is_active)

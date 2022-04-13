@@ -1,9 +1,13 @@
 {{-- aside item --}}
 @if ($attributes->has('aside'))
-    @if (
-        ($attributes->has('can') && auth()->user() && auth()->user()->can($attributes->get('can')))
-        || !$attributes->has('can')
+    @if ($attributes->has('can') && !auth()->user()->can($attributes->get('can')))
+        {{-- No permission --}}
+    @elseif (
+        ($attributes->has('account') && $attributes->get('account') !== 'any' && !auth()->user()->isAccountType($attributes->get('account')))
+        || (!$attributes->has('account') && !auth()->user()->isAccountType(['root', 'system']))
     )
+        {{-- No account type --}}
+    @else
         @if ($href || ($route && Route::has($route)))
             <a href="{{ $href ?: route($route, $params) }}" class="pl-2" {{ $isActive ? 'data-active' : '' }}>
                 <div

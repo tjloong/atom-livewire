@@ -50,7 +50,7 @@ class ResetPassword extends Component
                 $user->forceFill([
                     'password' => bcrypt($password),
                     'email_verified_at' => now(),
-                    'status' => $user->status === 'pending' ? 'active' : $user->status,
+                    'activated_at' => $user->activated_at ?? now(),
                 ])->setRememberToken(Str::random(60));
     
                 $user->saveQuietly();

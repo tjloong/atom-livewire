@@ -81,7 +81,7 @@ class AtomServiceProvider extends ServiceProvider
         });
 
         Blade::if('root', function() {
-            return auth()->user()->isRoot();
+            return auth()->user()->isAccountType('root');
         });
     }
 
@@ -233,10 +233,10 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.plan-price.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\PlanPrice\\Form');
 
         // user
-        Livewire::component('atom.user.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Listing');
-        Livewire::component('atom.user.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Create');
-        Livewire::component('atom.user.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Update');
-        Livewire::component('atom.user.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Form');
+        Livewire::component('atom.app.user.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Listing');
+        Livewire::component('atom.app.user.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Create');
+        Livewire::component('atom.app.user.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Update');
+        Livewire::component('atom.app.user.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Form');
 
         // role
         Livewire::component('atom.role.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Role\\Listing');

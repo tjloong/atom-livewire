@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Password;
@@ -132,13 +133,13 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Check user is root
-     * 
-     * @return boolean
+     * Check user is account type
      */
-    public function isRoot()
+    public function isAccountType($type)
     {
-        return $this->account->type === 'root';
+        if (!$this->account) return false;
+
+        return in_array($this->account->type, (array)$type);
     }
 
     /**
@@ -187,57 +188,53 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Check user can access app portal
-     * 
-     * @return boolean
+     * Check user can access portal
      */
-    public function canAccessAppPortal()
+    public function canAccessPortal($portal)
     {
-        return Route::has('app.home') && in_array($this->account->type, [
-            'root',
-            'system',
-        ]);
+        return [
+            'app' => Route::has('app.home') 
+                && in_array($this->account->type, ['root', 'system']),
+
+            'billing' => Route::has('billing') 
+                && model('plan')->whereIsActive(true)->count() > 0
+                && in_array($this->account->type, ['root', 'signup']),
+
+            'ticketing' => Route::has('ticketing.listing') 
+                && in_array($this->account->type, ['root', 'signup', 'system']),
+
+            'onboarding' => Route::has('onboarding') 
+                && in_array($this->account->type, ['root', 'signup']),
+        ][$portal] ?? false;
     }
 
     /**
-     * Check user can access billing portal
-     * 
-     * @return boolean
+     * Get user validation rules and messages
      */
-    public function canAccessBillingPortal()
+    public function getValidation()
     {
-        return Route::has('billing') 
-            && model('plan')->whereIsActive(true)->count() > 0
-            && in_array($this->account->type, [
-                'root',
-                'signup',
-            ]);
-    }
+        $validation = (object)[
+            'rules' => [
+                'user.name' => 'required',
+                'user.email' => [
+                    'required',
+                    'email',
+                    Rule::unique('users', 'email')->ignore($this),
+                ],
+                'user.visibility' => 'nullable',
+                'user.activated_at' => 'nullable',
+                'user.account_id' => 'nullable',    
+            ],
+            'messages' => [
+                'user.name.required' => __('Name is required.'),
+                'user.email.required' => __('Login email is required.'),
+                'user.email.email' => __('Invalid email address.'),
+                'user.email.unique' => __('Login email is already taken.'),    
+            ],
+        ];
 
-    /**
-     * Check user can access ticketing portal
-     * 
-     * @return boolean
-     */
-    public function canAccessTicketingPortal()
-    {
-        return Route::has('ticketing.listing') && in_array($this->account->type, [
-            'root',
-            'signup',
-            'system',
-        ]);
-    }
+        if (enabled_module('roles')) $validation->rules['role_id'] = 'nullable';
 
-    /**
-     * Check user can access onboarding portal
-     * 
-     * @return boolean
-     */
-    public function canAccessOnboardingPortal()
-    {
-        return Route::has('onboarding') && in_array($this->account->type, [
-            'root',
-            'signup',
-        ]);
+        return $validation;
     }
 }

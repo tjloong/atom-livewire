@@ -36,7 +36,13 @@ class AdminPanel extends Component
 
         if (is_null($active)) {
             if ($href) $this->isActive = str()->startsWith(url()->current(), $href);
-            elseif ($route && Route::has($route)) $this->isActive = str()->startsWith(url()->current(), route($route, $params));
+            elseif ($route && Route::has($route)) {
+                [$s1, $s2] = explode('.', $route);
+
+                $this->isActive = str()->startsWith(url()->current(), route($route, $params))
+                    || current_route() === $route
+                    || str(current_route())->is(implode('.', [$s1, $s2]).'.*');
+            }
         }
         else $this->isActive = $active;
     }

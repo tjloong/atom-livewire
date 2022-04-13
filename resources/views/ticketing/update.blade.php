@@ -26,7 +26,7 @@
                 (enabled_module('permissions') && auth()->user()->can('ticketing.status'))
                 || (enabled_module('roles') && auth()->user()->isRole('admin'))
                 || (!enabled_module('roles') && !enabled_module('permissions') && (
-                    auth()->user()->isRoot() || auth()->user()->account->type === 'system'
+                    auth()->user()->isAccountType('root') || auth()->user()->account->type === 'system'
                 ))
             )
                 <x-input.select

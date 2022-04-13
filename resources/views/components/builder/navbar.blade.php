@@ -130,7 +130,7 @@
                                                 Account
                                             </x-builder.navbar>
 
-                                            @if (auth()->user()->canAccessBillingPortal())
+                                            @if (auth()->user()->canAccessPortal('billing'))
                                                 <x-builder.navbar dropdown-item :href="route('billing')" icon="dollar-circle">
                                                     Billing
                                                 </x-builder.navbar>
@@ -198,7 +198,7 @@
                                                 Account
                                             </x-builder.navbar>
 
-                                            @if (auth()->user()->canAccessBillingPortal())
+                                            @if (auth()->user()->canAccessPortal('billing'))
                                                 <x-builder.navbar dropdown-item :href="route('billing')" icon="dollar-circle">
                                                     Billing
                                                 </x-builder.navbar>

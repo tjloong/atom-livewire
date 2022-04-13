@@ -22,7 +22,7 @@ class Update extends Component
     /**
      * Saved
      */
-    public function saved()
+    public function saved($id)
     {
         $this->dispatchBrowserEvent('toast', ['message' => 'User Updated', 'type' => 'success']);
     }
@@ -34,7 +34,7 @@ class Update extends Component
     {
         $this->user->block();
 
-        return redirect()->route('app.user.listing');
+        return redirect($this->redirectTo());
     }
 
     /**
@@ -44,7 +44,7 @@ class Update extends Component
     {
         $this->user->unblock();
         
-        return redirect()->route('app.user.listing');
+        return redirect($this->redirectTo());
     }
 
     /**
@@ -56,7 +56,15 @@ class Update extends Component
 
         session()->flash('flash', 'User deleted');
 
-        return redirect()->route('app.user.listing');
+        return redirect($this->redirectTo());
+    }
+
+    /**
+     * Redirect to
+     */
+    public function redirectTo()
+    {
+        return route('app.user.update', [$this->user->id]);
     }
 
     /**

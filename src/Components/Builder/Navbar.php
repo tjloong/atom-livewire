@@ -37,7 +37,7 @@ class Navbar extends Component
             && !request()->is('app/') 
             && !request()->is('app/*') 
             && auth()->check()
-            && auth()->user()->canAccessAppPortal();
+            && auth()->user()->canAccessPortal('app');
     }
 
     /**

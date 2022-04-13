@@ -9,15 +9,16 @@ class Listing extends Component
 {
     use WithPagination;
 
+    public $account;
     public $sortBy = 'name';
     public $sortOrder = 'asc';
     public $filters = ['search' => ''];
 
     protected $queryString = [
-        'filters', 
+        'page' => ['except' => 1],
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
-        'page' => ['except' => 1],
+        'filters' => ['except' => ['search' => '']], 
     ];
 
     /**
@@ -25,7 +26,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        breadcrumbs()->home('Users');
+        if (!$this->account) breadcrumbs()->home('Users');
     }
 
     /**
@@ -34,10 +35,14 @@ class Listing extends Component
     public function getUsersProperty()
     {
         return model('user')
-            ->whereHas('account', fn($q) => $q->where('accounts.type', '<>', 'signup'))
-            ->when(!auth()->user()->isRoot(), fn($q) => $q->where('account_id', auth()->user()->account_id))
+            ->when($this->account,
+                fn($q) => $q->whereHas('account', fn($q) => $q->where('account_id', $this->account->id)),
+                fn($q) => $q->whereHas('account', fn($q) => $q->whereIn('accounts.type', ['root', 'system']))
+            )
+            ->when(!auth()->user()->isAccountType('root'), fn($q) => $q->where('account_id', auth()->user()->account_id))
             ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder);
+            ->orderBy($this->sortBy, $this->sortOrder)
+            ->paginate(30);
     }
 
     /**
@@ -53,6 +58,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.user.listing', ['users' => $this->users->paginate(30)]);
+        return view('atom::app.user.listing');
     }
 }
