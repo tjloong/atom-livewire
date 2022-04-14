@@ -182,7 +182,7 @@ class AtomServiceProvider extends ServiceProvider
 
         // user portal
         Livewire::component('atom.account', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Index');
-        Livewire::component('atom.account.authentication', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Index');
+        Livewire::component('atom.account.authentication.index', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Index');
         Livewire::component('atom.account.authentication.profile', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Profile');
         Livewire::component('atom.account.authentication.password', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Password');
 

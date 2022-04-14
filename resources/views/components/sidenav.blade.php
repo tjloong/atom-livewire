@@ -1,26 +1,31 @@
 @if ($attributes->has('item'))
     <div
-        @if ($attributes->has('href'))
-            @if ($attributes->has('active')) x-data="{ active: @js($attributes->get('active')) }"
-            @else x-data="{ active: @js(str()->is($attributes->get('href') . '*', url()->current())) }"
-            @endif
-            x-on:click="show = !show; (!active && (window.location = '{{ $attributes->get('href') }}'))"
+        @if ($attributes->get('disabled'))
+            x-data="{ active: false }"
+            class="py-2 px-3 flex items-center gap-2 pointer-events-none text-gray-400"
         @else
-            x-data="{
-                name: @js($attributes->get('name') ?? str()->slug($slot->toHtml())),
-                @if ($attributes->has('active')) active: @js($attributes->get('active')),
-                @else get active () { return this.value === this.name },
+            @if ($attributes->has('href'))
+                @if ($attributes->has('active')) x-data="{ active: @js($attributes->get('active')) }"
+                @else x-data="{ active: @js(str()->is($attributes->get('href') . '*', url()->current())) }"
                 @endif
-            }"
-            x-on:click="show = !show; (!active && $dispatch('input', name))"
+                x-on:click="show = !show; (!active && (window.location = '{{ $attributes->get('href') }}'))"
+            @else
+                x-data="{
+                    name: @js($attributes->get('name') ?? str()->slug($slot->toHtml())),
+                    @if ($attributes->has('active')) active: @js($attributes->get('active')),
+                    @else get active () { return this.value === this.name },
+                    @endif
+                }"
+                x-on:click="show = !show; (!active && $dispatch('input', name))"
+            @endif
+            x-bind:class="active
+                ? 'font-bold text-theme-dark bg-theme-light rounded-l rounded-r md:border-r-2 md:border-theme-dark md:bg-gray-200 md:rounded-r-none'
+                : ('font-medium text-gray-600 hover:font-bold md:flex ' + (!show && 'hidden'))
+            "
+            wire:loading.class="pointer-events-none"
+            class="py-2 px-3 flex items-center gap-2 cursor-pointer last:mb-4"
+            {{ $attributes->except('name', 'href') }}
         @endif
-        x-bind:class="active
-            ? 'font-bold text-theme-dark bg-theme-light rounded-l rounded-r md:border-r-2 md:border-theme-dark md:bg-gray-200 md:rounded-r-none'
-            : ('font-medium text-gray-600 hover:font-bold md:flex ' + (!show && 'hidden'))
-        "
-        wire:loading.class="pointer-events-none"
-        class="py-2 px-3 flex items-center gap-2 cursor-pointer last:mb-4"
-        {{ $attributes->except('name', 'href') }}
     >
         @if ($icon = $attributes->get('icon') ?? null)
             <div

@@ -126,7 +126,7 @@
                                 <x-slot name="dropdown">
                                     <div class="grid divide-y gap-3">
                                         <div class="grid">
-                                            <x-builder.navbar dropdown-item :href="route('account.home')" icon="user-pin">
+                                            <x-builder.navbar dropdown-item :href="route('account')" icon="user-pin">
                                                 Account
                                             </x-builder.navbar>
 
@@ -194,7 +194,7 @@
                                         </div>
 
                                         <div class="grid mt-2">
-                                            <x-builder.navbar dropdown-item :href="route('account.home')" icon="user-pin">
+                                            <x-builder.navbar dropdown-item :href="route('account')" icon="user-pin">
                                                 Account
                                             </x-builder.navbar>
 

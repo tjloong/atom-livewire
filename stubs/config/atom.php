@@ -21,13 +21,6 @@ return [
     ],
 
     /**
-     * Onboarding Portal
-     */
-    'onboarding' => [
-        'steps' => [],
-    ],
-
-    /**
      * App Portal
      */
     'app' => [

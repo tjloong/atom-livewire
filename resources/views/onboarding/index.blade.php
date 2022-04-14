@@ -1,8 +1,8 @@
 <div class="grid gap-6 md:grid-cols-12">
-    @if ($this->tabs->count() > 1)
+    @if ($this->steps->count() > 1)
         <div class="md:col-span-3">
-            <x-sidenav wire:model="tab">
-                @foreach ($this->tabs as $item)
+            <x-sidenav wire:model="step">
+                @foreach ($this->steps as $item)
                     <x-sidenav item name="{{ $item['value'] }}">
                         <div class="flex items-center gap-2">
                             <x-icon
@@ -19,9 +19,9 @@
         </div>
     @endif
 
-    <div class="{{ $this->tabs->count() > 1 ? 'md:col-span-9' : 'md:col-span-12' }}">
-        @if ($component = livewire_name('onboarding/'.$tab))
-            @livewire($component, compact('account'), key($tab))
+    <div class="{{ $this->steps->count() > 1 ? 'md:col-span-9' : 'md:col-span-12' }}">
+        @if ($component = livewire_name('onboarding/'.$step))
+            @livewire($component, key($step))
         @endif
     </div>
 </div>

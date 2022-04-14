@@ -25,10 +25,7 @@ if (!config('atom.static_site')) {
     /**
      * Account Portal
      */
-    Route::prefix('account')->middleware('auth')->as('account.')->group(function() {
-        define_route('/', fn() => redirect()->route('account.authentication'))->name('home');
-        define_route('authentication', 'Account\\Authentication\\Index')->name('authentication');
-    });
+    define_route('account', 'Account\Index')->name('account');
 
     /**
      * Onboarding Portal

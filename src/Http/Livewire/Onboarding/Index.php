@@ -6,9 +6,8 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    public $tab;
-    public $tabs;
-    public $account;
+    public $step;
+    public $steps;
     public $redirect;
 
     protected $listeners = ['next'];
@@ -19,11 +18,9 @@ class Index extends Component
      */
     public function mount()
     {
-        $this->account = auth()->user()->account;
-
-        $this->tabs = collect(config('atom.onboarding.steps', []))->map(fn($label, $key) => [
-            'value' => $key,
-            'label' => $label,
+        $this->steps = $this->tabs->map(fn($tab) => [
+            'value' => data_get($tab, 'slug', $tab),
+            'label' => data_get($tab, 'label') ?? str()->headline($tab),
             'completed' => false,
         ]);
 
@@ -31,26 +28,31 @@ class Index extends Component
     }
 
     /**
+     * Get tabs property
+     */
+    public function getTabsProperty()
+    {
+        return collect([]);
+    }
+
+    /**
      * Next
      */
     public function next()
     {
-        // update current tab as completed
-        if ($this->tab) {
-            $this->tabs = $this->tabs->map(fn($tab) => $tab['value'] === $this->tab
-                ? array_merge($tab, ['completed' => true])
-                : $tab
+        // update current step as completed
+        if ($this->step) {
+            $this->steps = $this->steps->map(fn($step) => $step['value'] === $this->step
+                ? array_merge($step, ['completed' => true])
+                : $step
             );
         }
 
-        // go to next tab
-        $next = $this->tabs->where('completed', false)->first();
+        // go to next step
+        $next = $this->steps->where('completed', false)->first();
 
-        if ($next) $this->tab = $next['value'];
-        else {
-            $this->account->onboard();
-            return redirect($this->redirectTo());
-        }
+        if ($next) $this->step = $next['value'];
+        else return redirect($this->redirectTo());
     }
 
     /**

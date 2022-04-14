@@ -62,7 +62,7 @@ class Login extends Component
 
         request()->session()->regenerate();
         
-        return redirect()->intended($this->redirectTo());
+        return redirect()->intended($this->redirectTo($user));
     }
 
     /**
@@ -105,8 +105,12 @@ class Login extends Component
      * 
      * @return void
      */
-    private function redirectTo()
+    private function redirectTo($user)
     {
+        if ($user->isAccountType('signup') && $user->account->status !== 'onboarded') {
+            return route('onboarding');
+        }
+
         return app_route();
     }
 
