@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    public $slug;
+    public $tab = 'overview';
     public $account;
 
     /**
@@ -16,13 +16,6 @@ class Index extends Component
     {
         $this->account = model('account')->findOrFail($account);
 
-        if (!$this->slug) {
-            $nav = $this->navs->first();
-            $slug = isset($nav->tabs) ? $nav->tabs->first()->slug : $nav->slug;
-
-            return redirect()->route('app.account.update', [$account, $slug]);
-        }
-
         breadcrumbs()->push($this->account->name);
     }
 
@@ -31,22 +24,7 @@ class Index extends Component
      */
     public function getTabsProperty()
     {
-        return [
-            ['slug' => 'overview'],
-        ];
-    }
-
-    /**
-     * Get navs property
-     */
-    public function getNavsProperty()
-    {
-        return collect(json_decode(json_encode($this->tabs)))
-            ->map(function($nav) {
-                if (isset($nav->tabs)) $nav->tabs = collect($nav->tabs);
-                return $nav;
-            })
-            ->filter(fn($nav) => !isset($nav->tabs) || !empty($nav->tabs));
+        return collect(['overview']);
     }
 
     /**
@@ -56,7 +34,7 @@ class Index extends Component
     {
         $this->account->block();
 
-        return redirect()->route('app.account.listing');
+        return redirect($this->redirectTo());
     }
 
     /**
@@ -66,7 +44,7 @@ class Index extends Component
     {
         $this->account->unblock();
 
-        return redirect()->route('app.account.listing');
+        return redirect($this->redirectTo());
     }
 
     /**
@@ -78,7 +56,15 @@ class Index extends Component
         
         session()->flash('flash', 'Account Deleted');
 
-        return redirect()->route('app.account.listing');
+        return redirect($this->redirectTo());
+    }
+
+    /**
+     * Redirect to
+     */
+    public function redirectTo()
+    {
+        return route('app.account.listing');
     }
 
     /**
@@ -86,6 +72,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::app.account.update.index', ['navs' => $this->navs]);
+        return view('atom::app.account.update.index');
     }
 }

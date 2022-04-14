@@ -23,7 +23,7 @@ class PaymentGateway extends Component
         'ozopay' => [
             'local' => 'https://uatpayment.ozopay.com/PaymentEntry/PaymentOption',
             'staging' => 'https://uatpayment.ozopay.com/PaymentEntry/PaymentOption',
-            'production' => 'https://uatpayment.ozopay.com/PaymentEntry/PaymentOption',
+            'production' => 'https://checkout.ozopay.com/Paymententry/PaymentOption',
         ],
     ];
 

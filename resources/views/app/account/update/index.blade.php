@@ -1,57 +1,57 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header :title="$account->name" back>
         <div class="flex items-center gap-2">
-            @if ($account->status === 'blocked')
-                <x-button inverted icon="play" x-on:click="$dispatch('confirm', {
-                    title: 'Unblock Account',
-                    message: 'Are you sure to unblock this account?',
-                    onConfirmed: () => $wire.unblock().then(() => window.location.reload()),
-                })">
-                    Unblock
-                </x-button>
-            @elseif ($account->status !== 'trashed')
-                @can('account.block')
+            @can('account.block')
+                @if ($account->status === 'blocked')
+                    <x-button inverted icon="play" x-on:click="$dispatch('confirm', {
+                        title: '{{ __('Unblock Account') }}',
+                        message: '{{ __('Are you sure to unblock this account?') }}',
+                        onConfirmed: () => $wire.unblock(),
+                    })">
+                        Unblock
+                    </x-button>
+                @else
                     <x-button inverted icon="block" color="red" x-on:click="$dispatch('confirm', {
-                        title: 'Block Account',
-                        message: 'Are you sure to block this account?',
+                        title: '{{ __('Block Account') }}',
+                        message: '{{ __('Are you sure to block this account?') }}',
                         type: 'error',
-                        onConfirmed: () => $wire.block().then(() => window.location.reload()),
+                        onConfirmed: () => $wire.block(),
                     })">
                         Block
                     </x-button>
-                @endcan
-            @endif
+                @endif
+            @endcan
 
-            <x-button inverted icon="trash" color="red" 
-                can="account.delete"
-                :hide="$account->status === 'trashed'"
-                x-on:click="$dispatch('confirm', {
-                    title: 'Delete Account',
-                    message: 'Are you sure to delete this account?',
+            @can('account.delete')
+                <x-button inverted icon="trash" color="red" x-on:click="$dispatch('confirm', {
+                    title: '{{ __('Delete Account') }}',
+                    message: '{{ __('Are you sure to delete this account?') }}',
                     type: 'error',
                     onConfirmed: () => $wire.delete()
-                })"
-            >
-                Delete
-            </x-button>
+                })">
+                    Delete
+                </x-button>
+            @endcan
         </div>
     </x-page-header>
 
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
-            <x-sidenav>
-                @foreach ($navs as $nav)
-                    @if(property_exists($nav, 'group'))
-                        <x-sidenav :group="$nav->group">
-                            @foreach ($nav->tabs as $val)
-                                <x-sidenav item :href="route('app.account.update', [$account->id, $val->slug])">
-                                    {{ $val->label ?? str($val->slug)->headline() }}
-                                </x-sidenav>
+            <x-sidenav wire:model="tab">
+                @foreach ($this->tabs as $item)
+                    @if ($children = data_get($item, 'tabs'))
+                        <x-sidenav :group="$item['group'] ?? null">
+                            @foreach ($children as $child)
+                                @if ($slug = data_get($child, 'slug') ?? $child)
+                                    <x-sidenav item :icon="data_get($child, 'icon')" :name="$slug">
+                                        {{ data_get($child, 'label') ?? str()->headline($slug) }}
+                                    </x-sidenav>
+                                @endif
                             @endforeach
                         </x-sidenav>
-                    @else
-                        <x-sidenav item :href="route('app.account.update', [$account->id, $nav->slug])">
-                            {{ $nav->label ?? str($nav->slug)->headline() }}
+                    @elseif ($slug = data_get($item, 'slug') ?? $item)
+                        <x-sidenav item :icon="data_get($item, 'icon')" :name="$slug">
+                            {{ data_get($item, 'label') ?? json_encode($slug) }}
                         </x-sidenav>
                     @endif
                 @endforeach
@@ -59,8 +59,8 @@
         </div>
 
         <div class="md:col-span-9">
-            @if ($component = livewire_name('app/account/update/'.$slug))
-                @livewire($component, compact('account'))
+            @if ($component = livewire_name('app/account/update/'.$tab))
+                @livewire($component, compact('account'), key($tab))
             @endif
         </div>
     </div>

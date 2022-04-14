@@ -123,7 +123,7 @@ if (!config('atom.static_site')) {
         if (config('atom.accounts.register')) {
             Route::prefix('account')->as('app.account.')->group(function() {
                 define_route('listing', 'App\\Account\\Listing')->name('listing');
-                define_route('{account}/{slug?}', 'App\\Account\\Update\\Index')->name('update')->where(['slug' => '.*']);
+                define_route('{account}', 'App\\Account\\Update\\Index')->name('update');
             });
         }
     

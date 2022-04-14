@@ -3,17 +3,19 @@
         <div class="md:col-span-3">
             <x-sidenav wire:model="tab">
                 @foreach ($this->tabs as $item)
-                    @if ($group = $item['group'] ?? null)
-                        <x-sidenav :group="$group">
-                            @foreach ($item['tabs'] as $child)
-                                <x-sidenav item :icon="data_get($child, 'icon')" :name="data_get($child, 'slug', $child)">
-                                    {{ data_get($child, 'label') ?? str($child)->headline() }}
-                                </x-sidenav>
+                    @if ($children = data_get($item, 'tabs'))
+                        <x-sidenav :group="$item['group'] ?? null">
+                            @foreach ($children as $child)
+                                @if ($slug = data_get($child, 'slug') ?? $child)
+                                    <x-sidenav item :icon="data_get($child, 'icon')" :name="$slug">
+                                        {{ data_get($child, 'label') ?? str()->headline($slug) }}
+                                    </x-sidenav>
+                                @endif
                             @endforeach
                         </x-sidenav>
-                    @else
-                        <x-sidenav item :icon="data_get($item, 'icon')" :name="data_get($item, 'slug', $item)">
-                            {{ data_get($item, 'label') ?? str($item)->headline() }}
+                    @elseif ($slug = data_get($item, 'slug') ?? $item)
+                        <x-sidenav item :icon="data_get($item, 'icon')" :name="$slug">
+                            {{ data_get($item, 'label') ?? json_encode($slug) }}
                         </x-sidenav>
                     @endif
                 @endforeach

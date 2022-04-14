@@ -15,6 +15,7 @@ class AlpineData extends Component
      */
     public function __construct($scripts = [
         'table',
+        'ic-input',
         'phone-input',
         'image-input',
         'picker-input',

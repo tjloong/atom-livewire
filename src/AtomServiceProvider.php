@@ -123,6 +123,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('breadcrumbs', 'Jiannius\\Atom\\Components\\Breadcrumbs');
         Blade::component('payment-gateway', 'Jiannius\\Atom\\Components\\PaymentGateway');
         
+        Blade::component('input.ic', 'Jiannius\\Atom\\Components\\Input\\Ic');
         Blade::component('input.seo', 'Jiannius\\Atom\\Components\\Input\\Seo');
         Blade::component('input.text', 'Jiannius\\Atom\\Components\\Input\\Text');
         Blade::component('input.tags', 'Jiannius\\Atom\\Components\\Input\\Tags');
