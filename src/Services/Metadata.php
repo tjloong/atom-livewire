@@ -10,13 +10,9 @@ class Metadata
     public function countries($code = null) {
         $path = __DIR__.'/../../resources/json/countries.json';
         $json = json_decode(file_get_contents($path));
-        $countries = collect($json)->map(fn($country) => array_merge(
-            (array)$country, [
-                'states' => collect($country->states ?? [])->map(fn($state) => (array)$state)->values()->all(),
-            ]
-        ));
+        $countries = collect($json);
 
-        if ($code) return $countries->where('iso_code', $code)->first() ?? $countries->where('name', $code)->first();
+        if ($code) return $countries->firstWhere('iso_code', $code) ?? $countries->firstWhere('name', $code);
 
         return $countries;
     }

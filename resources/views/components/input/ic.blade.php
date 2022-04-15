@@ -11,7 +11,7 @@
         ]))"
         class="relative w-52"
     >
-        <input x-ref="input" type="text" x-bind:value="value" class="hidden" {{ $attributes->except('focus') }}>
+        <input x-ref="input" type="hidden" x-bind:value="value" {{ $attributes->except('focus') }}>
 
         <input 
             x-bind:class="focusElem.length && 'active'"

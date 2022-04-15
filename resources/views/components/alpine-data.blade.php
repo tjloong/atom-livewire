@@ -73,50 +73,65 @@
         @endif
 
         @if (in_array('phone-input', $scripts))
-            Alpine.data('phoneInput', (value, code = '+60') => ({
-                value,
-                code,
-                flag: null,
-                number: null,
-
-                get countries () {
-                    return Array.from(this.$refs.dropdown.querySelectorAll('[data-country-code]'))
-                        .map(el => ({ 
-                            code: el.getAttribute('data-country-code'), 
-                            flag: el.getAttribute('data-country-flag'),
-                        }))
-                },
+            Alpine.data('phoneInput', (config) => ({
+                show: false,
+                value: null,
+                tel: null,
+                search: null,
+                countries: [],
+                code: config.code,
+                focus: config.focus,
 
                 get flag () {
-                    if (!this.code) return 
-                    return this.countries.find(country => (country.code === this.code)).flag
+                    return this.countries.find(val => (val.code === this.code)).src
+                },
+
+                get results () {
+                    if (!this.search) return null
+
+                    return this.countries
+                        .filter(cn => (cn.name.toLowerCase().includes(this.search)))
+                        .map(cn => (cn.code))
                 },
 
                 init () {
+                    if (this.focus) this.$nextTick(() => this.$refs.tel.focus())
+                    
+                    this.countries = Array.from(this.$refs.options.querySelectorAll('a')).map(elem => ({
+                        'src': elem.querySelector('img')?.getAttribute('src'),
+                        'name': elem.getAttribute('data-name'),
+                        'code': elem.getAttribute('data-code'),
+                    }))
+
+                    this.value = config.model ? this.$wire.get(config.model) : (config.value || null)
+
                     if (this.value?.startsWith('+')) {
-                        const country = this.countries.find(val => (this.value.startsWith(val.code)))
+                        const country = this.countries.find(cn => (this.value.startsWith(cn.code)))
 
                         if (country) {
                             this.code = country.code
-                            this.number = this.value.replace(country.code, '')
+                            this.tel = this.value.replace(this.code, '')
                         }
+                        else this.tel = this.value.replace('+', '')
                     }
-                    else this.number = this.value || null
+                    else this.tel = this.value || null
                 },
-                input () {
-                    this.value = this.number ? `${this.code}${this.number}` : null
-                    this.close()
-                },
-                open () {
-                    this.$refs.dropdown.classList.remove('hidden')
 
-                    floatPositioning(this.$refs.input, this.$refs.dropdown, {
-                        placement: 'bottom',
-                        flip: true,
-                    })
+                pattern () {
+                    this.tel = this.tel.replace(/\D/g, '')
+                    this.input()
                 },
-                close () {
-                    this.$refs.dropdown.classList.add('hidden')
+
+                select (code) {
+                    this.code = code
+                    this.input()
+                },
+
+                input () {
+                    this.value = this.tel ? `${this.code}${this.tel}` : null
+                    this.$refs.input.dispatchEvent(new Event('input', { bubble: true }))
+                    this.show = false
+                    this.search = null
                 },
             }))
         @endif

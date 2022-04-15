@@ -29,7 +29,7 @@
                 <div class="grid gap-4">
                     <div>
                         <div class="font-medium text-gray-500 text-sm uppercase mb-2">Email</div>
-                        <input type="text" wire:model.defer="email" class="w-full form-input" tabindex="1" required autofocus>
+                        <input type="email" wire:model.defer="email" class="w-full form-input" tabindex="1" required autofocus>
                     </div>
     
                     <div>
