@@ -4,11 +4,11 @@
         
         <div class="p-5">
             <x-input.text wire:model.defer="settings.ozopay_tid" :error="$errors->first('settings.ozopay_tid')" required>
-                Ozopay Terminal ID
+                {{ __('Ozopay Terminal ID') }}
             </x-input.text>
         
             <x-input.text wire:model.defer="settings.ozopay_secret" :error="$errors->first('settings.ozopay_secret')" required>
-                Ozopay Secret
+                {{ __('Ozopay Secret') }}
             </x-input.text>
         </div>
 

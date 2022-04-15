@@ -274,16 +274,24 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.app.file.uploader.youtube', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Youtube');
         Livewire::component('atom.app.file.uploader.library', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Library');
 
-        // site settings
-        Livewire::component('atom.app.site-settings.index', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Index');
-        Livewire::component('atom.app.site-settings.site-profile', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\SiteProfile');
-        Livewire::component('atom.app.site-settings.site-seo', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\SiteSeo');
-        Livewire::component('atom.app.site-settings.site-tracking', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\SiteTracking');
-        Livewire::component('atom.app.site-settings.social-media', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\SocialMedia');
-        Livewire::component('atom.app.site-settings.whatsapp-bubble', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\WhatsappBubble');
-        Livewire::component('atom.app.site-settings.email-configurations', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\EmailConfigurations');
-        Livewire::component('atom.app.site-settings.storage', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Storage');
-        Livewire::component('atom.app.site-settings.ozopay', 'Jiannius\\Atom\\Http\\Livewire\\App\\SiteSettings\\Ozopay');
+        $components = [
+            // site settings
+            'atom.app.site-settings.index' => 'App\SiteSettings\Index',
+            'atom.app.site-settings.profile' => 'App\SiteSettings\Profile',
+            'atom.app.site-settings.seo' => 'App\SiteSettings\Seo',
+            'atom.app.site-settings.analytics' => 'App\SiteSettings\Analytics',
+            'atom.app.site-settings.social-media' => 'App\SiteSettings\SocialMedia',
+            'atom.app.site-settings.whatsapp' => 'App\SiteSettings\Whatsapp',
+            'atom.app.site-settings.system.email' => 'App\SiteSettings\System\Email',
+            'atom.app.site-settings.system.storage' => 'App\SiteSettings\System\Storage',
+            'atom.app.site-settings.payment-gateway.stripe' => 'App\SiteSettings\PaymentGateway\Stripe',
+            'atom.app.site-settings.payment-gateway.gkash' => 'App\SiteSettings\PaymentGateway\Gkash',
+            'atom.app.site-settings.payment-gateway.ozopay' => 'App\SiteSettings\PaymentGateway\Ozopay',
+        ];
+
+        foreach ($components as $name => $class) {
+            Livewire::component($name, 'Jiannius\\Atom\\Http\\Livewire\\'.$class);
+        }
     }
 
     /**

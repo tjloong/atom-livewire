@@ -11,33 +11,16 @@ class SiteSetting extends Model
 
     public $timestamps = false;
 
-    /**
-     * Scope for profile
-     * 
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeProfile($query)
-    {
-        return $query->whereIn('name', [
+    public $groups = [
+        'profile' => [
             'company', 
             'phone', 
             'email',
             'address',
             'gmap_url',
-            'briefs',
-        ]);
-    }
-
-    /**
-     * Scope for social media
-     * 
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeSocial($query)
-    {
-        return $query->whereIn('name', [
+            'briefs',    
+        ],
+        'social' => [
             'facebook',
             'twitter',
             'linkedin',
@@ -45,55 +28,18 @@ class SiteSetting extends Model
             'youtube',
             'spotify',
             'tiktok',
-        ]);
-    }
-
-    /**
-     * Scope for whatsapp
-     * 
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeWhatsapp($query)
-    {
-        return $query->whereIn('name', [
-            'whatsapp',
-            'whatsapp_bubble',
-            'whatsapp_text',
-        ]);
-    }
-
-    /**
-     * Scope for seo
-     * 
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeSeo($query)
-    {
-        return $query->whereIn('name', ['seo_title', 'seo_description', 'seo_image']);
-    }
-
-    /**
-     * Scope for tracking
-     * 
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeTracking($query)
-    {
-        return $query->whereIn('name', ['ga_id', 'gtm_id', 'fbpixel_id']);
-    }
-
-    /**
-     * Scope for email
-     * 
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeEmail($query)
-    {
-        return $query->whereIn('name', [
+        ],
+        'seo' => [
+            'seo_title', 
+            'seo_description', 
+            'seo_image',
+        ],
+        'analytics' => [
+            'ga_id', 
+            'gtm_id', 
+            'fbpixel_id',
+        ],
+        'email' => [
             'mailer',
             'smtp_host', 
             'smtp_port', 
@@ -104,43 +50,42 @@ class SiteSetting extends Model
             'mailgun_secret',
             'notify_from', 
             'notify_to',
-        ]);
-    }
-
-    /**
-     * Scope for storage
-     * 
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeStorage($query)
-    {
-        return $query->whereIn('name', [
-            'filesystem',
+        ],
+        'whatsapp' => [
+            'whatsapp',
+            'whatsapp_bubble',
+            'whatsapp_text',    
+        ],
+        'do' => [
             'do_spaces_key',
             'do_spaces_secret',
             'do_spaces_region',
             'do_spaces_bucket',
             'do_spaces_endpoint',
-            'do_spaces_cdn',
-        ]);
-    }
-
-    /**
-     * Scope for ozopay
-     * 
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeOzopay($query)
-    {
-        return $query->whereIn('name', [
+            'do_spaces_cdn',    
+        ],
+        'stripe' => [
+            'stripe_public_key', 
+            'stripe_secret_key', 
+            'stripe_webhook_key',
+        ],
+        'gkash' => [
+            'gkash_mid',
+            'gkash_signature_key',
+        ],
+        'ozopay' => [
             'ozopay_tid',
             'ozopay_secret',
-        ]);
+        ],
+    ];
+
+    /**
+     * Scope for group
+     */
+    public function scopeGroup($query, $group)
+    {
+        return $query->whereIn('name', $this->groups[$group]);
     }
-
-
 
     /**
      * Get settings
@@ -180,28 +125,27 @@ class SiteSetting extends Model
         if (config('atom.static_site')) return;
 
         try {
-            $settings = self::email()->get();
-            $mailer = self::getSetting('mailer', $settings);
+            $mailer = site_settings('mailer');
 
             if ($mailer === 'smtp') {
                 config([
-                    'mail.mailers.smtp.host' => self::getSetting('smtp_host', $settings),
-                    'mail.mailers.smtp.port' => self::getSetting('smtp_port', $settings),
-                    'mail.mailers.smtp.username' => self::getSetting('smtp_username', $settings),
-                    'mail.mailers.smtp.password' => self::getSetting('smtp_password', $settings),
-                    'mail.mailers.smtp.encryption' => self::getSetting('smtp_encryption', $settings),
+                    'mail.mailers.smtp.host' => site_settings('smtp_host'),
+                    'mail.mailers.smtp.port' => site_settings('smtp_port'),
+                    'mail.mailers.smtp.username' => site_settings('smtp_username'),
+                    'mail.mailers.smtp.password' => site_settings('smtp_password'),
+                    'mail.mailers.smtp.encryption' => site_settings('smtp_encryption'),
                 ]);
             }
             else if ($mailer === 'mailgun') {
                 config([
-                    'services.mailgun.domain' => self::getSetting('mailgun_domain', $settings),
-                    'services.mailgun.secret' => self::getSetting('mailgun_secret', $settings),
+                    'services.mailgun.domain' => site_settings('mailgun_domain'),
+                    'services.mailgun.secret' => site_settings('mailgun_secret'),
                 ]);
             }
     
             config([
                 'mail.default' => $mailer,
-                'mail.from.address' => self::getSetting('notify_from', $settings),
+                'mail.from.address' => site_settings('notify_from'),
                 'mail.from.name' => config('app.name'),
             ]);
         } catch (\Throwable $th) {
@@ -217,9 +161,8 @@ class SiteSetting extends Model
      */
     public static function getDoDisk()
     {
-        $settings = self::storage()->get();
-        $key = self::getSetting('do_spaces_key', $settings);
-        $secret = self::getSetting('do_spaces_secret', $settings);
+        $key = site_settings('do_spaces_key');
+        $secret = site_settings('do_spaces_secret');
 
         if ($key && $secret) {
             config([
@@ -227,9 +170,9 @@ class SiteSetting extends Model
                     'driver' => 's3',
                     'key' => $key,
                     'secret' => $secret,
-                    'region' => self::getSetting('do_spaces_region', $settings),
-                    'bucket' => self::getSetting('do_spaces_bucket', $settings),
-                    'endpoint' => self::getSetting('do_spaces_endpoint', $settings),
+                    'region' => site_settings('do_spaces_region'),
+                    'bucket' => site_settings('do_spaces_bucket'),
+                    'endpoint' => site_settings('do_spaces_endpoint'),
                 ],
             ]);
     

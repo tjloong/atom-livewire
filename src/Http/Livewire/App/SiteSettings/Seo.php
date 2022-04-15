@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Http\Livewire\App\SiteSettings;
 
 use Livewire\Component;
 
-class SiteProfile extends Component
+class Seo extends Component
 {
     public $settings;
 
@@ -13,7 +13,7 @@ class SiteProfile extends Component
      */
     public function mount()
     {
-        model('site_setting')->profile()->get()->each(function($setting) {
+        model('site_setting')->group('seo')->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
     }
@@ -23,9 +23,7 @@ class SiteProfile extends Component
      */
     public function submit()
     {
-        site_settings($this->settings);
-
-        $this->dispatchBrowserEvent('toast', ['message' => 'Site Profile Updated', 'type' => 'success']);
+        $this->emitUp('submit', $this->settings);
     }
 
     /**
@@ -33,6 +31,6 @@ class SiteProfile extends Component
      */
     public function render()
     {
-        return view('atom::app.site-settings.site-profile');
+        return view('atom::app.site-settings.seo');
     }
 }

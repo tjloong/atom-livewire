@@ -1,6 +1,6 @@
 <form wire:submit.prevent="submit">
     <x-box>
-        <x-slot name="header">Site Tracking ID</x-slot>
+        <x-slot name="header">Analytics</x-slot>
         
         <div class="p-5">
             <x-input.text wire:model.defer="settings.ga_id">

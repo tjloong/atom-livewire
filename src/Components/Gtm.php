@@ -19,13 +19,7 @@ class Gtm extends Component
     public function __construct($noscript = false)
     {
         $this->noscript = $noscript;
-
-        if (!config('atom.static_site')) {
-            $settings = SiteSetting::tracking()->get();
-            $this->id = $settings->where('name', 'gtm_id')->first()->value ?? null;
-        }
-
-        if (config('atom.gtm_id')) $this->id = config('atom.gtm_id');
+        $this->id = config('atom.gtm_id') ?? site_settings('gtm_id');
     }
 
     /**

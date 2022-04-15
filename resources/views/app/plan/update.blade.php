@@ -40,7 +40,7 @@
                                         <div class="font-medium text-gray-500">{{ $price->recurring }}</div>
                                     </div>
     
-                                    @if ($cn = optional(metadata()->countries($price->country))['name'])
+                                    @if ($cn = optional(metadata()->countries($price->country))->name)
                                         <div class="text-sm text-gray-500">Available in {{ $cn }}</div>
                                     @endif
                                 </div>

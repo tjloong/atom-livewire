@@ -175,7 +175,7 @@ if (!config('atom.static_site')) {
         /**
          * Site Settings
          */
-        define_route('site-settings/{tab?}', 'App\SiteSettings\Index')->name('app.site-settings');
+        define_route('site-settings', 'App\SiteSettings\Index')->name('app.site-settings');
     });
 }
 

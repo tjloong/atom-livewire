@@ -677,6 +677,11 @@ class InstallCommand extends Command
             ['name' => 'do_spaces_bucket', 'value' => null],
             ['name' => 'do_spaces_endpoint', 'value' => null],
             ['name' => 'do_spaces_cdn', 'value' => null],
+            ['name' => 'stripe_public_key', 'value' => null],
+            ['name' => 'stripe_secret_key', 'value' => null],
+            ['name' => 'stripe_webhook_key', 'value' => null],
+            ['name' => 'gkash_mid', 'value' => null],
+            ['name' => 'gkash_signature_key', 'value' => null],
             ['name' => 'ozopay_tid', 'value' => null],
             ['name' => 'ozopay_secret', 'value' => null],
         ] as $setting) {

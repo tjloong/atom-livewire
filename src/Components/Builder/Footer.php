@@ -76,7 +76,7 @@ class Footer extends Component
                 'address' => site_settings('address'),
                 'briefs' => site_settings('briefs'),
     
-                'socials' => model('site_setting')->social()->get()
+                'socials' => model('site_setting')->group('social')->get()
                         ->mapWithKeys(fn($val) => [$val->name => $val->value])
                         ->filter()
                         ->all(),

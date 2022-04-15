@@ -9,14 +9,10 @@ class Form extends Component
 {
     public $plan;
     public $features;
-    public $upgradables;
-    public $downgradables;
 
-    protected $messages = [
-        'plan.name.required' => 'Plan name is required.',
-        'plan.name.unique' => 'There is another plan with the same name.',
-    ];
-
+    /**
+     * Validation rules
+     */
     protected function rules()
     {
         return [
@@ -33,13 +29,22 @@ class Form extends Component
     }
 
     /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'plan.name.required' => __('Plan name is required.'),
+            'plan.name.unique' => __('There is another plan with the same name.'), 
+        ];
+    }
+
+    /**
      * Mount
      */
     public function mount()
     {
-        $this->features = $this->getFeatures();
-        $this->upgradables = $this->getUpgradables();
-        $this->downgradables = $this->getDowngradables();
+        $this->setFeatures();
     }
 
     /**
@@ -52,29 +57,29 @@ class Form extends Component
             ->get()
             ->map(fn($plan) => ['value' => $plan->id, 'label' => $plan->name]);
     }
-    
-    /**
-     * Get features
-     */
-    public function getFeatures()
-    {
-        return collect($this->plan->features ?? [])->filter()->join("\n");
-    }
 
     /**
-     * Get upgradables
+     * Get upgradables property
      */
-    public function getUpgradables()
+    public function getUpgradablesProperty()
     {
         return $this->plan->upgradables->pluck('id')->toArray();
     }
 
     /**
-     * Get downgradables
+     * Get downgradables property
      */
-    public function getDowngradables()
+    public function getDowngradablesProperty()
     {
         return $this->plan->downgradables->pluck('id')->toArray();
+    }
+    
+    /**
+     * Set features
+     */
+    public function setFeatures()
+    {
+        $this->features = collect($this->plan->features ?? [])->filter()->join("\n");
     }
 
     /**
@@ -93,13 +98,12 @@ class Form extends Component
                 ->all();
         }
 
+        $this->plan->trial = $this->plan->trial ?? null;
         $this->plan->save();
         $this->plan->upgradables()->sync($this->upgradables);
         $this->plan->downgradables()->sync($this->downgradables);
 
-        $this->features = $this->getFeatures();
-        $this->upgradables = $this->getUpgradables();
-        $this->downgradables = $this->getDowngradables();
+        $this->setFeatures();
 
         $this->emitUp('saved', $this->plan->id);
     }
@@ -109,8 +113,6 @@ class Form extends Component
      */
     public function render()
     {
-        return view('atom::app.plan.form', [
-            'otherPlans' => $this->otherPlans,
-        ]);
+        return view('atom::app.plan.form');
     }
 }

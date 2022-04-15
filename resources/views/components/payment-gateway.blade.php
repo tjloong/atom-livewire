@@ -76,7 +76,7 @@
                         <select x-model="value.country" class="form-input w-full">
                             <option value="">-- {{ __('Select Country') }} --</option>
                             @foreach (metadata()->countries() as $country)
-                                <option value="{{ $country['iso_code'] }}">{{ $country['name'] }}</option>
+                                <option value="{{ $country->iso_code }}">{{ $country->name }}</option>
                             @endforeach
                         </select>
                         <div x-show="errors.country" class="text-sm text-red-500 font-medium mt-1">{{ __('Country is required.') }}</div>
@@ -89,7 +89,7 @@
                         <select x-model="value.state" class="form-input w-full">
                             <option value="">-- {{ __('Select State') }} --</option>
                             @foreach (metadata()->states('MY') as $state)
-                                <option value="{{ $state['name'] }}">{{ $state['name'] }}</option>
+                                <option value="{{ $state->name }}">{{ $state->name }}</option>
                             @endforeach
                         </select>
                         <div x-show="errors.state" class="text-sm text-red-500 font-medium mt-1">{{ __('State is required.') }}</div>

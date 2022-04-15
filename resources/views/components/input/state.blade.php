@@ -7,7 +7,7 @@
         @if ($country)
             <option value=""> -- {{ $attributes->get('placeholder') ?? 'Please Select' }} -- </option>
             @foreach (metadata()->states($country) as $state)
-                <option>{{ $state['name'] }}</option>
+                <option>{{ $state->name }}</option>
             @endforeach
         @else
             <option value=""> -- Please select a country first -- </option>

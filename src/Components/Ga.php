@@ -19,13 +19,7 @@ class Ga extends Component
     public function __construct($noscript = false)
     {
         $this->noscript = $noscript;
-
-        if (!config('atom.static_site')) {
-            $settings = SiteSetting::tracking()->get();
-            $this->id = $settings->where('name', 'ga_id')->first()->value ?? null;
-        }
-
-        if (config('atom.ga_id')) $this->id = config('atom.ga_id');
+        $this->id = config('atom.ga_id') ?? site_settings('ga_id');
     }
 
     /**

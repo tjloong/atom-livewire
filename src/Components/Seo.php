@@ -29,7 +29,7 @@ class Seo extends Component
         }
         else {
             if (!config('atom.static_site')) {
-                $settings = SiteSetting::seo()->get();
+                $settings = model('site_setting')->group('seo')->get();
 
                 if ($settings->count()) {
                     $this->title = $settings->where('name', 'seo_title')->first()->value;

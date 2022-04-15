@@ -25,11 +25,11 @@
                 CTA Text
             </x-input.text>
 
-            <x-input.tags wire:model.defer="upgradables" :options="$otherPlans">
+            <x-input.tags wire:model.defer="upgradables" :options="$this->otherPlans">
                 Upgradable To
             </x-input.tags>
 
-            <x-input.tags wire:model.defer="downgradables" :options="$otherPlans">
+            <x-input.tags wire:model.defer="downgradables" :options="$this->otherPlans">
                 Downgradable To
             </x-input.tags>
 
