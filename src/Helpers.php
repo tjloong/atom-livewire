@@ -88,6 +88,8 @@ function get_tabs_from_config($config)
  */
 function site_settings($name, $default = null)
 {
+    if (config('atom.static_site')) return $default;
+
     if (is_string($name)) return model('site_setting')->getSetting($name) ?? $default;
     else {
         foreach($name as $key => $val) {

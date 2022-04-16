@@ -16,6 +16,8 @@ class Gkash extends Component
         return [
             'settings.gkash_mid' => 'required',
             'settings.gkash_signature_key' => 'required',
+            'settings.gkash_url' => 'required',
+            'settings.gkash_sandbox_url' => 'nullable',
         ];
     }
 
@@ -27,6 +29,7 @@ class Gkash extends Component
         return [
             'settings.gkash_mid.required' => __('Merchant ID is required.'),
             'settings.gkash_signature_key.required' => __('Signature key is required.'),
+            'settings.gkash_url.required' => __('URL is required.'),
         ];
     }
 

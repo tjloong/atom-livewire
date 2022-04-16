@@ -16,6 +16,8 @@ class Ozopay extends Component
         return [
             'settings.ozopay_tid' => 'required',
             'settings.ozopay_secret' => 'required',
+            'settings.ozopay_url' => 'required',
+            'settings.ozopay_sandbox_url' => 'nullable',
         ];
     }
 
@@ -27,6 +29,7 @@ class Ozopay extends Component
         return [
             'settings.ozopay_tid.required' => __('Terminal ID is required.'),
             'settings.ozopay_secret.required' => __('Secret is required.'),
+            'settings.ozopay_url.required' => __('URL is required.'),
         ];
     }
 

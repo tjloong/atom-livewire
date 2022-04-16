@@ -1,4 +1,4 @@
-@if ($form === 'ozopay')
+@if ($attributes->has('ozopay'))
     <form 
         x-data="ozopay(@js($value), @js($attributes->get('callback')))"
         x-on:submit.prevent="submit()"
@@ -165,12 +165,12 @@
                 redirect (params) {
                     const form = document.createElement('form')
                     form.method = 'POST'
-                    form.action = '{{ $attributes->get('endpoint') }}'
+                    form.action = params.endpoint
 
-                    Object.keys(params).forEach(key => {
+                    Object.keys(params.body).forEach(key => {
                         const input = document.createElement('input')
                         input.setAttribute('name', key)
-                        input.setAttribute('value', params[key] || '')
+                        input.setAttribute('value', params.body[key] || '')
                         form.appendChild(input)
                     })
 
@@ -181,7 +181,7 @@
         })
     </script>
 
-@elseif ($form === 'gkash')
+@elseif ($attributes->has('gkash'))
     <div>
         Gkash Form
     </div>
@@ -189,7 +189,7 @@
 @else
     <div class="grid divide-y">
     @foreach ($providers as $provider)
-        <div x-data="{ show: false }" x-on:click.away="show = false" {{ $attributes->whereStartsWith('wire') }}>
+        <div x-data="{ show: false }" x-on:click.away="show = false">
             <div x-on:click="show = !show" class="flex justify-between gap-4 py-3 px-4 cursor-pointer">
                 @isset($$provider)
                     {{ $$provider }}
@@ -198,7 +198,7 @@
                         <div class="font-semibold">
                             {{ $titles[$provider] ?? str($provider)->headline() }}
                         </div>
-
+    
                         <div class="flex items-center gap-2">
                             @foreach ($logos[$provider] as $logo)
                                 <x-logo :name="$logo" class="h-5 max-w-[60px]"/>
@@ -206,25 +206,15 @@
                         </div>
                     </div>
                 @endif
-
+    
                 <x-icon name="chevron-right"/>
             </div>
-
+    
             <div x-show="show" x-transition>
             @if ($provider === 'ozopay')
-                <x-payment-gateway form="ozopay"
-                    :value="$value"
-                    :endpoint="$endpoints['ozopay'][app()->environment()]"
-                    :callback="$attributes->get('callback')"
-                />
-
+                <x-payment-gateway ozopay :value="$value" :callback="$attributes->get('callback')"/>
             @elseif ($provider === 'gkash')
-                <x-payment-gateway form="gkash"
-                    :value="$value"
-                    :endpoint="$endpoints['gkash'][app()->environment()]"
-                    :callback="$attributes->get('callback')"
-                />
-
+                <x-payment-gateway gkash :value="$value" :callback="$attributes->get('callback')"/>
             @endif
             </div>
         </div>

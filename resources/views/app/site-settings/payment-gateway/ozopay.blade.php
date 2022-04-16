@@ -10,6 +10,14 @@
             <x-input.text wire:model.defer="settings.ozopay_secret" :error="$errors->first('settings.ozopay_secret')" required>
                 {{ __('Ozopay Secret') }}
             </x-input.text>
+        
+            <x-input.text wire:model.defer="settings.ozopay_url" :error="$errors->first('settings.ozopay_url')" required>
+                {{ __('Ozopay URL') }}
+            </x-input.text>
+        
+            <x-input.text wire:model.defer="settings.ozopay_sandbox_url">
+                {{ __('Ozopay Sandbox URL') }}
+            </x-input.text>
         </div>
 
         <x-slot name="buttons">

@@ -10,6 +10,14 @@
             <x-input.text wire:model.defer="settings.gkash_signature_key" :error="$errors->first('settings.gkash_signature_key')" required>
                 {{ __('GKash Signature Key') }}
             </x-input.text>
+        
+            <x-input.text wire:model.defer="settings.gkash_url" :error="$errors->first('settings.gkash_url')" required>
+                {{ __('GKash URL') }}
+            </x-input.text>
+        
+            <x-input.text wire:model.defer="settings.gkash_sandbox_url">
+                {{ __('GKash Sandbox URL') }}
+            </x-input.text>
         </div>
 
         <x-slot name="buttons">

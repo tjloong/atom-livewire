@@ -16,6 +16,7 @@ class OzopayController extends Controller
         $account = model('account')->find(request()->input('account_id'));
         $tid = $this->getTID($account);
         $secret = $this->getSecret($account);
+        $endpoint = $this->getEndpoint($account);
 
         $body = [
             'address' => $params['address'] ?? null,
@@ -30,7 +31,7 @@ class OzopayController extends Controller
             'orderDescription' => $params['order_id'] ?? null,
             'orderDetail' => $params['order_description'] ?? null,
             'phone' => $params['phone'] ?? null,
-            'purchaseAmount' => app()->environment('local') ? '1.00' : currency($params['amount'] ?? 0),
+            'purchaseAmount' => currency($params['amount'] ?? 0),
             'shipAddress' => null,
             'shipCity' => null,
             'shipCountry' => null,
@@ -46,7 +47,10 @@ class OzopayController extends Controller
         $concat = collect(array_values($body))->push($secret)->join('');
         $signature = hash('sha256', $concat);
 
-        return response()->json(array_merge($body, compact('signature')));
+        return response()->json([
+            'body' => array_merge($body, compact('signature')),
+            'endpoint' => $endpoint,
+        ]);
     }
 
     /**
@@ -78,11 +82,8 @@ class OzopayController extends Controller
      */
     private function getTID($account = null)
     {
-        if (config('atom.static_site')) $tid = env('OZOPAY_TID');
-        else if ($account) $tid = $account->setting->ozopay_tid ?? $account->setting->ozopay->tid ?? null;
-        else $tid = site_settings('ozopay_tid');
-
-        return $tid;
+        if ($account) return $account->setting->ozopay_tid ?? $account->setting->ozopay->tid ?? null;
+        else return site_settings('ozopay_tid', env('OZOPAY_TID'));
     }
 
     /**
@@ -90,11 +91,21 @@ class OzopayController extends Controller
      */
     private function getSecret($account = null)
     {
-        if (config('atom.static_site')) $secret = env('OZOPAY_SECRET');
-        else if ($account) $secret = $account->setting->ozopay_secret ?? $account->setting->ozopay->secret ?? null;
-        else $secret = site_settings('ozopay_secret');
+        if ($account) return $account->setting->ozopay_secret ?? $account->setting->ozopay->secret ?? null;
+        else return site_settings('ozopay_secret', env('OZOPAY_SECRET'));
+    }
 
-        return $secret;
+    /**
+     * Get endpoint
+     */
+    private function getEndpoint($account = null)
+    {
+        if ($account) {
+            if (app()->environment('production')) return $account->setting->ozopay_url ?? $account->setting->ozopay->url ?? null;
+            else return $account->setting->ozopay_sandbox_url ?? $account->setting->ozopay->sandbox_url ?? null;
+        }
+        else if (app()->environment('production')) return site_settings('ozopay_url', env('OZOPAY_URL'));
+        else return site_settings('ozopay_sandbox_url', env('OZOPAY_SANDBOX_URL'));
     }
 
     /**

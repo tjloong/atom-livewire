@@ -682,8 +682,12 @@ class InstallCommand extends Command
             ['name' => 'stripe_webhook_key', 'value' => null],
             ['name' => 'gkash_mid', 'value' => null],
             ['name' => 'gkash_signature_key', 'value' => null],
+            ['name' => 'gkash_sandbox_url', 'value' => 'https://api-staging.pay.asia/api/PaymentForm.aspx'],
+            ['name' => 'gkash_url', 'value' => 'https://api.gkash.my/api/PaymentForm.aspx'],
             ['name' => 'ozopay_tid', 'value' => null],
             ['name' => 'ozopay_secret', 'value' => null],
+            ['name' => 'ozopay_sandbox_url', 'value' => 'https://uatpayment.ozopay.com/PaymentEntry/PaymentOption'],
+            ['name' => 'ozopay_url', 'value' => 'https://checkout.ozopay.com/Paymententry/PaymentOption'],
         ] as $setting) {
             if (DB::table('site_settings')->where('name', $setting['name'])->count()) continue;
             DB::table('site_settings')->insert($setting);

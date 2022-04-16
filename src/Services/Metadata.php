@@ -22,7 +22,7 @@ class Metadata
      */
     public function states($country)
     {
-        $states = optional($this->countries($country))['states'] ?? [];
+        $states = optional($this->countries($country))->states ?? [];
 
         return collect($states)->sortBy('code')->values()->all();
     }
