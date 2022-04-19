@@ -20,7 +20,6 @@ class InstallCommand extends Command
 
     protected $node = [
         'devDependencies' => [
-            '@tailwindcss/forms' => '^0.5',
             '@tailwindcss/typography' => '^0.5',
             'postcss' => '^8.4.5',
             'postcss-import' => '^14.0.2',
