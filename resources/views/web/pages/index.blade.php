@@ -80,9 +80,13 @@
                                     <x-button 
                                         x-show="variant === '{{ $price->recurring }}'"
                                         block
-                                        :href="Route::has('register') 
-                                            ? route('register', ['ref' => 'pricing', 'plan' => $plan->slug, 'price' => $price->id]) 
-                                            : '#'" 
+                                        :href="auth()->user() && Route::has('billing')
+                                            ? route('billing')
+                                            : (Route::has('register') 
+                                                ? route('register', ['ref' => 'pricing', 'plan' => $plan->slug, 'price' => $price->id])
+                                                : '#'
+                                            )
+                                        " 
                                         size="md">
                                         {{ $plan->cta }}
                                     </x-button>

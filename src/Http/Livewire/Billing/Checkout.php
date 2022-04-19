@@ -6,20 +6,39 @@ use Livewire\Component;
 
 class Checkout extends Component
 {
-    public $plan;
-    public $price;
     public $cart;
+    public $accountOrder;
 
-    protected $queryString = ['plan', 'price'];
+    /**
+     * Validation rules
+     */
+    protected function rules()
+    {
+        return [
+            'accountOrder.agree_tnc' => 'accepted',
+        ];
+    }
+
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'accountOrder.agree_tnc.accepted' => __('Please accept terms & conditions and privacy policy.'),
+        ];
+    }
 
     /**
      * Mount
      */
     public function mount()
     {
-        if (!$this->plan && !$this->price) return redirect()->route('billing');
-
-        $this->addToCart($this->plan, $this->price);
+        if (request()->query('plan') && request()->query('price')) {
+            $this->accountOrder = model('account_order');
+            $this->addToCart(request()->query('plan'), request()->query('price'));
+        }
+        else return redirect()->route('billing');
     }
 
     /**
@@ -28,7 +47,7 @@ class Checkout extends Component
     public function getTotalProperty()
     {
         $currency = $this->cart->first()['currency'];
-        $amount = $this->cart->sum('amount');
+        $amount = $this->cart->sum('grand_total');
 
         return compact('currency', 'amount');
     }
@@ -43,16 +62,16 @@ class Checkout extends Component
         $plan = model('plan')->where('slug', $planId)->where('is_active', true)->firstOrFail();
         $price = $plan->prices()->findOrFail($priceId);
         $trial = $plan->trial && !auth()->user()->account->hasPlanPrice($price->id) ? $plan->trial : false;
-        $amount = $trial ? 0 : ($price->amount - ($price->discount ?? 0));
-
+        $discount = $trial ? $price->amount : $price->discount;
+        
         $this->cart->push([
             'name' => $plan->payment_description,
-            'trial' => $trial,
             'currency' => $price->currency,
+            'amount' => $price->amount,
+            'discounted_amount' => $discount,
+            'grand_total' => $price->amount - ($discount ?? 0),
+            'trial' => $trial,
             'recurring' => $price->recurring,
-            'discount' => $price->discount,
-            'original_amount' => $price->amount,
-            'amount' => $amount,
             'plan_price_id' => $price->id,
         ]);
     }
@@ -62,42 +81,55 @@ class Checkout extends Component
      */
     public function submit($data = null)
     {
-        $order = auth()->user()->account->accountOrders()->create([
-            'currency' => $this->total['currency'],
-            'amount' => $this->total['amount'],
-        ]);
+        $this->resetValidation();
+        $this->validate();
 
-        foreach ($this->cart as $item) {
-            $order->accountOrderItems()->create([
-                'name' => $item['name'].($item['trial'] ? (' ('.$item['trial'].' days trial)') : ''),
-                'currency' => $item['currency'],
-                'amount' => $item['original_amount'],
-                'discounted_amount' => $item['trial'] ? $item['original_amount'] : $item['discount'],
-                'grand_total' => $item['amount'],
-                'plan_price_id' => $item['plan_price_id'],
-            ]);
+        $this->accountOrder->currency = $this->total['currency'];
+        $this->accountOrder->amount = $this->total['amount'];
+        $this->accountOrder->account_id = auth()->user()->account_id;
+        $this->accountOrder->save();
+
+        foreach ($this->cart as $cartItem) {
+            $orderItem = collect($cartItem)->only(['currency', 'amount', 'discounted_amount', 'grand_total', 'plan_price_id'])->all();
+            $orderItem['name'] = $cartItem['name'].($cartItem['trial'] 
+                ? (' ('.$cartItem['trial'].' days trial)') 
+                : '');
+
+            $this->accountOrder->accountOrderItems()->create($orderItem);
         }
 
-        $payment = auth()->user()->account->accountPayments()->create([
-            'currency' => $order->currency,
-            'amount' => $order->amount,
-            'status' => $order->amount > 0 ? 'draft' : 'success',
-            'account_order_id' => $order->id,
+        $payment = $this->accountOrder->accountPayments()->create([
+            'currency' => $this->accountOrder->currency,
+            'amount' => $this->accountOrder->amount,
+            'status' => $this->accountOrder->amount > 0 ? 'draft' : 'success',
+            'account_id' => auth()->user()->account_id,
         ]);
 
         // payment gateway data
         if ($payment->amount > 0 && $data) {
-            return array_merge($data, [
+            $request = array_merge($data, [
+                'job' => 'Billing',
+                'email' => auth()->user()->account->email,
                 'payment_id' => $payment->id,
-                'payment_description' => 'Payment for order #'.$order->number,
+                'payment_description' => 'Payment for order #'.$this->accountOrder->number,
                 'currency' => $payment->currency,
-                'amount' => $payment->amount,
+                'amount' => currency($payment->amount),
+                'items' => $this->accountOrder->accountOrderItems->map(fn($item) => [
+                    'name' => $item->name,
+                    'amount' => currency($item->grand_total),
+                    'currency' => $item->currency,
+                    'qty' => 1,
+                    'stripe_price_id' => $item->planPrice->stripe_price_id,
+                ]),
             ]);
+
+            $payment->data = compact('request');
+            $payment->save();
+
+            return $request;
         }
         // no payment amount, provision straight away
-        else if ($payment->amount <= 0) {
-            $payment->provision();
-        }
+        else $payment->provision();
         
         if (auth()->user()->account->status === 'onboarded') return redirect()->route(app_route());
         else return redirect()->route('onboarding');

@@ -40,16 +40,40 @@ class AccountPayment extends Model
     public function provision()
     {
         foreach ($this->accountOrder->accountOrderItems as $item) {
-            $price = $item->planPrice;
-
-            if ($price->plan->trial && !$this->account->hasPlanPrice($price->id)) {
-                $this->account->accountSubscriptions()->create([
-                    'is_trial' => true,
-                    'start_at' => $this->created_at,
-                    'expired_at' => $this->created_at->addDays($price->plan->trial),
+            if (!$item->accountSubscription) {
+                $price = $item->planPrice;
+    
+                // trial
+                if ($price->plan->trial && !$this->account->hasPlanPrice($price->id)) {
+                    $subscription = [
+                        'is_trial' => true,
+                        'start_at' => $this->created_at,
+                        'expired_at' => $this->created_at->addDays($price->plan->trial),
+                    ];
+                }
+                // non-trial
+                else {
+                    $start = $this->created_at;
+    
+                    if (!$price->is_lifetime) {
+                        [$n, $unit] = explode(' ', $price->expired_after);
+    
+                        if ($unit === 'day') $end = $start->copy()->addDays($n);
+                        if ($unit === 'month') $end = $start->copy()->addMonths($n);
+                        if ($unit === 'year') $end = $start->copy()->addYears($n);
+                    }
+    
+                    $subscription = [
+                        'is_trial' => false,
+                        'start_at' => $start,
+                        'expired_at' => $end,
+                    ];
+                }
+                
+                $this->account->accountSubscriptions()->create(array_merge($subscription, [
                     'account_order_item_id' => $item->id,
-                    'plan_price_id' => $price->id,
-                ]);
+                    'plan_price_id' => $price->id,                
+                ]));
             }
         }
     }

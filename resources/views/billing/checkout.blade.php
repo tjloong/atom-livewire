@@ -16,24 +16,24 @@
                                 </div>
     
                                 <div class="flex-shrink-0 text-right">
-                                    @if ($item['amount'] !== $item['original_amount'])
+                                    @if ($item['amount'] !== $item['grand_total'])
                                         <div class="text-gray-500 line-through font-medium">
-                                            {{ currency($item['original_amount'], $item['currency']) }}
+                                            {{ currency($item['amount'], $item['currency']) }}
                                         </div>
     
                                         @if ($item['trial'])
                                             <span class="text-sm text-gray-500">
                                                 ({{ $item['trial'] }} {{ __('days trial') }})
                                             </span>
-                                        @elseif ($item['discount'])
+                                        @elseif ($item['discounted_amount'])
                                             <span class="text-sm text-red-500 font-medium">
-                                                {{ __('Discounted') }} {{ currency($item['discount']) }}
+                                                {{ __('Discounted') }} {{ currency($item['discounted_amount']) }}
                                             </span>
                                         @endif
 
-                                        {{ currency($item['amount'], $item['currency']) }}
+                                        {{ currency($item['grand_total'], $item['currency']) }}
                                     @else
-                                        {{ currency($item['amount'], $item['currency']) }}
+                                        {{ currency($item['grand_total'], $item['currency']) }}
                                     @endif
                                 </div>
                             </div>
@@ -68,11 +68,23 @@
             <div class="md:col-span-5">
                 <x-box>
                     <x-slot:header>{{ __('Payment Method') }}</x-slot:header>
-
-                    {{-- <x-payment-gateway callback="createPayment" :value="[
-                        'currency' => $this->total['currency'],
-                        'amount' => $this->total['amount'],
-                    ]"/> --}}
+                    <x-payment-gateway callback="submit">
+                        <div class="grid gap-4">
+                            <x-input.checkbox wire:model="accountOrder.agree_tnc">
+                                <div class="grid text-gray-500">
+                                    <div>{{ __('I have read and agreed to the app\'s terms & conditions and privacy policy.') }}</div>
+                                    <div class="flex items-center gap-2">
+                                        <a href="{{ route('page', ['terms']) }}" target="_blank">{{ __('Terms & Conditions') }}</a> | 
+                                        <a href="{{ route('page', ['privacy']) }}" target="_blank">{{ __('Privacy Policy') }}</a>
+                                    </div>
+                                </div>
+                            </x-input.checkbox>
+    
+                            @if ($errors->any())
+                                <x-alert :errors="$errors->all()"/>
+                            @endif
+                        </div>
+                    </x-payment-gateway>
                 </x-box>
             </div>
         @endif

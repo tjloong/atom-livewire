@@ -16,8 +16,10 @@
                         {{ $isActive ? 'font-semibold bg-white/20 border-r-8 border-theme' : 'font-medium hover:bg-white/10' }}
                     "
                 >
-                    @if ($attributes->get('icon'))
-                        <x-icon name="{{ $attributes->get('icon') }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="20px"/>
+                    @if ($icon = $attributes->get('icon'))
+                        <x-icon name="{{ $icon }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="20px"/>
+                    @elseif ($logo = $attributes->get('logo'))
+                        <x-logo :src="$logo" class="brightness-0 invert" style="width: 20px; height: 20px;"/>
                     @endif
 
                     <div class="truncate">{{ $slot }}</div>
@@ -33,8 +35,10 @@
                         x-bind:class="active && 'bg-white/10'"
                         class="flex items-center gap-3 rounded-l-md px-4 py-2.5 text-white"
                     >
-                        @if ($attributes->get('icon'))
-                            <x-icon name="{{ $attributes->get('icon') }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="20px"/>
+                        @if ($icon = $attributes->get('icon'))
+                            <x-icon name="{{ $icon }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="20px"/>
+                        @elseif ($logo = $attributes->get('logo'))
+                            <x-logo :src="$logo" class="brightness-0 invert" style="width: 20px; height: 20px;"/>
                         @endif
 
                         <div class="flex-grow truncate">{{ $slot }}</div>

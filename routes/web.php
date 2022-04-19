@@ -8,6 +8,18 @@ define_route('__file/{id}', 'FileController@index')->name('__file');
 define_route('__file/download/{id}', 'FileController@download')->name('__file.download');
 
 /**
+ * Stripe
+ */
+if (in_array('stripe', config('atom.payment_gateway'))) {
+    define_route()->prefix('__stripe')->as('__stripe.')->group(function() {
+        define_route('sign', 'StripeController@sign', 'post')->name('sign');
+        define_route('success', 'StripeController@success')->name('success');
+        define_route('cancel', 'StripeController@cancel')->name('cancel');
+        define_route('webhook', 'StripeController@webhook', 'post')->name('webhook');
+    });
+}
+
+/**
  * Ozopay
  */
 if (in_array('ozopay', config('atom.payment_gateway'))) {
@@ -19,7 +31,7 @@ if (in_array('ozopay', config('atom.payment_gateway'))) {
 }
 
 /**
- * Application
+ * Main
  */
 if (!config('atom.static_site')) {
     /**

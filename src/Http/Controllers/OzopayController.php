@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Http\Controllers;
 
-use App\Jobs\OzopayFulfillment;
 use App\Http\Controllers\Controller;
 
 class OzopayController extends Controller
@@ -14,24 +13,27 @@ class OzopayController extends Controller
     {
         $params = request()->input('params');
         $account = model('account')->find(request()->input('account_id'));
-        $tid = $this->getTID($account);
-        $secret = $this->getSecret($account);
-        $endpoint = $this->getEndpoint($account);
+        $credentials = $this->getCredentials($account);
+        $identifier = implode(':', array_filter([
+            data_get($params, 'job'),
+            data_get($params, 'payment_id'),
+            str()->random(6),
+        ]));
 
         $body = [
-            'address' => $params['address'] ?? null,
-            'city' => $params['city'] ?? null,
-            'country' => $params['country'] ?? null,
-            'currencyText' => $params['currency'] ?? null,
-            'customerPaymentPageText' => $tid,
-            'email' => $params['email'] ?? null,
-            'firstName' => $params['first_name'] ?? null,
+            'address' => data_get($params, 'address'),
+            'city' => data_get($params, 'city'),
+            'country' => data_get($params, 'country'),
+            'currencyText' => data_get($params, 'currency'),
+            'customerPaymentPageText' => $credentials->tid,
+            'email' => data_get($params, 'email'),
+            'firstName' => data_get($params, 'first_name'),
             'issameasbilling' => '1',
-            'lastName' => $params['last_name'] ?? null,
-            'orderDescription' => $params['order_id'] ?? null,
-            'orderDetail' => $params['order_description'] ?? null,
-            'phone' => $params['phone'] ?? null,
-            'purchaseAmount' => currency($params['amount'] ?? 0),
+            'lastName' => data_get($params, 'last_name'),
+            'orderDescription' => $identifier,
+            'orderDetail' => data_get($params, 'payment_description'),
+            'phone' => data_get($params, 'phone'),
+            'purchaseAmount' => currency(data_get($params, 'amount', 0)),
             'shipAddress' => null,
             'shipCity' => null,
             'shipCountry' => null,
@@ -39,17 +41,17 @@ class OzopayController extends Controller
             'shipLastName' => null,
             'shipState' => null,
             'shipZip' => null,
-            'state' => $params['state'] ?? null,
-            'transactionOriginatedURL' => $params['redirect_url'] ?? route('__ozopay.redirect'),
-            'zip' => $params['postcode'] ?? null,
+            'state' => data_get($params, 'state'),
+            'transactionOriginatedURL' => route('__ozopay.redirect'),
+            'zip' => data_get($params, 'postcode'),
         ];
 
-        $concat = collect(array_values($body))->push($secret)->join('');
+        $concat = collect(array_values($body))->push($credentials->secret)->join('');
         $signature = hash('sha256', $concat);
 
         return response()->json([
             'body' => array_merge($body, compact('signature')),
-            'endpoint' => $endpoint,
+            'endpoint' => app()->environment('production') ? $credentials->url : $credentials->sandbox,
         ]);
     }
 
@@ -58,11 +60,12 @@ class OzopayController extends Controller
      */
     public function redirect()
     {
-        $type = 'redirect';
         $response = request()->all();
         $status = $this->getStatus($response);
 
-        return OzopayFulfillment::dispatchNow((object)compact('type', 'status', 'response'));
+        if ($job = $this->getJob()) {
+            return ($job)::dispatchNow($status, $response);
+        }
     }
 
     /**
@@ -70,42 +73,49 @@ class OzopayController extends Controller
      */
     public function webhook()
     {
-        $type = 'webhook';
         $response = request()->all();
         $status = $this->getStatus($response);
 
-        OzopayFulfillment::dispatch((object)compact('type', 'status', 'response'));
+        if ($job = $this->getJob()) ($job)::dispatch($status, $response);
     }
 
     /**
-     * Get TID
+     * Get job
      */
-    private function getTID($account = null)
+    public function getJob()
     {
-        if ($account) return $account->setting->ozopay_tid ?? $account->setting->ozopay->tid ?? null;
-        else return site_settings('ozopay_tid', env('OZOPAY_TID'));
+        $name = request()->query('job') ?? 'Ozopay';
+        $ns = (object)[
+            'try' => 'App\\Jobs\\'.$name.'Provision',
+            'default' => 'Jiannius\\Atom\\Jobs\\'.$name.'Provision',
+        ];
+
+        if (class_exists($ns->try)) return $ns->try;
+        else if (class_exists($ns->default)) return $ns->default;
     }
 
     /**
-     * Get secret
+     * Get keys
      */
-    private function getSecret($account = null)
+    public function getCredentials($account = null)
     {
-        if ($account) return $account->setting->ozopay_secret ?? $account->setting->ozopay->secret ?? null;
-        else return site_settings('ozopay_secret', env('OZOPAY_SECRET'));
-    }
+        return (object)[
+            'tid' => $account
+                ? ($account->setting->ozopay_tid ?? $account->setting->ozopay->tid ?? null)
+                : site_settings('ozopay_tid', env('OZOPAY_TID')),
 
-    /**
-     * Get endpoint
-     */
-    private function getEndpoint($account = null)
-    {
-        if ($account) {
-            if (app()->environment('production')) return $account->setting->ozopay_url ?? $account->setting->ozopay->url ?? null;
-            else return $account->setting->ozopay_sandbox_url ?? $account->setting->ozopay->sandbox_url ?? null;
-        }
-        else if (app()->environment('production')) return site_settings('ozopay_url', env('OZOPAY_URL'));
-        else return site_settings('ozopay_sandbox_url', env('OZOPAY_SANDBOX_URL'));
+            'secret' => $account
+                ? ($account->setting->ozopay_secret ?? $account->setting->ozopay->secret ?? null)
+                : site_settings('ozopay_secret', env('OZOPAY_SECRET')),
+
+            'url' => $account
+                ? ($account->setting->ozopay_url ?? $account->setting->ozopay->url ?? null)
+                : site_settings('ozopay_url', env('OZOPAY_URL')),
+
+            'sandbox' => $account
+                ? ($account->setting->ozopay_sandbox_url ?? $account->setting->ozopay->sandbox_url ?? null)
+                : site_settings('ozopay_sandbox_url', env('OZOPAY_SANDBOX_URL')),
+        ];
     }
 
     /**

@@ -25,6 +25,14 @@ class AccountOrderItem extends Model
     }
 
     /**
+     * Get account subscription for account order items
+     */
+    public function accountSubscription()
+    {
+        return $this->hasOne(get_class(model('account_subscription')));
+    }
+
+    /**
      * Get plan price for account order item
      */
     public function planPrice()

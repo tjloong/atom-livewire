@@ -201,6 +201,7 @@ class InstallCommand extends Command
                 $table->string('number')->nullable()->unique();
                 $table->string('currency')->nullable();
                 $table->decimal('amount', 20, 2)->nullable();
+                $table->boolean('agree_tnc')->nullable();
                 $table->foreignId('account_id')->constrained()->onDelete('cascade');
                 $table->timestamps();
             });

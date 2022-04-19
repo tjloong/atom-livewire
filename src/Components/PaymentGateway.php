@@ -12,6 +12,7 @@ class PaymentGateway extends Component
     public $logos = [
         'ozopay' => ['ozopay', 'fpx', 'visa', 'master', 'tng'],
         'gkash' => ['fpx', 'tng'],
+        'stripe' => ['visa', 'master', 'apple-pay', 'google-pay'],
     ];
 
     public $titles = [

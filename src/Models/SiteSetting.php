@@ -73,11 +73,13 @@ class SiteSetting extends Model
             'gkash_mid',
             'gkash_signature_key',
             'gkash_url',
+            'gkash_sandbox_url',
         ],
         'ozopay' => [
             'ozopay_tid',
             'ozopay_secret',
             'ozopay_url',
+            'ozopay_sandbox_url',
         ],
     ];
 

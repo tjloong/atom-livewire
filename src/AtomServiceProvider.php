@@ -7,7 +7,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
-use Jiannius\Atom\Models\SiteSetting;
 use Jiannius\Atom\Console\RemoveCommand;
 use Jiannius\Atom\Console\InstallCommand;
 use Jiannius\Atom\Console\PublishCommand;
@@ -50,7 +49,7 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerStaticPublishing();
         $this->registerPublishing();
 
-        SiteSetting::configureSMTP();
+        model('site_setting')->configureSMTP();
     }
 
     /**
@@ -82,6 +81,10 @@ class AtomServiceProvider extends ServiceProvider
 
         Blade::if('root', function() {
             return auth()->user()->isAccountType('root');
+        });
+
+        Blade::if('accounttype', function($value) {
+            return auth()->user()->isAccountType($value);
         });
     }
 
