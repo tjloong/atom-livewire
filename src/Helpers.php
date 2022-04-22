@@ -238,16 +238,19 @@ function currency($num, $symbol = null, $bracket = true)
  */
 function format_date($date, $format = 'date', $tz = null)
 {
+    $tz = $tz ?? config('atom.timezone');
+
     if (!$date) return $date;
     if (!$date instanceof Carbon) $date = Carbon::parse($date);
 
-    $tz = $tz ?? config('atom.timezone');
+    $date = $date->timezone($tz);
 
-    if ($format === 'date') return $date->timezone($tz)->format('d M, Y');
-    else if ($format === 'datetime') return $date->timezone($tz)->format('d M, Y g:iA');
-    else if ($format === 'time') return $date->timezone($tz)->format('g:i A');
-    else if ($format === 'time-full') return $date->timezone($tz)->format('g:i:s A');
-    else if ($format === 'human') return $date->timezone($tz)->diffForHumans();
+    if ($format === 'carbon') return $date;
+    else if ($format === 'date') return $date->format('d M, Y');
+    else if ($format === 'datetime') return $date->format('d M, Y g:iA');
+    else if ($format === 'time') return $date->format('g:i A');
+    else if ($format === 'time-full') return $date->format('g:i:s A');
+    else if ($format === 'human') return $date->diffForHumans();
 }
 
 /**
