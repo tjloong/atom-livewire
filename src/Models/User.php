@@ -37,6 +37,15 @@ class User extends Authenticatable implements MustVerifyEmail
     const ROOT_EMAIL = 'root@jiannius.com';
 
     /**
+     * Get user home
+     */
+    public function home()
+    {
+        if ($this->isAccountType('signup')) return '/';
+        else return route('app.home');
+    }
+
+    /**
      * Get account for user
      */
     public function account()

@@ -86,6 +86,10 @@ class AtomServiceProvider extends ServiceProvider
         Blade::if('accounttype', function($value) {
             return auth()->user()->isAccountType($value);
         });
+
+        Blade::if('notaccounttype', function($value) {
+            return !auth()->user()->isAccountType($value);
+        });
     }
 
     /**

@@ -35,11 +35,13 @@ class Listing extends Component
     public function getUsersProperty()
     {
         return model('user')
-            ->when($this->account,
-                fn($q) => $q->whereHas('account', fn($q) => $q->where('account_id', $this->account->id)),
-                fn($q) => $q->whereHas('account', fn($q) => $q->whereIn('accounts.type', ['root', 'system']))
+            ->when($this->account, 
+                fn($q) => $q->where('account_id', $this->account->id),
+                fn($q) => $q->when(auth()->user()->isAccountType('root'), 
+                    fn($q) => $q->whereHas('account', fn($q) => $q->whereIn('accounts.type', ['root', 'system'])),
+                    fn($q) => $q->where('account_id', auth()->user()->account_id)
+                )
             )
-            ->when(!auth()->user()->isAccountType('root'), fn($q) => $q->where('account_id', auth()->user()->account_id))
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate(30);

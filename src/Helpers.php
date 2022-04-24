@@ -11,7 +11,12 @@ use Rap2hpoutre\FastExcel\FastExcel;
  */
 function app_route()
 {
-    return Route::has('app.home') ? route('app.home') : route('page');
+    $route = null;
+
+    if ($user = auth()->user()) $route = $user->home();
+    if (!$route) $route = Route::has('app.home') ? route('app.home') : route('page');
+
+    return $route;
 }
 
 /**

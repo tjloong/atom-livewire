@@ -64,7 +64,7 @@ class Update extends Component
      */
     public function redirectTo()
     {
-        return route('app.user.update', [$this->user->id]);
+        return route('app.user.listing');
     }
 
     /**
