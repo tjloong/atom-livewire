@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Traits;
 
-use Illuminate\Support\Str;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 
 trait HasFilters
@@ -78,16 +78,27 @@ trait HasFilters
         foreach ($filters as $key => $value) {
             if (empty($value)) continue;
 
-            $column = preg_replace('/(_from|_to)$/', '', $key);
-            $fn = Str::camel($column);
+            $column = preg_replace('/^(from_|to_)/', '', $key);
+            $fn = str()->camel($column);
 
-            if (method_exists($this, 'scope' . ucfirst($fn))) {
+            if (method_exists($this, 'scope'.ucfirst($fn))) {
                 array_push($parsed, ['column' => $column, 'value' => $value, 'scope' => $fn]);
             }
             else {
                 if ($this->isDateColumn($column) || $this->isDatetimeColumn($column)) {
-                    if (Str::endsWith($key, '_from')) array_push($parsed, ['column' => $column, 'value' => $value, 'operator' => '>=']);
-                    if (Str::endsWith($key, '_to')) array_push($parsed, ['column' => $column, 'value' => $value, 'operator' => '<=']);
+                    if (str($key)->is('from_*')) {
+                        if (Carbon::hasFormat($value, 'Y-m-d')) $value = Carbon::createFromFormat('Y-m-d', $value)->startOfDay();
+                        if (Carbon::hasFormat($value, 'Y-m-d H:i:s')) $value = Carbon::createFromFormat('Y-m-d H:i:s', $value);
+
+                        array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '>=']);
+                    }
+
+                    if (str($key)->is('to_*')) {
+                        if (Carbon::hasFormat($value, 'Y-m-d')) $value = Carbon::createFromFormat('Y-m-d', $value)->endOfDay();
+                        if (Carbon::hasFormat($value, 'Y-m-d H:i:s')) $value = Carbon::createFromFormat('Y-m-d H:i:s', $value);
+
+                        array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '<=']);
+                    }
                 }
                 else if ($this->hasColumn($column)) {
                     array_push($parsed, ['column' => $column, 'value' => $value]);

@@ -81,8 +81,8 @@
                 settings: config.settings,
 
                 init () {
-                    if (config.model) this.value = this.$wire.get(config.model)
-                    else if (config.value) this.value = config.value
+                    if (config.model) this.value = this.$wire.get(config.model) || null
+                    else if (config.value) this.value = config.value || null
                 },
     
                 open () {
@@ -94,7 +94,7 @@
                     ]).then(() => {
                         this.loading = false
                         this.show = true
-    
+
                         this.fp = flatpickr(this.$refs.datepicker, {
                             inline: true,
                             dateFormat: 'Y-m-d',
@@ -112,7 +112,7 @@
 
                 clear () {
                     this.value = null
-                    this.$dispatch('input', null)
+                    this.$dispatch('input', '')
                 },
             }))
         @endif

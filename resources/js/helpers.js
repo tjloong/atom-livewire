@@ -1,7 +1,11 @@
 const dayjs = require('@node/dayjs')
-const relativeTime = require('@node/dayjs/plugin/relativeTime')
+const dayjsUTC = require('@node/dayjs/plugin/utc')
+const dayjsRelativeTime = require('@node/dayjs/plugin/relativeTime')
 
-dayjs.extend(relativeTime)
+dayjs.extend(dayjsUTC)
+dayjs.extend(dayjsRelativeTime)
+
+global.dayjs = dayjs
 
 // format date
 global.formatDate = (value, option) => {

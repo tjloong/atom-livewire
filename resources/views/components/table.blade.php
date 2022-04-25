@@ -48,78 +48,74 @@
     </a>
 
 @else
-    <div class="flex flex-col space-y-4">
-        <div class="relative shadow rounded-lg border-b border-gray-200 w-full bg-white overflow-hidden">
-            <div class="rounded-t-lg">
-                @if (isset($header) && $header->isNotEmpty())
-                    <div class="border-b p-4 font-bold text-lg">
-                        {{ $header }}
-                    </div>
-                @endisset
+    <div class="grid gap-4">
+        <div class="relative shadow rounded-lg border w-full bg-white overflow-hidden grid divide-y">
+            @if (isset($header) && $header->isNotEmpty())
+                <div class="p-4 font-bold text-lg">
+                    {{ $header }}
+                </div>
+            @endisset
 
-                <div class="py-1 px-4 flex flex-wrap justify-between items-center">
-                    <div class="my-1">
-                    @if ($attributes->get('total'))
-                        <div class="text-gray-800">
-                            Total <span class="font-semibold">{{ $attributes->get('total') }}</span> record(s)
+            <div class="py-2 px-4 flex flex-wrap justify-between items-center gap-2">
+                <div class="text-gray-800 py-2">
+                    @if ($total = $attributes->get('total'))
+                        Total <span class="font-semibold">{{ $total }}</span> {{ str('record')->plural($total) }}
+                    @endif
+                </div>
+    
+                <div class="flex flex-wrap items-center gap-2">
+                @isset($checked)
+                    {{ $checked }}
+                @else
+                    @if ($showSearch)
+                        <div class="w-60 rounded-md border bg-gray-100 shadow flex items-center gap-2 px-3 py-0.5">
+                            <x-icon name="search" class="text-gray-500" size="xs"/>
+                            <div class="flex-grow">
+                                <input 
+                                    type="text"
+                                    wire:model.debounce.500ms="filters.search"
+                                    class="w-full bg-transparent appearance-none border-0 p-0 focus:ring-0"
+                                    placeholder="Search"
+                                >
+                            </div>
+                            <a 
+                                x-data
+                                x-show="$wire.get('filters.search')" 
+                                x-on:click.prevent="$wire.set('filters.search', null)" 
+                                class="flex items-center justify-center text-gray-800"
+                            >
+                                <x-icon name="x" size="xs"/>
+                            </a>
                         </div>
                     @endif
-                    </div>
-        
-                    <div class="flex flex-wrap items-center gap-2 my-1">
-                    @isset($checked)
-                        {{ $checked }}
-                    @else
-                        @if ($showSearch)
-                            <div class="w-60 rounded-md bg-gray-100 shadow flex items-center gap-2 px-2 py-1.5">
-                                <x-icon name="search" class="text-gray-500" size="xs"/>
-                                <div class="flex-grow">
-                                    <input 
-                                        type="text"
-                                        wire:model.debounce.500ms="filters.search"
-                                        class="w-full bg-transparent appearance-none border-0 p-0 focus:ring-0"
-                                        placeholder="Search"
-                                    >
-                                </div>
-                                <a 
-                                    x-data
-                                    x-show="$wire.get('filters.search')" 
-                                    x-on:click.prevent="$wire.set('filters.search', null)" 
-                                    class="flex items-center justify-center text-gray-800"
-                                >
-                                    <x-icon name="x" size="xs"/>
-                                </a>
-                            </div>
-                        @endif
-        
-                        @if ($showExport && $attributes->get('total'))
-                            <a
-                                x-data
-                                x-tooltip="Export"
-                                wire:click.prevent="export"
-                                class="p-1.5 rounded flex items-center justify-center text-gray-900 hover:bg-gray-100"
-                            >
-                                <x-icon name="download" size="18px" />
-                            </a>
-                        @endif
-                            
-                        @isset($filters)
-                            <a
-                                x-data
-                                x-tooltip="Filters"
-                                x-on:click.prevent="$dispatch('{{ $uid }}-drawer-open')"
-                                class="p-1.5 rounded flex items-center justify-center text-gray-900 hover:bg-gray-100"
-                            >
-                                <x-icon name="slider" size="18px" />
-                            </a>
-                        @endif
-                    @endisset
-                    </div>
+    
+                    @if ($showExport && $attributes->get('total'))
+                        <a
+                            x-data
+                            x-tooltip="Export"
+                            wire:click.prevent="export"
+                            class="p-1.5 rounded-md flex items-center justify-center text-gray-900 hover:bg-gray-100 hover:border hover:shadow"
+                        >
+                            <x-icon name="download" size="18px" />
+                        </a>
+                    @endif
+                        
+                    @isset($filters)
+                        <a
+                            x-data
+                            x-tooltip="Filters"
+                            x-on:click.prevent="$dispatch('{{ $uid }}-drawer-open')"
+                            class="p-1.5 rounded-md flex items-center justify-center text-gray-900 hover:bg-gray-100 hover:border hover:shadow"
+                        >
+                            <x-icon name="slider" size="18px" />
+                        </a>
+                    @endif
+                @endisset
                 </div>
             </div>
 
             @isset($toolbar)
-                <div class="border-t py-2 px-4">
+                <div class="py-2 px-4">
                     {{ $toolbar }}
                 </div>
             @endisset
@@ -152,14 +148,14 @@
         <x-drawer uid="{{ $uid }}-drawer">
             <x-slot name="title">Filters</x-slot>
 
-            <div class="grid gap-4">
+            <div class="grid gap-8">
                 <div>
                     {{ $filters }}
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <x-button color="gray" icon="refresh" size="sm" wire:click="resetFilters">
-                        Reset Filters
+                <div class="flex items-center justify-between gap-4">
+                    <x-button color="gray" icon="refresh" wire:click="resetFilters">
+                        {{ __('Reset') }}
                     </x-button>
                 </div>
             </div>
