@@ -137,6 +137,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('input.date', 'Jiannius\\Atom\\Components\\Input\\Date');
         Blade::component('input.file', 'Jiannius\\Atom\\Components\\Input\\File');
         Blade::component('input.slug', 'Jiannius\\Atom\\Components\\Input\\Slug');
+        Blade::component('input.agree', 'Jiannius\\Atom\\Components\\Input\\Agree');
         Blade::component('input.email', 'Jiannius\\Atom\\Components\\Input\\Email');
         Blade::component('input.field', 'Jiannius\\Atom\\Components\\Input\\Field');
         Blade::component('input.image', 'Jiannius\\Atom\\Components\\Input\\Image');
@@ -294,6 +295,7 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.site-settings.payment-gateway.stripe' => 'App\SiteSettings\PaymentGateway\Stripe',
             'atom.app.site-settings.payment-gateway.gkash' => 'App\SiteSettings\PaymentGateway\Gkash',
             'atom.app.site-settings.payment-gateway.ozopay' => 'App\SiteSettings\PaymentGateway\Ozopay',
+            'atom.app.site-settings.payment-gateway.ipay' => 'App\SiteSettings\PaymentGateway\Ipay',
         ];
 
         foreach ($components as $name => $class) {

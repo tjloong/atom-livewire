@@ -110,6 +110,28 @@
                     </div>
                 </div>
             </div>
+
+        @elseif ($provider === 'ipay')
+            <div>
+                <x-input.field x-bind:class="{ error: errors.name }" required>
+                    <x-slot name="label">{{ __('Customer Name') }}</x-slot>
+                    <input type="text" x-model="value.name" class="form-input w-full">
+                    <div x-show="errors.name" class="text-sm text-red-500 font-medium mt-1">{{ __('Customer name is required.') }}</div>
+                </x-input.field>
+        
+                <x-input.field x-bind:class="{ error: errors.email }" required>
+                    <x-slot name="label">{{ __('Email') }}</x-slot>
+                    <input type="email" x-model="value.email" class="form-input w-full">    
+                    <div x-show="errors.email" class="text-sm text-red-500 font-medium mt-1">{{ __('Customer email is required.') }}</div>
+                </x-input.field>
+        
+                <x-input.field x-bind:class="{ error: errors.phone }" required>
+                    <x-slot name="label">{{ __('Phone') }}</x-slot>
+                    <input type="text" x-model="value.phone" class="form-input w-full">                   
+                    <div x-show="errors.phone" class="text-sm text-red-500 font-medium mt-1">{{ __('Customer contact number is required.') }}</div>
+                </x-input.field>
+            </div>
+
         @endif
 
         @if ($slot->isNotEmpty())
@@ -134,14 +156,16 @@
                 validated () {
                     this.errors = {}
 
+                    let fields = []
+
                     if (this.provider === 'ozopay') {
-                        const fields = [
-                            'first_name', 'last_name', 'phone', 'email', 
-                            'address', 'city', 'postcode', 'country', 'state',
-                        ]
-                        
-                        fields.forEach(field => this.errors[field] = !Boolean(this.value[field]))
+                        fields = ['first_name', 'last_name', 'phone', 'email', 'address', 'city', 'postcode', 'country', 'state']
                     }
+                    else if (this.provider === 'ipay') {
+                        fields = ['name', 'email', 'phone']
+                    }
+                        
+                    fields.forEach(field => this.errors[field] = !Boolean(this.value[field]))
 
                     return Object.values(this.errors).filter(err => (err === true)).length <= 0
                 },
@@ -190,7 +214,7 @@
                             input.setAttribute('value', params.body[key] || '')
                             form.appendChild(input)
                         })
-    
+
                         document.body.appendChild(form)
                         form.submit()
                     }

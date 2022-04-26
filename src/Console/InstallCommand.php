@@ -688,6 +688,10 @@ class InstallCommand extends Command
             ['name' => 'ozopay_secret', 'value' => null],
             ['name' => 'ozopay_sandbox_url', 'value' => 'https://uatpayment.ozopay.com/PaymentEntry/PaymentOption'],
             ['name' => 'ozopay_url', 'value' => 'https://checkout.ozopay.com/Paymententry/PaymentOption'],
+            ['name' => 'ipay_merchant_code', 'value' => null],
+            ['name' => 'ipay_merchant_key', 'value' => null],
+            ['name' => 'ipay_url', 'value' => 'https://payment.ipay88.com.my/epayment/entry.asp'],
+            ['name' => 'ipay_query_url', 'value' => 'https://payment.ipay88.com.my/epayment/enquiry.asp'],
         ] as $setting) {
             if (DB::table('site_settings')->where('name', $setting['name'])->count()) continue;
             DB::table('site_settings')->insert($setting);

@@ -81,6 +81,12 @@ class SiteSetting extends Model
             'ozopay_url',
             'ozopay_sandbox_url',
         ],
+        'ipay' => [
+            'ipay_merchant_code',
+            'ipay_merchant_key',
+            'ipay_url',
+            'ipay_query_url',
+        ],
     ];
 
     /**

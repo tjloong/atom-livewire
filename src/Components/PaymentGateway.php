@@ -13,10 +13,11 @@ class PaymentGateway extends Component
         'ozopay' => ['ozopay', 'fpx', 'visa', 'master', 'tng'],
         'gkash' => ['fpx', 'tng'],
         'stripe' => ['visa', 'master', 'apple-pay', 'google-pay'],
+        'ipay' => ['ipay'],
     ];
 
     public $titles = [
-        'ipay88' => 'iPay88',
+        'ipay' => 'iPay88',
     ];
 
     /**
@@ -74,6 +75,20 @@ class PaymentGateway extends Component
                     site_settings('stripe_public_key', env('STRIPE_PUBLIC_KEY'))
                     && site_settings('stripe_secret_key', env('STRIPE_SECRET_KEY'))
                     && site_settings('stripe_webhook_key', env('STRIPE_WEBHOOK_KEY'))
+                );
+            }
+            else if ($provider === 'ipay') {
+                return (
+                    $account
+                    && ($account->setting->ipay_merchant_code ?? $account->setting->ipay->merchant_code)
+                    && ($account->setting->ipay_merchant_key ?? $account->setting->ipay->merchant_key)
+                    && ($account->setting->ipay_url ?? $account->setting->ipay->url)
+                    && ($account->setting->ipay_query_url ?? $account->setting->ipay->query_url)
+                ) || (
+                    site_settings('ipay_merchant_code', env('IPAY_MERCHANT_CODE'))
+                    && site_settings('ipay_merchant_key', env('IPAY_MERCHANT_KEY'))
+                    && site_settings('ipay_url', env('IPAY_URL'))
+                    && site_settings('ipay_query_url', env('IPAY_QUERY_URL'))
                 );
             }
 

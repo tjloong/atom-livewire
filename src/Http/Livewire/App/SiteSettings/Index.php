@@ -52,6 +52,8 @@ class Index extends Component
                     ? ['slug' => 'payment-gateway/gkash', 'label' => 'GKash'] : null,
                 in_array('ozopay', config('atom.payment_gateway', [])) 
                     ? ['slug' => 'payment-gateway/ozopay', 'label' => 'Ozopay'] : null,
+                in_array('ipay', config('atom.payment_gateway', []))
+                    ? ['slug' => 'payment-gateway/ipay', 'label' => 'iPay88'] : null,
             ])->filter()],
         ])->filter(fn($tab) => $tab['tabs']->count() > 0);
     }

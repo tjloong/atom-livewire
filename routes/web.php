@@ -31,13 +31,24 @@ if (in_array('ozopay', config('atom.payment_gateway'))) {
 }
 
 /**
+ * iPay88
+ */
+if (in_array('ipay', config('atom.payment_gateway'))) {
+    define_route()->prefix('__ipay')->as('__ipay.')->group(function() {
+        define_route('sign', 'IpayController@sign', 'post')->name('sign');
+        define_route('redirect', 'IpayController@redirect', 'post')->name('redirect');
+        define_route('webhook', 'IpayController@webhook', 'post')->name('webhook');
+    });
+}
+
+/**
  * Main
  */
 if (!config('atom.static_site')) {
     /**
      * Account Portal
      */
-    define_route('account', 'Account\Index')->name('account');
+    define_route('account', 'Account\Index')->middleware('auth')->name('account');
 
     /**
      * Onboarding Portal
