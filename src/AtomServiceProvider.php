@@ -167,6 +167,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::component('builder.navbar', 'Jiannius\\Atom\\Components\\Builder\\Navbar');
         Blade::component('builder.pricing', 'Jiannius\\Atom\\Components\\Builder\\Pricing');
         Blade::component('builder.testimonial', 'Jiannius\\Atom\\Components\\Builder\\Testimonial');
+        Blade::component('builder.announcements', 'Jiannius\\Atom\\Components\\Builder\\Announcements');
     }
 
     /**
@@ -289,6 +290,7 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.site-settings.seo' => 'App\SiteSettings\Seo',
             'atom.app.site-settings.analytics' => 'App\SiteSettings\Analytics',
             'atom.app.site-settings.social-media' => 'App\SiteSettings\SocialMedia',
+            'atom.app.site-settings.announcements' => 'App\SiteSettings\Announcements',
             'atom.app.site-settings.whatsapp' => 'App\SiteSettings\Whatsapp',
             'atom.app.site-settings.system.email' => 'App\SiteSettings\System\Email',
             'atom.app.site-settings.system.storage' => 'App\SiteSettings\System\Storage',

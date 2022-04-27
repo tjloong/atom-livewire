@@ -10,6 +10,8 @@ class Index extends Component
 
     protected $listeners = ['submit'];
 
+    protected $queryString = ['tab'];
+
     /**
      * Mount
      */
@@ -37,7 +39,8 @@ class Index extends Component
                 $settings->group('seo')->count() ? ['slug' => 'seo', 'label' => 'Site SEO'] : null,
                 $settings->group('analytics')->count() ? ['slug' => 'analytics'] : null,
                 $settings->group('social')->count() ? ['slug' => 'social-media'] : null,
-                $settings->group('whatsapp')->count() ? ['slug' => 'whatsapp-bubble'] : null,
+                $settings->group('whatsapp')->count() ? ['slug' => 'whatsapp', 'label' => 'Whatsapp Bubble'] : null,
+                $settings->where('name', 'announcements')->count() ? ['slug' => 'announcements'] : null,
             ])->filter()],
 
             ['group' => 'system', 'tabs' => collect([

@@ -21,6 +21,7 @@ class AlpineData extends Component
         'image-input',
         'picker-input',
         'richtext-input',
+        'sortable-input',
     ]) {
         $this->scripts = array_filter($scripts);
     }

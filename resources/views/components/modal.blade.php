@@ -1,5 +1,15 @@
 <div
-    x-data="modal"
+    x-data="{
+        show: false,
+        open () {
+            document.documentElement.classList.add('overflow-hidden')
+            this.show = true
+        },
+        close () {
+            document.documentElement.classList.remove('overflow-hidden')
+            this.show = false
+        },
+    }"
     x-on:{{ $uid }}-open.window="open()"
     x-on:{{ $uid }}-close.window="close()"
     {{ $attributes->except('class') }}
@@ -42,22 +52,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('modal', () => ({
-                show: false,
-                
-                open () {
-                    document.documentElement.classList.add('overflow-hidden')
-                    this.show = true
-                },
-                close () {
-                    document.documentElement.classList.remove('overflow-hidden')
-                    this.show = false
-                },
-            }))
-        })
-    </script>
 </div>
 

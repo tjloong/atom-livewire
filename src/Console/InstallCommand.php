@@ -534,6 +534,7 @@ class InstallCommand extends Command
             ['name' => 'whatsapp', 'value' => null],
             ['name' => 'whatsapp_bubble', 'value' => false],
             ['name' => 'whatsapp_text', 'value' => null],
+            ['name' => 'announcements', 'value' => []],
         ] as $setting) {
             if (DB::table('site_settings')->where('name', $setting['name'])->count()) continue;
             DB::table('site_settings')->insert($setting);
