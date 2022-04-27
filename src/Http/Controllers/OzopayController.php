@@ -76,7 +76,7 @@ class OzopayController extends Controller
         $response = request()->all();
         $status = $this->getStatus($response);
 
-        if ($job = $this->getJob()) ($job)::dispatch($status, $response);
+        if ($job = $this->getJob()) ($job)::dispatch($status, $response, true);
     }
 
     /**
