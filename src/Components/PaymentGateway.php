@@ -70,11 +70,11 @@ class PaymentGateway extends Component
                     $account
                     && ($account->setting->stripe_public_key ?? $account->setting->stripe->public_key)
                     && ($account->setting->stripe_secret_key ?? $account->setting->stripe->secret_key)
-                    && ($account->setting->stripe_webhook_key ?? $account->setting->stripe->webhook_key)
+                    && ($account->setting->stripe_webhook_signing_secret ?? $account->setting->stripe->webhook_signing_secret)
                 ) || (
                     site_settings('stripe_public_key', env('STRIPE_PUBLIC_KEY'))
                     && site_settings('stripe_secret_key', env('STRIPE_SECRET_KEY'))
-                    && site_settings('stripe_webhook_key', env('STRIPE_WEBHOOK_KEY'))
+                    && site_settings('stripe_webhook_signing_secret', env('STRIPE_WEBHOOK_SIGNING_SECRET'))
                 );
             }
             else if ($provider === 'ipay') {

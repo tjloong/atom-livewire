@@ -42,6 +42,17 @@ if (in_array('ipay', config('atom.payment_gateway'))) {
 }
 
 /**
+ * Gkash
+ */
+if (in_array('gkash', config('atom.payment_gateway'))) {
+    define_route()->prefix('__gkash')->as('__gkash.')->group(function() {
+        define_route('sign', 'GkashController@sign', 'post')->name('sign');
+        define_route('redirect', 'GkashController@redirect', 'post')->name('redirect');
+        define_route('webhook', 'GkashController@webhook', 'post')->name('webhook');
+    });
+}
+
+/**
  * Main
  */
 if (!config('atom.static_site')) {

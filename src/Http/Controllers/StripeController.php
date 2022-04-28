@@ -15,16 +15,17 @@ class StripeController extends Controller
         $account = model('account')->find(request()->input('account_id'));
         $keys = $this->getKeys($account);
         $mode = $this->hasSubscriptionItems(data_get($params, 'items')) ? 'subscription' : 'payment';
-        $qs = [
+        $metadata = [
             'job' => data_get($params, 'job'), 
             'payment_id' => data_get($params, 'payment_id'),
+            'account_id' => optional($account)->id,
         ];
 
         \Stripe\Stripe::setApiKey($keys->secret_key);
         
         $session = \Stripe\Checkout\Session::create([
             'line_items' => collect(data_get($params, 'items', []))->map(function($item) {
-                $data = [];
+                $data = ['quantity' => data_get($item, 'qty')];
 
                 if ($stripePriceId = data_get($item, 'stripe_price_id')) {
                     $data['price'] = $stripePriceId;
@@ -37,12 +38,13 @@ class StripeController extends Controller
                     ];
                 }
 
-                return array_merge($data, ['quantity' => data_get($item, 'qty')]);
+                return $data;
             })->all(),
             'mode' => $mode,
+            'metadata' => $metadata,
             'customer_email' => data_get($params, 'email'),
-            'success_url' => route('__stripe.success', $qs),
-            'cancel_url' => route('__stripe.cancel', $qs),
+            'success_url' => route('__stripe.success', $metadata),
+            'cancel_url' => route('__stripe.cancel', $metadata),
         ]);
 
         return response()->json([
@@ -57,7 +59,11 @@ class StripeController extends Controller
     public function success()
     {
         if ($job = $this->getJob()) {
-            return ($job)::dispatchNow('success', ['payment_id' => request()->query('payment_id')]);
+            return ($job)::dispatchNow([
+                'status' => 'success', 
+                'provider' => 'stripe',
+                'pay_response' => request()->query(),
+            ]);
         }
     }
 
@@ -67,7 +73,11 @@ class StripeController extends Controller
     public function cancel()
     {
         if ($job = $this->getJob()) {
-            return ($job)::dispatchNow('failed', ['payment_id' => request()->query('payment_id')]);
+            return ($job)::dispatchNow([
+                'status' => 'failed', 
+                'provider' => 'stripe',
+                'pay_response' => request()->query(),
+            ]);
         }
     }
 
@@ -76,21 +86,45 @@ class StripeController extends Controller
      */
     public function webhook()
     {
-        // $type = 'webhook';
-        // $response = request()->all();
-        // $status = $this->getStatus($response);
+        $payload = @file_get_contents('php://input');
+        $metadata = data_get(json_decode($payload), 'data.object.metadata');
+        $account = model('account')->find(data_get($metadata, 'account_id'));
+        $keys = $this->getKeys($account);
+        $job = $this->getJob($metadata);
 
-        // OzopayFulfillment::dispatch((object)compact('type', 'status', 'response'));
+        if ($keys->webhook_signing_secret) {
+            $sigheader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+
+            try {
+                $event = \Stripe\Webhook::constructEvent($payload, $sigheader, $keys->webhook_signing_secret);
+            } catch(\Stripe\Exception\SignatureVerificationException $e) {
+                abort(400, 'Stripe webhook error while validating signature.');
+            }
+        }
+        else abort(400, 'No webhook signing secret.');
+
+        if ($job) {
+            ($job)::dispatch([
+                'webhook' => true,
+                'status' => $this->getStatus($event), 
+                'provider' => 'stripe',
+                'pay_response' => json_decode($payload),
+            ]);
+
+            return response(200);
+        }
+        else abort(500, 'No stripe provisioning job.');
     }
 
     /**
      * Get job
      */
-    public function getJob()
+    public function getJob($metadata = null)
     {
+        $name = data_get($metadata, 'job') ?? request()->query('job') ?? 'Stripe';
         $ns = (object)[
-            'try' => 'App\\Jobs\\'.request()->query('job').'Provision',
-            'default' => 'Jiannius\\Atom\\Jobs\\'.request()->query('job').'Provision',
+            'try' => 'App\\Jobs\\'.$name.'Provision',
+            'default' => 'Jiannius\\Atom\\Jobs\\'.$name.'Provision',
         ];
 
         if (class_exists($ns->try)) return $ns->try;
@@ -109,12 +143,25 @@ class StripeController extends Controller
 
             'secret_key' => $account
                 ? ($account->setting->stripe_secret_key ?? $account->setting->stripe->secret_key ?? null)
-                : site_settings('stripe_secret_key', env('STRIPE_PUBLIC_KEY')),
+                : site_settings('stripe_secret_key', env('STRIPE_SECRET_KEY')),
 
-            'webhook_key' => $account
-                ? ($account->setting->stripe_webhook_key ?? $account->setting->stripe->webhook_key ?? null)
-                : site_settings('stripe_webhook_key', env('STRIPE_PUBLIC_KEY')),
+            'webhook_signing_secret' => $account
+                ? ($account->setting->stripe_webhook_signing_secret ?? $account->setting->stripe->webhook_signing_secret ?? null)
+                : site_settings('stripe_webhook_signing_secret', env('STRIPE_WEBHOOK_SIGNING_SECRET')),
         ];
+    }
+
+    /**
+     * Get status
+     */
+    public function getStatus($event)
+    {
+        if ($event->type === 'checkout.session.completed') {
+            if ($event->data->object->payment_status === 'paid') return 'success';
+            else return 'processing';
+        }
+        else if ($event->type === 'checkout.session.async_payment_succeeded') return 'success';
+        else return 'failed';
     }
 
     /**

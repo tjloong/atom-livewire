@@ -236,6 +236,7 @@ class InstallCommand extends Command
                 $table->json('data')->nullable();
                 $table->foreignId('account_id')->constrained()->onDelete('cascade');
                 $table->foreignId('account_order_id')->nullable()->constrained()->onDelete('set null');
+                $table->timestamp('provisioned_at')->nullable();
                 $table->timestamps();
             });
 
@@ -534,7 +535,7 @@ class InstallCommand extends Command
             ['name' => 'whatsapp', 'value' => null],
             ['name' => 'whatsapp_bubble', 'value' => false],
             ['name' => 'whatsapp_text', 'value' => null],
-            ['name' => 'announcements', 'value' => []],
+            ['name' => 'announcements', 'value' => json_encode([])],
         ] as $setting) {
             if (DB::table('site_settings')->where('name', $setting['name'])->count()) continue;
             DB::table('site_settings')->insert($setting);
@@ -680,7 +681,7 @@ class InstallCommand extends Command
             ['name' => 'do_spaces_cdn', 'value' => null],
             ['name' => 'stripe_public_key', 'value' => null],
             ['name' => 'stripe_secret_key', 'value' => null],
-            ['name' => 'stripe_webhook_key', 'value' => null],
+            ['name' => 'stripe_webhook_signing_secret', 'value' => null],
             ['name' => 'gkash_mid', 'value' => null],
             ['name' => 'gkash_signature_key', 'value' => null],
             ['name' => 'gkash_sandbox_url', 'value' => 'https://api-staging.pay.asia/api/PaymentForm.aspx'],

@@ -70,15 +70,7 @@
                     <x-slot:header>{{ __('Payment Method') }}</x-slot:header>
                     <x-payment-gateway callback="submit">
                         <div class="grid gap-4">
-                            <x-input.checkbox wire:model="accountOrder.agree_tnc">
-                                <div class="grid text-gray-500">
-                                    <div>{{ __('I have read and agreed to the app\'s terms & conditions and privacy policy.') }}</div>
-                                    <div class="flex items-center gap-2">
-                                        <a href="{{ route('page', ['terms']) }}" target="_blank">{{ __('Terms & Conditions') }}</a> | 
-                                        <a href="{{ route('page', ['privacy']) }}" target="_blank">{{ __('Privacy Policy') }}</a>
-                                    </div>
-                                </div>
-                            </x-input.checkbox>
+                            <x-input.agree wire:model="accountOrder.agree_tnc" tnc/>
     
                             @if ($errors->any())
                                 <x-alert :errors="$errors->all()"/>

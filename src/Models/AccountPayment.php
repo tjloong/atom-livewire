@@ -39,6 +39,9 @@ class AccountPayment extends Model
      */
     public function provision()
     {
+        if ($this->status !== 'success') return;
+        if ($this->provisioned_at) return;
+
         foreach ($this->accountOrder->accountOrderItems as $item) {
             if (!$item->accountSubscription) {
                 $price = $item->planPrice;
@@ -76,5 +79,7 @@ class AccountPayment extends Model
                 ]));
             }
         }
+
+        $this->fill(['provisioned_at' => now()])->save();
     }
 }

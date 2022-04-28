@@ -26,7 +26,7 @@
                             </x-input.password>
                         </div>
         
-                        <div class="grid gap-4 text-sm">
+                        <div class="grid gap-4">
                             <div>
                                 <x-input.agree wire:model="form.agree_tnc" tnc/>
                             </div>

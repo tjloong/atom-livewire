@@ -16,7 +16,7 @@ class Stripe extends Component
         return [
             'settings.stripe_public_key' => 'required',
             'settings.stripe_secret_key' => 'required',
-            'settings.stripe_webhook_key' => 'required',
+            'settings.stripe_webhook_signing_secret' => 'required',
         ];
     }
 
@@ -28,7 +28,7 @@ class Stripe extends Component
         return [
             'settings.stripe_public_key.required' => __('Public key is required.'),
             'settings.stripe_secret_key.required' => __('Secret key is required.'),
-            'settings.stripe_webhook_key.required' => __('Webhook key is required.'),
+            'settings.stripe_webhook_signing_secret.required' => __('Webhook signing secret is required.'),
         ];
     }
 

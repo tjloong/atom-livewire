@@ -11,8 +11,8 @@
                 {{ __('Stripe Secret Key') }}
             </x-input.text>
         
-            <x-input.text wire:model.defer="settings.stripe_webhook_key" :error="$errors->first('settings.stripe_webhook_key')" required>
-                {{ __('Stripe Webhook Key') }}
+            <x-input.text wire:model.defer="settings.stripe_webhook_signing_secret" :error="$errors->first('settings.stripe_webhook_signing_secret')" required>
+                {{ __('Stripe Webhook Signing Secret') }}
             </x-input.text>
         </div>
 

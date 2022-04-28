@@ -14,7 +14,8 @@ class BillingProvision implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $status;
-    public $params;
+    public $provider;
+    public $response;
     public $isWebhook;
 
     /**
@@ -22,11 +23,12 @@ class BillingProvision implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($status, $params = [], $isWebhook = false)
+    public function __construct($params)
     {
-        $this->status = $status;
-        $this->params = $params;
-        $this->isWebhook = $isWebhook;
+        $this->status = data_get($params, 'status');
+        $this->provider = data_get($params, 'provider');
+        $this->response = data_get($params, 'pay_response');
+        $this->isWebhook = data_get($params, 'webhook', false);
     }
 
     /**
@@ -36,16 +38,37 @@ class BillingProvision implements ShouldQueue
      */
     public function handle()
     {
-        $payment = model('account_payment')->findOrFail(data_get($this->params, 'payment_id'));
+        $accountPayment = $this->getAccountPayment();
 
-        if ($this->isWebhook || !$payment->status || $payment->status === 'draft') {
-            $payment->status = $this->status;
-            $payment->data = array_merge((array)$payment->data, ['response' => $this->params]);
-            $payment->save();
+        if (
+            ($this->isWebhook && (
+                $this->status !== 'processing'
+                || ($this->status === 'processing' && ($accountPayment->status === 'draft' || !$accountPayment->status))
+            ))
+            || (!$this->isWebhook && ($accountPayment->status === 'draft' || !$accountPayment->status))
+        ) {
+            $accountPayment->fill([
+                'status' => $this->status,
+                'data' => array_merge((array)$accountPayment->data, ['pay_response' => $this->response]),
+            ])->save();
         }
 
-        if ($payment->status === 'success') $payment->provision();
+        $accountPayment->provision();
 
         if (!$this->isWebhook) return redirect()->route('billing', ['payment_status' => $this->status]);
+    }
+
+    /**
+     * Get account payment
+     */
+    public function getAccountPayment()
+    {
+        if ($this->provider === 'stripe') {
+            $paymentId = $this->isWebhook
+                ? data_get($this->response, 'data.object.metadata.payment_id')
+                : data_get($this->response, 'payment_id');
+        }
+
+        return model('account_payment')->findOrFail($paymentId);
     }
 }

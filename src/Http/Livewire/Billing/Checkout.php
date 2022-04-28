@@ -123,7 +123,7 @@ class Checkout extends Component
                 ]),
             ]);
 
-            $payment->data = compact('request');
+            $payment->data = ['pay_request' => $request];
             $payment->save();
 
             return $request;

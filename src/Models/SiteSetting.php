@@ -67,7 +67,7 @@ class SiteSetting extends Model
         'stripe' => [
             'stripe_public_key', 
             'stripe_secret_key', 
-            'stripe_webhook_key',
+            'stripe_webhook_signing_secret',
         ],
         'gkash' => [
             'gkash_mid',
