@@ -114,6 +114,9 @@ function site_settings($name, $default = null)
     }
 }
 
+/**
+ * Export collection to excel
+ */
 function export_to_excel($filename, $collection, $iterator = null)
 {
     $dir = storage_path('export');
@@ -206,6 +209,20 @@ function locale_url($url)
 
     if ($locale === 'en') return $url;
     else return '/' . $locale . str_replace($locale, '', $url);
+}
+
+/**
+ * Mask email address
+ */
+function mask_email($email)
+{
+    $split = explode('@', $email);
+    $head = str($split[0])->mask('*', 1, strlen($split[0]) - 2);
+    $tailsplit = explode('.', $split[1]);
+    $tailhead = array_shift($tailsplit);
+    $tail = implode('.', array_merge([str($tailhead)->mask('*', 1)], $tailsplit));
+
+    return implode('@', [$head, $tail]);
 }
 
 /**
