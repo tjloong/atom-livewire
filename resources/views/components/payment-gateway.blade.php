@@ -177,8 +177,13 @@
 
                     if (this.callback) {
                         this.$wire.call(this.callback, { ...this.value, provider: this.provider })
-                            .then(res => this.value = { ...this.value, ...res })
-                            .then(() => this.sign())
+                            .then(res => {
+                                if (res) {
+                                    this.value = { ...this.value, ...res }
+                                    this.sign()
+                                }
+                                else this.loading = false
+                            })
                             .catch(() => this.loading = false)
                     }
                     else this.sign().catch(() => this.loading = false)

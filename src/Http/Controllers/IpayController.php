@@ -56,11 +56,9 @@ class IpayController extends Controller
      */
     public function webhook()
     {
-        // $type = 'webhook';
-        // $response = request()->all();
-        // $status = $this->getStatus($response);
-
-        // OzopayFulfillment::dispatch((object)compact('type', 'status', 'response'));
+        if ($job = $this->getJob()) {
+            return ($job)::dispatch($this->getStatus(), request()->all(), true);
+        }
     }
 
     /**
