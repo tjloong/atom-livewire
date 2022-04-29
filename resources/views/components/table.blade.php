@@ -115,8 +115,21 @@
             </div>
 
             @isset($toolbar)
-                <div class="py-2 px-4">
-                    {{ $toolbar }}
+                <div class="py-2 px-4 flex items-center justify-between gap-2">
+                    <div>
+                        {{ $toolbar }}
+                    </div>
+
+                    @if ($toolbar->attributes->get('trashed'))
+                        <x-button color="red" icon="trash-alt" inverted size="sm" x-on:click="$dispatch('confirm', {
+                            title: '{{ __('Empty Trashed') }}',
+                            message: '{{ __('Are you sure to clear all trashed records?') }}',
+                            type: 'warning',
+                            onConfirmed: () => $wire.emptyTrashed().then(() => location.reload()),
+                        })">
+                            Empty Trashed
+                        </x-button>
+                    @endif
                 </div>
             @endisset
         

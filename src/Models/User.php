@@ -128,6 +128,35 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Scope for status
+     * 
+     * @param Builder $query
+     * @param mixed $statuses
+     * @return Builder
+     */
+    public function scopeStatus($query, $statuses)
+    {
+        $statuses = (array)$statuses;
+
+        if (in_array('trashed', $statuses)) $query->onlyTrashed();
+
+        return $query->where(function ($q) use ($statuses) { 
+            foreach ($statuses as $status) {
+                if ($status === 'blocked') $q->orWhere(fn($q) => $q->whereNotNull('blocked_at')->whereRaw('blocked_at <= now()'));
+                else if ($status === 'inactive') $q->orWhere(fn($q) => $q->whereNull('activated_at')->orWhereRaw('activated_at > now()'));
+                else if ($status === 'active') {
+                    $q->orWhere(fn($q) => 
+                        $q
+                        ->where(fn($q) => $q->whereNull('deleted_at')->orWhereRaw('deleted_at > now()'))
+                        ->where(fn($q) => $q->whereNull('blocked_at')->orWhereRaw('blocked_at > now()'))
+                        ->whereRaw('activated_at <= now()')
+                    );
+                }
+            }
+        });
+    }
+
+    /**
      * Get status attribute
      * 
      * @return string

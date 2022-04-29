@@ -1,11 +1,11 @@
 <div class="max-w-screen-md mx-auto">
-    @route('app.user.listing')
+    @if ($this->isFullpage)
         <x-page-header :title="__('Users')">
             <x-button icon="plus" :href="route('app.user.create')">
                 {{ __('New User') }}
             </x-button>
         </x-page-header>
-    @endroute
+    @endif
 
     <x-table :total="$this->users->total()" :links="$this->users->links()">
         @if ($account)
@@ -17,6 +17,16 @@
                     </x-button>
                 </div>
             </x-slot:header>
+        @endif
+
+        @if ($this->tabs)
+            <x-slot:toolbar :trashed="data_get($filters, 'status') === 'trashed'">
+                <x-tabs wire:model="filters.status">
+                @foreach ($this->tabs as $item)
+                    <x-tabs item :name="data_get($item, 'slug')">{{ data_get($item, 'label') }}</x-tabs>
+                @endforeach
+                </x-tabs>
+            </x-slot:toolbar>
         @endif
 
         <x-slot:head>

@@ -1,32 +1,49 @@
 <div class="max-w-screen-sm mx-auto">
     <x-page-header :title="$user->name" back>
         @if ($user->id !== auth()->id())
-            @if ($user->status === 'blocked')
-                <x-button color="gray" icon="play" x-on:click="$dispatch('confirm', {
-                    title: '{{ __('Unblock User') }}',
-                    message: '{{ __('Are you sure to unblock this user?') }}',
-                    onConfirmed: () => $wire.unblock(),
-                })">
-                    Unblock
-                </x-button>
-            @else
-                <x-button inverted color="red" icon="block" x-on:click="$dispatch('confirm', {
-                    title: '{{ __('Block User') }}',
-                    message: '{{ __('Are you sure to block this user?') }}',
-                    onConfirmed: () => $wire.block(),
-                })">
-                    Block
-                </x-button>
-            @endif
-
-            <x-button inverted icon="trash" color="red" x-on:click="$dispatch('confirm', {
-                title: '{{ __('Delete User') }}',
-                message: '{{ __('Are you sure to delete this user?') }}',
-                type: 'error',
-                onConfirmed: () => $wire.delete(),    
-            })">
-                Delete
-            </x-button>
+            <div class="flex items-center gap-2">
+                @if ($user->status === 'trashed')
+                    <x-button color="gray" icon="trash-arrow-up" wire:click="restore">
+                        {{ __('Restore') }}
+                    </x-button>
+    
+                    <x-button color="red" icon="trash" inverted x-on:click="$dispatch('confirm', {
+                        title: '{{ __('Force Delete User') }}',
+                        message: '{{ __('This will permanently delete the user. Are you sure?') }}',
+                        type: 'error',
+                        onConfirmed: () => $wire.delete(true),
+                    })">
+                        {{ __('Force Delete') }}
+                    </x-button>
+                @else
+                    @if ($user->status === 'blocked')
+                        <x-button color="gray" icon="play" x-on:click="$dispatch('confirm', {
+                            title: '{{ __('Unblock User') }}',
+                            message: '{{ __('Are you sure to unblock this user?') }}',
+                            onConfirmed: () => $wire.unblock(),
+                        })">
+                            Unblock
+                        </x-button>
+                    @else
+                        <x-button inverted color="red" icon="block" x-on:click="$dispatch('confirm', {
+                            title: '{{ __('Block User') }}',
+                            message: '{{ __('Are you sure to block this user?') }}',
+                            onConfirmed: () => $wire.block(),
+                        })">
+                            Block
+                        </x-button>
+                    @endif
+    
+                    <x-button inverted icon="trash" color="red" x-on:click="$dispatch('confirm', {
+                        title: '{{ __('Delete User') }}',
+                        message: '{{ __('Are you sure to delete this user?') }}',
+                        type: 'error',
+                        onConfirmed: () => $wire.delete(),    
+                    })">
+                        Delete
+                    </x-button>
+                @endif
+            </div>
         @endif
     </x-page-header>
 

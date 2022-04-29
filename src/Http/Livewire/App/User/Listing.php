@@ -4,21 +4,29 @@ namespace Jiannius\Atom\Http\Livewire\App\User;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Jiannius\Atom\Traits\BaseComponent;
 
 class Listing extends Component
 {
+    use BaseComponent;
     use WithPagination;
 
     public $account;
     public $sortBy = 'name';
     public $sortOrder = 'asc';
-    public $filters = ['search' => ''];
+    public $filters = [
+        'search' => '',
+        'status' => 'all',
+    ];
 
     protected $queryString = [
         'page' => ['except' => 1],
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
-        'filters' => ['except' => ['search' => '']], 
+        'filters' => ['except' => [
+            'search' => '',
+            'status' => 'all', 
+        ]], 
     ];
 
     /**
@@ -30,9 +38,22 @@ class Listing extends Component
     }
 
     /**
-     * Get users property
+     * Get tabs property
      */
-    public function getUsersProperty()
+    public function getTabsProperty()
+    {
+        $tabs = collect([['slug' => 'all', 'label' => 'All']]);
+        $trashed = (clone $this->query)->status('trashed')->count();
+
+        if ($trashed) $tabs->push(['slug' => 'trashed', 'label' => __('Trashed').'('.$trashed.')']);
+
+        return $tabs->count() > 1 ? $tabs : null;
+    }
+
+    /**
+     * Get query property
+     */
+    public function getQueryProperty()
     {
         return model('user')
             ->when($this->account, 
@@ -43,8 +64,15 @@ class Listing extends Component
                 )
             )
             ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(30);
+            ->orderBy($this->sortBy, $this->sortOrder);
+    }
+
+    /**
+     * Get users property
+     */
+    public function getUsersProperty()
+    {
+        return $this->query->paginate(30);
     }
 
     /**
@@ -53,6 +81,17 @@ class Listing extends Component
     public function updatedFilters()
     {
         $this->resetPage();
+    }
+
+    /**
+     * Empty trashed
+     */
+    public function emptyTrashed()
+    {
+        (clone $this->query)->onlyTrashed()->forceDelete();
+
+        $this->dispatchBrowserEvent('toast', ['message' => 'Trashed Cleared', 'type' => 'success']);
+        $this->reset('filters');
     }
 
     /**

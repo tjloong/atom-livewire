@@ -15,7 +15,10 @@ class Update extends Component
      */
     public function mount($user)
     {
-        $this->user = model('user')->findOrFail($user);
+        $this->user = model('user')
+            ->withTrashed()
+            ->findOrFail($user);
+
         breadcrumbs()->push($this->user->name);
     }
 
@@ -50,11 +53,24 @@ class Update extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete($force = false)
     {
-        $this->user->delete();
+        if ($force) $this->user->forceDelete();
+        else $this->user->delete();
 
         session()->flash('flash', 'User deleted');
+
+        return redirect($this->redirectTo());
+    }
+
+    /**
+     * Restore
+     */
+    public function restore()
+    {
+        $this->user->restore();
+
+        session()->flash('flash', 'User Restored');
 
         return redirect($this->redirectTo());
     }
