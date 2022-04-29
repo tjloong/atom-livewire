@@ -6,15 +6,14 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    public $tab;
     public $page;
     
     /**
      * Mount
      */
-    public function mount($id)
+    public function mount($page)
     {
-        $this->page = model('page')->findOrFail($id);
+        $this->page = model('page')->findOrFail($page);
 
         breadcrumbs()->push($this->page->name);
     }
