@@ -46,7 +46,7 @@ class Checkout extends Component
      */
     public function getTotalProperty()
     {
-        $currency = $this->cart->first()['currency'];
+        $currency = data_get($this->cart->first(), 'currency');
         $amount = $this->cart->sum('grand_total');
 
         return compact('currency', 'amount');
@@ -55,24 +55,24 @@ class Checkout extends Component
     /**
      * Add to cart
      */
-    public function addToCart($planId, $priceId)
+    public function addToCart($planId, $planPriceId)
     {
         if (!$this->cart) $this->cart = collect([]);
 
         $plan = model('plan')->where('slug', $planId)->where('is_active', true)->firstOrFail();
-        $price = $plan->prices()->findOrFail($priceId);
-        $trial = $plan->trial && !auth()->user()->account->hasPlanPrice($price->id) ? $plan->trial : false;
-        $discount = $trial ? $price->amount : $price->discount;
+        $planPrice = $plan->planPrices()->findOrFail($planPriceId);
+        $trial = $plan->trial && !auth()->user()->account->hasPlanPrice($planPrice->id) ? $plan->trial : false;
+        $discount = $trial ? $planPrice->amount : $planPrice->discount;
         
         $this->cart->push([
             'name' => $plan->payment_description,
-            'currency' => $price->currency,
-            'amount' => $price->amount,
+            'currency' => $planPrice->currency,
+            'amount' => $planPrice->amount,
             'discounted_amount' => $discount,
-            'grand_total' => $price->amount - ($discount ?? 0),
+            'grand_total' => $planPrice->amount - ($discount ?? 0),
             'trial' => $trial,
-            'recurring' => $price->recurring,
-            'plan_price_id' => $price->id,
+            'recurring' => $planPrice->recurring,
+            'plan_price_id' => $planPrice->id,
         ]);
     }
 
@@ -84,10 +84,11 @@ class Checkout extends Component
         $this->resetValidation();
         $this->validate();
 
-        $this->accountOrder->currency = $this->total['currency'];
-        $this->accountOrder->amount = $this->total['amount'];
-        $this->accountOrder->account_id = auth()->user()->account_id;
-        $this->accountOrder->save();
+        $this->accountOrder->fill([
+            'currency' => data_get($this->total, 'currency'),
+            'amount' => data_get($this->total, 'amount'),
+            'account_id' => auth()->user()->account_id,
+        ])->save();
 
         foreach ($this->cart as $cartItem) {
             $orderItem = collect($cartItem)->only(['currency', 'amount', 'discounted_amount', 'grand_total', 'plan_price_id'])->all();
@@ -98,7 +99,7 @@ class Checkout extends Component
             $this->accountOrder->accountOrderItems()->create($orderItem);
         }
 
-        $payment = $this->accountOrder->accountPayments()->create([
+        $accountPayment = $this->accountOrder->accountPayments()->create([
             'currency' => $this->accountOrder->currency,
             'amount' => $this->accountOrder->amount,
             'status' => $this->accountOrder->amount > 0 ? 'draft' : 'success',
@@ -106,14 +107,14 @@ class Checkout extends Component
         ]);
 
         // payment gateway data
-        if ($payment->amount > 0 && $data) {
+        if ($accountPayment->amount > 0 && $data) {
             $request = array_merge($data, [
                 'job' => 'Billing',
                 'email' => auth()->user()->account->email,
-                'payment_id' => $payment->id,
+                'payment_id' => $accountPayment->id,
                 'payment_description' => 'Payment for order #'.$this->accountOrder->number,
-                'currency' => $payment->currency,
-                'amount' => currency($payment->amount),
+                'currency' => $accountPayment->currency,
+                'amount' => currency($accountPayment->amount),
                 'items' => $this->accountOrder->accountOrderItems->map(fn($item) => [
                     'name' => $item->name,
                     'amount' => currency($item->grand_total),
@@ -123,13 +124,14 @@ class Checkout extends Component
                 ]),
             ]);
 
-            $payment->data = ['pay_request' => $request];
-            $payment->save();
+            $accountPayment->fill([
+                'data' => ['pay_request' => $request],
+            ])->save();
 
             return $request;
         }
         // no payment amount, provision straight away
-        else $payment->provision();
+        else $accountPayment->provision();
         
         if (auth()->user()->account->status === 'onboarded') return redirect()->route(app_route());
         else return redirect()->route('onboarding');

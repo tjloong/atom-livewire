@@ -22,9 +22,9 @@ class Plan extends Model
     ];
 
     /**
-     * Get price for plan
+     * Get plan price for plan
      */
-    public function prices()
+    public function planPrices()
     {
         return $this->hasMany(get_class(model('plan_price')));
     }

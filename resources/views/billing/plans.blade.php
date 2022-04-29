@@ -8,18 +8,23 @@
             <x-builder.pricing
                 :plan="$plan"
                 :prices="
-                    $plan->prices
-                        ->map(fn($price) => $price->append('recurring'))
-                        ->map(fn($price) => array_merge($price->toArray(), [
-                            'is_subscribed' => $this->subscriptions->where('plan_price_id', $price->id)->count(),
-                        ]))->toArray()
+                    $plan->planPrices
+                        ->map(fn($planPrice) => $planPrice->append('recurring'))
+                        ->map(fn($planPrice) => array_merge($planPrice->toArray(), [
+                            'is_subscribed' => $this->subscriptions->where('plan_price_id', $planPrice->id)->count() > 0,
+                        ]))
+                        ->toArray()
                 "
                 :trial="$this->subscriptions->count() ? false : $plan->trial"
             >
                 <x-slot:cta>
-                    @foreach ($plan->prices as $price)
-                        <div x-show="variant === '{{ $price->recurring }}'">
-                            @if ($subscription = $this->subscriptions->where('plan_price_id', $price->id)->first())
+                    @foreach ($plan->planPrices as $planPrice)
+                        <div x-show="variant === '{{ $planPrice->recurring }}'">
+                            @if ($subscription = $this->subscriptions
+                                ->where('plan_price_id', $planPrice->id)
+                                ->sortBy('created_at')
+                                ->last()
+                            )
                                 <div class="flex items-center justify-between gap-4">
                                     <div class="text-gray-500 flex items-center gap-2">
                                         <x-icon name="check" size="xs"/> 
@@ -27,7 +32,7 @@
                                     </div>
 
                                     @if ($subscription->expired_at)
-                                        <x-button :href="route('billing.checkout', ['plan' => $plan->slug, 'price' => $price->id])">
+                                        <x-button :href="route('billing.checkout', ['plan' => $plan->slug, 'price' => $planPrice->id])">
                                             Renew
                                         </x-button>
                                     @endif
@@ -36,7 +41,7 @@
                                 <x-button 
                                     block
                                     size="md" 
-                                    :href="route('billing.checkout', ['plan' => $plan->slug, 'price' => $price->id])"
+                                    :href="route('billing.checkout', ['plan' => $plan->slug, 'price' => $planPrice->id])"
                                 >
                                     Subscribe
                                 </x-button>

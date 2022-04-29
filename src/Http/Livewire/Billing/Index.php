@@ -11,17 +11,34 @@ class Index extends Component
      */
     public function mount()
     {
-        if (!$this->subscriptions->count()) return redirect()->route('billing.plans');
+        if (!$this->plans->count()) return redirect()->route('billing.plans');
     }
 
     /**
-     * Get subscriptions property
+     * Get plans property
      */
-    public function getSubscriptionsProperty()
+    public function getPlansProperty()
     {
-        return auth()->user()->account->accountSubscriptions()
-            ->status('active')
-            ->get();
+        $query = auth()->user()->account->accountSubscriptions()->status(['active', 'pending']);
+
+        return model('plan')->whereHas('planPrices', fn($q) => 
+            $q->whereIn(
+                'plan_prices.id', 
+                (clone $query)->select('plan_price_id')->get()->pluck('plan_price_id')->unique()->all()
+            )
+        )->get()->map(function($plan) use ($query) {
+            $subscriptions = (clone $query)
+                ->whereHas('planPrice', fn($q) => $q->where('plan_id', $plan->id))
+                ->orderBy('created_at')
+                ->get();
+
+            $plan->is_trial = $subscriptions->count() === 1 && $subscriptions->first()->is_trial;
+            $plan->expired_at = $subscriptions->where('expired_at', null)->count()
+                ? null
+                : $subscriptions->last()->expired_at;
+
+            return $plan;
+        });
     }
 
     /**

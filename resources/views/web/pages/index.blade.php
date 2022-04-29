@@ -72,18 +72,20 @@
                     @foreach ($this->plans as $plan)
                         <x-builder.pricing 
                             :plan="$plan->toArray()" 
-                            :prices="$plan->prices->map(fn($price) => $price->append('recurring'))->toArray()"
+                            :prices="$plan->planPrices
+                                ->map(fn($planPrice) => $planPrice->append('recurring'))
+                                ->toArray()"
                             :trial="$plan->trial"
                         >
                             <x-slot:cta>
-                                @foreach ($plan->prices as $price)
+                                @foreach ($plan->planPrices as $planPrice)
                                     <x-button 
-                                        x-show="variant === '{{ $price->recurring }}'"
+                                        x-show="variant === '{{ $planPrice->recurring }}'"
                                         block
                                         :href="auth()->user() && Route::has('billing')
                                             ? route('billing')
                                             : (Route::has('register') 
-                                                ? route('register', ['ref' => 'pricing', 'plan' => $plan->slug, 'price' => $price->id])
+                                                ? route('register', ['ref' => 'pricing', 'plan' => $plan->slug, 'price' => $planPrice->id])
                                                 : '#'
                                             )
                                         " 
