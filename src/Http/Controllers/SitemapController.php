@@ -2,8 +2,6 @@
 
 namespace Jiannius\Atom\Http\Controllers;
 
-use Jiannius\Atom\Models\Blog;
-use Jiannius\Atom\Models\Page;
 use App\Http\Controllers\Controller;
 
 class SitemapController extends Controller
@@ -38,12 +36,16 @@ class SitemapController extends Controller
     {
         $sitemap = ['/' => 'monthly'];
 
-        foreach (Blog::status('published')->latest()->take(500)->get() as $blog) {
-            $sitemap[route('blogs', [$blog->slug])] = 'monthly';
+        if (enabled_module('blogs')) {
+            foreach (model('blog')->status('published')->latest()->take(500)->get() as $blog) {
+                $sitemap[route('page', ['blog/'.$blog->slug])] = 'monthly';
+            }
         }
 
-        foreach (Page::getSlugs() as $slug) {
-            $sitemap[route('page', [$slug])] = 'monthly';
+        if (enabled_module('pages')) {
+            foreach (model('page')->getSlugs() as $slug) {
+                $sitemap[route('page', [$slug])] = 'monthly';
+            }
         }
 
         return $sitemap;
