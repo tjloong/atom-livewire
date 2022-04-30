@@ -14,13 +14,13 @@ class Index extends Component
      */
     public function mount($slug = null)
     {
-        $path = $this->setLocale($slug) ?? 'index';
+        $path = $this->getPath($slug);
 
         if ($this->isBlog($path)) {
             $this->livewire = livewire_name('web/pages/blog');
         }
         else {
-            $this->livewire = livewire_name('web/pages/'.$path);
+            $this->livewire = livewire_name($path ? 'web/pages/'.$path : 'web/pages');
             $this->page = !$this->livewire && enabled_module('pages')
                 ? model('page')->where('slug', $path)->first()
                 : null;
@@ -30,20 +30,18 @@ class Index extends Component
     }
 
     /**
-     * Set locale
+     * Get path
      */
-    public function setLocale($slug = null)
+    public function getPath($slug)
     {
-        if (!$slug) return;
+        $path = $slug;
 
-        $locale = collect(config('atom.locales'))->first(fn($val) => head(explode('/', $slug)) === $val);
-
-        if ($locale) {
-            app()->setLocale($locale);
-            $slug = str($slug)->replaceFirst($locale, '')->replaceFirst('/', '')->__toString();
+        foreach (config('atom.locales') as $locale) {
+            if (str($path)->is($locale)) $path = str()->replaceFirst($locale, '', $path);
+            else if (str($path)->is($locale.'/*')) $path = str()->replaceFirst($locale.'/', '', $path);
         }
-        
-        return empty($slug) ? null : $slug;
+
+        return $path;
     }
 
     /**

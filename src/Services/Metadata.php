@@ -34,7 +34,7 @@ class Metadata
     {
         $locales = collect(json_decode(json_encode([
             ['code' => 'en', 'name' => 'English'],
-            ['code' => 'bm', 'name' => 'Bahasa Melayu'],
+            ['code' => 'ms', 'name' => 'Bahasa Melayu'],
             ['code' => 'zh', 'name' => '中文'],
         ])));
 

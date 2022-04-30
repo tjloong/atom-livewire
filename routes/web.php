@@ -59,13 +59,13 @@ if (!config('atom.static_site')) {
     /**
      * Account Portal
      */
-    define_route('account', 'Account\Index')->middleware('auth')->name('account');
+    define_route('account', 'Account\Index')->middleware('auth', 'locale')->name('account');
 
     /**
      * Onboarding Portal
      */
     if (config('atom.accounts.register')) {
-        Route::prefix('onboarding')->middleware(['auth', 'portal-guard'])->group(function() {
+        Route::prefix('onboarding')->middleware('auth', 'portal-guard', 'locale')->group(function() {
             define_route('/', 'Onboarding\\Index')->name('onboarding');
             define_route('completed', 'Onboarding\\Completed')->name('onboarding.completed');
         });
@@ -75,7 +75,7 @@ if (!config('atom.static_site')) {
      * Billing Portal
      */
     if (enabled_module('plans')) {
-        Route::prefix('billing')->middleware(['auth', 'portal-guard'])->group(function() {
+        Route::prefix('billing')->middleware('auth', 'portal-guard', 'locale')->group(function() {
             define_route('/', 'Billing\Index')->name('billing');
             define_route('plans', 'Billing\Plans')->name('billing.plans');
             define_route('checkout', 'Billing\Checkout')->name('billing.checkout');
@@ -86,7 +86,7 @@ if (!config('atom.static_site')) {
      * Ticketing Portal
      */
     if (enabled_module('ticketing')) {
-        Route::prefix('ticketing')->middleware(['auth', 'portal-guard'])->as('ticketing.')->group(function() {
+        Route::prefix('ticketing')->middleware('auth', 'portal-guard', 'locale')->as('ticketing.')->group(function() {
             define_route('listing', 'Ticketing\\Listing')->name('listing');
             define_route('create', 'Ticketing\\Create')->name('create');
             define_route('{id}', 'Ticketing\\Update')->name('update');
@@ -96,7 +96,7 @@ if (!config('atom.static_site')) {
     /**
      * App Portal
      */
-    Route::prefix('app')->middleware(['auth', 'portal-guard'])->group(function() {
+    Route::prefix('app')->middleware('auth', 'portal-guard', 'locale')->group(function() {
         define_route('/', fn() => redirect()->route('app.dashboard'))->name('app.home');
 
         /**
@@ -220,7 +220,7 @@ if (!config('atom.static_site')) {
 // so this route will be register after the consuming app's routes
 app()->booted(function() {
     define_route('{slug?}', 'Web\\Index')
-        ->middleware('web')
+        ->middleware('web', 'locale')
         ->name('page')
         // slugs to exclude
         ->where(['slug' => '^(?!'.implode('|', [
