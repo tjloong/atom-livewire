@@ -279,12 +279,15 @@ class AtomServiceProvider extends ServiceProvider
             'atom.billing' => 'Billing\Index',
             'atom.billing.plans' => 'Billing\Plans',
             'atom.billing.checkout' => 'Billing\Checkout',
-            'atom.billing.account-payment.listing' => 'Billing\AccountPayment\Listing',
 
             // account
             'atom.app.account.listing' => 'App\Account\Listing',
             'atom.app.account.update' => 'App\Account\Update\Index',
             'atom.app.account.update.overview' => 'App\Account\Update\Overview',
+
+            // account payments
+            'atom.app.account-payment.listing' => 'App\AccountPayment\Listing',
+            'atom.app.account-payment.update' => 'App\AccountPayment\Update',
 
             // site settings
             'atom.app.site-settings.index' => 'App\SiteSettings\Index',

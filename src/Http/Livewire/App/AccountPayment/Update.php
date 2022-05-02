@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Billing\AccountPayment;
+namespace Jiannius\Atom\Http\Livewire\App\AccountPayment;
 
 use Livewire\Component;
 
@@ -27,10 +27,24 @@ class Update extends Component
     }
 
     /**
+     * Download
+     */
+    public function download($doc)
+    {
+        return redirect()->route('__pdf', [
+            'model' => 'account-payment',
+            'find' => $this->accountPayment->id,
+            'doc' => $doc,
+        ]);
+    }
+
+    /**
      * Render
      */
     public function render()
     {
-        return view('atom::billing.account-payment.update')->layout('layouts.billing');
+        $view = view('atom::app.account-payment.update');
+
+        return current_route('billing*') ? $view->layout('layouts.billing') : $view;
     }
 }

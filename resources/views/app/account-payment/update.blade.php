@@ -1,5 +1,20 @@
 <div class="max-w-screen-sm mx-auto">
-    <x-page-header :title="__('Payment').'#'.$accountPayment->number" back/>
+    <x-page-header :title="__('Payment').'#'.$accountPayment->number" back>
+        <x-dropdown right>
+            <x-slot:trigger>
+                <x-button inverted icon="download">{{ __('Download') }}</x-button>
+            </x-slot:trigger>
+
+            <div class="grid divide-y">
+                <x-dropdown item class="cursor-pointer" wire:click="download('invoice')">
+                    {{ __('Download Invoice') }}
+                </x-dropdown>
+                <x-dropdown item class="cursor-pointer" wire:click="download('receipt')">
+                    {{ __('Download Receipt') }}
+                </x-dropdown>
+            </div>
+        </x-dropdown>
+    </x-page-header>
 
     <div class="grid gap-6">
         <x-box>

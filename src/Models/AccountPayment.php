@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Barryvdh\DomPDF\Facade as PDF;
 use Jiannius\Atom\Traits\HasFilters;
 use Jiannius\Atom\Traits\HasUniqueNumber;
 
@@ -42,6 +43,23 @@ class AccountPayment extends Model
     public function getDescriptionAttribute()
     {
         return $this->accountOrder->description;
+    }
+
+    /**
+     * Generate pdf
+     */
+    public function pdf($request)
+    {
+        $filename = 'billing-payment-'.$this->number.'.pdf';
+        $path = 'pdf.account-payment';
+        $view = view()->exists($path) ? $path : 'atom::'.$path;
+        $instance = PDF::loadView($view, [
+            'accountPayment' => $this,
+            'title' => $filename,
+            'doc' => data_get($request, 'doc'),
+        ]);
+
+        return (object)compact('filename', 'instance');
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Billing\AccountPayment;
+namespace Jiannius\Atom\Http\Livewire\App\AccountPayment;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -70,6 +70,8 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::billing.account-payment.listing');
+        $view = view('atom::app.account-payment.listing');
+
+        return current_route('billing*') ? $view->layout('layouts.billing') : $view;
     }
 }

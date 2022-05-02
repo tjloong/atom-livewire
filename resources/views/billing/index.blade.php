@@ -38,6 +38,6 @@
     </div>
 
     <div class="md:col-span-8">
-        @livewire('atom.billing.account-payment.listing', compact('account'))
+        @livewire('atom.app.account-payment.listing', compact('account'))
     </div>
 </div>

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 define_route('__sitemap', 'SitemapController@index')->name('__sitemap');
+define_route('__pdf', 'PdfController@index')->name('__pdf');
 define_route('__export/{filename}', 'ExportController@download')->name('__export');
 define_route('__file/{id}', 'FileController@index')->name('__file');
 define_route('__file/download/{id}', 'FileController@download')->name('__file.download');
@@ -81,8 +82,8 @@ if (!config('atom.static_site')) {
             define_route('checkout', 'Billing\Checkout')->name('billing.checkout');
 
             define_route()->prefix('account-payment')->as('billing.account-payment.')->group(function() {
-                define_route('listing', 'Billing\AccountPayment\Listing')->name('listing');
-                define_route('{accountPayment}', 'Billing\AccountPayment\Update')->name('update');
+                define_route('listing', 'App\AccountPayment\Listing')->name('listing');
+                define_route('{accountPayment}', 'App\AccountPayment\Update')->name('update');
             });
         });
     }
@@ -141,22 +142,6 @@ if (!config('atom.static_site')) {
         }
 
         /**
-         * Plans
-         */
-        if (enabled_module('plans')) {
-            Route::prefix('plan')->as('app.plan.')->group(function() {
-                define_route('listing', 'App\\Plan\\Listing')->name('listing');
-                define_route('create', 'App\\Plan\\Create')->name('create');
-                define_route('{id}', 'App\\Plan\\Update')->name('update');
-            });
-
-            Route::prefix('plan-price')->as('app.plan-price.')->group(function() {
-                define_route('create/{id}', 'App\\PlanPrice\\Create')->name('create');
-                define_route('{id}', 'App\\PlanPrice\\Update')->name('update');
-            });
-        }
-
-        /**
          * Accounts
          */
         if (config('atom.accounts.register')) {
@@ -165,7 +150,28 @@ if (!config('atom.static_site')) {
                 define_route('{account}', 'App\\Account\\Update\\Index')->name('update');
             });
         }
-    
+
+        /**
+         * Plans
+         */
+        if (enabled_module('plans')) {
+            define_route()->prefix('plan')->as('app.plan.')->group(function() {
+                define_route('listing', 'App\\Plan\\Listing')->name('listing');
+                define_route('create', 'App\\Plan\\Create')->name('create');
+                define_route('{id}', 'App\\Plan\\Update')->name('update');
+            });
+
+            define_route()->prefix('plan-price')->as('app.plan-price.')->group(function() {
+                define_route('create/{id}', 'App\\PlanPrice\\Create')->name('create');
+                define_route('{id}', 'App\\PlanPrice\\Update')->name('update');
+            });
+
+            define_route()->prefix('account-payment')->as('app.account-payment.')->group(function() {
+                define_route('listing', 'App\AccountPayment\Listing')->name('listing');
+                define_route('{accountPayment}', 'App\AccountPayment\Update')->name('update');
+            });
+        }
+
         /**
          * Teams
          */
