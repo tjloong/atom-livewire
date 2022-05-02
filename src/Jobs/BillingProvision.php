@@ -68,6 +68,9 @@ class BillingProvision implements ShouldQueue
                 ? data_get($this->response, 'data.object.metadata.payment_id')
                 : data_get($this->response, 'payment_id');
         }
+        else if ($this->provider === 'gkash') {
+            $paymentId = data_get($this->response, 'payment_id');
+        }
 
         return model('account_payment')->findOrFail($paymentId);
     }

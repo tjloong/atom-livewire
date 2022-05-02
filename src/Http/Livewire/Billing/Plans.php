@@ -13,9 +13,11 @@ class Plans extends Component
      */
     public function mount()
     {
-        if ($this->subscriptions->count() && !request()->query('plan')) return redirect()->route('billing');
+        $this->plan = request()->query('plan')
+            ? model('plan')->where('slug', request()->query('plan'))->where('is_active', true)->first()
+            : null;
 
-        $this->plan = model('plan')->where('slug', request()->query('plan'))->where('is_active', true)->firstOrFail();
+        if ($this->subscriptions->count() && !$this->plan) return redirect()->route('billing');
     }
 
     /**

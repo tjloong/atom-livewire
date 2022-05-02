@@ -10,7 +10,7 @@
 
         <x-slot:head>
             <x-table head sort="created_at">{{ __('Date') }}</x-table>
-            <x-table head>{{ __('Number') }}</x-table>
+            <x-table head>{{ __('Receipt Number') }}</x-table>
             <x-table head>{{ __('Description') }}</x-table>
             <x-table head align="right">{{ __('Amount') }}</x-table>
             <x-table head/>

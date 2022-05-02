@@ -684,6 +684,7 @@ class InstallCommand extends Command
             ['name' => 'stripe_webhook_signing_secret', 'value' => null],
             ['name' => 'gkash_mid', 'value' => null],
             ['name' => 'gkash_signature_key', 'value' => null],
+            ['name' => 'gkash_api_version', 'value' => '1.5.5'],
             ['name' => 'gkash_sandbox_url', 'value' => 'https://api-staging.pay.asia/api/PaymentForm.aspx'],
             ['name' => 'gkash_url', 'value' => 'https://api.gkash.my/api/PaymentForm.aspx'],
             ['name' => 'ozopay_tid', 'value' => null],
