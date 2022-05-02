@@ -4,11 +4,9 @@ namespace Jiannius\Atom\Http\Livewire\App\User;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Jiannius\Atom\Traits\BaseComponent;
 
 class Listing extends Component
 {
-    use BaseComponent;
     use WithPagination;
 
     public $account;
@@ -34,7 +32,15 @@ class Listing extends Component
      */
     public function mount()
     {
-        if (!$this->account) breadcrumbs()->home('Users');
+        if ($this->isFullpage) breadcrumbs()->home('Users');
+    }
+
+    /**
+     * Get is fullpage property
+     */
+    public function getIsFullpageProperty()
+    {
+        return current_route('app.user.listing');
     }
 
     /**

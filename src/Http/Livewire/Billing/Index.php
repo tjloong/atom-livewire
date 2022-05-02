@@ -6,11 +6,14 @@ use Livewire\Component;
 
 class Index extends Component
 {
+    public $account;
+
     /**
      * Mount
      */
     public function mount()
     {
+        if(!$this->account) $this->account = auth()->user()->account;
         if (!$this->plans->count()) return redirect()->route('billing.plans');
     }
 
@@ -19,7 +22,7 @@ class Index extends Component
      */
     public function getPlansProperty()
     {
-        $query = auth()->user()->account->accountSubscriptions()->status(['active', 'pending']);
+        $query = $this->account->accountSubscriptions()->status(['active', 'pending']);
 
         return model('plan')->whereHas('planPrices', fn($q) => 
             $q->whereIn(

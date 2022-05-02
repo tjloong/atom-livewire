@@ -20,17 +20,6 @@ function app_route()
 }
 
 /**
- * Check the given component is currently the full page component
- */
-function is_livewire_fullpage($class)
-{
-    $action = explode('@', app('router')->getCurrentRoute()->getActionName());
-    $classname = head($action);
-
-    return $classname === get_class($class);
-}
-
-/**
  * Get livewire component name
  */
 function livewire_name($path = null)
@@ -195,9 +184,13 @@ function define_route($path = null, $action = null, $method = 'get')
  * 
  * @return string
  */
-function current_route()
+function current_route($name = null)
 {
-    return request()->route()->getName();
+    $route = request()->route()->getName();
+
+    if ($name) return str($route)->is($name);
+
+    return $route;
 }
 
 /**

@@ -201,11 +201,6 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.onboarding', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Index');
         Livewire::component('atom.onboarding.profile', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Profile');
 
-        // billing portal
-        Livewire::component('atom.billing', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Index');
-        Livewire::component('atom.billing.plans', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Plans');
-        Livewire::component('atom.billing.checkout', 'Jiannius\\Atom\\Http\\Livewire\\Billing\\Checkout');
-
         // ticket portal
         Livewire::component('atom.ticketing.listing', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Listing');
         Livewire::component('atom.ticketing.create', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Create');
@@ -258,11 +253,6 @@ class AtomServiceProvider extends ServiceProvider
         // permission
         Livewire::component('atom.permission.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Permission\\Listing');
 
-        // account
-        Livewire::component('atom.app.account.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Listing');
-        Livewire::component('atom.app.account.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Update\\Index');
-        Livewire::component('atom.app.account.update.overview', 'Jiannius\\Atom\\Http\\Livewire\\App\\Account\\Update\\Overview');
-
         // team
         Livewire::component('atom.team.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Listing');
         Livewire::component('atom.team.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Create');
@@ -285,6 +275,17 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.app.file.uploader.library', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Library');
 
         $components = [
+            // billing portal
+            'atom.billing' => 'Billing\Index',
+            'atom.billing.plans' => 'Billing\Plans',
+            'atom.billing.checkout' => 'Billing\Checkout',
+            'atom.billing.account-payment.listing' => 'Billing\AccountPayment\Listing',
+
+            // account
+            'atom.app.account.listing' => 'App\Account\Listing',
+            'atom.app.account.update' => 'App\Account\Update\Index',
+            'atom.app.account.update.overview' => 'App\Account\Update\Overview',
+
             // site settings
             'atom.app.site-settings.index' => 'App\SiteSettings\Index',
             'atom.app.site-settings.profile' => 'App\SiteSettings\Profile',

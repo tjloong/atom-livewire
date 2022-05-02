@@ -47,4 +47,12 @@ class AccountOrder extends Model
     {
         return $this->hasMany(get_class(model('account_payment')));
     }
+
+    /**
+     * Get description attribute
+     */
+    public function getDescriptionAttribute()
+    {
+        return $this->accountOrderItems->pluck('name')->join(', ');
+    }
 }

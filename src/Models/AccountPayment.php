@@ -3,10 +3,12 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Jiannius\Atom\Traits\HasFilters;
 use Jiannius\Atom\Traits\HasUniqueNumber;
 
 class AccountPayment extends Model
 {
+    use HasFilters;
     use HasUniqueNumber;
 
     protected $guarded = [];
@@ -32,6 +34,14 @@ class AccountPayment extends Model
     public function accountOrder()
     {
         return $this->belongsTo(get_class(model('account_order')));
+    }
+
+    /**
+     * Get account payment description attribute
+     */
+    public function getDescriptionAttribute()
+    {
+        return $this->accountOrder->description;
     }
 
     /**

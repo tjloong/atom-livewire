@@ -79,6 +79,11 @@ if (!config('atom.static_site')) {
             define_route('/', 'Billing\Index')->name('billing');
             define_route('plans', 'Billing\Plans')->name('billing.plans');
             define_route('checkout', 'Billing\Checkout')->name('billing.checkout');
+
+            define_route()->prefix('account-payment')->as('billing.account-payment.')->group(function() {
+                define_route('listing', 'Billing\AccountPayment\Listing')->name('listing');
+                define_route('{accountPayment}', 'Billing\AccountPayment\Update')->name('update');
+            });
         });
     }
 
