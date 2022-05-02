@@ -8,6 +8,7 @@ class Footer extends Component
 {
     public $dark;
     public $color;
+    public $legals;
     public $company;
     public $socials;
     public $whatsapp;
@@ -50,6 +51,8 @@ class Footer extends Component
             $this->whatsapp['url'] = 'https://wa.me/' . $this->whatsapp['number'];
             if (!empty($this->whatsapp['text'])) $this->whatsapp['url'] .= '?text=' . urlencode($this->whatsapp['text']);
         }
+
+        $this->legals = $this->getLegals();
     }
 
     /**
@@ -90,6 +93,24 @@ class Footer extends Component
         }
 
         return (object)[];
+    }
+
+    /**
+     * Get legals
+     */
+    public function getLegals()
+    {
+        if (config('atom.static_site')) return null;
+        if (!enabled_module('pages')) return null;
+
+        return model('page')->whereIn('name', [
+            'Privacy',
+            'Terms',
+            'Disclaimer',
+        ])->get()->map(fn($page) => [
+            'label' => $page->title,
+            'href' => route('page', [$page->slug]),
+        ]);
     }
 
     /**

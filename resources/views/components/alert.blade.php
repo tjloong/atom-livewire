@@ -9,9 +9,9 @@
     </div>
 @else
     <div {{ $attributes->class(['p-4 rounded-md flex gap-2', $color->bg])->except('errors') }}>
-        <x-icon name="{{ $icon }}" class="{{ $color->icon }} flex-shrink-0"/>
+        <x-icon name="{{ $icon }}" class="{{ $color->icon }} shrink-0"/>
         
-        <div class="self-center flex-grow">
+        <div class="self-center grow">
             @isset($title)
                 <div class="{{ $color->title }} text-lg font-semibold mb-1.5">
                     {{ $title }}

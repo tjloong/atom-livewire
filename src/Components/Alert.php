@@ -78,14 +78,14 @@ class Alert extends Component
             'info' => 'text-blue-400',
             'error' => 'text-red-400',
             'success' => 'text-green-400',
-            'warning' => 'text-yellow-400',            
+            'warning' => 'text-orange-500',            
         ];
 
         $text = [
             'info' => 'text-blue-600',
             'error' => 'text-red-600',
             'success' => 'text-green-600',
-            'warning' => 'text-yellow-600',
+            'warning' => 'text-orange-700',
         ];
 
         return (object)[

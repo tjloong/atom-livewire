@@ -111,15 +111,15 @@
                         </div>
                     @endif
 
-                    @if ($links = $attributes->get('links'))
+                    @if ($links = $attributes->get('links') ?? $legals ?? null)
                         <div class="flex items-center gap-2">
                             @foreach ($links as $i => $link)
                                 @if ($i > 0)
                                     <span class="{{ $color->text }}">|</span>
                                 @endif
 
-                                <a href="{{ $link['href'] }}" class="text-sm {{ $color->text }}">
-                                    {{ $link['label'] }}
+                                <a href="{{ data_get($link, 'href') }}" class="text-sm {{ $color->text }}">
+                                    {{ data_get($link, 'label') }}
                                 </a>
                             @endforeach
                         </div>

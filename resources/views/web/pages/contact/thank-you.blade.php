@@ -3,11 +3,11 @@
         <div class="text-5xl font-bold">Thank You</div>
         <div>
             <x-alert type="success">
-                You enquiry is successfully sent.
+                {{ __('Your enquiry has been submitted successfully.') }}
             </x-alert>
     
             <a href="/" class="flex items-center mt-4">
-                <x-icon name="left-arrow-alt"/> Back to Home
+                <x-icon name="left-arrow-alt"/> {{ __('Back to Home') }}
             </a>
         </div>
     </div>
