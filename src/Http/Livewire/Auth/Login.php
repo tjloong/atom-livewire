@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
 use Livewire\Component;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -19,16 +18,8 @@ class Login extends Component
      */
     public function mount()
     {
-        if (request()->query('logout')) {
-            auth()->logout();
-            request()->session()->invalidate();
-            request()->session()->regenerateToken();
-
-            return redirect()->route('page');
-        }
-        else if (auth()->check()) {
-            return redirect($this->redirectTo());
-        }
+        if (request()->query('logout')) return $this->logout();
+        else if (auth()->check()) return redirect($this->redirectTo());
     }
 
     /**
@@ -66,6 +57,18 @@ class Login extends Component
     }
 
     /**
+     * Logout
+     */
+    public function logout()
+    {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect()->route('page');
+    }
+
+    /**
      * Ensure the login request is not rate limited.
      *
      * @return void
@@ -97,7 +100,7 @@ class Login extends Component
      */
     private function throttleKey()
     {
-        return Str::lower(request()->input('email')).'|'.request()->ip();
+        return str()->lower(request()->input('email')).'|'.request()->ip();
     }
 
     /**

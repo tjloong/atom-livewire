@@ -184,13 +184,6 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.web.pages.contact.index', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Contact\\Index');
         Livewire::component('atom.web.pages.contact.thank-you', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Contact\\ThankYou');
 
-        // auth portal
-        Livewire::component('atom.auth.login', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\Login');
-        Livewire::component('atom.auth.register', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\Register');
-        Livewire::component('atom.auth.register-form', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\RegisterForm');
-        Livewire::component('atom.auth.reset-password', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\ResetPassword');
-        Livewire::component('atom.auth.forgot-password', 'Jiannius\\Atom\\Http\\Livewire\\Auth\\ForgotPassword');
-
         // user portal
         Livewire::component('atom.account', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Index');
         Livewire::component('atom.account.authentication.index', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Index');
@@ -275,6 +268,13 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.app.file.uploader.library', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Library');
 
         $components = [
+            // auth portal
+            'atom.auth.login' => 'Auth\Login',
+            'atom.auth.register' => 'Auth\Register',
+            'atom.auth.register-form' => 'Auth\RegisterForm',
+            'atom.auth.reset-password' => 'Auth\ResetPassword',
+            'atom.auth.forgot-password' => 'Auth\ForgotPassword',
+
             // billing portal
             'atom.billing' => 'Billing\Index',
             'atom.billing.plans' => 'Billing\Plans',
