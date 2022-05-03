@@ -1,8 +1,10 @@
-.prose .image img {
-    @apply shadow rounded-md;
+.prose .image,
+.prose .image.image-style-align-center {
+    @apply block;
 }
-.prose .image figcaption {
-    @apply text-center;
+.prose .image img,
+.prose .image.image-style-align-center img {
+    @apply mx-auto;
 }
 
 .prose .image.image-style-align-left {
@@ -13,16 +15,25 @@
     @apply float-right ml-4 my-2 mr-0;
 }
 
-.prose .image.image-style-align-center {
-    @apply block mx-auto;
-}
-
 .prose .image.image-style-block-align-left {
-    @apply block ml-0 mr-auto;
+    @apply block;
+}
+.prose .image.image-style-block-align-left img {
+    @apply ml-0 mr-auto;
 }
 
 .prose .image.image-style-block-align-right {
-    @apply block mr-0 ml-auto;
+    @apply block;
+}
+.prose .image.image-style-block-align-right img {
+    @apply mr-0 ml-auto;
+}
+
+.prose .image img {
+    @apply shadow rounded-md;
+}
+.prose .image figcaption {
+    @apply text-center;
 }
 
 .prose strong {

@@ -26,14 +26,16 @@
             </div>
         @endif
     
-        <div class="grid gap-6 md:grid-cols-12">
+        <div class="grid gap-6 md:gap-0 md:grid-cols-12">
             @if ($this->blog)
-                <div class="md:col-span-9">
+                <div class="md:col-span-8">
                     <div class="grid gap-10">
                         @if ($this->blog->cover)
-                            <figure class="max-w-screen-md w-full bg-gray-100 rounded-md drop-shadow relative overflow-hidden">
-                                <img src="{{ $this->blog->cover->url }}" width="500" height="500" alt="{{ $this->blog->title }}" class="w-full">
-                            </figure>
+                            <div class="flex">
+                                <figure class="m-auto bg-gray-100 rounded-md drop-shadow relative overflow-hidden">
+                                    <img src="{{ $this->blog->cover->url }}" width="500" height="500" alt="{{ $this->blog->title }}">
+                                </figure>
+                            </div>
                         @endif
         
                         <div class="prose prose-sm md:prose-base lg:prose-lg max-w-none">
@@ -75,7 +77,7 @@
             @endif
     
             @if ($this->showSidebar)
-                <div class="md:col-span-3">
+                <div class="md:col-start-10 md:col-span-3">
                     <div class="grid gap-10">
                         @if ($this->labels->count())
                             <div class="grid gap-4">
