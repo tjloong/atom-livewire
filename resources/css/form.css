@@ -1,9 +1,3 @@
-input::placeholder, 
-select::placeholder, 
-textarea::placeholder {
-    @apply text-sm;
-}
-
 input:focus, 
 button:focus, 
 select:focus, 
