@@ -10,7 +10,7 @@
     <x-loader/>
 
     <div class="bg-gray-100 p-5 min-h-screen">
-        <main class="max-w-screen-xl mx-auto">
+        <main class="max-w-screen-lg mx-auto">
             <x-builder.navbar class="py-2" class.logo="h-[30px]"/>
 
             <div class="py-6">

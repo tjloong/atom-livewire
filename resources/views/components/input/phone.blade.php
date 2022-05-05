@@ -28,7 +28,7 @@
                 x-on:blur="focus = false"
                 x-on:input="pattern"
                 type="tel" 
-                class="w-full"
+                class="w-full appearance-none border-0 p-0 focus:ring-0"
             >
         </div>
 

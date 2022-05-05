@@ -1,39 +1,44 @@
-<div class="grid gap-6 {{ $this->total['amount'] <= 0 ? 'max-w-screen-sm mx-auto' : '' }}">
+<div class="grid gap-6 {{ data_get($this->total, 'amount') <= 0 ? 'max-w-screen-sm mx-auto' : '' }}">
     <h1 class="text-xl font-bold">{{ __('Order Summary') }}</h1>
 
     <div class="grid gap-6 md:grid-cols-12">
-        <div class="{{ $this->total['amount'] <= 0 ? 'md:col-span-12' : 'md:col-span-7' }}">
+        <div class="{{ data_get($this->total, 'amount') <= 0 ? 'md:col-span-12' : 'md:col-span-7' }}">
             <div class="grid gap-6">
                 <x-box>
                     <div class="grid divide-y">
                         @foreach ($cart as $item)
                             <div class="p-4 flex flex-wrap justify-between gap-4">
                                 <div>
-                                    <span class="font-bold">{{ $item['name'] }}</span>
-                                    @if ($item['recurring'] && $item['recurring'] !== 'lifetime')
-                                        <span class="font-medium text-gray-500">({{ str($item['recurring'])->headline() }})</span>
+                                    <span class="font-bold">
+                                        {{ data_get($item, 'name') }}
+                                    </span>
+
+                                    @if (data_get($item, 'recurring') !== 'lifetime')
+                                        <span class="font-medium text-gray-500">
+                                            ({{ str(data_get($item, 'recurring'))->headline() }})
+                                        </span>
                                     @endif
                                 </div>
     
                                 <div class="flex-shrink-0 text-right">
-                                    @if ($item['amount'] !== $item['grand_total'])
+                                    @if (data_get($item, 'amount') !== data_get($item, 'grand_total'))
                                         <div class="text-gray-500 line-through font-medium">
-                                            {{ currency($item['amount'], $item['currency']) }}
+                                            {{ currency(data_get($item, 'amount'), data_get($item, 'currency')) }}
                                         </div>
     
-                                        @if ($item['trial'])
+                                        @if ($trial = data_get($item, 'trial'))
                                             <span class="text-sm text-gray-500">
-                                                ({{ $item['trial'] }} {{ __('days trial') }})
+                                                ({{ $trial }} {{ __('days trial') }})
                                             </span>
-                                        @elseif ($item['discounted_amount'])
+                                        @elseif ($discount = data_get($item, 'discounted_amount'))
                                             <span class="text-sm text-red-500 font-medium">
-                                                {{ __('Discounted') }} {{ currency($item['discounted_amount']) }}
+                                                {{ __('Discounted') }} {{ currency($discount) }}
                                             </span>
                                         @endif
 
-                                        {{ currency($item['grand_total'], $item['currency']) }}
+                                        {{ currency(data_get($item, 'grand_total'), data_get($item, 'currency')) }}
                                     @else
-                                        {{ currency($item['grand_total'], $item['currency']) }}
+                                        {{ currency(data_get($item, 'grand_total'), data_get($item, 'currency')) }}
                                     @endif
                                 </div>
                             </div>
@@ -41,11 +46,23 @@
                     </div>
 
                     <x-slot name="buttons">
-                        <div class="flex items-center justify-between gap-4">
-                            <div class="text-lg font-bold">{{ __('Total') }}</div>
-                            <div class="text-lg font-bold">
-                                {{ currency($this->total['amount'], $this->total['currency']) }}
+                        <div class="grid gap-4">
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="text-lg font-bold">{{ __('Total') }}</div>
+                                <div class="text-lg font-bold">
+                                    {{ currency(data_get($this->total, 'amount'), data_get($this->total, 'currency')) }}
+                                </div>
                             </div>
+    
+                            @if (data_get($this->total, 'amount') <= 0)
+                                <div class="grid gap-4">
+                                    <x-input.agree wire:model="accountOrder.agree_tnc" tnc/>
+        
+                                    @if ($errors->any())
+                                        <x-alert :errors="$errors->all()"/>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </x-slot>
                 </x-box>
@@ -55,7 +72,7 @@
                         <x-icon name="left-arrow-alt" size="xs"/> {{ __('Back to Plans') }}
                     </a>
 
-                    @if ($this->total['amount'] <= 0)
+                    @if (data_get($this->total, 'amount') <= 0)
                         <x-button icon="check" wire:click="submit">
                             Checkout
                         </x-button>
@@ -64,7 +81,7 @@
             </div>
         </div>
 
-        @if ($this->total['amount'] > 0)
+        @if (data_get($this->total, 'amount') > 0)
             <div class="md:col-span-5">
                 <x-box>
                     <x-slot:header>{{ __('Payment Method') }}</x-slot:header>

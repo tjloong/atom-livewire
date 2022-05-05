@@ -1,5 +1,5 @@
 <x-input.checkbox {{ $attributes->except('tnc', 'marketing', 'links') }}>
-    <div class="grid gap-2">
+    <div class="grid gap-1">
         <div class="text-gray-500">
             @if ($slot->isNotEmpty())
                 {{ $slot }}

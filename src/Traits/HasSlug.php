@@ -2,12 +2,11 @@
 
 namespace Jiannius\Atom\Traits;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 trait HasSlug
 {
-    // public $enabledHasSlugTrait = true;
+    public $enabledHasSlugTrait = true;
 
     /**
      * The "booted" method of the model.
@@ -18,34 +17,41 @@ trait HasSlug
     {
         // listen to saving event
         static::saving(function ($model) {
-            if ($model->slug && $model->isDirty('slug')) $str = $model->slug;
-            else if (!$model->slug) $str = $model->name ?? $model->title;
+            $fields = $model->slugify ?? ['name' => 'slug'];
 
-            if (isset($str)) {
-                // non english slug
-                if (strlen($str) != strlen(utf8_decode($str))) {
-                    $slug = preg_replace('#(\p{P}|\p{C}|\p{S}|\p{Z})+#u', '-', strtolower($str));
+            foreach ($fields as $from => $to) {
+                if ($model->$to && $model->isDirty($to)) $source = $model->$to;
+                else if (!$model->$to) $source = $model->$from;
+
+                if (isset($source)) {
+                    // non english slug
+                    if (strlen($source) != strlen(utf8_decode($source))) {
+                        $slug = preg_replace('#(\p{P}|\p{C}|\p{S}|\p{Z})+#u', '-', strtolower($source));
+                    }
+                    // normal english slug
+                    else {
+                        $slug = str()->slug($source);
+                    }
+        
+                    // if the generated slug is empty
+                    if (!$slug) $slug = strtolower(str()->random(10));
+                    // if the generated slug is a number, append something
+                    else if (is_numeric($slug)) $slug = $slug . '-' . strtolower(str()->random(5));
+                    // remove head and tail dash
+                    else $slug = trim($slug, '-');
+        
+                    // check for uniqueness
+                    if (
+                        DB::table($model->getTable())
+                            ->where($to, $slug)
+                            ->when($model->enabledBelongsToAccountTrait, fn($q) => $q->where('account_id', $model->account_id))
+                            ->count() > 0
+                    ) {
+                        $slug = $slug.'-'.strtolower(str()->random(5));
+                    }
+                    
+                    $model->$to = $slug;
                 }
-                // normal english slug
-                else {
-                    $slug = Str::slug($str);
-                }
-    
-                // if the generated slug is empty
-                if (!$slug) $slug = strtolower(Str::random(10));
-                // if the generated slug is a number, append something
-                else if (is_numeric($slug)) $slug = $slug . '-' . strtolower(Str::random(5));
-                // remove head and tail dash
-                else $slug = trim($slug, '-');
-    
-                // check for uniqueness
-                $query = DB::table($model->getTable())
-                    ->where('slug', $slug)
-                    ->when($model->enabledMultiTenantTrait, fn($q) => $q->where('tenant_id', $model->tenant_id));
-    
-                if ($query->count()) $slug = $slug . '-' . strtolower(Str::random(5));
-                
-                $model->slug = $slug;
             }
         });
     }
@@ -59,8 +65,10 @@ trait HasSlug
      */
     public function scopeFindBySlug($query, $slug)
     {
-        if (is_numeric($slug)) $query->where($this->getTable() . '.id', $slug);
-        else $query->where($this->getTable() . '.slug', $slug);
+        $table = $this->getTable();
+
+        if (is_numeric($slug)) $query->where($table.'.id', $slug);
+        else $query->where($table.'.slug', $slug);
 
         return $query->first();
     }
@@ -74,8 +82,10 @@ trait HasSlug
      */
     public function scopeFindBySlugOrFail($query, $slug)
     {
-        if (is_numeric($slug)) $query->where($this->getTable() . '.id', $slug);
-        else $query->where($this->getTable() . '.slug', $slug);
+        $table = $this->getTable();
+
+        if (is_numeric($slug)) $query->where($table.'.id', $slug);
+        else $query->where($table.'.slug', $slug);
 
         return $query->firstOrFail();
     }
