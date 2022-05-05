@@ -6,6 +6,7 @@ use Illuminate\View\Component;
 
 class Richtext extends Component
 {
+    public $uid;
     public $toolbar;
 
     /**
@@ -13,11 +14,20 @@ class Richtext extends Component
      * 
      * @return void
      */
-    public function __construct($toolbar = null)
-    {
+    public function __construct(
+        $uid = null,
+        $toolbar = null
+    ) {
+        $this->uid = $uid ?? 'richtext-'.uniqid();
         $this->toolbar = $toolbar
             ? (is_array($toolbar) ? $toolbar : explode(',', $toolbar))
-            : null;
+            : [
+                'heading',
+                '|', 'bold', 'italic', 'underline', 'fontSize', 'fontColor', 'link', 'bulletedList', 'numberedList',
+                '|', 'alignment', 'outdent', 'indent', 'horizontalLine',
+                '|', 'blockQuote', 'insertMedia', 'insertTable', 'undo', 'redo',
+                '|', 'sourceEditing',
+            ];
     }
 
     /**

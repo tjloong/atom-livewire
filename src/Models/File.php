@@ -45,7 +45,7 @@ class File extends Model
             if ($path) {
                 // prevent production file delete when in local
                 if (!app()->environment('production') && (str()->startsWith($path, 'prod/') || str()->startsWith($path, 'production/'))) {
-                    abort(500, 'Do not delete production file in ' . app()->environment() . ' environment!');
+                    abort(400, 'Do not delete production file in ' . app()->environment() . ' environment!');
                 }
                 // digital ocean spaces
                 else if ($provider === 'do') {

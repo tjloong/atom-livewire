@@ -95,6 +95,19 @@ ClassicEditor.builtinPlugins = [
 
 // Editor configuration.
 ClassicEditor.defaultConfig = {
+    link: {
+        decorators: {
+            openInNewTab: {
+                mode: 'manual',
+                label: 'Open in a new tab',
+                defaultValue: true,
+                attributes: {
+                    target: '_blank',
+                    rel: 'noopener noreferrer'
+                },
+            },
+        },
+    },
     image: {
         toolbar: [
             'imageStyle:alignLeft',

@@ -6,16 +6,18 @@ use Illuminate\View\Component;
 
 class Image extends Component
 {
+    public $uid;
     public $dimension;
-    public $placeholder;
 
     /**
      * Contructor
      */
-    public function __construct($dimension = '100x100', $placeholder = null)
-    {
+    public function __construct(
+        $uid = null,
+        $dimension = '100x100'
+    ) {
+        $this->uid = $uid ?? 'image-input-'.uniqid();
         $this->dimension = $this->getDimension($dimension);
-        $this->placeholder = $placeholder;
     }
 
     /**
