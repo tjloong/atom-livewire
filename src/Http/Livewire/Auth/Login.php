@@ -19,7 +19,7 @@ class Login extends Component
     public function mount()
     {
         if (request()->query('logout')) return $this->logout();
-        else if (auth()->check()) return redirect($this->redirectTo());
+        else if ($user = auth()->user()) return redirect($this->redirectTo($user));
     }
 
     /**
