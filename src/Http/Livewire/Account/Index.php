@@ -8,6 +8,8 @@ class Index extends Component
 {
     public $tab;
 
+    protected $queryString = ['tab'];
+
     /**
      * Mount
      */
