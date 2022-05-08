@@ -22,7 +22,7 @@ class Announcements extends Component
         $this->announcements = $announcements;
 
         if (!$this->announcements && !config('atom.static_site')) {
-            $this->announcements = json_decode(site_settings('announcements'));
+            $this->announcements = collect(json_decode(site_settings('announcements')))->where('is_active', true)->values()->all();
         }
     }
 
