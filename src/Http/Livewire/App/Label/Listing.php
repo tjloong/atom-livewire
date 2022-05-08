@@ -25,7 +25,7 @@ class Listing extends Component
      */
     public function getTypesProperty()
     {
-        return config('atom.app.labels') ?? [];
+        return ['blog-category'];
     }
 
     /**
@@ -34,6 +34,7 @@ class Listing extends Component
     public function getLabels()
     {
         return model('label')
+            ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->where('type', $this->type)
             ->orderBy('seq')
             ->orderBy('name')
@@ -58,8 +59,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.label.listing', [
-            'types' => $this->types,
-        ]);
+        return view('atom::app.label.listing');
     }
 }

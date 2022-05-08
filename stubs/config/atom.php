@@ -27,10 +27,6 @@ return [
         'users' => [
             'data_visibility' => true,
         ],
-    
-        'labels' => [
-            'blog-category',
-        ],
         
         'permissions' => [
             'users' => ['manage'],

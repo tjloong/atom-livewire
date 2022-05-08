@@ -18,8 +18,7 @@ class Create extends Component
     {
         breadcrumbs()->push('Create Label');
         
-        $this->label = model('label');
-        $this->label->type = $this->type;
+        $this->label = model('label')->fill(['type' => $this->type]);
     }
 
     /**

@@ -15,7 +15,9 @@ class Update extends Component
      */
     public function mount($label)
     {
-        $this->label = model('label')->findOrFail($label);
+        $this->label = model('label')
+            ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+            ->findOrFail($label);
 
         breadcrumbs()->push($this->label->name);
     }

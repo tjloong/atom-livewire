@@ -6,7 +6,7 @@
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
             <x-sidenav wire:model="type">
-                @foreach ($types as $val)
+                @foreach ($this->types as $val)
                     <x-sidenav.item :name="$val">
                         {{ str()->headline($val) }}
                     </x-sidenav.item>

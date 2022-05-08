@@ -44,12 +44,14 @@ class AtomComponentServiceProvider extends ServiceProvider
             'checkbox',
             'file-card',
             'back-button',
-            'admin-panel',
             'empty-state',
             'alpine-data',
             'page-header',
             'breadcrumbs',
             'payment-gateway',
+
+            'admin-panel.index',
+            'admin-panel.aside',
             
             'analytics.ga',
             'analytics.gtm',
