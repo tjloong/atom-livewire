@@ -28,18 +28,18 @@
 
     @stack('styles')
     
-    {{-- @if ($enabled = $tracking ?? true)
+    @if ($enabled = $tracking ?? true)
         <x-gtm/>
         <x-ga/>
         <x-fbpixel/>
-    @endif --}}
+    @endif
 </head>
 
 <body class="font-{{ $fontTheme ?? 'sans' }} antialiased">
-    {{-- @if ($enabled = $tracking ?? true)
+    @if ($enabled = $tracking ?? true)
         <x-gtm noscript/>
         <x-fbpixel noscript/>
-    @endif --}}
+    @endif
 
     @yield('content')
 

@@ -10,10 +10,7 @@ class FbPixel extends Component
     public $noscript;
 
     /**
-     * Create the component instance.
-     *
-     * @param boolean $noscript
-     * @return void
+     * Constructor
      */
     public function __construct($noscript = false)
     {
@@ -22,9 +19,7 @@ class FbPixel extends Component
     }
 
     /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
+     * Render
      */
     public function render()
     {
