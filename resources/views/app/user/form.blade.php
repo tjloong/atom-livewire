@@ -1,96 +1,90 @@
-<form wire:submit.prevent="submit">
-    <x-box>
-        <div class="grid divide-y">
-            <div class="p-5">
-                <x-input.text wire:model.defer="user.name" :error="$errors->first('user.name')" required>
-                    {{ __('Login Name') }}
-                </x-input.text>
-    
-                <x-input.email
-                    wire:model.defer="user.email"
-                    :error="$errors->first('user.email')"
-                    required
-                    :caption="$user->exists ? 'User will need to verify the email again if you change this.' : ''"
-                >
-                    {{ __('Login Email') }}
-                </x-input.email>
+<x-form>
+    <x-form.text 
+        label="Login Name"
+        wire:model.defer="user.name" 
+        :error="$errors->first('user.name')" 
+        required
+    />
 
-                @if ($user->exists)
-                    <x-input.field>
-                        <x-slot:label>{{ __('Status') }}</x-slot:label>
-                        <x-badge>{{ $user->status }}</x-badge>
-                    </x-input.field>
-                @endif
+    <x-form.email
+        label="Login Email"
+        wire:model.defer="user.email"
+        :error="$errors->first('user.email')"
+        :caption="$user->exists ? 'User will need to verify the email again if you change this.' : ''"
+        required
+    />
 
-                @root
-                    @if ($user->account)
-                        <x-input.field>
-                            <x-slot:label>{{ __('Account Type') }}</x-slot:label>
-                            {{ str($user->account->type)->headline() }}
-                        </x-input.field>
-                    @endif
-                @endroot
-    
-                @if ($user->exists && $user->status === 'inactive')
-                    <x-alert icon="info-circle">
-                        {{ __('User account is pending for activation.') }}
-                    </x-alert>
-                @endif
-            </div>
+    @if ($user->exists)
+        <x-form.field label="Status">
+            <x-badge>{{ $user->status }}</x-badge>
+        </x-form.field>
+    @endif
 
-            @if (!$user->isAccountType('root') && (
-                config('atom.app.user.data_visibility')
-                || enabled_module('roles')
-                || enabled_module('teams')
-            ))
-                <div class="p-5">
-                    @if (config('atom.app.user.data_visibility'))
-                        <x-input.field>
-                            <x-slot:label>{{ __('Data Visiblity') }}</x-slot:label>
-                            <div class="flex flex-col gap-2">
-                                @foreach ($visibilities as $opt)
-                                    <x-input.radio name="visiblity" wire:model.defer="user.visibility" :value="$opt['value']" :checked="$user->visibility === $opt['value']">
-                                        <div>
-                                            <div class="font-medium">{{ str()->headline($opt['value']) }}</div>
-                                            <div class="text-sm text-gray-500">{{ $opt['caption'] }}</div>
-                                        </div>
-                                    </x-input.radio>
-                                @endforeach
+    @root
+        @if ($user->account)
+            <x-form.field label="Account Type">
+                {{ str($user->account->type)->headline() }}
+            </x-form.field>
+        @endif
+    @endroot
+
+    @if ($user->exists && $user->status === 'inactive')
+        <x-alert icon="info-circle">
+            {{ __('User account is pending for activation.') }}
+        </x-alert>
+    @endif
+
+    @if (!$user->isAccountType('root') && (
+        config('atom.app.user.data_visibility')
+        || enabled_module('roles')
+        || enabled_module('teams')
+    ))
+        @if (config('atom.app.user.data_visibility'))
+            <x-form.field label="Data Visiblity">
+                <div class="flex flex-col gap-2">
+                    @foreach ($visibilities as $opt)
+                        <x-form.radio 
+                            name="visiblity" 
+                            wire:model.defer="user.visibility" 
+                            :value="$opt['value']" :checked="$user->visibility === $opt['value']"
+                        >
+                            <div>
+                                <div class="font-medium">{{ str()->headline($opt['value']) }}</div>
+                                <div class="text-sm text-gray-500">{{ $opt['caption'] }}</div>
                             </div>
-                        </x-input.field>
-                    @endif
-
-                    @module('roles')
-                        <x-input.select wire:model="user.role_id" :options="$roles">
-                            {{ __('Role') }}
-                        </x-input.select>
-                    @endmodule
-
-                    @module('teams')
-                        <x-input.tags wire:model.defer="selectedTeams" :options="$teams">
-                            {{ __('Teams') }}
-                        </x-input.tags>
-                    @endmodule
+                        </x-form.radio>
+                    @endforeach
                 </div>
-            @endif
+            </x-form.field>
+        @endif
+
+        @module('roles')
+            <x-form.select 
+                label="Role"
+                wire:model="user.role_id" 
+                :options="$roles"
+            />
+        @endmodule
+
+        @module('teams')
+            <x-form.tags 
+                label="Teams"
+                wire:model.defer="selectedTeams" 
+                :options="$teams"
+            />
+        @endmodule
+    @endif
                     
-            @if ($user->status === 'inactive' || !$user->exists)
-                <div class="p-5">
-                    <x-input.checkbox wire:model="sendAccountActivationEmail">
-                        @if ($user->exists)
-                            {{ __('Resend account activation email to user') }}
-                        @else
-                            {{ __('Send account activation email to user') }}
-                        @endif
-                    </x-input.checkbox>
-                </div>
-            @endif
-        </div>
+    @if ($user->status === 'inactive' || !$user->exists)
+        <x-form.checkbox 
+            :label="$user->exists 
+                ? 'Resend account activation email to user'
+                : 'Send account activation email to user'"
+            wire:model="sendAccountActivationEmail"
+        />
+    @endif
 
-        <x-slot name="buttons">
-            <x-button type="submit" icon="check" color="green">
-                {{ __('Save User') }}
-            </x-button>
-        </x-slot>
-    </x-box>
-</form>
+    <x-slot:foot>
+        <x-button.submit/>
+    </x-slot:foot>
+</x-form>

@@ -56,7 +56,7 @@
     
                             @if (data_get($this->total, 'amount') <= 0)
                                 <div class="grid gap-4">
-                                    <x-input.agree wire:model="accountOrder.agree_tnc" tnc/>
+                                    <x-form.agree tnc wire:model="accountOrder.agree_tnc"/>
         
                                     @if ($errors->any())
                                         <x-alert :errors="$errors->all()"/>
@@ -87,7 +87,7 @@
                     <x-slot:header>{{ __('Payment Method') }}</x-slot:header>
                     <x-payment-gateway callback="submit">
                         <div class="grid gap-4">
-                            <x-input.agree wire:model="accountOrder.agree_tnc" tnc/>
+                            <x-form.agree tnc wire:model="accountOrder.agree_tnc"/>
     
                             @if ($errors->any())
                                 <x-alert :errors="$errors->all()"/>

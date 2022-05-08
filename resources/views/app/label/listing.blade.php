@@ -1,15 +1,15 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header title="Labels">
-        <x-button icon="plus" href="{{ route('app.label.create', compact('type')) }}">
-            New Label
-        </x-button>
+        <x-button.create label="New Label" href="{{ route('app.label.create', compact('type')) }}"/>
     </x-page-header>
 
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
-            <x-sidenav>
+            <x-sidenav wire:model="type">
                 @foreach ($types as $val)
-                    <x-sidenav item href="{{ route('app.label.listing', [$val]) }}">{{ Str::headline($val) }}</x-sidenav>
+                    <x-sidenav.item :name="$val">
+                        {{ str()->headline($val) }}
+                    </x-sidenav.item>
                 @endforeach
             </x-sidenav>
         </div>
@@ -20,13 +20,15 @@
                     <x-input.sortable wire:model="labels" :config="['handle' => '.sort-handle']" class="grid divide-y">
                         @foreach ($labels as $label)
                             <div class="flex">
-                                <div class="flex-shrink-0 cursor-move sort-handle flex justify-center p-2 text-gray-400">
+                                <div class="shrink-0 cursor-move sort-handle flex justify-center p-2 text-gray-400">
                                     <x-icon name="sort-alt-2"/>
                                 </div>
                             
-                                <a href="{{ route('app.label.update', [$label['id']]) }}" class="flex-grow py-2 px-4 hover:bg-gray-100">
-                                    {{ $label['name'] }}
-                                </a>
+                                <div class="self-center">
+                                    <a href="{{ route('app.label.update', [$label['id']]) }}" class="flex-grow py-2 px-4 hover:bg-gray-100">
+                                        {{ $label['name'] }}
+                                    </a>
+                                </div>
                             </div>
                         @endforeach
                     </x-input.sortable>

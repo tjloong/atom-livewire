@@ -114,10 +114,10 @@ if (!config('atom.static_site')) {
          * Blogs
          */
         if (enabled_module('blogs')) {
-            Route::prefix('blog')->as('app.blog.')->group(function () {
-                define_route('listing', 'App\\Blog\\Listing')->name('listing');
-                define_route('create', 'App\\Blog\\Create')->name('create');
-                define_route('{id}/{tab?}', 'App\\Blog\\Update\\Index')->name('update');
+            define_route()->prefix('blog')->as('app.blog.')->group(function () {
+                define_route('listing', 'App\Blog\Listing')->name('listing');
+                define_route('create', 'App\Blog\Create')->name('create');
+                define_route('{blog}', 'App\Blog\Update\Index')->name('update');
             });
         }
 
@@ -197,10 +197,10 @@ if (!config('atom.static_site')) {
         /**
          * Label
          */
-        Route::prefix('label')->as('app.label.')->group(function () {
-            define_route('listing/{type?}', 'App\\Label\\Listing')->name('listing');
-            define_route('create/{type}', 'App\\Label\\Create')->name('create');
-            define_route('{id}', 'App\\Label\\Update')->name('update');
+        define_route()->prefix('label')->as('app.label.')->group(function () {
+            define_route('listing', 'App\Label\Listing')->name('listing');
+            define_route('create/{type}', 'App\Label\Create')->name('create');
+            define_route('{label}', 'App\Label\Update')->name('update');
         });
         
         /**

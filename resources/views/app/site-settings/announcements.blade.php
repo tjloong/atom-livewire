@@ -35,26 +35,32 @@
             <x-slot:title>{{ data_get($form, 'uid') ? 'Update' : 'Create' }} Announcement</x-slot:title>
 
             @if ($form)
-                <x-input.select
-                    wire:model="form.type"
-                    :options="$this->types"
-                    :error="$errors->first('form.type')"
-                    required
-                >
-                    {{ __('Announcement Type') }}
-                </x-input.select>
-
-                <x-input.textarea wire:model.defer="form.content" :error="$errors->first('form.content')" required>
-                    {{ __('Announcement Content') }}
-                </x-input.textarea>
-
-                <x-input.text wire:model.defer="form.url">
-                    {{ __('Announcement Link') }}
-                </x-input.text>
-
-                <x-input.checkbox wire:model="form.is_active">
-                    {{ __('Announcement is active') }}
-                </x-input.checkbox>
+                <div class="grid gap-6">
+                    <x-form.select
+                        label="Announcement Type"
+                        wire:model="form.type"
+                        :options="$this->types"
+                        :error="$errors->first('form.type')"
+                        required
+                    />
+    
+                    <x-form.textarea 
+                        label="Announcement Content"
+                        wire:model.defer="form.content" 
+                        :error="$errors->first('form.content')" 
+                        required
+                    />
+    
+                    <x-form.text 
+                        label="Announcement Link"
+                        wire:model.defer="form.url"
+                    />
+    
+                    <x-form.checkbox 
+                        label="Announcement is active"
+                        wire:model="form.is_active"
+                    />
+                </div>
             @endif
     
             <x-slot:buttons>

@@ -227,7 +227,7 @@ function youtube_vid($url)
 
     preg_match($regex, $url, $matches);
 
-    return $matches[0];
+    return collect($matches)->first();
 }
 
 /**

@@ -1,25 +1,20 @@
-<form wire:submit.prevent="submit">
-    <x-box>
-        <div class="p-5">
-            <x-slot name="header">
-                Blog SEO
-            </x-slot>
-            
-            <x-input.slug wire:model.defer="blog.slug" prefix="blogs/" placeholder="Leave empty to auto generate">
-                Slug
-            </x-input.slug>
+<x-form header="Blog SEO">
+    <x-form.slug
+        label="Slug"
+        wire:model.defer="blog.slug" 
+        prefix="blogs/"
+        placeholder="Leave empty to auto generate"
+    />
 
-            <x-input.slug wire:model.defer="blog.redirect_slug" prefix="blogs/">
-                Redirect Slug
-            </x-input.slug>
+    <x-form.slug
+        label="Redirect Slug"
+        wire:model.defer="blog.redirect_slug" 
+        prefix="blogs/"
+    />
 
-            <x-input.seo wire:model.defer="blog.seo"/>
-        </div>
+    <x-form.seo wire:model.defer="blog.seo"/>
 
-        <x-slot name="buttons">
-            <x-button type="submit" color="green" icon="check">
-                Save Blog SEO
-            </x-button>
-        </x-slot>
-    </x-box>
-</form>
+    <x-slot:foot>
+        <x-button.submit/>
+    </x-slot:foot>
+</x-form>

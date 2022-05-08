@@ -6,20 +6,18 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    public $tab;
+    public $tab = 'content';
     public $blog;
 
     protected $listeners = ['saved'];
+    protected $queryString = ['tab'];
 
     /**
      * Mount
      */
-    public function mount($id, $tab = null)
+    public function mount($blog)
     {
-        $this->blog = model('blog')->findOrFail($id);
-
-        if (!$tab) return redirect()->route('app.blog.update', [$id, $this->tabs->first()->slug]);
-        else $this->tab = $tab;
+        $this->blog = model('blog')->findOrFail($blog);
 
         breadcrumbs()->push($this->blog->title);
     }
@@ -29,11 +27,11 @@ class Index extends Component
      */
     public function getTabsProperty()
     {
-        return collect(json_decode(json_encode([
+        return [
             ['slug' => 'content', 'label' => 'Blog Content'],
             ['slug' => 'seo', 'label' => 'SEO'],
             ['slug' => 'settings', 'label' => 'Settings'],
-        ])));
+        ];
     }
 
     /**

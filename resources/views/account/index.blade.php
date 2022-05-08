@@ -4,23 +4,31 @@
             <x-sidenav wire:model="tab">
                 @foreach ($this->tabs as $item)
                     @if ($children = data_get($item, 'tabs'))
-                        <x-sidenav :group="$item['group'] ?? null">
+                        <x-sidenav.group :name="data_get($item, 'group')">
                             @foreach ($children as $child)
                                 @if ($slug = data_get($child, 'slug'))
-                                    <x-sidenav item :icon="data_get($child, 'icon')" :name="$slug">
+                                    <x-sidenav.item :icon="data_get($child, 'icon')" :name="$slug">
                                         {{ data_get($child, 'label') ?? str($slug)->headline() }}
-                                    </x-sidenav>
+                                    </x-sidenav.item>
                                 @elseif (is_string($child))
-                                    <x-sidenav item :name="$child">{{ str($child)->headline() }}</x-sidenav>
+                                    <x-sidenav.item :name="$child">
+                                        {{ str($child)->headline() }}
+                                    </x-sidenav.item>
                                 @endif
                             @endforeach
-                        </x-sidenav>
+                        </x-sidenav.group>
                     @elseif ($slug = data_get($item, 'slug'))
-                        <x-sidenav item :icon="data_get($item, 'icon')" :name="$slug">
-                            {{ data_get($item, 'label') ?? str($slug)->headline() }}
-                        </x-sidenav>
+                        <x-sidenav.group>
+                            <x-sidenav.item :icon="data_get($item, 'icon')" :name="$slug">
+                                {{ data_get($item, 'label') ?? str($slug)->headline() }}
+                            </x-sidenav.item>
+                        </x-sidenav.group>
                     @elseif (is_string($item))
-                        <x-sidenav item :name="$item">{{ str($item)->headline() }}</x-sidenav>
+                        <x-sidenav.group>
+                            <x-sidenav.item :name="$item">
+                                {{ str($item)->headline() }}
+                            </x-sidenav.item>
+                        </x-sidenav.group>
                     @endif
                 @endforeach
             </x-sidenav>

@@ -1,10 +1,8 @@
 <x-box>
     <x-slot name="header">Account Overview</x-slot>
     
-    <div class="p-5">
-        <x-input.field>
-            <x-slot name="label">Name</x-slot>
-
+    <div class="grid gap-6 p-5">
+        <x-form.field label="Name">
             <div class="grid gap-1">
                 <div>{{ $account->name }}</div>
 
@@ -15,41 +13,34 @@
                     </div>
                 @endif
             </div>
-        </x-input.field>
+        </x-form.field>
 
-        <x-input.field>
-            <x-slot name="label">Login Email</x-slot>
+        <x-form.field label="Login Email">
             {{ $account->email ?? '--' }}
-        </x-input.field>
+        </x-form.field>
 
-        <x-input.field>
-            <x-slot name="label">Agreed to T&C/Privacy Policy</x-slot>
+        <x-form.field label="Agreed to T&C/Privacy Policy">
             {{ $account->agree_tnc ? 'Yes' : 'No' }}
-        </x-input.field>
+        </x-form.field>
 
-        <x-input.field>
-            <x-slot name="label">Agreed to receiving promotions and marketing</x-slot>
+        <x-form.field label="Agreed to receiving promotions and marketing">
             {{ $account->agree_marketing ? 'Yes' : 'No' }}
-        </x-input.field>
+        </x-form.field>
 
-        <x-input.field>
-            <x-slot name="label">Join Date</x-slot>
+        <x-form.field label="Join Date">
             {{ format_date($account->created_at, 'datetime') }}
-        </x-input.field>
+        </x-form.field>
 
-        <x-input.field>
-            <x-slot name="label">Registered IP Address</x-slot>
+        <x-form.field label="Registered IP Address">
             {{ $account->data->register_geo->ip ?? '--' }}
-        </x-input.field>
+        </x-form.field>
 
-        <x-input.field>
-            <x-slot name="label">Registered From Country</x-slot>
+        <x-form.field label="Registered From Country">
             {{ $account->data->register_geo->country ?? '--' }}
-        </x-input.field>
+        </x-form.field>
 
-        <x-input.field>
-            <x-slot name="label">Status</x-slot>
+        <x-form.field label="Status">
             <x-badge>{{ $account->status }}</x-badge>
-        </x-input.field>
+        </x-form.field>
     </div>
 </x-box>

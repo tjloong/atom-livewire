@@ -21,18 +21,21 @@
                                 {{ __('Login Email') }}
                             </x-input.email>
         
-                            <x-input.password wire:model.defer="form.password" :error="$errors->first('form.password')" required>
-                                {{ __('Login Password') }}
-                            </x-input.password>
+                            <x-form.password 
+                                label="Login Password"
+                                wire:model.defer="form.password" 
+                                :error="$errors->first('form.password')" 
+                                required
+                            />
                         </div>
         
                         <div class="grid gap-4">
                             <div>
-                                <x-input.agree wire:model="form.agree_tnc" tnc/>
+                                <x-form.agree tnc wire:model="form.agree_tnc"/>
                             </div>
         
                             <div>
-                                <x-input.agree wire:model="form.agree_marketing" marketing/>
+                                <x-form.agree marketing wire:model="form.agree_marketing"/>
                             </div>
                         </div>
                     </div>

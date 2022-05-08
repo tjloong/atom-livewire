@@ -1,14 +1,9 @@
-<div class="max-w-lg mx-auto">
+<div class="max-w-screen-sm mx-auto">
     <x-page-header title="{{ $label->name }}" back>
-        <x-button icon="trash" color="red" inverted x-on:click="$dispatch('confirm', {
-            title: 'Delete Label',
-            message: 'Are you sure to delete this label?',
-            type: 'error',
-            onConfirmed: () => $wire.delete(),
-        })">
-            Delete
-        </x-button>
+        <x-button.delete inverted title="Delete Label" message="Are you sure to delete this label?"/>
     </x-page-header>
 
-    @livewire($this->component_name, ['label' => $label])
+    @if ($component = livewire_name('app/label/form'))
+        @livewire($component, ['label' => $label])
+    @endif
 </div>

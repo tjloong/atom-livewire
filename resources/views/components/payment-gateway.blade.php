@@ -15,70 +15,62 @@
             <div class="grid gap-4">
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <x-input.field x-bind:class="{ error: errors.first_name }" required>
-                            <x-slot name="label">{{ __('First Name') }}</x-slot>
+                        <x-form.field label="First Name" x-bind:class="{ error: errors.first_name }" required>
                             <input type="text" x-model="value.first_name" class="form-input w-full">
                             <div x-show="errors.first_name" class="text-sm text-red-500 font-medium mt-1">{{ __('First name is required.') }}</div>
-                        </x-input.field>
+                        </x-form.field>
                     </div>
         
                     <div>
-                        <x-input.field x-bind:class="{ error: errors.last_name }" required>
-                            <x-slot name="label">{{ __('Last Name') }}</x-slot>
+                        <x-form.field label="Last Name" x-bind:class="{ error: errors.last_name }" required>
                             <input type="text" x-model="value.last_name" class="form-input w-full">
                             <div x-show="errors.last_name" class="text-sm text-red-500 font-medium mt-1">{{ __('Last name is required.') }}</div>
-                        </x-input.field>
+                        </x-form.field>
                     </div>
                 </div>
         
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <x-input.field x-bind:class="{ error: errors.phone }" required>
-                            <x-slot name="label">{{ __('Phone') }}</x-slot>
+                        <x-form.field label="Phone" x-bind:class="{ error: errors.phone }" required>
                             <input type="text" x-model="value.phone" class="form-input w-full">                   
                             <div x-show="errors.phone" class="text-sm text-red-500 font-medium mt-1">{{ __('Phone is required.') }}</div>
-                        </x-input.field>
+                        </x-form.field>
                     </div>
         
                     <div>
-                        <x-input.field x-bind:class="{ error: errors.email }" required>
-                            <x-slot name="label">{{ __('Email') }}</x-slot>
+                        <x-form.field label="Email" x-bind:class="{ error: errors.email }" required>
                             <input type="email" x-model="value.email" class="form-input w-full">    
                             <div x-show="errors.email" class="text-sm text-red-500 font-medium mt-1">{{ __('Email is required.') }}</div>
-                        </x-input.field>
+                        </x-form.field>
                     </div>
                 </div>
         
                 <div>
-                    <x-input.field x-bind:class="{ error: errors.address }" required>
-                        <x-slot name="label">{{ __('Billing Address') }}</x-slot>
+                    <x-form.field label="Billing Address" x-bind:class="{ error: errors.address }" required>
                         <input type="text" x-model="value.address" class="form-input w-full">
                         <div x-show="errors.address" class="text-sm text-red-500 font-medium mt-1">{{ __('Address is required.') }}</div>
-                    </x-input.field>
+                    </x-form.field>
                 </div>
         
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <x-input.field x-bind:class="{ error: errors.city }" required>
-                            <x-slot name="label">{{ __('City') }}</x-slot>
+                        <x-form.field label="City" x-bind:class="{ error: errors.city }" required>
                             <input type="text" x-model="value.city" class="form-input w-full">
                             <div x-show="errors.city" class="text-sm text-red-500 font-medium mt-1">{{ __('City is required.') }}</div>
-                        </x-input.field>
+                        </x-form.field>
                     </div>
         
                     <div>
-                        <x-input.field x-bind:class="{ error: errors.postcode }" required>
-                            <x-slot name="label">{{ __('Postcode') }}</x-slot>
+                        <x-form.field label="Postcode" x-bind:class="{ error: errors.postcode }" required>
                             <input type="text" x-model="value.postcode" class="form-input w-full">
                             <div x-show="errors.postcode" class="text-sm text-red-500 font-medium mt-1">{{ __('Postcode is required.') }}</div>
-                        </x-input.field>
+                        </x-form.field>
                     </div>
                 </div>
         
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <x-input.field x-bind:class="{ error: errors.country }" required>
-                            <x-slot name="label">{{ __('Country') }}</x-slot>
+                        <x-form.field label="Country" x-bind:class="{ error: errors.country }" required>
                             <select x-model="value.country" class="form-input w-full">
                                 <option value="">-- {{ __('Select Country') }} --</option>
                                 @foreach (metadata()->countries() as $country)
@@ -86,12 +78,11 @@
                                 @endforeach
                             </select>
                             <div x-show="errors.country" class="text-sm text-red-500 font-medium mt-1">{{ __('Country is required.') }}</div>
-                        </x-input.field>
+                        </x-form.field>
                     </div>
         
                     <div x-show="value.country === 'MY'">
-                        <x-input.field x-bind:class="{ error: errors.state }" required>
-                            <x-slot name="label">{{ __('State') }}</x-slot>
+                        <x-form.field label="State" x-bind:class="{ error: errors.state }" required>
                             <select x-model="value.state" class="form-input w-full">
                                 <option value="">-- {{ __('Select State') }} --</option>
                                 @foreach (metadata()->states('MY') as $state)
@@ -99,37 +90,33 @@
                                 @endforeach
                             </select>
                             <div x-show="errors.state" class="text-sm text-red-500 font-medium mt-1">{{ __('State is required.') }}</div>
-                        </x-input.field>
+                        </x-form.field>
                     </div>
         
                     <div x-show="value.country !== 'MY'">
-                        <x-input.field required>
-                            <x-slot name="label">{{ __('State') }}</x-slot>
+                        <x-form.field label="State" required>
                             <input type="text" x-model="value.state" class="form-input w-full">
-                        </x-input.field>
+                        </x-form.field>
                     </div>
                 </div>
             </div>
 
         @elseif ($provider === 'ipay')
             <div>
-                <x-input.field x-bind:class="{ error: errors.name }" required>
-                    <x-slot name="label">{{ __('Customer Name') }}</x-slot>
+                <x-form.field label="Customer Name" x-bind:class="{ error: errors.name }" required>
                     <input type="text" x-model="value.name" class="form-input w-full">
                     <div x-show="errors.name" class="text-sm text-red-500 font-medium mt-1">{{ __('Customer name is required.') }}</div>
-                </x-input.field>
+                </x-form.field>
         
-                <x-input.field x-bind:class="{ error: errors.email }" required>
-                    <x-slot name="label">{{ __('Email') }}</x-slot>
+                <x-form.field label="Email" x-bind:class="{ error: errors.email }" required>
                     <input type="email" x-model="value.email" class="form-input w-full">    
                     <div x-show="errors.email" class="text-sm text-red-500 font-medium mt-1">{{ __('Customer email is required.') }}</div>
-                </x-input.field>
+                </x-form.field>
         
-                <x-input.field x-bind:class="{ error: errors.phone }" required>
-                    <x-slot name="label">{{ __('Phone') }}</x-slot>
+                <x-form.field label="Phone" x-bind:class="{ error: errors.phone }" required>
                     <input type="text" x-model="value.phone" class="form-input w-full">                   
                     <div x-show="errors.phone" class="text-sm text-red-500 font-medium mt-1">{{ __('Customer contact number is required.') }}</div>
-                </x-input.field>
+                </x-form.field>
             </div>
 
         @endif

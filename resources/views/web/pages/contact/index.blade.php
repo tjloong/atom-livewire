@@ -36,9 +36,12 @@
                             Your Name
                         </x-input.text>
                 
-                        <x-input.phone wire:model.defer="enquiry.phone" :error="$errors->first('enquiry.phone')" required>
-                            Contact Number
-                        </x-input.phone>
+                        <x-form.phone 
+                            label="Contact Number"
+                            wire:model.defer="enquiry.phone" 
+                            :error="$errors->first('enquiry.phone')" 
+                            required
+                        />
                 
                         <x-input.email wire:model.defer="enquiry.email" :error="$errors->first('enquiry.email')" required>
                             Contact Email

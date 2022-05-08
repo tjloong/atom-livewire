@@ -10,18 +10,14 @@ class Drawer extends Component
 
     /**
      * Contructor
-     * 
-     * @return void
      */
-    public function __construct($uid = 'drawer')
+    public function __construct($uid = null)
     {
-        $this->uid = $uid;
+        $this->uid = $uid ?? 'drawer-'.uniqid();
     }
 
     /**
-     * Render component
-     * 
-     * @return Response
+     * Render
      */
     public function render()
     {

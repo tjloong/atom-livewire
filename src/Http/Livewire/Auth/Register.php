@@ -91,7 +91,7 @@ class Register extends Component
             'data' => $this->accountMetadata(),
         ]);
 
-        $this->account->accountSetting()->create([
+        $this->account->accountSettings()->create([
             'timezone' => config('atom.timezone'), 
             'locale' => head(config('atom.locales', [])) ?? null,
         ]);

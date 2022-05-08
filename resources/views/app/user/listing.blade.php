@@ -1,9 +1,7 @@
 <div class="max-w-screen-md mx-auto">
-    @if ($this->isFullpage)
+    @if ($isFullpage)
         <x-page-header :title="__('Users')">
-            <x-button icon="plus" :href="route('app.user.create')">
-                {{ __('New User') }}
-            </x-button>
+            <x-button.create label="New User" :href="route('app.user.create')"/>
         </x-page-header>
     @endif
 
@@ -12,9 +10,7 @@
             <x-slot:header>
                 <div class="flex items-center gap-4 justify-between">
                     <div>{{ _('Users') }}</div>
-                    <x-button size="sm" icon="plus" :href="route('app.user.create', ['account' => $account->id])">
-                        {{ _('New User') }}
-                    </x-button>
+                    <x-button.create label="New User" size="sm" :href="route('app.user.create', ['account' => $account->id])"/>
                 </div>
             </x-slot:header>
         @endif
@@ -30,23 +26,23 @@
         @endif
 
         <x-slot:head>
-            <x-table head sort="name">{{ __('Name') }}</x-table>
+            <x-table.th sort="name">{{ __('Name') }}</x-table.th>
             
             @if (auth()->user()->isAccountType('root'))
-                <x-table head>{{ __('Type') }}</x-table>
+                <x-table.th>{{ __('Type') }}</x-table.th>
             @endif
             
             @module('roles')
-                <x-table head align="right">{{ __('Role') }}</x-table>
+                <x-table.th class="text-right">{{ __('Role') }}</x-table.th>
             @endmodule
 
-            <x-table head/>
+            <x-table.th/>
         </x-slot:head>
 
         <x-slot:body>
             @foreach ($this->users as $user)
-                <x-table row>
-                    <x-table cell>
+                <x-table.tr>
+                    <x-table.td>
                         @if ($user->id === auth()->id())
                             <span>{{ $user->name }} ({{ __('You') }})</span>
                         @else
@@ -59,24 +55,24 @@
                                 </div>
                             </div>
                         @endif
-                    </x-table>
+                    </x-table.td>
 
                     @if (auth()->user()->isAccountType('root'))
-                        <x-table cell>
+                        <x-table.td>
                             {{ $user->account->type }}
-                        </x-table>
+                        </x-table.td>
                     @endif
                     
                     @module('roles')
-                        <x-table cell class="text-right">
+                        <x-table.td class="text-right">
                             {{ $user->role->name ?? '--' }}
-                        </x-table>
+                        </x-table.td>
                     @endmodule
 
-                    <x-table cell class="text-right">
+                    <x-table.td class="text-right">
                         <x-badge>{{ $user->status }}</x-badge>
-                    </x-table>
-                </x-table>
+                    </x-table.td>
+                </x-table.tr>
             @endforeach
         </x-slot:body>
 

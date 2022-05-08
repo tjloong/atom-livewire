@@ -6,19 +6,23 @@
             </div>
         @endif
 
-        <div class="self-center grid gap-1">
-            @if($attributes->get('title'))
+        @isset($title)
+            <div class="self-center">
+                {{ $title }}
+            </div>
+        @elseif ($title = $attributes->get('title'))
+            <div class="self-center grid gap-1">
                 <div class="text-gray-800 font-bold truncate {{ $attributes->has('small') ? 'text-xl font-semibold' : 'text-2xl font-bold' }}">
-                    {{ $attributes->get('title') }}
+                    {{ __($title) }}
                 </div>
-            @endif
-    
-            @if($attributes->get('subtitle'))
-                <div class="text-gray-600 font-light">
-                    {{ $attributes->get('subtitle') }}
-                </div>
-            @endif
-        </div>
+        
+                @if($subtitle = $attributes->get('subtitle'))
+                    <div class="text-gray-600 font-light">
+                        {{ __($subtitle) }}
+                    </div>
+                @endif
+            </div>
+        @endif
     </div>
 
     <div class="flex-shrink-0 my-1">

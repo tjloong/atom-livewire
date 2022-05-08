@@ -51,8 +51,7 @@
         @if ($user->account_id !== auth()->user()->account_id)
             <x-box>
                 <div class="p-5">
-                    <x-input.field>
-                        <x-slot:label>{{ __('Account Name') }}</x-slot:label>
+                    <x-form.field label="Account Name">
                         <div class="text-lg font-bold">{{ $user->account->name }}</div>
                         <div class="font-medium text-gray-500">
                             @if ($email = $user->account->email)
@@ -62,7 +61,7 @@
                                 {{ $phone }}<br>
                             @endif
                         </div>
-                    </x-input.field>
+                    </x-form.field>
                 </div>
             </x-box>
         @endif

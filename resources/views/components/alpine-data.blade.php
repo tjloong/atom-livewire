@@ -72,6 +72,25 @@
             }))
         @endif
 
+        @if (in_array('seo-input', $scripts))
+            Alpine.data('seoInput', (config) => ({
+                value: {
+                    title: null,
+                    description: null,
+                    image: null,
+                },
+
+                init () {
+                    if (config.model) this.value = { ...this.value, ...this.$wire.get(config.model) }
+                    else if (config.value) this.value = { ...this.value, ...config.value }
+                },
+
+                input () {
+                    this.$nextTick(() => this.$dispatch('seo-updated', this.value))
+                }
+            }))
+        @endif
+
         @if (in_array('date-input', $scripts))
             Alpine.data('dateInput', (config) => ({
                 fp: null,
@@ -177,6 +196,58 @@
                     this.$refs.input.dispatchEvent(new Event('input', { bubble: true }))
                     this.show = false
                     this.search = null
+                },
+            }))
+        @endif
+
+        @if (in_array('title-input', $scripts))
+            Alpine.data('titleInput', (config) => ({
+                value: null,
+
+                init () {
+                    if (config.model) this.value = this.$wire.get(config.model)
+                    else if (config.value) this.value = config.value
+                },
+            }))
+        @endif
+
+        @if (in_array('tags-input', $scripts))
+            Alpine.data('tagsInput', (value, options) => ({
+                value,
+                options: [],
+
+                init () {
+                    this.options = options.map(opt => ({ ...opt, selected: this.value.includes(opt.value) }))
+                },
+
+                open () {
+                    this.$refs.dropdown.classList.remove('hidden')
+                    this.$refs.dropdown.classList.add('opacity-0')
+
+                    floatPositioning(this.$refs.input, this.$refs.dropdown, {
+                        placement: 'bottom',
+                        flip: true,
+                    })
+
+                    this.$refs.dropdown.classList.remove('opacity-0')
+                },
+
+                close () {
+                    this.$refs.dropdown.classList.add('hidden')
+                },
+                
+                toggle (val) {
+                    this.options = this.options.map(opt => {
+                        if (opt.value === val.value) opt.selected = !opt.selected
+                        return opt
+                    })
+
+                    this.$dispatch('input', this.options
+                        .filter(opt => (opt.selected))
+                        .map(opt => (opt.value))
+                    )
+
+                    this.close()
                 },
             }))
         @endif
@@ -372,9 +443,32 @@
             }))
         @endif
 
+        @if (in_array('sidenav', $scripts))
+            Alpine.data('sidenav', (config) => ({
+                show: false,
+                value: null,
+
+                init () {
+                    this.setValue()
+                    Livewire.hook('message.received', (message, component) => this.setValue())
+                },
+
+                setValue () {
+                    if (config.model) this.value = this.$wire.get(config.model)
+                    else if (config.value) this.value = config.value
+                },
+
+                select (val) {
+                    this.show = !this.show
+                    this.value = val
+                    this.$nextTick(() => this.$dispatch('input', this.value))
+                }
+            }))
+        @endif
+
         @if (in_array('table', $scripts))
-            Alpine.data('sortableTableHead', (key) => ({
-                isSorted () { 
+            Alpine.data('tableHead', (key) => ({
+                get sorted () {
                     return this.$wire.get('sortBy') === key
                 },
 

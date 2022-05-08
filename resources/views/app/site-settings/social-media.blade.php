@@ -1,22 +1,12 @@
-<form wire:submit.prevent="submit">
-    <x-box>
-        <x-slot name="header">Social Media Pages</x-slot>
+<x-form header="Social Media Pages">
+    @foreach ($platforms as $platform)
+        <x-form.text 
+            :label="str($platform)->headline()"
+            wire:model.defer="settings.{{ $platform }}"
+        />
+    @endforeach
 
-        <div class="p-5">
-            @foreach ($platforms as $platform)
-                <x-input.text wire:model.defer="settings.{{ $platform }}">
-                    <div class="flex items-center gap-1">
-                        <x-icon name="{{ $platform }}" type="logo" size="xs"/>
-                        <div>{{ str($platform)->headline() }}</div>
-                    </div>
-                </x-input.text>
-            @endforeach
-        </div>
-
-        <x-slot name="buttons">
-            <x-button type="submit" icon="check" color="green">
-                Save
-            </x-button>
-        </x-slot>
-    </x-box>
-</form>
+    <x-slot:foot>
+        <x-button.submit/>
+    </x-slot:foot>
+</x-form>

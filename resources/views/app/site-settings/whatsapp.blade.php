@@ -1,27 +1,22 @@
-<form wire:submit.prevent="submit">
-    <x-box>
-        <div class="p-5">
-            <div class="grid gap-4">
-                <x-input.checkbox wire:model="settings.whatsapp_bubble">
-                    Enable Whatsapp bubble
-                </x-input.checkbox>
+<x-form header="Whatsapp Bubble">
+    <x-form.checkbox 
+        label="Enable Whatsapp bubble"
+        wire:model="settings.whatsapp_bubble"
+    />
     
-                <div x-data="{ show: @entangle('settings.whatsapp_bubble') }" x-show="show">
-                    <x-input.phone wire:model.defer="settings.whatsapp" class="mb-0">
-                        Whatsapp Number
-                    </x-input.phone>
-        
-                    <x-input.textarea wire:model.defer="settings.whatsapp_text">
-                        Prefill Text
-                    </x-input.textarea>
-                </div>
-            </div>
-        </div>
+    <div x-data="{ show: @entangle('settings.whatsapp_bubble') }" x-show="show" class="grid gap-6">
+        <x-form.phone 
+            label="Whatsapp Number"
+            wire:model.defer="settings.whatsapp" 
+        />
 
-        <x-slot name="buttons">
-            <x-button type="submit" icon="check" color="green">
-                Save
-            </x-button>
-        </x-slot>
-    </x-box>
-</form>
+        <x-form.textarea 
+            label="Prefill Text"
+            wire:model.defer="settings.whatsapp_text"
+        />
+    </div>
+
+    <x-slot:foot>
+        <x-button.submit/>
+    </x-slot:foot>
+</x-form>

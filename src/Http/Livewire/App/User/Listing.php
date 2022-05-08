@@ -32,15 +32,9 @@ class Listing extends Component
      */
     public function mount()
     {
-        if ($this->isFullpage) breadcrumbs()->home('Users');
-    }
-
-    /**
-     * Get is fullpage property
-     */
-    public function getIsFullpageProperty()
-    {
-        return current_route('app.user.listing');
+        if ($this->isFullpage = current_route('app.user.listing')) {
+            breadcrumbs()->home('Users');
+        }
     }
 
     /**

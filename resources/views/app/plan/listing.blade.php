@@ -22,11 +22,11 @@
                             </div>
                         </div>
                         <div class="grid">
-                            @foreach ($plan->prices as $price)
+                            @foreach ($plan->planPrices as $planPrice)
                                 <div>
-                                    <span class="font-medium text-gray-500">{{ $price->currency }}</span>
-                                    <span class="font-semibold text-gray-800">{{ currency($price->amount) }}</span>
-                                    <span class="font-medium text-gray-500">{{ str($price->recurring)->headline() }}</span>
+                                    <span class="font-medium text-gray-500">{{ $planPrice->currency }}</span>
+                                    <span class="font-semibold text-gray-800">{{ currency($planPrice->amount) }}</span>
+                                    <span class="font-medium text-gray-500">{{ str($planPrice->recurring)->headline() }}</span>
                                 </div>
                             @endforeach
                         </div>

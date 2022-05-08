@@ -21,7 +21,7 @@
                     <div class="flex items-center justify-between">
                         <div>Prices</div>
         
-                        @if ($plan->prices->count())
+                        @if ($plan->planPrices->count())
                             <x-button :href="route('app.plan-price.create', [$plan->id])" icon="plus" size="xs">
                                 New Price
                             </x-button>
@@ -30,7 +30,7 @@
                 </x-slot:header>
         
                 <div class="grid divide-y">
-                    @forelse ($plan->prices as $price)
+                    @forelse ($plan->planPrices as $price)
                         <a href="{{ route('app.plan-price.update', [$price->id]) }}" class="py-2 px-4 text-gray-800 hover:bg-gray-100">
                             <div class="flex items-start justify-between">
                                 <div class="grid gap-1">

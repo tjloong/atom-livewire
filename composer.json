@@ -30,7 +30,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Jiannius\\Atom\\AtomServiceProvider"
+                "Jiannius\\Atom\\Providers\\AtomServiceProvider",
+                "Jiannius\\Atom\\Providers\\AtomComponentServiceProvider"
             ]
         }
     },

@@ -1,35 +1,35 @@
 <form wire:submit.prevent="submit" class="grid gap-4">
     <x-box>
         <div class="p-5">
-            <x-input.field>
-                <x-slot name="label">Plan</x-slot>
+            <x-form.field label="Plan">
                 <div class="font-semibold">{{ $plan->name }}</div>
                 <div class="font-medium text-gray-500">{{ $plan->excerpt }}</div>
-            </x-input.field>
+            </x-form.field>
 
-            <x-input.country wire:model="price.country">
-                Available for Country
-            </x-input.country>
+            <x-form.country 
+                label="Available for Country"
+                wire:model="price.country"
+            />
 
             @if ($this->readonly)
-                <x-input.field>
-                    <x-slot:label>Currency</x-slot:label>
+                <x-form.field label="Currency">
                     {{ $price->currency }}
-                </x-input.field>
+                </x-form.field>
 
-                <x-input.field>
-                    <x-slot:label>Price</x-slot:label>
+                <x-form.field label="Price">
                     {{ currency($price->amount) }}
-                </x-input.field>
+                </x-form.field>
 
-                <x-input.field>
-                    <x-slot:label>Expired After</x-slot:label>
+                <x-form.field label="Expired After">
                     {{ $price->is_lifetime ? 'Valid for lifetime' : $price->expired_after }}
-                </x-input.field>
+                </x-form.field>
             @else
-                <x-input.currency wire:model="price.currency" required :error="$errors->first('price.currency')">
-                    Currency
-                </x-input.currency>
+                <x-form.currency 
+                    label="Currency"
+                    wire:model="price.currency" 
+                    :error="$errors->first('price.currency')"
+                    required 
+                />
 
                 <x-input.number wire:model.defer="price.amount" required :error="$errors->first('price.amount')">
                     Price
@@ -43,9 +43,10 @@
                         </div>
 
                         <div>
-                            <x-input.checkbox wire:model="price.is_lifetime">
-                                Valid for lifetime
-                            </x-input.checkbox>
+                            <x-form.checkbox 
+                                label="Valid for lifetime"
+                                wire:model="price.is_lifetime"
+                            />
                         </div>
                     </div>
                 </x-input.field>
@@ -60,9 +61,10 @@
             </x-input.text>
 
             <div class="grid gap-4">
-                <x-input.checkbox wire:model="price.is_default">
-                    Use this price as default (if there are multiple prices).
-                </x-input.checkbox>
+                <x-form.checkbox 
+                    label="Use this price as default (if there are multiple prices)."
+                    wire:model="price.is_default"
+                />
 
                 <a class="flex items-center gap-1">
                     <x-icon name="info-circle" class="text-gray-400" size="20px"/>

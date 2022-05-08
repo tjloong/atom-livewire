@@ -1,28 +1,26 @@
-<form wire:submit.prevent="submit">
-    <x-box>
-        <div class="p-5">
-            <x-input.field>
-                <x-slot name="label">Page Name</x-slot>
-                {{ $page->name }}
-            </x-input.field>
+<x-form>
+    <x-form.field label="Page Name">
+        {{ $page->name }}
+    </x-form.field>
 
-            <x-input.text wire:model.defer="page.title">
-                Page Title
-            </x-input.text>
+    <x-form.text
+        label="Page Title"
+        wire:model.defer="page.title"
+    />
 
-            <x-input.slug wire:model.defer="page.slug" prefix="/" required>
-                Page Slug
-            </x-input.slug>
+    <x-form.slug
+        label="Page Slug"
+        wire:model.defer="page.slug" 
+        prefix="/" 
+        required
+    />
 
-            <x-input.richtext wire:model.defer="page.content">
-                Page Content
-            </x-input.richtext>
-        </div>
+    <x-form.richtext
+        label="Page Content"
+        wire:model.defer="page.content"
+    />
 
-        <x-slot name="buttons">    
-            <x-button type="submit" color="green" icon="check">
-                Save Page
-            </x-button>
-        </x-slot>
-    </x-box>
-</form>
+    <x-slot:foot>
+        <x-button.submit/>
+    </x-slot:foot>
+</x-form>

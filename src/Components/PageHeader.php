@@ -10,8 +10,6 @@ class PageHeader extends Component
 
     /**
      * Contructor
-     * 
-     * @return void
      */
     public function __construct($back = false)
     {
@@ -20,9 +18,7 @@ class PageHeader extends Component
     }
 
     /**
-     * Render component
-     * 
-     * @return Response
+     * Render
      */
     public function render()
     {

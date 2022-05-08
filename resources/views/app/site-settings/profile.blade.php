@@ -1,37 +1,35 @@
-<form wire:submit.prevent="submit">
-    <x-box>
-        <x-slot name="header">Site Profile</x-slot>
+<x-form header="Site Profile">
+    <x-form.text 
+        label="Company"
+        wire:model.defer="settings.company"
+    />
 
-        <div class="p-5">
-            <x-input.text wire:model.defer="settings.company">
-                Company
-            </x-input.text>
+    <x-form.text 
+        label="Phone"
+        wire:model.defer="settings.phone"
+    />
+        
+    <x-form.text 
+        label="Email"
+        wire:model.defer="settings.email"
+    />
 
-            <x-input.text wire:model.defer="settings.phone">
-                Phone
-            </x-input.text>
-                
-            <x-input.text wire:model.defer="settings.email">
-                Email
-            </x-input.text>
+    <x-form.textarea 
+        label="Address"
+        wire:model.defer="settings.address"
+    />
 
-            <x-input.textarea wire:model.defer="settings.address">
-                Address
-            </x-input.textarea>
+    <x-form.text 
+        label="Google Map URL"
+        wire:model.defer="settings.gmap_url"
+    />
 
-            <x-input.text wire:model.defer="settings.gmap_url">
-                Google Map URL
-            </x-input.text>
+    <x-form.textarea 
+        label="Brief Description"
+        wire:model.defer="settings.briefs"
+    />
 
-            <x-input.textarea wire:model.defer="settings.briefs">
-                Brief Description
-            </x-input.textarea>
-        </div>
-
-        <x-slot name="buttons">
-            <x-button type="submit" icon="check" color="green">
-                Save
-            </x-button>
-        </x-slot>
-    </x-box>
-</form>
+    <x-slot:foot>
+        <x-button.submit/>
+    </x-slot:foot>
+</x-form>

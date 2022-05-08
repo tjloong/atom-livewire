@@ -13,21 +13,11 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($id)
+    public function mount($label)
     {
-        $this->label = model('label')->findOrFail($id);
+        $this->label = model('label')->findOrFail($label);
 
         breadcrumbs()->push($this->label->name);
-    }
-
-    /**
-     * Get component name property
-     */
-    public function getComponentNameProperty()
-    {
-        return file_exists(resource_path('views/livewire/app/label/' . $this->label->type . '.blade.php'))
-            ? 'app.label.' . $this->label->type
-            : 'atom.label.form';
     }
 
     /**

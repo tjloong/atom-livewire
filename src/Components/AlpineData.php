@@ -15,9 +15,13 @@ class AlpineData extends Component
      */
     public function __construct($scripts = [
         'table',
+        'sidenav',
         'ic-input',
+        'seo-input',
+        'tags-input',
         'date-input',
         'phone-input',
+        'title-input',
         'image-input',
         'picker-input',
         'richtext-input',

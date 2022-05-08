@@ -1,38 +1,34 @@
-<form wire:submit.prevent="submit">
-    <x-box>
-        <div class="p-5">
-            <x-slot name="header">
-                Blog Settings
-            </x-slot>
+<x-form label="Blog Settings">
+    <x-form.image 
+        label="Cover"
+        wire:model="blog.cover_id" 
+        dimension="150x100" 
+        :placeholder="$blog->cover->url ?? null"
+    />
 
-            <x-input.image wire:model="blog.cover_id" dimension="150x100" :placeholder="$blog->cover->url ?? null">
-                Cover
-            </x-input.image>
+    <x-form.select 
+        label="Status"
+        wire:model="status" 
+        :options="[
+            ['value' => 'draft', 'label' => 'Draft'],
+            ['value' => 'published', 'label' => 'Published'],
+        ]"
+    />
 
-            <x-input.select wire:model="status" :options="[
-                ['value' => 'draft', 'label' => 'Draft'],
-                ['value' => 'published', 'label' => 'Published'],
-            ]">
-                Status
-            </x-input.select>
+    <div x-data="{ status: @entangle('status') }" x-show="status === 'published'">
+        <x-form.date 
+            label="Published Date"
+            wire:model.defer="blog.published_at"
+        />
+    </div>
 
-            <x-input.field>
-                <div x-data="{ status: @entangle('status') }" x-show="status === 'published'">
-                    <x-input.date wire:model.defer="blog.published_at">
-                        Published Date
-                    </x-input.date>
-                </div>
-            </x-input.field>
+    <x-form.tags 
+        label="Categories"
+        wire:model.defer="selectedLabels" 
+        :options="$this->labels"
+    />
 
-            <x-input.tags wire:model.defer="selectedLabels" :options="$this->labels">
-                Categories
-            </x-input.tags>
-        </div>
-
-        <x-slot name="buttons">
-            <x-button type="submit" color="green" icon="check">
-                Save Blog Settings
-            </x-button>
-        </x-slot>
-    </x-box>
-</form>
+    <x-slot:foot>
+        <x-button.submit/>
+    </x-slot:foot>
+</x-form>

@@ -1,70 +1,82 @@
-<form wire:submit.prevent="submit">
-    <x-box>
-        <x-slot name="header">Email Configurations</x-slot>
-        
-        <div class="p-5">
-            <x-input.text wire:model.defer="settings.notify_from" :error="$errors->first('settings.notify_from')" required>
-                Send Email Notification From
-            </x-input.text>
+<x-form header="Email Configurations">
+    <x-form.text 
+        label="Send Email Notification From"
+        wire:model.defer="settings.notify_from" 
+        :error="$errors->first('settings.notify_from')" 
+        required
+    />
 
-            <x-input.text wire:model.defer="settings.notify_to" :error="$errors->first('settings.notify_to')" required>
-                Send Email Notification To
-            </x-input.text>
+    <x-form.text 
+        label="Send Email Notification To"
+        wire:model.defer="settings.notify_to" 
+        :error="$errors->first('settings.notify_to')" 
+        required
+    />
 
-            <x-input.select wire:model="settings.mailer" :options="[
-                ['value' => 'smtp', 'label' => 'SMTP'],
-                ['value' => 'mailgun', 'label' => 'Mailgun'],
-            ]" required>
-                Email Provider
-            </x-input.select>
+    <x-form.select 
+        label="Email Provider"
+        wire:model="settings.mailer" 
+        :options="[
+            ['value' => 'smtp', 'label' => 'SMTP'],
+            ['value' => 'mailgun', 'label' => 'Mailgun'],
+        ]" 
+        required
+    />
 
-            <div>
-                @if ($settings['mailer'] === 'smtp')
-                    <x-input.text wire:model.defer="settings.smtp_host" :error="$errors->first('settings.smtp_host')" required>
-                        SMPT Host
-                    </x-input.text>
-            
-                    <x-input.text wire:model.defer="settings.smtp_port" :error="$errors->first('settings.smtp_port')" required>
-                        SMTP Port
-                    </x-input.text>
-            
-                    <x-input.text wire:model.defer="settings.smtp_username" :error="$errors->first('settings.smtp_username')" required>
-                        SMTP Username
-                    </x-input.text>
-            
-                    <x-input.password wire:model.defer="settings.smtp_password" :error="$errors->first('settings.smtp_password')" required>
-                        SMTP Password
-                    </x-input.password>
-            
-                    <x-input.select
-                        wire:model.defer="settings.smtp_encryption"
-                        :options="[
-                            ['value' => 'ssl', 'label' => 'SSL'],
-                            ['value' => 'tls', 'label' => 'TLS'],
-                        ]"
-                    >
-                        SMTP Encryption
-                    </x-input.select>    
-                @endif
-            </div>
+    @if ($settings['mailer'] === 'smtp')
+        <x-form.text 
+            label="SMPT Host"
+            wire:model.defer="settings.smtp_host" 
+            :error="$errors->first('settings.smtp_host')" 
+            required
+        />
 
-            <div>
-                @if ($settings['mailer'] === 'mailgun')
-                    <x-input.text wire:model.defer="settings.mailgun_domain" :error="$errors->first('settings.mailgun_domain')">
-                        Mailgun Domain
-                    </x-input.text>
+        <x-form.text 
+            label="SMTP Port"
+            wire:model.defer="settings.smtp_port" 
+            :error="$errors->first('settings.smtp_port')" 
+            required
+        />
 
-                    <x-input.text wire:model.defer="settings.mailgun_secret" :error="$errors->first('settings.mailgun_secret')">
-                        Mailgun Secret
-                    </x-input.text>
-                @endif
-            </div>
-        </div>
+        <x-form.text 
+            label="SMTP Username"
+            wire:model.defer="settings.smtp_username" 
+            :error="$errors->first('settings.smtp_username')" 
+            required
+        />
 
-        <x-slot name="buttons">
-            <x-button type="submit" color="green" icon="check">
-                Save
-            </x-button>
-        </x-slot>
-    </x-box>
-</form>
+        <x-form.text 
+            label="SMTP Password"
+            wire:model.defer="settings.smtp_password" 
+            :error="$errors->first('settings.smtp_password')" 
+            required
+        />
+
+        <x-form.select
+            label="SMTP Encryption"
+            wire:model.defer="settings.smtp_encryption"
+            :options="[
+                ['value' => 'ssl', 'label' => 'SSL'],
+                ['value' => 'tls', 'label' => 'TLS'],
+            ]"
+        />
+    @endif
+
+    @if ($settings['mailer'] === 'mailgun')
+        <x-form.text 
+            label="Mailgun Domain"
+            wire:model.defer="settings.mailgun_domain" 
+            :error="$errors->first('settings.mailgun_domain')"
+        />
+
+        <x-form.text 
+            label="Mailgun Secret"
+            wire:model.defer="settings.mailgun_secret" 
+            :error="$errors->first('settings.mailgun_secret')"
+        />
+    @endif
+
+    <x-slot:foot>
+        <x-button.submit/>
+    </x-slot:foot>
+</x-form>

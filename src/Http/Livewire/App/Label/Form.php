@@ -29,9 +29,9 @@ class Form extends Component
     }
 
     /**
-     * Save
+     * Submit
      */
-    public function save()
+    public function submit()
     {
         $this->resetValidation();
         $this->validate();

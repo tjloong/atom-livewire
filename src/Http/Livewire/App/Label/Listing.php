@@ -14,8 +14,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        if (!$this->type) return redirect()->route('app.label.listing', [$this->types[0]]);
-
+        $this->type = $this->type ?? $this->types[0];
         $this->labels = $this->getLabels();
 
         breadcrumbs()->home('Labels');
@@ -50,6 +49,8 @@ class Listing extends Component
         foreach ($labels as $index => $label) {
             model('label')->where('id', $label['id'])->update(['seq' => $index + 1]);
         }
+
+        $this->dispatchBrowserEvent('toast', ['message' => __('Labels Updated'), 'type' => 'success']);
     }
 
     /**

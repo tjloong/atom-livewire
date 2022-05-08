@@ -16,11 +16,11 @@
 
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
-            <x-sidenav>
-                @foreach ($this->tabs as $val)
-                    <x-sidenav item :href="route('app.blog.update', [$blog->id, $val->slug])">
-                        {{ $val->label ?? str()->headline($val->slug) }}
-                    </x-sidenav>
+            <x-sidenav wire:model="tab">
+                @foreach ($this->tabs as $item)
+                    <x-sidenav.item :name="data_get($item, 'slug')">
+                        {{ data_get($item, 'label') ?? str(data_get($item, 'slug'))->headline() }}
+                    </x-sidenav.item>
                 @endforeach
             </x-sidenav>
         </div>

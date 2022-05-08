@@ -21,15 +21,16 @@
                 </a>
             </x-slot>
 
-            <div class="md:w-[350px]">
-                <div class="p-5">
-                    <x-input.date wire:model.defer="dateFrom">
-                        From
-                    </x-input.date>
-    
-                    <x-input.date wire:model.defer="dateTo">
-                        To
-                    </x-input.date>
+            <div>
+                <div class="grid gap-6 p-5">
+                    <x-form.date 
+                        label="From"
+                        wire:model.defer="dateFrom"
+                    />
+                    <x-form.date 
+                        label="To"
+                        wire:model.defer="dateTo"
+                    />
                 </div>
 
                 <div class="bg-gray-100 p-4">

@@ -33,9 +33,10 @@
                 Downgradable To
             </x-input.tags>
 
-            <x-input.checkbox wire:model="plan.is_active">
-                Plan is active
-            </x-input.checkbox>
+            <x-form.checkbox 
+                label="Plan is active"
+                wire:model="plan.is_active"
+            />
         </div>
 
         <x-slot name="buttons">

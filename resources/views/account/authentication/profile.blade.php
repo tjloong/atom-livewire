@@ -1,21 +1,21 @@
-<form wire:submit.prevent="submit">
-    <x-box>
-        <x-slot name="header">Change Login Information</x-slot>
+<x-form>
+    <x-slot:header>{{ __('Change Login Information') }}</x-slot:header>
 
-        <div class="p-5">
-            <x-input.text wire:model.defer="user.name" :error="$errors->first('user.name')" required>
-                Login Name
-            </x-input.text>
+    <x-form.text 
+        label="Login Name"
+        wire:model.defer="user.name" 
+        :error="$errors->first('user.name')" 
+        required
+    />
 
-            <x-input.email wire:model.defer="user.email" :error="$errors->first('user.email')" required>
-                Login Email
-            </x-input.email>
-        </div>
+    <x-form.email 
+        label="Login Email"
+        wire:model.defer="user.email" 
+        :error="$errors->first('user.email')" 
+        required
+    />
 
-        <x-slot name="buttons">
-            <x-button icon="check" color="green" type="submit">
-                Update Profile
-            </x-button>
-        </x-slot>
-    </x-box>
-</form>
+    <x-slot:foot>
+        <x-button.submit label="Update Profile"/>
+    </x-slot:foot>
+</x-form>
