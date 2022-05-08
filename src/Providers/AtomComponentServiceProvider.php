@@ -25,8 +25,6 @@ class AtomComponentServiceProvider extends ServiceProvider
     public function boot()
     {
         $components = [
-            'ga',
-            'gtm',
             'seo',
             'box',
             'tabs',
@@ -41,7 +39,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'loader',
             'notify',
             'drawer',
-            'fbpixel',
             'stat-box',
             'dropdown',
             'checkbox',
@@ -53,6 +50,10 @@ class AtomComponentServiceProvider extends ServiceProvider
             'page-header',
             'breadcrumbs',
             'payment-gateway',
+            
+            'analytics.ga',
+            'analytics.gtm',
+            'analytics.fbpixel',
             
             'button.index',
             'button.create',

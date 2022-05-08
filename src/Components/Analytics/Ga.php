@@ -1,8 +1,7 @@
 <?php
 
-namespace Jiannius\Atom\Components;
+namespace Jiannius\Atom\Components\Analytics;
 
-use Jiannius\Atom\Models\SiteSetting;
 use Illuminate\View\Component;
 
 class Ga extends Component
@@ -11,10 +10,7 @@ class Ga extends Component
     public $noscript;
 
     /**
-     * Create the component instance.
-     *
-     * @param boolean $noscript
-     * @return void
+     * Constructor
      */
     public function __construct($noscript = false)
     {
@@ -23,12 +19,10 @@ class Ga extends Component
     }
 
     /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
+     * Render
      */
     public function render()
     {
-        return view('atom::components.ga');
+        return view('atom::components.analytics.ga');
     }
 }

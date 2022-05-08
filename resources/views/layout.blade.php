@@ -29,16 +29,16 @@
     @stack('styles')
     
     @if ($enabled = $tracking ?? true)
-        <x-gtm/>
-        <x-ga/>
-        <x-fbpixel/>
+        <x-analytics.gtm/>
+        <x-analytics.ga/>
+        <x-analytics.fbpixel/>
     @endif
 </head>
 
 <body class="font-{{ $fontTheme ?? 'sans' }} antialiased">
     @if ($enabled = $tracking ?? true)
-        <x-gtm noscript/>
-        <x-fbpixel noscript/>
+        <x-analytics.gtm noscript/>
+        <x-analytics.fbpixel noscript/>
     @endif
 
     @yield('content')
