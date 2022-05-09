@@ -40,7 +40,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'notify',
             'drawer',
             'stat-box',
-            'dropdown',
             'checkbox',
             'file-card',
             'back-button',
@@ -49,7 +48,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'page-header',
             'breadcrumbs',
             'payment-gateway',
-
+            
             'admin-panel.index',
             'admin-panel.aside',
             
@@ -61,6 +60,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'button.create',
             'button.submit',
             'button.delete',
+
+            'dropdown.index',
+            'dropdown.item',
             
             'table.index',
             'table.th',

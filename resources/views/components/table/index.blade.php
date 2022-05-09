@@ -43,15 +43,36 @@
                     </div>
                 @endif
 
-                @if ($attributes->get('total') && $attributes->get('export'))
-                    <a
-                        x-data
-                        x-tooltip="Export"
-                        wire:click.prevent="export"
-                        class="p-1.5 rounded-md flex items-center justify-center text-gray-900 hover:bg-gray-100 hover:border hover:shadow"
-                    >
-                        <x-icon name="download" size="18px" />
-                    </a>
+                @if ($attributes->get('total'))
+                    @if ($export = $attributes->get('export'))
+                        @if (is_array($export))
+                            <x-dropdown right>
+                                <x-slot:trigger>
+                                    <div class="p-1.5 rounded-md flex items-center justify-center text-gray-900 hover:bg-gray-100 hover:border hover:shadow">
+                                        <x-icon name="download" size="18px"/>
+                                    </div>
+                                </x-slot:trigger>
+
+                                @foreach ($export as $val)
+                                    <x-dropdown.item 
+                                        :label="data_get($val, 'label')"
+                                        wire:click="export('{{ data_get($val, 'value') }}')"
+                                        class="cursor-pointer"
+                                    />
+                                @endforeach
+                            </x-dropdown>
+                        @else
+                            <a
+                                x-data
+                                x-tooltip="Export"
+                                wire:click.prevent="export"
+                                class="p-1.5 rounded-md flex items-center justify-center text-gray-900 hover:bg-gray-100 hover:border hover:shadow"
+                            >
+                                <x-icon name="download" size="18px" />
+                            </a>
+                        @endif
+                    @endif
+                    
                 @endif
                     
                 @isset($filters)

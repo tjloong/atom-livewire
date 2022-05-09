@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Dashboard">
         <x-dropdown right>
-            <x-slot name="trigger">
+            <x-slot:trigger>
                 <a class="flex items-center bg-gray-200 py-2 px-3 rounded-md space-x-2 text-gray-800">
                     <x-icon name="calendar" class="text-gray-500"/>
         
@@ -19,25 +19,19 @@
         
                     <x-icon name="chevron-down"/>
                 </a>
-            </x-slot>
+            </x-slot:trigger>
 
-            <div>
-                <div class="grid gap-6 p-5">
-                    <x-form.date 
-                        label="From"
-                        wire:model.defer="dateFrom"
-                    />
-                    <x-form.date 
-                        label="To"
-                        wire:model.defer="dateTo"
-                    />
-                </div>
+            <div class="grid gap-6 p-5">
+                <x-form.date 
+                    label="From"
+                    wire:model.defer="dateFrom"
+                />
+                <x-form.date 
+                    label="To"
+                    wire:model.defer="dateTo"
+                />
 
-                <div class="bg-gray-100 p-4">
-                    <x-button class="w-full" color="green" wire:click="$refresh" x-on:click="$dispatch('close')">
-                        Apply
-                    </x-button>
-                </div>
+                <x-button label="Apply" color="green" wire:click="$refresh"/>
             </div>
         </x-dropdown>
     </x-page-header>

@@ -6,12 +6,13 @@
             </x-slot:trigger>
 
             <div class="grid divide-y">
-                <x-dropdown item class="cursor-pointer" wire:click="download('invoice')">
-                    {{ __('Download Invoice') }}
-                </x-dropdown>
-                <x-dropdown item class="cursor-pointer" wire:click="download('receipt')">
-                    {{ __('Download Receipt') }}
-                </x-dropdown>
+                @foreach (['invoice', 'receipt'] as $val)
+                    <x-dropdown.item 
+                        :label="str($val)->headline()"
+                        wire:click="download('{{ $val }}')"
+                        class="cursor-pointer"
+                    />
+                @endforeach
             </div>
         </x-dropdown>
     </x-page-header>

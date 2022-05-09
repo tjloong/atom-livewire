@@ -76,7 +76,9 @@
                 </div>
             </x-slot>
 
-            {{ $links }}
+            @isset($links)
+                {{ $links }}
+            @endisset
         </x-builder.navbar>
 
         <x-breadcrumbs class="bg-white py-1 px-4 shadow"/>
