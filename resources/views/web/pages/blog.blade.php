@@ -26,7 +26,7 @@
             </div>
         @endif
     
-        <div class="grid gap-6 md:gap-0 md:grid-cols-12">
+        <div class="grid gap-6 md:grid-cols-12 {{ $this->blog ? 'md:gap-0' : 'md:gap-10' }}">
             @if ($this->blog)
                 <div class="md:col-span-8">
                     <div class="grid gap-10">

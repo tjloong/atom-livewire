@@ -4,7 +4,7 @@
         
         <div class="p-5 grid gap-4">
             @if (collect($announcements)->count())
-                <x-input.sortable wire:model="announcements" :config="['handle' => '.sort-handle']" class="grid gap-2">
+                <x-form.sortable wire:model="announcements" :config="['handle' => '.sort-handle']" class="grid gap-2">
                     @foreach ($announcements as $announcement)
                         <div class="flex items-center gap-2">
                             <div class="shrink-0 cursor-move sort-handle flex justify-center text-gray-400">
@@ -19,7 +19,7 @@
                             <x-badge>{{ data_get($announcement, 'is_active') ? __('active') : __('inactive') }}</x-badge>
                         </div>
                     @endforeach
-                </x-input.sortable>
+                </x-form.sortable>
             @endif
 
             <div class="flex items-center gap-2">

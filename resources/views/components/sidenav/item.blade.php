@@ -4,7 +4,9 @@
             <x-icon :name="$icon" :type="$attributes->get('icon-type') ?? 'regular'"/>
         @endif
 
-        {{ $slot }}
+        @if ($label = $attributes->get('label')) {{ __($label) }}
+        @else {{ $slot }}
+        @endif
     </div>
 @else
     <div 
@@ -35,7 +37,9 @@
         @endif
 
         <div class="grow">
-            {{ $slot }}
+            @if ($label = $attributes->get('label')) {{ __($label) }}
+            @else {{ $slot }}
+            @endif
         </div>
 
         <div x-show="active && !show" class="shrink-0 flex items-center justify-center md:hidden">

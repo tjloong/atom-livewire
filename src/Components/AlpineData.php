@@ -23,6 +23,7 @@ class AlpineData extends Component
         'phone-input',
         'title-input',
         'image-input',
+        'amount-input',
         'picker-input',
         'richtext-input',
         'sortable-input',

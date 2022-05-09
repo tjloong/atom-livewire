@@ -9,6 +9,8 @@ class Index extends Component
     public $tab = 'overview';
     public $account;
 
+    protected $queryString = ['tab'];
+
     /**
      * Mount
      */

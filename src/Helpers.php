@@ -320,7 +320,7 @@ function html_excerpt($html)
     $content = strip_tags($content);
     $content = html_entity_decode($content);
     $content = urldecode($content);
-    $content = preg_replace('/[^A-Za-z0-9\,\.\’\‘\";]/', ' ', $content);
+    $content = preg_replace('/[^A-Za-z0-9\,\.\’\‘\";?]/', ' ', $content);
     $content = preg_replace('/ +/', ' ', $content);
     $content = trim($content);
     $length = str()->length($content);

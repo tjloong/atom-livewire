@@ -5,3 +5,7 @@
 .ck.ck-content.ck-editor__editable {
     min-height: 250px;
 }
+
+.ck.ck-toolbar.ck-toolbar_grouping > .ck-toolbar__items {
+    flex-wrap: wrap;
+}

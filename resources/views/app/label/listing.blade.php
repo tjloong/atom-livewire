@@ -17,7 +17,7 @@
         <div class="md:col-span-9">
             @if (count($labels))
                 <x-box>
-                    <x-input.sortable wire:model="labels" :config="['handle' => '.sort-handle']" class="grid divide-y">
+                    <x-form.sortable wire:model="labels" :config="['handle' => '.sort-handle']" class="grid divide-y">
                         @foreach ($labels as $label)
                             <div class="flex">
                                 <div class="shrink-0 cursor-move sort-handle flex justify-center p-2 text-gray-400">
@@ -31,7 +31,7 @@
                                 </div>
                             </div>
                         @endforeach
-                    </x-input.sortable>
+                    </x-form.sortable>
                 </x-box>
             @else
                 <x-box>
