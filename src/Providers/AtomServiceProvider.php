@@ -158,12 +158,6 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.app.user.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Update');
         Livewire::component('atom.app.user.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Form');
 
-        // role
-        Livewire::component('atom.role.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Role\\Listing');
-        Livewire::component('atom.role.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Role\\Create');
-        Livewire::component('atom.role.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Role\\Update');
-        Livewire::component('atom.role.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\Role\\Form');
-
         // permission
         Livewire::component('atom.permission.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Permission\\Listing');
 
@@ -209,6 +203,18 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.label.create' => 'App\Label\Create',
             'atom.app.label.update' => 'App\Label\Update',
             'atom.app.label.form' => 'App\Label\Form',
+
+            // tax
+            'atom.app.tax.listing' => 'App\Tax\Listing',
+            'atom.app.tax.create' => 'App\Tax\Create',
+            'atom.app.tax.update' => 'App\Tax\Update',
+            'atom.app.tax.form' => 'App\Tax\Form',
+
+            // role
+            'atom.app.role.listing' => 'App\Role\Listing',
+            'atom.app.role.create' => 'App\Role\Create',
+            'atom.app.role.update' => 'App\Role\Update',
+            'atom.app.role.form' => 'App\Role\Form',
 
             // site settings
             'atom.app.site-settings.index' => 'App\SiteSettings\Index',

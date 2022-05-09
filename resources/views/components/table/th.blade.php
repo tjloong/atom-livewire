@@ -12,14 +12,18 @@
                 class="flex items-center gap-1 py-1"
             >
                 <a x-on:click.prevent="sort()" {{ $attributes->class(['grow', 'text-left', 'text-gray-600']) }}">
-                    {{ $slot }}
+                    @if ($label = $attributes->get('label')) {{ __($label) }}
+                    @else {{ $slot }}
+                    @endif
                 </a>
                 <x-icon x-show="sorted && $wire.get('sortOrder') === 'desc'" name="chevron-up" size="xs"/>
                 <x-icon x-show="sorted && $wire.get('sortOrder') === 'asc'" name="chevron-down" size="xs"/>
             </div>
         @else
             <div {{ $attributes->class(['text-gray-500 py-1 px-2', 'text-left']) }}">
-                {{ $slot }}
+                @if ($label = $attributes->get('label')) {{ __($label) }}
+                @else {{ $slot }}
+                @endif
             </div>
         @endif
     </th>

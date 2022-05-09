@@ -146,8 +146,8 @@ if (!config('atom.static_site')) {
          */
         if (config('atom.accounts.register')) {
             Route::prefix('account')->as('app.account.')->group(function() {
-                define_route('listing', 'App\\Account\\Listing')->name('listing');
-                define_route('{account}', 'App\\Account\\Update\\Index')->name('update');
+                define_route('listing', 'App\Account\Listing')->name('listing');
+                define_route('{account}', 'App\Account\Update\Index')->name('update');
             });
         }
 
@@ -156,19 +156,30 @@ if (!config('atom.static_site')) {
          */
         if (enabled_module('plans')) {
             define_route()->prefix('plan')->as('app.plan.')->group(function() {
-                define_route('listing', 'App\\Plan\\Listing')->name('listing');
-                define_route('create', 'App\\Plan\\Create')->name('create');
-                define_route('{id}', 'App\\Plan\\Update')->name('update');
+                define_route('listing', 'App\Plan\Listing')->name('listing');
+                define_route('create', 'App\Plan\Create')->name('create');
+                define_route('{id}', 'App\Plan\Update')->name('update');
             });
 
             define_route()->prefix('plan-price')->as('app.plan-price.')->group(function() {
-                define_route('create/{id}', 'App\\PlanPrice\\Create')->name('create');
-                define_route('{id}', 'App\\PlanPrice\\Update')->name('update');
+                define_route('create/{id}', 'App\PlanPrice\Create')->name('create');
+                define_route('{id}', 'App\PlanPrice\Update')->name('update');
             });
 
             define_route()->prefix('account-payment')->as('app.account-payment.')->group(function() {
                 define_route('listing', 'App\AccountPayment\Listing')->name('listing');
                 define_route('{accountPayment}', 'App\AccountPayment\Update')->name('update');
+            });
+        }
+
+        /**
+         * Taxes
+         */
+        if (enabled_module('taxes')) {
+            define_route()->prefix('tax')->as('app.tax.')->group(function() {
+                define_route('listing', 'App\Tax\Listing')->name('listing');
+                define_route('create', 'App\Tax\Create')->name('create');
+                define_route('{tax}', 'App\Tax\Update')->name('update');
             });
         }
 
