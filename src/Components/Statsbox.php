@@ -4,13 +4,13 @@ namespace Jiannius\Atom\Components;
 
 use Illuminate\View\Component;
 
-class Statbox extends Component
+class Statsbox extends Component
 {
     /**
      * Render
      */
     public function render()
     {
-        return view('atom::components.statbox');
+        return view('atom::components.statsbox');
     }
 }

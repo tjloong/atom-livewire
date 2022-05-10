@@ -5,24 +5,24 @@
     
     <div class="grid gap-6 md:grid-cols-4">
         @if ($this->blogs)
-            <x-statbox 
+            <x-statsbox 
                 title="Total Articles"
                 :count="data_get($this->blogs, 'count')"
             />
 
-            <x-statbox 
+            <x-statsbox 
                 title="Total Published"
                 :count="data_get($this->blogs, 'published')"
             />
         @endif
 
         @if ($this->enquiries)
-            <x-statbox 
+            <x-statsbox 
                 title="Total Enquiries"
                 :count="data_get($this->enquiries, 'count')"
             />
 
-            <x-statbox 
+            <x-statsbox 
                 title="Pending Enquiries"
                 :count="data_get($this->enquiries, 'pending')"
             />
