@@ -4,7 +4,7 @@
     @endif
 
     <div 
-        x-data="phoneInput(@js([
+        x-data="formPhone(@js([
             'code' => '+60',
             'model' => $attributes->wire('model')->value(),
             'value' => $attributes->get('value'),

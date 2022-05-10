@@ -1,4 +1,4 @@
-<div x-data="seoInput(@js([
+<div x-data="formSeo(@js([
     'model' => $attributes->wire('model')->value(),
     'value' => $attributes->get('value'),
 ]))" class="grid gap-6">

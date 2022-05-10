@@ -4,7 +4,7 @@
     @endif
 
     <div
-        x-data="tagsInput(
+        x-data="formTags(
             @entangle($attributes->wire('model')->value()), 
             @js($attributes->get('options'))
         )"

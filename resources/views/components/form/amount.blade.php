@@ -4,7 +4,7 @@
     @endif
 
     <div 
-        x-data="amountInput(
+        x-data="formAmount(
             @if ($wire = $attributes->wire('model')->value()) $wire.get('{{ $wire }}')
             @elseif ($value = $attributes->get('value')) @js($value)
             @endif

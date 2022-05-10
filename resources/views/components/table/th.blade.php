@@ -7,7 +7,7 @@
     <th class="py-1 px-2 bg-gray-100 font-medium text-sm uppercase border-b border-gray-200 leading-6 tracking-wider">
         @if ($sort = $attributes->get('sort'))
             <div 
-                x-data="tableHead('{{ $attributes->get('sort') }}')" 
+                x-data="tableTh('{{ $attributes->get('sort') }}')" 
                 x-bind:class="sorted ? 'bg-gray-200 rounded px-3' : 'px-2'"
                 class="flex items-center gap-1 py-1"
             >

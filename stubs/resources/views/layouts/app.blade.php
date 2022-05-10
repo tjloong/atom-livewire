@@ -4,6 +4,10 @@
     <script src="{{ mix('js/app.js') }}" defer></script>
 @endpush
 
+@push('vendors')
+    <x-script.vendor/>
+@endpush
+
 @section('content')
     <x-admin-panel>
         <x-slot:links>

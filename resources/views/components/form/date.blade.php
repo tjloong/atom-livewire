@@ -4,7 +4,7 @@
     @endif
 
     <div
-        x-data="dateInput(@js([
+        x-data="formDate(@js([
             'model' => $attributes->wire('model')->value(),
             'value' => $attributes->get('value'),
             'settings' => [

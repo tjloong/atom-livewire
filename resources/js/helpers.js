@@ -71,7 +71,7 @@ global.dd = console.log.bind(console)
 
 // floating element positioning
 global.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => {
-    const { computePosition, flip, shift, offset, autoPlacement } = FloatingUIDOM
+    const { computePosition, flip, shift, offset, autoPlacement } = window.FloatingUIDOM
 
     const middleware = []
     if (config.offset) middleware.push(offset(config.offset))
@@ -82,7 +82,7 @@ global.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => 
     const options = {}
     if (config.placement) options.placement = config.placement
     if (middleware.length) options.middleware = middleware
-    
+
     computePosition(refEl, floatEl, options).then(({x, y}) => {
         Object.assign(floatEl.style, { left: `${x}px`, top: `${y}px` })
     })

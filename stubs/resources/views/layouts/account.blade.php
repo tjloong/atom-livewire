@@ -1,11 +1,11 @@
-@extends('atom::layout', ['noindex' => true, 'tracking' => false, 'vendors' => ['floating-ui']])
+@extends('atom::layout')
 
 @push('scripts')
     <script src="{{ mix('js/web.js') }}" defer></script>
 @endpush
 
 @section('content')
-    <x-alpine-data/>
+    <x-script.alpine/>
     <x-notify/>
     <x-loader/>
 

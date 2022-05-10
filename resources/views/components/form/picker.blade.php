@@ -3,7 +3,7 @@
         <x-slot:label>{{ $label }}</x-slot:label>
     @endif
 
-    <div x-data="pickerInput('{{ $getter }}', '{{ $labelKey }}')">
+    <div x-data="formPicker('{{ $getter }}', '{{ $labelKey }}')">
         @isset($trigger)
             <div x-on:click.prevent="open()">
                 {{ $trigger }}

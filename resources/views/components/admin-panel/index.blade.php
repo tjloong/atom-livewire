@@ -1,4 +1,4 @@
-<x-alpine-data/>
+<x-script.alpine/>
 <x-notify/>
 <x-loader/>
 

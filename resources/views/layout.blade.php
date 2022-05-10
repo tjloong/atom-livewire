@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <x-seo :noindex="$noindex ?? false"/>
+    <x-seo :noindex="isset($indexing) ? !$indexing : true"/>
 
     <link rel="shortcut icon" href="{{ $favicon ?? asset('storage/img/favicon.png') }}">
     <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'>
@@ -28,15 +28,17 @@
 
     @stack('styles')
     
-    @if ($enabled = $tracking ?? true)
+    @if ($enabled = $analytics ?? false)
         <x-analytics.gtm/>
         <x-analytics.ga/>
         <x-analytics.fbpixel/>
     @endif
+
+    @stack('vendors')
 </head>
 
 <body class="font-{{ $fontTheme ?? 'sans' }} antialiased">
-    @if ($enabled = $tracking ?? true)
+    @if ($enabled = $analytics ?? false)
         <x-analytics.gtm noscript/>
         <x-analytics.fbpixel noscript/>
     @endif
@@ -46,20 +48,6 @@
     @if ($enabled = $livewire ?? true)
         @livewireScripts
     @endif
-    
-    {{-- Vendor scripts --}}
-    @foreach ([
-        'floating-ui' => [
-            'https://unpkg.com/@floating-ui/core@0.1.2/dist/floating-ui.core.min.js',
-            'https://unpkg.com/@floating-ui/dom@0.1.2/dist/floating-ui.dom.min.js',
-        ],
-    ] as $key => $scripts)
-        @if (in_array($key, $vendors ?? []))
-            @foreach ((array)$scripts as $script)
-                <script src="{{ $script }}"></script>
-            @endforeach
-        @endif
-    @endforeach
 
     @stack('scripts')
 </body>

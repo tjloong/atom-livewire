@@ -1,4 +1,4 @@
-<div x-data="titleInput(@js([
+<div x-data="formTitle(@js([
     'model' => $attributes->wire('model')->value(),
     'value' => $attributes->get('value'),
 ]))" class="relative">

@@ -3,7 +3,7 @@
         <x-slot:label>{{ $label }}</x-slot:label>
     @endif
 
-    <div x-data="imageInput(@js([
+    <div x-data="formImage(@js([
         'model' => $attributes->wire('model')->value(),
         'value' => $attributes->get('value'),
         'shape' => $attributes->get('shape') ?? 'square',

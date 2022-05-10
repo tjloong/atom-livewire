@@ -4,7 +4,7 @@
     @endif
 
     <div
-        x-data="icInput(@js([
+        x-data="formIc(@js([
             'focus' => $attributes->get('focus') ?? false,
             'model' => $attributes->wire('model')->value(),
             'value' => $attributes->get('value'),

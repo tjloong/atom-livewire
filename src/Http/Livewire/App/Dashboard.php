@@ -6,8 +6,7 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    public $dateFrom;
-    public $dateTo;
+    public $date;
 
     /**
      * Mount
@@ -15,9 +14,11 @@ class Dashboard extends Component
     public function mount()
     {
         breadcrumbs()->home('Dashboard');
-        
-        $this->dateFrom = today()->subDays(30);
-        $this->dateTo = today();
+
+        $this->date = [
+            format_date(today()->startOfDay()->subDays(30), 'carbon')->toDateString(),
+            format_date(now(), 'carbon')->toDateString(),
+        ];
     }
 
     /**
@@ -28,8 +29,8 @@ class Dashboard extends Component
         if (!enabled_module('blogs')) return;
 
         return [
-            'count' => model('blog')->whereBetween('created_at', [$this->dateFrom, $this->dateTo])->count(),
-            'published' => model('blog')->whereBetween('published_at', [$this->dateFrom, $this->dateTo])->count(),
+            'count' => model('blog')->whereBetween('created_at', $this->date)->count(),
+            'published' => model('blog')->whereBetween('published_at', $this->date)->count(),
         ];
     }
 
@@ -41,21 +42,16 @@ class Dashboard extends Component
         if (!enabled_module('enquiries')) return;
 
         return [
-            'count' => model('enquiry')->whereBetween('created_at',[$this->dateFrom, $this->dateTo])->count(),
-            'pending' => model('enquiry')->whereBetween('created_at',[$this->dateFrom, $this->dateTo])->where('status', 'pending')->count(),
+            'count' => model('enquiry')->whereBetween('created_at', $this->date)->count(),
+            'pending' => model('enquiry')->whereBetween('created_at', $this->date)->where('status', 'pending')->count(),
         ];
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
+     * Render
      */
     public function render()
     {
-        return view('atom::app.dashboard', [
-            'blogs' => $this->blogs,
-            'enquiries' => $this->enquiries,
-        ]);
+        return view('atom::app.dashboard');
     }
 }

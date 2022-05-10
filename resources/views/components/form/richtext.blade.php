@@ -3,7 +3,7 @@
         <x-slot:label>{{ $label }}</x-slot:label>
     @endif
 
-    <div wire:ignore x-data="richtextInput(@js([
+    <div wire:ignore x-data="formRichtext(@js([
         'uid' => $uid,
         'model' => $attributes->wire('model')->value(),
         'value' => $attributes->get('value'),

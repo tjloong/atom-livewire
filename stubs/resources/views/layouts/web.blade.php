@@ -1,4 +1,4 @@
-@extends('atom::layout')
+@extends('atom::layout', ['indexing' => true, 'analytics' => true])
 
 @push('scripts')
     <script src="{{ mix('js/web.js') }}" defer></script>
