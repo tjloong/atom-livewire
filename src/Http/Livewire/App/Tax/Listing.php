@@ -34,6 +34,7 @@ class Listing extends Component
     public function getTaxesProperty()
     {
         return model('tax')
+            ->when(model('tax')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate(30);

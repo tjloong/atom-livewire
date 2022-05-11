@@ -4,10 +4,12 @@ namespace Jiannius\Atom\Models;
 
 use Jiannius\Atom\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
+use Jiannius\Atom\Traits\HasFilters;
 
 class Label extends Model
 {
     use HasSlug;
+    use HasFilters;
 
     protected $guarded = [];
 
