@@ -13,16 +13,16 @@
     @endif
 
     <div {{ $attributes->merge(['class' => 'text-5xl font-bold']) }}>
-        @if ($currency && $amount)
+        @if ($currency && !is_null($amount))
             <div class="flex gap-2">
                 <div class="text-lg font-medium text-gray-400">{{ $currency }}</div>
                 {{ currency($amount) }}
             </div>
-        @elseif ($amount)
+        @elseif (!is_null($amount))
             {{ currency($amount) }}
-        @elseif ($percentage)
+        @elseif (!is_null($percentage))
             {{ number_format($percentage, 2) }}%
-        @elseif ($count)
+        @elseif (!is_null($count))
             {{ $count }}
         @elseif (!$slot->isNotEmpty())
             {{ $slot }}

@@ -31,9 +31,11 @@
                 ]) }}
             >
                 <div class="px-6 pt-4 flex items-center justify-between">
-                    <div class="font-semibold text-lg">
-                        {{ $title ?? '' }}
-                    </div>
+                    @if ($header = $attributes->get('header'))
+                        <div class="font-semibold text-lg">{{ __($header) }}</div>
+                    @elseif (isset($header))
+                        <div class="font-semibold text-lg">{{ $header }}</div>
+                    @endif
 
                     <a class="text-gray-500 flex items-center justify-center" x-on:click.prevent="close()">
                         <x-icon name="x"/>

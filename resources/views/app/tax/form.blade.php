@@ -6,9 +6,11 @@
         required
     />
 
-    <x-form.country
+    <x-form.picker
         label="Country"
         wire:model="tax.country"
+        options="country"
+        :selected="$tax->country"
         required
     />
 

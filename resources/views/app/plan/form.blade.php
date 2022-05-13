@@ -29,14 +29,20 @@
         wire:model.defer="plan.cta"
     />
 
-    <x-form.tags 
+    <x-form.picker 
         label="Upgradable To"
-        wire:model.defer="upgradables" :options="$this->otherPlans"
+        wire:model="upgradables" 
+        :options="$this->otherPlans->toArray()"
+        :selected="$upgradables"
+        multiple
     />
 
-    <x-form.tags 
+    <x-form.picker 
         label="Downgradable To"
-        wire:model.defer="downgradables" :options="$this->otherPlans"
+        wire:model="downgradables" 
+        :options="$this->otherPlans->toArray()"
+        :selected="$downgradables"
+        multiple
     />
 
     <x-form.checkbox 

@@ -24,7 +24,7 @@ class Metadata
     {
         $states = optional($this->countries($country))->states ?? [];
 
-        return collect($states)->sortBy('code')->values()->all();
+        return collect($states)->sortBy('code');
     }
 
     /**

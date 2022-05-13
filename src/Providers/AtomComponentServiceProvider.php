@@ -58,13 +58,10 @@ class AtomComponentServiceProvider extends ServiceProvider
             'script.alpine.form.date',
             'script.alpine.form.tags',
             'script.alpine.form.image',
-            'script.alpine.form.phone',
             'script.alpine.form.title',
             'script.alpine.form.amount',
-            'script.alpine.form.picker',
             'script.alpine.form.richtext',
             'script.alpine.form.sortable',
-            'script.alpine.form.date-range',
             
             'admin-panel.index',
             'admin-panel.aside',

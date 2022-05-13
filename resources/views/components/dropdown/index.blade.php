@@ -1,28 +1,34 @@
 <div
     x-cloak
-    x-data="{ show: false }"
-    x-on:click.away="show = false"
-    x-on:close="show = false"
+    x-data="{ 
+        show: false,
+        open () {
+            this.show = true
+            this.$nextTick(() => floatDropdown(this.$refs.anchor, this.$refs.dd))
+        },
+        close () {
+            this.show = false
+        },
+    }"
+    x-on:click.away="close()"
     class="relative"
 >
-    <div x-ref="trigger" x-on:click="show = true" class="cursor-pointer">
-        {{ $trigger }}
-    </div>
+    @if ($label = $attributes->get('label'))
+        <a x-ref="anchor" x-on:click="open()">
+            {{ __($label) }}
+        </a>
+    @elseif (isset($anchor))
+        <div x-ref="anchor" x-on:click="open()" class="cursor-pointer">
+            {{ $anchor }}
+        </div>
+    @endif
 
     <div
+        x-ref="dd"
         x-show="show"
         x-transition.opacity
-        class="
-            fixed inset-0 pt-12 pb-20 px-6 z-20 
-            md:absolute md:inset-auto md:pt-1 md:pb-0 md:px-0 {{ $right ? 'md:right-0' : '' }}
-        "
+        class="absolute z-20 w-full bg-white border border-gray-300 shadow-lg rounded-md max-w-md min-w-[250px] py-1"
     >
-        <div x-on:click="show = false" class="absolute inset-0 bg-black opacity-60 md:hidden"></div>
-
-        <div {{ $attributes->class([
-            'relative min-w-[250px] max-w-sm mx-auto bg-white border shadow-lg rounded-md py-1'
-        ])->whereStartsWith('class') }}>
-            {{ $slot }}
-        </div>
+        {{ $slot }}
     </div>
 </div>

@@ -9,6 +9,8 @@ class Form extends Component
 {
     public $plan;
     public $features;
+    public $upgradables;
+    public $downgradables;
 
     /**
      * Validation rules
@@ -45,6 +47,8 @@ class Form extends Component
     public function mount()
     {
         $this->setFeatures();
+        $this->upgradables = $this->plan->upgradables->pluck('id')->toArray();
+        $this->downgradables = $this->plan->downgradables->pluck('id')->toArray();
     }
 
     /**
@@ -54,26 +58,10 @@ class Form extends Component
     {
         return model('plan')
             ->when($this->plan->exists, fn($q) => $q->where('id', '<>', $this->plan->id))
-            ->get()
-            ->map(fn($plan) => ['value' => $plan->id, 'label' => $plan->name]);
+            ->selectRaw('id as value, name as label')
+            ->get();
     }
 
-    /**
-     * Get upgradables property
-     */
-    public function getUpgradablesProperty()
-    {
-        return $this->plan->upgradables->pluck('id')->toArray();
-    }
-
-    /**
-     * Get downgradables property
-     */
-    public function getDowngradablesProperty()
-    {
-        return $this->plan->downgradables->pluck('id')->toArray();
-    }
-    
     /**
      * Set features
      */

@@ -3,103 +3,144 @@
         <x-slot:label>{{ $label }}</x-slot:label>
     @endif
 
-    <div x-data="formPicker('{{ $getter }}', '{{ $labelKey }}')">
-        @isset($trigger)
-            <div x-on:click.prevent="open()">
-                {{ $trigger }}
-            </div>
-        @else
-            <a class="inline-flex items-center gap-2" x-on:click.prevent="open()">
-                {{ $attributes->get('placeholder') ?? 'Select Option'}} <x-icon name="chevron-down"/>
-            </a>
-        @endif
+    <div
+        x-data="{
+            show: false,
+            text: null,
+            value: @entangle($attributes->wire('model')),
+            multiple: @js($multiple),
+            clearOnOpen: @js($clearOnOpen),
+            open () {
+                if (this.clearOnOpen) this.value = null
 
-        <div x-show="show" x-transition.opacity class="modal">
-            <div class="modal-bg"></div>
-            <div class="modal-container" x-on:click="close()">
-                <div 
-                    x-on:click.stop
-                    {{ $attributes->class([
-                        'modal-content',
-                        'w-80' => !$attributes->get('class'),
-                    ])->whereStartsWith('class') }}
-                >
-                    <div class="px-4 pt-4 pb-2 flex items-center justify-between">
-                        <div class="font-semibold text-lg">
-                            @isset($title) {{ $title }}
-                            @else Please Select
-                            @endisset
+                this.show = true
+                this.$nextTick(() => {
+                    floatDropdown(this.$refs.anchor, this.$refs.dd)
+                    this.$refs.search && this.$refs.search.focus()
+                })
+            },
+            close () {
+                this.show = false
+                this.text = null
+            },
+            select (val) {
+                if (this.multiple) this.value.push(val)
+                else this.value = val
+
+                this.$nextTick(() => this.close())
+            },
+            remove (val) {
+                this.value = this.value.filter(item => (item !== val))
+            }
+        }"
+        x-on:click.away="close()"
+        class="relative"
+        {{ $attributes->wire('page') }}
+        {{ $attributes->wire('search') }}
+    >
+        <div 
+            x-ref="anchor" 
+            x-on:click="open()" 
+            x-bind:class="show && 'active'"
+            class="form-input select w-full"
+        >
+            @if ($selected->count() && $multiple)
+                <div class="flex flex-wrap gap-2">
+                    @foreach ($selected as $sel)
+                        <div class="bg-slate-200 rounded-md py-1 px-2 text-sm font-medium border flex items-center gap-2 max-w-[200px]">
+                            <div class="grid">
+                                <div class="truncate">{{ data_get($sel, 'label') }}</div>
+                            </div>
+                            <a x-on:click="remove('{{ data_get($sel, 'value') }}')" class="flex text-gray-500">
+                                <x-icon name="xmark" size="12px"/>
+                            </a>
                         </div>
-    
-                        <a class="text-gray-500 flex items-center justify-center" x-on:click.prevent="close()">
-                            <x-icon name="x"/>
-                        </a>
+                    @endforeach
+                </div>
+            @elseif ($selected->count())
+                <div class="flex items-center justify-between gap-2">
+                    {{ data_get($selected->first(), 'label') }}
+                    <a x-on:click="value = null" class="flex shrink-0 text-gray-500">
+                        <x-icon name="xmark" size="16px" class="m-auto"/>
+                    </a>
+                </div>
+            @else
+                <div class="text-gray-400">
+                    {{ $attributes->get('placeholder', 'Select '.($label ?? 'an option')) }}
+                </div>
+            @endif
+        </div>
+
+        <div 
+            x-ref="dd"
+            x-show="show"
+            x-transition.opacity
+            class="absolute z-20 bg-white shadow-lg rounded-md border border-gray-300 overflow-hidden grid divide-y w-full min-w-[300px]"
+        >
+            @if (count($options) > 10)
+                <div class="py-2 px-4 flex items-center gap-2 bg-gray-100">
+                    <x-icon name="search" size="15px" class="text-gray-400"/>
+                    <div class="grow">
+                        <input type="text"
+                            x-ref="search"
+                            x-model="text"
+                            x-on:input.debounce.400ms="$dispatch('search', text)"
+                            placeholder="{{ __('Search') }}"
+                            class="bg-transparent appearance-none border-0 p-0 focus:ring-0 w-full"
+                        >
                     </div>
-    
-                    <div class="p-4">
-                        <div class="bg-gray-100 rounded-md py-2 px-3 drop-shadow flex items-center space-x-2">
-                            <x-icon name="search" class="flex-shrink-0 text-gray-400" size="18px"/>
-                            <input
-                                x-ref="text"
-                                x-model="text"
-                                x-on:input.debounce="fetch()"
-                                type="text"
-                                class="leading-tight w-full appearance-none bg-transparent p-0 border-0 focus:ring-0"
-                                placeholder="Search"
-                            >
-                            <template x-if="text">
-                                <a x-on:click.prevent="text = null; fetch()" class="flex-shrink-0 flex items-center justify-center text-gray-500">
-                                    <x-icon name="x" size="18px"/>
-                                </a>
-                            </template>
+                </div>
+            @endif
+
+            <div class="{{ count($options) > 10 ? 'h-[250px] overflow-auto' : '' }}">
+                <div class="grid divide-y">
+                    @forelse ($options as $opt)
+                        <div 
+                            @if ($isCountries || !$attributes->wire('search')->value()) 
+                                x-show="!text || '{{ data_get($opt, 'label') }}'.toLowerCase().includes(text.toLowerCase())"
+                            @endif
+                            x-on:click="select('{{ data_get($opt, 'value') }}')"
+                            class="py-2 px-4 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
+                            data-option-value="{{ data_get($opt, 'value') }}"
+                            data-option-label="{{ data_get($opt, 'label') }}"
+                        >
+                            <div class="grid">
+                                @if ($isCountries)
+                                    <div class="flex items-center gap-2">
+                                        @if ($flag = data_get($opt, 'flag')) <img src="{{ $flag }}" class="w-4"> @endif
+                                        <div class="font-medium">{{ data_get($opt, 'label') }}</div>
+                                    </div>
+                                @else
+                                    <div class="font-medium truncate">{{ data_get($opt, 'label') }}</div>
+                                @endif
+                            </div>
                         </div>
-                    </div>
-    
-                    <div {{ $attributes->whereStartsWith('wire') }}>
-                        <template x-if="options.length">
+                    @empty
+                        <div class="flex items-center justify-center gap-2 py-2 px-4">
+                            <x-icon name="folder-open" size="15px" class="text-gray-400"/>
+                            <div class="font-medium text-gray-400">{{ __('List is empty') }}</div>
+                        </div>
+                    @endforelse
+
+                    @if ($prevpage || $nextpage)
+                        <div class="py-2 px-4 flex items-center justify-between gap-4">
                             <div>
-                                <div class="mb-4">
-                                    <template x-for="opt in options" x-bind:key="opt.id">
-                                        <div x-on:click="pick(opt)" class="cursor-pointer py-2 px-4 border-t hover:bg-gray-100">
-                                            @isset($item) {{ $item }}
-                                            @else <span class="font-medium" x-text="opt[labelKey]"></span>
-                                            @endif
-                                        </div>
-                                    </template>
-                                </div>
-        
-                                <template x-if="loading">
-                                    <div class="p-4 bg-gray-100 flex items-center justify-center">
-                                        <x-loader size="20px" class="text-gray-500"/>
-                                        <div class="font-medium">
-                                            Loading
-                                        </div>
-                                    </div>
-                                </template>
-        
-                                <template x-if="!loading && paginator?.current_page < paginator?.last_page">
-                                    <div class="p-4 px-4 bg-gray-100">
-                                        <a 
-                                            class="w-full py-1.5 flex items-center justify-center border border-gray-300 rounded-md bg-white text-gray-900"
-                                            x-on:click.prevent="fetch(paginator.current_page + 1)"
-                                        >
-                                            Load More
-                                        </a>
-                                    </div>
-                                </template>
+                                @if ($prevpage)
+                                    <a x-on:click="$dispatch('page', {{ $prevpage }})" class="flex items-center gap-2">
+                                        <x-icon name="chevron-left" size="15px"/> {{ __('Previous') }}
+                                    </a>
+                                @endif
                             </div>
-                        </template>
-        
-                        <template x-if="!options.length && loading">
-                            <div class="flex items-center justify-center py-8">
-                                <x-loader size="32px"/>
+
+                            <div>
+                                @if ($nextpage)
+                                    <a x-on:click="$dispatch('page', {{ $nextpage }})" class="flex items-center gap-2">
+                                        {{ __('Next') }} <x-icon name="chevron-right" size="15px"/>
+                                    </a>
+                                @endif
                             </div>
-                        </template>
-        
-                        <template x-if="!options.length && !loading">
-                            <x-empty-state subtitle=""/>
-                        </template>
-                    </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

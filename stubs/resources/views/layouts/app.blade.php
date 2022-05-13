@@ -1,4 +1,4 @@
-@extends('atom::layout', ['noindex' => true, 'tracking' => false, 'vendors' => ['floating-ui']])
+@extends('atom::layout')
 
 @push('scripts')
     <script src="{{ mix('js/app.js') }}" defer></script>

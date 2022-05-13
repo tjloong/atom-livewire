@@ -88,6 +88,18 @@ global.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => 
     })
 }
 
+// floating for dropdown
+global.floatDropdown = (anchor, dropdown) => {
+    const { computePosition, flip, shift, offset } = window.FloatingUIDOM
+    
+    computePosition(anchor, dropdown, {
+        placement: 'bottom',
+        middleware: [flip(), shift({ padding: 10 }), offset(2)],
+    }).then(({x, y}) => {
+        Object.assign(dropdown.style, { left: `${x}px`, top: `${y}px` })
+    })
+}
+
 // toggle element in array
 global.arrayToggle = (array, value) => {
     const index = array.indexOf(value)

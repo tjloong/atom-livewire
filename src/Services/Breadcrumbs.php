@@ -114,7 +114,7 @@ class Breadcrumbs
         $url = url()->current();
 
         return array_merge([
-            'label' => $name,
+            'label' => __($name),
             'url' => $url,
             'route' => current_route(),
         ], parse_url($url));
