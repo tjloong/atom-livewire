@@ -6,11 +6,11 @@
     <div class="grid gap-4">
         <div class="text-center">
             <div class="font-semibold text-lg text-gray-700">
-                {{ $attributes->get('title') ?? 'No Results' }}
+                {{ __($attributes->get('title') ?? 'No Results') }}
             </div>
         
             <div class="text-gray-400 font-medium text-center">
-                {{ $attributes->get('subtitle') ?? 'There is nothing returned from the search' }}
+                {{ __($attributes->get('subtitle') ?? 'There is nothing returned from the search') }}
             </div>
         </div>
 

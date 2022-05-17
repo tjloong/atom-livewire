@@ -4,47 +4,72 @@
     @endif
 
     <div
-        x-data="formDate(@js([
-            'model' => $attributes->wire('model')->value(),
-            'value' => $attributes->get('value'),
-            'settings' => [
-                'minDate' => $attributes->get('min'),
-                'maxDate' => $attributes->get('max'),
-            ],
-        ]))"
+        x-data="{
+            show: false,
+            value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
+            settings: @js($attributes->get('settings')),
+            calendar: null,
+            placeholder: @js($attributes->get('placeholder', 'Select Date')),
+            open () {
+                this.show = true
+                this.$nextTick(() => {
+                    floatDropdown(this.$refs.anchor, this.$refs.dd)
+                    this.setCalendar()
+                })
+            },
+            close () {
+                this.show = false
+                this.$nextTick(() => {
+                    if (!this.calendar) return
+                    this.calendar.destroy()
+                    this.calendar = null
+                })
+            },
+            clear () {
+                this.value = null
+                this.close()
+            },
+            setCalendar () {
+                if (!this.calendar) {
+                    this.calendar = flatpickr(this.$refs.datepicker, {
+                        inline: true,
+                        dateFormat: 'Y-m-d',
+                        onClose: () => this.close(),
+                        onChange: (selectedDate, dateStr) => this.value = dateStr,
+                        ...this.settings,
+                    })
+                }
+
+                this.calendar.setDate(this.value)
+            },
+        }"
         x-on:click.away="close()"
         class="relative"
-        {{ $attributes->except('error', 'required', 'caption') }}
     >
-        <div class="absolute top-0 bottom-0 text-gray-400 flex items-center justify-center px-2.5">
-            <x-icon name="calendar" size="20px"/>
-        </div>
-
-        <input
-            x-bind:value="formatDate(value)"
-            x-on:focus="open()"
-            type="text"
-            class="w-full form-input px-10 cursor-pointer {{ !empty($attributes->get('error')) ? 'error' : '' }}"
-            placeholder="Pick a date"
-            readonly
+        <div
+            x-ref="anchor" 
+            x-bind:class="show && 'active'"
+            class="flex items-center gap-2 form-input w-full {{ !empty($attributes->get('error')) ? 'error' : '' }}"
         >
+            <x-icon name="calendar" size="18px" class="text-gray-400"/>
 
-        <div x-show="loading" class="absolute top-0 bottom-0 right-0 flex items-center justify-center px-1">
-            <x-loader size="18px"/>
+            <div 
+                x-on:click="open()" 
+                x-text="value ? formatDate(value) : placeholder" 
+                x-bind:class="!value && 'text-gray-400'"
+                class="grow cursor-pointer">
+            </div>
+
+            <a x-show="value" x-on:click="clear()" class="px-2 flex">
+                <x-icon name="xmark" size="15px" class="m-auto"/>
+            </a>
         </div>
-
-        <a
-            class="absolute top-0 bottom-0 right-0 text-gray-500 flex items-center justify-center px-2.5"
-            x-on:click="clear()"
-            x-show="!loading && value !== null"
-        >
-            <x-icon name="x" size="20px"/>
-        </a>
 
         <div
-            x-ref="dropdown"
+            x-ref="dd"
             x-show="show"
-            class="absolute z-10"
+            x-transition.opacity
+            class="absolute z-20"
         >
             <div x-ref="datepicker"></div>
         </div>

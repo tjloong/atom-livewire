@@ -9,39 +9,22 @@
         @endif
 
         <x-slot:head>
-            <x-table head sort="created_at">{{ __('Date') }}</x-table>
-            <x-table head>{{ __('Receipt Number') }}</x-table>
-            <x-table head>{{ __('Description') }}</x-table>
-            <x-table head align="right">{{ __('Amount') }}</x-table>
-            <x-table head/>
+            <x-table.th label="Date" sort="created_at"/>
+            <x-table.th label="Receipt Number"/>
+            <x-table.th label="Description"/>
+            <x-table.th label="Amount" class="text-right"/>
+            <x-table.th/>
         </x-slot:head>
             
         <x-slot:body>
             @foreach ($this->accountPayments as $accountPayment)
-                <x-table row>
-                    <x-table cell>
-                        {{ format_date($accountPayment->created_at) }}
-                        <div class="font-medium text-gray-500">{{ format_date($accountPayment->created_at, 'time') }}</div>
-                    </x-table>
-
-                    <x-table cell>
-                        <a href="{{ route('billing.account-payment.update', [$accountPayment->id]) }}">
-                            {{ $accountPayment->number }}
-                        </a>
-                    </x-table>
-
-                    <x-table cell>
-                        {{ str($accountPayment->description)->limit(40) }}
-                    </x-table>
-
-                    <x-table cell class="text-right">
-                        {{ currency($accountPayment->amount, $accountPayment->currency) }}
-                    </x-table>
-
-                    <x-table cell class="text-right">
-                        <x-badge>{{ $accountPayment->status }}</x-badge>
-                    </x-table>
-                </x-table>
+                <x-table.tr>
+                    <x-table.td :date="$accountPayment->created_at"/>
+                    <x-table.td :href="route('billing.account-payment.update', [$accountPayment->id])" :label="$accountPayment->number"/>
+                    <x-table.td :label="str($accountPayment->description)->limit(40)"/>
+                    <x-table.td :amount="$accountPayment->amount" :currency="$accountPayment->currency" class="text-right"/>
+                    <x-table.td :status="$accountPayment->status" class="text-right"/>
+                </x-table.tr>
             @endforeach
         </x-slot:body>
     </x-table>

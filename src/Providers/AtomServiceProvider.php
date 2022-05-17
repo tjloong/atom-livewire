@@ -99,12 +99,6 @@ class AtomServiceProvider extends ServiceProvider
      */
     public function registerLivewires()
     {
-        // web
-        Livewire::component('atom.web.pages.index', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Index');
-        Livewire::component('atom.web.pages.blog', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Blog');
-        Livewire::component('atom.web.pages.contact.index', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Contact\\Index');
-        Livewire::component('atom.web.pages.contact.thank-you', 'Jiannius\\Atom\\Http\\Livewire\\Web\\Pages\\Contact\\ThankYou');
-
         // user portal
         Livewire::component('atom.account', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Index');
         Livewire::component('atom.account.authentication.index', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Index');
@@ -177,6 +171,12 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.app.file.uploader.library', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Library');
 
         $components = [
+            // web
+            'atom.web.pages.index' => 'Web\\Pages\\Index',
+            'atom.web.pages.blog' => 'Web\\Pages\\Blog',
+            'atom.web.pages.contact.index' => 'Web\\Pages\\Contact\\Index',
+            'atom.web.pages.contact.thank-you' => 'Web\\Pages\\Contact\\ThankYou',
+
             // auth portal
             'atom.auth.login' => 'Auth\Login',
             'atom.auth.register' => 'Auth\Register',

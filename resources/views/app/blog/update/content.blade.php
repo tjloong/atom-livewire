@@ -13,7 +13,6 @@
     <x-form.richtext
         label="Blog Content"
         wire:model.debounce.500ms="blog.content"
-        :error="$errors->first('blog.content')"
         :caption="$autosavedAt ? ('Auto saved at ' . format_date($autosavedAt, 'time-full')) : ''"
     />
 

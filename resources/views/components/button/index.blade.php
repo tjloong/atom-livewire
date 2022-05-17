@@ -17,12 +17,16 @@
             ->merge($el === 'button' ? ['type' => 'button'] : [])
         }}
     >
-        @if ($config->icon->name)
+        @if ($config->icon->name && $config->icon->position === 'left')
             <x-icon :name="$config->icon->name" :size="$config->icon->size"/>
         @endif
 
         @if ($label = $attributes->get('label')) {{ __($label) }}
         @else {{ $slot }}
+        @endif
+
+        @if ($config->icon->name && $config->icon->position === 'right')
+            <x-icon :name="$config->icon->name" :size="$config->icon->size"/>
         @endif
     </{{ $el }}>
 @endif

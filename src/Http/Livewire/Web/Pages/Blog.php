@@ -11,7 +11,7 @@ class Blog extends Component
 
     public $search;
     public $filters;
-    public $isPreview;
+    public $preview;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -24,7 +24,7 @@ class Blog extends Component
      */
     public function mount()
     {
-        $this->isPreview = auth()->user() && request()->query('preview');
+        $this->preview = auth()->user() && request()->query('preview');
         $this->filters = array_filter([optional(model('label')->where('slug', $this->slug)->first())->slug]);
 
         if ($this->blog) {
@@ -58,7 +58,7 @@ class Blog extends Component
         if ($this->filters) return;
 
         return model('blog')
-            ->when(!$this->isPreview, fn($q) => $q->status('published'))
+            ->when(!$this->preview, fn($q) => $q->status('published'))
             ->where('slug', $this->slug)
             ->first();
     }
@@ -88,7 +88,7 @@ class Blog extends Component
     {
         return model('blog')
             ->status('published')
-            ->where('slug', '<>', $this->slug)
+            ->when($this->slug, fn($q) => $q->where('slug', '<>', $this->slug))
             ->orderBy('published_at', 'desc')
             ->orderBy('created_at', 'desc')
             ->take(6)
@@ -112,9 +112,7 @@ class Blog extends Component
      */
     public function getShowSidebarProperty()
     {
-        return ($this->recents && $this->recents->count()) 
-            || $this->filters 
-            || $this->labels->count();
+        return $this->recents->count() || $this->labels->count();
     }
 
     /**

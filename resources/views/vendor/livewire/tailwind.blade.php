@@ -5,32 +5,34 @@
         <nav role="navigation" aria-label="Pagination Navigation" class="w-full">
             <div class="flex justify-between flex-1 md:hidden">
                 <span>
-                    @if ($paginator->onFirstPage())
-                        <span class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5 rounded-md">
-                            {!! __('pagination.previous') !!}
-                        </span>
-                    @else
-                        <button wire:click="previousPage('{{ $paginator->getPageName() }}')" wire:loading.attr="disabled" dusk="previousPage{{ $paginator->getPageName() == 'page' ? '' : '.' . $paginator->getPageName() }}.before" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
-                            {!! __('pagination.previous') !!}
-                        </button>
+                    @if (!$paginator->onFirstPage())
+                        <a
+                            wire:click="previousPage('{{ $paginator->getPageName() }}')" 
+                            wire:loading.attr="disabled" 
+                            dusk="previousPage{{ $paginator->getPageName() == 'page' ? '' : '.' . $paginator->getPageName() }}.before"
+                            class="flex items-center gap-2 text-gray-800 py-1 px-3 rounded-md hover:shadow hover:bg-gray-100"
+                        >
+                            <x-icon name="left-arrow-alt" size="15px"/> {{ __('Previous') }}
+                        </a>
                     @endif
                 </span>
 
                 <span>
                     @if ($paginator->hasMorePages())
-                        <button wire:click="nextPage('{{ $paginator->getPageName() }}')" wire:loading.attr="disabled" dusk="nextPage{{ $paginator->getPageName() == 'page' ? '' : '.' . $paginator->getPageName() }}.before" class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
-                            {!! __('pagination.next') !!}
-                        </button>
-                    @else
-                        <span class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5 rounded-md">
-                            {!! __('pagination.next') !!}
-                        </span>
+                        <a
+                            wire:click="nextPage('{{ $paginator->getPageName() }}')" 
+                            wire:loading.attr="disabled" 
+                            dusk="nextPage{{ $paginator->getPageName() == 'page' ? '' : '.' . $paginator->getPageName() }}.before"
+                            class="flex items-center gap-2 text-gray-800 py-1 px-3 rounded-md hover:shadow hover:bg-gray-100"
+                        >
+                            {{ __('Next') }} <x-icon name="right-arrow-alt" size="15px"/>
+                        </a>
                     @endif
                 </span>
             </div>
 
             <div class="flex-wrap items-center justify-between hidden md:flex">
-                <div class="flex-shrink-0 text-sm text-gray-700 my-1">
+                <div class="flex-shrink-0 text-gray-700 my-1">
                     <span>{!! __('Showing') !!}</span>
                     <span class="font-medium">{{ $paginator->firstItem() }}</span>
                     <span>{!! __('to') !!}</span>

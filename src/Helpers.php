@@ -325,6 +325,6 @@ function html_excerpt($html)
     $content = trim($content);
     $length = str()->length($content);
 
-    if ($length > 120) return str()->limit($content, 120);
+    if ($length > 100) return str()->limit($content, 100);
     else return $content;
 }

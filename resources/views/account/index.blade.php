@@ -18,17 +18,13 @@
                             @endforeach
                         </x-sidenav.group>
                     @elseif ($slug = data_get($item, 'slug'))
-                        <x-sidenav.group>
-                            <x-sidenav.item :icon="data_get($item, 'icon')" :name="$slug">
-                                {{ data_get($item, 'label') ?? str($slug)->headline() }}
-                            </x-sidenav.item>
-                        </x-sidenav.group>
+                        <x-sidenav.item :icon="data_get($item, 'icon')" :name="$slug">
+                            {{ data_get($item, 'label') ?? str($slug)->headline() }}
+                        </x-sidenav.item>
                     @elseif (is_string($item))
-                        <x-sidenav.group>
-                            <x-sidenav.item :name="$item">
-                                {{ str($item)->headline() }}
-                            </x-sidenav.item>
-                        </x-sidenav.group>
+                        <x-sidenav.item :name="$item">
+                            {{ str($item)->headline() }}
+                        </x-sidenav.item>
                     @endif
                 @endforeach
             </x-sidenav>

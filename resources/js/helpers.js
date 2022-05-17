@@ -94,7 +94,7 @@ global.floatDropdown = (anchor, dropdown) => {
     
     computePosition(anchor, dropdown, {
         placement: 'bottom',
-        middleware: [flip(), shift({ padding: 10 }), offset(2)],
+        middleware: [flip(), shift({ padding: 10 }), offset(4)],
     }).then(({x, y}) => {
         Object.assign(dropdown.style, { left: `${x}px`, top: `${y}px` })
     })

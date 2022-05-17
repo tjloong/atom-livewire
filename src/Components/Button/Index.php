@@ -100,14 +100,15 @@ class Index extends Component
                 'color' => $color[$this->color][$this->mode],
             ],
             'icon' => [
-                'name' => $this->icon,
+                'name' => is_string($this->icon) ? $this->icon : data_get($this->icon, 'name'),
                 'size' => [
                     'xs' => '12px',
                     'sm' => '14px',
                     'base' => '16px',
                     'md' => '18px',
-                    'lg' => '20px',        
+                    'lg' => '20px',
                 ][$this->size],
+                'position' => is_string($this->icon) ? 'left' : data_get($this->icon, 'position', 'left'),
             ],
         ]));
     }

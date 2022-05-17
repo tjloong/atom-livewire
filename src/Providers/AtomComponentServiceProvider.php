@@ -26,7 +26,6 @@ class AtomComponentServiceProvider extends ServiceProvider
     {
         $components = [
             'seo',
-            'box',
             'tabs',
             'card',
             'icon',
@@ -47,6 +46,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'alpine-data',
             'page-header',
             'breadcrumbs',
+            'social-share',
             'payment-gateway',
 
             'script.vendor',
@@ -55,7 +55,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'script.alpine.table.th',
             'script.alpine.form.ic',
             'script.alpine.form.seo',
-            'script.alpine.form.date',
             'script.alpine.form.tags',
             'script.alpine.form.image',
             'script.alpine.form.title',
@@ -69,6 +68,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'analytics.ga',
             'analytics.gtm',
             'analytics.fbpixel',
+
+            'box.index',
+            'box.item',
             
             'button.index',
             'button.create',
@@ -122,10 +124,12 @@ class AtomComponentServiceProvider extends ServiceProvider
             'input.email',
             'input.field',
             'input.search',
+
+            'blog.index',
+            'blog.card',
         
             'builder.faq',
             'builder.hero',
-            'builder.share',
             'builder.footer',
             'builder.slider',
             'builder.navbar',

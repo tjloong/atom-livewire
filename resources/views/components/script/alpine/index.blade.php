@@ -2,7 +2,6 @@
 <x-script.alpine.table.th/>
 <x-script.alpine.form.ic/>
 <x-script.alpine.form.seo/>
-<x-script.alpine.form.date/>
 <x-script.alpine.form.tags/>
 <x-script.alpine.form.image/>
 <x-script.alpine.form.title/>

@@ -30,7 +30,7 @@
                 this.$nextTick(() => this.close())
             },
             remove (val) {
-                this.value = this.value.filter(item => (item !== val))
+                this.value = this.value.filter(item => (`${item}` !== `${val}`))
             }
         }"
         x-on:click.away="close()"
@@ -42,7 +42,7 @@
             x-ref="anchor" 
             x-on:click="open()" 
             x-bind:class="show && 'active'"
-            class="form-input select w-full"
+            class="form-input w-full {{ !$selected->count() ? 'select' : '' }}"
         >
             @if ($selected->count() && $multiple)
                 <div class="flex flex-wrap gap-2">
@@ -59,14 +59,20 @@
                 </div>
             @elseif ($selected->count())
                 <div class="flex items-center justify-between gap-2">
-                    {{ data_get($selected->first(), 'label') }}
+                    <div class="grid">
+                        <div class="truncate">{{ data_get($selected->first(), 'label') }}</div>
+                    </div>
                     <a x-on:click="value = null" class="flex shrink-0 text-gray-500">
                         <x-icon name="xmark" size="16px" class="m-auto"/>
                     </a>
                 </div>
+            @elseif ($placeholder = $attributes->get('placeholder'))
+                <div class="text-gray-400 grid">
+                    <div class="truncate">{{ __($placeholder) }}</div>
+                </div>
             @else
-                <div class="text-gray-400">
-                    {{ $attributes->get('placeholder', 'Select '.($label ?? 'an option')) }}
+                <div class="text-gray-400 grid">
+                    <div class="truncate">{{ __('Select '.($label ?? 'an option')) }}</div>
                 </div>
             @endif
         </div>
