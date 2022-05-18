@@ -47,11 +47,11 @@
                     @if ($export = $attributes->get('export'))
                         @if (is_array($export))
                             <x-dropdown right>
-                                <x-slot:trigger>
+                                <x-slot:anchor>
                                     <div class="p-1.5 rounded-md flex items-center justify-center text-gray-900 hover:bg-gray-100 hover:border hover:shadow">
                                         <x-icon name="download" size="18px"/>
                                     </div>
-                                </x-slot:trigger>
+                                </x-slot:anchor>
 
                                 @foreach ($export as $val)
                                     <x-dropdown.item 

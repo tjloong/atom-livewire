@@ -65,7 +65,7 @@
             'lg:pl-56': !toggled,
         }"
     >
-        <x-builder.navbar class="bg-white py-2 px-4 shadow">
+        <x-builder.navbar class="bg-white py-2 px-4 shadow" sticky>
             <x-slot name="logo">
                 <div class="flex items-center gap-2">
                     <x-logo class="h-[40px] md:hidden" small/>
@@ -97,7 +97,7 @@
             </div> 
         @endif
 
-        <div class="px-5 pt-5 pb-20 md:px-8 md:pt-8">
+        <div class="px-5 pt-5 pb-20 md:px-8 md:pt-8 overflow-y-auto">
             {{ $slot }}
         </div>
     </main>

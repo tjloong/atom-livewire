@@ -28,7 +28,7 @@ global.formatDate = (value, option) => {
 }
 
 // format currency
-global.currency = (val, symbol = null) => {
+global.currency = (val, symbol = null, round = true) => {
     const config = { minimumFractionDigits: 2 }
 
     if (symbol) {
@@ -36,7 +36,12 @@ global.currency = (val, symbol = null) => {
         config.style = 'currency'
     }
 
-    return Number(val).toLocaleString('en-US', config)
+    const num = Number(val)
+    const rounded = round 
+        ? (Math.round((num + Number.EPSILON) * 10) / 10)
+        : num
+
+    return rounded.toLocaleString('en-US', config)
 }
 
 // device type

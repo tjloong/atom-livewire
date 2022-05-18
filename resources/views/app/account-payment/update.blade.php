@@ -1,9 +1,9 @@
 <div class="max-w-screen-sm mx-auto">
     <x-page-header :title="__('Payment').'#'.$accountPayment->number" back>
         <x-dropdown right>
-            <x-slot:trigger>
+            <x-slot:anchor>
                 <x-button inverted icon="download">{{ __('Download') }}</x-button>
-            </x-slot:trigger>
+            </x-slot:anchor>
 
             <div class="grid divide-y">
                 @foreach (['invoice', 'receipt'] as $val)

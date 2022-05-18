@@ -7,7 +7,7 @@
     <x-dropdown right="{{ $attributes->get('right') }}">
         <x-slot:anchor>
             <x-button :label="$attributes->get('label', 'Share')" icon="share-alt"/>
-        </x-slot:trigger>
+        </x-slot:anchor>
     
         @foreach ($sites as $site)
             <x-dropdown.item

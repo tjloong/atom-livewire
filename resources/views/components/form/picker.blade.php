@@ -31,7 +31,12 @@
             },
             remove (val) {
                 this.value = this.value.filter(item => (`${item}` !== `${val}`))
-            }
+            },
+            clear () {
+                this.text = null
+                this.$dispatch('search', null)
+                this.$dispatch('page', 1)
+            },
         }"
         x-on:click.away="close()"
         class="relative"
@@ -83,27 +88,48 @@
             x-transition.opacity
             class="absolute z-20 bg-white shadow-lg rounded-md border border-gray-300 overflow-hidden grid divide-y w-full min-w-[300px]"
         >
-            @if (count($options) > 10)
-                <div class="py-2 px-4 flex items-center gap-2 bg-gray-100">
-                    <x-icon name="search" size="15px" class="text-gray-400"/>
-                    <div class="grow">
-                        <input type="text"
-                            x-ref="search"
-                            x-model="text"
-                            x-on:input.debounce.400ms="$dispatch('search', text)"
-                            placeholder="{{ __('Search') }}"
-                            class="bg-transparent appearance-none border-0 p-0 focus:ring-0 w-full"
-                        >
+            <div class="py-2 px-4 flex items-center gap-2 bg-gray-100">
+                <x-icon name="search" size="15px" class="text-gray-400"/>
+                <div class="grow">
+                    <input type="text"
+                        x-ref="search"
+                        x-model="text"
+                        x-on:input.debounce.400ms="$dispatch('search', text); $dispatch('page', 1)"
+                        placeholder="{{ __('Search') }}"
+                        class="bg-transparent appearance-none border-0 p-0 focus:ring-0 w-full"
+                    >
+                </div>
+                <a x-show="text" x-on:click="clear()" class="flex">
+                    <x-icon name="xmark" size="15px" class="text-gray-500 m-auto"/>
+                </a>
+            </div>
+
+            @if ($prevpage || $nextpage)
+                <div class="px-4 py-2 flex items-center justify-between gap-4">
+                    <div>
+                        @if ($prevpage)
+                            <a x-on:click="$dispatch('page', {{ $prevpage }})" class="flex items-center gap-2">
+                                <x-icon name="chevron-left" size="15px"/> {{ __('Previous') }}
+                            </a>
+                        @endif
+                    </div>
+
+                    <div>
+                        @if ($nextpage)
+                            <a x-on:click="$dispatch('page', {{ $nextpage }})" class="flex items-center gap-2">
+                                {{ __('Next') }} <x-icon name="chevron-right" size="15px"/>
+                            </a>
+                        @endif
                     </div>
                 </div>
             @endif
 
-            <div class="{{ count($options) > 10 ? 'h-[250px] overflow-auto' : '' }}">
+            <div class="{{ count($options) > 10 ? 'h-[250px]' : 'max-h-[250px]' }} overflow-auto">
                 <div class="grid divide-y">
                     @forelse ($options as $opt)
                         <div 
                             @if ($isCountries || !$attributes->wire('search')->value()) 
-                                x-show="!text || '{{ data_get($opt, 'label') }}'.toLowerCase().includes(text.toLowerCase())"
+                                x-show="!text || `{{ data_get($opt, 'label') }}`.toLowerCase().includes(text.toLowerCase())"
                             @endif
                             x-on:click="select('{{ data_get($opt, 'value') }}')"
                             class="py-2 px-4 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
@@ -118,35 +144,16 @@
                                     </div>
                                 @else
                                     <div class="font-medium truncate">{{ data_get($opt, 'label') }}</div>
+                                    @if ($caption = data_get($opt, 'caption')) <div class="font-medium text-gray-500 text-sm">{{ $caption }}</div> @endif
                                 @endif
                             </div>
                         </div>
                     @empty
-                        <div class="flex items-center justify-center gap-2 py-2 px-4">
+                        <div class="flex items-center justify-center gap-2 p-4">
                             <x-icon name="folder-open" size="15px" class="text-gray-400"/>
                             <div class="font-medium text-gray-400">{{ __('List is empty') }}</div>
                         </div>
                     @endforelse
-
-                    @if ($prevpage || $nextpage)
-                        <div class="py-2 px-4 flex items-center justify-between gap-4">
-                            <div>
-                                @if ($prevpage)
-                                    <a x-on:click="$dispatch('page', {{ $prevpage }})" class="flex items-center gap-2">
-                                        <x-icon name="chevron-left" size="15px"/> {{ __('Previous') }}
-                                    </a>
-                                @endif
-                            </div>
-
-                            <div>
-                                @if ($nextpage)
-                                    <a x-on:click="$dispatch('page', {{ $nextpage }})" class="flex items-center gap-2">
-                                        {{ __('Next') }} <x-icon name="chevron-right" size="15px"/>
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    @endif
                 </div>
             </div>
         </div>
