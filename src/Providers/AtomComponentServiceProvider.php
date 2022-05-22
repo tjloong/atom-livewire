@@ -54,13 +54,11 @@ class AtomComponentServiceProvider extends ServiceProvider
             'script.alpine.sidenav',
             'script.alpine.table.th',
             'script.alpine.form.ic',
-            'script.alpine.form.seo',
             'script.alpine.form.tags',
             'script.alpine.form.image',
             'script.alpine.form.title',
             'script.alpine.form.amount',
             'script.alpine.form.richtext',
-            'script.alpine.form.sortable',
             
             'admin-panel.index',
             'admin-panel.aside',
@@ -127,12 +125,17 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'blog.index',
             'blog.card',
+
+            'navbar.index',
+            'navbar.item',
+            'navbar.locale',
+
+            'footer.index',
+            'footer.pre',
         
             'builder.faq',
             'builder.hero',
-            'builder.footer',
             'builder.slider',
-            'builder.navbar',
             'builder.pricing',
             'builder.testimonial',
             'builder.announcements',

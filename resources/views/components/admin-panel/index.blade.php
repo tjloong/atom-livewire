@@ -65,8 +65,8 @@
             'lg:pl-56': !toggled,
         }"
     >
-        <x-builder.navbar class="bg-white py-2 px-4 shadow" sticky>
-            <x-slot name="logo">
+        <x-navbar class="bg-white py-2 px-4 shadow" sticky>
+            <x-slot:logo>
                 <div class="flex items-center gap-2">
                     <x-logo class="h-[40px] md:hidden" small/>
 
@@ -74,12 +74,12 @@
                         <x-icon name="dots-vertical"/>
                     </a>
                 </div>
-            </x-slot>
+            </x-slot:logo>
 
             @isset($links)
                 {{ $links }}
             @endisset
-        </x-builder.navbar>
+        </x-navbar>
 
         <x-breadcrumbs class="bg-white py-1 px-4 shadow"/>
     

@@ -9,16 +9,28 @@ class Form extends Component
     public $types;
     public $label;
 
-    protected $rules = [
-        'label.name' => 'required|max:255',
-        'label.type' => 'required',
-        'label.slug' => 'nullable',
-    ];
+    /**
+     * Validation rules
+     */
+    protected function rules()
+    {
+        return [
+            'label.name' => 'required|max:255',
+            'label.type' => 'required',
+            'label.slug' => 'nullable',
+        ];
+    }
 
-    protected $messages = [
-        'label.name' => 'Label name is required.',
-        'label.type' => 'Label type is required.',
-    ];
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'label.name' => 'Label name is required.',
+            'label.type' => 'Label type is required.',
+        ];
+    }
 
     /**
      * Mount

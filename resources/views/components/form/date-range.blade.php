@@ -15,6 +15,8 @@
         },
         close () {
             if (!this.from || !this.to) return
+            if (!this.calendar) return
+            
             this.show = false
             this.calendar.destroy()
             this.calendar = null

@@ -6,18 +6,17 @@ return [
     'timezone' => 'Asia/Kuala_Lumpur',
     'payment_gateway' => [],
 
-    'login' => [
-        'facebook',
-        'google',
-        'linkedin',
-    ],
-
     /**
      * Account Portal
      */
     'accounts' => [
         'verify' => true,
         'register' => true,
+        'login' => [
+            'facebook',
+            'google',
+            'linkedin',    
+        ],
     ],
 
     /**

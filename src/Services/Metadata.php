@@ -40,4 +40,23 @@ class Metadata
 
         return $code ? $locales->where('code', $code)->first() : $locales;
     }
+
+    /**
+     * Get payment methods
+     */
+    public function paymentMethods($code = null)
+    {
+        $paymentMethods = collect([
+            ['code' => 'cash', 'label' => 'Cash'],
+            ['code' => 'master', 'label' => 'Master Card'],
+            ['code' => 'visa', 'label' => 'Visa Card'],
+            ['code' => 'amex', 'label' => 'AMEX Card'],
+            ['code' => 'bank-transfer', 'label' => 'Bank-Transfer'],
+            ['code' => 'tng', 'label' => 'Touch & Go'],
+            ['code' => 'grabpay', 'label' => 'GrabPay'],
+            ['code' => 'boost', 'label' => 'Boost'],
+        ]);
+
+        return $code ? $paymentMethods->firstWhere('code', $code) : $paymentMethods;
+    }
 }

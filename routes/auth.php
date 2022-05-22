@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 if (!config('atom.static_site')) {
@@ -14,7 +13,7 @@ if (!config('atom.static_site')) {
         }
     
         if (config('atom.accounts.verify')) {
-            Route::middleware('auth')->group(function () {
+            define_route()->middleware('auth')->group(function () {
                 define_route('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
                     $request->fulfill();
                     return view('atom::auth.verify', ['action' => 'verified']);

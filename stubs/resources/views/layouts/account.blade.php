@@ -9,7 +9,7 @@
     <x-notify/>
     <x-loader/>
 
-    <x-builder.navbar class="bg-white shadow py-2" class.logo="h-[40px]"/>
+    <x-navbar class="bg-white shadow py-2" class.logo="h-[40px]"/>
 
     <div class="min-h-screen bg-gray-100">
         <main class="max-w-screen-lg mx-auto py-10 px-6">

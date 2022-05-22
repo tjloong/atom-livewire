@@ -14,7 +14,7 @@ class Listing extends Component
     public $filters = ['search' => ''];
 
     protected $queryString = [
-        'filters', 
+        'filters' => ['except' => ['search' => '']], 
         'sortBy' => ['except' => 'created_at'],
         'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
@@ -29,13 +29,21 @@ class Listing extends Component
     }
 
     /**
-     * Get enquiries property
+     * Get query property
      */
-    public function getEnquiriesProperty()
+    public function getQueryProperty()
     {
         return model('enquiry')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
+    }
+
+    /**
+     * Get enquiries property
+     */
+    public function getEnquiriesProperty()
+    {
+        return $this->query->paginate(30);
     }
 
     /**
@@ -51,9 +59,7 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.enquiry.listing', [
-            'enquiries' => $this->enquiries->paginate(30),
-        ]);
+        return view('atom::app.enquiry.listing');
     }
 
     /**
@@ -62,7 +68,7 @@ class Listing extends Component
     public function export()
     {
         $filename = 'enquiries-' . rand(1000, 9999) . '.xlsx';
-        $enquiries = $this->enquiries->get();
+        $enquiries = $this->query->get();
 
         return export_to_excel($filename, $enquiries, fn($enquiry) => [
             'Date' => $enquiry->created_at->toDatetimeString(),

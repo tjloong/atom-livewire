@@ -5,21 +5,21 @@
 @endpush
 
 @section('content')
-    <x-builder.navbar align="right" back-to-app>
+    <x-navbar align="right" back-to-app>
         @if (Route::has('blogs'))
-            <x-builder.navbar item href="{{ route('blogs') }}">Blogs</x-builder.navbar>
+            <x-navbar.item label="Blogs" :href="route('page', ['slug' => 'blogs'])"/>
         @endif
 
         @if (Route::has('contact'))
-            <x-builder.navbar item href="{{ route('contact', ['ref' => 'landing']) }}">Contact</x-builder.navbar>
+            <x-navbar.item label="Contact" :href="route('page', ['slug' => 'contact', 'params' => ['ref' => 'landing']])"/>
         @endif
-    </x-builder.navbar>
+    </x-navbar>
 
     <x-loader/>
     
     {{ $slot }}
 
     <footer>
-        <x-builder.footer/>
+        <x-footer/>
     </footer>
 @endsection

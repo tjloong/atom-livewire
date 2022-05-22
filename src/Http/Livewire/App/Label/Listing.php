@@ -7,7 +7,9 @@ use Livewire\Component;
 class Listing extends Component
 {
     public $type;
-    public $labels;
+    public $sortedLabels;
+
+    protected $queryString = ['type'];
 
     /**
      * Mount
@@ -15,7 +17,6 @@ class Listing extends Component
     public function mount()
     {
         $this->type = $this->type ?? $this->types[0];
-        $this->labels = $this->getLabels();
 
         breadcrumbs()->home('Labels');
     }
@@ -29,26 +30,27 @@ class Listing extends Component
     }
 
     /**
-     * Get labels
+     * Get labels property
      */
-    public function getLabels()
+    public function getLabelsProperty()
     {
         return model('label')
             ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->where('type', $this->type)
             ->orderBy('seq')
             ->orderBy('name')
-            ->get()
-            ->toArray();
+            ->get();
     }
 
     /**
-     * Updated labels
+     * Sort labels
      */
-    public function updatedLabels($labels)
+    public function sortLabels($data = null)
     {
-        foreach ($labels as $index => $label) {
-            model('label')->where('id', $label['id'])->update(['seq' => $index + 1]);
+        if (!$data) return;
+
+        foreach ($data as $index => $id) {
+            model('label')->where('id', $id)->update(['seq' => $index + 1]);
         }
 
         $this->dispatchBrowserEvent('toast', ['message' => __('Labels Updated'), 'type' => 'success']);

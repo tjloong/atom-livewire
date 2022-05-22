@@ -37,14 +37,11 @@
                         Deselect All
                     </x-button>
         
-                    <x-button icon="trash" color="red" inverted x-on:click="$dispatch('confirm', {
-                        title: 'Delete Multiple Files',
-                        message: `Are you sure to delete the selected {{ count($selected) }} files?`,
-                        type: 'error',
-                        onConfirmed: () => $wire.delete(),
-                    })">
-                        Delete ({{ count($selected) }})
-                    </x-button>
+                    <x-button.delete inverted
+                        :label="'Delete ('.count($selected).')'"
+                        title="Delete Multiple Files"
+                        message="Are you sure to delete the selected {{ count($selected) }} files?"
+                    />
                 </div>
             @else
                 <div>
@@ -125,7 +122,7 @@
     </div>
 
     <div x-data x-on:drawer-close="$wire.set('open', false)">
-        <x-drawer>
+        <x-drawer uid="file-form">
             <x-slot name="title">File Details</x-slot>
             @if ($open)
                 @livewire('atom.app.file.form', ['fileId' => $open], key('file-form'))

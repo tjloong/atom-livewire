@@ -69,8 +69,8 @@ class Listing extends Component
      */
     public function toggleDrawer()
     {
-        if ($this->open) $this->dispatchBrowserEvent('drawer-open');
-        else $this->dispatchBrowserEvent('drawer-close');        
+        if ($this->open) $this->dispatchBrowserEvent('file-form-open');
+        else $this->dispatchBrowserEvent('file-form-close');        
     }
 
     /**

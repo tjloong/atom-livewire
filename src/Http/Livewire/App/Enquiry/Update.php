@@ -8,17 +8,33 @@ class Update extends Component
 {
     public $enquiry;
 
-    protected $rules = [
-        'enquiry.remark' => 'nullable',
-        'enquiry.status' => 'required',
-    ];
+    /**
+     * Validation rules
+     */
+    protected function rules()
+    {
+        return [
+            'enquiry.remark' => 'nullable',
+            'enquiry.status' => 'required',
+        ];
+    }
+
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'enquiry.status.required' => __('Enquiry status is required.'),
+        ];
+    }
 
     /**
      * Mount
      */
-    public function mount($id)
+    public function mount($enquiry)
     {
-        $this->enquiry = model('enquiry')->findOrFail($id);
+        $this->enquiry = model('enquiry')->findOrFail($enquiry);
         breadcrumbs()->push($this->enquiry->name);
     }
 
@@ -27,7 +43,11 @@ class Update extends Component
      */
     public function submit()
     {
+        $this->resetValidation();
+        $this->validate();
+
         $this->enquiry->save();
+        
         $this->dispatchBrowserEvent('toast', ['message' => 'Enquiry Updated', 'type' => 'success']);
     }
 

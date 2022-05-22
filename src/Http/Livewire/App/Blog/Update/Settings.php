@@ -10,10 +10,13 @@ class Settings extends Component
     public $status;
     public $selectedLabels;
 
-    protected $rules = [
-        'blog.cover_id' => 'nullable',
-        'blog.published_at' => 'nullable',
-    ];
+    protected function rules()
+    {
+        return [
+            'blog.cover_id' => 'nullable',
+            'blog.published_at' => 'nullable',
+        ];
+    }
 
     /**
      * Mount
@@ -31,9 +34,9 @@ class Settings extends Component
     {
         return model('label')
             ->where('type', 'blog-category')
+            ->selectRaw('id as value, name as label')
             ->orderBy('name')
-            ->get()
-            ->map(fn($label) => ['value' => $label->id, 'label' => $label->name]);
+            ->get();
     }
 
     /**

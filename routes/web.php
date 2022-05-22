@@ -126,8 +126,8 @@ if (!config('atom.static_site')) {
          */
         if (enabled_module('enquiries')) {
             Route::prefix('enquiry')->as('app.enquiry.')->group(function () {
-                define_route('listing',  'App\\Enquiry\\Listing')->name('listing');
-                define_route('{id}', 'App\\Enquiry\\Update')->name('update');
+                define_route('listing',  'App\Enquiry\Listing')->name('listing');
+                define_route('{enquiry}', 'App\Enquiry\Update')->name('update');
             });
         }
 

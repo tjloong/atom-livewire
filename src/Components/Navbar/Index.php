@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Components\Builder;
+namespace Jiannius\Atom\Components\Navbar;
 
 use Illuminate\View\Component;
 
-class Navbar extends Component
+class Index extends Component
 {
     public $fixed;
     public $align;
@@ -47,6 +47,6 @@ class Navbar extends Component
      */
     public function render()
     {
-        return view('atom::components.builder.navbar');
+        return view('atom::components.navbar.index');
     }
 }

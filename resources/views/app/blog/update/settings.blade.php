@@ -22,10 +22,12 @@
         />
     </div>
 
-    <x-form.tags 
+    <x-form.picker 
         label="Categories"
-        wire:model.defer="selectedLabels" 
+        wire:model="selectedLabels" 
         :options="$this->labels"
+        :selected="$this->selectedLabels"
+        multiple
     />
 
     <x-slot:foot>

@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Components\Builder;
+namespace Jiannius\Atom\Components\Footer;
 
 use Illuminate\View\Component;
 
-class Footer extends Component
+class Index extends Component
 {
     public $dark;
     public $color;
@@ -120,6 +120,6 @@ class Footer extends Component
      */
     public function render()
     {
-        return view('atom::components.builder.footer');
+        return view('atom::components.footer.index');
     }
 }

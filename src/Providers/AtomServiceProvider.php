@@ -161,15 +161,6 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.team.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Update');
         Livewire::component('atom.team.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Form');
 
-        // file
-        Livewire::component('atom.app.file.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Form');
-        Livewire::component('atom.app.file.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Listing');
-        Livewire::component('atom.app.file.uploader', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Index');
-        Livewire::component('atom.app.file.uploader.device', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Device');
-        Livewire::component('atom.app.file.uploader.web-image', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\WebImage');
-        Livewire::component('atom.app.file.uploader.youtube', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Youtube');
-        Livewire::component('atom.app.file.uploader.library', 'Jiannius\\Atom\\Http\\Livewire\\App\\File\\Uploader\Library');
-
         $components = [
             // web
             'atom.web.pages.index' => 'Web\\Pages\\Index',
@@ -215,6 +206,15 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.role.create' => 'App\Role\Create',
             'atom.app.role.update' => 'App\Role\Update',
             'atom.app.role.form' => 'App\Role\Form',
+
+            // file
+            'atom.app.file.form' => 'App\File\Form',
+            'atom.app.file.listing' => 'App\File\Listing',
+            'atom.app.file.uploader' => 'App\File\Uploader\Index',
+            'atom.app.file.uploader.device' => 'App\File\Uploader\Device',
+            'atom.app.file.uploader.web-image' => 'App\File\Uploader\WebImage',
+            'atom.app.file.uploader.youtube' => 'App\File\Uploader\Youtube',
+            'atom.app.file.uploader.library' => 'App\File\Uploader\Library',
 
             // site settings
             'atom.app.site-settings.index' => 'App\SiteSettings\Index',

@@ -21,12 +21,18 @@
         </div>
     
     @elseif ($href = $attributes->get('href'))
-        <a href="{{ $href }}">
-            {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
-        </a>
+        <div class="grid">
+            <a href="{{ $href }}" class="truncate">
+                {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
+            </a>
+        </div>
 
     @else
-        {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
+        <div class="grid">
+            <div class="truncate">
+                {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
+            </div>
+        </div>
 
     @endif
 </td>
