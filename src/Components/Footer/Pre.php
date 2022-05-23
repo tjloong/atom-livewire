@@ -10,6 +10,8 @@ class Pre extends Component
     public $color;
     public $company;
     public $briefs;
+    public $socials;
+    public $whatsapp;
 
     /**
      * Contructor
@@ -20,6 +22,8 @@ class Pre extends Component
         $dark = false,
         $briefs = null,
         $company = [],
+        $socials = null,
+        $whatsapp = null,
         $siteSettings = true
     ) {
         $this->dark = $dark;
@@ -38,6 +42,8 @@ class Pre extends Component
             'email' => isset($company['email']) ? $company['email'] : $default->email,
             'address' => isset($company['address']) ? $company['address'] : $default->address,
         ];
+        $this->socials = $socials ?? $default->socials;
+        $this->whatsapp = $whatsapp ?? $default->whatsapp;
     }
 
     /**
@@ -55,13 +61,7 @@ class Pre extends Component
             ];
         }
         else if ($useSiteSettings) {
-            return (object)[
-                'company' => site_settings('company'),
-                'phone' => site_settings('phone'),
-                'email' => site_settings('email'),
-                'address' => site_settings('address'),
-                'briefs' => site_settings('briefs'),
-            ];
+            return model('site_setting')->getContactInfo();
         }
 
         return (object)[];

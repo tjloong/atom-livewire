@@ -46,12 +46,6 @@ class Index extends Component
 
         $this->socials = $socials ?? $default->socials;
         $this->whatsapp = $whatsapp ?? $default->whatsapp;
-
-        if ($this->whatsapp) {
-            $this->whatsapp['url'] = 'https://wa.me/' . $this->whatsapp['number'];
-            if (!empty($this->whatsapp['text'])) $this->whatsapp['url'] .= '?text=' . urlencode($this->whatsapp['text']);
-        }
-
         $this->legals = $this->getLegals();
     }
 
@@ -72,24 +66,7 @@ class Index extends Component
             ];
         }
         else if ($useSiteSettings) {
-            return (object)[
-                'company' => site_settings('company'),
-                'phone' => site_settings('phone'),
-                'email' => site_settings('email'),
-                'address' => site_settings('address'),
-                'briefs' => site_settings('briefs'),
-    
-                'socials' => model('site_setting')->group('social')->get()
-                        ->mapWithKeys(fn($val) => [$val->name => $val->value])
-                        ->filter()
-                        ->all(),
-                
-                'whatsapp' => [
-                    'number' => str()->replace('+', '', site_settings('whatsapp')),
-                    'bubble' => (bool)site_settings('whatsapp_bubble'),
-                    'text' => site_settings('whatsapp_text'),
-                ],
-            ];
+            return model('site_setting')->getContactInfo();
         }
 
         return (object)[];

@@ -129,6 +129,8 @@ class AtomComponentServiceProvider extends ServiceProvider
             'navbar.index',
             'navbar.item',
             'navbar.locale',
+            'navbar.dropdown.index',
+            'navbar.dropdown.item',
 
             'footer.index',
             'footer.pre',

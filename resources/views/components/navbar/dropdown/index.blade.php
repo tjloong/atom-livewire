@@ -1,21 +1,16 @@
-<div x-data="{ open: false }" x-on:click.away="open = false" class="relative">
-    <div
-        x-on:click.prevent="open = true"
-        {{ $attributes->merge(['class' => 'block py-1.5 px-3 text-center cursor-pointer font-medium hover:text-theme']) }}
-    >
+<x-dropdown>
+    <x-slot:anchor>
+        <div {{ $attributes->merge([
+            'class' => 'flex items-center justify-center gap-2 py-1.5 px-3 text-center font-medium hover:text-theme',
+        ]) }}>
+            @if ($label = $attributes->get('label')) {{ __($label) }}
+            @elseif (isset($anchor)) {{ $anchor }}
+            @endif
+            <x-icon name="chevron-down"/>
+        </div>
+    </x-slot:anchor>
+
+    <div class="grid">
         {{ $slot }}
     </div>
-
-    <div
-        x-show="open"
-        x-transition
-        class="
-            grid
-            md:absolute md:z-10 md:w-max {{ $attributes->has('right') ? 'md:right-0' : '' }}
-            md:bg-white md:drop-shadow-md md:rounded-md md:border
-            md:py-2 md:min-w-[200px]
-        "
-    >
-        {{ $dropdown }}
-    </div>
-</div>
+</x-dropdown>

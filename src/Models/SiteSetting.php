@@ -191,4 +191,36 @@ class SiteSetting extends Model
 
         return false;
     }
+
+    /**
+     * Get contact info
+     */
+    public function getContactInfo()
+    {
+        $waNum = str()->replace('+', '', site_settings('whatsapp'));
+        $waText = site_settings('whatsapp_text');
+        
+        $waUrl = 'https://wa.me/'.$waNum;
+        if (!empty($waText)) $waUrl .= '?text='.urlencode($waText);
+
+        return (object)[
+            'company' => site_settings('company'),
+            'phone' => site_settings('phone'),
+            'email' => site_settings('email'),
+            'address' => site_settings('address'),
+            'briefs' => site_settings('briefs'),
+
+            'socials' => model('site_setting')->group('social')->get()
+                    ->mapWithKeys(fn($val) => [$val->name => $val->value])
+                    ->filter()
+                    ->all(),
+            
+            'whatsapp' => [
+                'number' => $waNum,
+                'bubble' => (bool)site_settings('whatsapp_bubble'),
+                'text' => $waText,
+                'url' => $waUrl,
+            ],
+        ];
+    }
 }
