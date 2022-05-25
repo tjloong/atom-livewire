@@ -4,14 +4,18 @@
     <script src="{{ mix('js/web.js') }}" defer></script>
 @endpush
 
+@push('vendors')
+    <x-script.vendor swiper/>
+@endpush
+
 @section('content')
-    <x-navbar align="right" back-to-app>
+    <x-navbar align="right">
         @if (Route::has('blogs'))
-            <x-navbar.item label="Blogs" :href="route('page', ['slug' => 'blogs'])"/>
+            <x-navbar.item href="{{ route('page', ['blog']) }}" label="Blogs"/>
         @endif
 
         @if (Route::has('contact'))
-            <x-navbar.item label="Contact" :href="route('page', ['slug' => 'contact', 'params' => ['ref' => 'landing']])"/>
+            <x-navbar.item href="{{ route('page', ['slug' => 'contact', 'ref' => 'landing']) }}" label="Contact"/>
         @endif
     </x-navbar>
 

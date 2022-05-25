@@ -109,12 +109,6 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.onboarding', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Index');
         Livewire::component('atom.onboarding.profile', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Profile');
 
-        // ticket portal
-        Livewire::component('atom.ticketing.listing', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Listing');
-        Livewire::component('atom.ticketing.create', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Create');
-        Livewire::component('atom.ticketing.update', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Update');
-        Livewire::component('atom.ticketing.comments', 'Jiannius\\Atom\\Http\\Livewire\\Ticketing\\Comments');
-
         // dashboard
         Livewire::component('atom.dashboard', 'Jiannius\\Atom\\Http\\Livewire\\App\\Dashboard');
 
@@ -179,6 +173,12 @@ class AtomServiceProvider extends ServiceProvider
             'atom.billing' => 'Billing\Index',
             'atom.billing.plans' => 'Billing\Plans',
             'atom.billing.checkout' => 'Billing\Checkout',
+
+            // ticket portal
+            'atom.ticketing.listing' => 'Ticketing\Listing',
+            'atom.ticketing.create' => 'Ticketing\Create',
+            'atom.ticketing.update' => 'Ticketing\Update',
+            'atom.ticketing.comments' => 'Ticketing\Comments',
 
             // account
             'atom.app.account.listing' => 'App\Account\Listing',

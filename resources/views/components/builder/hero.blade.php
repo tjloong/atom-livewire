@@ -7,9 +7,9 @@
 
 @if ($attributes->has('slider'))
     <div class="relative h-[500px] md:h-[600px] 3xl:max-w-screen-xl 3xl:mx-auto">
-        <x-builder.slider :config="$attributes->get('slider')">
+        <x-slider :config="$attributes->get('slider')">
             {{ $slot }}
-        </x-builder.slider>
+        </x-slider>
     </div>
 
 @elseif ($attributes->has('content'))

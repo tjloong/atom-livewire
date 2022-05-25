@@ -9,7 +9,7 @@
             "
         >
             @if ($icon = $attributes->get('icon'))
-                <x-icon name="{{ $icon }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="20px"/>
+                <x-icon name="{{ $icon }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="18px"/>
             @elseif ($logo = $attributes->get('logo'))
                 <x-logo :src="$logo" class="brightness-0 invert" style="width: 20px; height: 20px;"/>
             @endif

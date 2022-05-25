@@ -9,12 +9,19 @@ class Listing extends Component
 {
     use WithPagination;
 
+    public $layout;
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
-    public $filters = ['search' => ''];
+    public $filters = [
+        'search' => '',
+        'status' => '',
+    ];
 
     protected $queryString = [
-        'filters', 
+        'filters' => ['except' => [
+            'search' => '',
+            'status' => '',
+        ]],
         'sortBy' => ['except' => 'created_at'],
         'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
@@ -25,6 +32,7 @@ class Listing extends Component
      */
     public function mount()
     {
+        $this->layout = current_route('app.*') ? 'app' : 'ticketing';
         breadcrumbs()->home('Support Tickets');
     }
 
@@ -34,9 +42,13 @@ class Listing extends Component
     public function getTicketsProperty()
     {
         return model('ticket')
-            ->when(auth()->user()->account, fn($q) => $q->where('created_by', auth()->id()))
+            ->when(
+                !auth()->user()->isAccountType(['root', 'system']), 
+                fn($q) => $q->where('created_by', auth()->id())
+            )
             ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder);
+            ->orderBy($this->sortBy, $this->sortOrder)
+            ->paginate(30);
     }
 
     /**
@@ -52,8 +64,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::ticketing.listing', [
-            'tickets' => $this->tickets->paginate(30),
-        ])->layout('layouts.ticketing');
+        return view('atom::ticketing.listing')->layout('layouts.'.$this->layout);
     }
 }

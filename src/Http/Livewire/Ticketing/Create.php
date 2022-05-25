@@ -6,27 +6,40 @@ use Livewire\Component;
 
 class Create extends Component
 {
+    public $layout;
     public $ticket;
 
-    protected $rules = [
-        'ticket.subject' => 'required',
-        'ticket.description' => 'required',
-        'ticket.status' => 'required',
-    ];
+    /**
+     * Validation rules
+     */
+    protected function rules()
+    {
+        return [
+            'ticket.subject' => 'required',
+            'ticket.description' => 'required',
+            'ticket.status' => 'required',
+        ];
+    }
 
-    protected $messages = [
-        'ticket.subject.required' => 'Ticket subject is required.',
-        'ticket.description.required' => 'Ticket description is required.',
-    ];
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'ticket.subject.required' => 'Ticket subject is required.',
+            'ticket.description.required' => 'Ticket description is required.',
+        ];
+    }
 
     /**
      * Mount
      */
     public function mount()
     {
-        $this->ticket = model('ticket');
-        $this->ticket->status = 'opened';
-
+        $this->layout = current_route('app.*') ? 'app' : 'ticketing';
+        $this->ticket = model('ticket')->fill(['status' => 'opened']);
+        
         breadcrumbs()->push('Create Ticket');
     }
 
@@ -41,15 +54,8 @@ class Create extends Component
         $this->ticket->save();
 
         session()->flash('flash', 'Ticket Created::success');
-        return redirect($this->redirectTo());
-    }
 
-    /**
-     * Redirect to
-     */
-    public function redirectTo()
-    {
-        return route('ticketing.listing');
+        return redirect()->route('ticketing.listing');
     }
 
     /**
@@ -57,6 +63,6 @@ class Create extends Component
      */
     public function render()
     {
-        return view('atom::ticketing.create')->layout('layouts.ticketing');
+        return view('atom::ticketing.create')->layout('layouts.'.$this->layout);
     }
 }

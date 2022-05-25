@@ -20,8 +20,8 @@
                 @if ($cover = $attributes->get('cover'))
                     <figure class="absolute inset-0">
                         <img
-                            src="{{ data_get($cover, 'url') }}"
-                            alt="{{ data_get($cover, 'alt') }}"
+                            src="{{ $attributes->get('cover') }}"
+                            alt="{{ $attributes->get('title') }}"
                             class="w-full h-full object-cover transition-all duration-500 hover:transform hover:scale-125"
                         >
                     </figure>
@@ -33,7 +33,7 @@
                     {{ $attributes->get('title') }}
                 </div>
                 <div class="text-sm text-gray-400">
-                    {{ $attributes->get('excerpt') }}
+                    {{ str()->limit($attributes->get('excerpt'), 100) }}
                 </div>
             </div>
         </div>

@@ -1,14 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Components\Builder;
+namespace Jiannius\Atom\Components\Slider;
 
 use Illuminate\View\Component;
 
-class Slider extends Component
+class Index extends Component
 {
     public $image;
     public $align;
-    public $config;
     public $valign;
     public $thumbs;
     public $overlay;
@@ -22,13 +21,11 @@ class Slider extends Component
         $image = null,
         $align = 'center',
         $valign = 'center',
-        $config = null,
         $overlay = false,
         $thumbs = null
     ) {
         $this->align = $align;
         $this->valign = $valign;
-        $this->config = $config;
         $this->overlay = $overlay;
 
         $this->image = [
@@ -54,6 +51,6 @@ class Slider extends Component
      */
     public function render()
     {
-        return view('atom::components.builder.slider');
+        return view('atom::components.slider.index');
     }
 }

@@ -6,22 +6,24 @@ use Livewire\Component;
 
 class Update extends Component
 {
+    public $layout;
     public $ticket;
-    public $statuses = [
-        'opened',
-        'closed',
-    ];
 
-    protected $rules = [
-        'ticket.status' => 'required',
-    ];
+    protected function rules()
+    {
+        return [
+            'ticket.status' => 'required',
+        ];
+    }
 
     /**
      * Mount
      */
-    public function mount($id)
+    public function mount($ticket)
     {
-        $this->ticket = model('ticket')->findOrFail($id);
+        $this->layout = current_route('app.*') ? 'app' : 'ticketing';
+        $this->ticket = model('ticket')->findOrFail($ticket);
+
         breadcrumbs()->push($this->ticket->number);
     }
 
@@ -43,17 +45,7 @@ class Update extends Component
         
         session()->flash('flash', 'Ticket Deleted');
 
-        return redirect($this->redirectTo());
-    }
-
-    /**
-     * Redirect to...
-     * 
-     * @return string
-     */
-    public function redirectTo()
-    {
-        return route('ticketing.listing');
+        return redirect()->route('ticketing.listing');
     }
 
     /**
@@ -61,6 +53,6 @@ class Update extends Component
      */
     public function render()
     {
-        return view('atom::ticketing.update')->layout('layouts.ticketing');
+        return view('atom::ticketing.update')->layout('layouts.'.$this->layout);
     }
 }

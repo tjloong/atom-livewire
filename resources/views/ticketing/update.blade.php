@@ -1,45 +1,42 @@
 <div class="max-w-screen-md mx-auto">
     <x-page-header :title="$ticket->subject" back>
-        <x-button icon="trash" color="red" inverted x-on:click="$dispatch('confirm', {
-            title: 'Delete Ticket',
-            message: 'Are you sure to delete this ticket?',
-            type: 'error',
-            onConfirmed: () => $wire.delete(),
-        })">
-            Delete
-        </x-button>
+        <x-button.delete inverted
+            title="Delete Ticket"
+            message="Are you sure to delete this ticket?"
+        />
     </x-page-header>
 
     <x-box>
         <div class="p-5">
-            <x-input.field>
-                <x-slot name="label">Ticket Number</x-slot>
+            <x-form.field label="Ticket Number">
                 {{ $ticket->number }}
-            </x-input.field>
+            </x-form.field>
 
-            <x-input.field>
-                <x-slot name="label">Issue Description</x-slot>
+            <x-form.field label="Issue Description">
                 {!! nl2br($ticket->description) !!}
-            </x-input.field>
+            </x-form.field>
 
             @if (
                 (enabled_module('permissions') && auth()->user()->can('ticketing.status'))
                 || (enabled_module('roles') && auth()->user()->isRole('admin'))
-                || (!enabled_module('roles') && !enabled_module('permissions') && (
-                    auth()->user()->isAccountType('root') || auth()->user()->account->type === 'system'
-                ))
+                || (
+                    !enabled_module('roles') 
+                    && !enabled_module('permissions') 
+                    && auth()->user()->isAccountType(['root', 'system'])
+                )
             )
-                <x-input.select
+                <x-form.select
+                    label="Status"
                     wire:model="ticket.status"
-                    :options="collect($statuses)->map(fn($value) => ['value' => $value, 'label' => Str::headline($value)])"
-                >
-                    Status
-                </x-input.select>
+                    :options="[
+                        ['value' => 'opened', 'label' => 'Opened'],
+                        ['value' => 'closed', 'label' => 'Closed'],
+                    ]"
+                />
             @else
-                <x-input.field>
-                    <x-slot name="label">Status</x-slot>
-                    <x-badge>{{ $ticket->status }}</x-badge>
-                </x-input.field>
+                <x-form.field label="Status">
+                    <x-badge :label="$ticket->status"/>
+                </x-form.field>
             @endif
         </div>
     </x-box>

@@ -10,7 +10,7 @@
     }}"
 >
     <div class="max-w-screen-xl mx-auto grid divide-y">
-        <div class="grid gap-4 md:flex">
+        <div class="grid gap-4 items-center md:flex">
             <div class="flex justify-between items-center">
                 @isset($logo)
                     {{ $logo }}
@@ -29,132 +29,47 @@
                 </a>
             </div>
 
-            {{-- Desktop view --}}
-            <div class="flex-grow hidden gap-3 items-center justify-between md:flex">
-                <div
-                    class="{{
-                        collect([
-                            'flex-grow flex gap-3 items-center',
-                            ($align === 'left' ? 'justify-start' : null),
-                            ($align === 'center' ? 'justify-center' : null),
-                            ($align === 'right' ? 'justify-end' : null),
-                        ])->filter()->join(' ')
-                    }}"
-                >
-                    {{ $slot }}
+            <div 
+                x-bind:class="!show && 'hidden'" 
+                class="grow fixed inset-0 z-40 p-6 md:static md:p-0 md:block"
+            >
+                <div x-on:click="show = false" class="absolute inset-0 bg-gray-400/50 md:hidden"></div>
 
-                    @if ($attributes->has('locales') && count(config('atom.locales', [])) > 1)
-                        <div class="{{ $attributes->get('class.locales') ?? 'text-gray-800' }}">
-                            <x-navbar.locale/>
-                        </div>
-                    @endif
-                </div>
+                <div class="
+                    relative flex flex-col items-center gap-3 bg-white rounded-lg shadow p-4 max-h-[100%] overflow-auto
+                    md:static md:bg-transparent md:shadow-none md:p-0 md:max-h-fit md:overflow-visible
+                    md:flex-row
+                ">
+                    <div class="grow">
+                        @isset($body)
+                            <div {{ $body->attributes->merge(['class' => 'flex flex-col items-center gap-3 md:flex-row']) }}>
+                                {{ $body }}
+                            </div>
+                        @endisset
+                    </div>
 
-                @if ($showAuth)
-                    @auth
-                        <x-dropdown>
-                            <x-slot:anchor>
-                                <div class="flex items-center justify-center gap-2">
-                                    <x-icon name="user-circle"/>
-                                    <div class="flex-grow">{{ str(auth()->user()->name)->limit(15) }}</div>
-                                    <x-icon name="chevron-down"/>
-                                </div>
-                            </x-slot:anchor>
-
-                            <x-dropdown.item :href="route('account')" icon="user-pin" label="Account"/>
-
-                            @if (auth()->user()->canAccessPortal('billing'))
-                                <x-dropdown.item :href="route('billing')" icon="dollar-circle" label="Billing"/>
-                            @endif
-
+                    <div class="shrink-0 w-full md:w-auto">
+                        @auth
                             @isset($auth)
                                 {{ $auth }}
+                            @else
+                                <x-navbar.dropdown.auth/>
                             @endisset
-
-                            @if ($backToApp)
-                                <x-dropdown.item :href="app_route()" icon="home-alt" label="Back to App"/>
-                            @endif
-
-                            <x-dropdown.item :href="route('login', ['logout' => true])" icon="log-out" label="Logout"/>
-                        </x-dropdown>
-
-                    @elseif (Route::has('login') || Route::has('register'))
-                        <div class="flex items-center gap-3">
-                            @if (Route::has('login'))
-                                <x-navbar.item :href="route('login')" :label="$loginPlaceholder"/>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <x-button :href="route('register', ['ref' => 'navbar'])" :label="$registerPlaceholder"/>
-                            @endif
-                        </div>
-                    @endauth
-                @endif
-            </div>
-
-            {{-- Mobile view --}}
-            <div x-show="show" x-transition.opacity class="fixed inset-0 z-40 px-4 py-6">
-                <div x-on:click="show = !show" class="absolute inset-0 bg-gray-400/50"></div>
-
-                <div class="relative bg-white rounded-lg shadow p-4 max-h-[100%] overflow-auto">
-                    <div class="grid gap-3">
-                        {{ $slot }}
-
-                        @if ($attributes->has('locales') && count(config('atom.locales', [])) > 1)
-                            <x-navbar.locale/>
-                        @endif
-
-                        @if ($showAuth)
-                            @auth
-                                <div class="bg-gray-100 rounded-lg p-4">
-                                    <div class="flex-shrink-0 flex items-center justify-center gap-1">
-                                        <x-icon name="user-circle" class="text-gray-400"/>
-                                        <div class="truncate">{{ auth()->user()->name }}</div>
-                                    </div>
-
-                                    <div class="grid mt-2">
-                                        <x-dropdown.item :href="route('account')" icon="user-pin" label="Account"/>
-
-                                        @if (auth()->user()->canAccessPortal('billing'))
-                                            <x-dropdown.item :href="route('billing')" icon="dollar-circle" label="Billing"/>
-                                        @endif
-
-                                        @isset($auth)
-                                            {{ $auth }}
-                                        @endisset
-
-                                        @if ($backToApp)
-                                            <x-dropdown.item :href="app_route()" icon="home-alt" label="Back to App"/>
-                                        @endif
-
-                                        <x-dropdown.item :href="route('login', ['logout' => 1])" icon="log-out" label="Logout"/>
-                                    </div>
-                                </div>
-                            @elseif (Route::has('login') || Route::has('register'))
-                                <div class="bg-gray-100 rounded-lg p-4">
-                                    <div class="flex items-center justify-center gap-3">
-                                        @if (Route::has('login'))
-                                            <x-button color="gray" :href="route('login')" :label="$loginPlaceholder"/>
-                                        @endif
-
-                                        @if (Route::has('register'))
-                                            <x-button :href="route('register', ['ref' => 'navbar'])" :label="$registerPlaceholder"/>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endauth
-                        @endif
+                        @else
+                            @isset($notauth)
+                                {{ $notauth }}
+                            @else
+                                <x-navbar.login/>
+                            @endisset
+                        @endauth
                     </div>
                 </div>
 
-                <div class="absolute top-4 right-2 w-8 h-8">
-                    <a
-                        x-on:click="show = false" 
-                        class="block w-full h-full rounded-full bg-white shadow flex items-center justify-center text-gray-500"
-                    >
-                        <x-icon name="x" size="28px"/>
-                    </a>
-                </div>
+                <a x-on:click="show = false" class="absolute top-4 right-2 block w-8 h-8 md:hidden">
+                    <div class="w-full h-full rounded-full bg-white shadow flex">
+                        <x-icon name="x" size="20px" class="m-auto"/>
+                    </div>
+                </a>
             </div>
         </div>
     </div>

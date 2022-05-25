@@ -1,9 +1,7 @@
-<x-box>
-    <x-slot name="header">Comments</x-slot>
-
+<x-box header="Comments">
     <div class="grid divide-y">
-        @if ($comments->total())
-            @foreach ($comments as $comment)
+        @if ($this->comments->total())
+            @foreach ($this->comments as $comment)
                 <div class="p-4 grid gap-2">
                     <div class="flex items-center justify-between gap-4">
                         <div class="text-sm font-medium">
@@ -11,14 +9,11 @@
                         </div>
 
                         @if ($comment->created_by === auth()->id())
-                            <a class="text-red-500" x-tooltip="Delete" x-on:click="$dispatch('confirm', {
-                                title: 'Delete Comment',
-                                message: 'Are you sure to delete this comment?',
-                                type: 'error',
-                                onConfirmed: () => $wire.delete({{ $comment->id }}),
-                            })">
-                                <x-icon name="trash" size="14px"/>
-                            </a>
+                            <x-button.delete inverted size="xs"
+                                title="Delete Comment"
+                                message="Are you sure to delete this comment?"
+                                :params="$comment->id"
+                            />
                         @endif
                     </div>
 
@@ -26,21 +21,23 @@
                 </div>
             @endforeach
 
-            @if ($comments->hasPages())
+            @if ($this->comments->hasPages())
                 <div class="p-4">
-                    {{ $comments->links() }}
+                    {{ $this->comments->links() }}
                 </div>
             @endif
         @endif
 
         <div class="p-5">
-            <x-input.textarea wire:model.defer="content" placeholder="Comments" :error="$errors->first('content')"/>
+            <x-form.textarea 
+                wire:model.defer="content" 
+                placeholder="Comments" 
+                :error="$errors->first('content')"
+            />
         </div>
     </div>
 
-    <x-slot name="buttons">
-        <x-button icon="check" color="green" wire:click="submit">
-            Post Comment
-        </x-button>
-    </x-slot>
+    <x-slot:buttons>
+        <x-button icon="check" color="green" wire:click="submit" label="Post Comment"/>
+    </x-slot:buttons>
 </x-box>

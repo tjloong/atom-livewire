@@ -1,6 +1,4 @@
-<x-form>
-    <x-slot:header>{{ __('Change Password') }}</x-slot:header>
-
+<x-form header="Change Password">
     <x-form.password 
         label="Current Password"
         wire:model.defer="password.current" 

@@ -1,6 +1,4 @@
-<x-form>
-    <x-slot:header>{{ __('Change Login Information') }}</x-slot:header>
-
+<x-form header="Change Login Information">
     <x-form.text 
         label="Login Name"
         wire:model.defer="user.name" 

@@ -1,74 +1,60 @@
-@if ($attributes->has('slide'))
-    <div 
-        class="swiper-slide relative w-full h-full {{ $attributes->get('href') ? 'cursor-pointer' : '' }}"
-        @if ($attributes->get('href'))
-            x-data
-            x-on:click="window.open('{{ $attributes->get('href') }}', '_blank')"
-        @endif
-    >
-        @if ($image['url'])
-            <img
-                src="{{ $image['url'] }}"
-                width="{{ $image['width'] ?? '1200' }}"
-                height="{{ $image['height'] ?? '500' }}"
-                class="{{ $attributes->get('class') }}"
-                alt="{{ $attributes->get('alt') }}"
-                style="
-                    width: {{ isset($image['width']) ? ($image['width'] . 'px') : '100%' }};
-                    height: {{ isset($image['height']) ? ($image['height'] . 'px') : '100%' }};
-                    object-fit: {{ $image['fit'] }};
-                "
-            >
-        @endif
-
-        <div 
-            class="
-                absolute inset-0 z-10 flex p-12
-                {{ $overlay ? 'bg-black/30 text-gray-200' : '' }}
-                {{ $valign === 'top' ? 'items-start' : '' }}
-                {{ $valign === 'center' ? 'items-center' : '' }}
-                {{ $valign === 'bottom' ? 'items-end' : '' }}
-            "
-        >
-            <div 
-                class="
-                    max-w-screen-xl mx-auto flex flex-col gap-4 h-max
-                    {{ $align === 'center' ? 'text-center' : '' }}
-                    {{ $align === 'right' ? 'text-right' : '' }}
-                "
-            >
-                @isset($title)
-                    <div class="text-4xl font-bold">
-                        {{ $title }}
-                    </div>                        
-                @endisset
-
-                <div>{{ $slot }}</div>
-
-                @isset($cta)
-                    <div>{{ $cta }}</div>
-                @endisset
-            </div>
-        </div>
+<div 
+    x-data="{
+        config: @js($attributes->get('config')),
+        slider: null,
+        thumbs: null,
+        get slides () {
+            return Array.from(this.$refs.slider.querySelectorAll('.swiper-slide'))
+        },
+        init () {
+            this.slider = new Swiper(this.$refs.slider, {
+                enabled: this.slides.length > 1, 
+                loop: true,
+                autoplay: {
+                    delay: 3500,
+                },
+                navigation: {
+                    nextEl: '#swiper-next',
+                    prevEl: '#swiper-prev',
+                    disabledClass: 'hidden',
+                    hiddenClass: 'hidden',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                    hiddenClass: 'hidden',
+                    bulletClass: 'inline-block mx-1 rounded-full bg-gray-100 w-2 h-2 drop-shadow',
+                    bulletActiveClass: 'bg-theme px-4',
+                },
+                ...this.config,
+            })
+        },
+        show () {
+            [
+                this.slider.navigation.prevEl && '#swiper-prev',
+                this.slider.navigation.nextEl && '#swiper-next',
+                this.slider.pagination.el && '.swiper-pagination',
+                this.slider.scrollbar.el && '.swiper-scrollbar',
+            ]
+                .filter(Boolean)
+                .forEach(selector => this.$el.querySelector(selector).classList.remove('hidden'))
+        },
+    }"
+    x-init="init(); show()"
+    class="{{ $attributes->get('class') }}"
+>
+    <div x-ref="slider" class="swiper w-full h-full">
+        <div class="swiper-wrapper">{{ $slot }}</div>
+        <div class="swiper-pagination hidden"></div>
+        <div class="swiper-scrollbar hidden"></div>
+        <x-slider.nav prev/>
+        <x-slider.nav next/>
     </div>
+</div>
 
-@elseif ($attributes->has('swiper-prev'))
-    <div id="swiper-prev" class="hidden absolute top-0 bottom-0 left-0 z-10 flex items-center justify-center md:pl-3">
-        <div class="bg-gray-100 flex items-center justify-center drop-shadow rounded-r-md py-1 md:rounded-full md:px-1">
-            <x-icon name="chevron-left" size="32px" class="hidden md:block"/>
-            <x-icon name="chevron-left" size="20px" class="md:hidden"/>
-        </div>
-    </div>
 
-@elseif ($attributes->has('swiper-next'))
-    <div id="swiper-next" class="hidden absolute top-0 bottom-0 right-0 z-10 flex items-center justify-center md:pr-3">
-        <div class="bg-gray-100 flex items-center justify-center drop-shadow rounded-l-md py-1 md:rounded-full md:px-1">
-            <x-icon name="chevron-right" size="32px" class="hidden md:block"/>
-            <x-icon name="chevron-right" size="20px" class="md:hidden"/>
-        </div>
-    </div>
 
-@elseif (in_array($thumbs['position'], ['top', 'bottom']))
+{{-- @if (in_array($thumbs['position'], ['top', 'bottom']))
     <style>
         #swiper-thumbs .swiper-slide { opacity: 0.6; }
         #swiper-thumbs .swiper-slide-thumb-active { opacity: 1; }
@@ -126,15 +112,6 @@
     </div>
 
 @else
-    <div x-data="slider(@js($config))" class="{{ $attributes->get('class') }}">
-        <div id="swiper-slider" class="swiper w-full h-full">
-            <div class="swiper-wrapper">{{ $slot }}</div>
-            <div class="swiper-pagination hidden"></div>
-            <div class="swiper-scrollbar hidden"></div>
-            <x-builder.slider swiper-prev/>
-            <x-builder.slider swiper-next/>
-        </div>
-    </div>
     
 @endif
 
@@ -224,4 +201,4 @@
         })
     </script>
 
-@endif
+@endif --}}

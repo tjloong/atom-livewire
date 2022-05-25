@@ -235,10 +235,11 @@ function youtube_vid($url)
  *
  * @return string
  */
-function currency($num, $symbol = null, $bracket = true)
+function currency($num, $symbol = null, $rounded = true, $bracket = true)
 {
     $num = (float)$num ?: 0;
-    $currency = number_format($num, 2);
+    $round = $rounded ? (round($num * 2, 1)/2) : $num;
+    $currency = number_format($round, 2);
 
     if ($symbol) $currency = "$symbol $currency";
     if ($bracket && $num < 0) $currency = '(' . str_replace('-', '', $currency) . ')';

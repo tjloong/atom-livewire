@@ -66,7 +66,7 @@ if (!config('atom.static_site')) {
      * Onboarding Portal
      */
     if (config('atom.accounts.register')) {
-        Route::prefix('onboarding')->middleware('auth', 'portal-guard', 'locale')->group(function() {
+        define_route()->prefix('onboarding')->middleware('auth', 'portal-guard', 'locale')->group(function() {
             define_route('/', 'Onboarding\\Index')->name('onboarding');
             define_route('completed', 'Onboarding\\Completed')->name('onboarding.completed');
         });
@@ -76,7 +76,7 @@ if (!config('atom.static_site')) {
      * Billing Portal
      */
     if (enabled_module('plans')) {
-        Route::prefix('billing')->middleware('auth', 'portal-guard', 'locale')->group(function() {
+        define_route()->prefix('billing')->middleware('auth', 'portal-guard', 'locale')->group(function() {
             define_route('/', 'Billing\Index')->name('billing');
             define_route('plans', 'Billing\Plans')->name('billing.plans');
             define_route('checkout', 'Billing\Checkout')->name('billing.checkout');
@@ -92,17 +92,17 @@ if (!config('atom.static_site')) {
      * Ticketing Portal
      */
     if (enabled_module('ticketing')) {
-        Route::prefix('ticketing')->middleware('auth', 'portal-guard', 'locale')->as('ticketing.')->group(function() {
-            define_route('listing', 'Ticketing\\Listing')->name('listing');
-            define_route('create', 'Ticketing\\Create')->name('create');
-            define_route('{id}', 'Ticketing\\Update')->name('update');
+        define_route()->prefix('ticketing')->middleware('auth', 'portal-guard', 'locale')->as('ticketing.')->group(function() {
+            define_route('listing', 'Ticketing\Listing')->name('listing');
+            define_route('create', 'Ticketing\Create')->name('create');
+            define_route('{ticket}', 'Ticketing\Update')->name('update');
         });
     }
 
     /**
      * App Portal
      */
-    Route::prefix('app')->middleware('auth', 'portal-guard', 'locale')->group(function() {
+    define_route()->prefix('app')->middleware('auth', 'portal-guard', 'locale')->group(function() {
         define_route('/', fn() => redirect()->route('app.dashboard'))->name('app.home');
 
         /**
@@ -217,16 +217,27 @@ if (!config('atom.static_site')) {
         /**
          * Users
          */
-        Route::prefix('user')->as('app.user.')->group(function () {
-            define_route('listing', 'App\\User\\Listing')->name('listing');
-            define_route('create', 'App\\User\\Create')->name('create');
-            define_route('{user}', 'App\\User\\Update')->name('update');
+        define_route()->prefix('user')->as('app.user.')->group(function () {
+            define_route('listing', 'App\User\Listing')->name('listing');
+            define_route('create', 'App\User\Create')->name('create');
+            define_route('{user}', 'App\User\Update')->name('update');
         });
+
+        /**
+         * Ticketing
+         */
+        if (enabled_module('ticketing')) {
+            define_route()->prefix('ticketing')->as('app.ticketing.')->group(function() {
+                define_route('listing', 'Ticketing\Listing')->name('listing');
+                define_route('create', 'Ticketing\Create')->name('create');
+                define_route('{ticket}', 'Ticketing\Update')->name('update');
+            });
+        }
         
         /**
          * Files
          */
-        define_route('files', 'App\\File\\Listing')->name('app.files');
+        define_route('files', 'App\File\Listing')->name('app.files');
     
         /**
          * Site Settings
@@ -241,7 +252,7 @@ if (!config('atom.static_site')) {
 // A catch all route after the app is booted
 // so this route will be register after the consuming app's routes
 app()->booted(function() {
-    define_route('{slug?}', 'Web\\Index')
+    define_route('{slug?}', 'Web\Index')
         ->middleware('web', 'locale')
         ->name('page')
         // slugs to exclude

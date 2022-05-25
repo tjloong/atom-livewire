@@ -38,13 +38,13 @@ class TicketComment extends Model
     {
         // creator comment, send notification to admin
         if ($this->is_self_comment) {
-            if ($to = SiteSetting::getSetting('notify_to')) {
+            if ($to = site_settings('notify_to')) {
                 Notification::route('mail', $to)->notify(new TicketCommentNotification($this));
             }
         }
         // non-creator comment, send notification to creator
         else {
-            $this->creator->notify(new TicketCommentNotification($this));
+            $this->created_by_user->notify(new TicketCommentNotification($this));
         }
     }
 }

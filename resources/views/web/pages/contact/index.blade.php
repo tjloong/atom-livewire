@@ -31,10 +31,13 @@
                         Send us a message
                     </div>
     
-                    <form wire:submit.prevent="submit">
-                        <x-input.text wire:model.defer="enquiry.name" :error="$errors->first('enquiry.name')" required>
-                            Your Name
-                        </x-input.text>
+                    <form class="grid gap-6" wire:submit.prevent="submit">
+                        <x-form.text 
+                            label="Your Name"
+                            wire:model.defer="enquiry.name" 
+                            :error="$errors->first('enquiry.name')"
+                            required
+                        />
                 
                         <x-form.phone 
                             label="Contact Number"
@@ -43,17 +46,21 @@
                             required
                         />
                 
-                        <x-input.email wire:model.defer="enquiry.email" :error="$errors->first('enquiry.email')" required>
-                            Contact Email
-                        </x-input.email>
+                        <x-form.email
+                            label="Contact Email"
+                            wire:model.defer="enquiry.email" 
+                            :error="$errors->first('enquiry.email')"
+                            required
+                        />
                 
-                        <x-input.textarea wire:model.defer="enquiry.message" :error="$errors->first('enquiry.message')" required>
-                            Message
-                        </x-input.textarea>
-                
-                        <x-button type="submit" size="md" icon="paper-plane" block>
-                            Send Enquiry
-                        </x-button>
+                        <x-form.textarea
+                            label="Message"
+                            wire:model.defer="enquiry.message" 
+                            :error="$errors->first('enquiry.message')"
+                            required
+                        />
+
+                        <x-button type="submit" size="md" icon="paper-plane" block label="Send Enquiry"/>
                     </form>
                 </div>
             </div>

@@ -16,13 +16,25 @@ class Comments extends Component
         'page' => ['except' => 1]
     ];
 
-    protected $rules = [
-        'content' => 'required',
-    ];
+    /**
+     * Validation rules
+     */
+    protected function rules()
+    {
+        return [
+            'content' => 'required',
+        ];
+    }
 
-    protected $messages = [
-        'content.required' => 'Comment is required.',
-    ];
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'content.required' => 'Comment is required.',
+        ];
+    }
 
     /**
      * Mount
@@ -37,11 +49,13 @@ class Comments extends Component
      */
     public function getCommentsProperty()
     {
-        return $this->ticket->comments()->orderBy('created_at', 'desc');
+        return $this->ticket->comments()
+            ->orderBy('created_at', 'desc')
+            ->paginate(30);
     }
 
     /**
-     * Post comment
+     * Submit
      */
     public function submit()
     {
@@ -71,6 +85,6 @@ class Comments extends Component
      */
     public function render()
     {
-        return view('atom::ticketing.comments', ['comments' => $this->comments->paginate(10)]);
+        return view('atom::ticketing.comments');
     }
 }

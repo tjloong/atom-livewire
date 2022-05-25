@@ -1,52 +1,38 @@
 <div class="max-w-screen-xl mx-auto">
-    <x-page-header 
-        title="Support Tickets" 
-        :back="app_route()"
-    >
-        <x-button icon="plus" href="{{ route('ticketing.create') }}">
-            New Ticket
-        </x-button>
+    <x-page-header title="Support Tickets">
+        <x-button.create :href="route('ticketing.create')" label="New Ticket"/>
     </x-page-header>
 
-    <x-table :total="$tickets->total()" :links="$tickets->links()">
-        <x-slot name="head">
-            <x-table head sort="created_at">Date</x-table>
-            <x-table head sort="number">Number</x-table>
-            <x-table head sort="subject">Subject</x-table>
-            <x-table head align="right">Status</x-table>
-            <x-table head align="right">Created By</x-table>
-        </x-slot>
+    <x-table :total="$this->tickets->total()" :links="$this->tickets->links()">
+        <x-slot:toolbar>
+            <x-tabs wire:model="filters.status">
+                <x-tabs item name="">All</x-tabs>
+                <x-tabs item>Opened</x-tabs>
+                <x-tabs item>Closed</x-tabs>
+            </x-tabs>
+        </x-slot:toolbar>
 
-        <x-slot name="body">
-            @foreach ($tickets as $ticket)
-                <x-table row>
-                    <x-table cell>
-                        {{ format_date($ticket->created_at) }}
-                        <div class="text-sm text-gray-400">
-                            {{ format_date($ticket->created_at, 'time') }}
-                        </div>
-                    </x-table>
-                    <x-table cell>
-                        <a href="{{ route('ticketing.update', [$ticket->id]) }}">
-                            {{ $ticket->number }}
-                        </a>
-                    </x-table>
-                    <x-table cell>
-                        <a href="{{ route('ticketing.update', [$ticket->id]) }}">
-                            {{ str($ticket->subject)->limit(50) }}
-                        </a>
-                        <div class="text-sm text-gray-400">
-                            {{ str($ticket->description)->limit(80) }}
-                        </div>
-                    </x-table>
-                    <x-table cell class="text-right">
-                        <x-badge>{{ $ticket->status }}</x-badge>
-                    </x-table>
-                    <x-table cell class="text-right">
-                        {{ str($ticket->created_by_user->name ?? '--')->limit(15) }}
-                    </x-table>
-                </x-table>
+        <x-slot:head>
+            <x-table.th sort="created_at" label="Date"/>
+            <x-table.th sort="number" label="Number"/>
+            <x-table.th sort="subject" label="Subject"/>
+            <x-table.th class="text-right" label="Status"/>
+            <x-table.th class="text-right" label="Created By"/>
+        </x-slot:head>
+
+        <x-slot:body>
+            @foreach ($this->tickets as $ticket)
+                <x-table.tr>
+                    <x-table.td :datetime="$ticket->created_at"/>
+                    <x-table.td :href="route('ticketing.update', [$ticket->id])" :label="$ticket->number"/>
+                    <x-table.td :href="route('ticketing.update', [$ticket->id])"
+                        :label="str($ticket->subject)->limit(50)"
+                        :small="str($ticket->description)->limit(80)"
+                    />
+                    <x-table.td :status="$ticket->status" class="text-right"/>
+                    <x-table.td :label="str($ticket->created_by_user->name ?? '--')->limit(15)" class="text-right"/>
+                </x-table.tr>
             @endforeach
-        </x-slot>
+        </x-slot:body>
     </x-table>
 </div>

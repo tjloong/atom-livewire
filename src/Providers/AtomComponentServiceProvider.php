@@ -128,16 +128,23 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'navbar.index',
             'navbar.item',
+            'navbar.login',
             'navbar.locale',
             'navbar.dropdown.index',
             'navbar.dropdown.item',
+            'navbar.dropdown.auth',
+
+            'slider.index',
+            'slider.slide',
+            'slider.nav',
+
+            'faq.index',
+            'faq.item',
 
             'footer.index',
             'footer.pre',
         
-            'builder.faq',
             'builder.hero',
-            'builder.slider',
             'builder.pricing',
             'builder.testimonial',
             'builder.announcements',

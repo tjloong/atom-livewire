@@ -77,7 +77,9 @@
             </x-slot:logo>
 
             @isset($links)
-                {{ $links }}
+                <x-slot:body>
+                    {{ $links }}
+                </x-slot:body>
             @endisset
         </x-navbar>
 

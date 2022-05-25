@@ -1,5 +1,5 @@
 <figure
-    class="rounded-full shadow flex"
+    class="rounded-full shadow flex overflow-hidden"
     style="height: {{ $size }}px; width: {{ $size }}px; background-color: {{ collect($colors)->random() }};"
 >
     @if ($url = $attributes->get('url'))

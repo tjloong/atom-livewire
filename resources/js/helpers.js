@@ -36,12 +36,14 @@ global.currency = (val, symbol = null, round = true) => {
         config.style = 'currency'
     }
 
-    const num = Number(val)
-    const rounded = round 
-        ? (Math.round((num + Number.EPSILON) * 10) / 10)
-        : num
+    let num = Number(val)
 
-    return rounded.toLocaleString('en-US', config)
+    if (round) {
+        num = num + Number.EPSILON
+        const rounded = Math.round(num * 2 * 10)/10/2
+        return rounded.toLocaleString('en-US', config)
+    }
+    else return num.toLocaleString('en-US', config)
 }
 
 // device type

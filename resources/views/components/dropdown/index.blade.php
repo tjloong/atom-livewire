@@ -27,7 +27,7 @@
         x-ref="dd"
         x-show="show"
         x-transition.opacity
-        class="absolute z-20 w-full bg-white border border-gray-300 shadow-lg rounded-md max-w-md min-w-[250px] py-1"
+        class="absolute z-20 w-full bg-white border border-gray-300 shadow-lg rounded-md max-w-md min-w-[250px] overflow-hidden"
     >
         {{ $slot }}
     </div>
