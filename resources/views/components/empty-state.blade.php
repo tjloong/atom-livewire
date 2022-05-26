@@ -1,4 +1,4 @@
-<div class="flex flex-col items-center justify-center py-8 gap-4">
+<div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center py-8 gap-4']) }}>
     <div class="p-6 rounded-full bg-gray-100 shadow flex m-auto">
         <x-icon name="{{ $attributes->get('icon') ?? 'folder-open' }}" size="lg" class="text-gray-400"/>
     </div>

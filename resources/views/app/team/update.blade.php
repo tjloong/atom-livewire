@@ -40,7 +40,7 @@
             </x-slot>
             
             <div class="p-3">
-                <x-input.search placeholder="Search team members"/>
+                <x-form.search placeholder="Search team members"/>
             </div>
     
             <div class="grid divide-y">

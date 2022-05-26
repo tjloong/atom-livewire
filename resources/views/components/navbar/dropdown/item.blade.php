@@ -1,7 +1,7 @@
 <a {{ $attributes->merge([
     'class' => '
-        inline-flex items-center justify-center gap-3
-        py-3 px-5 text-gray-800 font-medium hover:text-theme 
+        inline-flex items-center justify-center gap-3 
+        py-3 px-5 text-gray-800 font-medium
         md:hover:bg-gray-100 md:justify-start
     '
 ]) }}>

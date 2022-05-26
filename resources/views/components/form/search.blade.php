@@ -1,4 +1,4 @@
-<div class="flex items-center bg-gray-100 py-2 px-3 rounded-md space-x-1.5 drop-shadow w-full" x-data>
+<div class="flex items-center bg-gray-100 py-2 px-3 rounded-md gap-2 shadow w-full" x-data>
     <x-icon name="search" size="18px" class="text-gray-400"/>
 
     <input
@@ -13,6 +13,6 @@
         class="flex items-center justify-center text-gray-600"
         x-on:click="$wire.set('search', null)"
     >
-        <x-icon name="x" size="18px"/>
+        <x-icon name="xmark" size="18px"/>
     </a>
 </div>

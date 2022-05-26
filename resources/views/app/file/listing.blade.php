@@ -45,7 +45,7 @@
                 </div>
             @else
                 <div>
-                    <x-input.search placeholder="Search files"/>
+                    <x-form.search placeholder="Search files"/>
                 </div>
             @endif
         </div>

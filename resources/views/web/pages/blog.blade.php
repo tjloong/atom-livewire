@@ -41,7 +41,7 @@
             <div class="md:col-span-3">
                 <div class="grid gap-10">
                     <div class="max-w-md">
-                        <x-input.search wire:model.debounce.500ms="search" placeholder="Search Articles"/>
+                        <x-form.search placeholder="Search Articles"/>
                     </div>
 
                     @if ($this->labels->count())

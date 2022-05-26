@@ -26,8 +26,7 @@
         <x-navbar.dropdown>
             <x-slot:anchor>
                 <div class="flex items-center justify-center gap-2">
-                    <x-icon name="circle-user" size="18px" class="text-gray-500"/>
-                    <div class="flex-grow">{{ str(auth()->user()->name)->limit(15) }}</div>
+                    <x-icon name="circle-user" size="18px" class="text-gray-500"/> {{ str(auth()->user()->name)->limit(15) }}
                 </div>
             </x-slot:anchor>
     

@@ -108,6 +108,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.gender',
             'form.number',
             'form.picker',
+            'form.search',
             'form.select',
             'form.country',
             'form.checkbox',
@@ -121,7 +122,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'input.text',
             'input.email',
             'input.field',
-            'input.search',
 
             'blog.index',
             'blog.card',
