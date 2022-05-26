@@ -13,8 +13,6 @@ class Td extends Component
      */
     public function __construct(
         $label = null,
-        $date = null,
-        $datetime = null,
         $percentage = null,
         $amount = null,
         $currency = null
@@ -22,8 +20,6 @@ class Td extends Component
         if ($label) $this->label = $label;
         else if (!empty($amount)) $this->label = currency($amount, $currency);
         else if (!empty($percentage)) $this->label = number_format($percentage, 2).'%';
-        else if ($date) $this->label = format_date($date);
-        else if ($datetime) $this->label = format_date($datetime, 'datetime');
     }
 
     /**

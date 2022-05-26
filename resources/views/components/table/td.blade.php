@@ -19,6 +19,13 @@
                 </div>
             @endif
         </div>
+
+    @elseif ($date = $attributes->get('date'))
+        {{ format_date($date) }}
+    
+    @elseif ($datetime = $attributes->get('datetime'))
+        <div>{{ format_date($datetime) }}</div>
+        <div class="text-sm text-gray-500">{{ format_date($datetime, 'time') }}</div>
     
     @elseif ($href = $attributes->get('href'))
         <div class="grid">
