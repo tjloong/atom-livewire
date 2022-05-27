@@ -14,8 +14,8 @@
     </a>
 
 @else
-    <a href="{{ $attributes->get('href') }}" class="text-gray-800">
-        <div class="bg-white rounded-md shadow overflow-hidden transition-all hover:shadow-lg">
+    <div class="bg-white rounded-md shadow overflow-hidden transition-all hover:shadow-lg">
+        <a href="{{ $attributes->get('href') }}" class="text-gray-800">
             <div class="relative pt-[60%] bg-gray-200 overflow-hidden">
                 @if ($cover = $attributes->get('cover'))
                     <figure class="absolute inset-0">
@@ -36,7 +36,7 @@
                     {{ str()->limit($attributes->get('excerpt'), 100) }}
                 </div>
             </div>
-        </div>
-    </a>
+        </a>
+    </div>
 @endif
 
