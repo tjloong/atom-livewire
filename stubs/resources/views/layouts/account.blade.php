@@ -14,7 +14,7 @@
     <div class="min-h-screen bg-gray-100">
         <main class="max-w-screen-lg mx-auto py-10 px-6">
             <div class="grid gap-6">
-                <h1 class="text-2xl font-bold">Account Settings</h1>
+                <x-page-header title="Account Settings"/>
 
                 {{ $slot }}
             </div>

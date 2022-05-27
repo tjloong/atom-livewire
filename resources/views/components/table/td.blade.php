@@ -32,6 +32,12 @@
             <a href="{{ $href }}" class="truncate">
                 {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
             </a>
+
+            @if ($small = $attributes->get('small'))
+                <div class="text-sm text-gray-500 truncate font-medium">
+                    {{ $small }}
+                </div>
+            @endif
         </div>
 
     @else
@@ -39,6 +45,12 @@
             <div class="truncate">
                 {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
             </div>
+
+            @if ($small = $attributes->get('small'))
+                <div class="text-sm text-gray-500 truncate font-medium">
+                    {{ $small }}
+                </div>
+            @endif
         </div>
 
     @endif
