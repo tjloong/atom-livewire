@@ -54,10 +54,9 @@
                                 </x-slot:anchor>
 
                                 @foreach ($export as $val)
-                                    <x-dropdown.item 
+                                    <x-dropdown.item
                                         :label="data_get($val, 'label')"
                                         wire:click="export('{{ data_get($val, 'value') }}')"
-                                        class="cursor-pointer"
                                     />
                                 @endforeach
                             </x-dropdown>

@@ -11,6 +11,7 @@
             multiple: @js($multiple),
             clearOnOpen: @js($clearOnOpen),
             open () {
+                if (this.show) return this.close()
                 if (this.clearOnOpen) this.value = null
 
                 this.show = true
@@ -49,7 +50,7 @@
             x-bind:class="show && 'active'"
             class="form-input w-full {{ !$selected->count() ? 'select' : '' }}"
         >
-            @if ($selected->count() && $multiple)
+            @if ($multiple && $selected->count())
                 <div class="flex flex-wrap gap-2">
                     @foreach ($selected as $sel)
                         <div class="bg-slate-200 rounded-md py-1 px-2 text-sm font-medium border flex items-center gap-2 max-w-[200px]">
@@ -62,10 +63,12 @@
                         </div>
                     @endforeach
                 </div>
-            @elseif ($selected->count())
+            @elseif (!$multiple && (is_string($selected) || $selected->count()))
                 <div class="flex items-center justify-between gap-2">
                     <div class="grid">
-                        <div class="truncate">{{ data_get($selected->first(), 'label') }}</div>
+                        <div class="truncate">
+                            {{ is_string($selected) ? $selected : data_get($selected->first(), 'label') }}
+                        </div>
                     </div>
                     <a x-on:click="value = null" class="flex shrink-0 text-gray-500">
                         <x-icon name="xmark" size="16px" class="m-auto"/>

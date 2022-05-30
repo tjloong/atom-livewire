@@ -13,11 +13,14 @@ class Listing extends Component
     public $sortOrder = 'desc';
     public $filters = [
         'search' => '',
-        'status' => 'all',
+        'status' => null,
     ];
 
     protected $queryString = [
-        'filters', 
+        'filters' => ['except' => [
+            'search' => '',
+            'status' => null,
+        ]], 
         'sortBy' => ['except' => 'updated_at'],
         'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
@@ -38,7 +41,8 @@ class Listing extends Component
     {
         return model('blog')
             ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder);
+            ->orderBy($this->sortBy, $this->sortOrder)
+            ->paginate(30);
     }
 
     /**
@@ -54,8 +58,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.blog.listing', [
-            'blogs' => $this->blogs->paginate(30),
-        ]);
+        return view('atom::app.blog.listing');
     }
 }

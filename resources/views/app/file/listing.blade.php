@@ -16,14 +16,18 @@
 
     <div class="bg-white rounded-lg shadow grid divide-y">
         <div class="p-4 flex flex-wrap items-center justify-between gap-4">
-            <x-tabs wire:model="filters.type" wire:loading.class="disabled">
-                <x-tabs item>All</x-tabs>
-                <x-tabs item>Image</x-tabs>
-                <x-tabs item>Video</x-tabs>
-                <x-tabs item>Audio</x-tabs>
-                <x-tabs item>File</x-tabs>
-                <x-tabs item>Youtube</x-tabs>
-            </x-tabs>
+            <x-tab wire:model="filters.type">
+                @foreach ([
+                    'all',
+                    'image',
+                    'video',
+                    'audio',
+                    'file',
+                    'youtube',
+                ] as $item)
+                    <x-tab.item :name="$item === 'all' ? null : $item" :label="str()->headline($item)"/>
+                @endforeach
+            </x-tab>
 
             @if ($selected)
                 <div class="flex flex-wrap items-center gap-2">

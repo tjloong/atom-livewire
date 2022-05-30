@@ -14,12 +14,15 @@ class Listing extends Component
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
     public $filters = [
-        'type' => 'all',
+        'type' => null,
         'search' => '',
     ];
 
     protected $queryString = [
-        'filters',
+        'filters' => ['except' => [
+            'type' => null,
+            'search' => '',
+        ]],
         'page' => ['except' => 1],
     ];
 

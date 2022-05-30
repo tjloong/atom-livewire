@@ -5,11 +5,11 @@
 
     <x-table :total="$this->tickets->total()" :links="$this->tickets->links()">
         <x-slot:toolbar>
-            <x-tabs wire:model="filters.status">
-                <x-tabs item name="">All</x-tabs>
-                <x-tabs item>Opened</x-tabs>
-                <x-tabs item>Closed</x-tabs>
-            </x-tabs>
+            <x-tab wire:model="filters.status">
+                @foreach (['all', 'opened', 'closed'] as $item)
+                    <x-tab.item :name="$item === 'all' ? null : $item" :label="str()->headline($item)"/>
+                @endforeach
+            </x-tab>
         </x-slot:toolbar>
 
         <x-slot:head>

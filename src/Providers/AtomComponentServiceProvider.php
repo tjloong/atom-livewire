@@ -26,8 +26,6 @@ class AtomComponentServiceProvider extends ServiceProvider
     {
         $components = [
             'seo',
-            'tabs',
-            'card',
             'icon',
             'logo',
             'alert',
@@ -122,6 +120,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'input.text',
             'input.email',
             'input.field',
+
+            'tab.index',
+            'tab.item',
 
             'blog.index',
             'blog.card',

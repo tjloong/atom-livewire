@@ -1,6 +1,6 @@
 <div class="max-w-screen-md mx-auto">
     @if ($isFullpage)
-        <x-page-header :title="__('Users')">
+        <x-page-header title="Users">
             <x-button.create label="New User" :href="route('app.user.create')"/>
         </x-page-header>
     @endif
@@ -9,19 +9,22 @@
         @if ($account)
             <x-slot:header>
                 <div class="flex items-center gap-4 justify-between">
-                    <div>{{ _('Users') }}</div>
-                    <x-button.create label="New User" size="sm" :href="route('app.user.create', ['account' => $account->id])"/>
+                    <div>{{ __('Users') }}</div>
+                    <x-button.create size="sm"
+                        label="New User" 
+                        :href="route('app.user.create', ['account' => $account->id])"
+                    />
                 </div>
             </x-slot:header>
         @endif
 
         @if ($this->tabs)
             <x-slot:toolbar :trashed="data_get($filters, 'status') === 'trashed'">
-                <x-tabs wire:model="filters.status">
+                <x-tab wire:model="filters.status">
                 @foreach ($this->tabs as $item)
-                    <x-tabs item :name="data_get($item, 'slug')">{{ data_get($item, 'label') }}</x-tabs>
+                    <x-tab item :name="data_get($item, 'slug')" :label="data_get($item, 'label')"/>
                 @endforeach
-                </x-tabs>
+                </x-tab>
             </x-slot:toolbar>
         @endif
 

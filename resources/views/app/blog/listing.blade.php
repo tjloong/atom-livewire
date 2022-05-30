@@ -3,13 +3,13 @@
         <x-button.create label="New Blog" href="{{ route('app.blog.create') }}"/>
     </x-page-header>
 
-    <x-table :total="$blogs->total()" :links="$blogs->links()">
+    <x-table :total="$this->blogs->total()" :links="$this->blogs->links()">
         <x-slot:toolbar>
-            <x-tabs wire:model="filters.status">
-                <x-tabs item>All</x-tabs>
-                <x-tabs item>Published</x-tabs>
-                <x-tabs item>Draft</x-tabs>
-            </x-tabs>
+            <x-tab wire:model="filters.status">
+                @foreach (['all', 'published', 'draft'] as $item)
+                    <x-tab.item :name="$item === 'all' ? null : $item" :label="str()->headline($item)"/>
+                @endforeach
+            </x-tab>
         </x-slot:toolbar>
 
         <x-slot:head>
@@ -20,7 +20,7 @@
         </x-slot:head>
 
         <x-slot:body>
-        @foreach ($blogs as $blog)
+        @foreach ($this->blogs as $blog)
             <x-table.tr>
                 <x-table.td class="max-w-xs">
                     <div class="grid">

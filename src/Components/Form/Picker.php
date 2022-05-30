@@ -48,10 +48,14 @@ class Picker extends Component
 
         $this->multiple = $multiple;
         $this->clearOnOpen = $clearOnOpen;
-        
-        $this->selected = $selected
-            ? collect($this->options)->filter(fn($opt) => in_array(data_get($opt, 'value'), (array)$selected))
-            : collect($this->options)->where('selected', true);
+
+        if (!empty($selected)) {
+            $find = collect($this->options)->filter(fn($opt) => in_array(data_get($opt, 'value'), (array)$selected));
+            $this->selected = $find->count()
+                ? $find
+                : $selected;
+        }
+        else $this->selected = collect($this->options)->where('selected', true);
     }
 
     /**

@@ -34,7 +34,7 @@
         },
     }"
 >
-    <input x-ref="fileinput" x-on:change="read" type="file" class="hidden">
+    <input x-ref="fileinput" x-on:change="read" type="file" class="hidden" {{ $attributes->only('accept') }}>
 
     <x-button
         x-on:click="$refs.fileinput.click()"
@@ -43,6 +43,11 @@
         {{ $attributes->filter(fn($val, $key) => !str($key)->is('wire*')) }}
     >
         <span x-show="loading" x-text="`Uploading ${progress}%`"></span>
-        <span x-show="!loading">{{ $slot->isNotEmpty() ? $slot : __('Choose File') }}</span>
+        <span x-show="!loading">
+            @if ($label = $attributes->get('label')) {{ __($label) }}
+            @elseif ($slot->isNotEmpty()) {{ $slot }}
+            @else {{ __('Choose File') }}
+            @endif
+        </span>
     </x-button>
 </div>

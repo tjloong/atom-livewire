@@ -45,6 +45,7 @@
 
         'blocked' => 'black',
         'trashed' => 'black',
+        'voided' => 'black',
     ],
     'label' => $attributes->get('label'),
 ])
