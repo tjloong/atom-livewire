@@ -18,7 +18,7 @@
             @if ($this->labels->count())
                 <x-box>
                     <x-form.sortable
-                        wire:sort="sortLabels"
+                        wire:sorted="sortLabels"
                         :config="['handle' => '.sort-handle']"
                         class="grid divide-y"
                     >

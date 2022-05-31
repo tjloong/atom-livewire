@@ -6,23 +6,6 @@ use Illuminate\View\Component;
 
 class Sortable extends Component
 {
-    public $el;
-    public $config;
-    public $value;
-
-    /**
-     * Contructor
-     */
-    public function __construct(
-        $el = 'div',
-        $config = [],
-        $value = null,
-    ) {
-        $this->el = $el;
-        $this->config = $config;
-        $this->value = $value;
-    }
-
     /**
      * Render
      */

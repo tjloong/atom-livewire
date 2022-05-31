@@ -1,7 +1,7 @@
 <div {{ $attributes->class(['flex flex-col gap-2']) }}>
     @if ($label = $label ?? $attributes->get('label'))
         <label class="block font-medium leading-5 text-gray-400 uppercase text-sm">
-            {{ __(str($label)->__toString()) }}
+            {{ is_string($label) ? __($label) : $label }}
             @if ($attributes->get('required'))
                 <x-icon name="health" size="8px" class="text-red-400"/>
             @endif

@@ -67,22 +67,27 @@ class Index extends Component
             ],
             'green' => [
                 'normal' => 'bg-green-500 border-2 border-green-500 text-white',
-                'inverted' => 'border-2 border-transparent hover:bg-green-100 hover:border-bg-green-100 text-green-500',
+                'inverted' => 'border-2 border-transparent hover:bg-green-100 hover:border-green-100 text-green-500',
                 'outlined' => 'bg-white border-2 border-green-500 text-green-500',
             ],
             'red' => [
                 'normal' => 'bg-red-500 border-2 border-red-500 text-white',
-                'inverted' => 'border-2 border-transparent hover:bg-red-100 hover:border-bg-red-100 text-red-500',
+                'inverted' => 'border-2 border-transparent hover:bg-red-100 hover:border-red-100 text-red-500',
                 'outlined' => 'bg-white border-2 border-red-500 text-red-500',
             ],
             'blue' => [
                 'normal' => 'bg-blue-500 border-2 border-blue-500 text-white',
-                'inverted' => 'border-2 border-transparent hover:bg-blue-100 hover:border-bg-blue-100 text-blue-500',
+                'inverted' => 'border-2 border-transparent hover:bg-blue-100 hover:border-blue-100 text-blue-500',
                 'outlined' => 'bg-white border-2 border-blue-500 text-blue-500',
+            ],
+            'yellow' => [
+                'normal' => 'bg-yellow-200 border-2 border-yellow-200 text-orange-700',
+                'inverted' => 'border-2 border-transparent hover:bg-yellow-200 hover:border-yellow-200 text-orange-800',
+                'outlined' => 'bg-white border-2 border-yellow-600 text-yellow-600',
             ],
             'gray' => [
                 'normal' => 'bg-gray-200 border-2 border-gray-200 text-gray-800',
-                'inverted' => 'border-2 border-transparent hover:bg-gray-100 hover:border-bg-gray-100 text-gray-800',
+                'inverted' => 'border-2 border-transparent hover:bg-gray-100 hover:border-gray-100 text-gray-800',
                 'outlined' => 'bg-white border-2 border-gray-800 text-gray-800',
             ],
         ];
