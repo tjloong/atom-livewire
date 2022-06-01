@@ -3,14 +3,21 @@
         <x-slot:label>{{ $label }}</x-slot:label>
     @endif
 
-    <div x-data="formImage(@js([
-        'model' => $attributes->wire('model')->value(),
-        'value' => $attributes->get('value'),
-        'shape' => $attributes->get('shape') ?? 'square',
-        'placeholder' => $attributes->get('placeholder'),
-    ]))">
-        <input x-ref="input" type="hidden" x-bind:value="value" {{ $attributes->whereStartsWith('wire') }}>
-
+    <div
+        x-data="{
+            value: @entangle($attributes->wire('model')),
+            shape: @js($attributes->get('shape', 'square')),
+            placeholder: @js($attributes->get('placeholder')),
+            select (file) {
+                this.value = file.id
+                this.placeholder = file.url
+            },
+            clear () {
+                this.value = null
+                this.placeholder = null
+            },
+        }"
+    >
         <div style="width: {{ $dimension->width }}px; height: {{ $dimension->height }}px;">
             <div
                 x-show="placeholder"

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Components\Builder;
+namespace Jiannius\Atom\Components;
 
 use Illuminate\View\Component;
 
@@ -33,6 +33,6 @@ class Announcements extends Component
      */
     public function render()
     {
-        return view('atom::components.builder.announcements');
+        return view('atom::components.announcements');
     }
 }

@@ -95,8 +95,8 @@ class File extends Model
                     if ($type === 'file') {
                         $q->orWhere(fn($q) => $q
                             ->where('mime', 'not like', 'image/%')
-                            ->where('mime', 'not lime', 'video/%')
-                            ->where('mime', 'not lime', 'audio/%')
+                            ->where('mime', 'not like', 'video/%')
+                            ->where('mime', 'not like', 'audio/%')
                             ->where('mime', '<>', 'youtube')
                         );
                     }

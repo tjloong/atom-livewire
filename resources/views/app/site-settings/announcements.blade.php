@@ -1,7 +1,5 @@
 <div>
-    <x-box>
-        <x-slot name="header">Site Announcements</x-slot>
-        
+    <x-box header="Site Announcements">
         <div class="p-5 grid gap-4">
             @if (collect($announcements)->count())
                 <x-form.sortable wire:model="announcements" :config="['handle' => '.sort-handle']" class="grid gap-2">
@@ -31,9 +29,7 @@
     </x-box>
 
     <form wire:submit.prevent="submit">
-        <x-modal>
-            <x-slot:title>{{ data_get($form, 'uid') ? 'Update' : 'Create' }} Announcement</x-slot:title>
-
+        <x-modal :header="(data_get($form, 'uid') ? 'Update' : 'Create').' Announcement'">
             @if ($form)
                 <div class="grid gap-6">
                     <x-form.select

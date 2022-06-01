@@ -21,6 +21,8 @@ class Blog extends Model
         'published_at' => 'datetime',
     ];
 
+    protected $slugify = ['title' => 'slug'];
+
     /**
      * Get cover for blog
      */

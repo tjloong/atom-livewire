@@ -45,6 +45,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'page-header',
             'breadcrumbs',
             'social-share',
+            'announcements',
             'payment-gateway',
 
             'script.vendor',
@@ -53,7 +54,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'script.alpine.table.th',
             'script.alpine.form.ic',
             'script.alpine.form.tags',
-            'script.alpine.form.image',
             'script.alpine.form.title',
             'script.alpine.form.amount',
             'script.alpine.form.richtext',
@@ -148,7 +148,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'builder.hero',
             'builder.pricing',
             'builder.testimonial',
-            'builder.announcements',
         ];
 
         foreach ($components as $value) {

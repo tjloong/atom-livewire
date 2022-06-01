@@ -16,7 +16,7 @@ class Image extends Component
         $uid = null,
         $dimension = '100x100'
     ) {
-        $this->uid = $uid ?? 'image-input-'.uniqid();
+        $this->uid = $uid ?? 'image-input';
         $this->dimension = $this->getDimension($dimension);
     }
 
