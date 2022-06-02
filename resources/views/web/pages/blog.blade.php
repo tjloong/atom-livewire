@@ -21,7 +21,7 @@
                                 @forelse ($this->blogs as $blog)
                                     <x-blog.card
                                         :href="route('page', ['blog/'.$blog->slug])"
-                                        :cover="$blog->cover"
+                                        :cover="optional($blog->cover)->url"
                                         :title="$blog->title"
                                         :excerpt="html_excerpt($blog->excerpt ?? $blog->content)"
                                     />

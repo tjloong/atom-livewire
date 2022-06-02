@@ -11,6 +11,7 @@
             calendar: null,
             placeholder: @js($attributes->get('placeholder', 'Select Date')),
             open () {
+                if (this.show) return this.close()
                 this.show = true
                 this.$nextTick(() => {
                     floatDropdown(this.$refs.anchor, this.$refs.dd)
