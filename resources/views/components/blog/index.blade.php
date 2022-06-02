@@ -33,7 +33,7 @@
             </div>
         @endif
 
-        <div class="prose prose-sm md:prose-base lg:prose-lg max-w-none">
+        <div class="prose lg:prose-lg max-w-none">
             {{ $slot }}
         </div>
     </div>
