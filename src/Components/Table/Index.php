@@ -13,7 +13,7 @@ class Index extends Component
      */
     public function __construct($uid = null)
     {
-        $this->uid = $uid ?? 'table-'.uniqid();
+        $this->uid = $uid ?? 'table';
     }
 
     /**

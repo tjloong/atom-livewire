@@ -1,26 +1,45 @@
 <div class="grid gap-4">
-    <div class="relative shadow rounded-lg border w-full bg-white overflow-hidden grid divide-y">
+    <div 
+        x-data="{
+            name: @js($uid),
+            total: @js($attributes->get('total', 0)),
+            checkedValues: [],
+            get totalRows () {
+                return $el.querySelectorAll('table tbody tr').length
+            },
+            get checkedCount () {
+                if (this.checkedValues.includes('all')) return this.totalRows
+                else if (this.checkedValues.includes('everything')) return this.total
+                else return this.checkedValues.length
+            },
+            selectTotal () {
+                const data = { name: this.name, value: 'everything' }
+                this.$dispatch('table-checkbox-check', data)
+                this.$wire && this.$wire.emit('table-checkbox-check', data)
+            },
+        }"
+        x-on:table-checkbox-checked.window="checkedValues = $event.detail"
+        class="relative shadow rounded-lg border w-full bg-white overflow-hidden"
+    >
         @if (isset($header))
-            <div class="p-4 font-bold text-lg">
+            <div class="p-4 font-bold text-lg border-b">
                 {{ $header }}
             </div>
         @elseif ($header = $attributes->get('header'))
-            <div class="p-4 font-bold text-lg">
+            <div class="p-4 font-bold text-lg border-b">
                 {{ __($header) }}
             </div>
         @endisset
 
-        <div class="py-2 px-4 flex flex-wrap justify-between items-center gap-2">
-            <div class="text-gray-800 py-2">
-                @if ($total = $attributes->get('total'))
-                    Total <span class="font-semibold">{{ $total }}</span> {{ str('record')->plural($total) }}
+        <div class="py-3 px-4 flex flex-wrap justify-between items-center gap-2 border-b">
+            <div class="text-gray-800 flex items-end gap-1.5">
+                @if ($attributes->has('total'))
+                    <div class="text-lg font-medium leading-snug">{{ $attributes->get('total') }}</div>
+                    <div class="text-gray-500">{{ __('total rows') }}</div>
                 @endif
             </div>
 
-            <div class="flex flex-wrap items-center gap-2">
-            @isset($checked)
-                {{ $checked }}
-            @else
+            <div x-show="!checkedCount" class="flex flex-wrap items-center gap-2">
                 @if ($search = $attributes->get('search') ?? true)
                     <div class="w-60 rounded-md border bg-gray-100 shadow flex items-center gap-2 px-3 py-0.5">
                         <x-icon name="search" class="text-gray-500" size="xs"/>
@@ -84,12 +103,31 @@
                         <x-icon name="slider" size="18px" />
                     </a>
                 @endif
-            @endisset
+            </div>
+        </div>
+
+        <div x-show="checkedCount" class="py-3 px-4 flex items-center justify-between border-b">
+            <div class="grid">
+                <div class="flex items-center gap-1.5">
+                    <div class="font-medium" x-text="checkedCount"></div>
+                    <div class="text-gray-500">{{ __('selected rows') }}</div>
+                </div>
+                <a 
+                    x-show="total > totalRows && checkedValues.includes('all')" 
+                    x-on:click="selectTotal"
+                    class="text-sm"
+                >
+                    {{ __('Select all :total rows', ['total' => $attributes->get('total')]) }}
+                </a>
+            </div>
+
+            <div>
+                {{ $checked ?? null }}
             </div>
         </div>
 
         @isset($toolbar)
-            <div class="py-2 px-4 flex items-center justify-between gap-2">
+            <div x-show="!checkedCount" class="py-3 px-4 flex items-center justify-between gap-2 border-b">
                 <div>
                     {{ $toolbar }}
                 </div>
@@ -109,10 +147,12 @@
     
         @if ($attributes->get('total'))
             <div class="w-full overflow-auto">
-                <table class="min-w-full w-full divide-y divide-gray-200">
+                <table class="min-w-full w-full divide-y divide-gray-200" uid="{{ $uid }}">
                     @isset($head)
                         <thead>
-                            {{ $head }}
+                            <tr>
+                                {{ $head }}
+                            </tr>
                         </thead>
                     @endisset
 
