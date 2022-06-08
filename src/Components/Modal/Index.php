@@ -1,17 +1,15 @@
 <?php
 
-namespace Jiannius\Atom\Components;
+namespace Jiannius\Atom\Components\Modal;
 
 use Illuminate\View\Component;
 
-class Modal extends Component
+class Index extends Component
 {
     public $uid;
 
     /**
      * Contructor
-     * 
-     * @return void
      */
     public function __construct($uid = null)
     {
@@ -19,12 +17,10 @@ class Modal extends Component
     }
 
     /**
-     * Render component
-     * 
-     * @return Response
+     * Render
      */
     public function render()
     {
-        return view('atom::components.modal');
+        return view('atom::components.modal.index');
     }
 }

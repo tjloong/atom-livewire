@@ -16,9 +16,9 @@
                     {{ __($title) }}
                 </div>
         
-                @if($subtitle = $attributes->get('subtitle'))
+                @if($subtitle = $subtitle ?? $attributes->get('subtitle'))
                     <div class="text-gray-600 font-light">
-                        {{ __($subtitle) }}
+                        {{ is_string($subtitle) ? __($subtitle) : $subtitle }}
                     </div>
                 @endif
             </div>

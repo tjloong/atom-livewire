@@ -31,7 +31,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'alert',
             'badge',
             'image',
-            'modal',
             'avatar',
             'loader',
             'notify',
@@ -66,7 +65,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'analytics.fbpixel',
 
             'box.index',
-            'box.item',
+            'box.row',
             
             'button.index',
             'button.create',
@@ -75,6 +74,9 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'dropdown.index',
             'dropdown.item',
+
+            'modal.index',
+            'modal.row',
             
             'table.index',
             'table.th',
