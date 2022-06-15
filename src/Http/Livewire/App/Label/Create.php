@@ -27,7 +27,7 @@ class Create extends Component
     public function saved()
     {
         session()->flash('flash', 'Label Created::success');
-        return redirect()->route('app.label.listing', [$this->type]);
+        return redirect()->route('app.label.listing', ['type' => $this->type]);
     }
 
     /**

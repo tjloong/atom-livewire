@@ -7,6 +7,14 @@ use Livewire\Component;
 class Overview extends Component
 {
     public $account;
+
+    /**
+     * Get user property
+     */
+    public function getUserProperty()
+    {
+        return $this->account->users()->orderBy('id')->first();
+    }
     
     /**
      * Render

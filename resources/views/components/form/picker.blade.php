@@ -55,7 +55,7 @@
                     @foreach ($selected as $sel)
                         <div class="bg-slate-200 rounded-md py-1 px-2 text-sm font-medium border flex items-center gap-2 max-w-[200px]">
                             <div class="grid">
-                                <div class="truncate">{{ data_get($sel, 'label') }}</div>
+                                <div class="truncate text-xs">{{ data_get($sel, 'label') }}</div>
                             </div>
                             <a x-on:click="remove('{{ data_get($sel, 'value') }}')" class="flex text-gray-500">
                                 <x-icon name="xmark" size="12px"/>

@@ -264,13 +264,27 @@ function uncurrency($string)
 }
 
 /**
+ * Get timezone
+ */
+function timezone()
+{
+    if ($account = optional(auth()->user())->account) {
+        if ($tz = $account->accountSettings->timezone ?? null) {
+            return $tz;
+        }
+    }
+
+    return config('atom.timezone');
+}
+
+/**
  * Format date to string
  * 
  * @return string
  */
 function format_date($date, $format = 'date', $tz = null)
 {
-    $tz = $tz ?? config('atom.timezone');
+    $tz = $tz ?? timezone();
 
     if (!$date) return $date;
     if (!$date instanceof Carbon) $date = Carbon::parse($date);

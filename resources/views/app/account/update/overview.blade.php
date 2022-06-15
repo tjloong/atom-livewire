@@ -16,7 +16,7 @@
         </x-form.field>
 
         <x-form.field label="Login Email">
-            {{ $account->email ?? '--' }}
+            {{ $this->user->email ?? '--' }}
         </x-form.field>
 
         <x-form.field label="Agreed to T&C/Privacy Policy">

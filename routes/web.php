@@ -108,7 +108,7 @@ if (!config('atom.static_site')) {
         /**
          * Dashboard
          */
-        define_route('dashboard', 'App\\Dashboard')->name('app.dashboard');
+        define_route('dashboard', 'App\Dashboard')->name('app.dashboard');
 
         /**
          * Blogs
