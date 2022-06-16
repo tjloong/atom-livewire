@@ -234,6 +234,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'app' => Route::has('app.home') 
                 && in_array($this->account->type, ['root', 'system']),
 
+            'account' => true,
+
             'billing' => Route::has('billing') 
                 && model('plan')->whereIsActive(true)->count() > 0
                 && in_array($this->account->type, ['root', 'signup']),

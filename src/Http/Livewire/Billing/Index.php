@@ -49,6 +49,8 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::billing.index')->layout('layouts.billing');
+        $view = view('atom::billing.index');
+        
+        return current_route('app.billing*') ? $view : $view->layout('layouts.billing');
     }
 }

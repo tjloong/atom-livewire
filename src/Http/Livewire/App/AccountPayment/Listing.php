@@ -10,6 +10,7 @@ class Listing extends Component
     use WithPagination;
 
     public $account;
+    public $fullpage;
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
     public $filters = ['search' => ''];
@@ -26,15 +27,9 @@ class Listing extends Component
      */
     public function mount()
     {
-        if ($this->isFullpage) breadcrumbs()->home($this->title);
-    }
-
-    /**
-     * Get is fullpage property
-     */
-    public function getIsFullpageProperty()
-    {
-        return current_route('app.account-payment.listing');
+        if ($this->fullpage = current_route('app.account-payment.listing')) {
+            breadcrumbs()->home($this->title);
+        }
     }
 
     /**
@@ -50,8 +45,12 @@ class Listing extends Component
      */
     public function getAccountPaymentsProperty()
     {
-        return $this->account->accountPayments()
-            ->when(!auth()->user()->isAccountType('root'), fn($q) => $q->where('status', 'success'))
+        return model('account_payment')
+            ->when(
+                auth()->user()->isAccountType('root'), 
+                fn($q) => $q->when($this->account, fn($q) => $q->where('account_id', $this->account->id)),
+                fn($q) => $q->where('account_id', auth()->user()->account_id)->where('status', 'success')
+            )
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate(30);

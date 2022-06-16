@@ -1,79 +1,68 @@
 <div class="max-w-screen-sm mx-auto">
-    <x-page-header :title="__('Payment').'#'.$accountPayment->number" back>
-        <x-dropdown right>
+    <x-page-header :title="'Payment #'.$accountPayment->number" back>
+        <x-dropdown>
             <x-slot:anchor>
-                <x-button inverted icon="download">{{ __('Download') }}</x-button>
+                <x-button inverted icon="download" label="Download"/>
             </x-slot:anchor>
 
-            <div class="grid divide-y">
                 @foreach (['invoice', 'receipt'] as $val)
                     <x-dropdown.item 
                         :label="str($val)->headline()"
                         wire:click="download('{{ $val }}')"
-                        class="cursor-pointer"
                     />
                 @endforeach
-            </div>
         </x-dropdown>
     </x-page-header>
 
     <div class="grid gap-6">
-        <x-box>
-            <div class="p-5">
-                <x-input.field>
-                    <x-slot:label>{{ __('Receipt Number') }}</x-slot:label>
+        <x-box header="Payment Information">
+            <div class="p-5 grid gap-4">
+                <x-box.row label="Receipt Number">
                     {{ $accountPayment->number }}
-                </x-input.field>
+                </x-box.row>
     
-                <x-input.field>
-                    <x-slot:label>{{ __('Amount') }}</x-slot:label>
+                <x-box.row label="Amount">
                     {{ currency($accountPayment->amount, $accountPayment->currency) }}
-                </x-input.field>
+                </x-box.row>
     
-                <x-input.field>
-                    <x-slot:label>{{ __('Status') }}</x-slot:label>
+                <x-box.row label="Status">
                     <x-badge>{{ $accountPayment->status }}</x-badge>
-                </x-input.field>
+                </x-box.row>
             </div>
         </x-box>
 
         @if ($items = $accountPayment->accountOrder->accountOrderItems)
-            <x-box>
-                <x-slot:header>{{ __('Order Summary') }}</x-slot:header>
-
+            <x-box header="Order Summary">
                 <div class="grid divide-y">
                     @foreach ($items as $item)
-                        <div class="p-4 flex items-center justify-between gap-2">
-                            <div class="grid">
-                                <div class="truncate">{{ $item->name }}</div>
-                            </div>
+                        <x-box.row :label="$item->name" class="py-2 px-4">
+                            <div class="text-right">
+                                <div>{{ currency($item->grand_total, $item->currency) }}</div>
 
-                            <div class="shrink-0">
-                                {{ currency($item->grand_total, $item->currency) }}
                                 @if ($item->discount) 
                                     <div class="text-sm text-gray-500">
                                         {{ __('Discounted') }} {{ currency($item->discount, $item->currency) }}
                                     </div>
                                 @endif
                             </div>
-                        </div>
+                        </x-box.row>
                     @endforeach
                 </div>
             </x-box>
         @endif
 
         @if ($req = data_get($accountPayment->data, 'pay_request'))
-            <x-box :header="__('Payment Details')">
-                <div x-data="{ show: false }" class="grid divide-y">
-                    <x-box row :label="__('Provider')" :value="str()->headline(data_get($req, 'provider', '--'))"/>
+            <x-box header="Payment Details">
+                <div x-data="{ show: false }" class="grid gap-4 p-4">
+                    <x-box.row label="Provider">
+                        {{ str()->headline(data_get($req, 'provider', '--')) }}
+                    </x-box.row>
 
                     @if ($res = data_get($accountPayment->data, 'pay_response'))
                         @if ($accountPayment->account_id !== auth()->user()->account_id)
-                            <x-box row x-on:click="show = !show" class="cursor-pointer" :label="__('Response Data')">
-                                <x-slot:value>
-                                    <a>{{ __('View') }}</a>
-                                </x-slot:value>
-                            </x-box>
+                            <x-box.row label="Response Data">
+                                <a x-on:click="show = !show">{{ __('View') }}</a>
+                            </x-box.row>
 
                             <div x-show="show" x-transition class="p-4 w-full overflow-auto bg-gray-100">
                                 <pre x-text="JSON.stringify(@js($res), null, 4)"></pre>

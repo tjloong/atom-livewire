@@ -142,6 +142,8 @@ class Checkout extends Component
      */
     public function render()
     {
-        return view('atom::billing.checkout')->layout('layouts.billing');
+        $view = view('atom::billing.checkout');
+        
+        return current_route('app.billing*') ? $view : $view->layout('layouts.billing');
     }
 }

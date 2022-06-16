@@ -31,6 +31,8 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::account.index')->layout('layouts.account');
+        $view = view('atom::account.index');
+        
+        return current_route('app.account') ? $view : $view->layout('layouts.account');
     }
 }

@@ -1,10 +1,10 @@
 <div class="max-w-screen-lg mx-auto">
-    @if ($this->isFullpage)
+    @if ($fullpage)
         <x-page-header :title="$this->title"/>
     @endif
 
     <x-table :total="$this->accountPayments->total()" :links="$this->accountPayments->links()">
-        @if (!$this->isFullpage)
+        @if (!$fullpage)
             <x-slot:header>{{ __('Payment History') }}</x-slot:header>
         @endif
 

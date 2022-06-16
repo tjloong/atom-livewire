@@ -54,6 +54,8 @@ class Plans extends Component
      */
     public function render()
     {
-        return view('atom::billing.plans')->layout('layouts.billing');
+        $view = view('atom::billing.plans');
+        
+        return current_route('app.billing*') ? $view : $view->layout('layouts.billing');
     }
 }

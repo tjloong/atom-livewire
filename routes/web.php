@@ -60,7 +60,7 @@ if (!config('atom.static_site')) {
     /**
      * Account Portal
      */
-    define_route('account', 'Account\Index')->middleware('auth', 'locale')->name('account');
+    define_route('account', 'Account\Index')->middleware('auth', 'portal-guard', 'locale')->name('account');
 
     /**
      * Onboarding Portal
@@ -145,9 +145,13 @@ if (!config('atom.static_site')) {
          * Accounts
          */
         if (config('atom.accounts.register')) {
-            Route::prefix('account')->as('app.account.')->group(function() {
-                define_route('listing', 'App\Account\Listing')->name('listing');
-                define_route('{account}', 'App\Account\Update\Index')->name('update');
+            define_route()->prefix('account')->group(function() {
+                define_route('account', 'Account\Index')->name('app.account');
+
+                define_route()->as('app.account.')->group(function() {
+                    define_route('listing', 'App\Account\Listing')->name('listing');
+                    define_route('{account}', 'App\Account\Update\Index')->name('update');
+                });
             });
         }
 
@@ -232,6 +236,25 @@ if (!config('atom.static_site')) {
                 define_route('create', 'Ticketing\Create')->name('create');
                 define_route('{ticket}', 'Ticketing\Update')->name('update');
             });
+        }
+
+        /**
+         * Billing
+         */
+        if (enabled_module('plans')) {
+            define_route()->prefix('billing')->group(function() {
+                define_route('/', 'Billing\Index')->name('app.billing');
+
+                define_route()->as('app.billing.')->group(function() {
+                    define_route('plans', 'Billing\Plans')->name('plans');
+                    define_route('checkout', 'Billing\Checkout')->name('checkout');
+                });
+
+                define_route()->prefix('account-payment')->as('app.billing.account-payment.')->group(function() {
+                    define_route('listing', 'App\AccountPayment\Listing')->name('listing');
+                    define_route('{accountPayment}', 'App\AccountPayment\Update')->name('update');
+                });
+            });    
         }
         
         /**
