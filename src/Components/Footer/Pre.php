@@ -42,7 +42,7 @@ class Pre extends Component
             'email' => isset($company['email']) ? $company['email'] : $default->email,
             'address' => isset($company['address']) ? $company['address'] : $default->address,
         ];
-        $this->socials = $socials ?? $default->socials;
+        $this->socials = $socials ?? $default->socials ?? [];
         $this->whatsapp = $whatsapp ?? $default->whatsapp;
     }
 
@@ -58,6 +58,8 @@ class Pre extends Component
                 'email' => config('atom.company.email'),
                 'address' => config('atom.company.address'),
                 'briefs' => config('atom.company.briefs'),
+                'socials' => config('atom.company.social_media'),
+                'whatsapp' => config('atom.company.whatsapp'),
             ];
         }
         else if ($useSiteSettings) {

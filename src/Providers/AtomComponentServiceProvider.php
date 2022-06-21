@@ -35,6 +35,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'loader',
             'notify',
             'drawer',
+            'lightbox',
             'statsbox',
             'checkbox',
             'file-card',

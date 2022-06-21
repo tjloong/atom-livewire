@@ -1,6 +1,6 @@
 <x-form.field {{ $attributes->only(['error', 'required', 'caption']) }}>
     @if ($label = $attributes->get('label'))
-        <x-slot:label>{{ $label }}</x-slot:label>
+        <x-slot:label>{{ __($label) }}</x-slot:label>
     @endif
 
     <input type="email" {{ $attributes->class([

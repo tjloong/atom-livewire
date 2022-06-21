@@ -3,9 +3,9 @@
     x-data="{ show: false }"
     class="{{
         collect([
-            ($fixed ? 'fixed top-0 left-0 right-0 z-10' : 'relative'),
+            ($fixed ? 'fixed top-0 left-0 right-0 z-40' : null),
             ($sticky ? 'sticky top-0 z-10' : null),
-            ($attributes->get('class') ?? 'p-4'),
+            ($attributes->get('class') ?? 'p-4 relative'),
         ])->filter()->join(' ')
     }}"
 >

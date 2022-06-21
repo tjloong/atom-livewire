@@ -12,14 +12,17 @@
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
     @if (isset($gfont) && $gfont !== false)
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link rel="preload" as="style" href="{{ $gfont }}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="{{ $gfont }}">
     @elseif (!isset($gfont) && app()->isLocale('zh-my'))
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;500;700;900&display=swap">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;500;700;900&display=swap">
     @elseif (!isset($gfont))
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap">
     @endif
 
     @if ($enabled = $livewire ?? true)

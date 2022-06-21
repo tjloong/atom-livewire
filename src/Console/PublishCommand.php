@@ -3,7 +3,7 @@
 namespace Jiannius\Atom\Console;
 
 use Illuminate\Console\Command;
-use Jiannius\Atom\AtomServiceProvider;
+use Jiannius\Atom\Providers\AtomServiceProvider;
 
 class PublishCommand extends Command
 {

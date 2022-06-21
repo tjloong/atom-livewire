@@ -44,7 +44,7 @@ class Index extends Component
             'address' => isset($company['address']) ? $company['address'] : $default->address,
         ];
 
-        $this->socials = $socials ?? $default->socials;
+        $this->socials = $socials ?? $default->socials ?? [];
         $this->whatsapp = $whatsapp ?? $default->whatsapp;
         $this->legals = $this->getLegals();
     }

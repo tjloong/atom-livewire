@@ -1,7 +1,7 @@
 <div {{ $attributes->class(['max-w-screen-xl mx-auto p-6']) }}>
-    @if ($whatsapp && $whatsapp['number'] && $whatsapp['bubble'])
+    @if (data_get($whatsapp, 'number') && data_get($whatsapp, 'bubble'))
         <a 
-            href="{{ $whatsapp['url'] }}"
+            href="{{ data_get($whatsapp, 'url') }}"
             class="fixed bottom-8 right-8 w-14 h-14 bg-green-500 rounded-full drop-shadow z-10 flex items-center justify-center"
             target="_blank"
         >
@@ -18,9 +18,9 @@
             <div class="grid space-y-1 order-first md:order-last">
                 @if (count($socials) > 0)
                     <div class="flex items-center justify-center space-x-2 md:justify-end">
-                        @if ($whatsapp && $whatsapp['number'] && !$whatsapp['bubble'])
+                        @if (data_get($whatsapp, 'number') && !data_get($whatsapp, 'bubble'))
                             <a
-                                href="{{ $whatsapp['url'] }}"
+                                href="{{ data_get($whatsapp, 'url') }}"
                                 class="flex items-center justify-center {{ $color->text }}"
                                 target="_blank"
                             >
@@ -39,27 +39,27 @@
                     </div>
                 @endif
 
-                @if ($company['phone'] || $company['email'])
+                @if (data_get($company, 'phone') || data_get($company, 'email'))
                     <div class="md:text-right">
-                        @if ($company['phone'])
-                            <a href="tel: {{ $company['phone'] }}" class="{{ $color->text }} font-light">{{ $company['phone'] }}</a>
+                        @if ($phone = data_get($company, 'phone'))
+                            <a href="tel: {{ $phone }}" class="{{ $color->text }} font-light">{{ $phone }}</a>
                         @endif
 
-                        @if ($company['phone'] && $company['email'])
+                        @if ($phone && data_get($company, 'email'))
                             <span class="px-1 {{ $color->text }}">|</span>
                         @endif
 
-                        @if ($company['email'])
-                            <a href="mailto: {{ $company['email'] }}" class="font-semibold {{ $color->text }}">{{ $company['email'] }}</a>
+                        @if ($email = data_get($company, 'email'))
+                            <a href="mailto: {{ $email }}" class="font-semibold {{ $color->text }}">{{ $email }}</a>
                         @endif
                     </div>
                 @endif
             </div>
 
             <div class="grid gap-1">
-                @if ($company['name'])
+                @if ($name = data_get($company, 'name'))
                     <div class="font-medium {{ $color->text }}">
-                        © {{ date('Y') }} {{ $company['name'] }}. All rights reserved.
+                        © {{ date('Y') }} {{ $name }}. All rights reserved.
                     </div>
                 @endif
 

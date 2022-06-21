@@ -17,11 +17,13 @@ return [
         'jsonld' => null,
     ],
 
-    'contact' => [
-        'company' => null,
+    'company' => [
+        'name' => null,
         'phone' => null,
         'email' => null,
         'address' => null,
-        'gmap_url' => null,
+        'briefs' => null,
+        'social_media' => null,
+        'whatsapp' => null,
     ],
 ];

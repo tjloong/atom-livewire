@@ -1,5 +1,5 @@
 .modal {
-    @apply fixed inset-0 z-20;
+    @apply fixed inset-0 z-50;
 }
 .modal .modal-bg {
     @apply absolute inset-0 bg-black opacity-80;
