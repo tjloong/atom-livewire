@@ -233,7 +233,9 @@ class File extends Model
             'mime' => data_get($meta, 'mime'),
             'url' => $url,
             'data' => $data,
-        ])->save();
+        ]);
+        
+        $file->save();
 
         return $file;
     }

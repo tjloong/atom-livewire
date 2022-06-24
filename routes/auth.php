@@ -9,7 +9,7 @@ if (!config('atom.static_site')) {
         define_route('reset-password', 'Auth\\ResetPassword')->name('password.reset');
     
         if (config('atom.accounts.register')) {
-            define_route('register', 'Auth\\Register')->middleware('guest')->name('register');
+            define_route('register', 'Auth\\Register')->middleware('guest', 'referer')->name('register');
         }
     
         if (config('atom.accounts.verify')) {
