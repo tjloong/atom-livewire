@@ -8,10 +8,9 @@
             <input 
                 x-ref="input" 
                 type="text" 
-                class="" 
                 {{ $attributes->class([
-                    'w-full border-0 p-0 pr-10',
-                    empty($attributes->get('error')) ? 'focus:ring-0' : 'ring-red-500 ring-offset-2',
+                    'w-full form-input transparent',
+                    empty($attributes->get('error')) ? '' : 'ring-red-500 ring-offset-2',
                 ]) }}
             >
             <a 

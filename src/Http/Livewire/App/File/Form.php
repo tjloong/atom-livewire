@@ -8,18 +8,45 @@ class Form extends Component
 {
     public $file;
 
-    protected $rules = [
-        'file.name' => 'required',
-        'file.data.alt' => 'nullable',
-        'file.data.description' => 'nullable',
-    ];
+    protected $listeners = ['open'];
+
+    /**
+     * Validation rules
+     */
+    protected function rules()
+    {
+        return [
+            'file.name' => 'required',
+            'file.data.alt' => 'nullable',
+            'file.data.description' => 'nullable',
+        ];
+    }
+
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'file.name.required' => __('File name is required.'),
+        ];
+    }
 
     /**
      * Mount
      */
-    public function mount($fileId)
+    public function mount()
     {
-        $this->file = model('file')->find($fileId);
+        //
+    }
+
+    /**
+     * Open
+     */
+    public function open($id)
+    {
+        $this->file = model('file')->find($id);
+        $this->dispatchBrowserEvent('file-form-open');
     }
 
     /**

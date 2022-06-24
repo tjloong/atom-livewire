@@ -12,11 +12,10 @@ class FileController extends Controller
     public function index($id)
     {
         $file = model('file')->findOrFail($id);
+        $source = $this->getSource($file);
 
-        if ($this->verify($file)) {
-            $path = $file->data->path ?? null;
-            return response()->file(storage_path('app/'.$path));
-        }
+        if ($url = data_get($source, 'url')) return redirect()->to($url);
+        else if ($path = data_get($source, 'path')) return response()->file($path);
         else abort(404);
     }
 
@@ -26,12 +25,25 @@ class FileController extends Controller
     public function download($id)
     {
         $file = model('file')->findOrFail($id);
+        $source = $this->getSource($file);
 
-        if ($this->verify($file)) {
-            $path = $file->data->path ?? null;
-            return response()->download(storage_path('app/'.$path));
-        }
+        if ($url = data_get($source, 'url')) return response()->download($url);
+        else if ($path = data_get($source, 'path')) return response()->download($path);
         else abort(404);
+    }
+
+    /**
+     * Get source
+     */
+    public function getSource($file)
+    {
+        if (!$this->verify($file)) return;
+
+        $path = data_get($file->data, 'path');
+        $provider = data_get($file->data, 'provider', 'local');
+
+        if ($provider === 'local') return ['path' => storage_path('app/'.$path)];
+        else if ($disk = model('file')->getStorageDisk($provider)) return ['url' => $disk->temporaryUrl($path, now()->addDay(1))];
     }
 
     /**

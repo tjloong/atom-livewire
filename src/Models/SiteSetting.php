@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Models;
 
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 
 class SiteSetting extends Model
@@ -162,34 +161,6 @@ class SiteSetting extends Model
             logger('Unable to configure SMTP from site settings.');
             logger($th->getMessage());
         }
-    }
-
-    /**
-     * Get digital ocean disk
-     * 
-     * @return Storage
-     */
-    public static function getDoDisk()
-    {
-        $key = site_settings('do_spaces_key');
-        $secret = site_settings('do_spaces_secret');
-
-        if ($key && $secret) {
-            config([
-                'filesystems.disks.do' => [
-                    'driver' => 's3',
-                    'key' => $key,
-                    'secret' => $secret,
-                    'region' => site_settings('do_spaces_region'),
-                    'bucket' => site_settings('do_spaces_bucket'),
-                    'endpoint' => site_settings('do_spaces_endpoint'),
-                ],
-            ]);
-    
-            return Storage::disk('do');
-        }
-
-        return false;
     }
 
     /**

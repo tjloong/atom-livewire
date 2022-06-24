@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Models;
 
-use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
@@ -39,21 +38,16 @@ class File extends Model
         parent::boot();
 
         static::deleting(function($file) {
-            $path = $file->data->path ?? null;
-            $provider = $file->data->provider ?? 'local';
+            $path = data_get($file->data, 'path');
+            $provider = data_get($file->data, 'provider', 'local');
+            $env = data_get($file->data, 'env', 'production');
 
             if ($path) {
-                // prevent production file delete when in local
-                if (!app()->environment('production') && (str()->startsWith($path, 'prod/') || str()->startsWith($path, 'production/'))) {
-                    abort(400, 'Do not delete production file in ' . app()->environment() . ' environment!');
+                if ($env === 'production' && !app()->environment('production')) {
+                    abort(400, 'Do not delete production file in '.app()->environment().' environment!');
                 }
-                // digital ocean spaces
-                else if ($provider === 'do') {
-                    if ($disk = model('site_setting')->getDoDisk()) $disk->delete($path);
-                }
-                // local file
-                else {
-                    Storage::delete($path);
+                else if ($disk = model('file')->getStorageDisk($provider)) {
+                    $disk->delete($path);
                 }
             }
         });
@@ -155,11 +149,12 @@ class File extends Model
      */
     public function getUrlAttribute($url)
     {
-        $path = $this->data->path ?? null;
-        $isPublic = !$path || str($path)->is('public/*');
+        $path = data_get($this->data, 'path');
+        $visibility = data_get($this->data, 'visibility', 'public');
+        $provider = data_get($this->data, 'provider', 'local');
 
-        if ($isPublic) return $path ? Storage::url($path) : $url;
-        else return route('__file', [$this->id]);
+        if ($visibility === 'private') return route('__file', [$this->id]);
+        else return $url ?? $this->getStorageDisk($provider)->url($path);
     }
 
     /**
@@ -200,44 +195,45 @@ class File extends Model
      */
     public static function store($file, $location = 'public/uploads')
     {
-        $isPublic = str($location)->is('public/*');
-        $provider = 'local';
+        $visibility = str($location)->is('public/*') ? 'public' : 'private';
         $dimension = self::compress($file);
         $path = $file->store($location);
         $meta = self::getFileMeta($file);
-        $url = $isPublic ? asset('storage/' . str_replace('public/', '', $path)) : null;
-
-        // upload file to DO
-        if (site_settings('filesystem') === 'do') {
-            if ($disk = model('site_setting')->getDoDisk()) {
-                try {
-                    $folder = app()->environment('production') ? 'prod' : 'staging';
-                    $dopath = $disk->putFile($folder, storage_path("app/$path"), $isPublic ? 'public' : 'private');
-                    $cdn = site_settings('do_spaces_cdn');
-                    $url = $cdn . '/' . $dopath;
-                    $provider = 'do';
-    
-                    // delete the local copy
-                    Storage::delete($path);
-                } catch (Exception $e) {
-                    logger("Unable to upload $path to Digital Ocean bucket.");
-                }
-            }
-        }
-
-        $file = model('file');
-        $file->name = $meta['name'];
-        $file->size = $meta['size'];
-        $file->mime = $meta['mime'];
-        $file->url = $url;
-
-        $file->data = [
-            'path' => $dopath ?? $path,
-            'provider' => $provider,
+        $data = [
             'dimension' => $dimension,
+            'visibility' => $visibility,
+            'env' => app()->environment(),
         ];
 
-        $file->save();
+        // local disk
+        if (site_settings('filesystem') === 'local') {
+            $url = $visibility === 'public' ? asset('storage/' . str_replace('public/', '', $path)) : null;
+            $data = array_merge($data, [
+                'path' => $path,
+                'provider' => 'local',
+            ]);
+        }
+        // upload file to 3rd party disk
+        else if ($disk = self::getStorageDisk()) {
+            $config = $disk->getConfig();
+            $storedpath = $disk->putFile(data_get($config, 'folder'), storage_path('app/'.$path), $visibility);
+            $url = $disk->url($storedpath);
+            $data = array_merge($data, [
+                'path' => $storedpath,
+                'provider' => site_settings('filesystem'),
+            ]);
+
+            // delete the local copy
+            Storage::delete($path);
+        }
+
+        $file = model('file')->fill([
+            'name' => data_get($meta, 'name'),
+            'size' => data_get($meta, 'size'),
+            'mime' => data_get($meta, 'mime'),
+            'url' => $url,
+            'data' => $data,
+        ])->save();
 
         return $file;
     }
@@ -311,5 +307,37 @@ class File extends Model
 
             return $img->width() . 'x' . $img->height();
         }
+    }
+
+    /**
+     * Get storage disk
+     */
+    public static function getStorageDisk($provider = null)
+    {
+        $provider = $provider ?? site_settings('filesystem');
+
+        if ($provider === 'do') {
+            $key = site_settings('do_spaces_key');
+            $secret = site_settings('do_spaces_secret');
+            $bucket = head(explode('/', site_settings('do_spaces_bucket')));
+            $folder = str(site_settings('do_spaces_bucket'))->replaceFirst($bucket, '')->replaceFirst('/', '')->toString();
+
+            if ($key && $secret) {
+                config([
+                    'filesystems.disks.do' => [
+                        'driver' => 's3',
+                        'key' => $key,
+                        'secret' => $secret,
+                        'bucket' => $bucket,
+                        'folder' => $folder,
+                        'region' => site_settings('do_spaces_region'),
+                        'endpoint' => site_settings('do_spaces_endpoint'),
+                    ],
+                ]);
+        
+                return Storage::disk('do');
+            }
+        }
+        else if ($provider) return Storage::disk($provider);
     }
 }

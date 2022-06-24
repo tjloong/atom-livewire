@@ -13,6 +13,7 @@ class Index extends Component
     public $multiple;
     public $sources;
     public $accept;
+    public $private;
     public $open = false;
 
     protected $listeners = ['completed'];
@@ -23,12 +24,14 @@ class Index extends Component
     public function mount(
         $uid = null,
         $title = 'File Manager',
+        $private = false,
         $multiple = false,
         $sources = ['device', 'web-image', 'youtube', 'library'],
         $accept = ['image', 'video', 'audio', 'youtube', 'file']
     ) {
         $this->uid = $uid;
         $this->title = $title;
+        $this->private = $private;
         $this->multiple = $multiple;
         $this->sources = $sources;
         $this->accept = $accept;

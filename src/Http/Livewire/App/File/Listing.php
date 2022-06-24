@@ -9,7 +9,6 @@ class Listing extends Component
 {
     use WithPagination;
 
-    public $open = false;
     public $selected = [];
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
@@ -29,7 +28,6 @@ class Listing extends Component
     protected $listeners = [
         'delete',
         'saved' => '$refresh',
-        'uploader-completed' => '$refresh',
     ];
 
     /**
@@ -57,23 +55,6 @@ class Listing extends Component
     public function updatedFilters()
     {
         $this->resetPage();
-    }
-
-    /**
-     * Updated open
-     */
-    public function updatedOpen()
-    {
-        $this->toggleDrawer();
-    }
-
-    /**
-     * Toggle drawer
-     */
-    public function toggleDrawer()
-    {
-        if ($this->open) $this->dispatchBrowserEvent('file-form-open');
-        else $this->dispatchBrowserEvent('file-form-close');        
     }
 
     /**
@@ -106,8 +87,7 @@ class Listing extends Component
             $this->dispatchBrowserEvent('toast', ['message' => count($this->selected).' Files Deleted']);
         }
         
-        $this->open = false;
-        $this->toggleDrawer();
+        $this->reset('selected');
     }
 
     /**

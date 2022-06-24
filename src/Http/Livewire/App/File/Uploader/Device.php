@@ -10,6 +10,7 @@ class Device extends Component
     use WithFileUploads;
     
     public $files;
+    public $private;
     public $multiple;
     public $inputFileTypes;
 
@@ -19,9 +20,10 @@ class Device extends Component
     public function updatedFiles()
     {
         $completed = [];
+        $location = $this->private ? 'uploads' : 'public/uploads';
 
         foreach ($this->files as $file) {
-            array_push($completed, model('file')->store($file));
+            array_push($completed, model('file')->store($file, $location));
         }
 
         $this->emitUp('completed', $completed);

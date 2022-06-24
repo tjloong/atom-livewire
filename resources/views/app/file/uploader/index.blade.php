@@ -34,6 +34,7 @@
 
                     @livewire('atom.app.file.uploader.'.$tab, [
                         'accept' => $accept,
+                        'private' => $private,
                         'multiple' => $multiple,
                         'inputFileTypes' => $this->inputFileTypes,
                     ], key($tab))

@@ -1,4 +1,8 @@
-<div class="max-w-screen-xl mx-auto">
+<div 
+    x-data
+    x-on:uploader-completed.window="location.reload()"
+    class="max-w-screen-xl mx-auto"
+>
     <x-page-header title="Files">
         @if (!$selected)
             <x-button icon="upload" x-on:click="$dispatch('uploader-open')">
@@ -58,7 +62,7 @@
             @forelse ($this->files as $file)
                 <div 
                     @if ($selected) wire:click="select({{ $file->id }})"
-                    @else wire:click="$set('open', {{ $file->id }})"
+                    @else wire:click="$emitTo('atom.app.file.form', 'open', {{ $file->id }})"
                     @endif
                     class="grid gap-1 cursor-pointer"
                 >
@@ -125,12 +129,5 @@
         @endif
     </div>
 
-    <div x-data x-on:drawer-close="$wire.set('open', false)">
-        <x-drawer uid="file-form">
-            <x-slot name="title">File Details</x-slot>
-            @if ($open)
-                @livewire('atom.app.file.form', ['fileId' => $open], key('file-form'))
-            @endif
-        </x-drawer>
-    </div>
+    @livewire('atom.app.file.form', key('file-form'))
 </div>
