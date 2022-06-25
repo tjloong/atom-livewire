@@ -31,7 +31,7 @@
             </x-slot:anchor>
     
             <div class="grid divide-y">
-                <x-navbar.dropdown.item :href="route('account')" icon="address-card" label="Account"/>
+                <x-navbar.dropdown.item :href="route('account')" icon="address-card" label="My Account"/>
     
                 @if (auth()->user()->canAccessPortal('billing'))
                     <x-navbar.dropdown.item :href="route('billing')" icon="dollar-circle" label="Billing"/>

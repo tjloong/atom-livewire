@@ -44,6 +44,7 @@ class Listing extends Component
     public function getFilesProperty()
     {
         return model('file')
+            ->when(model('file')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate(48);

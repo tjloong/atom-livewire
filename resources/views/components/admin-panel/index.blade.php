@@ -30,7 +30,7 @@
         }"
     >
         <div class="flex flex-col h-full">
-            <div class="flex-shrink-0 py-3 px-5">
+            <div class="shrink-0 py-3 px-5">
                 @isset($brand)
                     {{ $brand }}
                 @else    
@@ -44,13 +44,19 @@
                 @endisset
             </div>
 
-            <div class="flex-grow overflow-y-auto overflow-x-hidden">
+            <div class="grow overflow-y-auto overflow-x-hidden">
                 <div class="text-sm text-gray-500 py-2 px-6">
                     NAVIGATION
                 </div>
 
                 <div class="grid pb-10">
                     {{ $aside }}
+                </div>
+            </div>
+
+            <div class="shrink-0">
+                <div class="grid pb-2">
+                    {{ $asidefoot }}
                 </div>
             </div>
         </div>

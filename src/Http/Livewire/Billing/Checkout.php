@@ -133,7 +133,7 @@ class Checkout extends Component
         // no payment amount, provision straight away
         else $accountPayment->provision();
         
-        if (auth()->user()->account->status === 'onboarded') return redirect()->route(app_route());
+        if (auth()->user()->account->status === 'onboarded') return redirect(app_route());
         else return redirect()->route('onboarding');
     }
 

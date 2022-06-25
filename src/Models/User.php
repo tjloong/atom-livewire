@@ -238,14 +238,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
             'billing' => Route::has('billing') 
                 && model('plan')->whereIsActive(true)->count() > 0
-                && in_array($this->account->type, ['root', 'signup']),
+                && in_array($this->account->type, ['signup']),
 
             'ticketing' => Route::has('ticketing.listing') 
                 && in_array($this->account->type, ['root', 'signup', 'system']),
 
             'onboarding' => Route::has('onboarding') 
-                && in_array($this->account->type, ['root', 'signup']),
-        ][$portal] ?? false;
+                && in_array($this->account->type, ['signup']),
+        ][$portal] ?? true;
     }
 
     /**

@@ -56,4 +56,12 @@ class Plan extends Model
     {
         return $query->where('name', 'like', "%$search%");
     }
+
+    /**
+     * Route guard
+     */
+    public function routeGuard()
+    {
+        return [];
+    }
 }

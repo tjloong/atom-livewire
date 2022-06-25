@@ -60,13 +60,13 @@ if (!config('atom.static_site')) {
     /**
      * Account Portal
      */
-    define_route('account', 'Account\Index')->middleware('auth', 'portal-guard', 'locale')->name('account');
+    define_route('account', 'Account\Index')->middleware('auth', 'locale')->name('account');
 
     /**
      * Onboarding Portal
      */
     if (config('atom.accounts.register')) {
-        define_route()->prefix('onboarding')->middleware('auth', 'portal-guard', 'locale')->group(function() {
+        define_route()->prefix('onboarding')->middleware('auth', 'locale')->group(function() {
             define_route('/', 'Onboarding\\Index')->name('onboarding');
             define_route('completed', 'Onboarding\\Completed')->name('onboarding.completed');
         });
@@ -76,7 +76,7 @@ if (!config('atom.static_site')) {
      * Billing Portal
      */
     if (enabled_module('plans')) {
-        define_route()->prefix('billing')->middleware('auth', 'portal-guard', 'locale')->group(function() {
+        define_route()->prefix('billing')->middleware('auth', 'locale')->group(function() {
             define_route('/', 'Billing\Index')->name('billing');
             define_route('plans', 'Billing\Plans')->name('billing.plans');
             define_route('checkout', 'Billing\Checkout')->name('billing.checkout');
@@ -92,7 +92,7 @@ if (!config('atom.static_site')) {
      * Ticketing Portal
      */
     if (enabled_module('ticketing')) {
-        define_route()->prefix('ticketing')->middleware('auth', 'portal-guard', 'locale')->as('ticketing.')->group(function() {
+        define_route()->prefix('ticketing')->middleware('auth', 'locale')->as('ticketing.')->group(function() {
             define_route('listing', 'Ticketing\Listing')->name('listing');
             define_route('create', 'Ticketing\Create')->name('create');
             define_route('{ticket}', 'Ticketing\Update')->name('update');
@@ -102,7 +102,7 @@ if (!config('atom.static_site')) {
     /**
      * App Portal
      */
-    define_route()->prefix('app')->middleware('auth', 'portal-guard', 'locale')->group(function() {
+    define_route()->prefix('app')->middleware('auth')->group(function() {
         define_route('/', fn() => redirect()->route('app.dashboard'))->name('app.home');
 
         /**
