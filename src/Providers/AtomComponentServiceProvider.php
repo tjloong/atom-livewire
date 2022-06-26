@@ -47,7 +47,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'social-share',
             'announcements',
             'payment-gateway',
-
+            
             'script.vendor',
             'script.alpine.index',
             'script.alpine.sidenav',
@@ -64,7 +64,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'analytics.ga',
             'analytics.gtm',
             'analytics.fbpixel',
-
+            
             'box.index',
             'box.row',
             
@@ -72,10 +72,10 @@ class AtomComponentServiceProvider extends ServiceProvider
             'button.create',
             'button.submit',
             'button.delete',
-
+            
             'dropdown.index',
             'dropdown.item',
-
+            
             'modal.index',
             'modal.row',
             
@@ -84,11 +84,11 @@ class AtomComponentServiceProvider extends ServiceProvider
             'table.tr',
             'table.td',
             'table.checkbox',
-
+            
             'sidenav.index',
             'sidenav.group',
             'sidenav.item',
-
+            
             'form.index',
             'form.ic',
             'form.seo',
@@ -119,6 +119,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.richtext',
             'form.sortable',
             'form.textarea',
+            'form.recaptcha',
             'form.date-range',
         
             'input.text',

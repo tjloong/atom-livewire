@@ -7,6 +7,32 @@ use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
+ * Recaptcha verification
+ */
+function verify_recaptcha($token, $secret = null)
+{
+    $secret = $secret ?? env('RECAPTCHA_SECRET') ?? site_settings('recaptcha_secret');
+
+	$data = http_build_query([
+		'secret' => $secret,
+		'response' => $token,
+		'remoteip' => $_SERVER['REMOTE_ADDR'],
+	]);
+
+	$opts = ['http' => [
+		'method' => 'POST',
+		'header' => 'Content-type: application/x-www-form-urlencoded',
+		'content' => $data,
+	]];
+
+	$context  = stream_context_create($opts);
+	$response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+	$result = json_decode($response);
+
+	return $result->success;
+}
+
+/**
  * Get app route
  */
 function app_route()

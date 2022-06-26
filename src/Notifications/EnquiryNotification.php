@@ -45,14 +45,14 @@ class EnquiryNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('[' . config('app.name') . '] New enquiry from ' . $this->enquiry->name)
+            ->subject('['.config('app.name').'] New enquiry from '.data_get($this->enquiry, 'name'))
             ->greeting('Hello!')
             ->line('You have a new enquiry:')
             ->line('
-                <span style="font-weight: bold">Name:</span> ' . $this->enquiry->name . '<br>
-                <span style="font-weight: bold">Phone:</span> ' . $this->enquiry->phone . '<br>
-                <span style="font-weight: bold">Email:</span> ' . $this->enquiry->email . '<br>
-                <span style="font-weight: bold">Message:</span><br>' . nl2br($this->enquiry->message) . '
+                <span style="font-weight: bold">Name:</span> '.data_get($this->enquiry, 'name').'<br>
+                <span style="font-weight: bold">Phone:</span> '.data_get($this->enquiry, 'phone').'<br>
+                <span style="font-weight: bold">Email:</span> '.data_get($this->enquiry, 'email').'<br>
+                <span style="font-weight: bold">Message:</span><br>'.nl2br(data_get($this->enquiry, 'message')).'
             ');
     }
 
