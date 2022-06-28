@@ -162,12 +162,12 @@ if (!config('atom.static_site')) {
             define_route()->prefix('plan')->as('app.plan.')->group(function() {
                 define_route('listing', 'App\Plan\Listing')->name('listing');
                 define_route('create', 'App\Plan\Create')->name('create');
-                define_route('{id}', 'App\Plan\Update')->name('update');
+                define_route('{plan}', 'App\Plan\Update')->name('update');
             });
 
             define_route()->prefix('plan-price')->as('app.plan-price.')->group(function() {
-                define_route('create/{id}', 'App\PlanPrice\Create')->name('create');
-                define_route('{id}', 'App\PlanPrice\Update')->name('update');
+                define_route('create/{plan}', 'App\PlanPrice\Create')->name('create');
+                define_route('{planPrice}', 'App\PlanPrice\Update')->name('update');
             });
 
             define_route()->prefix('account-payment')->as('app.account-payment.')->group(function() {

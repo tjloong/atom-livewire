@@ -25,6 +25,7 @@ class Form extends Component
             'plan.slug' => 'nullable',
             'plan.trial' => 'nullable',
             'plan.excerpt' => 'nullable',
+            'plan.payment_description' => 'nullable',
             'plan.cta' => 'nullable',
             'plan.is_active' => 'nullable',
         ];
@@ -78,21 +79,17 @@ class Form extends Component
         $this->resetValidation();
         $this->validate();
 
-        if ($this->features) {
-            $this->plan->features = collect(explode("\n", $this->features))
-                ->filter()
-                ->map(fn($val) => trim($val))
-                ->values()
-                ->all();
-        }
+        $this->plan->fill([
+            'trial' => $this->plan->trial ?? null,
+            'features' => $this->features 
+                ? collect(explode("\n", $this->features))->filter()->map(fn($val) => trim($val))->values()->all()
+                : null,
+        ])->save();
 
-        $this->plan->trial = $this->plan->trial ?? null;
-        $this->plan->save();
         $this->plan->upgradables()->sync($this->upgradables);
         $this->plan->downgradables()->sync($this->downgradables);
 
         $this->setFeatures();
-
         $this->emitUp('saved', $this->plan->id);
     }
 

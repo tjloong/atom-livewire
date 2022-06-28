@@ -6,51 +6,52 @@
 
     <x-form.picker 
         label="Available for Country"
-        wire:model="price.country"
+        wire:model="planPrice.country"
         options="country"
-        :selected="$price->country"
+        :selected="$planPrice->country"
     />
 
     @if ($this->readonly)
         <x-form.field label="Currency">
-            {{ $price->currency }}
+            {{ $planPrice->currency }}
         </x-form.field>
 
         <x-form.field label="Price">
-            {{ currency($price->amount) }}
+            {{ currency($planPrice->amount) }}
         </x-form.field>
 
         <x-form.field label="Expired After">
-            {{ $price->is_lifetime ? 'Valid for lifetime' : $price->expired_after }}
+            {{ $planPrice->is_lifetime ? 'Valid for lifetime' : $planPrice->expired_after.' Months' }}
         </x-form.field>
     @else
         <x-form.currency 
             label="Currency"
-            wire:model="price.currency" 
-            :error="$errors->first('price.currency')"
+            wire:model="planPrice.currency" 
+            :error="$errors->first('planPrice.currency')"
             required 
         />
 
         <x-form.number 
             label="Price"
-            wire:model.defer="price.amount" 
-            :error="$errors->first('price.amount')"
+            wire:model.defer="planPrice.amount" 
+            :error="$errors->first('planPrice.amount')"
             required 
         />
 
-        <x-form.field label="Expired After" required :error="$errors->first('price.expired_after')">
+        <x-form.field 
+            label="Expired After" 
+            :error="$errors->first('planPrice.expired_after')"
+            required 
+        >
             <div class="grid gap-2">
-                <div x-data="{ isLifetime: @entangle('price.is_lifetime') }" x-show="!isLifetime">
-                    <x-form.number 
-                        wire:model.defer="price.expired_after" 
-                        :units="['day', 'month', 'year']"
-                    />
+                <div x-data="{ isLifetime: @entangle('planPrice.is_lifetime') }" x-show="!isLifetime">
+                    <x-form.number wire:model.defer="planPrice.expired_after" unit="Months"/>
                 </div>
 
                 <div>
                     <x-form.checkbox 
                         label="Valid for lifetime"
-                        wire:model="price.is_lifetime"
+                        wire:model="planPrice.is_lifetime"
                     />
                 </div>
             </div>
@@ -59,24 +60,24 @@
 
     <x-form.number 
         label="Discounted Amount"
-        wire:model.defer="price.discount" 
-        :error="$errors->first('price.discount')"
+        wire:model.defer="planPrice.discount" 
+        :error="$errors->first('planPrice.discount')"
     />
 
     <x-form.text 
         label="Shout Out Text"
-        wire:model.defer="price.shoutout"
+        wire:model.defer="planPrice.shoutout"
     />
 
     <div class="grid gap-4">
         <x-form.checkbox 
             label="Use this price as default (if there are multiple prices)."
-            wire:model="price.is_default"
+            wire:model="planPrice.is_default"
         />
 
         <a class="flex items-center gap-1">
             <x-icon name="info-circle" class="text-gray-400" size="20px"/>
-            {{ $price->accounts->count() }} {{ str('user')->plural($price->accounts->count()) }} subscribed to this price.
+            {{ $planPrice->accounts->count() }} {{ str('user')->plural($planPrice->accounts->count()) }} subscribed to this planPrice.
         </a>
     </div>
 

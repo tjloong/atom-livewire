@@ -14,9 +14,9 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($id)
+    public function mount($plan)
     {
-        $this->plan = model('plan')->findOrFail($id);
+        $this->plan = model('plan')->findOrFail($plan);
         breadcrumbs()->push($this->plan->name);
     }
 

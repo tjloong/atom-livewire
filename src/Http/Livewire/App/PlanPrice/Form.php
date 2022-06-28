@@ -7,7 +7,7 @@ use Livewire\Component;
 class Form extends Component
 {
     public $plan;
-    public $price;
+    public $planPrice;
 
     /**
      * Validation rules
@@ -15,16 +15,16 @@ class Form extends Component
     protected function rules()
     {
         return [
-            'price.country' => 'nullable',
-            'price.currency' => 'required',
-            'price.amount' => 'required|numeric',
-            'price.discount' => 'nullable|numeric|max:100',
-            'price.expired_after' => 'required_if:price.is_lifetime,false',
-            'price.shoutout' => 'nullable',
-            'price.is_lifetime' => 'nullable',
-            'price.is_default' => 'nullable',
-            'price.plan_id' => 'required',
-            'price.tax_id' => 'nullable',
+            'planPrice.country' => 'nullable',
+            'planPrice.currency' => 'required',
+            'planPrice.amount' => 'required|numeric',
+            'planPrice.discount' => 'nullable|numeric|max:100',
+            'planPrice.expired_after' => 'required_if:planPrice.is_lifetime,false',
+            'planPrice.shoutout' => 'nullable',
+            'planPrice.is_lifetime' => 'nullable',
+            'planPrice.is_default' => 'nullable',
+            'planPrice.plan_id' => 'required',
+            'planPrice.tax_id' => 'nullable',
         ];
     }
 
@@ -34,13 +34,13 @@ class Form extends Component
     protected function messages()
     {
         return [
-            'price.currency.required' => 'Currency is required.',
-            'price.amount.required' => 'Price is required.',
-            'price.amount.numeric' => 'Invalid price.',
-            'price.discount.numeric' => 'Invalid discount percentage.',
-            'price.discount.max' => 'Invalid discount percentage.',
-            'price.expired_after.required_if' => 'Price valid period is required.',
-            'price.plan_id.required' => 'Unknown plan.',
+            'planPrice.currency.required' => 'Currency is required.',
+            'planPrice.amount.required' => 'Price is required.',
+            'planPrice.amount.numeric' => 'Invalid price.',
+            'planPrice.discount.numeric' => 'Invalid discount percentage.',
+            'planPrice.discount.max' => 'Invalid discount percentage.',
+            'planPrice.expired_after.required_if' => 'Price valid period is required.',
+            'planPrice.plan_id.required' => 'Unknown plan.',
         ];
     }
     
@@ -57,7 +57,7 @@ class Form extends Component
      */
     public function getReadonlyProperty()
     {
-        return $this->price->accounts()->count() > 0;
+        return $this->planPrice->accounts()->count() > 0;
     }
 
     /**
@@ -68,17 +68,20 @@ class Form extends Component
         $this->resetValidation();
         $this->validate();
 
-        $this->price->expired_after = $this->price->is_lifetime ? null : $this->price->expired_after;
-        $this->price->save();
+        $this->planPrice->fill([
+            'expired_after' => $this->planPrice->is_lifetime
+                ? null
+                : $this->planPrice->expired_after,
+        ])->save();
         
-        if ($this->price->is_default) {
-            $this->plan->prices()
+        if ($this->planPrice->is_default) {
+            $this->plan->planPrices()
                 ->where('is_default', true)
-                ->where('id', '<>', $this->price->id)
+                ->where('id', '<>', $this->planPrice->id)
                 ->update(['is_default' => false]);
         }
 
-        $this->emitUp('saved', $this->price->id);
+        $this->emitUp('saved', $this->planPrice->id);
     }
 
     /**

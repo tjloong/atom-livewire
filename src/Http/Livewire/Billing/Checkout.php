@@ -65,7 +65,7 @@ class Checkout extends Component
         $discount = $trial ? $planPrice->amount : $planPrice->discount;
         
         $this->cart->push([
-            'name' => $plan->payment_description,
+            'name' => $plan->payment_description ?: $plan->name,
             'currency' => $planPrice->currency,
             'amount' => $planPrice->amount,
             'discounted_amount' => $discount,

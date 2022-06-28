@@ -21,7 +21,14 @@
 
     <x-form.textarea 
         label="Features"
-        wire:model.defer="features" caption="Each line will be converted to a bullet point."
+        wire:model.defer="features"
+        caption="Each line will be converted to a bullet point."
+    />
+
+    <x-form.text
+        label="Payment Description"
+        wire:model.defer="plan.payment_description"
+        caption="This will appear as the line item description when user checkout."
     />
 
     <x-form.text 

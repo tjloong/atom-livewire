@@ -7,19 +7,19 @@ use Livewire\Component;
 class Update extends Component
 {
     public $plan;
-    public $price;
+    public $planPrice;
 
     protected $listeners = ['saved'];
 
     /**
      * Mount
      */
-    public function mount($id)
+    public function mount($planPrice)
     {
-        $this->price = model('plan-price')->findOrFail($id);
-        $this->plan = $this->price->plan;
+        $this->planPrice = model('plan-price')->findOrFail($planPrice);
+        $this->plan = $this->planPrice->plan;
 
-        breadcrumbs()->push($this->price->name);
+        breadcrumbs()->push($this->planPrice->name);
     }
 
     /**
@@ -35,11 +35,11 @@ class Update extends Component
      */
     public function delete()
     {
-        if ($this->price->accounts->count()) {
+        if ($this->planPrice->accounts->count()) {
             $this->dispatchBrowserEvent('alert', ['message' => 'There are subscribers under this plan price.', 'type' => 'error']);
         }
         else {
-            $this->price->delete();
+            $this->planPrice->delete();
 
             session()->flash('flash', 'Plan Price Deleted');
 

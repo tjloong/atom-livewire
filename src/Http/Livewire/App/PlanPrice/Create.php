@@ -7,19 +7,19 @@ use Livewire\Component;
 class Create extends Component
 {
     public $plan;
-    public $price;
+    public $planPrice;
 
     protected $listeners = ['saved'];
 
     /**
      * Mount
      */
-    public function mount($id)
+    public function mount($plan)
     {
-        $this->plan = model('plan')->findOrFail($id);
+        $this->plan = model('plan')->findOrFail($plan);
 
-        $this->price = model('plan-price');
-        $this->price->plan_id = $this->plan->id;
+        $this->planPrice = model('plan-price');
+        $this->planPrice->plan_id = $this->plan->id;
 
         breadcrumbs()->push('Create Plan Price');
     }

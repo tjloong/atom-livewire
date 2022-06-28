@@ -85,14 +85,9 @@ class AccountPayment extends Model
             else {
                 $lastSubscription = $this->account->accountSubscriptions()->where('plan_price_id', $planPrice->id)->latest()->first();
                 $start = $lastSubscription ? $lastSubscription->expired_at->addSecond() : $this->created_at;
-
-                if (!$planPrice->is_lifetime) {
-                    [$n, $unit] = explode(' ', $planPrice->expired_after);
-
-                    if ($unit === 'day') $end = $start->copy()->addDays($n);
-                    if ($unit === 'month') $end = $start->copy()->addMonths($n);
-                    if ($unit === 'year') $end = $start->copy()->addYears($n);
-                }
+                $end = $planPrice->is_lifetime
+                    ? null
+                    : $start->copy()->addMonths($planPrice->expired_after);
 
                 $data = [
                     'is_trial' => false,

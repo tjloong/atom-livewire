@@ -162,7 +162,7 @@ class InstallCommand extends Command
                 $table->decimal('discount', 20, 2)->nullable();
                 $table->string('country')->nullable();
                 $table->string('shoutout')->nullable();
-                $table->string('expired_after')->nullable();
+                $table->integer('expired_after')->nullable();
                 $table->boolean('is_lifetime')->nullable();
                 $table->boolean('is_default')->nullable();
                 $table->string('stripe_price_id')->nullable();
