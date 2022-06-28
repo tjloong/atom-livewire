@@ -61,7 +61,7 @@ class SiteSetting extends Model
             'do_spaces_region',
             'do_spaces_bucket',
             'do_spaces_endpoint',
-            'do_spaces_cdn',    
+            'do_spaces_folder',    
         ],
         'stripe' => [
             'stripe_public_key', 

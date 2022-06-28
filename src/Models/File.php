@@ -215,8 +215,8 @@ class File extends Model
         }
         // upload file to 3rd party disk
         else if ($disk = self::getStorageDisk()) {
-            $config = $disk->getConfig();
-            $storedpath = $disk->putFile(data_get($config, 'folder'), storage_path('app/'.$path), $visibility);
+            $folder = site_settings('do_spaces_folder').'/'.str()->replaceFirst('public/', '', $location);
+            $storedpath = $disk->putFile($folder, storage_path('app/'.$path), $visibility);
             $url = $disk->url($storedpath);
             $data = array_merge($data, [
                 'path' => $storedpath,
@@ -321,8 +321,6 @@ class File extends Model
         if ($provider === 'do') {
             $key = site_settings('do_spaces_key');
             $secret = site_settings('do_spaces_secret');
-            $bucket = head(explode('/', site_settings('do_spaces_bucket')));
-            $folder = str(site_settings('do_spaces_bucket'))->replaceFirst($bucket, '')->replaceFirst('/', '')->toString();
 
             if ($key && $secret) {
                 config([
@@ -330,10 +328,11 @@ class File extends Model
                         'driver' => 's3',
                         'key' => $key,
                         'secret' => $secret,
-                        'bucket' => $bucket,
-                        'folder' => $folder,
                         'region' => site_settings('do_spaces_region'),
+                        'bucket' => site_settings('do_spaces_bucket'),
+                        'folder' => site_settings('do_spaces_folder'),
                         'endpoint' => site_settings('do_spaces_endpoint'),
+                        'use_path_style_endpoint' => false,
                     ],
                 ]);
         

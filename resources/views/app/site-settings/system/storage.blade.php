@@ -46,9 +46,9 @@
         />
 
         <x-form.text 
-            label="CDN URL"
-            wire:model.defer="settings.do_spaces_cdn" 
-            :error="$errors->first('settings.do_spaces_cdn')" 
+            label="DO Spaces Folder"
+            wire:model.defer="settings.do_spaces_folder" 
+            :error="$errors->first('settings.do_spaces_folder')" 
             required
         />
     @endif

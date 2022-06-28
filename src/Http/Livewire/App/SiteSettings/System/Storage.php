@@ -20,7 +20,7 @@ class Storage extends Component
             'settings.do_spaces_region' => 'required_if:settings.filesystem,do',
             'settings.do_spaces_bucket' => 'required_if:settings.filesystem,do',
             'settings.do_spaces_endpoint' => 'required_if:settings.filesystem,do',
-            'settings.do_spaces_cdn' => 'required_if:settings.filesystem,do',
+            'settings.do_spaces_folder' => 'required_if:settings.filesystem,do',
         ];
     }
 
@@ -33,7 +33,7 @@ class Storage extends Component
             'settings.do_spaces_region.required_if' => __('DO spaces region is required.'),
             'settings.do_spaces_bucket.required_if' => __('DO spaces bucket is required.'),
             'settings.do_spaces_endpoint.required_if' => __('DO spaces endpoint is required.'),
-            'settings.do_spaces_cdn.required_if' => __('DO spaces CDN URL is required.'),
+            'settings.do_spaces_folder.required_if' => __('DO spaces folder is required.'),
         ];
     }
 
