@@ -54,11 +54,13 @@
                 </div>
             </div>
 
-            <div class="shrink-0">
-                <div class="grid pb-2">
-                    {{ $asidefoot }}
+            @isset($asidefoot)
+                <div class="shrink-0">
+                    <div class="grid pb-2">
+                        {{ $asidefoot }}
+                    </div>
                 </div>
-            </div>
+            @endisset
         </div>
     </aside>
 

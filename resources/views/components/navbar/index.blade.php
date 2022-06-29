@@ -30,8 +30,8 @@
             </div>
 
             <div 
-                x-bind:class="!show && 'hidden'" 
-                class="grow fixed inset-0 z-40 p-6 md:static md:p-0 md:block"
+                x-bind:class="show ? 'fixed inset-0 z-40' : 'hidden'" 
+                class="grow p-6 md:static md:p-0 md:block"
             >
                 <div x-on:click="show = false" class="absolute inset-0 bg-gray-400/50 md:hidden"></div>
 
