@@ -75,13 +75,17 @@
     >
         <x-navbar class="bg-white py-2 px-4 shadow" sticky>
             <x-slot:logo>
-                <div class="flex items-center gap-2">
-                    <x-logo class="h-[40px] md:hidden" small/>
+                @isset($logo)
+                    {{ $logo }}
+                @else
+                    <div class="flex items-center gap-2">
+                        <x-logo class="h-[40px] md:hidden" small/>
 
-                    <a class="flex-shrink-0 text-gray-800 flex items-center justify-center" @click="toggled = !toggled; animate = true">
-                        <x-icon name="dots-vertical"/>
-                    </a>
-                </div>
+                        <a class="flex-shrink-0 text-gray-800 flex items-center justify-center" @click="toggled = !toggled; animate = true">
+                            <x-icon name="dots-vertical"/>
+                        </a>
+                    </div>
+                @endisset
             </x-slot:logo>
 
             @isset($links)

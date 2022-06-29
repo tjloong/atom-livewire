@@ -8,6 +8,17 @@ use Illuminate\Support\Facades\Schema;
 trait HasFilters
 {
     /**
+     * Scope for status
+     */
+    public function scopeStatus($query, $status)
+    {
+        if ($status === 'active' && $this->hasColumn('is_active')) return $query->where('is_active', true);
+        if ($status === 'inactive' && $this->hasColumn('is_active')) return $query->where('is_active', false);
+
+        return $query->whereIn('status', (array)$status);
+    }
+
+    /**
      * Apply scope from filters
      *
      * @param Builder $query
