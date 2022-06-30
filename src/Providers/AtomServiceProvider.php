@@ -24,7 +24,7 @@ class AtomServiceProvider extends ServiceProvider
      * @return void
      */
     public function register()
-    {
+    {        
         $this->mergeConfigFrom(__DIR__.'/../../stubs/config/atom.php', 'atom');
     }
 

@@ -3,7 +3,7 @@
 <x-loader/>
 
 <div 
-    class="min-h-screen bg-gray-50" 
+    class="min-h-screen bg-gray-50 admin-panel" 
     x-data="{ toggled: false, animate: false }"
     @if ($flash)
         x-init="$dispatch('toast', { message: '{{ $flash->message }}', type: '{{ $flash->type }}' })"
@@ -73,7 +73,7 @@
             'lg:pl-56': !toggled,
         }"
     >
-        <x-navbar class="bg-white py-2 px-4 shadow" sticky>
+        <x-navbar class="bg-white py-3 px-4 shadow" sticky>
             <x-slot:logo>
                 @isset($logo)
                     {{ $logo }}

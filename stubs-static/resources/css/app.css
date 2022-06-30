@@ -4,3 +4,5 @@
 @import 'atom-livewire/resources/css/atom.css';
 
 @import 'tailwindcss/utilities';
+
+html { font-size: 14px; }
