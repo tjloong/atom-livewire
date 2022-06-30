@@ -60,13 +60,18 @@
                         <div class="text-gray-500" x-text="config.message"></div>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <a class="py-1.5 px-3 font-medium rounded-md" x-bind:class="buttonColors[config.type]" x-on:click.prevent="confirmed()">
-                            Confirm
-                        </a>
+                        <a 
+                            x-on:click.prevent="confirmed()"
+                            x-bind:class="buttonColors[config.type]" 
+                            x-text="config.buttonText[0]"
+                            class="py-1.5 px-3 font-medium rounded-md" 
+                        ></a>
 
-                        <a class="py-1.5 px-3 font-medium rounded-md text-gray-900 hover:bg-gray-100" x-on:click.prevent="reject()">
-                            Cancel
-                        </a>
+                        <a 
+                            x-on:click.prevent="reject()"
+                            x-text="config.buttonText[1]"
+                            class="py-1.5 px-3 font-medium rounded-md text-gray-900 hover:bg-gray-100" 
+                        ></a>
                     </div>
                 </div>
             </div>
@@ -137,6 +142,7 @@
                 title: null,
                 message: null,
                 type: 'info',
+                buttonText: ['Confirm', 'Cancel'],
             },
             buttonColors: {
                 info: 'bg-blue-500 text-white',
