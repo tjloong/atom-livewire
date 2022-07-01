@@ -20,12 +20,12 @@
         </div>
 
         <div x-ref="ckeditor" x-show="!loading"></div>
-    </div>
 
-    @livewire('atom.app.file.uploader', [
-        'uid' => $uid.'-uploader',
-        'title' => 'Insert Media',
-        'accept' => ['image', 'video', 'audio', 'youtube'],
-        'sources' => ['device', 'web-image', 'youtube', 'library'],
-    ], key($uid.'-uploader'))
+        @livewire('atom.app.file.uploader', [
+            'uid' => $uid.'-uploader',
+            'title' => 'Insert Media',
+            'accept' => ['image', 'video', 'audio', 'youtube'],
+            'sources' => ['device', 'web-image', 'youtube', 'library'],
+        ], key($uid.'-uploader'))
+    </div>
 </x-form.field>

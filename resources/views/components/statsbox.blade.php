@@ -12,7 +12,7 @@
         </div>
     @endif
 
-    <div {{ $attributes->merge(['class' => 'text-5xl font-bold']) }}>
+    <div {{ $attributes->merge(['class' => 'text-4xl font-bold']) }}>
         @if ($currency && !is_null($amount))
             <div class="flex gap-2">
                 <div class="text-lg font-medium text-gray-400">{{ $currency }}</div>
