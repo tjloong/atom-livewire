@@ -3,11 +3,16 @@
 <x-loader/>
 
 <div 
+    x-data="{ 
+        toggled: false, 
+        animate: false,
+        flash: @js($flash),
+        init () {
+            if (this.flash) this.$dispatch('toast', flash)
+            document.querySelector('html').style.fontSize = '14px'
+        },
+    }"
     class="min-h-screen bg-gray-50 admin-panel" 
-    x-data="{ toggled: false, animate: false }"
-    @if ($flash)
-        x-init="$dispatch('toast', { message: '{{ $flash->message }}', type: '{{ $flash->type }}' })"
-    @endif
 >
     <div
         x-ref="void"
