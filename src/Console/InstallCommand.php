@@ -44,6 +44,8 @@ class InstallCommand extends Command
         'enquiries',
         'ticketing',
         'plans',
+        'products', 
+        'promotions',
     ];
 
     /**
@@ -122,6 +124,109 @@ class InstallCommand extends Command
         $value = $enabled->unique()->values()->all();
 
         $query->update(['value' => json_encode($value)]);
+    }
+
+    /**
+     * Install promotions
+     */
+    private function installPromotions()
+    {
+        $this->newLine();
+        $this->info('Installing promotions table...');
+
+        if (Schema::hasTable('promotions')) $this->warn('promotions table exists, skipped.');
+        else {
+            Schema::create('promotions', function ($table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('code')->indexed()->nullable();
+                $table->string('type')->nullable();
+                $table->decimal('rate', 20, 2)->nullable();
+                $table->integer('usable_limit')->nullable();
+                $table->text('description')->nullable();
+                $table->json('data')->nullable();
+                $table->datetime('end_at')->nullable();
+                $table->boolean('is_active')->nullable();
+
+                if (Schema::hasTable('products')) $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
+
+                $table->timestamps();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+
+            $this->line('promotions table created successfully.');
+        }
+    }
+
+    /**
+     * Install products
+     */
+    private function installProducts()
+    {
+        $this->newLine();
+        $this->info('Installing products module...');
+
+        $this->installTaxes();
+
+        if (Schema::hasTable('products')) $this->warn('products table exists, skipped.');
+        else {
+            Schema::create('products', function($table) {
+                $table->id();
+                $table->string('code')->index();
+                $table->string('name');
+                $table->string('type')->nullable();
+                $table->text('description')->nullable();
+                $table->decimal('price', 20, 2)->nullable();
+                $table->decimal('stock', 20, 2)->nullable();
+                $table->boolean('is_active')->nullable();
+                $table->foreignId('tax_id')->nullable()->constrained()->onDelete('set null');
+                $table->timestamps();
+            });
+
+            $this->line('products table created successfully.');
+        }
+
+        if (Schema::hasTable('product_images')) $this->warn('product_images table exists, skipped.');
+        else {
+            Schema::create('product_images', function($table) {
+                $table->id();
+                $table->foreignId('product_id')->constrained()->onDelete('cascade');
+                $table->foreignId('file_id')->constrained()->onDelete('cascade');
+                $table->integer('seq')->nullable();
+            });
+
+            $this->line('product_images table created successfully.');
+        }
+
+        if (Schema::hasTable('product_categories')) $this->warn('product_categories table exists, skipped.');
+        else {
+            Schema::create('product_categories', function($table) {
+                $table->id();
+                $table->foreignId('product_id')->constrained()->onDelete('cascade');
+                $table->foreignId('label_id')->constrained()->onDelete('cascade');
+            });
+
+            $this->line('product_categories table created successfully.');
+        }
+
+        if (Schema::hasTable('product_variants')) $this->warn('product_variants table exists, skipped.');
+        else {
+            Schema::create('product_variants', function($table) {
+                $table->id();
+                $table->string('name');
+                $table->decimal('price', 20, 2)->nullable();
+                $table->decimal('stock', 20, 2)->nullable();
+                $table->integer('seq')->nullable();
+                $table->boolean('is_default')->nullable();
+                $table->boolean('is_active')->nullable();
+                $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
+                $table->foreignId('product_id')->constrained()->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            $this->line('product_variants table created successfully.');
+        }
     }
 
     /**

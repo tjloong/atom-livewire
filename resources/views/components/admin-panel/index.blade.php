@@ -8,7 +8,7 @@
         animate: false,
         flash: @js($flash),
         init () {
-            if (this.flash) this.$dispatch('toast', flash)
+            if (this.flash) this.$dispatch('toast', this.flash)
             document.querySelector('html').style.fontSize = '14px'
         },
     }"

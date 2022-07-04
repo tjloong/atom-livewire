@@ -27,4 +27,14 @@ class Tax extends Model
             ->orWhere('region', 'like', "%$search%")
         );
     }
+
+    /**
+     * Calculate tax amount
+     */
+    public function calculate($amount = 0)
+    {
+        $tax = $amount * ($this->rate/100);
+
+        return round($tax * 2, 1)/2;
+    }
 }

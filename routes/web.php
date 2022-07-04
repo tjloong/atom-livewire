@@ -156,6 +156,33 @@ if (!config('atom.static_site')) {
         }
 
         /**
+         * Products
+         */
+        if (enabled_module('products')) {
+            define_route()->prefix('product')->as('app.product.')->group(function() {
+                define_route('listing', 'App\Product\Listing')->name('listing');
+                define_route('create', 'App\Product\Create')->name('create');
+                define_route('{product}', 'App\Product\Update\Index')->name('update');
+            });
+
+            define_route()->prefix('product-variant')->as('app.product-variant.')->group(function() {
+                define_route('create', 'App\ProductVariant\Create')->name('create');
+                define_route('{productVariant}', 'App\ProductVariant\Update')->name('update');
+            });
+        }
+
+        /**
+         * Promotions
+         */
+        if (enabled_module('promotions')) {
+            define_route()->prefix('promotion')->as('app.promotion.')->group(function() {
+                define_route('listing', 'App\Promotion\Listing')->name('listing');
+                define_route('create', 'App\Promotion\Create')->name('create');
+                define_route('{promotion}', 'App\Promotion\Update')->name('update');
+            });
+        }
+
+        /**
          * Plans
          */
         if (enabled_module('plans')) {

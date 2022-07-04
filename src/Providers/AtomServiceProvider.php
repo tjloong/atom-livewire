@@ -190,6 +190,25 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.account-payment.listing' => 'App\AccountPayment\Listing',
             'atom.app.account-payment.update' => 'App\AccountPayment\Update',
 
+            // product
+            'atom.app.product.listing' => 'App\Product\Listing',
+            'atom.app.product.create' => 'App\Product\Create',
+            'atom.app.product.update' => 'App\Product\Update\Index',
+            'atom.app.product.update.overview' => 'App\Product\Update\Overview',
+            'atom.app.product.update.images' => 'App\Product\Update\Images',
+
+            // product variant
+            'atom.app.product-variant.listing' => 'App\ProductVariant\Listing',
+            'atom.app.product-variant.create' => 'App\ProductVariant\Create',
+            'atom.app.product-variant.update' => 'App\ProductVariant\Update',
+            'atom.app.product-variant.form' => 'App\ProductVariant\Form',
+
+            // promotion
+            'atom.app.promotion.listing' => 'App\Promotion\Listing',
+            'atom.app.promotion.create' => 'App\Promotion\Create',
+            'atom.app.promotion.update' => 'App\Promotion\Update',
+            'atom.app.promotion.form' => 'App\Promotion\Form',
+
             // label
             'atom.app.label.listing' => 'App\Label\Listing',
             'atom.app.label.create' => 'App\Label\Create',
