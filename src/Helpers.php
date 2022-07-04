@@ -323,6 +323,7 @@ function format_date($date, $format = 'date', $tz = null)
     else if ($format === 'time') return $date->format('g:i A');
     else if ($format === 'time-full') return $date->format('g:i:s A');
     else if ($format === 'human') return $date->diffForHumans();
+    else if ($format) return $date->format($format);
 }
 
 /**
