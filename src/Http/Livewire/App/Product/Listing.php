@@ -78,7 +78,11 @@ class Listing extends Component
      */
     public function getHasSoldColumnProperty()
     {
-        return in_array('sold', array_keys($this->products->first()->toArray()));
+        if ($product = $this->products->first()) {
+            return in_array('sold', array_keys($product->toArray()));
+        }
+
+        return false;
     }
 
     /**

@@ -47,8 +47,12 @@ class TicketCommentNotification extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('['.config('app.name').'] New Comment for Ticket #'.$this->comment->ticket->number)
             ->greeting('Hello!')
-            ->line('You have new comment in your ticket.')
-            ->line('<span style="font-weight: bold">"' . $this->comment->body . '"</span>');
+            ->line('You have 1 new response to your Support Ticket.')
+            ->line('<span style="font-style: italic;">"' . $this->comment->body . '"</span>')
+            ->line('
+                <span style="font-weight: bold;">Subject:</span> '.$this->comment->ticket->subject.'<br>
+                <span style="font-weight: bold;">Description:</span> '.str()->limit($this->comment->ticket->description, 50).'
+            ');
     }
 
     /**
