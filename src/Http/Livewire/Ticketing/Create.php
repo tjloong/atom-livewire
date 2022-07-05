@@ -3,6 +3,8 @@
 namespace Jiannius\Atom\Http\Livewire\Ticketing;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Notification;
+use Jiannius\Atom\Notifications\TicketCreateNotification;
 
 class Create extends Component
 {
@@ -44,6 +46,14 @@ class Create extends Component
     }
 
     /**
+     * Notify to
+     */
+    public function notifyTo()
+    {
+        return site_settings('notify_to');
+    }
+
+    /**
      * Submit
      */
     public function submit()
@@ -52,6 +62,10 @@ class Create extends Component
         $this->validate();
 
         $this->ticket->save();
+
+        if ($notifyTo = $this->notifyTo()) {
+            Notification::route('mail', $notifyTo)->notify(new TicketCreateNotification($this->ticket));
+        }
 
         session()->flash('flash', 'Ticket Created::success');
 

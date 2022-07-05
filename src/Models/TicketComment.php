@@ -44,7 +44,7 @@ class TicketComment extends Model
         }
         // non-creator comment, send notification to creator
         else {
-            $this->created_by_user->notify(new TicketCommentNotification($this));
+            $this->ticket->created_by_user->notify(new TicketCommentNotification($this));
         }
     }
 }

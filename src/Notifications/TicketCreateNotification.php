@@ -7,22 +7,20 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class TicketCommentNotification extends Notification implements ShouldQueue
+class TicketCreateNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $comment;
+    public $ticket;
 
     /**
      * Create a new notification instance.
      *
-     * @param TicketComment $comment
-     * @param array $cc
      * @return void
      */
-    public function __construct($comment)
+    public function __construct($ticket)
     {
-        $this->comment = $comment;
+        $this->ticket = $ticket;
     }
 
     /**
@@ -45,10 +43,12 @@ class TicketCommentNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('['.config('app.name').'] New Comment for Ticket #'.$this->comment->ticket->number)
+            ->subject('['.config('app.name').'] New Support Ticket #'.$this->ticket->number)
             ->greeting('Hello!')
-            ->line('You have new comment in your ticket.')
-            ->line('<span style="font-weight: bold">"' . $this->comment->body . '"</span>');
+            ->line('A new support ticket is created by '.$this->ticket->created_by_user->name.'.')
+            ->line('<span style="font-weight: bold">Subject:</span> '.$this->ticket->subject)
+            ->line('<span style="font-weight: bold">Description:</span> '.str()->limit($this->ticket->description, 50))
+            ->action('View Ticket', route('app.ticketing.listing'));
     }
 
     /**
