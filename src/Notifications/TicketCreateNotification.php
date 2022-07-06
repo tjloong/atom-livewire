@@ -42,15 +42,18 @@ class TicketCreateNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $name = $this->ticket->created_by_user->account->name
+            ?? $this->ticket->created_by_user->name;
+
         return (new MailMessage)
             ->subject('['.config('app.name').'] New Support Ticket #'.$this->ticket->number)
             ->greeting('Hello!')
-            ->line('You received a new support ticket from '.$this->ticket->created_by_user->name.'.')
+            ->line('You received a new support ticket from '.$name.'.')
             ->line('
                 <span style="font-weight: bold">Subject:</span> '.$this->ticket->subject.'<br>
                 <span style="font-weight: bold">Description:</span> '.str()->limit($this->ticket->description, 50).'
             ')
-            ->action('View Ticket', route('app.ticketing.listing'));
+            ->action('View full reply', route('ticketing.listing'));
     }
 
     /**

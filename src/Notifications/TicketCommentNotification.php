@@ -52,7 +52,8 @@ class TicketCommentNotification extends Notification implements ShouldQueue
             ->line('
                 <span style="font-weight: bold;">Subject:</span> '.$this->comment->ticket->subject.'<br>
                 <span style="font-weight: bold;">Description:</span> '.str()->limit($this->comment->ticket->description, 50).'
-            ');
+            ')
+            ->action('View full reply', route('ticketing.update', [$this->comment->ticket_id]));
     }
 
     /**

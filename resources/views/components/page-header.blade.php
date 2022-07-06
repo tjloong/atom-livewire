@@ -13,13 +13,13 @@
         @elseif ($title = $attributes->get('title'))
             <div class="self-center grid gap-1">
                 <div class="text-gray-800 font-bold truncate {{ $attributes->has('small') ? 'text-xl font-semibold' : 'text-2xl font-bold' }}">
-                    {{ __($title) }}
+                    {{ str(__($title))->toHtmlString() }}
                 </div>
-        
-                @if($subtitle = $subtitle ?? $attributes->get('subtitle'))
-                    <div class="text-gray-600 font-light">
-                        {{ is_string($subtitle) ? __($subtitle) : $subtitle }}
-                    </div>
+
+                @isset($subtitle)
+                    <div class="text-gray-600 font-light">{{ $subtitle }}</div>
+                @elseif($subtitle = $attributes->get('subtitle'))
+                    <div class="text-gray-600 font-light">{{ str(__($subtitle))->toHtmlString() }}</div>
                 @endif
             </div>
         @endif
