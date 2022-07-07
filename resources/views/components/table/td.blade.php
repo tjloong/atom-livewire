@@ -29,7 +29,11 @@
     
     @elseif ($href = $attributes->get('href'))
         <div class="grid">
-            <a href="{{ $href }}" class="truncate">
+            <a 
+                href="{{ $href }}" 
+                class="{{ $tooltip ? '' : 'truncate' }}" 
+                @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
+            >
                 {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
             </a>
 
@@ -42,7 +46,10 @@
 
     @else
         <div class="grid">
-            <div class="truncate">
+            <div 
+                class="{{ $tooltip ? '' : 'truncate' }}" 
+                @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
+            >
                 {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
             </div>
 
@@ -52,6 +59,6 @@
                 </div>
             @endif
         </div>
-
+        
     @endif
 </td>
