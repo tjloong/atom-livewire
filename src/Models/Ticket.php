@@ -3,9 +3,11 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Traits\HasFilters;
 use Jiannius\Atom\Traits\HasUniqueNumber;
+use Jiannius\Atom\Notifications\TicketCreateNotification;
 
 class Ticket extends Model
 {
@@ -20,7 +22,7 @@ class Ticket extends Model
      */
     public function comments()
     {
-        return $this->hasMany(TicketComment::class);
+        return $this->hasMany(get_class(model('ticket_comment')));
     }
 
     /**
@@ -36,5 +38,15 @@ class Ticket extends Model
             ->where('subject', 'like', "%$search%")
             ->orWhere('description', 'like', "%$search%")
         );
+    }
+
+    /**
+     * Notification
+     */
+    public function notify()
+    {
+        if ($notifyTo = $this->notifyTo ?? site_settings('notify_to')) {
+            Notification::route('mail', $notifyTo)->notify(new TicketCreateNotification($this));
+        }
     }
 }

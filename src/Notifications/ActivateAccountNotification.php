@@ -48,7 +48,7 @@ class ActivateAccountNotification extends Notification implements ShouldQueue
             'token' => app(PasswordBroker::class)->createToken($notifiable),
             'email' => $notifiable->email,
         ]));
-        
+
         return (new MailMessage)
             ->subject('[' . config('app.name') . '] Activate Your Account')
             ->greeting('Hello!')

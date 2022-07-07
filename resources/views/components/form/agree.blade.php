@@ -4,7 +4,7 @@
             @if ($slot->isNotEmpty())
                 {{ $slot }}
             @elseif ($type === 'tnc')
-                {{ __('I have read and agreed to the website\'s terms & conditions and privacy policy.') }}
+                {{ __('I have read and agreed to the website\'s Terms of Use and Privacy Policy.') }}
             @elseif ($type === 'marketing')
                 {{ __('I agree to be part of the website\'s database for future marketing and promotional opportunities.') }}
             @endif

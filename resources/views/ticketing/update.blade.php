@@ -41,5 +41,7 @@
         </div>
     </x-box>
 
-    @livewire('atom.ticket.comments', ['ticket' => $ticket], key('ticket-comments'))
+    @if ($component = livewire_name('ticketing/comments'))
+        @livewire($component, compact('ticket'), key('comments'))
+    @endif
 </div>
