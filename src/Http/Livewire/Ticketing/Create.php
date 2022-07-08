@@ -40,7 +40,7 @@ class Create extends Component
     public function mount()
     {
         $this->layout = current_route('app.*') ? 'app' : 'ticketing';
-        $this->ticket = model('ticket')->fill(['status' => 'opened']);
+        $this->ticket = model('ticket')->fill(['status' => 'pending']);
         
         breadcrumbs()->push('Create Ticket');
     }

@@ -465,6 +465,7 @@ class InstallCommand extends Command
             Schema::create('ticket_comments', function($table) {
                 $table->id();
                 $table->text('body')->nullable();
+                $table->boolean('is_read')->nullable();
                 $table->foreignId('ticket_id')->nullable()->constrained()->onDelete('cascade');
                 $table->timestamps();
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');

@@ -23,6 +23,8 @@ class Update extends Component
     {
         $this->layout = current_route('app.*') ? 'app' : 'ticketing';
         $this->ticket = model('ticket')->findOrFail($ticket);
+        
+        $this->ticket->comments()->where('created_by', '<>', auth()->id())->update(['is_read' => true]);
 
         breadcrumbs()->push($this->ticket->number);
     }

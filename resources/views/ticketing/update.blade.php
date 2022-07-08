@@ -28,10 +28,7 @@
                 <x-form.select
                     label="Status"
                     wire:model="ticket.status"
-                    :options="[
-                        ['value' => 'opened', 'label' => 'Opened'],
-                        ['value' => 'closed', 'label' => 'Closed'],
-                    ]"
+                    :options="collect(['pending', 'closed'])->map(fn($val) => ['value' => $val, 'label' => str()->headline($val)])"
                 />
             @else
                 <x-form.field label="Status">

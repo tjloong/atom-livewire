@@ -42,11 +42,13 @@ class Listing extends Component
     public function getTicketsProperty()
     {
         return model('ticket')
+            ->selectRaw('tickets.*, if (tickets.status = "new", 0, 1) as seq')
             ->when(
                 !auth()->user()->isAccountType(['root', 'system']), 
                 fn($q) => $q->where('created_by', auth()->id())
             )
             ->filter($this->filters)
+            ->orderBy('seq')
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate(30);
     }

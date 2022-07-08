@@ -47,4 +47,19 @@ class TicketComment extends Model
             $this->ticket->created_by_user->notify(new TicketCommentNotification($this));
         }
     }
+
+    /**
+     * Get unread count
+     */
+    public static function getUnreadCount($ticketId = null)
+    {
+        return model('ticket_comment')
+            ->when($ticketId, fn($q) => $q->where('ticket_id', $ticketId))
+            ->when(auth()->user(), fn($q) => $q->where('created_by', '<>', auth()->id()))
+            ->where(fn($q) => $q
+                ->whereNull('is_read')
+                ->orWhere('is_read', false)
+            )
+            ->count();
+    }
 }

@@ -6,7 +6,7 @@
     <x-table :total="$this->tickets->total()" :links="$this->tickets->links()">
         <x-slot:toolbar>
             <x-tab wire:model="filters.status">
-                @foreach (['all', 'opened', 'closed'] as $item)
+                @foreach (['all', 'pending', 'closed'] as $item)
                     <x-tab.item :name="$item === 'all' ? null : $item" :label="str()->headline($item)"/>
                 @endforeach
             </x-tab>
@@ -16,6 +16,7 @@
             <x-table.th sort="created_at" label="Date"/>
             <x-table.th sort="number" label="Number"/>
             <x-table.th sort="subject" label="Subject"/>
+            <x-table.th/>
             <x-table.th class="text-right" label="Status"/>
             <x-table.th class="text-right" label="Created By"/>
         </x-slot:head>
@@ -29,6 +30,9 @@
                         :label="str($ticket->subject)->limit(50)"
                         :small="str($ticket->description)->limit(80)"
                     />
+                    <x-table.td>
+                        <x-badge :label="model('ticket_comment')->getUnreadCount($ticket->id)"/>
+                    </x-table.td>
                     <x-table.td :status="$ticket->status" class="text-right"/>
                     <x-table.td :label="str($ticket->created_by_user->name ?? '--')->limit(15)" class="text-right"/>
                 </x-table.tr>

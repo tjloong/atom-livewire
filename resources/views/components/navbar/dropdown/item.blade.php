@@ -16,4 +16,10 @@
     @if ($label = $attributes->get('label')) {{ __($label) }}
     @else {{ $slot }}
     @endif
+
+    @if ($badgeText = data_get($badge, 'text'))
+        <div class="w-5 h-5 rounded-full flex items-center justify-center font-medium text-xs {{ data_get($badge, 'colors.'.data_get($badge, 'color')) }}">
+            {{ $badgeText }}
+        </div>
+    @endif
 </a>
