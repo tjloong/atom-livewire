@@ -55,7 +55,10 @@ class TicketComment extends Model
     {
         return model('ticket_comment')
             ->when($ticketId, fn($q) => $q->where('ticket_id', $ticketId))
-            ->when(auth()->user(), fn($q) => $q->where('created_by', '<>', auth()->id()))
+            ->when(auth()->user(), fn($q) => $q
+                ->whereHas('ticket', fn($q) => $q->where('tickets.created_by', auth()->id()))
+                ->where('created_by', '<>', auth()->id())
+            )
             ->where(fn($q) => $q
                 ->whereNull('is_read')
                 ->orWhere('is_read', false)
