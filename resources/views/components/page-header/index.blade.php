@@ -1,8 +1,10 @@
 <div class="w-full mb-6 flex flex-wrap justify-between">
     <div class="flex-grow flex my-1">
-        @if ($back)
-            <div class="flex-shrink-0">
-                <x-back-button :href="request()->query('back') ?? (is_string($back) ? $back : null)"/>
+        @if (request()->query('back'))
+            <div class="shrink-0"><x-page-header.back :href="request()->query('back')"/></div>
+        @elseif ($back)
+            <div class="shrink-0">
+                <x-page-header.back :href="is_string($back) ? str($back)->toHtmlString() : null"/>
             </div>
         @endif
 

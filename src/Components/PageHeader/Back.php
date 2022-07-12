@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Components;
+namespace Jiannius\Atom\Components\PageHeader;
 
 use Illuminate\View\Component;
 
-class BackButton extends Component
+class Back extends Component
 {
     /**
      * Render component
@@ -13,6 +13,6 @@ class BackButton extends Component
      */
     public function render()
     {
-        return view('atom::components.back-button');
+        return view('atom::components.page-header.back');
     }
 }

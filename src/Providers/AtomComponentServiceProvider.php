@@ -39,10 +39,8 @@ class AtomComponentServiceProvider extends ServiceProvider
             'statsbox',
             'checkbox',
             'file-card',
-            'back-button',
             'empty-state',
             'alpine-data',
-            'page-header',
             'breadcrumbs',
             'social-share',
             'announcements',
@@ -121,6 +119,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.textarea',
             'form.recaptcha',
             'form.date-range',
+
+            'page-header.index',
+            'page-header.back',
         
             'input.text',
             'input.email',
