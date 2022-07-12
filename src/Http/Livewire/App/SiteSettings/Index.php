@@ -37,10 +37,10 @@ class Index extends Component
             ['group' => 'general', 'tabs' => collect([
                 $settings->group('profile')->count() ? ['slug' => 'profile', 'label' => 'Site Profile'] : null,
                 $settings->group('seo')->count() ? ['slug' => 'seo', 'label' => 'Site SEO'] : null,
-                $settings->group('analytics')->count() ? ['slug' => 'analytics'] : null,
-                $settings->group('social')->count() ? ['slug' => 'social-media'] : null,
+                $settings->group('analytics')->count() ? 'analytics' : null,
+                $settings->group('social')->count() ? 'social-media' : null,
                 $settings->group('whatsapp')->count() ? ['slug' => 'whatsapp', 'label' => 'Whatsapp Bubble'] : null,
-                $settings->where('name', 'announcements')->count() ? ['slug' => 'announcements'] : null,
+                $settings->where('name', 'announcements')->count() ? 'announcements' : null,
             ])->filter()],
 
             ['group' => 'system', 'tabs' => collect([

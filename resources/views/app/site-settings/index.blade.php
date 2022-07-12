@@ -4,13 +4,17 @@
         <div class="md:col-span-3">
             <x-sidenav wire:model="tab">
                 @foreach ($this->tabs as $item)
-                    <x-sidenav.group :name="data_get($item, 'group')">
-                        @foreach (data_get($item, 'tabs') as $child)
-                            <x-sidenav.item :name="data_get($child, 'slug')">
-                                {{ data_get($child, 'label') ?? str()->headline(data_get($child, 'slug')) }}
-                            </x-sidenav.item>
-                        @endforeach
-                    </x-sidenav>
+                    @if ($group = data_get($item, 'group'))
+                        <x-sidenav.group :label="$group"/>
+                    @endif
+
+                    @foreach (data_get($item, 'tabs') as $child)
+                        <x-sidenav.item
+                            :icon="data_get($child, 'icon')"
+                            :name="is_string($child) ? $child : data_get($child, 'slug')"
+                            :label="is_string($child) ? str()->headline($child) : data_get($child, 'label')"
+                        />
+                    @endforeach
                 @endforeach
             </x-sidenav>
         </div>

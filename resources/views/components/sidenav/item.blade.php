@@ -21,7 +21,7 @@
     >
         @if ($icon = $attributes->get('icon'))
             <div
-                x-bind:class="active ? 'text-theme' : 'text-gray-400'"
+                x-bind:class="active ? 'md:text-theme' : 'md:text-gray-400'"
                 class="shrink-0 flex items-center justify-center"
             >
                 <x-icon :name="$icon" :type="$attributes->get('icon-type') ?? 'regular'" size="18px"/>

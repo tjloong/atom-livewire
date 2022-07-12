@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Components\Navbar;
+namespace Jiannius\Atom\Components\Navbar\Mobile;
 
 use Illuminate\View\Component;
 
@@ -11,6 +11,6 @@ class Item extends Component
      */
     public function render()
     {
-        return view('atom::components.navbar.item');
+        return view('atom::components.navbar.mobile.item');
     }
 }

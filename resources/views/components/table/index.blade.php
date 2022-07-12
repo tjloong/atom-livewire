@@ -147,7 +147,7 @@
     
         @if ($attributes->get('total'))
             <div class="w-full overflow-auto">
-                <table class="min-w-full w-full divide-y divide-gray-200" uid="{{ $uid }}">
+                <table class="w-max divide-y divide-gray-200 md:w-full md:max-w-full" uid="{{ $uid }}">
                     @isset($head)
                         <thead>
                             <tr>

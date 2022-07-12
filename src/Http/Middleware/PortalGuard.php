@@ -16,6 +16,10 @@ class PortalGuard
      */
     public function handle(Request $request, Closure $next)
     {
+        if ((bool)$request->query('webview')) {
+            session(['webview' => $request->userAgent()]);
+        }
+
         if ($user = $request->user()) {
             $paths = explode('/', $request->path());
             $portal = head($paths);
