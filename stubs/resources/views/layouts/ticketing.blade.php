@@ -10,7 +10,7 @@
 
 @section('content')
     <x-script.alpine/>
-    <x-notify/>
+    <x-popup/>
     <x-loader/>
 
     <div class="bg-gray-100 p-5 min-h-screen">

@@ -1,5 +1,5 @@
 <x-script.alpine/>
-<x-notify/>
+<x-popup/>
 <x-loader/>
 
 <div 

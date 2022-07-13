@@ -9,6 +9,7 @@
                 x-on:click="$dispatch('confirm', {
                     title: '{{ __('Logout') }}',
                     message: '{{ __('Are you sure to logout?') }}',
+                    type: 'error',
                     onConfirmed: () => window.location = '{{ route('login', ['logout' => true]) }}',
                 })"
             />

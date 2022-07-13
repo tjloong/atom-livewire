@@ -33,7 +33,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'image',
             'avatar',
             'loader',
-            'notify',
             'drawer',
             'lightbox',
             'statsbox',
@@ -62,6 +61,11 @@ class AtomComponentServiceProvider extends ServiceProvider
             'analytics.ga',
             'analytics.gtm',
             'analytics.fbpixel',
+
+            'popup.index',
+            'popup.alert',
+            'popup.toast',
+            'popup.confirm',
             
             'box.index',
             'box.row',

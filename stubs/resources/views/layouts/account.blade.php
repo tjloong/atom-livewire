@@ -6,7 +6,7 @@
 
 @section('content')
     <x-script.alpine/>
-    <x-notify/>
+    <x-popup/>
     <x-loader/>
 
     <x-navbar class="bg-white shadow py-2" class.logo="h-[40px]"/>
