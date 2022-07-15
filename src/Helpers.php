@@ -102,16 +102,20 @@ function breadcrumbs()
 }
 
 /**
- * Get tabs array from atom config
+ * Account settings
  */
-function get_tabs_from_config($config)
+function account_settings($name, $default = null)
 {
-    return collect(config($config, []))
-        ->map(fn($val, $key) => is_array($val)
-            ? ['group' => $key, 'tabs' => collect($val)->map(fn($subval, $subkey) => ['value' => $subkey, 'label' => $subval])]
-            : ['value' => $key, 'label' => $val]
-        )
-        ->values();
+    if (
+        config('atom.static_site')
+        || !auth()->user()
+        || !auth()->user()->account
+    ) return $default;
+
+    $settings = auth()->user()->account->accountSettings;
+
+    if (is_string($name)) return data_get($settings, $name);
+    else $settings->fill($name)->save();
 }
 
 /**
