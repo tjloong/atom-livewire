@@ -32,7 +32,7 @@
                     <x-table.td :label="$promotion->code"/>
                     <x-table.td :label="str()->headline($promotion->type)"/>
                     <x-table.td :amount="$promotion->rate" class="text-right"/>
-                    <x-table.td :active="$promotion->is_active" class="text-right"/>
+                    <x-table.td :status="$promotion->status" class="text-right"/>
                     <x-table.td :date="$promotion->created_at" class="text-right"/>
                 </x-table.tr>
             @endforeach

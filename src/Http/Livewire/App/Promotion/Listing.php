@@ -52,7 +52,7 @@ class Listing extends Component
     public function getOptionsProperty()
     {
         return [
-            'statuses' => collect(['active', 'inactive'])->map(fn($val) => [
+            'statuses' => collect(['active', 'inactive', 'ended'])->map(fn($val) => [
                 'value' => $val,
                 'label' => str()->headline($val),
             ]),

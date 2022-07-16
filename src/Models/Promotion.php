@@ -31,10 +31,6 @@ class Promotion extends Model
 
     /**
      * Scope for fussy search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
     public function scopeSearch($query, $search)
     {
@@ -43,5 +39,47 @@ class Promotion extends Model
             ->orWhere('code', 'like', "%$search%")
             ->orWhere('description', 'like', "%$search%")
         );
+    }
+
+    /**
+     * Scope for status
+     */
+    public function scopeStatus($query, $statuses)
+    {
+        return $query->where(function($q) use ($statuses) {
+            foreach ((array)$statuses as $status) {
+                if ($status === 'ended') $q->orWhereDate('end_at', '<=', today());
+                if ($status === 'inactive') $q->orWhere(fn($q) => $q->where('is_active', false)->orWhereNull('is_active'));
+                if ($status === 'active') {
+                    $q->orWhere(fn($q) => $q
+                        ->where('is_active', true)
+                        ->where(fn($q) => $q
+                            ->whereNull('end_at')
+                            ->orWhereDate('end_at', '>', today())
+                        )
+                    );
+                }
+            }
+        });
+    }
+
+    /**
+     * Get status attribute
+     */
+    public function getStatusAttribute()
+    {
+        if ($this->end_at && $this->end_at->lte(today())) return 'ended';
+        if (!$this->is_active) return 'inactive';
+
+        return 'active';
+    }
+
+    /**
+     * Get rate display attribute
+     */
+    public function getRateDisplayAttribute()
+    {
+        if ($this->type === 'fixed') return currency($this->rate, account_settings('currency'));
+        if ($this->type === 'percentage') return $this->rate.'%';
     }
 }
