@@ -23,12 +23,12 @@
                         class="grid divide-y"
                     >
                         @foreach ($this->labels as $label)
-                            <div class="flex" data-sortable-id="{{ $label->id }}">
-                                <div class="shrink-0 cursor-move sort-handle flex justify-center p-2 text-gray-400">
+                            <div class="flex gap-2 px-2" data-sortable-id="{{ $label->id }}">
+                                <div class="shrink-0 cursor-move sort-handle flex justify-center text-gray-400 py-2">
                                     <x-icon name="sort-alt-2"/>
                                 </div>
                             
-                                <div class="self-center">
+                                <div class="grow self-center">
                                     <a 
                                         href="{{ route('app.label.update', [$label->id]) }}" 
                                         class="flex-grow py-2 px-4 hover:bg-gray-100"
@@ -36,6 +36,12 @@
                                         {{ $label->name }}
                                     </a>
                                 </div>
+
+                                @if ($label->children_count)
+                                    <div class="text-sm font-medium text-gray-500 self-center">
+                                        {{ $label->children_count }} {{ str()->plural('child', $label->children_count) }}
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </x-form.sortable>

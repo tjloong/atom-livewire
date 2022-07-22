@@ -4,7 +4,20 @@
 >
     @if ($sort = $attributes->get('sort'))
         <div 
-            x-data="tableTh('{{ $attributes->get('sort') }}')" 
+            x-data="{
+                field: @js($attributes->get('sort')),
+                get sorted () {
+                    return this.$wire.get('sortBy') === this.field
+                },
+                sort () {
+                    if (this.$wire.get('sortBy') === this.field) {
+                        this.$wire.set('sortOrder', this.$wire.get('sortOrder') === 'asc' ? 'desc' : 'asc')
+                    }
+                    else this.$wire.set('sortOrder', 'asc')
+    
+                    this.$wire.set('sortBy', this.field)
+                },    
+            }"
             x-bind:class="sorted ? 'bg-gray-200 rounded px-3' : 'px-2'"
             class="flex items-center gap-1 py-1"
         >

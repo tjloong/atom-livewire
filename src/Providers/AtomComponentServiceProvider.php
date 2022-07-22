@@ -48,11 +48,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'script.vendor',
             'script.alpine.index',
             'script.alpine.sidenav',
-            'script.alpine.table.th',
             'script.alpine.form.ic',
             'script.alpine.form.tags',
             'script.alpine.form.title',
-            'script.alpine.form.amount',
             'script.alpine.form.richtext',
             
             'admin-panel.index',

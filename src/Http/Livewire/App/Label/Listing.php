@@ -35,8 +35,10 @@ class Listing extends Component
     public function getLabelsProperty()
     {
         return model('label')
+            ->withCount('children')
             ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->where('type', $this->type)
+            ->whereNull('parent_id')
             ->orderBy('seq')
             ->orderBy('name')
             ->get();

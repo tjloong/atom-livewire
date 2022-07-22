@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Label\Update;
 
 use Livewire\Component;
 
-class Form extends Component
+class General extends Component
 {
     public $types;
     public $label;
@@ -58,6 +58,6 @@ class Form extends Component
      */
     public function render()
     {
-        return view('atom::app.label.form');
+        return view('atom::app.label.update.general');
     }
 }

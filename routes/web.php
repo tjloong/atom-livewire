@@ -242,7 +242,7 @@ if (!config('atom.static_site')) {
         define_route()->prefix('label')->as('app.label.')->group(function () {
             define_route('listing', 'App\Label\Listing')->name('listing');
             define_route('create/{type}', 'App\Label\Create')->name('create');
-            define_route('{label}', 'App\Label\Update')->name('update');
+            define_route('{label}', 'App\Label\Update\Index')->name('update');
         });
         
         /**

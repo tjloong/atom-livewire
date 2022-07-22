@@ -1,9 +1,11 @@
 <div class="w-full mb-6 flex flex-wrap justify-between">
-    <div class="flex-grow flex my-1">
+    <div class="grow flex gap-4 my-1">
         @if (request()->query('back'))
-            <div class="shrink-0"><x-page-header.back :href="request()->query('back')"/></div>
+            <div class="shrink-0 py-2">
+                <x-page-header.back :href="request()->query('back')"/>
+            </div>
         @elseif ($back)
-            <div class="shrink-0">
+            <div class="shrink-0 py-2">
                 <x-page-header.back :href="is_string($back) ? str($back)->toHtmlString() : null"/>
             </div>
         @endif
@@ -13,7 +15,7 @@
                 {{ $title }}
             </div>
         @elseif ($title = $attributes->get('title'))
-            <div class="self-center grid gap-1">
+            <div class="self-center grid md:gap-1">
                 <div class="text-gray-800 font-bold truncate {{ $attributes->has('small') ? 'text-xl font-semibold' : 'text-2xl font-bold' }}">
                     {{ str(__($title))->toHtmlString() }}
                 </div>
@@ -27,7 +29,7 @@
         @endif
     </div>
 
-    <div class="flex-shrink-0 my-1">
+    <div class="shrink-0 my-1">
         {{ $slot }}
     </div>
 </div>

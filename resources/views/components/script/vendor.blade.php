@@ -1,8 +1,8 @@
 @props(['noattr' => empty($attributes->getAttributes())])
 
 @if ($noattr || $attributes->has('floating-ui'))
-    <script src="https://unpkg.com/@floating-ui/core@0.7.0"></script>
-    <script src="https://unpkg.com/@floating-ui/dom@0.5.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.0.0/dist/floating-ui.core.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.0.0/dist/floating-ui.dom.umd.min.js"></script>
 @endif
 
 @if ($noattr || $attributes->has('flatpickr'))
@@ -15,8 +15,8 @@
 @endif
 
 @if ($noattr || $attributes->has('swiper'))
-    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8.3.1/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8.3.1/swiper-bundle.min.css">
 @endif
 
 @if ($noattr || $attributes->has('chartjs'))

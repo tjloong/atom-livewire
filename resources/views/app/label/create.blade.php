@@ -1,4 +1,7 @@
 <div class="max-w-lg mx-auto">
     <x-page-header title="Create Label" back/>
-    @livewire('atom.app.label.form', ['label' => $label])
+
+    @if ($component = livewire_name('app/label/update/general'))
+        @livewire($component, ['label' => $label])
+    @endif
 </div>

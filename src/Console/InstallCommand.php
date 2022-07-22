@@ -853,6 +853,7 @@ class InstallCommand extends Command
                 $table->string('type')->nullable();
                 $table->integer('seq')->nullable();
                 $table->json('data')->nullable();
+                $table->foreignId('parent_id')->nullable()->constrained('labels')->onDelete('cascade');
                 $table->timestamps();
             });
     

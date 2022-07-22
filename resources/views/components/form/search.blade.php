@@ -1,4 +1,7 @@
-<div class="flex items-center bg-gray-100 py-2 px-3 rounded-md gap-2 shadow w-full" x-data>
+<div 
+    x-data
+    class="flex items-center py-2 px-3 rounded-md gap-2 shadow w-full {{ $attributes->get('class', 'bg-gray-100') }}"
+>
     <x-icon name="search" size="18px" class="text-gray-400"/>
 
     <input

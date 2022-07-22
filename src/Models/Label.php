@@ -19,6 +19,22 @@ class Label extends Model
     ];
 
     /**
+     * Get children for label
+     */
+    public function children()
+    {
+        return $this->hasMany(get_class(model('label')), 'parent_id');
+    }
+
+    /**
+     * Get parent for label
+     */
+    public function parent()
+    {
+        return $this->belongsTo(get_class(model('label')), 'parent_id');
+    }
+
+    /**
      * Scope for fussy search
      * 
      * @param Builder $query

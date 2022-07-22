@@ -1,4 +1,4 @@
-<x-form>
+<x-form header="Label Information">
     <x-form.field label="Label Type">
         {{ str()->headline($label->type) }}
     </x-form.field>

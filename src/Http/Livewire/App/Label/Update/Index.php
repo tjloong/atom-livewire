@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Label\Update;
 
 use Livewire\Component;
 
-class Update extends Component
+class Index extends Component
 {
     public $label;
     
@@ -20,6 +20,14 @@ class Update extends Component
             ->findOrFail($label);
 
         breadcrumbs()->push($this->label->name);
+    }
+
+    /**
+     * Get enable children property
+     */
+    public function getEnableChildrenProperty()
+    {
+        return false;
     }
 
     /**
@@ -47,6 +55,6 @@ class Update extends Component
      */
     public function render()
     {
-        return view('atom::app.label.update');
+        return view('atom::app.label.update.index');
     }
 }

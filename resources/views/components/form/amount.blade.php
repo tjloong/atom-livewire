@@ -4,28 +4,26 @@
     @endif
 
     <div 
-        x-data="formAmount(
-            @if ($wire = $attributes->wire('model')->value()) $wire.get('{{ $wire }}')
-            @elseif ($value = $attributes->get('value')) @js($value)
-            @endif
-        )"
-        class="relative"
+        x-data="{
+            value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
+            focus: false,
+        }"
+        x-bind:class="focus && 'active'"
+        class="form-input w-full flex items-center gap-2 {{ !empty($attributes->get('error')) ? 'error' : '' }}"
     >
-        <div {{ $attributes->except('error', 'required', 'caption') }}>
-            <input type="number" x-ref="input" x-bind:value="value" step="any" class="hidden">
-        </div>
-
         @if ($attributes->has('prefix'))
-            <div class="absolute top-0 bottom-0 left-0 px-4 flex items-center justify-center text-gray-400">
+            <div class="text-gray-400 font-medium">
                 {{ $attributes->get('prefix') }}
             </div>
         @endif
         
         <input 
-            type="text"
-            class="form-input w-full pl-14 {{ !empty($attributes->get('error')) ? 'error' : '' }}"
-            x-bind:value="value ? value.toLocaleString('en-US') : null"
-            x-on:input="updateValue($event.target.value)"
+            x-model="value"
+            x-on:focus="focus = true"
+            x-on:blur="focus = false"
+            type="number"
+            class="form-input transparent"
+            step=".01"
         >
     </div>
 </x-form.field>
