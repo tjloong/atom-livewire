@@ -5,8 +5,8 @@
     @if ($url = $attributes->get('url'))
         <img src="{{ $url }}" class="w-full h-full object-cover">
     @elseif ($placeholder = $attributes->get('placeholder'))
-        <div class="m-auto text-white font-bold" style="font-size: {{ $size/2.5 }}px">
-            {{ str($placeholder)->substr(0, 1)->upper() }}
+        <div class="m-auto text-white font-bold" style="font-size: {{ $size/3.2 }}px">
+            {{ str($placeholder)->substr(0, 2)->upper() }}
         </div>
     @endif
 </figure>

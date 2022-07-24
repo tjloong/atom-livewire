@@ -154,7 +154,8 @@ class File extends Model
         $provider = data_get($this->data, 'provider', 'local');
 
         if ($visibility === 'private') return route('__file', [$this->id]);
-        else return $url ?? $this->getStorageDisk($provider)->url($path);
+        else if ($url) return $url;
+        else if ($path) return $this->getStorageDisk($provider)->url($path);
     }
 
     /**
