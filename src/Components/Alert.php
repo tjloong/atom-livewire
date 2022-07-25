@@ -13,8 +13,6 @@ class Alert extends Component
 
     /**
      * Contructor
-     * 
-     * @return void
      */
     public function __construct(
         $type = 'info',
@@ -27,9 +25,7 @@ class Alert extends Component
     }
 
     /**
-     * Render component
-     * 
-     * @return Response
+     * Render
      */
     public function render()
     {
@@ -38,8 +34,6 @@ class Alert extends Component
 
     /**
      * Get icon
-     * 
-     * @return string
      */
     private function getIcon()
     {
@@ -88,11 +82,19 @@ class Alert extends Component
             'warning' => 'text-orange-700',
         ];
 
-        return (object)[
+        $border = [
+            'info' => 'border border-blue-300',
+            'error' => 'border border-red-300',
+            'success' => 'border border-green-300',
+            'warning' => 'border border-orange-300',
+        ];
+
+        return [
             'bg' => $bg[$this->type],
             'title' => $title[$this->type],
             'icon' => $icon[$this->type],
             'text' => $text[$this->type],
+            'border' => $border[$this->type],
         ];
     }
 }
