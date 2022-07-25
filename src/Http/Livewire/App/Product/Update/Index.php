@@ -16,7 +16,9 @@ class Index extends Component
      */
     public function mount($product)
     {
-        $this->product = model('product')->findOrFail($product);
+        $this->product = model('product')
+            ->when(model('product')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+            ->findOrFail($product);
 
         breadcrumbs()->push($this->product->name);
     }
