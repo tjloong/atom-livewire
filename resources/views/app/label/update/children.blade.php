@@ -28,9 +28,9 @@
                                     {{ $child->locale('name') }}
                                 </a>
 
-                                @if ($locales = collect($child->name)->filter(fn($name) => $name !== $child->locale('name')))
+                                @if ($str = collect($child->name)->filter(fn($name) => $name !== $child->locale('name')))
                                     <div class="text-sm text-gray-500 font-medium">
-                                        {{ $locales->join(' | ') }}
+                                        {{ $str->join(' | ') }}
                                     </div>
                                 @endif
                             </div>

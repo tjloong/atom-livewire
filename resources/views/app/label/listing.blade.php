@@ -35,11 +35,11 @@
                                         </a>
     
                                         @if (
-                                            $locales = collect($label->name)
+                                            $str = collect($label->name)
                                                 ->filter(fn($name) => $name !== $label->locale('name'))
                                         )
-                                            <div class="text-sm text-gray-500">
-                                                {{ $locales->join(' | ') }}
+                                            <div class="text-sm text-gray-500 font-medium">
+                                                {{ $str->join(' | ') }}
                                             </div>
                                         @endif
                                     </div>

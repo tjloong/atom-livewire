@@ -9,7 +9,7 @@
                 @livewire($general, ['label' => $label, 'locales' => $this->locales])
             @endif
         </div>
-    
+
         @if ($this->enableChildren)
             <div>
                 @if ($children = livewire_name('app/label/update/children'))
