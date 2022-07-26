@@ -40,7 +40,7 @@ class Listing extends Component
             ->where('type', $this->type)
             ->whereNull('parent_id')
             ->orderBy('seq')
-            ->orderBy('name')
+            ->orderBy('name->'.app()->currentLocale())
             ->get();
     }
 

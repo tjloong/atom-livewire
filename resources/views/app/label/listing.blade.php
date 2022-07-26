@@ -29,12 +29,20 @@
                                 </div>
                             
                                 <div class="grow self-center">
-                                    <a 
-                                        href="{{ route('app.label.update', [$label->id]) }}" 
-                                        class="flex-grow py-2 px-4 hover:bg-gray-100"
-                                    >
-                                        {{ $label->name }}
-                                    </a>
+                                    <div class="py-2 px-4 hover:bg-gray-100">
+                                        <a href="{{ route('app.label.update', [$label->id]) }}" >
+                                            {{ $label->locale('name') }}
+                                        </a>
+    
+                                        @if (
+                                            $locales = collect($label->name)
+                                                ->filter(fn($name) => $name !== $label->locale('name'))
+                                        )
+                                            <div class="text-sm text-gray-500">
+                                                {{ $locales->join(' | ') }}
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
 
                                 @if ($label->children_count)

@@ -18,7 +18,18 @@ class Create extends Component
     {
         breadcrumbs()->push('Create Label');
         
-        $this->label = model('label')->fill(['type' => $this->type]);
+        $this->label = model('label')->fill([
+            'name' => $this->locales->mapWithKeys(fn($locale) => [$locale => null]),
+            'type' => $this->type,
+        ]);
+    }
+
+    /**
+     * Get locales property
+     */
+    public function getLocalesProperty()
+    {
+        return collect(config('atom.locales'));
     }
 
     /**

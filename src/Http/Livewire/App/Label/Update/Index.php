@@ -19,7 +19,17 @@ class Index extends Component
             ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->findOrFail($label);
 
-        breadcrumbs()->push($this->label->name);
+        breadcrumbs()->push($this->label->locale('name'));
+    }
+
+    /**
+     * Get locales property
+     */
+    public function getLocalesProperty()
+    {
+        $locales = array_merge(array_keys((array)$this->label->name), config('atom.locales'));
+
+        return collect($locales)->unique()->values();
     }
 
     /**

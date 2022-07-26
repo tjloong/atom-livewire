@@ -2,21 +2,26 @@
 
 namespace Jiannius\Atom\Models;
 
-use Jiannius\Atom\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
+use Jiannius\Atom\Traits\HasSlug;
+use Jiannius\Atom\Traits\HasLocale;
 use Jiannius\Atom\Traits\HasFilters;
 
 class Label extends Model
 {
     use HasSlug;
+    use HasLocale;
     use HasFilters;
 
     protected $guarded = [];
 
     protected $casts = [
+        'name' => 'object',
         'seq' => 'integer',
         'data' => 'object',
     ];
+
+    protected $slugify = ['name.en' => 'slug'];
 
     /**
      * Get children for label

@@ -34,9 +34,12 @@ class Settings extends Component
     {
         return model('label')
             ->where('type', 'blog-category')
-            ->selectRaw('id as value, name as label')
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->map(fn($label) => [
+                'value' => $label->id,
+                'label' => $label->locale('name'),
+            ]);
     }
 
     /**

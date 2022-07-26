@@ -1,14 +1,17 @@
 <x-form header="Label Information">
     <x-form.field label="Label Type">
-        {{ str()->headline($label->type) }}
+        {{ str()->headline(data_get($label, 'type')) }}
     </x-form.field>
 
-    <x-form.text 
-        label="Label Name"
-        wire:model.defer="label.name" 
-        :error="$errors->first('label.name')" 
-        required
-    />
+    @foreach ($locales->sort() as $locale)
+        <x-form.text
+            label="Label Name"
+            :label-tag="$this->locales->count() > 1 ? data_get(metadata()->locales($locale), 'name') : null"
+            wire:model.defer="names.{{ $locale }}"
+            :error="$errors->first('names.'.$locale)"
+            required
+        />
+    @endforeach
 
     <x-form.slug 
         label="Label Slug"

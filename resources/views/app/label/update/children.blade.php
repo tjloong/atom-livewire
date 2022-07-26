@@ -23,12 +23,17 @@
                         </div>
                     
                         <div class="grow self-center">
-                            <a 
-                                wire:click="edit({{ $child->id }})"
-                                class="flex-grow py-2 px-4 hover:bg-gray-100"
-                            >
-                                {{ $child->name }}
-                            </a>
+                            <div class="py-2 px-4 hover:bg-gray-100">
+                                <a wire:click="edit({{ $child->id }})">
+                                    {{ $child->locale('name') }}
+                                </a>
+
+                                @if ($locales = collect($child->name)->filter(fn($name) => $name !== $child->locale('name')))
+                                    <div class="text-sm text-gray-500 font-medium">
+                                        {{ $locales->join(' | ') }}
+                                    </div>
+                                @endif
+                            </div>
                         </div>
 
                         <div class="shrink-0 self-center">
@@ -48,12 +53,15 @@
 
     <x-modal uid="child-form-modal" :header="(data_get($form, 'id') ? 'Update' : 'Create').' Label Child'">
         <form wire:submit.prevent="submit" class="grid gap-4">
-            <x-form.text 
-                label="Child Label Name"
-                wire:model.defer="form.name" 
-                :error="$errors->first('form.name')" 
-                required
-            />
+            @foreach ($locales->sort() as $locale)
+                <x-form.text
+                    label="Child Label Name"
+                    :label-tag="$locales->count() > 1 ? data_get(metadata()->locales($locale), 'name') : null"
+                    wire:model.defer="form.name.{{ $locale }}"
+                    :error="$errors->first('form.name.'.$locale)"
+                    required
+                />
+            @endforeach
     
             <x-form.slug 
                 label="Child Label Slug"

@@ -8,16 +8,22 @@ class Children extends Component
 {
     public $label;
     public $form;
+    public $locales;
 
     /**
      * Validation rules
      */
     protected function rules()
     {
-        return [
-            'form.name' => 'required|max:255',
+        $rules = [
             'form.slug' => 'nullable',
         ];
+
+        foreach ($this->locales as $locale) {
+            $rules['form.name.'.$locale] = 'required';
+        }
+
+        return $rules;
     }
 
     /**
@@ -25,9 +31,13 @@ class Children extends Component
      */
     protected function messages()
     {
-        return [
-            'form.name' => 'Child label name is required.',
-        ];
+        $messages = [];
+
+        foreach ($this->locales as $locale) {
+            $messages['form.name.'.$locale.'.required'] = __('Child label name is required.');
+        }
+
+        return $messages;
     }
 
     /**
@@ -44,7 +54,7 @@ class Children extends Component
     public function create()
     {
         $this->form = [
-            'name' => null,
+            'name' => $this->locales->mapWithKeys(fn($locale) => [$locale => null])->all(),
             'slug' => null,
             'type' => $this->label->type,
             'parent_id' => $this->label->id,

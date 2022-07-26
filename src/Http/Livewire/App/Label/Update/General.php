@@ -8,17 +8,25 @@ class General extends Component
 {
     public $types;
     public $label;
+    public $names;
+    public $locales;
 
     /**
      * Validation rules
      */
     protected function rules()
     {
-        return [
-            'label.name' => 'required|max:255',
+        $rules = [
+            'label.name' => 'required',
             'label.type' => 'required',
             'label.slug' => 'nullable',
         ];
+
+        foreach ($this->locales as $locale) {
+            $rules['names.'.$locale] = 'required';
+        }
+
+        return $rules;
     }
 
     /**
@@ -26,10 +34,15 @@ class General extends Component
      */
     protected function messages()
     {
-        return [
-            'label.name' => 'Label name is required.',
-            'label.type' => 'Label type is required.',
+        $messages = [
+            'label.type.required' => __('Label type is required.'),
         ];
+
+        foreach ($this->locales as $locale) {
+            $messages['names.'.$locale.'.required'] = __('Label name is required.');
+        }
+
+        return $messages;
     }
 
     /**
@@ -37,7 +50,7 @@ class General extends Component
      */
     public function mount()
     {
-        //
+        $this->names = (array)$this->label->name;
     }
 
     /**
@@ -48,7 +61,9 @@ class General extends Component
         $this->resetValidation();
         $this->validate();
 
-        $this->label->save();
+        $this->label->fill([
+            'name' => $this->names,
+        ])->save();
 
         $this->emitUp('saved', $this->label->type);
     }

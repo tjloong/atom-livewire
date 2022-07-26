@@ -848,7 +848,7 @@ class InstallCommand extends Command
         else {
             Schema::create('labels', function ($table) {
                 $table->id();
-                $table->string('name');
+                $table->json('name')->nullable();
                 $table->string('slug')->nullable();
                 $table->string('type')->nullable();
                 $table->integer('seq')->nullable();

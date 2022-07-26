@@ -63,7 +63,7 @@
                                             "
                                         >
                                             <div class="flex items-center gap-2">
-                                                {{ $label->name }}
+                                                {{ $label->locale('name') }}
                                                 @if (collect($filters)->contains($label->slug)) <x-icon name="x"/> @endif
                                             </div>
                                         </a>

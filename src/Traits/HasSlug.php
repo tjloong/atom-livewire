@@ -20,8 +20,8 @@ trait HasSlug
             $fields = $model->slugify ?? ['name' => 'slug'];
 
             foreach ($fields as $from => $to) {
-                if ($model->$to && $model->isDirty($to)) $source = $model->$to;
-                else if (!$model->$to) $source = $model->$from;
+                if ($model->$to && $model->isDirty($to)) $source = data_get($model, $to);
+                else if (!$model->$to) $source = data_get($model, $from);
 
                 if (isset($source)) {
                     // non english slug

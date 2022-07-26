@@ -2,6 +2,13 @@
     @if ($label = $label ?? $attributes->get('label'))
         <label class="form-label">
             {{ is_string($label) ? __($label) : $label }}
+
+            @if ($tag = $attributes->get('label-tag'))
+                <span class="bg-blue-100 text-blue-500 font-medium text-xs px-2 rounded-md">
+                    {{ $tag }}
+                </span>
+            @endif
+
             @if ($attributes->get('required'))
                 <x-icon name="health" size="8px" class="text-red-400"/>
             @endif

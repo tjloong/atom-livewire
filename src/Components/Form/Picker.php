@@ -53,7 +53,7 @@ class Picker extends Component
             $find = collect($this->options)->filter(fn($opt) => in_array(data_get($opt, 'value'), (array)$selected));
             $this->selected = $find->count()
                 ? $find
-                : $selected;
+                : collect($selected);
         }
         else $this->selected = collect($this->options)->where('selected', true);
     }
