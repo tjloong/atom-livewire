@@ -4,7 +4,7 @@
             {{ is_string($label) ? __($label) : $label }}
 
             @if ($tag = $attributes->get('label-tag'))
-                <span class="bg-blue-100 text-blue-500 font-medium text-xs px-2 rounded-md">
+                <span class="bg-blue-100 text-blue-500 font-medium text-xs px-2 py-0.5 rounded-md">
                     {{ $tag }}
                 </span>
             @endif
