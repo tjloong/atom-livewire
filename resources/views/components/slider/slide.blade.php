@@ -17,7 +17,11 @@
 ])
 
 @if ($href = $attributes->get('href'))
-    <a href="{{ $href }}" class="swiper-slide block relative w-full h-full" target="_blank">
+    <a 
+        href="{{ $href }}" 
+        target="{{ $attributes->get('target', '_blank') }}"
+        class="swiper-slide block relative w-full h-full" 
+    >
         @if ($url)
             {!! $img !!}
         @endif

@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\App;
 
 use Livewire\Component;
-use Carbon\Carbon;
 
 class Dashboard extends Component
 {
