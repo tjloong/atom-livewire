@@ -41,7 +41,7 @@ class CdnScripts extends Component
                 'https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js',
             ],
             'ckeditor' => [
-                'vite:resources/js/plugins/ckeditor.js',
+                '/ckeditor/ckeditor.js',
             ],
         ];
 
