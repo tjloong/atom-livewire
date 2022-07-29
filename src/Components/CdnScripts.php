@@ -45,7 +45,12 @@ class CdnScripts extends Component
             ],
         ];
 
-        $toload = array_merge(['floating-ui', 'flatpickr', 'dayjs'], $scripts);
+        $toload = array_merge([
+            'alpinejs', 
+            'floating-ui', 
+            'flatpickr', 
+            'dayjs',
+        ], $scripts);
 
         foreach ($cdn as $key => $val) {
             if (in_array($key, $toload)) {

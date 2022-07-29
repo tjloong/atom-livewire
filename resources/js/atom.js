@@ -6,9 +6,3 @@ if (window.dayjs) {
 
 import './helpers.js'
 
-import Alpine from 'alpinejs'
-window.Alpine = Alpine
-
-import Tooltip from './directives/tooltip'
-Alpine.directive('tooltip', Tooltip)
-
