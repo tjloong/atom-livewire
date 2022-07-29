@@ -1,12 +1,8 @@
-@extends('atom::layout', ['indexing' => true, 'analytics' => true])
-
-@push('scripts')
-    <script src="{{ mix('js/web.js') }}" defer></script>
-@endpush
-
-@push('vendors')
-    <x-script.vendor swiper/>
-@endpush
+@extends('atom::layout', [
+    'indexing' => true, 
+    'analytics' => true,
+    'cdn' => ['swiper', 'social-share'],
+])
 
 @section('content')
     <x-navbar align="right">

@@ -1,7 +1,7 @@
 @import 'tailwindcss/base';
 
 @import 'tailwindcss/components';
-@import 'atom-livewire/resources/css/atom.css';
+@import '/vendor/jiannius/atom-livewire/resources/css/atom.css';
 
 @import 'tailwindcss/utilities';
 

@@ -14,7 +14,6 @@
         ?? (file_exists(storage_path('app/public/img/favicon.jpg')) ? asset('storage/img/favicon.jpg') : null)
     }}">
     <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'>
-    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
     @if (isset($gfont) && $gfont !== false)
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,19 +29,26 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap">
     @endif
 
-    @if ($enabled = $livewire ?? true)
+    @if ($enabledLivewire = $livewire ?? true)
         @livewireStyles
     @endif
 
-    @stack('styles')
-    
-    @if ($enabled = $analytics ?? false)
+    @if ($enabledAnalytics = $analytics ?? false)
         <x-analytics.gtm/>
         <x-analytics.ga/>
         <x-analytics.fbpixel/>
     @endif
 
-    @stack('vendors')
+    @if ($cdn = $cdn ?? [])
+        <x-cdn-scripts :scripts="array_filter($cdn)"/>
+    @endif
+
+    @vite(array_merge(
+        ['resources/css/app.css'],
+        $vite ?? ['resources/js/app.js'],
+    ))
+
+    @stack('styles')
 </head>
 
 <body class="font-{{ $fontTheme ?? 'sans' }} antialiased">
@@ -53,10 +59,8 @@
 
     @yield('content')
 
-    @if ($enabled = $livewire ?? true)
+    @if ($enabledLivewire = $livewire ?? true)
         @livewireScripts
     @endif
-
-    @stack('scripts')
 </body>
 </html>

@@ -21,15 +21,13 @@ class InstallCommand extends Command
     protected $node = [
         'devDependencies' => [
             '@tailwindcss/typography' => '^0.5',
-            'postcss' => '^8.4.5',
-            'postcss-import' => '^14.0.2',
-            'postcss-nesting' => '^10.1.2',
+            'autoprefixer' => '^10',
+            'postcss' => '^8',
+            'postcss-import' => '^14',
+            'tailwindcss' => '^3',
         ],
         'dependencies' => [
-            'alpinejs' => '^3.4.2',
-            'dayjs' => '^1.10.7',
-            'flatpickr' => '^4.6.9',
-            'tailwindcss' => '^3',
+            'flatpickr' => '^4',
         ],
     ];
 

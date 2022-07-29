@@ -85,6 +85,39 @@ npm run dev
 php artisan atom:install
 ```
 
+8. Add PortalGuard middleware to the web group in app\Http\Kernel.php
+
+```
+...
+protected $middlewareGroups = [
+    'web' => [
+        ...
+        \Jiannius\Atom\Http\Middleware\PortalGuard::class,
+    ],
+
+    'api' => [
+        ...
+    ],
+];
+```
+
+9. (Optional) Add PlanGuard middleware to web group in app\Http\Kernel.php (only if using plans module).
+
+```
+...
+protected $middlewareGroups = [
+    'web' => [
+        ...
+        \Jiannius\Atom\Http\Middleware\PortalGuard::class,
+        \Jiannius\Atom\Http\Middleware\PlanGuard::class,
+    ],
+
+    'api' => [
+        ...
+    ],
+];
+```
+
 ### Account Portal Customisation
 
 1. Atom has provided a default account portal route named "account.authentication" for session user to change their login details and password.

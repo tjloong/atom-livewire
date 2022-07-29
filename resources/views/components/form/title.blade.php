@@ -1,13 +1,21 @@
-<div x-data="formTitle(@js([
-    'model' => $attributes->wire('model')->value(),
-    'value' => $attributes->get('value'),
-]))" class="relative">
-    <span x-show="!value" class="absolute text-3xl font-bold text-gray-400 pointer-events-none">
+<div 
+    x-data="{
+        empty: false,
+
+        check () {
+            this.empty = !this.$refs.input.value || this.$refs.input.value === ''
+        },
+    }"
+    x-init="check"
+    class="relative"
+>
+    <span x-show="empty" class="absolute text-3xl font-bold text-gray-400 pointer-events-none">
         {{ __($attributes->get('label') ?? 'Title') }}
     </span>
     
     <input
-        x-model="value"
+        x-ref="input"
+        x-on:input="check"
         type="text"
         class="w-full bg-transparent appearance-none border-0 p-0 text-3xl font-bold focus:ring-0"
         autofocus

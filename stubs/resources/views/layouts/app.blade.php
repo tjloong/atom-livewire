@@ -1,12 +1,12 @@
-@extends('atom::layout')
-
-@push('scripts')
-    <script src="{{ mix('js/app.js') }}" defer></script>
-@endpush
-
-@push('vendors')
-    <x-script.vendor/>
-@endpush
+@extends('atom::layout', [
+    'cdn' => [
+        'sortable', 
+        'chartjs', 
+        current_route(['app.blog.*', 'app.page.*', 'app.dashboard']) 
+            ? 'ckeditor' 
+            : null,
+    ],
+])
 
 @section('content')
     <x-admin-panel>

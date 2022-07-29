@@ -1,6 +1,6 @@
 <main class="min-h-screen max-w-screen-xl mx-auto px-6 py-20 grid gap-10">
     <section class="grid gap-4">
-        <div class="text-xl font-bold">Hero</div>
+        <div class="text-xl font-bold">Heroin</div>
 
         <div class="border rounded-md overflow-hidden shadow">
             <x-builder.hero

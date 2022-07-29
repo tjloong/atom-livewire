@@ -1,14 +1,14 @@
-<div x-data="{
-    init () {
-        const script = 'https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js'
-        ScriptLoader.load(script).then(() => Sharer.init())
-    },
-    copy (url) {
-        navigator.clipboard.writeText(url).then(() => this.$dispatch('toast', {
-            message: '{{ __('URL copied.') }}'
-        }))
-    },
-}" class="inline-block">
+<div
+    x-data="{
+        copy (url) {
+            navigator.clipboard.writeText(url).then(() => this.$dispatch('toast', {
+                message: '{{ __('URL copied.') }}'
+            }))
+        },
+    }"
+    x-init="Sharer.init()"
+    class="inline-block"
+>
     <x-dropdown right="{{ $attributes->get('right') }}">
         <x-slot:anchor>
             <x-button :label="$attributes->get('label', 'Share')" icon="share-alt"/>

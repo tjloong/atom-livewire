@@ -1,4 +1,3 @@
-<x-script.alpine/>
 <x-popup/>
 <x-loader/>
 

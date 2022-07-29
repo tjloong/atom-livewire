@@ -173,9 +173,13 @@ function enabled_module($module)
     if (config('atom.static_site')) return false;
     if (app()->runningInConsole()) return true;
 
-    $enabled = collect(json_decode(DB::table('site_settings')->where('name', 'modules')->first()->value));
+    return rescue(function() use ($module) {
+        $enabled = collect(json_decode(
+            data_get(DB::table('site_settings')->where('name', 'modules')->first(), 'value')
+        ));
 
-    return $enabled->contains($module);
+        return $enabled->contains($module);
+    }, false);
 }
 
 /**
@@ -218,7 +222,12 @@ function current_route($name = null)
 {
     $route = request()->route()->getName();
 
-    if ($name) return str($route)->is($name);
+    if (is_string($name)) return str($route)->is($name);
+    elseif (is_array($name)) {
+        return is_numeric(
+            collect($name)->search(fn($val) => str($route)->is($val))
+        );
+    }
 
     return $route;
 }

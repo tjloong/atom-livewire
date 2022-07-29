@@ -1,11 +1,6 @@
 @extends('atom::layout')
 
-@push('scripts')
-    <script src="{{ mix('js/web.js') }}" defer></script>
-@endpush
-
 @section('content')
-    <x-script.alpine/>
     <x-popup/>
     <x-loader/>
 

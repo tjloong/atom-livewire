@@ -1,14 +1,5 @@
-const dayjs = require('@node/dayjs')
-const dayjsUTC = require('@node/dayjs/plugin/utc')
-const dayjsRelativeTime = require('@node/dayjs/plugin/relativeTime')
-
-dayjs.extend(dayjsUTC)
-dayjs.extend(dayjsRelativeTime)
-
-global.dayjs = dayjs
-
 // format date
-global.formatDate = (value, option) => {
+window.formatDate = (value, option) => {
     const date = dayjs(value, 'YYYY-MM-DD HH:mm:ss')
     const format = {
         time: 'h:mm A',
@@ -28,7 +19,7 @@ global.formatDate = (value, option) => {
 }
 
 // format currency
-global.currency = (val, symbol = null, round = true) => {
+window.currency = (val, symbol = null, round = true) => {
     const config = { minimumFractionDigits: 2 }
 
     if (symbol) {
@@ -47,7 +38,7 @@ global.currency = (val, symbol = null, round = true) => {
 }
 
 // device type
-global.deviceType = () => {
+window.deviceType = () => {
     const ua = navigator.userAgent
 
     if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
@@ -61,7 +52,7 @@ global.deviceType = () => {
 }
 
 // get youtube vid
-global.getYoutubeVid = (url) => {
+window.getYoutubeVid = (url) => {
     const regex = /(?:youtube(?:-nocookie)?\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/
     const matches = url.match(regex)
 
@@ -69,15 +60,15 @@ global.getYoutubeVid = (url) => {
 }
 
 // generate random string
-global.random = () => {
+window.random = () => {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
 
 // dd
-global.dd = console.log.bind(console)
+window.dd = console.log.bind(console)
 
 // floating element positioning
-global.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => {
+window.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => {
     const { computePosition, flip, shift, offset, autoPlacement } = window.FloatingUIDOM
 
     const middleware = []
@@ -96,7 +87,7 @@ global.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => 
 }
 
 // floating for dropdown
-global.floatDropdown = (anchor, dropdown) => {
+window.floatDropdown = (anchor, dropdown) => {
     const { computePosition, flip, shift, offset } = window.FloatingUIDOM
     
     computePosition(anchor, dropdown, {
@@ -108,7 +99,7 @@ global.floatDropdown = (anchor, dropdown) => {
 }
 
 // toggle element in array
-global.arrayToggle = (array, value) => {
+window.arrayToggle = (array, value) => {
     const index = array.indexOf(value)
 
     if (index === -1) array.push(value)
