@@ -16,7 +16,9 @@
         :caption="$autosavedAt ? ('Auto saved at ' . format_date($autosavedAt, 'time-full')) : ''"
     />
 
-    <x-form.errors :errors="$errors"/>
+    @if ($errors->any())
+        <x-alert :errors="$errors->all()"/>
+    @endif
 
     <x-slot:foot>
         <x-button.submit/>

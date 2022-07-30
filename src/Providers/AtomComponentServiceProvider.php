@@ -99,7 +99,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.state',
             'form.title',
             'form.amount',
-            'form.errors',
             'form.gender',
             'form.number',
             'form.picker',

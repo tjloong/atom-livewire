@@ -21,6 +21,7 @@ class InstallCommand extends Command
     protected $node = [
         'devDependencies' => [
             '@tailwindcss/typography' => '^0.5',
+            'alpinejs' => '^3',
             'autoprefixer' => '^10',
             'postcss' => '^8',
             'postcss-import' => '^14',
