@@ -26,10 +26,10 @@ class PlanGuard
                     ->filter(fn($key) => collect($routeGuard[$key])->search($route) !== false)
                     ->values();
 
-                $accountPlans = $mustHavePlans->filter(fn($val) => $request->user()->account->hasPlan($val)); 
+                $subscribedPlans = $mustHavePlans->filter(fn($val) => $request->user()->account->hasPlan($val)); 
 
-                if (!$accountPlans->count() && !$request->user()->isAccountType('root')) {
-                    if (Route::has('billing')) return redirect()->route('billing');
+                if (!$subscribedPlans->count() && !$request->user()->isAccountType('root')) {
+                    if (Route::has('app.billing.plans')) return redirect()->route('app.billing.plans');
                     else abort(403);
                 }
             }

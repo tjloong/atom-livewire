@@ -21,21 +21,16 @@ class PortalGuard
         }
 
         if ($user = $request->user()) {
-            $paths = explode('/', $request->path());
-            $portal = head($paths);
+            $status = data_get($user->account, 'status');
 
-            if (!$user->canAccessPortal($portal)) return redirect()->route('page');
-
-            // redirect ticketing/* to app/ticketing/* if user can access app portal
-            if ($user->canAccessPortal('app') && (
-                current_route('ticketing.*')
-                || current_route('billing*')
-                || current_route('account')
-            )) {
-                return redirect()->route('app.'.current_route(), array_merge(
-                    $request->route()->parameters(),
-                    $request->query()
-                ));
+            if ($status === 'blocked') {
+                dd('Your account is blocked');
+            }
+            else {
+                $paths = explode('/', $request->path());
+                $portal = head($paths);
+    
+                if (!$user->canAccessPortal($portal)) return redirect($user->home());
             }
         }
 

@@ -1,6 +1,8 @@
 <td {{ $attributes->class(['align-top py-3 px-4 whitespace-nowrap']) }}>
-    @if ($status = $attributes->get('status'))
-        <x-badge :label="$status"/>
+    @if ($attributes->has('status'))
+        @if ($status = $attributes->get('status'))
+            <x-badge :label="$status"/>
+        @endif
 
     @elseif ($attributes->has('active'))
         <x-badge :label="$attributes->get('active') ? 'active' : 'inactive'"/>

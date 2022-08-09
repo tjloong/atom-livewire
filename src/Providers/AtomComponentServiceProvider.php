@@ -34,6 +34,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'avatar',
             'loader',
             'drawer',
+            'pricing',
             'lightbox',
             'statsbox',
             'checkbox',
@@ -147,9 +148,8 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'footer.index',
             'footer.pre',
-        
+
             'builder.hero',
-            'builder.pricing',
             'builder.testimonial',
         ];
 

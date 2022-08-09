@@ -230,22 +230,16 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function canAccessPortal($portal)
     {
-        return [
-            'app' => Route::has('app.home') 
-                && in_array($this->account->type, ['root', 'system']),
+        if ($portal === 'app') {
+            return current_route([
+                'app.account.*', 
+                'app.ticketing.*', 
+                'app.billing.*',
+                'app.onboarding.*',
+            ]) || in_array($this->account->type, ['root', 'system']);
+        }
 
-            'account' => true,
-
-            'billing' => Route::has('billing') 
-                && model('plan')->whereIsActive(true)->count() > 0
-                && in_array($this->account->type, ['signup']),
-
-            'ticketing' => Route::has('ticketing.listing') 
-                && in_array($this->account->type, ['root', 'signup', 'system']),
-
-            'onboarding' => Route::has('onboarding') 
-                && in_array($this->account->type, ['signup']),
-        ][$portal] ?? true;
+        return true;
     }
 
     /**

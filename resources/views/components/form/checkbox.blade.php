@@ -32,5 +32,11 @@
             @else {{ $slot }}
             @endif
         </div>
+
+        @if ($caption = $attributes->get('caption'))
+            <div class="text-sm text-gray-500 font-medium">
+                {{ __($caption) }}
+            </div>
+        @endif
     </div>
 </label>

@@ -51,22 +51,37 @@
             </x-box>
         @endif
 
-        @if ($req = data_get($accountPayment->data, 'pay_request'))
+        @if ($accountPayment->amount > 0)
             <x-box header="Payment Details">
-                <div x-data="{ show: false }" class="grid gap-4 p-4">
-                    <x-box.row label="Provider">
-                        {{ str()->headline(data_get($req, 'provider', '--')) }}
-                    </x-box.row>
+                <div class="grid gap-4 p-4">
+                    @if ($provider = $accountPayment->provider)
+                        <x-box.row label="Provider">
+                            {{ str()->headline($provider) }}
+                        </x-box.row>
 
-                    @if ($res = data_get($accountPayment->data, 'pay_response'))
-                        @if ($accountPayment->account_id !== auth()->user()->account_id)
-                            <x-box.row label="Response Data">
-                                <a x-on:click="show = !show">{{ __('View') }}</a>
-                            </x-box.row>
+                        @if ($res = data_get($accountPayment->data, 'pay_response'))
+                            @if ($accountPayment->is_auto_billing)
+                                <x-box.row label="Auto Billing">{{ __('Yes') }}</x-box.row>
+                            @endif
+        
+                            @if ($provider === 'stripe')
+                                @if ($customerId = data_get($accountPayment->data, 'metadata.stripe_customer_id'))
+                                    <x-box.row label="Stripe Customer ID">{{ $customerId }}</x-box.row>
+                                @endif
+                                @if ($subscriptionId = data_get($accountPayment->data, 'metadata.stripe_subscription_id'))
+                                    <x-box.row label="Stripe Customer ID">{{ $subscriptionId }}</x-box.row>
+                                @endif
+                            @endif
 
-                            <div x-show="show" x-transition class="p-4 w-full overflow-auto bg-gray-100">
-                                <pre x-text="JSON.stringify(@js($res), null, 4)"></pre>
-                            </div>
+                            @if (auth()->user()->isAccountType('root'))
+                                <x-box.row label="Response Data">
+                                    <a x-on:click="show = !show">{{ __('View') }}</a>
+                                </x-box.row>
+                    
+                                <div x-show="show" x-transition class="p-4 w-full overflow-auto bg-gray-100">
+                                    <pre x-text="JSON.stringify(@js($res), null, 4)"></pre>
+                                </div>
+                            @endif
                         @endif
                     @endif
                 </div>

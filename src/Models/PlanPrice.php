@@ -14,7 +14,7 @@ class PlanPrice extends Model
     protected $casts = [
         'amount' => 'float',
         'expired_after' => 'integer',
-        'is_lifetime' => 'boolean',
+        'is_recurring' => 'boolean',
         'is_default' => 'boolean',
         'plan_id' => 'integer',
     ];
@@ -48,9 +48,11 @@ class PlanPrice extends Model
      */
     public function getRecurringAttribute()
     {
-        if ($this->is_lifetime) return 'lifetime';
-        else if ($this->expired_after === 1) return 'monthly';
-        else if ($this->expired_after === 12) return 'yearly';
-        else return $this->expired_after.' months';
+        if (is_numeric($this->expired_after)) {
+            if ($this->expired_after === 1) return __('monthly');
+            else if ($this->expired_after === 12) return __('yearly');
+            else return __(':total months', ['total' => $this->expired_after]);
+        }
+        else return __('lifetime');
     }
 }

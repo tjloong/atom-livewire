@@ -21,13 +21,18 @@ sudo chmod 777 bootstrap -R
 composer require jiannius/atom-livewire
 php artisan atom:install --static --force
 npm install
-npm run dev
 ```
 
 3. Enable static site in config/atom.php
 
 ```
 'static_site' => true,
+```
+
+4. Start development
+
+```
+npm run dev
 ```
 
 
@@ -76,7 +81,6 @@ composer require -W league/flysystem-aws-s3-v3 "^3.0"
 composer require jiannius/atom-livewire
 php artisan atom:install --force
 npm install
-npm run dev
 ```
 
 7. Run atom:install again to install Atom's modules
@@ -116,6 +120,12 @@ protected $middlewareGroups = [
         ...
     ],
 ];
+```
+
+10. Start development
+
+```
+npm run dev
 ```
 
 ### Account Portal Customisation

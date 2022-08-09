@@ -6,11 +6,7 @@
             {{ str(auth()->user()->name)->limit(15) }}
         </div>
 
-        <x-navbar.dropdown.item :href="route('account')" icon="address-card" label="Account"/>
-
-        @if (auth()->user()->canAccessPortal('billing'))
-            <x-navbar.dropdown.item :href="route('billing')" icon="dollar-circle" label="Billing"/>
-        @endif
+        <x-navbar.dropdown.item :href="route('app.account.home')" icon="address-card" label="Account"/>
 
         {{ $slot }}
 
@@ -31,11 +27,7 @@
             </x-slot:anchor>
     
             <div class="grid divide-y">
-                <x-navbar.dropdown.item :href="route('account')" icon="address-card" label="My Account"/>
-    
-                @if (auth()->user()->canAccessPortal('billing'))
-                    <x-navbar.dropdown.item :href="route('billing')" icon="dollar-circle" label="Billing"/>
-                @endif
+                <x-navbar.dropdown.item :href="route('app.account.home')" icon="address-card" label="My Account"/>
     
                 {{ $slot }}
     

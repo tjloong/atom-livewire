@@ -70,15 +70,29 @@
     />
 
     <div class="grid gap-4">
-        <x-form.checkbox 
-            label="Use this price as default (if there are multiple prices)."
-            wire:model="planPrice.is_default"
-        />
+        <div class="grid gap-2">
+            <x-form.checkbox 
+                label="Use this price as default"
+                caption="If there are multiple prices."
+                wire:model="planPrice.is_default"
+            />
+    
+            @if ($this->enabledStripe)
+                <x-form.checkbox
+                    label="Enable auto renewal"
+                    caption="Only available with Stripe payment."
+                    wire:model="planPrice.auto_renew"
+                />
+            @endif
+        </div>
 
-        <a class="flex items-center gap-1">
-            <x-icon name="info-circle" class="text-gray-400" size="20px"/>
-            {{ $planPrice->accounts->count() }} {{ str('user')->plural($planPrice->accounts->count()) }} subscribed to this planPrice.
-        </a>
+        @if ($planPrice->exists)
+            <x-alert>
+                <a class="flex items-center gap-1">
+                    {{ __('This plan has :count subscribers', ['count' => $planPrice->accounts->count()]) }}
+                </a>
+            </x-alert>
+        @endif
     </div>
 
     <x-slot:foot>

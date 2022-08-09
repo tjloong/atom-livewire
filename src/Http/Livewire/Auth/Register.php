@@ -143,19 +143,17 @@ class Register extends Component
      */
     public function redirectTo()
     {
-        if ($this->user->canAccessPortal('billing')) {
-            if ($this->plan && $this->price) {
-                return route('billing.checkout', ['plan' => $this->plan, 'price' => $this->price]);
-            }
-            else {
-                return route('billing.plans');
-            }
-        }
-        else if ($this->user->canAccessPortal('onboarding')) {
-            return route('onboarding', array_filter(['redirect' => $this->redirect]));
-        }
+        $url = '/';
 
-        return route('page');
+        if (enabled_module('plans') && $this->plan && $this->price) {
+            $url = route('app.billing.checkout', [
+                'plan' => $this->plan, 
+                'price' => $this->price,
+            ]);
+        }
+        else $url = route('app.onboarding.home');
+
+        return $url;
     }
 
     /**

@@ -13,10 +13,11 @@ define_route('__file/download/{id}', 'FileController@download')->name('__file.do
  */
 if (in_array('stripe', config('atom.payment_gateway'))) {
     define_route()->prefix('__stripe')->as('__stripe.')->group(function() {
-        define_route('sign', 'StripeController@sign', 'post')->name('sign');
+        define_route('checkout', 'StripeController@checkout')->name('checkout');
         define_route('success', 'StripeController@success')->name('success');
         define_route('cancel', 'StripeController@cancel')->name('cancel');
         define_route('webhook', 'StripeController@webhook', 'post')->name('webhook');
+        define_route('cancel-subscription', 'StripeController@cancelSubscription')->name('cancel-subscription');
     });
 }
 
@@ -25,7 +26,7 @@ if (in_array('stripe', config('atom.payment_gateway'))) {
  */
 if (in_array('ozopay', config('atom.payment_gateway'))) {
     define_route()->prefix('__ozopay')->as('__ozopay.')->group(function() {
-        define_route('sign', 'OzopayController@sign', 'post')->name('sign');
+        define_route('checkout', 'OzopayController@checkout')->name('checkout');
         define_route('redirect', 'OzopayController@redirect', 'post')->name('redirect');
         define_route('webhook', 'OzopayController@webhook', 'post')->name('webhook');
     });
@@ -36,7 +37,7 @@ if (in_array('ozopay', config('atom.payment_gateway'))) {
  */
 if (in_array('ipay', config('atom.payment_gateway'))) {
     define_route()->prefix('__ipay')->as('__ipay.')->group(function() {
-        define_route('sign', 'IpayController@sign', 'post')->name('sign');
+        define_route('checkout', 'IpayController@checkout')->name('checkout');
         define_route('redirect', 'IpayController@redirect', 'post')->name('redirect');
         define_route('webhook', 'IpayController@webhook', 'post')->name('webhook');
     });
@@ -47,7 +48,7 @@ if (in_array('ipay', config('atom.payment_gateway'))) {
  */
 if (in_array('gkash', config('atom.payment_gateway'))) {
     define_route()->prefix('__gkash')->as('__gkash.')->group(function() {
-        define_route('sign', 'GkashController@sign', 'post')->name('sign');
+        define_route('checkout', 'GkashController@checkout')->name('checkout');
         define_route('redirect', 'GkashController@redirect', 'post')->name('redirect');
         define_route('webhook', 'GkashController@webhook', 'post')->name('webhook');
     });
@@ -57,51 +58,6 @@ if (in_array('gkash', config('atom.payment_gateway'))) {
  * Main
  */
 if (!config('atom.static_site')) {
-    /**
-     * Account Portal
-     */
-    define_route('account', 'Account\Index')->middleware('auth', 'locale')->name('account');
-
-    /**
-     * Onboarding Portal
-     */
-    if (config('atom.accounts.register')) {
-        define_route()->prefix('onboarding')->middleware('auth', 'locale')->group(function() {
-            define_route('/', 'Onboarding\\Index')->name('onboarding');
-            define_route('completed', 'Onboarding\\Completed')->name('onboarding.completed');
-        });
-    }
-
-    /**
-     * Billing Portal
-     */
-    if (enabled_module('plans')) {
-        define_route()->prefix('billing')->middleware('auth', 'locale')->group(function() {
-            define_route('/', 'Billing\Index')->name('billing');
-            define_route('plans', 'Billing\Plans')->name('billing.plans');
-            define_route('checkout', 'Billing\Checkout')->name('billing.checkout');
-
-            define_route()->prefix('account-payment')->as('billing.account-payment.')->group(function() {
-                define_route('listing', 'App\AccountPayment\Listing')->name('listing');
-                define_route('{accountPayment}', 'App\AccountPayment\Update')->name('update');
-            });
-        });
-    }
-
-    /**
-     * Ticketing Portal
-     */
-    if (enabled_module('ticketing')) {
-        define_route()->prefix('ticketing')->middleware('auth', 'locale')->as('ticketing.')->group(function() {
-            define_route('listing', 'Ticketing\Listing')->name('listing');
-            define_route('create', 'Ticketing\Create')->name('create');
-            define_route('{ticket}', 'Ticketing\Update')->name('update');
-        });
-    }
-
-    /**
-     * App Portal
-     */
     define_route()->prefix('app')->middleware('auth')->group(function() {
         define_route('/', fn() => redirect()->route('app.dashboard'))->name('app.home');
 
@@ -145,13 +101,20 @@ if (!config('atom.static_site')) {
          * Accounts
          */
         if (config('atom.accounts.register')) {
-            define_route()->prefix('account')->group(function() {
-                define_route('account', 'Account\Index')->name('app.account');
+            define_route()->prefix('account')->as('app.account.')->group(function() {
+                define_route('/', 'App\Account\Update\Index')->name('home');
+                define_route('listing', 'App\Account\Listing')->name('listing');
+                define_route('{account}', 'App\Account\Update\Index')->name('update');
+            });
+        }
 
-                define_route()->as('app.account.')->group(function() {
-                    define_route('listing', 'App\Account\Listing')->name('listing');
-                    define_route('{account}', 'App\Account\Update\Index')->name('update');
-                });
+        /**
+         * Onboarding
+         */
+        if (config('atom.accounts.register')) {
+            define_route()->prefix('onboarding')->as('app.onboarding.')->group(function() {
+                define_route('/', 'App\Onboarding\Index')->name('home');
+                define_route('completed', 'App\Onboarding\Completed')->name('completed');
             });
         }
 
@@ -189,7 +152,7 @@ if (!config('atom.static_site')) {
             define_route()->prefix('plan')->as('app.plan.')->group(function() {
                 define_route('listing', 'App\Plan\Listing')->name('listing');
                 define_route('create', 'App\Plan\Create')->name('create');
-                define_route('{plan}', 'App\Plan\Update')->name('update');
+                define_route('{plan}', 'App\Plan\Update\Index')->name('update');
             });
 
             define_route()->prefix('plan-price')->as('app.plan-price.')->group(function() {
@@ -259,9 +222,9 @@ if (!config('atom.static_site')) {
          */
         if (enabled_module('ticketing')) {
             define_route()->prefix('ticketing')->as('app.ticketing.')->group(function() {
-                define_route('listing', 'Ticketing\Listing')->name('listing');
-                define_route('create', 'Ticketing\Create')->name('create');
-                define_route('{ticket}', 'Ticketing\Update')->name('update');
+                define_route('listing', 'App\Ticketing\Listing')->name('listing');
+                define_route('create', 'App\Ticketing\Create')->name('create');
+                define_route('{ticket}', 'App\Ticketing\Update')->name('update');
             });
         }
 
@@ -269,18 +232,10 @@ if (!config('atom.static_site')) {
          * Billing
          */
         if (enabled_module('plans')) {
-            define_route()->prefix('billing')->group(function() {
-                define_route('/', 'Billing\Index')->name('app.billing');
-
-                define_route()->as('app.billing.')->group(function() {
-                    define_route('plans', 'Billing\Plans')->name('plans');
-                    define_route('checkout', 'Billing\Checkout')->name('checkout');
-                });
-
-                define_route()->prefix('account-payment')->as('app.billing.account-payment.')->group(function() {
-                    define_route('listing', 'App\AccountPayment\Listing')->name('listing');
-                    define_route('{accountPayment}', 'App\AccountPayment\Update')->name('update');
-                });
+            define_route()->prefix('billing')->as('app.billing.')->group(function() {
+                define_route('/', 'App\Billing\Index')->name('home');
+                define_route('plans', 'App\Billing\Plans')->name('plans');
+                define_route('checkout', 'App\Billing\Checkout')->name('checkout');
             });    
         }
         
@@ -308,10 +263,6 @@ app()->booted(function() {
         // slugs to exclude
         ->where(['slug' => '^(?!'.implode('|', [
             'livewire',
-            'account',
-            'onboarding',
-            'billing',
-            'ticketing',
             'login',
             'register',
             'forgot-password',

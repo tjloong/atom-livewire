@@ -10,8 +10,15 @@
     </div>
 @else
     <div 
-        x-data="{ get active () { return value === '{{ $attributes->get('name') }}' }}"
-        x-on:click="select('{{ $attributes->get('name') }}')"
+        x-data="{ 
+            itemName: @js($attributes->get('name')),
+            itemHref: @js($attributes->get('href')),
+            get active () { return value === this.itemName }
+        }"
+        x-on:click="
+            if (itemHref) window.location = itemHref
+            else select(itemName)
+        "
         x-bind:class="active
             ? 'font-bold text-theme-inverted bg-theme rounded-l rounded-r md:border-r-2 md:border-theme-dark md:text-theme-dark md:bg-gray-200 md:rounded-r-none'
             : ('font-medium text-gray-600 hover:font-bold md:flex ' + (!show && 'hidden'))
@@ -24,7 +31,7 @@
                 x-bind:class="active ? 'md:text-theme' : 'md:text-gray-400'"
                 class="shrink-0 flex items-center justify-center"
             >
-                <x-icon :name="$icon" :type="$attributes->get('icon-type') ?? 'regular'" size="18px"/>
+                <x-icon :name="$icon" :type="$attributes->get('icon-type') ?? 'regular'" size="16px"/>
             </div>
         @elseif ($attributes->has('bullet'))
             <div

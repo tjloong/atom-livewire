@@ -3,40 +3,47 @@
 namespace Jiannius\Atom\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Blade;
 
 class GkashController extends Controller
 {
     /**
-     * Create request signature
+     * Checkout
      */
-    public function sign()
+    public function checkout()
     {
-        $params = request()->input('params');
-        $credentials = $this->getCredentials(request()->input('account_id'));
+        $params = session('pay_request');
+        $keys = $this->getGkashKeys(data_get($params, 'account_id'));
+        
         $metadata = [
             'job' => data_get($params, 'job'), 
             'payment_id' => data_get($params, 'payment_id'),
             'account_id' => data_get($params, 'account_id'),
         ];
 
-        $body = [
-            'version' => $credentials->api_version,
-            'CID' => $credentials->mid,
+        $paymode = [
+            'fpx' => 'EBANKING',
+            'ewallet' => 'EWALLET',
+            'credit-card' => 'ECOMM',
+        ][data_get($params, 'payment_mode')] ?? null;
+
+        $data = [
+            'version' => data_get($keys, 'version'),
+            'CID' => data_get($keys, 'mid'),
             'v_currency' => data_get($params, 'currency'),
             'v_amount' => currency(data_get($params, 'amount')),
             'v_cartid' => data_get($params, 'payment_id'),
             'v_productdesc' => data_get($params, 'payment_description'),
-            'preselection' => $this->getPaymentMode(data_get($params, 'payment_mode')),
+            'preselection' => $paymode,
             'returnurl' => route('__gkash.redirect', $metadata),
             'callbackurl' => route('__gkash.webhook', $metadata),
         ];
 
-        $signature = $this->getSignature($body, $credentials->mid, $credentials->signature_key);
-
-        return response()->json([
-            'body' => array_merge($body, ['signature' => $signature]),
-            'endpoint' => app()->environment('production') ? $credentials->url : $credentials->sandbox_url,
+        $body = array_merge($data, [
+            'signature' => $this->getGkashSignature($data, $keys),
         ]);
+
+        return $this->getGkashCheckoutForm($body, data_get($keys, 'url'));
     }
 
     /**
@@ -44,14 +51,15 @@ class GkashController extends Controller
      */
     public function redirect()
     {
-        $credentials = $this->getCredentials(request()->query('account_id'));
-        $this->verifyResponse(request()->all(), $credentials->mid, $credentials->signature_key);
+        $params = request()->query();
+        $keys = $this->getGkashKeys(data_get($params, 'account_id'));
+        $this->verifyGkashResponse(request()->all(), $keys);
 
-        if ($job = $this->getJob()) {
-            return ($job)::dispatchNow([
+        if ($jobhandler = $this->getJobHandler()) {
+            return ($jobhandler)::dispatchNow([
                 'status' => $this->getStatus(request()->input('status')),
                 'provider' => 'gkash',
-                'pay_response' => request()->all(),
+                'response' => request()->all(),
             ]);
         }
     }
@@ -61,11 +69,12 @@ class GkashController extends Controller
      */
     public function webhook()
     {
-        $credentials = $this->getCredentials(request()->query('account_id'));
-        $this->verifyResponse(request()->all(), $credentials->mid, $credentials->signature_key);
+        $params = request()->query();
+        $keys = $this->getGkashKeys(data_get($params, 'account_id'));
+        $this->verifyGkashResponse(request()->all(), $keys);
 
-        if ($job = $this->getJob()) {
-            return ($job)::dispatch([
+        if ($jobhandler = $this->getJobHandler()) {
+            return ($jobhandler)::dispatch([
                 'status' => $this->getStatus(request()->input('status')),
                 'provider' => 'gkash',
                 'pay_response' => request()->all(),
@@ -74,57 +83,89 @@ class GkashController extends Controller
     }
 
     /**
-     * Get job
+     * Get job handler
      */
-    public function getJob()
+    public function getJobHandler()
     {
-        $name = request()->query('job') ?? 'Gkash';
-        $ns = (object)[
-            'try' => 'App\\Jobs\\'.$name.'Provision',
-            'default' => 'Jiannius\\Atom\\Jobs\\'.$name.'Provision',
-        ];
+        $jobname = request()->query('job') ?? 'GkashProvision';
+        $jobhandler = collect([
+            'App\\Jobs\\'.$jobname,
+            'Jiannius\\Atom\\Jobs\\'.$jobname,
+        ])->first(fn($ns) => class_exists($ns));
 
-        if (class_exists($ns->try)) return $ns->try;
-        else if (class_exists($ns->default)) return $ns->default;
+        return $jobhandler;
     }
 
     /**
-     * Get Credentials
+     * Get gkash checkout form
      */
-    public function getCredentials($accountId = null)
+    public function getGkashCheckoutForm($body, $url)
     {
-        $account = model('account')->find($accountId);
+        $form = '';
 
-        return (object)[
-            'mid' => $account
-                ? ($account->setting->gkash_mid ?? $account->setting->gkash->mid ?? null)
-                : site_settings('gkash_mid', env('GKASH_MID')),
+        foreach (array_keys($body) as $key) {
+            $form .= '<input name="'.$key.'" value="'.data_get($body, $key).'">';
+        }
 
-            'signature_key' => $account
-                ? ($account->setting->gkash_signature_key ?? $account->setting->gkash->signature_key ?? null)
-                : site_settings('gkash_signature_key', env('GKASH_SIGNATURE_KEY')),
+        return Blade::render(<<<EOL
+            <form name="gkash_checkout" method="POST" action="$url" style="display: none;">
+                $form
+            </form>
 
-            'api_version' => $account
-                ? ($account->setting->gkash_api_version ?? $account->setting->gkash->api_version ?? null)
-                : site_settings('gkash_api_version', env('GKASH_API_VERSION')),
+            <div>Redirecting to payment gateway...</div>
 
-            'url' => $account
-                ? ($account->setting->gkash_url ?? $account->setting->gkash->url ?? null)
-                : site_settings('gkash_url', env('GKASH_URL')),
-
-            'sandbox_url' => $account
-                ? ($account->setting->gkash_sandbox_url ?? $account->setting->gkash->sandbox_url ?? null)
-                : site_settings('gkash_sandbox_url', env('GKASH_SANDBOX_URL')),
-        ];
+            <script>
+                window.onload = function() {
+                    document.forms['gkash_checkout'].submit()
+                }
+            </script>
+        EOL
+        );
     }
 
     /**
-     * Get signature
+     * Get gkash keys
      */
-    public function getSignature($body, $mid, $signatureKey)
+    public function getGkashKeys($accountId = null)
     {
+        $account = $accountId ? model('account')->find($accountId) : null;
+        $settings = optional($account)->accountSettings;
+
+        $mid = $account
+            ? data_get($settings, 'gkash_mid') ?? data_get(optional($settings->gkash), 'mid')
+            : site_settings('gkash_mid', env('GKASH_MID'));
+
+        $sk = $account
+            ? data_get($settings, 'gkash_signature_key') ?? data_get(optional($settings->gkash), 'signature_key')
+            : site_settings('gkash_signature_key', env('GKASH_SIGNATURE_KEY'));
+
+        $version = $account
+            ? data_get($settings, 'gkash_api_version') ?? data_get(optional($settings->gkash), 'api_version')
+            : site_settings('gkash_api_version', env('GKASH_API_VERSION'));
+
+        if (app()->environment('production')) {
+            $url = $account
+                ? data_get($settings, 'gkash_url') ?? data_get(optional($settings->gkash), 'url')
+                : site_settings('gkash_url', env('GKASH_URL'));
+        }
+        else {
+            $url = $account
+                ? data_get($settings, 'gkash_sandbox_url') ?? data_get(optional($settings->gkash), 'sandbox_url')
+                : site_settings('gkash_sandbox_url', env('GKASH_SANDBOX_URL'));
+        }
+
+        return compact('mid', 'sk', 'version', 'url');
+    }
+
+    /**
+     * Get gkash signature
+     */
+    public function getGkashSignature($body, $keys)
+    {
+        $mid = data_get($keys, 'mid');
+        $sk = data_get($keys, 'sk');
         $data = implode(';', [
-            $signatureKey,
+            $sk,
             $mid,
             data_get($body, 'v_cartid'),
             str(data_get($body, 'v_amount'))->replace('.', '')->replace(',', '')->toString(),
@@ -135,12 +176,14 @@ class GkashController extends Controller
     }
 
     /**
-     * Verify response
+     * Verify gkash response
      */
-    public function verifyResponse($response, $mid, $signatureKey)
+    public function verifyGkashResponse($response, $keys)
     {
+        $sk = data_get($keys, 'sk');
+        $mid = data_get($keys, 'mid');
         $data = implode(';', [
-            $signatureKey,
+            $sk,
             $mid,
             data_get($response, 'POID'),
             data_get($response, 'cartid'),
@@ -167,17 +210,5 @@ class GkashController extends Controller
             '11 - Pending' => 'processing',
             '99 - Error' => 'failed',
         ][$code] ?? 'failed';
-    }
-
-    /**
-     * Get payment mode
-     */
-    public function getPaymentMode($mode = null)
-    {
-        return [
-            'fpx' => 'EBANKING',
-            'ewallet' => 'EWALLET',
-            'credit-card' => 'ECOMM',
-        ][$mode] ?? null;
     }
 }

@@ -13,8 +13,13 @@ class Update extends Component
      */
     public function mount($accountPayment)
     {
-        $this->accountPayment = model('account_payment')->findOrFail($accountPayment);
-        breadcrumbs()->home('#'.$this->accountPayment->number);
+        $this->accountPayment = model('account_payment')
+            ->when(auth()->user()->isAccountType('signup'), 
+                fn($q) => $q->where('account_id', auth()->user()->account_id)
+            )
+            ->findOrFail($accountPayment);
+
+        breadcrumbs()->push('Payment #'.$this->accountPayment->number);
     }
 
     /**
@@ -34,8 +39,6 @@ class Update extends Component
      */
     public function render()
     {
-        $view = view('atom::app.account-payment.update');
-
-        return current_route('billing*') ? $view->layout('layouts.billing') : $view;
+        return view('atom::app.account-payment.update');
     }
 }

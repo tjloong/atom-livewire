@@ -110,8 +110,8 @@ class Login extends Component
      */
     private function redirectTo($user)
     {
-        if ($user->isAccountType('signup') && $user->account->status !== 'onboarded') {
-            return route('onboarding');
+        if ($user->isAccountType('signup') && $user->account->status === 'new') {
+            return route('app.onboarding.home');
         }
 
         return app_route();

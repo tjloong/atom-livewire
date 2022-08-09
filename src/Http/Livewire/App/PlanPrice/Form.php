@@ -21,6 +21,7 @@ class Form extends Component
             'planPrice.discount' => 'nullable|numeric|max:100',
             'planPrice.expired_after' => 'required_if:planPrice.is_lifetime,false',
             'planPrice.shoutout' => 'nullable',
+            'planPrice.auto_renew' => 'nullable',
             'planPrice.is_lifetime' => 'nullable',
             'planPrice.is_default' => 'nullable',
             'planPrice.plan_id' => 'required',
@@ -61,6 +62,14 @@ class Form extends Component
     }
 
     /**
+     * Get enabled stripe property
+     */
+    public function getEnabledStripeProperty()
+    {
+        return site_settings('stripe_public_key') && site_settings('stripe_secret_key');
+    }
+
+    /**
      * Submit
      */
     public function submit()
@@ -76,6 +85,7 @@ class Form extends Component
         
         if ($this->planPrice->is_default) {
             $this->plan->planPrices()
+                ->where('country', $this->planPrice->country)
                 ->where('is_default', true)
                 ->where('id', '<>', $this->planPrice->id)
                 ->update(['is_default' => false]);

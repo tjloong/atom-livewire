@@ -38,7 +38,7 @@
                 @isset($brand)
                     {{ $brand }}
                 @else    
-                    <a href="{{ route('app.dashboard') }}" class="flex-shrink-0 flex items-center gap-2">
+                    <a href="{{ route('app.dashboard') }}" class="shrink-0 flex items-center gap-2">
                         <x-logo class="w-8 h-8" small/>
                         
                         <div class="text-white text-lg tracking-wider">

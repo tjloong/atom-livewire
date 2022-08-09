@@ -61,19 +61,11 @@ class AtomServiceProvider extends ServiceProvider
     public function registerBlade()
     {
         Blade::if('route', function($value) {
-            return collect((array)$value)->contains(function($name) {
-                return request()->route()->getName() === $name
-                    || request()->path() === $name
-                    || request()->is($name);
-            });
+            return collect((array)$value)->contains(fn($name) => current_route($name));
         });
 
         Blade::if('notroute', function($value) {
-            return !collect((array)$value)->contains(function($name) {
-                return request()->route()->getName() === $name
-                    || request()->path() === $name
-                    || request()->is($name);
-            });
+            return !collect((array)$value)->contains(fn($name) => current_route($name));
         });
 
         Blade::if('module', function($value) {
@@ -100,46 +92,10 @@ class AtomServiceProvider extends ServiceProvider
      */
     public function registerLivewires()
     {
-        // user portal
-        Livewire::component('atom.account', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Index');
-        Livewire::component('atom.account.authentication.index', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Index');
-        Livewire::component('atom.account.authentication.profile', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Profile');
-        Livewire::component('atom.account.authentication.password', 'Jiannius\\Atom\\Http\\Livewire\\Account\\Authentication\\Password');
-
-        // onboarding portal
-        Livewire::component('atom.onboarding', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Index');
-        Livewire::component('atom.onboarding.profile', 'Jiannius\\Atom\\Http\\Livewire\\Onboarding\\Profile');
-
-        // dashboard
-        Livewire::component('atom.dashboard', 'Jiannius\\Atom\\Http\\Livewire\\App\\Dashboard');
-
-        // blog
-        Livewire::component('atom.app.blog.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Create');
-        Livewire::component('atom.app.blog.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Listing');
-        Livewire::component('atom.app.blog.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Update\\Index');
-        Livewire::component('atom.app.blog.update.content', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Update\\Content');
-        Livewire::component('atom.app.blog.update.seo', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Update\\Seo');
-        Livewire::component('atom.app.blog.update.settings', 'Jiannius\\Atom\\Http\\Livewire\\App\\Blog\\Update\\Settings');
-
-        // enquiry
-        Livewire::component('atom.app.enquiry.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Enquiry\\Listing');
-        Livewire::component('atom.app.enquiry.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Enquiry\\Update');
-
         // page
         Livewire::component('atom.app.page.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Listing');
         Livewire::component('atom.app.page.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Update\\Index');
         Livewire::component('atom.app.page.update.content', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Update\\Content');
-
-        // plan
-        Livewire::component('atom.plan.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Plan\\Listing');
-        Livewire::component('atom.plan.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Plan\\Create');
-        Livewire::component('atom.plan.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Plan\\Update');
-        Livewire::component('atom.plan.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\Plan\\Form');
-
-        // plan price
-        Livewire::component('atom.plan-price.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\PlanPrice\\Create');
-        Livewire::component('atom.plan-price.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\PlanPrice\\Update');
-        Livewire::component('atom.plan-price.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\PlanPrice\\Form');
 
         // user
         Livewire::component('atom.app.user.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Listing');
@@ -170,25 +126,42 @@ class AtomServiceProvider extends ServiceProvider
             'atom.auth.reset-password' => 'Auth\ResetPassword',
             'atom.auth.forgot-password' => 'Auth\ForgotPassword',
 
-            // billing portal
-            'atom.billing' => 'Billing\Index',
-            'atom.billing.plans' => 'Billing\Plans',
-            'atom.billing.checkout' => 'Billing\Checkout',
-
-            // ticket portal
-            'atom.ticketing.listing' => 'Ticketing\Listing',
-            'atom.ticketing.create' => 'Ticketing\Create',
-            'atom.ticketing.update' => 'Ticketing\Update',
-            'atom.ticketing.comments' => 'Ticketing\Comments',
+            // dashboard
+            'atom.app.dashboard' => 'App\Dashboard',
 
             // account
             'atom.app.account.listing' => 'App\Account\Listing',
             'atom.app.account.update' => 'App\Account\Update\Index',
-            'atom.app.account.update.overview' => 'App\Account\Update\Overview',
+            'atom.app.account.update.login' => 'App\Account\Update\Login',
+            'atom.app.account.update.password' => 'App\Account\Update\Password',
+            'atom.app.account.update.register' => 'App\Account\Update\Register',
 
             // account payments
             'atom.app.account-payment.listing' => 'App\AccountPayment\Listing',
             'atom.app.account-payment.update' => 'App\AccountPayment\Update',
+
+            // billing
+            'atom.app.billing.home' => 'App\Billing\Index',
+            'atom.app.billing.plans' => 'App\Billing\Plans',
+            'atom.app.billing.checkout' => 'App\Billing\Checkout',
+            'atom.app.billing.current-subscriptions' => 'App\Billing\CurrentSubscriptions',
+            'atom.app.billing.cancel-auto-billing-modal' => 'App\Billing\CancelAutoBillingModal',
+
+            // onboarding
+            'atom.app.onboarding.home' => 'App\Onboarding\Index',
+            'atom.app.onboarding.profile' => 'App\Onboarding\Profile',
+
+            // blog
+            'atom.app.blog.create' => 'App\Blog\Create',
+            'atom.app.blog.listing' => 'App\Blog\Listing',
+            'atom.app.blog.update' => 'App\Blog\Update\Index',
+            'atom.app.blog.update.content' => 'App\Blog\Update\Content',
+            'atom.app.blog.update.seo' => 'App\Blog\Update\Seo',
+            'atom.app.blog.update.settings' => 'App\Blog\Update\Settings',
+
+            // enquiry
+            'atom.app.enquiry.listing' => 'App\Enquiry\Listing',
+            'atom.app.enquiry.update' => 'App\Enquiry\Update',
 
             // product
             'atom.app.product.listing' => 'App\Product\Listing',
@@ -236,6 +209,24 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.file.uploader.web-image' => 'App\File\Uploader\WebImage',
             'atom.app.file.uploader.youtube' => 'App\File\Uploader\Youtube',
             'atom.app.file.uploader.library' => 'App\File\Uploader\Library',
+
+            // plan
+            'atom.app.plan.listing' => 'App\Plan\Listing',
+            'atom.app.plan.create' => 'App\Plan\Create',
+            'atom.app.plan.update' => 'App\Plan\Update\Index',
+            'atom.app.plan.update.info' => 'App\Plan\Update\Info',
+            'atom.app.plan.update.prices' => 'App\Plan\Update\Prices',
+
+            // plan price
+            'atom.app.plan-price.create' => 'App\PlanPrice\Create',
+            'atom.app.plan-price.update' => 'App\PlanPrice\Update',
+            'atom.app.plan-price.form' => 'App\PlanPrice\Form',
+
+            // ticket
+            'atom.app.ticketing.listing' => 'App\Ticketing\Listing',
+            'atom.app.ticketing.create' => 'App\Ticketing\Create',
+            'atom.app.ticketing.update' => 'App\Ticketing\Update',
+            'atom.app.ticketing.comments' => 'App\Ticketing\Comments',
 
             // site settings
             'atom.app.site-settings.index' => 'App\SiteSettings\Index',
@@ -329,7 +320,6 @@ class AtomServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../../stubs-static/config' => base_path('config'),
-            __DIR__.'/../../stubs-static/jsconfig.json' => base_path('jsconfig.json'),
             __DIR__.'/../../stubs-static/tailwind.config.js' => base_path('tailwind.config.js'),
             __DIR__.'/../../stubs-static/postcss.config.js' => base_path('postcss.config.js'),
             __DIR__.'/../../stubs-static/vite.config.js' => base_path('vite.config.js'),
@@ -353,7 +343,6 @@ class AtomServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../stubs/config' => base_path('config'),
             __DIR__.'/../../stubs/app/Models' => app_path('Models'),
-            __DIR__.'/../../stubs/jsconfig.json' => base_path('jsconfig.json'),
             __DIR__.'/../../stubs/tailwind.config.js' => base_path('tailwind.config.js'),
             __DIR__.'/../../stubs/postcss.config.js' => base_path('postcss.config.js'),
             __DIR__.'/../../stubs/vite.config.js' => base_path('vite.config.js'),
@@ -365,8 +354,10 @@ class AtomServiceProvider extends ServiceProvider
         ], 'atom-base');
 
         foreach ([
+            'app/account',
             'app/user', 
             'app/role', 
+            'app/onboarding',
             'app/file', 
             'app/site-settings', 
             'app/label', 
@@ -376,11 +367,9 @@ class AtomServiceProvider extends ServiceProvider
             'app/blog', 
             'app/enquiry', 
             'app/plan',
+            'app/ticketing',
             'web',
             'auth',
-            'account',
-            'ticketing',
-            'onboarding',
         ] as $module) {
             $this->publishes([
                 __DIR__.'/../../resources/views/'.$module => resource_path('views/vendor/atom/'.$module),

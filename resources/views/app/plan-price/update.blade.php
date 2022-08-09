@@ -6,5 +6,5 @@
         />
     </x-page-header>
 
-    @livewire('atom.plan-price.form', compact('plan', 'planPrice'))
+    @livewire('atom.app.plan-price.form', compact('plan', 'planPrice'))
 </div>

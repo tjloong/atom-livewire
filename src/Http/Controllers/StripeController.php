@@ -7,50 +7,16 @@ use App\Http\Controllers\Controller;
 class StripeController extends Controller
 {
     /**
-     * Create request signature
+     * Checkout
      */
-    public function sign()
+    public function checkout()
     {
-        $params = request()->input('params');
-        $account = model('account')->find(request()->input('account_id'));
-        $keys = $this->getKeys($account);
-        $mode = $this->hasSubscriptionItems(data_get($params, 'items')) ? 'subscription' : 'payment';
-        $metadata = [
-            'job' => data_get($params, 'job'), 
-            'payment_id' => data_get($params, 'payment_id'),
-            'account_id' => optional($account)->id,
-        ];
+        $params = session('pay_request');
+        $keys = $this->getStripeKeys(data_get($params, 'account_id'));
+        $stripe = $this->getStripeClient($keys);
+        $session = $stripe->checkout->sessions->create($this->getStripeSessionObject($params));
 
-        \Stripe\Stripe::setApiKey($keys->secret_key);
-        
-        $session = \Stripe\Checkout\Session::create([
-            'line_items' => collect(data_get($params, 'items', []))->map(function($item) {
-                $data = ['quantity' => data_get($item, 'qty')];
-
-                if ($stripePriceId = data_get($item, 'stripe_price_id')) {
-                    $data['price'] = $stripePriceId;
-                }
-                else {
-                    $data['price_data'] = [
-                        'currency' => data_get($item, 'currency'),
-                        'product_data' => ['name' => data_get($item, 'name')],
-                        'unit_amount' => str(data_get($item, 'amount'))->replace('.', '')->replace(',', ''),    
-                    ];
-                }
-
-                return $data;
-            })->all(),
-            'mode' => $mode,
-            'metadata' => $metadata,
-            'customer_email' => data_get($params, 'email'),
-            'success_url' => route('__stripe.success', $metadata),
-            'cancel_url' => route('__stripe.cancel', $metadata),
-        ]);
-
-        return response()->json([
-            'endpoint' => $session->url,
-            'endpoint_method' => 'get',
-        ]);
+        return redirect($session->url);
     }
 
     /**
@@ -58,11 +24,13 @@ class StripeController extends Controller
      */
     public function success()
     {
-        if ($job = $this->getJob()) {
-            return ($job)::dispatchNow([
-                'status' => 'success', 
+        if ($jobhandler = $this->getJobHandler()) {
+            return ($jobhandler)::dispatchNow([
                 'provider' => 'stripe',
-                'pay_response' => request()->query(),
+                'metadata' => array_merge(request()->query(),[
+                    'job' => $jobhandler,
+                    'status' => 'success',
+                ]),
             ]);
         }
     }
@@ -72,11 +40,13 @@ class StripeController extends Controller
      */
     public function cancel()
     {
-        if ($job = $this->getJob()) {
-            return ($job)::dispatchNow([
-                'status' => 'failed', 
+        if ($jobhandler = $this->getJobHandler()) {
+            return ($jobhandler)::dispatchNow([
                 'provider' => 'stripe',
-                'pay_response' => request()->query(),
+                'metadata' => array_merge(request()->query(), [
+                    'job' => $jobhandler,
+                    'status' => 'failed',
+                ]),
             ]);
         }
     }
@@ -86,96 +56,201 @@ class StripeController extends Controller
      */
     public function webhook()
     {
-        $payload = @file_get_contents('php://input');
-        $metadata = data_get(json_decode($payload), 'data.object.metadata');
-        $account = model('account')->find(data_get($metadata, 'account_id'));
-        $keys = $this->getKeys($account);
-        $job = $this->getJob($metadata);
+        $input = @file_get_contents('php://input');
+        $payload = json_decode($input);
+        $metadata = $this->getMetadata($payload);
+        $keys = $this->getStripeKeys(data_get($metadata, 'account_id'));
 
-        if ($keys->webhook_signing_secret) {
-            $sigheader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+        $event = $this->validateStripeInput($input, data_get($keys, 'whse'));
+        if (!$event) return response()->json('Unable to validate signature with the webhook signing secret.', 400);
 
-            try {
-                $event = \Stripe\Webhook::constructEvent($payload, $sigheader, $keys->webhook_signing_secret);
-            } catch(\Stripe\Exception\SignatureVerificationException $e) {
-                abort(400, 'Stripe webhook error while validating signature.');
-            }
-        }
-        else abort(400, 'No webhook signing secret.');
+        $jobhandler = data_get($metadata, 'job');
+        $status = data_get($metadata, 'status');
 
-        if ($job) {
-            ($job)::dispatch([
-                'webhook' => true,
-                'status' => $this->getStatus($event), 
-                'provider' => 'stripe',
-                'pay_response' => json_decode($payload),
-            ]);
+        if (!$status) return response()->json('Event '.$event->type.' was not listened.', 422);
+        if (!$jobhandler) return response()->json('No job was defined for event '.$event->type.'.', 422);
 
-            return response(200);
-        }
-        else abort(500, 'No stripe provisioning job.');
+        ($jobhandler)::dispatch([
+            'webhook' => true,
+            'provider' => 'stripe',
+            'metadata' => $metadata,
+            'response' => (array)$payload,
+        ]);
+
+        return response('OK');
     }
 
     /**
-     * Get job
+     * Cancel subscription
      */
-    public function getJob($metadata = null)
+    public function cancelSubscription()
     {
-        $name = data_get($metadata, 'job') ?? request()->query('job') ?? 'Stripe';
-        $ns = (object)[
-            'try' => 'App\\Jobs\\'.$name.'Provision',
-            'default' => 'Jiannius\\Atom\\Jobs\\'.$name.'Provision',
+        $params = request()->query();
+        $redirect = data_get($params, 'redirect');
+
+        $keys = $this->getStripeKeys(data_get($params, 'account_id'));
+        $stripe = $this->getStripeClient($keys);
+        $stripe->subscriptions->cancel(data_get($params, 'subscription_id'));
+
+        $jobhandler = $this->getJobHandler();
+        ($jobhandler)::dispatchNow($params);
+        
+        return $redirect
+            ? redirect($redirect)
+            : back();
+    }
+
+    /**
+     * Get metadata
+     */
+    public function getMetadata($payload)
+    {
+        $event = data_get($payload, 'type');
+        $body = data_get($payload, 'data.object');
+
+        $status = [
+            'checkout.session.completed' => data_get($body, 'payment_status') === 'paid' 
+                ? 'success' 
+                : 'processing',
+            'checkout.session.async_payment_succeeded' => 'success',
+            'checkout.session.expired' => 'failed',
+            'checkout.session.async_payment_failed' => 'failed',
+            'invoice.paid' => 'renew',
+            'invoice.payment_failed' => 'renew-failed',
+        ][$event] ?? null;
+        if (!$status) return null;
+
+        if (in_array($event, ['invoice.paid', 'invoice.payment_failed'])) {
+            $lines = (array)data_get($body, 'lines.data');
+            $metadata = (array)collect($lines)->pluck('metadata')->first();
+        }
+        else $metadata = (array)data_get($body, 'metadata');
+
+        $customerId = data_get($body, 'customer');
+        $subscriptionId = data_get($body, 'subscription');
+
+        return array_merge($metadata, [
+            'job' => $this->getJobHandler($metadata),
+            'status' => $status,
+            'stripe_customer_id' => $customerId,
+            'stripe_subscription_id' => $subscriptionId,
+        ]);
+    }
+
+    /**
+     * Get job handler
+     */
+    public function getJobHandler($metadata = null)
+    {
+        $jobname = data_get($metadata, 'job') ?? request()->query('job') ?? 'StripeProvision';
+        $jobhandler = collect([
+            'App\\Jobs\\'.$jobname,
+            'Jiannius\\Atom\\Jobs\\'.$jobname,
+        ])->first(fn($ns) => class_exists($ns));
+
+        return $jobhandler;
+    }
+
+    /**
+     * Get stripe client
+     */
+    public function getStripeClient($keys)
+    {
+        $sk = data_get($keys, 'sk');
+
+        return new \Stripe\StripeClient($sk);
+    }
+
+    /**
+     * Get stripe keys
+     */
+    public function getStripeKeys($accountId = null)
+    {
+        $account = $accountId ? model('account')->find($accountId) : null;
+        $settings = optional($account)->accountSettings;
+
+        $pk = $account
+            ? data_get($settings, 'stripe_public_key') ?? data_get(optional($settings->stripe), 'public_key')
+            : site_settings('stripe_public_key', env('STRIPE_PUBLIC_KEY'));
+
+        $sk = $account
+            ? data_get($settings, 'stripe_secret_key') ?? data_get(optional($settings->stripe), 'secret_key')
+            : site_settings('stripe_secret_key', env('STRIPE_SECRET_KEY'));
+
+        $whse = $account
+            ? data_get($settings, 'stripe_webhook_signing_secret') ?? data_get(optional($settings->stripe), 'webhook_signing_secret')
+            : site_settings('stripe_webhook_signing_secret', env('STRIPE_WEBHOOK_SIGNING_SECRET'));
+
+        return compact('pk', 'sk', 'whse');
+    }
+
+    /**
+     * Get stripe session object
+     */
+    public function getStripeSessionObject($params)
+    {
+        $hasRecurringItems = collect(data_get($params, 'items'))->search(fn($item) => !empty(data_get($item, 'recurring')));
+        $mode = is_numeric($hasRecurringItems) ? 'subscription' : 'payment';
+
+        $metadata = [
+            'job' => data_get($params, 'job'), 
+            'payment_id' => data_get($params, 'payment_id'),
+            'account_id' => data_get($params, 'account_id'),
         ];
 
-        if (class_exists($ns->try)) return $ns->try;
-        else if (class_exists($ns->default)) return $ns->default;
+        $lineItems = collect(data_get($params, 'items', []))->map(function($item) {
+            $recurring = [
+                'interval' => data_get($item, 'recurring.interval'),
+                'interval_count' => data_get($item, 'recurring.count'),
+            ];
+
+            $unitAmount = str(data_get($item, 'amount'))
+                ->replace('.', '')
+                ->replace(',', '')
+                ->toString();
+
+            return [
+                'quantity' => data_get($item, 'qty'),
+                'price_data' => array_filter([
+                    'currency' => data_get($item, 'currency'),
+                    'product_data' => ['name' => data_get($item, 'name')],
+                    'unit_amount' => $unitAmount,
+                    'recurring' => $recurring['interval_count'] && $recurring['interval']
+                        ? $recurring
+                        : null,
+                ]),
+            ];
+        })->all();
+
+        $email = data_get($params, 'customer.email');
+        $customerId = data_get($params, 'customer.stripe_customer_id');
+        $subscriptionData = $mode === 'subscription' ? ['metadata' => $metadata] : null;
+
+        return array_filter([
+            'mode' => $mode,
+            'metadata' => $metadata,
+            'customer_email' => $customerId ? null : $email,
+            'customer' => $customerId,
+            'subscription_data' => $subscriptionData,
+            'success_url' => route('__stripe.success', $metadata),
+            'cancel_url' => route('__stripe.cancel', $metadata),
+            'line_items' => $lineItems,
+        ]);
     }
 
     /**
-     * Get Keys
+     * Validation stripe input
      */
-    public function getKeys($account = null)
+    public function validateStripeInput($input, $whse)
     {
-        return (object)[
-            'public_key' => $account
-                ? ($account->setting->stripe_public_key ?? $account->setting->stripe->public_key ?? null)
-                : site_settings('stripe_public_key', env('STRIPE_PUBLIC_KEY')),
-
-            'secret_key' => $account
-                ? ($account->setting->stripe_secret_key ?? $account->setting->stripe->secret_key ?? null)
-                : site_settings('stripe_secret_key', env('STRIPE_SECRET_KEY')),
-
-            'webhook_signing_secret' => $account
-                ? ($account->setting->stripe_webhook_signing_secret ?? $account->setting->stripe->webhook_signing_secret ?? null)
-                : site_settings('stripe_webhook_signing_secret', env('STRIPE_WEBHOOK_SIGNING_SECRET')),
-        ];
-    }
-
-    /**
-     * Get status
-     */
-    public function getStatus($event)
-    {
-        if ($event->type === 'checkout.session.completed') {
-            if ($event->data->object->payment_status === 'paid') return 'success';
-            else return 'processing';
+        $sigheader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+        
+        try {
+            $event = \Stripe\Webhook::constructEvent($input, $sigheader, $whse);
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            $event = false;
         }
-        else if ($event->type === 'checkout.session.async_payment_succeeded') return 'success';
-        else return 'failed';
-    }
 
-    /**
-     * Check has subscription items
-     */
-    public function hasSubscriptionItems($items)
-    {
-        $search = collect($items)->search(function($item) {
-            $stripePriceId = $item['stripe_price_id'] ?? null;
-            $isSubscription = $item['is_subscription'] ?? false;
-
-            return $stripePriceId && $isSubscription;
-        });
-
-        return $search ? true : false;
+        return $event;
     }
 }

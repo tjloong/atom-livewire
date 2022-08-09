@@ -15,6 +15,7 @@ class AccountSubscription extends Model
         'is_trial' => 'boolean',
         'start_at' => 'datetime',
         'expired_at' => 'datetime',
+        'data' => 'object',
         'account_id' => 'integer',
         'account_order_item_id' => 'integer',
         'plan_price_id' => 'integer',

@@ -12,6 +12,7 @@ class AccountOrderItem extends Model
         'amount' => 'float',
         'discounted_amount' => 'float',
         'grand_total' => 'float',
+        'data' => 'object',
         'account_order_id' => 'integer',
         'plan_price_id' => 'integer',
     ];

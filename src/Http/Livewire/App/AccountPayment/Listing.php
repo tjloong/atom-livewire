@@ -69,8 +69,6 @@ class Listing extends Component
      */
     public function render()
     {
-        $view = view('atom::app.account-payment.listing');
-
-        return current_route('billing*') ? $view->layout('layouts.billing') : $view;
+        return view('atom::app.account-payment.listing');
     }
 }

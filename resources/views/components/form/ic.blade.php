@@ -18,7 +18,7 @@
             init () {
                 if (this.onloadFocus) this.$nextTick(() => this.$refs.head.focus())
         
-                const splits = this.value.split('-')
+                const splits = (this.value || '').split('-')
     
                 if (splits.length > 1) {
                     this.segments.head = splits[0]

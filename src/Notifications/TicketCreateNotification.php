@@ -53,7 +53,7 @@ class TicketCreateNotification extends Notification implements ShouldQueue
                 <span style="font-weight: bold">Subject:</span> '.$this->ticket->subject.'<br>
                 <span style="font-weight: bold">Description:</span> '.str()->limit($this->ticket->description, 50).'
             ')
-            ->action('View full reply', route('ticketing.listing'));
+            ->action('View full reply', route('app.ticketing.listing'));
     }
 
     /**

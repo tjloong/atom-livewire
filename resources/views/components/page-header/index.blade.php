@@ -29,7 +29,7 @@
         @endif
     </div>
 
-    <div class="shrink-0 my-1">
+    <div class="shrink-0 self-center my-1">
         {{ $slot }}
     </div>
 </div>

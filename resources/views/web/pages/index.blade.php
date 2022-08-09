@@ -1,6 +1,6 @@
 <main class="min-h-screen max-w-screen-xl mx-auto px-6 py-20 grid gap-10">
     <section class="grid gap-4">
-        <div class="text-xl font-bold">Heroin</div>
+        <div class="text-xl font-bold">Hero</div>
 
         <div class="border rounded-md overflow-hidden shadow">
             <x-builder.hero
@@ -78,11 +78,9 @@
             <div class="max-w-screen-md mx-auto">
                 <div class="grid gap-6 md:grid-cols-2">
                     @foreach ($this->plans as $plan)
-                        <x-builder.pricing 
-                            :plan="$plan->toArray()" 
-                            :prices="$plan->planPrices
-                                ->map(fn($planPrice) => $planPrice->append('recurring'))
-                                ->toArray()"
+                        <x-pricing 
+                            :plan="$plan" 
+                            :prices="$plan->planPrices->map(fn($planPrice) => $planPrice->append('recurring'))"
                             :trial="$plan->trial"
                         >
                             <x-slot:cta>
@@ -97,12 +95,12 @@
                                                 : '#'
                                             )
                                         " 
-                                        size="md">
-                                        {{ $plan->cta }}
-                                    </x-button>
+                                        size="md"
+                                        :label="$plan->cta"
+                                    />
                                 @endforeach
                             </x-slot:cta>
-                        </x-builder.pricing>
+                        </x-pricing>
                     @endforeach
                 </div>
             </div>

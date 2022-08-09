@@ -267,9 +267,8 @@ class InstallCommand extends Command
                 $table->string('country')->nullable();
                 $table->string('shoutout')->nullable();
                 $table->integer('expired_after')->nullable();
-                $table->boolean('is_lifetime')->nullable();
+                $table->boolean('is_recurring')->nullable();
                 $table->boolean('is_default')->nullable();
-                $table->string('stripe_price_id')->nullable();
                 $table->foreignId('tax_id')->nullable()->constrained()->onDelete('set null');
                 $table->foreignId('plan_id')->constrained()->onDelete('cascade');
                 $table->timestamps();
@@ -304,7 +303,7 @@ class InstallCommand extends Command
                 $table->string('number')->nullable()->unique();
                 $table->string('currency')->nullable();
                 $table->decimal('amount', 20, 2)->nullable();
-                $table->boolean('agree_tnc')->nullable();
+                $table->json('data')->nullable();
                 $table->foreignId('account_id')->constrained()->onDelete('cascade');
                 $table->timestamps();
             });
@@ -321,6 +320,7 @@ class InstallCommand extends Command
                 $table->decimal('amount', 20, 2)->nullable();
                 $table->decimal('discounted_amount', 20, 2)->nullable();
                 $table->decimal('grand_total', 20, 2)->nullable();
+                $table->json('data')->nullable();
                 $table->foreignId('account_order_id')->constrained()->onDelete('cascade');
                 $table->foreignId('plan_price_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamps();
@@ -337,6 +337,7 @@ class InstallCommand extends Command
                 $table->string('currency')->nullable();
                 $table->decimal('amount', 20, 2)->nullable();
                 $table->string('status')->nullable();
+                $table->string('provider')->nullable();
                 $table->json('data')->nullable();
                 $table->foreignId('account_id')->constrained()->onDelete('cascade');
                 $table->foreignId('account_order_id')->nullable()->constrained()->onDelete('set null');
@@ -354,6 +355,7 @@ class InstallCommand extends Command
                 $table->boolean('is_trial')->nullable();
                 $table->timestamp('start_at')->nullable();
                 $table->timestamp('expired_at')->nullable();
+                $table->json('data')->nullable();
                 $table->foreignId('account_id')->constrained()->onDelete('cascade');
                 $table->foreignId('account_order_item_id')->nullable()->constrained()->onDelete('set null');
                 $table->foreignId('plan_price_id')->nullable()->constrained()->onDelete('set null');
@@ -400,25 +402,25 @@ class InstallCommand extends Command
             DB::table('plan_prices')->insert(collect([
                 [
                     'amount' => 50,
-                    'expired_after' => '1 month',
+                    'expired_after' => 1,
                     'is_default' => true,
                     'plan_id' => 1,
                 ],
                 [
                     'amount' => 550,
-                    'expired_after' => '1 year',
+                    'expired_after' => 12,
                     'shoutout' => 'Save 10%!',
                     'plan_id' => 1,
                 ],
                 [
                     'amount' => 99,
-                    'expired_after' => '1 month',
+                    'expired_after' => 1,
                     'is_default' => true,
                     'plan_id' => 2,
                 ],
                 [
                     'amount' => 1100,
-                    'expired_after' => '1 year',
+                    'expired_after' => 12,
                     'shoutout' => 'Save 20%!',
                     'plan_id' => 2,
                 ],
@@ -427,7 +429,6 @@ class InstallCommand extends Command
                 'country' => 'MY',
                 'shoutout' => $val['shoutout'] ?? null,
                 'is_default' => $val['is_default'] ?? false,
-                'is_lifetime' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]))->values()->all());
@@ -518,13 +519,10 @@ class InstallCommand extends Command
                 $table->text('excerpt')->nullable();
                 $table->longText('content')->nullable();
                 $table->json('seo')->nullable();
-                $table->unsignedBigInteger('cover_id')->nullable();
+                $table->foreignId('cover_id')->nullable()->constrained('files')->onDelete('set null');
                 $table->timestamp('published_at')->nullable();
                 $table->timestamps();
-                $table->unsignedBigInteger('created_by')->nullable();
-    
-                $table->foreign('cover_id')->references('id')->on('files')->onDelete('set null');
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             });
 
             $this->line('blogs table created successfully.');
@@ -534,11 +532,8 @@ class InstallCommand extends Command
         else {
             Schema::create('blog_labels', function ($table) {
                 $table->id();
-                $table->unsignedBigInteger('blog_id');
-                $table->unsignedBigInteger('label_id');
-    
-                $table->foreign('blog_id')->references('id')->on('blogs')->onDelete('cascade');
-                $table->foreign('label_id')->references('id')->on('labels')->onDelete('cascade');
+                $table->foreignId('blog_id')->constrained('blogs')->onDelete('cascade');
+                $table->foreignId('label_id')->constrained('labels')->onDelete('cascade');
             });
 
             $this->line('blog_labels table created successfully.');
@@ -560,9 +555,7 @@ class InstallCommand extends Command
                 $table->string('name')->nullable();
                 $table->text('description')->nullable();
                 $table->timestamps();
-                $table->unsignedBigInteger('created_by')->nullable();
-    
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             });
             $this->line('teams table created successfully.');
         }
@@ -571,11 +564,8 @@ class InstallCommand extends Command
         else {
             Schema::create('teams_users', function ($table) {
                 $table->id();
-                $table->unsignedBigInteger('team_id')->nullable();
-                $table->unsignedBigInteger('user_id')->nullable();
-    
-                $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
-                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('cascade');
+                $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             });
             $this->line('teams_users table created successfully.');
         }
@@ -688,9 +678,7 @@ class InstallCommand extends Command
                 $table->id();
                 $table->string('permission');
                 $table->boolean('is_granted')->nullable();
-                $table->unsignedBigInteger('user_id')->nullable();
-
-                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             });
 
             $this->line('users_permissions table created successfully.');
@@ -703,9 +691,7 @@ class InstallCommand extends Command
                     $table->id();
                     $table->string('permission');
                     $table->boolean('is_granted')->nullable();
-                    $table->unsignedBigInteger('role_id')->nullable();
-        
-                    $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+                    $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade');
                 });
     
                 $this->line('roles_permissions table created successfully.');
@@ -728,9 +714,7 @@ class InstallCommand extends Command
                 $table->string('name')->nullable();
                 $table->string('slug')->nullable();
                 $table->timestamps();
-                $table->unsignedBigInteger('created_by')->nullable();
-    
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             });
             
             $this->line('roles table created successfully.');
@@ -739,8 +723,7 @@ class InstallCommand extends Command
         if (Schema::hasColumn('users', 'role_id')) $this->warn('users table already has role_id column, skipped.');
         else {
             Schema::table('users', function ($table) {
-                $table->unsignedBigInteger('role_id')->nullable()->after('is_active');
-                $table->foreign('role_id')->references('id')->on('roles')->onDelete('set null');
+                $table->foreignId('role_id')->nullable()->after('visibility')->constrained('roles')->onDelete('set null');
             });
             $this->line('Added role_id column to users table.');
         }
@@ -826,9 +809,7 @@ class InstallCommand extends Command
                 $table->text('url')->nullable();
                 $table->json('data')->nullable();
                 $table->timestamps();
-                $table->unsignedBigInteger('created_by')->nullable();
-    
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             });
     
             $this->line('files table created successfully.');

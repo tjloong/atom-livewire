@@ -16,8 +16,6 @@
     <x-form.text 
         label="Stripe Webhook Signing Secret"
         wire:model.defer="settings.stripe_webhook_signing_secret" 
-        :error="$errors->first('settings.stripe_webhook_signing_secret')" 
-        required
     />
 
     <x-slot:foot>

@@ -13,6 +13,7 @@ class AccountOrder extends Model
 
     protected $casts = [
         'amount' => 'float',
+        'data' => 'object',
         'account_id' => 'integer',
     ];
 
