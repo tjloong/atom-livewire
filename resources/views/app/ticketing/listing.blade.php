@@ -1,6 +1,6 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Support Tickets">
-        <x-button.create :href="route('ticketing.create')" label="New Ticket"/>
+        <x-button.create :href="route('app.ticketing.create')" label="New Ticket"/>
     </x-page-header>
 
     <x-table :total="$this->tickets->total()" :links="$this->tickets->links()">
@@ -25,8 +25,8 @@
             @foreach ($this->tickets as $ticket)
                 <x-table.tr>
                     <x-table.td :datetime="$ticket->created_at"/>
-                    <x-table.td :href="route('ticketing.update', [$ticket->id])" :label="$ticket->number"/>
-                    <x-table.td :href="route('ticketing.update', [$ticket->id])"
+                    <x-table.td :href="route('app.ticketing.update', [$ticket->id])" :label="$ticket->number"/>
+                    <x-table.td :href="route('app.ticketing.update', [$ticket->id])"
                         :label="str($ticket->subject)->limit(50)"
                         :small="str($ticket->description)->limit(80)"
                     />

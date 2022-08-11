@@ -48,7 +48,7 @@
 
             <x-slot:aside>
                 <x-admin-panel.aside label="Dashboard" icon="chart-line" route="app.dashboard"/>    
-                <x-admin-panel.aside label="Blogs" icon="edit-alt" route="app.blog.listing"/>    
+                <x-admin-panel.aside label="Blogs" icon="feather-pointed" route="app.blog.listing"/>    
                 <x-admin-panel.aside label="Enquiries" icon="paper-plane" route="app.enquiry.listing"/>    
                 <x-admin-panel.aside label="Accounts" icon="user-plus" route="app.account.listing" :active="current_route('app.account.*') && !current_route('app.account.home')"/>
                 

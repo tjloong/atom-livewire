@@ -13,13 +13,13 @@ class Listing extends Component
     public $sortOrder = 'desc';
     public $filters = [
         'search' => '',
-        'status' => '',
+        'status' => null,
     ];
 
     protected $queryString = [
         'filters' => ['except' => [
             'search' => '',
-            'status' => '',
+            'status' => null,
         ]],
         'sortBy' => ['except' => 'created_at'],
         'sortOrder' => ['except' => 'desc'],
@@ -48,7 +48,7 @@ class Listing extends Component
             ->filter($this->filters)
             ->orderBy('seq')
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(30);
+            ->paginate(50);
     }
 
     /**

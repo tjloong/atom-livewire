@@ -53,7 +53,7 @@ class Create extends Component
 
         session()->flash('flash', 'Ticket Created::success');
 
-        return redirect()->route('ticketing.listing');
+        return redirect()->route('app.ticketing.listing');
     }
 
     /**

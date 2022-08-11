@@ -44,7 +44,7 @@ class Update extends Component
         
         session()->flash('flash', 'Ticket Deleted');
 
-        return redirect()->route('ticketing.listing');
+        return redirect()->route('app.ticketing.listing');
     }
 
     /**

@@ -34,6 +34,7 @@
             <a 
                 href="{{ $href }}" 
                 class="{{ $tooltip ? '' : 'truncate' }}" 
+                target="{{ $attributes->get('target', '_self') }}"
                 @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
             >
                 {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}

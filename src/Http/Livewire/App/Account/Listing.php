@@ -37,14 +37,22 @@ class Listing extends Component
     }
 
     /**
-     * Get accounts property
+     * Get query property
      */
-    public function getAccountsProperty()
+    public function getQueryProperty()
     {
         return model('account')
             ->where('type', 'signup')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
+    }
+
+    /**
+     * Get accounts property
+     */
+    public function getAccountsProperty()
+    {
+        return $this->query->paginate(100);
     }
 
     /**
@@ -56,22 +64,12 @@ class Listing extends Component
     }
 
     /**
-     * Render
-     */
-    public function render()
-    {
-        return view('atom::app.account.listing', [
-            'accounts' => $this->accounts->paginate(30),
-        ]);
-    }
-
-    /**
      * Export
      */
     public function export()
     {
         $filename = 'accounts-' . rand(1000, 9999) . '.xlsx';
-        $accounts = $this->accounts->get();
+        $accounts = $this->query->get();
 
         return export_to_excel($filename, $accounts, fn($account) => [
             'Date' => $account->created_at->toDatetimeString(),
@@ -82,5 +80,13 @@ class Listing extends Component
             'Status' => $account->status,
             'Blocked Date' => optional($account->blocked_at)->toDatetimeString(),
         ]);
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return view('atom::app.account.listing');
     }
 }

@@ -19,16 +19,16 @@
                 if (this.onloadFocus) this.$nextTick(() => this.$refs.head.focus())
         
                 const splits = (this.value || '').split('-')
-    
+
                 if (splits.length > 1) {
                     this.segments.head = splits[0]
                     this.segments.body = splits[1] || null
                     this.segments.tail = splits[2] || null
                 }
                 else if (+this.value) {
-                    this.segments.head = val.substring(0, 6)
-                    this.segments.body = val.substring(6, 8)
-                    this.segments.tail = val.substring(8)
+                    this.segments.head = this.value.substring(0, 6)
+                    this.segments.body = this.value.substring(6, 8)
+                    this.segments.tail = this.value.substring(8)
                 }
             },
         

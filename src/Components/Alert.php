@@ -38,10 +38,10 @@ class Alert extends Component
     private function getIcon()
     {
         $icons = [
-            'info' => 'info-circle',
-            'error' => 'x-circle',
-            'success' => 'check-circle',
-            'warning' => 'error-circle',
+            'info' => 'circle-info',
+            'error' => 'circle-xmark',
+            'success' => 'circle-check',
+            'warning' => 'circle-exclamation',
         ];
 
         return $icons[$this->type];

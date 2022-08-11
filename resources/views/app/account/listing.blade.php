@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header :title="$this->title"/>
 
-    <x-table :total="$accounts->total()" :links="$accounts->links()" export>
+    <x-table :total="$this->accounts->total()" :links="$this->accounts->links()" export>
         <x-slot:head>
             <x-table.th sort="created_at">Join Date</x-table.th>
             <x-table.th sort="name">Name</x-table.th>
@@ -15,18 +15,10 @@
         </x-slot:head>
 
         <x-slot:body>
-            @foreach ($accounts as $account)
+            @foreach ($this->accounts as $account)
                 <x-table.tr>
-                    <x-table.td>
-                        {{ format_date($account->created_at) }}
-                        <div class="font-medium text-gray-500">{{ format_date($account->created_at, 'time') }}</div>
-                    </x-table.td>
-
-                    <x-table.td>
-                        <a href="{{ route('app.account.update', [$account->id]) }}">
-                            {{ $account->name }}
-                        </a>
-                    </x-table.td>
+                    <x-table.td :datetime="$account->created_at"/>
+                    <x-table.td :label="$account->name" :href="route('app.account.update', [$account->id])"/>
 
                     <x-table.td>
                         @foreach (array_filter([$account->email, $account->phone ?? null]) as $contact)
@@ -50,9 +42,7 @@
                         </x-table.td>
                     @endmodule
 
-                    <x-table.td class="text-right">
-                        <x-badge>{{ $account->status }}</x-badge>
-                    </x-table.td>
+                    <x-table.td :status="$account->status" class="text-right"/>
                 </x-table.tr>
             @endforeach
         </x-slot:body>

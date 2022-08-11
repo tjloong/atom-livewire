@@ -11,12 +11,12 @@
         </div>
 
         @if ($links)
-            <div class="flex items-center gap-2">
+            <div class="flex flex-col md:flex-row md:flex-wrap md:items-center md:gap-2">
             @foreach ($links as $label => $href)
-                <a href="{{ $href }}" target="_blank" class="text-sm">
+                <a href="{{ $href }}" target="_blank" class="shrink-0 text-sm">
                     {{ $label }}
                 </a>
-                @if ($label !== array_key_last($links)) | @endif
+                @if ($label !== array_key_last($links)) <span class="hidden md:block">|</span> @endif
             @endforeach
             </div>
         @endif

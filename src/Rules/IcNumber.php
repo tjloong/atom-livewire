@@ -35,8 +35,13 @@ class IcNumber implements Rule
      */
     public function passes($attribute, $value)
     {
-        [$head, $body, $tail] = explode('-', $value);
-
+        if (str($value)->is('*-*-*')) [$head, $body, $tail] = explode('-', $value);
+        else {
+            $head = substr($value, 0, 6);
+            $body = substr($value, 6, 2);
+            $tail = substr($value, 8);
+        }
+        
         $codes = collect($this->codes)->values()->flatten()->all();
 
         return $head && $body && $tail 
