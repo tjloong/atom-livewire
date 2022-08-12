@@ -72,20 +72,6 @@
                     @livewire($com, compact('account'), key($tab))
                 @endif
             @endif
-
-            @if ($isHome && session('webview'))
-                <div>
-                    <x-button color="red" icon="log-out"
-                        label="Logout"
-                        x-on:click="$dispatch('confirm', {
-                            title: '{{ __('Logout') }}',
-                            message: '{{ __('Are you sure to logout?') }}',
-                            type: 'error',
-                            onConfirmed: () => window.location = '{{ route('login', ['logout' => true]) }}',
-                        })"
-                    />
-                </div>
-            @endif
         </div>
     </div>
 </div>
