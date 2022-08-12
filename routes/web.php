@@ -100,13 +100,14 @@ if (!config('atom.static_site')) {
         /**
          * Accounts
          */
-        if (config('atom.accounts.register')) {
-            define_route()->prefix('account')->as('app.account.')->group(function() {
-                define_route('/', 'App\Account\Update\Index')->name('home');
+        define_route()->prefix('account')->as('app.account.')->group(function() {
+            define_route('/', 'App\Account\Update\Index')->name('home');
+
+            if (config('atom.accounts.register')) {
                 define_route('listing', 'App\Account\Listing')->name('listing');
                 define_route('{account}', 'App\Account\Update\Index')->name('update');
-            });
-        }
+            }
+        });
 
         /**
          * Onboarding

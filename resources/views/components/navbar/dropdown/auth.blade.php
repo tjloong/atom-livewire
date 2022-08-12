@@ -11,7 +11,7 @@
         {{ $slot }}
 
         @if ($canBackToApp)
-            <x-navbar.dropdown.item :href="app_route()" icon="house-user" label="Back to App"/>
+            <x-navbar.dropdown.item :href="app_route()" icon="house" label="Back to App"/>
         @endif
 
         <x-navbar.dropdown.item :href="route('login', ['logout' => true])" icon="logout" label="Logout"/>
@@ -32,7 +32,7 @@
                 {{ $slot }}
     
                 @if ($canBackToApp)
-                    <x-navbar.dropdown.item :href="app_route()" icon="house-user" label="Back to App"/>
+                    <x-navbar.dropdown.item :href="app_route()" icon="house" label="Back to App"/>
                 @endif
     
                 <x-navbar.dropdown.item :href="route('login', ['logout' => true])" icon="logout" label="Logout"/>

@@ -22,7 +22,7 @@
             x-on:focus="focus = true"
             x-on:blur="focus = false"
             type="number"
-            class="form-input transparent"
+            class="form-input transparent grow"
             step=".01"
         >
     </div>
