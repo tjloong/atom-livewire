@@ -3,7 +3,6 @@
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
@@ -30,19 +29,6 @@ function verify_recaptcha($token, $secret = null)
 	$result = json_decode($response);
 
 	return $result->success;
-}
-
-/**
- * Get app route
- */
-function app_route()
-{
-    $route = null;
-
-    if ($user = auth()->user()) $route = $user->home();
-    if (!$route) $route = Route::has('app.home') ? route('app.home') : route('page');
-
-    return $route;
 }
 
 /**
@@ -183,14 +169,6 @@ function enabled_module($module)
 }
 
 /**
- * Abort module error
- */
-function abort_module($module)
-{
-    abort(500, str()->headline($module) . ' module is not enabled.');
-}
-
-/**
  * Define route
  */
 function define_route($path = null, $action = null, $method = 'get')
@@ -230,17 +208,6 @@ function current_route($name = null)
     }
 
     return $route;
-}
-
-/**
- * Get current locale url
- */
-function locale_url($url)
-{
-    $locale = app()->currentLocale();
-
-    if ($locale === 'en') return $url;
-    else return '/' . $locale . str_replace($locale, '', $url);
 }
 
 /**

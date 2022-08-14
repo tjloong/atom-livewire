@@ -7,6 +7,7 @@ define_route('__pdf', 'PdfController@index')->name('__pdf');
 define_route('__export/{filename}', 'ExportController@download')->name('__export');
 define_route('__file/{id}', 'FileController@index')->name('__file');
 define_route('__file/download/{id}', 'FileController@download')->name('__file.download');
+define_route('__locale/{locale}', 'LocaleController@set')->name('__locale.set');
 
 /**
  * Stripe
@@ -259,7 +260,7 @@ if (!config('atom.static_site')) {
 // so this route will be register after the consuming app's routes
 app()->booted(function() {
     define_route('{slug?}', 'Web\Index')
-        ->middleware('web', 'locale')
+        ->middleware('web')
         ->name('page')
         // slugs to exclude
         ->where(['slug' => '^(?!'.implode('|', [

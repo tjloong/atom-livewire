@@ -108,9 +108,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function scopeWhereIsRole($query, $name)
     {
-        if (!enabled_module('roles')) abort_module('roles');
-
-        return $query->whereHas('role', fn($q) => $q->where('slug', $name));
+        return $query->when(
+            enabled_module('roles'), 
+            fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', $name)) 
+        );
     }
 
     /**
@@ -122,9 +123,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function scopeTeamId($query, $id)
     {
-        if (!enabled_module('teams')) abort_module('teams');
-
-        return $query->whereHas('teams', fn($q) => $q->whereIn('teams.id', (array)$id));
+        return $query->when(
+            enabled_module('teams'),
+            fn($q) => $q->whereHas('teams', fn($q) => $q->whereIn('teams.id', (array)$id))
+        );
     }
 
     /**
@@ -188,7 +190,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isRole($names)
     {
-        if (!enabled_module('roles')) abort_module('roles');
+        if (!enabled_module('roles')) return true;
         if (!$this->role) return false;
 
         return collect((array)$names)->filter(function($name) {

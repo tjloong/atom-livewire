@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Rules;
  
 use Illuminate\Contracts\Validation\Rule;
  
-class IcNumber implements Rule
+class MyIcNumber implements Rule
 {
     public $codes = [
         'johor' => ['01', '21', '22', '23', '24'],

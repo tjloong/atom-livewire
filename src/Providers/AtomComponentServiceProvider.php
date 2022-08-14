@@ -84,10 +84,10 @@ class AtomComponentServiceProvider extends ServiceProvider
             'sidenav.item',
             
             'form.index',
-            'form.ic',
             'form.seo',
             'form.date',
             'form.file',
+            'form.myic',
             'form.tags',
             'form.slug',
             'form.text',

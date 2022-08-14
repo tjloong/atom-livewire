@@ -4,13 +4,13 @@ namespace Jiannius\Atom\Components\Form;
 
 use Illuminate\View\Component;
 
-class Ic extends Component
+class Myic extends Component
 {
     /**
      * Render
      */
     public function render()
     {
-        return view('atom::components.form.ic');
+        return view('atom::components.form.myic');
     }
 }

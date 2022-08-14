@@ -6,6 +6,9 @@
     </x-slot:anchor>
 
     @foreach (config('atom.locales') as $locale)
-        <x-dropdown.item :href="'/'.$locale" :label="metadata('locales', $locale)->name"/>
+        <x-dropdown.item 
+            :href="route('__locale.set', [$locale])" 
+            :label="metadata('locales', $locale)->name"
+        />
     @endforeach
 </x-dropdown>

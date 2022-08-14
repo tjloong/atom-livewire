@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ config('app.locale') }}">
+<html lang="{{ app()->currentLocale() }}">
 
 <head>
     @if ($code === 503)

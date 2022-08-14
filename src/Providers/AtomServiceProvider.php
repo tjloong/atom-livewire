@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Route;
 use Jiannius\Atom\Console\RemoveCommand;
 use Jiannius\Atom\Console\InstallCommand;
 use Jiannius\Atom\Console\PublishCommand;
-use Jiannius\Atom\Http\Middleware\IsRole;
-use Jiannius\Atom\Http\Middleware\Locale;
-use Jiannius\Atom\Http\Middleware\PlanGuard;
-use Jiannius\Atom\Http\Middleware\PortalGuard;
-use Jiannius\Atom\Http\Middleware\TrackReferer;
 
 class AtomServiceProvider extends ServiceProvider
 {
@@ -256,13 +251,7 @@ class AtomServiceProvider extends ServiceProvider
      */
     public function registerMiddlewares()
     {
-        $router = app('router');
-        $router->aliasMiddleware('role', IsRole::class);
-        $router->aliasMiddleware('locale', Locale::class);
-        $router->aliasMiddleware('referer', TrackReferer::class);
-        
-        $router->pushMiddlewareToGroup('web', PortalGuard::class);
-        $router->pushMiddlewareToGroup('web', PlanGuard::class);
+        //
     }
 
     /**

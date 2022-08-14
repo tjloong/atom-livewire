@@ -11,7 +11,7 @@
 
     <div x-show="show" class="absolute bottom-full border rounded-md bg-white shadow w-max grid divide-y">
         @foreach (config('atom.locales') as $locale)
-            <a href="/{{ $locale }}" class="py-2 px-4 text-sm text-gray-900">
+            <a href="{{ route('__locale.set', [$locale]) }}" class="py-2 px-4 text-sm text-gray-900">
                 {{ data_get(metadata('locales', $locale), 'name') }}
             </a>
         @endforeach

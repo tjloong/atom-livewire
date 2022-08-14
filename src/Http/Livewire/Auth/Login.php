@@ -114,7 +114,7 @@ class Login extends Component
             return route('app.onboarding.home');
         }
 
-        return app_route();
+        return auth()->user()->home();
     }
 
     /**
