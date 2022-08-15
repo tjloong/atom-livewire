@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 
 class TrackReferer
@@ -22,8 +21,8 @@ class TrackReferer
         $duration = $days * 24 * 60;
 
         // ref is trackable
-        if ($ref && $this->isTrackable($ref)) {
-            if ($ref !== $cookie) Cookie::queue('_ref', $ref, $duration);
+        if ($this->isTrackable($ref) && $ref !== $cookie) {
+            Cookie::queue('_ref', $ref, $duration);
         }
         // got ref cookie, append the ref={cookie} to url
         else if ($cookie) {
@@ -41,12 +40,12 @@ class TrackReferer
      * @param string $ref
      * @return boolean
      */
-    public function isTrackable($ref)
+    public function isTrackable($ref = null)
     {
         return !request()->user()
-            && $ref !== 'page'
-            && $ref !== 'navbar'
-            && !Str::startsWith($ref, 'page-')
-            && !Str::startsWith($ref, 'navbar-');
+            && !is_null($ref)
+            && !(str($ref)->is('page') || str($ref)->is('page-*'))
+            && !(str($ref)->is('navbar') || str($ref)->is('navbar-*'))
+            && !(str($ref)->is('footer') || str($ref)->is('footer-*'));
     }
 }

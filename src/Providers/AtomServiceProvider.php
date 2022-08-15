@@ -87,11 +87,6 @@ class AtomServiceProvider extends ServiceProvider
      */
     public function registerLivewires()
     {
-        // page
-        Livewire::component('atom.app.page.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Listing');
-        Livewire::component('atom.app.page.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Update\\Index');
-        Livewire::component('atom.app.page.update.content', 'Jiannius\\Atom\\Http\\Livewire\\App\\Page\\Update\\Content');
-
         // user
         Livewire::component('atom.app.user.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Listing');
         Livewire::component('atom.app.user.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Create');
@@ -177,6 +172,11 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.promotion.update' => 'App\Promotion\Update',
             'atom.app.promotion.form' => 'App\Promotion\Form',
 
+            // page
+            'atom.app.page.listing' => 'App\Page\Listing',
+            'atom.app.page.update' => 'App\Page\Update\Index',
+            'atom.app.page.update.content' => 'App\Page\Update\Content',
+
             // label
             'atom.app.label.listing' => 'App\Label\Listing',
             'atom.app.label.create' => 'App\Label\Create',
@@ -251,7 +251,8 @@ class AtomServiceProvider extends ServiceProvider
      */
     public function registerMiddlewares()
     {
-        //
+        $router = app('router');
+        $router->aliasMiddleware('track-ref', \Jiannius\Atom\Http\Middleware\TrackReferer::class);
     }
 
     /**

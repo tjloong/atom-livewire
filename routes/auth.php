@@ -3,12 +3,12 @@
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 if (!config('atom.static_site')) {
-    define_route('login', 'Auth\\Login')->name('login');
-    define_route('forgot-password', 'Auth\\ForgotPassword')->middleware('guest')->name('password.forgot');
-    define_route('reset-password', 'Auth\\ResetPassword')->name('password.reset');
+    define_route('login', 'Auth\Login')->name('login');
+    define_route('forgot-password', 'Auth\ForgotPassword')->middleware('guest')->name('password.forgot');
+    define_route('reset-password', 'Auth\ResetPassword')->name('password.reset');
 
     if (config('atom.accounts.register')) {
-        define_route('register', 'Auth\\Register')->middleware('guest', 'referer')->name('register');
+        define_route('register', 'Auth\Register')->middleware('guest', 'track-ref')->name('register');
     }
 
     if (config('atom.accounts.verify')) {

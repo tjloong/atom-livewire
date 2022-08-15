@@ -28,7 +28,7 @@ class Blog extends Model
      */
     public function cover()
     {
-        return $this->belongsTo(File::class, 'cover_id');
+        return $this->belongsTo(get_class(model('file')), 'cover_id');
     }
 
     /**
@@ -36,7 +36,7 @@ class Blog extends Model
      */
     public function labels()
     {
-        return $this->belongsToMany(Label::class, 'blog_labels');
+        return $this->belongsToMany(get_class(model('label')), 'blog_labels');
     }
 
     /**
