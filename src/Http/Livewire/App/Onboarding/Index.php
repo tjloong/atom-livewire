@@ -19,12 +19,12 @@ class Index extends Component
     public function mount()
     {
         $this->steps = auth()->user()->isAccountType('signup')
-            ? $this->tabs->map(fn($tab) => [
+            ? collect($this->tabs)->map(fn($tab) => [
                 'value' => data_get($tab, 'slug', $tab),
                 'label' => data_get($tab, 'label') ?? str()->headline($tab),
                 'completed' => false,
             ])
-            : $this->tabs->filter(fn() => false);
+            : collect([]);
 
         $this->next();
     }
@@ -34,7 +34,7 @@ class Index extends Component
      */
     public function getTabsProperty()
     {
-        return collect([]);
+        return [];
     }
 
     /**

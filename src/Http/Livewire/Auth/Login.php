@@ -51,6 +51,8 @@ class Login extends Component
             throw ValidationException::withMessages(['email' => __('auth.failed')]);
         }
 
+        $user->fill(['login_at' => now()])->saveQuietly();
+        
         request()->session()->regenerate();
         
         return redirect()->intended($this->redirectTo($user));

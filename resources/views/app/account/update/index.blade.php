@@ -66,7 +66,7 @@
             </x-sidenav>
         </div>
 
-        <div class="md:col-span-9 grid gap-6">
+        <div class="md:col-span-9 flex flex-col gap-6">
             @if ($tab)
                 @if ($com = livewire_name('app/account/update/'.$tab))
                     @livewire($com, compact('account'), key($tab))

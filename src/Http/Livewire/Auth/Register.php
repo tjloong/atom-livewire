@@ -132,6 +132,8 @@ class Register extends Component
             $this->user->sendEmailVerificationNotification();
         }
 
+        $this->user->fill(['login_at' => now()])->saveQuietly();
+
         Auth::login($this->user);
 
         // clear refcode

@@ -5,6 +5,7 @@
         'blue' => 'text-blue-800 bg-blue-100 border border-blue-200',
         'yellow' => 'text-yellow-800 bg-yellow-100 border border-yellow-200',
         'indigo' => 'text-indigo-800 bg-indigo-100 border border-indigo-200',
+        'orange' => 'text-orange-800 bg-orange-100 border border-orange-200',
         'black' => 'text-white bg-black',
         'gray' => 'text-gray-800 bg-gray-100',
     ],
@@ -42,6 +43,8 @@
         'published' => 'green',
         'completed' => 'green',
         'onboarded' => 'green',
+        'offered' => 'green',
+        'accepted' => 'green',
 
         'blocked' => 'black',
         'trashed' => 'black',

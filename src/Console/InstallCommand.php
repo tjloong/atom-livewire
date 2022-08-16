@@ -854,6 +854,14 @@ class InstallCommand extends Command
         });
         $this->line('Made password column in users table nullable.');
 
+        if (Schema::hasColumn('users', 'login_at')) $this->warn('users table already has login_at column, skipped.');
+        else {
+            Schema::table('users', function ($table) {
+                $table->timestamp('login_at')->nullable()->after('remember_token');
+            });
+            $this->line('Added login_at column to users table.');
+        }
+
         if (Schema::hasColumn('users', 'activated_at')) $this->warn('users table already has activated_at column, skipped.');
         else {
             Schema::table('users', function ($table) {

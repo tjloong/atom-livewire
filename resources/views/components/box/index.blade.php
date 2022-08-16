@@ -1,7 +1,7 @@
-<div {{ $attributes->merge(['class' => 'box bg-white rounded-md border shadow']) }}">
+<div class="box bg-white border shadow {{ $attributes->get('class', 'rounded-md') }}">
     <div class="p-1">
         @if (isset($header))
-            <div class="pt-3 pb-4 px-3 border-b font-bold text-lg">
+            <div class="pt-3 pb-4 px-3 border-b font-bold {{ $header->attributes->get('class', 'text-lg') }}">
                 {{ $header }}
             </div>
         @elseif ($header = $attributes->get('header'))

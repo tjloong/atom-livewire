@@ -159,7 +159,9 @@ class Checkout extends Component
         // no payment amount, provision straight away
         else $accountPayment->provision();
 
-        return redirect(auth()->user()->home());
+        return auth()->user()->account->status === 'new'
+            ? redirect()->route('app.onboarding.home')
+            : redirect(auth()->user()->home());
     }
 
     /**
