@@ -100,7 +100,7 @@ function account_settings($name, $default = null)
 
     $settings = auth()->user()->account->accountSettings;
 
-    if (is_string($name)) return data_get($settings, $name);
+    if (is_string($name)) return data_get($settings, $name, $default);
     else $settings->fill($name)->save();
 }
 

@@ -26,8 +26,8 @@
                         </div>
                     </div>
     
-                    <div class="shrink-0 self-center">
-                        <x-icon name="chevron-right"/>
+                    <div class="shrink-0 pt-1">
+                        <x-icon name="chevron-right" size="15px"/>
                     </div>    
                 </div>
         

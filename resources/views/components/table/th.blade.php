@@ -26,8 +26,8 @@
                 @else {{ $slot }}
                 @endif
             </a>
-            <x-icon x-show="sorted && $wire.get('sortOrder') === 'desc'" name="chevron-up" size="xs"/>
-            <x-icon x-show="sorted && $wire.get('sortOrder') === 'asc'" name="chevron-down" size="xs"/>
+            <x-icon x-show="sorted && $wire.get('sortOrder') === 'desc'" name="chevron-up" size="10px"/>
+            <x-icon x-show="sorted && $wire.get('sortOrder') === 'asc'" name="chevron-down" size="10px"/>
         </div>
     @else
         <div {{ $attributes->class(['text-gray-500 py-1 px-2', 'text-left']) }}">

@@ -66,7 +66,7 @@
                     <div x-text="formatDate(from) || '{{ __('From') }}'" class="p-1 rounded"></div>
                     <x-icon name="right-arrow-alt"/>
                     <div x-text="formatDate(to) || '{{ __('To') }}'" class="p-1 rounded"></div>
-                    <x-icon name="chevron-down"/>
+                    <x-icon name="chevron-down" size="15px"/>
                 </div>
             </a>
         </div>

@@ -50,7 +50,7 @@
         </div>
 
         <div x-show="active && !show" class="shrink-0 flex items-center justify-center md:hidden">
-            <x-icon name="chevron-down"/>
+            <x-icon name="chevron-down" size="15px"/>
         </div>
     </div>
 @endif
