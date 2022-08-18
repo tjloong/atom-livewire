@@ -20,7 +20,7 @@
                             <div class="grid gap-6 md:grid-cols-3">
                                 @forelse ($this->blogs as $blog)
                                     <x-blog.card
-                                        :href="route('page', ['blog/'.$blog->slug])"
+                                        :href="'/blog/'.$blog->slug"
                                         :cover="optional($blog->cover)->url"
                                         :title="$blog->title"
                                         :excerpt="html_excerpt($blog->excerpt ?? $blog->content)"
@@ -56,7 +56,7 @@
                                         <a 
                                             wire:click="toggleFilter('{{ $label->slug }}')"
                                             class="
-                                                inline-block py-1.5 px-3 rounded-md font-medium border-2
+                                                inline-block py-1.5 px-3 rounded-lg font-medium border-2
                                                 {{ collect($filters)->contains($label->slug) 
                                                     ? 'border-theme bg-theme text-white' 
                                                     : 'border-gray-400 bg-white text-gray-500' }}
@@ -81,7 +81,7 @@
             
                             @foreach ($this->recents as $blog)
                                 <x-blog.card size="sm"
-                                    :href="route('page', ['blog/'.$blog->slug])"
+                                    :href="'/blog/'.$blog->slug"
                                     :title="$blog->title"
                                     :excerpt="html_excerpt($blog->excerpt ?? $blog->content)"
                                     :date="$blog->published_at"

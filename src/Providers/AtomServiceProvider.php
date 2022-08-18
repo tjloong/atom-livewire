@@ -104,10 +104,10 @@ class AtomServiceProvider extends ServiceProvider
 
         $components = [
             // web
-            'atom.web.pages.index' => 'Web\\Pages\\Index',
-            'atom.web.pages.blog' => 'Web\\Pages\\Blog',
-            'atom.web.pages.contact.index' => 'Web\\Pages\\Contact\\Index',
-            'atom.web.pages.contact.thank-you' => 'Web\\Pages\\Contact\\ThankYou',
+            'atom.web' => 'Web\Index',
+            'atom.web.blog' => 'Web\Blog',
+            'atom.web.contact-us' => 'Web\ContactUs\Index',
+            'atom.web.contact-us.thank-you' => 'Web\ContactUs\ThankYou',
 
             // auth portal
             'atom.auth.login' => 'Auth\Login',

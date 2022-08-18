@@ -67,7 +67,7 @@ class Login extends Component
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
-        return redirect()->route('page');
+        return redirect('/');
     }
 
     /**

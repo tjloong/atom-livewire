@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Web\Pages\Contact;
+namespace Jiannius\Atom\Http\Livewire\Web\ContactUs;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Notification;
@@ -8,10 +8,7 @@ use Jiannius\Atom\Notifications\EnquiryNotification;
 
 class Index extends Component
 {
-    public $ref;
     public $enquiry;
-
-    protected $queryString = ['ref'];
 
     /**
      * Validation rules
@@ -44,6 +41,9 @@ class Index extends Component
      */
     public function mount()
     {
+        // prevent bot
+        if (request()->query('ref')) return redirect('/');
+
         $this->enquiry = enabled_module('enquiries')
             ? model('enquiry')
             : [
@@ -52,14 +52,6 @@ class Index extends Component
                 'email' => null,
                 'message' => null,
             ];
-    }
-
-    /**
-     * Prevent bot
-     */
-    public function dehydrate()
-    {
-        if (!$this->ref) return redirect('/');
     }
 
     /**
@@ -105,7 +97,7 @@ class Index extends Component
             Notification::route('mail', $mail['to'])->notify(new EnquiryNotification($mail['params']));
         }
         
-        return redirect()->route('page', ['contact/thank-you']);
+        return redirect('/contact-us/thank-you');
     }
 
     /**
@@ -113,6 +105,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::web.pages.contact.index')->layout('layouts.web');
+        return view('atom::web.contact-us.index')->layout('layouts.web');
     }
 }

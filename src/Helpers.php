@@ -176,19 +176,28 @@ function define_route($path = null, $action = null, $method = 'get')
     if (!$path && !$action) return app('router');
     if (is_callable($action)) return app('router')->$method($path, $action);
 
-    $isController = str()->is('*Controller@*', $action);
-    $namespacePrefix = $isController ? 'Jiannius\\Atom\\Http\\Controllers\\' : 'Jiannius\\Atom\\Http\\Livewire\\';
-    $tryNamespacePrefix = $isController ? 'App\\Http\\Controllers\\' : 'App\\Http\\Livewire\\';
-    $className = $isController ? substr($action, 0, strpos($action, '@')) : $action;
-    $classMethod = $isController ? str_replace('@', '', substr($action, strpos($action, '@'), strlen($action))) : null;
-    $fullClass = class_exists($tryNamespacePrefix . $className)
-        ? $tryNamespacePrefix . $className
-        : $namespacePrefix . $className;
+    // controller
+    if (str()->is('*Controller@*', $action)) {
+        $postfix = substr($action, 0, strpos($action, '@'));
+        $classmethod = str_replace('@', '', substr($action, strpos($action, '@'), strlen($action)));
+        $class = collect([
+            'App\Http\Controllers\\'.$postfix,
+            'Jiannius\Atom\Http\Controllers\\'.$postfix,
+        ])->first(fn($val) => class_exists($val));
 
-    return app('router')->$method(
-        $path, 
-        $classMethod ? [$fullClass, $classMethod] : $fullClass
-    );
+        return app('router')->$method($path, [$class, $classmethod]);
+    }
+    // livewire
+    else {
+        $class = collect([
+            'App\Http\Livewire\\'.$action,
+            'App\Http\Livewire\\'.$action.'\Index',
+            'Jiannius\Atom\Http\Livewire\\'.$action,
+            'Jiannius\Atom\Http\Livewire\\'.$action.'\Index',
+        ])->first(fn($val) => class_exists($val));
+
+        return app('router')->$method($path, $class);
+    }
 }
 
 /**

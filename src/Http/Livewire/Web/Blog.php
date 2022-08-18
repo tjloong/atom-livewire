@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Web\Pages;
+namespace Jiannius\Atom\Http\Livewire\Web;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -9,6 +9,7 @@ class Blog extends Component
 {
     use WithPagination;
 
+    public $slug;
     public $search;
     public $filters;
     public $preview;
@@ -18,36 +19,13 @@ class Blog extends Component
     ];
 
     /**
-     * Mount event
-     * 
-     * @return void
+     * Mount
      */
     public function mount()
     {
         $this->preview = auth()->user() && request()->query('preview');
         $this->filters = array_filter([optional(model('label')->where('slug', $this->slug)->first())->slug]);
-
-        if ($this->blog) {
-            config([
-                'atom.seo.title' => $this->blog->seo->title ?? $this->blog->title,
-                'atom.seo.description' => $this->blog->seo->description ?? html_excerpt($this->blog->excerpt ?? $this->blog->content),
-                'atom.seo.image' => $this->blog->seo->image ?? $this->blog->cover->url ?? null,
-            ]);
-        }
-    }
-
-    /**
-     * Get slug property
-     */
-    public function getSlugProperty()
-    {
-        $slug = request()->route('slug');
-
-        if ($slug === 'blog' || $slug === 'blog/') return null;
-
-        $split = explode('/', $slug);
-
-        return end($split);
+        $this->setSeo();
     }
 
     /**
@@ -55,12 +33,16 @@ class Blog extends Component
      */
     public function getBlogProperty()
     {
-        if ($this->filters) return;
+        if (!$this->slug) return;
 
-        return model('blog')
+        $blogs = model('blog')
             ->when(!$this->preview, fn($q) => $q->status('published'))
             ->where('slug', $this->slug)
-            ->first();
+            ->latest()
+            ->get();
+
+        if ($blogs->count() > 1) return $blogs->where('locale', app()->currentLocale())->first();
+        else return $blogs->first();
     }
 
     /**
@@ -69,7 +51,7 @@ class Blog extends Component
     public function getBlogsProperty()
     {
         if ($this->blog) return;
-        
+
         return model('blog')
             ->status('published')
             ->when($this->search, fn($q) => $q->search($this->search))
@@ -78,7 +60,7 @@ class Blog extends Component
             )
             ->orderBy('published_at', 'desc')
             ->orderBy('created_at', 'desc')
-            ->paginate(30);
+            ->paginate(50);
     }
 
     /**
@@ -116,6 +98,20 @@ class Blog extends Component
     }
 
     /**
+     * Set Seo
+     */
+    public function setSeo()
+    {
+        if (!$this->blog) return;
+
+        config([
+            'atom.seo.title' => $this->blog->seo->title ?? $this->blog->title,
+            'atom.seo.description' => $this->blog->seo->description ?? html_excerpt($this->blog->excerpt ?? $this->blog->content),
+            'atom.seo.image' => $this->blog->seo->image ?? $this->blog->cover->url ?? null,
+        ]);
+    }
+
+    /**
      * Toggle filter
      */
     public function toggleFilter($slug)
@@ -129,6 +125,6 @@ class Blog extends Component
      */
     public function render()
     {
-        return view('atom::web.pages.blog')->layout('layouts.web');
+        return view('atom::web.blog')->layout('layouts.web');
     }
 }

@@ -586,6 +586,7 @@ class InstallCommand extends Command
                 $table->string('name');
                 $table->string('title')->nullable();
                 $table->string('slug')->nullable();
+                $table->string('locale')->nullable();
                 $table->longText('content')->nullable();
                 $table->json('seo')->nullable();
                 $table->json('data')->nullable();
@@ -601,6 +602,7 @@ class InstallCommand extends Command
             if (DB::table('pages')->where('slug', $page['slug'])->count()) continue;
 
             DB::table('pages')->insert(array_merge($page, [
+                'locale' => 'en',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]));

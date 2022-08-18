@@ -86,7 +86,7 @@ class Index extends Component
             'Disclaimer',
         ])->get()->map(fn($page) => [
             'label' => $page->title,
-            'href' => route('page', [$page->slug]),
+            'href' => '/'.$page->slug,
         ]);
     }
 

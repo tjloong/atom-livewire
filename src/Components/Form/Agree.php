@@ -26,7 +26,7 @@ class Agree extends Component
         if (!$this->links && $this->type === 'tnc') {
             $this->links = model('page')->whereIn('name', ['Terms', 'Privacy'])
                 ->get()
-                ->mapWithKeys(fn($page) => [$page->title => route('page', [$page->slug])])
+                ->mapWithKeys(fn($page) => [$page->title => '/'.$page->slug])
                 ->all();
         }
     }

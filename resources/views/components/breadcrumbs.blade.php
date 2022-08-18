@@ -1,6 +1,6 @@
 @if ($attributes->has('separator'))
     <li class="flex items-center justify-center text-gray-500">
-        <x-icon name="chevron-right"/>
+        <x-icon name="chevron-right" size="10px"/>
     </li>
 
 @elseif ($item = $attributes->get('item'))

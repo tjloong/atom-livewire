@@ -15,7 +15,11 @@ class Index extends Component
     {
         $this->page = model('page')->findOrFail($page);
 
-        breadcrumbs()->push($this->page->name);
+        breadcrumbs()->push($this->page->name.(
+            count(config('atom.locales')) > 1
+                ? ' ('.data_get(metadata()->locales($this->page->locale), 'name').')'
+                : ''
+        ));
     }
 
     /**

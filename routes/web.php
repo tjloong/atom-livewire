@@ -82,7 +82,7 @@ if (!config('atom.static_site')) {
          * Enquiries
          */
         if (enabled_module('enquiries')) {
-            Route::prefix('enquiry')->as('app.enquiry.')->group(function () {
+            define_route()->prefix('enquiry')->as('app.enquiry.')->group(function () {
                 define_route('listing',  'App\Enquiry\Listing')->name('listing');
                 define_route('{enquiry}', 'App\Enquiry\Update')->name('update');
             });
@@ -92,9 +92,9 @@ if (!config('atom.static_site')) {
          * Pages
          */
         if (enabled_module('pages')) {
-            Route::prefix('page')->as('app.page.')->group(function () {
-                define_route('listing',  'App\\Page\\Listing')->name('listing');
-                define_route('{page}', 'App\\Page\\Update\\Index')->name('update');
+            define_route()->prefix('page')->as('app.page.')->group(function () {
+                define_route('listing',  'App\Page\Listing')->name('listing');
+                define_route('{page}', 'App\Page\Update')->name('update');
             });
         }
 
@@ -256,12 +256,18 @@ if (!config('atom.static_site')) {
 /**
  * Web
  */
+if (enabled_module('blogs')) {
+    define_route('blog/{slug?}', 'Web\Blog');
+}
+
+define_route('contact-us', 'Web\ContactUs\Index');
+define_route('contact-us/thank-you', 'Web\ContactUs\ThankYou');
+
 // A catch all route after the app is booted
 // so this route will be register after the consuming app's routes
 app()->booted(function() {
-    define_route('{slug?}', 'Web\Index')
+    define_route('{slug?}', 'Web\CatchAll')
         ->middleware('web')
-        ->name('page')
         // slugs to exclude
         ->where(['slug' => '^(?!'.implode('|', [
             'livewire',

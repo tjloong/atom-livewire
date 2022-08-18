@@ -1,4 +1,4 @@
-<div {{ $attributes->merge(['class' => 'py-20 px-6']) }}>
+<div {{ $attributes }}>
     @if ($title = $attributes->get('title'))
         <div class="text-3xl font-bold pb-4">{{ __($title) }}</div>
     @elseif (isset($title))

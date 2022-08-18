@@ -6,13 +6,7 @@
 
 @section('content')
     <x-navbar align="right">
-        @if (Route::has('blogs'))
-            <x-navbar.item href="{{ route('page', ['blog']) }}" label="Blogs"/>
-        @endif
-
-        @if (Route::has('contact'))
-            <x-navbar.item href="{{ route('page', ['slug' => 'contact', 'ref' => 'landing']) }}" label="Contact"/>
-        @endif
+        <x-navbar.item href="/contact-us?ref=landing" label="Contact"/>
     </x-navbar>
 
     <x-loader/>
