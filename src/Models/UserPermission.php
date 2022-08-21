@@ -6,30 +6,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserPermission extends Model
 {
-    protected $table = 'users_permissions';
     protected $guarded = [];
 
     public $timestamps = false;
 
     /**
      * Scope for granted abiltiy
-     * 
-     * @param Builder $query
-     * @param string $ability
      */
-    public function scopeGranted($query, $ability)
+    public function scopeGranted($query, $permission = null)
     {
-        return $query->where('permission', $ability)->where('is_granted', true);
+        return $query
+            ->when($permission, fn($q) => $q->where('permission', $permission))
+            ->where('is_granted', true);
     }
 
     /**
      * Scope for forbidden ability
-     * 
-     * @param Builder $query
-     * @param string $ability
      */
-    public function scopeForbidden($query, $ability)
+    public function scopeForbidden($query, $permission = null)
     {
-        return $query->where('permission', $ability)->where('is_granted', false);
+        return $query
+            ->when($permission, fn($q) => $q->where('permission', $permission))
+            ->where('is_granted', false);
     }
 }

@@ -1,30 +1,38 @@
-<div class="max-w-screen-sm mx-auto">
+<div class="max-w-screen-lg mx-auto">
     <x-page-header title="Roles">
-        <x-button icon="plus" href="{{ route('app.role.create') }}">
-            New Role
-        </x-button>
+        <x-button.create
+            label="New Role"
+            :href="route('app.role.create')"
+        />
     </x-page-header>
 
-    <x-table :total="$roles->total()" :links="$roles->links()">
-        <x-slot name="head">
-            <x-table head sort="name">Name</x-table>
-            <x-table head align="right">Users</x-table>
-        </x-slot>
+    <x-table :total="$this->roles->total()" :links="$this->roles->links()">
+        <x-slot:head>
+            <x-table.th label="Name" sort="name"/>
+            @module('permissions') <x-table.th label="Permissions" class="text-right"/> @endmodule
+            <x-table.th label="Users" class="text-right"/>
+        </x-slot:head>
 
-        <x-slot name="body">
-        @foreach ($roles as $role)
-            <x-table row>
-                <x-table cell>
-                    <a href="{{ route('app.role.update', [$role->id]) }}">
-                        {{ $role->name }}
-                    </a>
-                </x-table>
-                
-                <x-table cell class="text-right">
-                    {{ $role->users_count }} {{ str('user')->plural($role->users_count) }}
-                </x-table>
-            </x-table>
-        @endforeach
-        </x-slot>
+        <x-slot:body>
+            @foreach ($this->roles as $role)
+                <x-table.tr>
+                    <x-table.td :label="$role->name" :href="route('app.role.update', [$role->id])"/>
+
+                    @module('permissions')
+                        <x-table.td class="text-right">
+                            @if ($role->slug === 'admin') --
+                            @else
+                                @php $permissionsCount = $role->permissions()->granted()->count() @endphp
+                                {{ __(':count '.str()->plural('permission', $permissionsCount), ['count' => $permissionsCount]) }}
+                            @endif
+                        </x-table.td>    
+                    @endmodule
+
+                    <x-table.td class="text-right">
+                        {{ __(':count '.str()->plural('user', $role->users_count), ['count' => $role->users_count]) }}
+                    </x-table.td>
+                </x-table.tr>
+            @endforeach
+        </x-slot:body>
     </x-table>
 </div>

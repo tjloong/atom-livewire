@@ -34,6 +34,24 @@ function verify_recaptcha($token, $secret = null)
 /**
  * Get livewire component name
  */
+function lw($name)
+{
+    $segments = explode('.', $name);
+    $slashed = collect($segments)->map(fn($str) => str()->studly($str))->filter()->join('\\');
+    $class = collect([
+        'App\Http\Livewire\\'.$slashed,
+        'App\Http\Livewire\\'.$slashed.'\Index',
+        'Jiannius\Atom\Http\Livewire\\'.$slashed,
+        'Jiannius\Atom\Http\Livewire\\'.$slashed.'\Index',
+    ])->first(fn($ns) => class_exists($ns));
+
+    if (str($class)->startsWith('Jiannius\Atom')) return 'atom.'.$name;
+    else return $name;
+}
+
+/**
+ * Get livewire component name
+ */
 function livewire_name($path = null)
 {
     if (!$path) return;

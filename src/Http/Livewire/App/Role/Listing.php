@@ -12,10 +12,10 @@ class Listing extends Component
 
     public $sortBy = 'name';
     public $sortOrder = 'asc';
-    public $filters = ['search' => ''];
+    public $filters = ['search' => null];
 
     protected $queryString = [
-        'filters', 
+        'filters' => ['except' => ['search' => null]],
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
         'page' => ['except' => 1],
@@ -34,10 +34,12 @@ class Listing extends Component
      */
     public function getRolesProperty()
     {
-        return Role::query()
+        return model('role')
+            ->belongsToAccount()
             ->withCount('users')
             ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder);
+            ->orderBy($this->sortBy, $this->sortOrder)
+            ->paginate(50);
     }
 
     /**
@@ -53,8 +55,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.role.listing', [
-            'roles' => $this->roles->paginate(30),
-        ]);
+        return view('atom::app.role.listing');
     }
 }

@@ -23,15 +23,14 @@ return [
      * App Portal
      */
     'app' => [
-        'users' => [
+        'user' => [
             'data_visibility' => true,
         ],
         
         'permissions' => [
-            'users' => ['manage'],
-            'labels' => ['manage'],
-            'files' => ['manage'],
-            'site-settings' => ['manage'],
+            'user' => ['manage'],
+            'label' => ['manage'],
+            'file' => ['manage'],
         ],
     ],
 ];

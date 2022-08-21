@@ -19,7 +19,7 @@
             },
         }"
         x-on:table-checkbox-checked.window="checkedValues = $event.detail"
-        class="relative shadow rounded-lg border w-full bg-white overflow-hidden"
+        class="relative shadow rounded-lg border w-full bg-white"
     >
         @if (isset($header))
             <div class="p-4 font-bold text-lg border-b">

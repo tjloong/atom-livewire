@@ -183,10 +183,10 @@ if (!config('atom.static_site')) {
          * Teams
          */
         if (enabled_module('teams')) {
-            Route::prefix('team')->as('app.team.')->group(function () {
-                define_route('listing', 'App\\Team\\Listing')->name('listing');
-                define_route('create', 'App\\Team\\Create')->name('create');
-                define_route('{id}', 'App\\Team\\Update')->name('update');
+            define_route()->prefix('team')->as('app.team.')->group(function () {
+                define_route('listing', 'App\Team\Listing')->name('listing');
+                define_route('create', 'App\Team\Create')->name('create');
+                define_route('{team}', 'App\Team\Update\Index')->name('update');
             });
         }
         
@@ -194,10 +194,10 @@ if (!config('atom.static_site')) {
          * Roles
          */
         if (enabled_module('roles')) {
-            Route::prefix('role')->as('app.role.')->group(function () {
-                define_route('listing', 'App\\Role\\Listing')->name('listing');
-                define_route('create', 'App\\Role\\Create')->name('create');
-                define_route('{id}', 'App\\Role\\Update')->name('update');
+            define_route()->prefix('role')->as('app.role.')->group(function () {
+                define_route('listing', 'App\Role\Listing')->name('listing');
+                define_route('create', 'App\Role\Create')->name('create');
+                define_route('{role}', 'App\Role\Update\Index')->name('update');
             });
         }
     
@@ -216,7 +216,7 @@ if (!config('atom.static_site')) {
         define_route()->prefix('user')->as('app.user.')->group(function () {
             define_route('listing', 'App\User\Listing')->name('listing');
             define_route('create', 'App\User\Create')->name('create');
-            define_route('{user}', 'App\User\Update')->name('update');
+            define_route('{user}', 'App\User\Update\Index')->name('update');
         });
 
         /**

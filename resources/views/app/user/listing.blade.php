@@ -1,5 +1,5 @@
-<div class="max-w-screen-md mx-auto">
-    @if ($isFullpage)
+<div class="max-w-screen-lg mx-auto">
+    @if ($fullpage)
         <x-page-header title="Users">
             <x-button.create label="New User" :href="route('app.user.create')"/>
         </x-page-header>
@@ -18,27 +18,24 @@
             </x-slot:header>
         @endif
 
-        @if ($this->tabs)
+        @if (count($this->tabs) > 1)
             <x-slot:toolbar :trashed="data_get($filters, 'status') === 'trashed'">
                 <x-tab wire:model="filters.status">
-                @foreach ($this->tabs as $item)
-                    <x-tab item :name="data_get($item, 'slug')" :label="data_get($item, 'label')"/>
-                @endforeach
+                    @foreach ($this->tabs as $item)
+                        <x-tab.item 
+                            :name="data_get($item, 'slug')" 
+                            :label="data_get($item, 'label')"
+                            :count="data_get($item, 'count')"
+                        />
+                    @endforeach
                 </x-tab>
             </x-slot:toolbar>
         @endif
 
         <x-slot:head>
-            <x-table.th sort="name">{{ __('Name') }}</x-table.th>
-            
-            @if (auth()->user()->isAccountType('root'))
-                <x-table.th>{{ __('Type') }}</x-table.th>
-            @endif
-            
-            @module('roles')
-                <x-table.th class="text-right">{{ __('Role') }}</x-table.th>
-            @endmodule
-
+            <x-table.th label="Name" sort="name"/>
+            @module('roles') <x-table.th label="Role" class="text-right"/> @endmodule
+            <x-table.th label="Created Date" class="text-right"/>
             <x-table.th/>
         </x-slot:head>
 
@@ -60,27 +57,18 @@
                         @endif
                     </x-table.td>
 
-                    @if (auth()->user()->isAccountType('root'))
-                        <x-table.td>
-                            {{ $user->account->type }}
-                        </x-table.td>
-                    @endif
-                    
                     @module('roles')
-                        <x-table.td class="text-right">
-                            {{ $user->role->name ?? '--' }}
-                        </x-table.td>
+                        <x-table.td :label="data_get($user->role, 'name')" class="text-right"/>
                     @endmodule
 
-                    <x-table.td class="text-right">
-                        <x-badge>{{ $user->status }}</x-badge>
-                    </x-table.td>
+                    <x-table.td :date="$user->created_at" class="text-right"/>
+                    <x-table.td :status="$user->status" class="text-right"/>
                 </x-table.tr>
             @endforeach
         </x-slot:body>
 
         <x-slot:empty>
-            <x-empty-state :title="__('No Users')" :subtitle="__('User list is empty')"/>
+            <x-empty-state title="No Users" subtitle="User list is empty"/>
         </x-slot:empty>
     </x-table>
 </div>

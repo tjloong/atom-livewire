@@ -1,4 +1,4 @@
-<div class="max-w-md mx-auto">
+<div class="max-w-screen-sm mx-auto">
     <x-page-header title="Create Team" back/>
-    @livewire('atom.team.form', ['team' => $team])
+    @livewire('atom.app.team.update.info', compact('team'))
 </div>

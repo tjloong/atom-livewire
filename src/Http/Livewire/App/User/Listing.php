@@ -9,12 +9,14 @@ class Listing extends Component
 {
     use WithPagination;
 
+    public $role;
     public $account;
+    public $fullpage;
     public $sortBy = 'name';
     public $sortOrder = 'asc';
     public $filters = [
-        'search' => '',
-        'status' => 'all',
+        'search' => null,
+        'status' => null,
     ];
 
     protected $queryString = [
@@ -22,8 +24,8 @@ class Listing extends Component
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
         'filters' => ['except' => [
-            'search' => '',
-            'status' => 'all', 
+            'search' => null,
+            'status' => null,
         ]], 
     ];
 
@@ -32,7 +34,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        if ($this->isFullpage = current_route('app.user.listing')) {
+        if ($this->fullpage = current_route('app.user.listing')) {
             breadcrumbs()->home('Users');
         }
     }
@@ -42,12 +44,14 @@ class Listing extends Component
      */
     public function getTabsProperty()
     {
-        $tabs = collect([['slug' => 'all', 'label' => 'All']]);
         $trashed = (clone $this->query)->status('trashed')->count();
 
-        if ($trashed) $tabs->push(['slug' => 'trashed', 'label' => __('Trashed').'('.$trashed.')']);
-
-        return $tabs->count() > 1 ? $tabs : null;
+        return array_filter([
+            ['slug' => null, 'label' => 'All'],
+            $trashed
+                ? ['slug' => 'trashed', 'label' => 'Trashed', 'count' => $trashed]
+                : null,
+        ]);
     }
 
     /**
@@ -56,13 +60,13 @@ class Listing extends Component
     public function getQueryProperty()
     {
         return model('user')
-            ->when($this->account, 
-                fn($q) => $q->where('account_id', $this->account->id),
-                fn($q) => $q->when(auth()->user()->isAccountType('root'), 
-                    fn($q) => $q->whereHas('account', fn($q) => $q->whereIn('accounts.type', ['root', 'system'])),
-                    fn($q) => $q->where('account_id', auth()->user()->account_id)
-                )
+            ->when(
+                auth()->user()->isAccountType('root'), 
+                fn($q) => $q->where('accounts.type', 'root'),
+                fn($q) => $q->where('account_id', auth()->user()->account_id)
             )
+            ->when($this->role, fn($q) => $q->where('role_id', $this->role->id))
+            ->when($this->account, fn($q) => $q->where('account_id', $this->account->id))
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
     }
@@ -72,7 +76,7 @@ class Listing extends Component
      */
     public function getUsersProperty()
     {
-        return $this->query->paginate(30);
+        return $this->query->paginate(50);
     }
 
     /**
@@ -90,7 +94,11 @@ class Listing extends Component
     {
         (clone $this->query)->onlyTrashed()->forceDelete();
 
-        $this->dispatchBrowserEvent('toast', ['message' => 'Trashed Cleared', 'type' => 'success']);
+        $this->dispatchBrowserEvent('toast', [
+            'message' => __('Trashed Cleared'), 
+            'type' => 'success',
+        ]);
+
         $this->reset('filters');
     }
 

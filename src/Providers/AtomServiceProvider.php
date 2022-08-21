@@ -87,21 +87,6 @@ class AtomServiceProvider extends ServiceProvider
      */
     public function registerLivewires()
     {
-        // user
-        Livewire::component('atom.app.user.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Listing');
-        Livewire::component('atom.app.user.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Create');
-        Livewire::component('atom.app.user.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Update');
-        Livewire::component('atom.app.user.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\User\\Form');
-
-        // permission
-        Livewire::component('atom.permission.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Permission\\Listing');
-
-        // team
-        Livewire::component('atom.team.listing', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Listing');
-        Livewire::component('atom.team.create', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Create');
-        Livewire::component('atom.team.update', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Update');
-        Livewire::component('atom.team.form', 'Jiannius\\Atom\\Http\\Livewire\\App\\Team\\Form');
-
         $components = [
             // web
             'atom.web' => 'Web\Index',
@@ -109,7 +94,7 @@ class AtomServiceProvider extends ServiceProvider
             'atom.web.contact-us' => 'Web\ContactUs\Index',
             'atom.web.contact-us.thank-you' => 'Web\ContactUs\ThankYou',
 
-            // auth portal
+            // auth
             'atom.auth.login' => 'Auth\Login',
             'atom.auth.register' => 'Auth\Register',
             'atom.auth.register-form' => 'Auth\RegisterForm',
@@ -193,8 +178,24 @@ class AtomServiceProvider extends ServiceProvider
             // role
             'atom.app.role.listing' => 'App\Role\Listing',
             'atom.app.role.create' => 'App\Role\Create',
-            'atom.app.role.update' => 'App\Role\Update',
-            'atom.app.role.form' => 'App\Role\Form',
+            'atom.app.role.update' => 'App\Role\Update\Index',
+            'atom.app.role.update.info' => 'App\Role\Update\Info',
+
+            // permission
+            'atom.app.permission.listing' => 'App\Permission\Listing',
+
+            // user
+            'atom.app.user.listing' => 'App\User\Listing',
+            'atom.app.user.create' => 'App\User\Create',
+            'atom.app.user.update' => 'App\User\Update\Index',
+            'atom.app.user.update.info' => 'App\User\Update\Info',
+
+            // team
+            'atom.app.team.listing' => 'App\Team\Listing',
+            'atom.app.team.create' => 'App\Team\Create',
+            'atom.app.team.update' => 'App\Team\Update\Index',
+            'atom.app.team.update.info' => 'App\Team\Update\Info',
+            'atom.app.team.update.users' => 'App\Team\Update\Users',
 
             // file
             'atom.app.file.form' => 'App\File\Form',
@@ -279,12 +280,12 @@ class AtomServiceProvider extends ServiceProvider
         
         Gate::before(function ($user, $permission) {
             if (!enabled_module('permissions')) return true;
-            
+
             [$module, $action] = explode('.', $permission);
-            $isActionDefined = in_array($action, config('atom.app.permissions.'.$module) ?? []);
+            $isActionDefined = in_array($action, config('atom.app.permissions.'.$module, []));
 
             if (!$isActionDefined) return true;
-            if ($user->is_root) return true;
+            if ($user->isAccountType('root')) return true;
 
             if (enabled_module('roles')) {
                 return $user->permissions()->granted($permission)->count() > 0 || (

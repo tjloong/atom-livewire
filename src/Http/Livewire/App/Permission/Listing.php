@@ -89,7 +89,10 @@ class Listing extends Component
             $permission->save();
         }
 
-        $this->dispatchBrowserEvent('toast', ['message' => 'Permission Updated', 'type' => 'success']);
+        $this->dispatchBrowserEvent('toast', [
+            'message' => __('Permission Updated'),
+            'type' => 'success',
+        ]);
     }
 
     /**
@@ -97,8 +100,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.permission.listing', [
-            'permissions' => $this->permissions,
-        ]);
+        return view('atom::app.permission.listing');
     }
 }

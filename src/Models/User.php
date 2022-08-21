@@ -4,7 +4,6 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -35,6 +34,25 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     const ROOT_EMAIL = 'root@jiannius.com';
+
+    /**
+     * Model boot
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function($user) {
+            $user->sendAccountActivation();
+        });
+
+        static::updated(function($user) {
+            if ($user->isDirty('email') && config('atom.accounts.verify')) {
+                $user->fill(['email_verified_at' => null])->saveQuietly();
+                $user->sendEmailVerificationNotification();
+            }
+        });
+    }
 
     /**
      * Get user home
@@ -80,15 +98,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('teams')) return;
 
-        return $this->belongsToMany(get_class(model('team')), 'teams_users');
+        return $this->belongsToMany(get_class(model('team')), 'team_users');
     }
 
     /**
      * Scope for fussy search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
     public function scopeSearch($query, $search)
     {
@@ -101,10 +115,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Scope for is role
-     * 
-     * @param Builder $query
-     * @param string $name
-     * @return Builder
      */
     public function scopeWhereIsRole($query, $name)
     {
@@ -116,10 +126,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Scope for team id
-     * 
-     * @param Builder $query
-     * @param integer $id
-     * @return Builder
      */
     public function scopeTeamId($query, $id)
     {
@@ -131,10 +137,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Scope for status
-     * 
-     * @param Builder $query
-     * @param mixed $statuses
-     * @return Builder
      */
     public function scopeStatus($query, $statuses)
     {
@@ -160,8 +162,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Get status attribute
-     * 
-     * @return string
      */
     public function getStatusAttribute()
     {
@@ -184,9 +184,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Check user is role
-     * 
-     * @param mixed $names
-     * @return boolean
      */
     public function isRole($names)
     {
@@ -204,8 +201,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Invite user to activate account
-     * 
-     * @return void
      */
     public function sendAccountActivation()
     {
@@ -216,8 +211,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Send password reset link
-     * 
-     * @return void
      */
     public function sendPasswordResetLink()
     {

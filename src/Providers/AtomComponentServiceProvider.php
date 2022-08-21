@@ -66,6 +66,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'button.create',
             'button.submit',
             'button.delete',
+            'button.confirm',
             
             'dropdown.index',
             'dropdown.item',

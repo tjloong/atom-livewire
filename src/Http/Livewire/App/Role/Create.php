@@ -8,23 +8,14 @@ class Create extends Component
 {
     public $role;
 
-    protected $listeners = ['saved'];
-
     /**
      * Mount
      */
     public function mount()
     {
-        breadcrumbs()->push('Create Role');
         $this->role = model('role');
-    }
 
-    /**
-     * Saved
-     */
-    public function saved($id)
-    {
-        return redirect()->route('app.role.update', [$id]);
+        breadcrumbs()->push('Create Role');
     }
 
     /**

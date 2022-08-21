@@ -9,7 +9,7 @@
                 {{ __($attributes->get('title') ?? 'No Results') }}
             </div>
         
-            <div class="text-gray-400 font-medium text-center">
+            <div class="text-gray-400 font-medium text-center text-base">
                 {{ __($attributes->get('subtitle') ?? 'There is nothing returned from the search') }}
             </div>
         </div>

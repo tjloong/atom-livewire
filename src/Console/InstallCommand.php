@@ -560,14 +560,14 @@ class InstallCommand extends Command
             $this->line('teams table created successfully.');
         }
 
-        if (Schema::hasTable('teams_users')) $this->warn('teams_users table exists, skipped.');
+        if (Schema::hasTable('team_users')) $this->warn('team_users table exists, skipped.');
         else {
-            Schema::create('teams_users', function ($table) {
+            Schema::create('team_users', function ($table) {
                 $table->id();
                 $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('cascade');
                 $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             });
-            $this->line('teams_users table created successfully.');
+            $this->line('team_users table created successfully.');
         }
     }
 
@@ -674,29 +674,29 @@ class InstallCommand extends Command
         $this->newLine();
         $this->info('Installing permissions...');
 
-        if (Schema::hasTable('users_permissions')) $this->warn('users_permissions table exists, skipped.');
+        if (Schema::hasTable('user_permissions')) $this->warn('user_permissions table exists, skipped.');
         else {
-            Schema::create('users_permissions', function($table) {
+            Schema::create('user_permissions', function($table) {
                 $table->id();
                 $table->string('permission');
                 $table->boolean('is_granted')->nullable();
                 $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             });
 
-            $this->line('users_permissions table created successfully.');
+            $this->line('user_permissions table created successfully.');
         }
 
         if (Schema::hasTable('roles')) {
-            if (Schema::hasTable('roles_permissions')) $this->warn('roles_permissions table exists, skipped.');
+            if (Schema::hasTable('role_permissions')) $this->warn('role_permissions table exists, skipped.');
             else {
-                Schema::create('roles_permissions', function ($table) {
+                Schema::create('role_permissions', function ($table) {
                     $table->id();
                     $table->string('permission');
                     $table->boolean('is_granted')->nullable();
                     $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade');
                 });
     
-                $this->line('roles_permissions table created successfully.');
+                $this->line('role_permissions table created successfully.');
             }
         }
     }

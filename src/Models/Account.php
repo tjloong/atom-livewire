@@ -65,10 +65,6 @@ class Account extends Model
 
     /**
      * Scope for fussy search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
     public function scopeSearch($query, $search)
     {
@@ -80,8 +76,6 @@ class Account extends Model
 
     /**
      * Get status attribute
-     * 
-     * @return string
      */
     public function getStatusAttribute()
     {
@@ -98,8 +92,6 @@ class Account extends Model
 
     /**
      * Onboard account
-     * 
-     * @return void
      */
     public function onboard()
     {

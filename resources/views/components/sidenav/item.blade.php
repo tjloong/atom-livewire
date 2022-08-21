@@ -49,6 +49,14 @@
             @endif
         </div>
 
+        @if ($count = $attributes->get('count'))
+            <div class="shrink-0">
+                <div class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-xs">
+                    {{ $count }}
+                </div>
+            </div>
+        @endif 
+        
         <div x-show="active && !show" class="shrink-0 flex items-center justify-center md:hidden">
             <x-icon name="chevron-down" size="15px"/>
         </div>

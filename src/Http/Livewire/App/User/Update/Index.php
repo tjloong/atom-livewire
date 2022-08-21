@@ -1,14 +1,15 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\User;
+namespace Jiannius\Atom\Http\Livewire\App\User\Update;
 
 use Livewire\Component;
 
-class Update extends Component
+class Index extends Component
 {
+    public $tab = 'info';
     public $user;
 
-    protected $listeners = ['saved'];
+    protected $queryString = ['tab'];
 
     /**
      * Mount
@@ -23,11 +24,18 @@ class Update extends Component
     }
 
     /**
-     * Saved
+     * Get tabs property
      */
-    public function saved($id)
+    public function getTabsProperty()
     {
-        $this->dispatchBrowserEvent('toast', ['message' => 'User Updated', 'type' => 'success']);
+        $tabs = array_filter([
+            ['slug' => 'info', 'label' => 'User Information'],
+            enabled_module('permissions')
+                ? ['slug' => 'permissions', 'label' => 'Permissions']
+                : null,
+        ]);
+
+        return count($tabs) > 1 ? $tabs : [];
     }
 
     /**
@@ -88,6 +96,6 @@ class Update extends Component
      */
     public function render()
     {
-        return view('atom::app.user.update');
+        return view('atom::app.user.update.index');
     }
 }

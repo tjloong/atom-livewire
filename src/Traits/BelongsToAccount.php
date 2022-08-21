@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Traits;
 
+use Illuminate\Support\Facades\Schema;
+
 trait BelongsToAccount
 {
     public $enabledBelongsToAccountTrait = true;
@@ -48,6 +50,8 @@ trait BelongsToAccount
     public function scopeBelongsToAccount($query, $accountId = null)
     {
         $table = $this->getTable();
+
+        if (!Schema::hasColumn($table, 'account_id')) return $query;
 
         if (auth()->user()->isAccountType('root')) {
             if ($accountId) return $query->where($table.'.account_id', $accountId);
