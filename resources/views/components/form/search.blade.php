@@ -13,9 +13,9 @@
 
     <a 
         x-show="$wire.get('search')"
-        class="flex items-center justify-center text-gray-600"
+        class="flex text-gray-600"
         x-on:click="$wire.set('search', null)"
     >
-        <x-icon name="xmark" size="18px"/>
+        <x-icon name="xmark" size="15px" class="m-auto"/>
     </a>
 </div>
