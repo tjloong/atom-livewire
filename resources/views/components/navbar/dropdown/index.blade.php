@@ -6,7 +6,7 @@
             @if ($label = $attributes->get('label')) {{ __($label) }}
             @elseif (isset($anchor)) {{ $anchor }}
             @endif
-            <x-icon name="chevron-down" size="15px"/>
+            <x-icon name="chevron-down" size="12px"/>
         </div>
     </x-slot:anchor>
 

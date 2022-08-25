@@ -9,7 +9,6 @@
         <x-icon :name="$icon" 
             size="18px" 
             class="text-gray-400" 
-            type="{{ $attributes->get('icon-type') ?? 'regular' }}"
         />
     @endif
 
