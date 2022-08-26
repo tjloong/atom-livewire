@@ -15,6 +15,10 @@
         @endif
 
         <x-navbar.dropdown.item :href="route('login', ['logout' => true])" icon="logout" label="Logout"/>
+
+        @isset($foot)
+            {{ $foot }}
+        @endisset
     </div>
 
     {{-- desktop view --}}
@@ -36,6 +40,10 @@
                 @endif
     
                 <x-navbar.dropdown.item :href="route('login', ['logout' => true])" icon="logout" label="Logout"/>
+
+                @isset($foot)
+                    {{ $foot }}
+                @endisset
             </div>
         </x-navbar.dropdown>
     </div>
