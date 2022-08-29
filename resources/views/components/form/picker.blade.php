@@ -138,6 +138,7 @@
                             class="py-2 px-4 hover:bg-gray-100 cursor-pointer flex items-center justify-between"
                             data-option-value="{{ data_get($opt, 'value') }}"
                             data-option-label="{{ data_get($opt, 'label') }}"
+                            id="{{ uniqid() }}"
                         >
                             <div class="grid">
                                 @if ($isCountries)

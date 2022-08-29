@@ -21,8 +21,8 @@ class Slide extends Component
                 ? $image 
                 : data_get($image, 'url'),
             'fit' => data_get($image, 'fit', 'cover'),
-            'width' => $width ? $width.'px' : '100%',
-            'height' => $height ? $height.'px' : '100%',
+            'width' => $width ?? '100%',
+            'height' => $height ?? '100%',
         ];
     }
 
