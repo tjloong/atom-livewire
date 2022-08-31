@@ -6,9 +6,9 @@ use Livewire\Component;
 
 class Images extends Component
 {
-    public $product;
-    public $images;
     public $image;
+    public $product;
+    public $productImages;
 
     protected $listeners = ['uploader-completed' => 'attach'];
 
@@ -25,7 +25,7 @@ class Images extends Component
      */
     public function setImages()
     {
-        $this->images = $this->product->productImages()
+        $this->productImages = $this->product->productImages()
             ->orderBy('seq')
             ->orderBy('id')
             ->get()
@@ -41,7 +41,7 @@ class Images extends Component
     public function attach($files)
     {
         foreach ($files as $file) {
-            if ($this->images->where('id', data_get($file, 'id'))->count()) continue;
+            if ($this->productImages->where('id', data_get($file, 'id'))->count()) continue;
 
             $this->product->productImages()->attach(data_get($file, 'id'));
         }

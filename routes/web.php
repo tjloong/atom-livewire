@@ -127,12 +127,12 @@ if (!config('atom.static_site')) {
             define_route()->prefix('product')->as('app.product.')->group(function() {
                 define_route('listing', 'App\Product\Listing')->name('listing');
                 define_route('create', 'App\Product\Create')->name('create');
-                define_route('{product}', 'App\Product\Update\Index')->name('update');
+                define_route('{productId}', 'App\Product\Update\Index')->name('update');
             });
 
             define_route()->prefix('product-variant')->as('app.product-variant.')->group(function() {
-                define_route('create', 'App\ProductVariant\Create')->name('create');
-                define_route('{productVariant}', 'App\ProductVariant\Update')->name('update');
+                define_route('create/{productId}', 'App\ProductVariant\Create')->name('create');
+                define_route('{productVariantId}', 'App\ProductVariant\Update')->name('update');
             });
         }
 

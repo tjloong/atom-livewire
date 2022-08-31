@@ -4,11 +4,18 @@ namespace Jiannius\Atom\Http\Livewire\App\Product\Update;
 
 use Livewire\Component;
 use Illuminate\Validation\Rule;
+use Jiannius\Atom\Traits\WithPopupNotify;
 
 class Overview extends Component
 {
+    use WithPopupNotify;
+
     public $product;
-    public $categories = [];
+    public $selected = [
+        'taxes' => [],
+        'categories' => [],
+        'autocode' => false,
+    ];
 
     /**
      * Validation rules
@@ -19,16 +26,20 @@ class Overview extends Component
             'product.name' => 'required',
             'product.code' => [
                 'nullable',
-                model('product')->enabledBelongsToAccountTrait
-                ? Rule::unique('products', 'code')->ignore($this->product)->where(fn($q) => $q->where('id', $this->product->account_id))
-                : Rule::unique('products', 'code')->ignore($this->product),
+                Rule::unique('products', 'code')
+                    ->ignore($this->product)
+                    ->where(fn($q) => $q
+                        ->when(
+                            model('product')->enabledBelongsToAccountTrait,
+                            fn($q) => $q->where('account_id', auth()->user()->account_id)
+                        )
+                    ),
             ],
             'product.type' => 'required',
             'product.description' => 'nullable',
             'product.price' => 'nullable|numeric',
             'product.stock' => 'nullable|numeric',
             'product.is_active' => 'nullable|boolean',
-            'product.tax_id' => 'nullable',
             'product.account_id' => 'nullable',
         ];
     }
@@ -50,7 +61,10 @@ class Overview extends Component
      */
     public function mount()
     {
-        $this->categories = $this->product->productCategories->pluck('id')->toArray();
+        $this->fill([
+            'selected.taxes' => $this->product->taxes->pluck('id')->toArray(),
+            'selected.categories' => $this->product->productCategories->pluck('id')->toArray(),
+        ]);
     }
 
     /**
@@ -59,24 +73,50 @@ class Overview extends Component
     public function getOptionsProperty()
     {
         return [
-            'types' => model('product')->getTypes()->map(fn($val) => [
-                'value' => $val,
-                'label' => str()->headline($val),
-            ]),
+            'types' => collect(model('product')->getTypes())
+                ->when(
+                    $this->product->exists,
+                    fn($types) => $types->filter(fn($val) => data_get($val, 'value') === $this->product->type)
+                ),
 
             'taxes' => model('tax')
-                ->when(model('tax')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+                ->when(
+                    model('tax')->enabledBelongsToAccountTrait, 
+                    fn($q) => $q->belongsToAccount()
+                )
                 ->selectRaw('id as value, concat(name, " ", rate, "%") as label')
                 ->orderBy('name')
                 ->get(),
 
             'categories' => model('label')
-                ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+                ->when(
+                    model('label')->enabledBelongsToAccountTrait, 
+                    fn($q) => $q->belongsToAccount()
+                )
                 ->where('type', 'product-category')
-                ->selectRaw('id as value, name as label')
+                ->select('id as value', 'name->'.app()->currentLocale().' as label')
                 ->orderBy('name')
                 ->get(),
         ];
+    }
+
+    /**
+     * Generate code
+     */
+    public function generateCode()
+    {
+        $code = null;
+        $dup = true;
+
+        while ($dup) {
+            $code = str()->upper(str()->random(6));
+            $dup = model('product')
+                ->belongsToAccount()
+                ->where('code', $code)
+                ->count() > 0;
+        }
+
+        $this->product->fill(['code' => $code]);
     }
 
     /**
@@ -88,16 +128,16 @@ class Overview extends Component
         $this->validate();
 
         $this->product->save();
-        $this->product->productCategories()->sync($this->categories);
+        $this->product->taxes()->sync(data_get($this->selected, 'taxes'));
+        $this->product->productCategories()->sync(data_get($this->selected, 'categories'));
 
         if ($this->product->wasRecentlyCreated) {
-            session()->flash('flash', __('Product Created').'::success');        
             return redirect()->route('app.product.update', [
-                'product' => $this->product->id,
+                'productId' => $this->product->id,
                 'tab' => $this->product->type === 'variant' ? 'variants' : null,
-            ]);
+            ])->with('success', 'Product Created');
         }
-        else $this->dispatchBrowserEvent('toast', ['message' => __('Product Updated'), 'type' => 'success']);
+        else $this->popup('Product Updated');
     }
 
     /**

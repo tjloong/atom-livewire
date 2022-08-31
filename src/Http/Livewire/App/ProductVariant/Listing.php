@@ -2,12 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\ProductVariant;
 
+use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithPagination;
+    use WithPopupNotify;
 
     public $product;
     public $filters = ['search' => ''];
@@ -45,7 +47,7 @@ class Listing extends Component
             model('product_variant')->find($id)->update(['seq' => $seq]);
         }
 
-        $this->dispatchBrowserEvent('toast', ['message' => 'Product Variants Sorted', 'type' => 'success']);
+        $this->popup('Product Variants Sorted');
     }
 
     /**

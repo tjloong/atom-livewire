@@ -2,12 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Label;
 
+use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
 
 class Listing extends Component
 {
+    use WithPopupNotify;
+    
     public $type;
-    public $sortedLabels;
 
     protected $queryString = ['type'];
 
@@ -16,7 +18,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        $this->type = $this->type ?? $this->types[0];
+        $this->type = head($this->types ?? []);
 
         breadcrumbs()->home('Labels');
     }
@@ -36,7 +38,10 @@ class Listing extends Component
     {
         return model('label')
             ->withCount('children')
-            ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+            ->when(
+                model('label')->enabledBelongsToAccountTrait, 
+                fn($q) => $q->belongsToAccount()
+            )
             ->where('type', $this->type)
             ->whereNull('parent_id')
             ->orderBy('seq')
@@ -55,7 +60,7 @@ class Listing extends Component
             model('label')->where('id', $id)->update(['seq' => $index + 1]);
         }
 
-        $this->dispatchBrowserEvent('toast', ['message' => __('Labels Updated'), 'type' => 'success']);
+        $this->popup('Labels Sorted');
     }
 
     /**

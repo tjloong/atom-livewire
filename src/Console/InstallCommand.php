@@ -172,14 +172,13 @@ class InstallCommand extends Command
         else {
             Schema::create('products', function($table) {
                 $table->id();
-                $table->string('code')->index();
                 $table->string('name');
+                $table->string('code')->nullable()->index();
                 $table->string('type')->nullable();
                 $table->text('description')->nullable();
                 $table->decimal('price', 20, 2)->nullable();
                 $table->decimal('stock', 20, 2)->nullable();
                 $table->boolean('is_active')->nullable();
-                $table->foreignId('tax_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamps();
             });
 
@@ -214,6 +213,7 @@ class InstallCommand extends Command
             Schema::create('product_variants', function($table) {
                 $table->id();
                 $table->string('name');
+                $table->string('code')->nullable()->index();
                 $table->decimal('price', 20, 2)->nullable();
                 $table->decimal('stock', 20, 2)->nullable();
                 $table->integer('seq')->nullable();
@@ -225,6 +225,17 @@ class InstallCommand extends Command
             });
 
             $this->line('product_variants table created successfully.');
+        }
+
+        if (Schema::hasTable('product_taxes')) $this->warn('product_taxes table exists, skipped.');
+        else {
+            Schema::create('product_taxes', function($table) {
+                $table->id();
+                $table->foreignId('tax_id')->constrained('taxes')->onDelete('cascade');
+                $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            });
+
+            $this->line('product_taxes table created successfully.');
         }
     }
 

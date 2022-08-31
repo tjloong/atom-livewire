@@ -14,11 +14,14 @@ class Index extends Component
     /**
      * Mount
      */
-    public function mount($product)
+    public function mount($productId)
     {
         $this->product = model('product')
-            ->when(model('product')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
-            ->findOrFail($product);
+            ->when(
+                model('product')->enabledBelongsToAccountTrait,
+                fn($q) => $q->belongsToAccount()
+            )
+            ->findOrFail($productId);
 
         breadcrumbs()->push($this->product->name);
     }
@@ -29,9 +32,11 @@ class Index extends Component
     public function getTabsProperty()
     {
         return [
-            'overview',
-            'images',
-            $this->product->type === 'variant' ? 'variants' : null,
+            ['slug' => 'overview', 'label' => 'Overview'],
+            ['slug' => 'images', 'label' => 'Images', 'count' => $this->product->productImages()->count()],
+            $this->product->type === 'variant'
+                ? ['slug' => 'variants', 'label' => 'Variants', 'count' => $this->product->productVariants()->count()]
+                : null,
         ];
     }
 
@@ -42,9 +47,7 @@ class Index extends Component
     {
         $this->product->delete();
 
-        session()->flash('flash', __('Product Deleted'));
-
-        return redirect()->route('app.product.listing');
+        return redirect()->route('app.product.listing')->with('info', 'Product Deleted');
     }
 
     /**

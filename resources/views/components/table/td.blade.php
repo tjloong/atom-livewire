@@ -8,19 +8,23 @@
         <x-badge :label="$attributes->get('active') ? 'active' : 'inactive'"/>
 
     @elseif ($tags = $attributes->get('tags'))
-        <div class="flex items-center gap-2">
-            @foreach (collect($tags)->take(2) as $tag)
-                <div class="text-sm font-medium bg-slate-100 rounded-md py-1 px-2 border">
-                    {{ str($tag)->limit(12) }}
-                </div>
-            @endforeach
+        @if (count($tags))
+            <div class="flex items-center gap-2">
+                @foreach (collect($tags)->take(2) as $tag)
+                    <div class="text-sm font-medium bg-slate-100 rounded-md py-1 px-2 border">
+                        {{ str($tag)->limit(12) }}
+                    </div>
+                @endforeach
 
-            @if (count($tags) > 2)
-                <div class="text-sm font-medium bg-slate-100 rounded-md py-1 px-2 border">
-                    +{{ count($tags) -  2 }}
-                </div>
-            @endif
-        </div>
+                @if (count($tags) > 2)
+                    <div class="text-sm font-medium bg-slate-100 rounded-md py-1 px-2 border">
+                        +{{ count($tags) -  2 }}
+                    </div>
+                @endif
+            </div>
+        @else
+            --
+        @endif
 
     @elseif ($date = $attributes->get('date'))
         {{ format_date($date) }}

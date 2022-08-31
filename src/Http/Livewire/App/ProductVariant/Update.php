@@ -6,14 +6,16 @@ use Livewire\Component;
 
 class Update extends Component
 {
+    public $productVariant;
+
     /**
      * Mount
      */
-    public function mount ($productVariant)
+    public function mount ($productVariantId)
     {
-        $this->variant = model('product_variant')->findOrFail($productVariant);
+        $this->productVariant = model('product_variant')->findOrFail($productVariantId);
 
-        breadcrumbs()->push($this->variant->name);
+        breadcrumbs()->push($this->productVariant->name);
     }
 
     /**
@@ -21,10 +23,10 @@ class Update extends Component
      */
     public function delete()
     {
-        $this->variant->delete();
+        $this->productVariant->delete();
 
         return redirect()->route('app.product.update', [
-            'product' => $this->variant->product_id,
+            'product' => $this->productVariant->product_id,
             'tab' => 'variants',
         ]);
     }

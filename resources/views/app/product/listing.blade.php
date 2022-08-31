@@ -33,27 +33,59 @@
         </x-slot:toolbar>
 
         <x-slot:head>
+            <x-table.th sort="code" label="Code"/>
             <x-table.th sort="name" label="Name"/>
-            <x-table.th/>
             <x-table.th label="Category"/>
-            <x-table.th sort="price" label="Price"/>
+            <x-table.th sort="price" label="Price" class="text-right"/>
             @if ($this->hasSoldColumn)
                 <x-table.th sort="sold" label="Sold" class="text-right"/>
             @endif
-            <x-table.th sort="updated_at" class="text-right" label="Updated At"/>
+            <x-table.th/>
         </x-slot:head>
 
         <x-slot:body>
             @foreach ($this->products as $product)
                 <x-table.tr>
-                    <x-table.td :href="route('app.product.update', [$product->id])" :label="$product->name"/>
-                    <x-table.td :active="$product->is_active" class="text-right"/>
+                    <x-table.td
+                        :href="route('app.product.update', [$product->id])"
+                        :label="$product->code"
+                    />
+                    
+                    <x-table.td
+                        :href="route('app.product.update', [$product->id])"
+                        :label="$product->name"
+                        :small="
+                            $product->type === 'variant'
+                                ? __(
+                                    ':count '.str()->plural('variant', $product->productVariants->count()),
+                                    ['count' => $product->productVariants->count()]
+                                )
+                                : null
+                        "
+                    />
+
                     <x-table.td :tags="$product->productCategories->pluck('name')"/>
-                    <x-table.td :amount="$product->price"/>
+                    
+                    @if ($product->type === 'variant')
+                        @php $min = $product->productVariants->min('price'); @endphp
+                        @php $max = $product->productVariants->max('price'); @endphp
+                        <x-table.td class="text-right">
+                            {{ 
+                                collect([
+                                    $min,
+                                    $min == $max ? null : $max,
+                                ])->filter()->map(fn($val) => currency($val))->join(' - ') 
+                            }}
+                        </x-table.td>
+                    @else
+                        <x-table.td :amount="$product->price" class="text-right"/>
+                    @endif
+
                     @if ($this->hasSoldColumn)
                         <x-table.td :label="$product->sold" class="text-right"/>
                     @endif
-                    <x-table.td :date="$product->updated_at" class="text-right"/>
+
+                    <x-table.td :active="$product->is_active" class="text-right"/>
                 </x-table.tr>
             @endforeach
         </x-slot:body>

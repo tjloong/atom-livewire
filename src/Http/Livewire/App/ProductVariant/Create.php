@@ -6,19 +6,22 @@ use Livewire\Component;
 
 class Create extends Component
 {
-    public $variant;
     public $product;
+    public $productVariant;
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount($productId)
     {
         $this->product = model('product')
-            ->when(model('product')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
-            ->findOrFail(request()->query('product'));
+            ->when(
+                model('product')->enabledBelongsToAccountTrait, 
+                fn($q) => $q->belongsToAccount()
+            )
+            ->findOrFail($productId);
 
-        $this->variant = model('product_variant')->fill([
+        $this->productVariant = model('product_variant')->fill([
             'is_default' => false,
             'is_active' => true,
             'product_id' => $this->product->id,

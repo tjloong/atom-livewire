@@ -20,8 +20,6 @@ class ProductVariant extends Model
         'image_id' => 'integer',
         'product_id' => 'integer',
     ];
-
-    protected $appends = ['tax_amount'];
     
     /**
      * Get product for product variant
@@ -37,13 +35,5 @@ class ProductVariant extends Model
     public function image()
     {
         return $this->belongsTo(get_class(model('file')), 'image_id');
-    }
-
-    /**
-     * Get tax amount attribute
-     */
-    public function getTaxAmountAttribute()
-    {
-        return optional($this->product->tax)->calculate($this->price);
     }
 }

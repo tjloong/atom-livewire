@@ -43,7 +43,8 @@ class Listing extends Component
      */
     public function getProductsProperty()
     {
-        return model('product')->belongsToAccount()
+        return model('product')
+            ->belongsToAccount()
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate(30);
@@ -60,13 +61,11 @@ class Listing extends Component
                 'label' => str()->headline($val),
             ]),
 
-            'types' => model('product')->getTypes()->map(fn($val) => [
-                'value' => $val,
-                'label' => str()->headline($val),
-            ]),
+            'types' => model('product')->getTypes(),
 
-            'product_categories' => model('label')->where('type', 'product-category')
+            'product_categories' => model('label')
                 ->belongsToAccount()
+                ->where('type', 'product-category')
                 ->orderBy('name')
                 ->selectRaw('id as value, name as label')
                 ->get(),

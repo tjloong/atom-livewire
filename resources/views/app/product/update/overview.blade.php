@@ -1,10 +1,4 @@
 <x-form header="Product Overview">
-    @if ($product->exists)
-        <x-form.field label="Product Type">
-            {{ str()->headline($product->type) }}
-        </x-form.field>
-    @endif
-
     <x-form.text
         label="Product Name"
         wire:model.defer="product.name"
@@ -12,44 +6,48 @@
         required
     />
 
-    <x-form.text
+    <x-form.field 
         label="Product Code"
-        wire:model.defer="product.code"
         :error="$errors->first('product.code')"
-        caption="Leave empty to auto generate"
-    />
+    >
+        <div class="grid gap-2">
+            <x-form.text wire:model.defer="product.code"/>
+            <div>
+                <a wire:click="generateCode" class="text-sm inline-flex items-center gap-2">
+                    <x-icon name="arrows-rotate" size="12px"/> Auto generate
+                </a>
+            </div>
+        </div>
+    </x-form.field>
 
-    @if (!$product->exists)
-        <x-form.select
-            label="Product Type"
-            wire:model="product.type"
-            :options="data_get($this->options, 'types')"
-            :selected="$product->type"
-            :error="$errors->first('product.type')"
-            required
-        />
-    @endif
+    <x-form.checkbox-select
+        label="Product Type"
+        wire:model="product.type"
+        :options="data_get($this->options, 'types')"
+        class="grid gap-2 grid-cols-2"
+    />
 
     <x-form.picker
         label="Category"
-        wire:model="categories"
+        wire:model="selected.categories"
         :options="data_get($this->options, 'categories')"
-        :selected="$categories"
+        :selected="data_get($this->selected, 'categories')"
         multiple
     />
 
     @if ($product->type !== 'variant')
-        <x-form.picker
-            label="Tax"
-            wire:model="product.tax_id"
-            :selected="$product->tax_id"
-            :options="data_get($this->options, 'taxes')"
-        />
-
         <x-form.amount
             label="Price"
             wire:model.defer="product.price"
             prefix="MYR"
+        />
+
+        <x-form.picker
+            label="Taxes"
+            wire:model="selected.taxes"
+            :selected="data_get($this->selected, 'taxes')"
+            :options="data_get($this->options, 'taxes')"
+            multiple
         />
     @endif
 
@@ -60,7 +58,10 @@
         />
     @endif
 
-    <x-form.checkbox wire:model="product.is_active" label="Product is active"/>
+    <x-form.checkbox 
+        wire:model="product.is_active"
+        label="Product is active"
+    />
 
     <x-slot:foot>
         <x-button.submit/>

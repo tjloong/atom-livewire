@@ -1,17 +1,14 @@
 <div>
-    <x-box>
-        <x-slot:header>
-            <div class="flex items-center justify-between gap-4">
-                {{ __('Product Images') }}
-                <x-button size="sm" icon="image-add" 
-                    label="Add Image"
-                    x-on:click="$dispatch('uploader-open')"
-                />
-            </div>
-        </x-slot:header>
+    <x-box header="Product Images">
+        <x-slot:header-buttons>
+            <x-button size="sm" icon="image-add" 
+                label="Add Image"
+                x-on:click="$dispatch('uploader-open')"
+            />
+        </x-slot:header-buttons>
 
         <div class="p-5">
-            @if ($images->count())
+            @if ($productImages->count())
                 <x-form.sortable 
                     wire:sorted="sort" 
                     :config="[
@@ -20,7 +17,7 @@
                     ]"
                     class="grid gap-4 grid-cols-2 md:grid-cols-6"
                 >
-                    @foreach ($images as $img)
+                    @foreach ($productImages as $img)
                         <div 
                             class="relative pt-[100%] bg-gray-100 rounded-md shadow overflow-hidden"
                             data-sortable-id="{{ data_get($img, 'id') }}"

@@ -1,5 +1,11 @@
 <div class="max-w-screen-lg mx-auto">
-    <x-page-header :title="$product->name" :subtitle="'#'.$product->code" back>
+    <x-page-header 
+        :title="$product->name" 
+        :subtitle="$product->code
+            ? '#'.$product->code
+            : null" 
+        back
+    >
         <x-button.delete inverted
             title="Delete Product"
             message="Are you sure to delete this product?"
@@ -11,8 +17,9 @@
             <x-sidenav wire:model="tab">
                 @foreach (collect($this->tabs)->filter() as $item)
                     <x-sidenav.item 
-                        :name="$item" 
-                        :label="str()->headline($item)"
+                        :name="data_get($item, 'slug')" 
+                        :label="data_get($item, 'label')"
+                        :count="data_get($item, 'count')"
                     />
                 @endforeach
             </x-sidenav>
@@ -20,13 +27,11 @@
 
         <div class="md:col-span-9">
             @if (
-                $path = $tab === 'variants'
-                    ? 'app/product-variant/listing'
-                    : 'app/product/update/'.$tab
+                $com = $tab === 'variants'
+                    ? lw('app.product-variant.listing')
+                    : lw('app.product.update.'.$tab)
             )
-                @if ($component = livewire_name($path))
-                    @livewire($component, compact('product'), key($tab))
-                @endif
+                @livewire($com, compact('product'), key($tab))
             @endif
         </div>
     </div>

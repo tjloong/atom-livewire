@@ -17,29 +17,14 @@ class Product extends Model
         'price' => 'float',
         'stock' => 'integer',
         'is_active' => 'boolean',
-        'tax_id' => 'integer',
     ];
 
-    protected $appends = ['tax_amount'];
-
     /**
-     * Model boot
+     * Get taxes for product
      */
-    protected static function boot()
+    public function taxes()
     {
-        parent::boot();
-
-        static::saving(function($product) {
-            if (empty($product->code)) $product->code = $product->generateCode();
-        });
-    }
-
-    /**
-     * Get tax for product
-     */
-    public function tax()
-    {
-        return $this->belongsTo(get_class(model('tax')));
+        return $this->belongsToMany(get_class(model('tax')), 'product_taxes');
     }
 
     /**
@@ -87,37 +72,13 @@ class Product extends Model
     }
 
     /**
-     * Get tax amount attribute
-     */
-    public function getTaxAmountAttribute()
-    {
-        return optional($this->tax)->calculate($this->price);
-    }
-
-    /**
      * Get types
      */
     public function getTypes()
     {
-        return collect(['normal', 'variant']);
-    }
-
-    /**
-     * Generate code
-     */
-    public function generateCode()
-    {
-        $code = null;
-        $dup = true;
-
-        while ($dup) {
-            $code = str()->upper(str()->random(6));
-            $dup = model('product')
-                ->belongsToAccount()
-                ->where('code', $code)
-                ->count() > 0;
-        }
-
-        return $code;
+        return [
+            ['value' => 'normal', 'label' => 'Normal', 'description' => 'Single item product, eg. can drink, book, phone.'],
+            ['value' => 'variant', 'label' => 'With multiple variants', 'description' => 'Product with multiple options, eg. shirt with multiple sizes'],
+        ];
     }
 }

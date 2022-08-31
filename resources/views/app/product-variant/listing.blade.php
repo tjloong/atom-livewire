@@ -1,14 +1,11 @@
-<x-box>
-    <x-slot:header>
-        <div class="flex items-center justify-between gap-4">
-            {{ __('Product Variants') }}
-            <x-button.create
-                label="New Variant"
-                size="sm"
-                :href="route('app.product-variant.create', ['product' => $product->id])"
-            />
-        </div>
-    </x-slot:header>
+<x-box header="Product Variants">
+    <x-slot:header-buttons>
+        <x-button.create
+            label="New Variant"
+            size="sm"
+            :href="route('app.product-variant.create', ['productId' => $product->id])"
+        />
+    </x-slot:header-buttons>
 
     @if (count($this->productVariants))
         <x-form.sortable 

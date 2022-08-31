@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Models;
 
-use App\Models\User;
 use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Model;
