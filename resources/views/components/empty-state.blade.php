@@ -1,16 +1,26 @@
-<div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center py-8 gap-4']) }}>
-    <div class="p-6 rounded-full bg-gray-100 shadow flex m-auto">
-        <x-icon name="{{ $attributes->get('icon') ?? 'folder-open' }}" size="lg" class="text-gray-400"/>
+@props([
+    'title' => __($attributes->get('title', 'No Results')),
+    'subtitle' => __($attributes->get('subtitle', 'There is nothing returned from the search')),
+    'size' => $attributes->get('size'),
+])
+
+<div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center py-8 px-4 gap-3']) }}>
+    <div class="{{ $size === 'sm' ? 'w-12 h-12' : 'w-20 h-20' }} rounded-full bg-slate-100 shadow flex border">
+        <x-icon 
+            :name="$attributes->get('icon', 'folder-open')" 
+            :size="$size === 'sm' ? '18px' : '32px'"
+            class="text-gray-400 m-auto"
+        />
     </div>
 
     <div class="grid gap-4">
         <div class="text-center">
-            <div class="font-semibold text-lg text-gray-700">
-                {{ __($attributes->get('title') ?? 'No Results') }}
+            <div class="font-semibold text-gray-700 {{ $size === 'sm' ? 'text-base' : 'text-lg' }}">
+                {{ $title }}
             </div>
         
-            <div class="text-gray-400 font-medium text-center text-base">
-                {{ __($attributes->get('subtitle') ?? 'There is nothing returned from the search') }}
+            <div class="text-gray-400 font-medium text-center {{ $size === 'sm' ? 'text-sm' : 'text-base' }}">
+                {{ $subtitle }}
             </div>
         </div>
 
@@ -21,3 +31,4 @@
         @endif
     </div>
 </div>
+

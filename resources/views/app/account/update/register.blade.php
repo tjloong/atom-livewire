@@ -1,5 +1,5 @@
 <x-box header="Registration Overview">
-    <div class="grid gap-4 p-5">
+    <div class="grid divide-y">
         <x-box.row label="Name">
             <div class="text-right">
                 <div>{{ $account->name }}</div>

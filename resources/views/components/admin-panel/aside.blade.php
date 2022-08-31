@@ -43,7 +43,7 @@
                     @endif
                 </div>
                 
-                <x-icon name="chevron-down" size="15px"/>
+                <x-icon name="chevron-down" size="12px"/>
             </div>
         </div>
 

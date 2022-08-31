@@ -14,12 +14,6 @@
     x-on:{{ $uid }}-close.window="close()"
     {{ $attributes->except('class') }}
 >
-    @isset($trigger)
-        <div x-on:click="open()">
-            {{ $trigger }}
-        </div>
-    @endisset
-
     <div x-show="show" x-transition.opacity class="modal">
         <div class="modal-bg"></div>
         <div class="modal-container" x-on:click="close()">
@@ -46,9 +40,9 @@
                     {{ $slot }}
                 </div>
 
-                @isset($buttons)
+                @isset($foot)
                     <div class="p-4 bg-gray-100">
-                        {{ $buttons }}
+                        {{ $foot }}
                     </div>
                 @endisset
             </div>
