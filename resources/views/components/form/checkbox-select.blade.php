@@ -7,7 +7,7 @@
         x-data="{
             value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
         }"
-        class="{{ $attributes->get('class', 'grid gap-2 grid-cols-3') }}"
+        class="{{ $attributes->get('class', 'grid gap-2 md:grid-cols-3') }}"
     >
         @foreach ($attributes->get('options') as $opt)
             <div

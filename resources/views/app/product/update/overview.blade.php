@@ -24,7 +24,7 @@
         label="Product Type"
         wire:model="product.type"
         :options="data_get($this->options, 'types')"
-        class="grid gap-2 grid-cols-2"
+        class="grid gap-2 md:grid-cols-2"
     />
 
     <x-form.picker
@@ -35,13 +35,14 @@
         multiple
     />
 
-    @if ($product->type !== 'variant')
-        <x-form.amount
-            label="Price"
-            wire:model.defer="product.price"
-            prefix="MYR"
+    @if ($product->type === 'normal')
+        <x-form.number
+            label="Stock"
+            wire:model.defer="product.stock"
         />
+    @endif
 
+    @if ($product->type !== 'variant')
         <x-form.picker
             label="Taxes"
             wire:model="selected.taxes"
@@ -49,12 +50,11 @@
             :options="data_get($this->options, 'taxes')"
             multiple
         />
-    @endif
 
-    @if ($product->type === 'normal')
-        <x-form.number
-            label="Stock"
-            wire:model.defer="product.stock"
+        <x-form.amount
+            label="Price"
+            wire:model.defer="product.price"
+            prefix="MYR"
         />
     @endif
 

@@ -11,13 +11,6 @@ class Submit extends Component
      */
     public function render()
     {
-        return <<<blade
-            <x-button 
-                type="submit" 
-                icon="check" 
-                color="green" 
-                :label="\$attributes->get('label') ?? 'Save'"
-            />
-        blade;
+        return view('atom::components.button.submit');
     }
 }

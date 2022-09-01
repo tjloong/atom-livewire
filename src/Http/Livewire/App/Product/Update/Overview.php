@@ -126,11 +126,26 @@ class Overview extends Component
     {
         $this->resetValidation();
         $this->validate();
+        $this->persist();
 
+        return $this->submitted();
+    }
+
+    /**
+     * Persist
+     */
+    public function persist()
+    {
         $this->product->save();
         $this->product->taxes()->sync(data_get($this->selected, 'taxes'));
         $this->product->productCategories()->sync(data_get($this->selected, 'categories'));
+    }
 
+    /**
+     * Submitted
+     */
+    public function submitted()
+    {
         if ($this->product->wasRecentlyCreated) {
             return redirect()->route('app.product.update', [
                 'productId' => $this->product->id,

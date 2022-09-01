@@ -1,3 +1,5 @@
+@props(['el' => $attributes->get('form') ? 'form' : 'div'])
+
 <div
     x-data="{
         show: false,
@@ -12,23 +14,28 @@
     }"
     x-on:{{ $uid }}-open.window="open()"
     x-on:{{ $uid }}-close.window="close()"
-    {{ $attributes->except('class') }}
 >
-    <div x-show="show" x-transition.opacity class="modal">
-        <div class="modal-bg"></div>
-        <div class="modal-container" x-on:click="close()">
-            <div
-                x-on:click.stop
-                {{ $attributes->class([
-                    'modal-content',
-                    'max-w-lg' => !$attributes->get('class'),
-                ]) }}
-            >
-                <div class="px-6 pt-4 flex items-center justify-between">
-                    @if ($header = $attributes->get('header'))
-                        <div class="font-semibold text-lg">{{ __($header) }}</div>
-                    @elseif (isset($header))
-                        <div class="font-semibold text-lg">{{ $header }}</div>
+    <div 
+        x-show="show" 
+        x-transition.opacity 
+        x-on:click="close()"
+        class="fixed inset-0 z-50 bg-black/80 overflow-auto"
+    >
+        <div class="px-6 py-10">
+            <{{ $el }} x-on:click.stop {{ 
+                $attributes->merge([
+                    'class' => collect([
+                        'mx-auto bg-white rounded-xl border shadow-lg',
+                        !$attributes->get('class') ? 'max-w-lg' : null,
+                    ])->filter()->join(' '),
+                    'wire:submit.prevent' => $el === 'form' ? 'submit' : null,
+                ])->except(['uid', 'header', 'form']) 
+            }}>
+                <div class="px-6 py-4 flex items-center justify-between border-b">
+                    @if ($header = $header ?? $attributes->get('header'))
+                        <div class="font-semibold text-lg">
+                            {{ is_string($header) ? __($header) : $header }}
+                        </div>
                     @endif
 
                     <a class="text-gray-500 flex items-center justify-center" x-on:click.prevent="close()">
@@ -41,11 +48,11 @@
                 </div>
 
                 @isset($foot)
-                    <div class="p-4 bg-gray-100">
+                    <div class="p-4 bg-gray-100 rounded-b-xl">
                         {{ $foot }}
                     </div>
                 @endisset
-            </div>
+            </{{ $el }}>
         </div>
     </div>
 </div>

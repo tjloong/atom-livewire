@@ -11,9 +11,9 @@
         x-bind:class="focus && 'active'"
         class="form-input w-full flex items-center gap-2 {{ !empty($attributes->get('error')) ? 'error' : '' }}"
     >
-        @if ($attributes->has('prefix'))
+        @if ($prefix = $attributes->get('prefix'))
             <div class="text-gray-400 font-medium">
-                {{ $attributes->get('prefix') }}
+                {{ $prefix }}
             </div>
         @endif
         
@@ -25,5 +25,11 @@
             class="form-input transparent grow"
             step=".01"
         >
+
+        @if ($postfix = $attributes->get('postfix'))
+            <div class="text-gray-400 font-medium">
+                {{ $postfix }}
+            </div>
+        @endif
     </div>
 </x-form.field>
