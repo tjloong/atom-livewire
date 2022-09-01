@@ -6,7 +6,7 @@
         />
     </x-page-header>
 
-    @if ($com = lw('app.product-variant.form'))
+    @if ($com = lw('app.product.variant.form'))
         @livewire($com, compact('productVariant'))
     @endif
 </div>

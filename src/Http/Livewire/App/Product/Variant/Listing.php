@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\ProductVariant;
+namespace Jiannius\Atom\Http\Livewire\App\Product\Variant;
 
 use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
@@ -55,6 +55,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.product-variant.listing');
+        return view('atom::app.product.variant.listing');
     }
 }

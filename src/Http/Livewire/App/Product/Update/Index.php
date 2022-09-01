@@ -33,10 +33,10 @@ class Index extends Component
     {
         return [
             ['slug' => 'overview', 'label' => 'Overview'],
-            ['slug' => 'images', 'label' => 'Images', 'count' => $this->product->productImages()->count()],
             $this->product->type === 'variant'
                 ? ['slug' => 'variants', 'label' => 'Variants', 'count' => $this->product->productVariants()->count()]
                 : null,
+            ['slug' => 'images', 'label' => 'Images', 'count' => $this->product->productImages()->count()],
         ];
     }
 

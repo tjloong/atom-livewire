@@ -146,10 +146,10 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.product.update.images' => 'App\Product\Update\Images',
 
             // product variant
-            'atom.app.product-variant.listing' => 'App\ProductVariant\Listing',
-            'atom.app.product-variant.create' => 'App\ProductVariant\Create',
-            'atom.app.product-variant.update' => 'App\ProductVariant\Update',
-            'atom.app.product-variant.form' => 'App\ProductVariant\Form',
+            'atom.app.product.variant.listing' => 'App\Product\Variant\Listing',
+            'atom.app.product.variant.create' => 'App\Product\Variant\Create',
+            'atom.app.product.variant.update' => 'App\Product\Variant\Update',
+            'atom.app.product.variant.form' => 'App\Product\Variant\Form',
 
             // promotion
             'atom.app.promotion.listing' => 'App\Promotion\Listing',

@@ -128,11 +128,11 @@ if (!config('atom.static_site')) {
                 define_route('listing', 'App\Product\Listing')->name('listing');
                 define_route('create', 'App\Product\Create')->name('create');
                 define_route('{productId}', 'App\Product\Update\Index')->name('update');
-            });
 
-            define_route()->prefix('product-variant')->as('app.product-variant.')->group(function() {
-                define_route('create/{productId}', 'App\ProductVariant\Create')->name('create');
-                define_route('{productVariantId}', 'App\ProductVariant\Update')->name('update');
+                define_route()->prefix('{productId}/variant')->as('variant.')->group(function() {
+                    define_route('create', 'App\Product\Variant\Create')->name('create');
+                    define_route('{productVariantId}', 'App\Product\Variant\Update')->name('update');
+                });
             });
         }
 

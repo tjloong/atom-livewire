@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\ProductVariant;
+namespace Jiannius\Atom\Http\Livewire\App\Product\Variant;
 
 use Livewire\Component;
 
@@ -77,13 +77,28 @@ class Form extends Component
     {
         $this->resetValidation();
         $this->validate();
+        $this->persist();
 
+        return $this->submitted();
+    }
+
+    /**
+     * Persist
+     */
+    public function persist()
+    {
         if ($this->productVariant->is_default) {
             $this->productVariant->product->productVariants()->update(['is_default' => false]);
         }
         
         $this->productVariant->save();
+    }
 
+    /**
+     * Submitted
+     */
+    public function submitted()
+    {
         return redirect()->route('app.product.update', [
             'productId' => $this->productVariant->product_id, 
             'tab' => 'variants',
@@ -95,6 +110,6 @@ class Form extends Component
      */
     public function render()
     {
-        return view('atom::app.product-variant.form');
+        return view('atom::app.product.variant.form');
     }
 }

@@ -3,7 +3,7 @@
         <x-button.create
             label="New Variant"
             size="sm"
-            :href="route('app.product-variant.create', ['productId' => $product->id])"
+            :href="route('app.product.variant.create', ['productId' => $product->id])"
         />
     </x-slot:header-buttons>
 
@@ -31,12 +31,23 @@
                     </div>
 
                     <div class="grow">
-                        <div class="flex items-center gap-2">
-                            <a href="{{ route('app.product-variant.update', [$productVariant->id]) }}" class="grow">
-                                {{ $productVariant->name }}
-                            </a>
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="grid">
+                                <a href="{{ route('app.product.variant.update', [
+                                    'productId' => $product->id,
+                                    'productVariantId' => $productVariant->id,
+                                ]) }}" class="grow">
+                                    {{ $productVariant->name }}
+                                </a>
 
-                            <div class="flex items-center gap-2">
+                                @if ($code = $productVariant->code)
+                                    <div class="text-sm text-gray-400 font-medium">
+                                        {{ $code }}
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="shrink-0">
                                 @if ($productVariant->is_default)
                                     <x-badge label="default"/>
                                 @endif
@@ -46,12 +57,19 @@
                     </div>
 
                     <div class="shrink-0">
-                        {{ currency($productVariant->price) }}
+                        @if (is_numeric($productVariant->price)) 
+                            {{ currency($productVariant->price) }}
+                        @else
+                            {{ currency(
+                                data_get($productVariant->price, 'amount'), 
+                                data_get($productVariant->price, 'currency')
+                            ) }}
+                        @endif
                     </div>
                 </div>
             @endforeach
         </x-form.sortable>
     @else
-        <x-empty-state title="No product variants" subtitle=""/>
+        <x-empty-state title="No product variants" subtitle="This product do not have any variants."/>
     @endif
 </x-box>

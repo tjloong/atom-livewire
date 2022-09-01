@@ -64,21 +64,16 @@
                         "
                     />
 
-                    <x-table.td :tags="$product->productCategories->pluck('name')"/>
+                    <x-table.td :tags="$product->productCategories->pluck('name.'.app()->currentLocale())"/>
                     
-                    @if ($product->type === 'variant')
-                        @php $min = $product->productVariants->min('price'); @endphp
-                        @php $max = $product->productVariants->max('price'); @endphp
-                        <x-table.td class="text-right">
-                            {{ 
-                                collect([
-                                    $min,
-                                    $min == $max ? null : $max,
-                                ])->filter()->map(fn($val) => currency($val))->join(' - ') 
-                            }}
-                        </x-table.td>
-                    @else
+                    @if (is_numeric($product->price))
                         <x-table.td :amount="$product->price" class="text-right"/>
+                    @else
+                        <x-table.td
+                            :amount="data_get($product->price, 'amount')"
+                            :currency="data_get($product->price, 'currency')"
+                            class="text-right"
+                        />
                     @endif
 
                     @if ($this->hasSoldColumn)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\ProductVariant;
+namespace Jiannius\Atom\Http\Livewire\App\Product\Variant;
 
 use Livewire\Component;
 
@@ -35,6 +35,6 @@ class Create extends Component
      */
     public function render()
     {
-        return view('atom::app.product-variant.create');
+        return view('atom::app.product.variant.create');
     }
 }

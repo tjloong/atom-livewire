@@ -11,8 +11,11 @@
         @if (count($tags))
             <div class="flex items-center gap-2">
                 @foreach (collect($tags)->take(2) as $tag)
-                    <div class="text-sm font-medium bg-slate-100 rounded-md py-1 px-2 border">
-                        {{ str($tag)->limit(12) }}
+                    <div 
+                        @if (strlen($tag) > 20) x-tooltip="{{ $tag }}" @endif
+                        class="text-xs font-medium bg-slate-100 rounded-md py-0.5 px-2 border"
+                    >
+                        {{ str($tag)->limit(20) }}
                     </div>
                 @endforeach
 

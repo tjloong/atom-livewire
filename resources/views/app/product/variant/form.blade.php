@@ -21,13 +21,12 @@
     </x-form.field>
 
     <x-form.amount
-        label="Price"
+        label="Variant Price"
         wire:model.defer="productVariant.price"
-        prefix="MYR"
     />
 
     <x-form.number
-        label="Stock"
+        label="Variant Stock"
         wire:model.defer="productVariant.stock"
     />
 
