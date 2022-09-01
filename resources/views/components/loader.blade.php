@@ -4,6 +4,7 @@
 
     init () {
         Livewire.hook('message.sent', () => {
+            clearInterval(this.timer)
             this.timer = setTimeout(() => this.show = true, 500)
         })
 
