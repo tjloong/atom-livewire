@@ -1,5 +1,5 @@
 <x-form header="User Information">
-    @root
+    @if (auth()->user()->isAccountType('root') && $user->account->type !== 'root')
         <x-box>
             <div class="p-5">
                 <x-form.field label="Account Name">
@@ -15,7 +15,7 @@
                 </x-form.field>    
             </div>
         </x-box>
-    @endroot
+    @endif
 
     <x-form.text 
         label="Login Name"

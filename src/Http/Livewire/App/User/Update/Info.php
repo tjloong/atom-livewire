@@ -4,9 +4,12 @@ namespace Jiannius\Atom\Http\Livewire\App\User\Update;
 
 use Livewire\Component;
 use Illuminate\Validation\Rule;
+use Jiannius\Atom\Traits\WithPopupNotify;
 
 class Info extends Component
 {
+    use WithPopupNotify;
+    
     public $user;
     public $selectedTeams;
 
@@ -101,15 +104,8 @@ class Info extends Component
             $this->user->teams()->sync($this->selectedTeams);
         }
 
-        if ($this->user->wasRecentlyCreated) {
-            return redirect()->route('app.user.listing');
-        }
-        else {
-            $this->dispatchBrowserEvent('toast', [
-                'message' => __('User Updated'),
-                'type' => 'success',
-            ]);
-        }
+        if ($this->user->wasRecentlyCreated) return redirect()->route('app.user.listing');
+        else $this->popup('User Updated');
     }
 
     /**

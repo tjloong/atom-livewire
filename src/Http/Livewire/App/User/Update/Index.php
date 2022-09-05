@@ -45,7 +45,7 @@ class Index extends Component
     {
         $this->user->block();
 
-        return redirect($this->redirectTo());
+        return redirect($this->redirectTo())->with('info', 'User Blocked');
     }
 
     /**
@@ -55,7 +55,7 @@ class Index extends Component
     {
         $this->user->unblock();
         
-        return redirect($this->redirectTo());
+        return redirect($this->redirectTo())->with('info', 'User Unblocked');
     }
 
     /**
@@ -66,9 +66,7 @@ class Index extends Component
         if ($force) $this->user->forceDelete();
         else $this->user->delete();
 
-        session()->flash('flash', 'User deleted');
-
-        return redirect($this->redirectTo());
+        return redirect($this->redirectTo())->with('info', 'User Deleted');
     }
 
     /**
@@ -78,9 +76,7 @@ class Index extends Component
     {
         $this->user->restore();
 
-        session()->flash('flash', 'User Restored');
-
-        return redirect($this->redirectTo());
+        return redirect($this->redirectTo())->with('info', 'User Restored');
     }
 
     /**

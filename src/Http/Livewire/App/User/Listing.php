@@ -2,12 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
+use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithPagination;
+    use WithPopupNotify;
 
     public $role;
     public $account;
@@ -62,7 +64,7 @@ class Listing extends Component
         return model('user')
             ->when(
                 auth()->user()->isAccountType('root'), 
-                fn($q) => $q->where('accounts.type', 'root'),
+                fn($q) => $q->whereHas('account', fn($q) => $q->where('accounts.type', 'root')),
                 fn($q) => $q->where('account_id', auth()->user()->account_id)
             )
             ->when($this->role, fn($q) => $q->where('role_id', $this->role->id))
@@ -94,11 +96,7 @@ class Listing extends Component
     {
         (clone $this->query)->onlyTrashed()->forceDelete();
 
-        $this->dispatchBrowserEvent('toast', [
-            'message' => __('Trashed Cleared'), 
-            'type' => 'success',
-        ]);
-
+        $this->popup('Trash Cleared');
         $this->reset('filters');
     }
 

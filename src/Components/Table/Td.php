@@ -23,12 +23,15 @@ class Td extends Component
         $this->tooltip = $tooltip;
 
         if ($label) $this->label = $label;
-        else if (!empty($amount)) $this->label = currency($amount, $currency);
+        else if (is_numeric($amount)) $this->label = currency($amount, $currency);
         else if (!empty($percentage)) $this->label = number_format($percentage, 2).'%';
 
         if ($limit) {
-            if (!$this->tooltip && strlen($this->label) > $limit) $this->tooltip = $this->label;
             $this->label = str()->limit($this->label, $limit);
+            
+            if ($this->tooltip !== false && empty($this->tooltip) && strlen($this->label) > $limit) {
+                $this->tooltip = $this->label;
+            }
         }
     }
 
