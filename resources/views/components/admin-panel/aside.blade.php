@@ -29,7 +29,7 @@
         <div x-on:click="open = true" class="cursor-pointer pl-2">
             <div
                 x-bind:class="active && 'bg-white/10'"
-                class="flex items-center gap-3 rounded-l-md px-4 py-2.5 text-white"
+                class="flex items-center gap-3 rounded-l-md px-4 py-2.5 font-medium text-white"
             >
                 @if ($icon = $attributes->get('icon'))
                     <x-icon name="{{ $icon }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="20px"/>
@@ -37,7 +37,7 @@
                     <x-logo :src="$logo" class="brightness-0 invert" style="width: 20px; height: 20px;"/>
                 @endif
 
-                <div class="flex-grow truncate">
+                <div class="grow truncate">
                     @if ($label = $attributes->get('label')) {{ __($label) }}
                     @else {{ $slot }}
                     @endif
