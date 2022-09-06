@@ -8,8 +8,6 @@ class Index extends Component
 {
     public $label;
     
-    protected $listeners = ['saved'];
-
     /**
      * Mount
      */
@@ -41,23 +39,13 @@ class Index extends Component
     }
 
     /**
-     * Saved
-     */
-    public function saved()
-    {
-        $this->dispatchBrowserEvent('toast', ['message' => 'Label Updated', 'type' => 'success']);
-    }
-
-    /**
      * Delete
      */
     public function delete()
     {
         $this->label->delete();
 
-        session()->flash('flash', 'Label Deleted');
-        
-        return redirect()->route('app.label.listing', [$this->label->type]);
+        return redirect()->route('app.label.listing', [$this->label->type])->with('info', 'Label Deleted');
     }
 
     /**

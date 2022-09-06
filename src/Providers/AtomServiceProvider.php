@@ -166,8 +166,9 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.label.listing' => 'App\Label\Listing',
             'atom.app.label.create' => 'App\Label\Create',
             'atom.app.label.update' => 'App\Label\Update\Index',
-            'atom.app.label.update.general' => 'App\Label\Update\General',
+            'atom.app.label.update.info' => 'App\Label\Update\Info',
             'atom.app.label.update.children' => 'App\Label\Update\Children',
+            'atom.app.label.update.child-form-modal' => 'App\Label\Update\ChildFormModal',
 
             // tax
             'atom.app.tax.listing' => 'App\Tax\Listing',

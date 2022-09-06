@@ -18,7 +18,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        $this->type = head($this->types ?? []);
+        if (!$this->type) $this->type = head($this->types);
 
         breadcrumbs()->home('Labels');
     }

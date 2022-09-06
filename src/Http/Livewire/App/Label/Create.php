@@ -9,8 +9,6 @@ class Create extends Component
     public $type;
     public $label;
 
-    protected $listeners = ['saved'];
-
     /**
      * Mount
      */
@@ -30,15 +28,6 @@ class Create extends Component
     public function getLocalesProperty()
     {
         return collect(config('atom.locales'));
-    }
-
-    /**
-     * Saved
-     */
-    public function saved()
-    {
-        session()->flash('flash', 'Label Created::success');
-        return redirect()->route('app.label.listing', ['type' => $this->type]);
     }
 
     /**

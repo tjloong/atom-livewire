@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Label\Update;
 
+use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
 
-class General extends Component
+class Info extends Component
 {
+    use WithPopupNotify;
+    
     public $types;
     public $label;
     public $names;
@@ -65,7 +68,8 @@ class General extends Component
             'name' => $this->names,
         ])->save();
 
-        $this->emitUp('saved', $this->label->type);
+        if ($this->label->wasRecentlyCreated) return redirect()->route('app.label.listing', ['type' => $this->label->type]);
+        else $this->popup('Label Updated');
     }
 
     /**
@@ -73,6 +77,6 @@ class General extends Component
      */
     public function render()
     {
-        return view('atom::app.label.update.general');
+        return view('atom::app.label.update.info');
     }
 }

@@ -19,7 +19,7 @@
     >
         <div
             x-on:click.stop
-            x-bind:class="show && 'bg-white rounded-md shadow max-w-sm mx-auto p-4 h-[500px] overflow-auto md:bg-transparent md:shadow-none md:max-w-none md:p-0 md:h-auto'"
+            x-bind:class="show && 'bg-white rounded-md shadow max-w-sm mx-auto p-4 h-[500px] overflow-auto md:bg-transparent md:shadow-none md:max-w-none md:p-0 md:h-auto md:rounded-none'"
         >
             {{ $slot }}
         </div>

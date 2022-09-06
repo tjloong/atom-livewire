@@ -1,18 +1,20 @@
 <div class="max-w-screen-sm mx-auto">
     <x-page-header :title="$label->locale('name')" back>
-        <x-button.delete inverted title="Delete Label" message="Are you sure to delete this label?"/>
+        @if (!data_get($label, 'data.is_locked'))
+            <x-button.delete inverted title="Delete Label" message="Are you sure to delete this label?"/>
+        @endif
     </x-page-header>
 
     <div class="grid gap-6">
         <div>
-            @if ($general = livewire_name('app/label/update/general'))
-                @livewire($general, ['label' => $label, 'locales' => $this->locales])
+            @if ($info = lw('app.label.update.info'))
+                @livewire($info, ['label' => $label, 'locales' => $this->locales])
             @endif
         </div>
 
         @if ($this->enableChildren)
             <div>
-                @if ($children = livewire_name('app/label/update/children'))
+                @if ($children = lw('app.label.update.children'))
                     @livewire($children, ['label' => $label, 'locales' => $this->locales])
                 @endif
             </div>

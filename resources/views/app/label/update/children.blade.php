@@ -1,22 +1,19 @@
 <div>
-    <x-box>
-        <x-slot:header>
-            <div class="flex items-center justify-between gap-2">
-                {{ __('Label Children') }}
-                <x-button icon="plus" size="sm" color="gray" 
-                    label="Add"
-                    wire:click="create"
-                />
-            </div>
-        </x-slot:header>
+    <x-box header="Label Children">
+        <x-slot:header-buttons>
+            <x-button icon="plus" size="sm" color="gray" 
+                label="Add"
+                wire:click="$emitTo('{{ lw('app.label.update.child-form-modal') }}', 'open')"
+            />
+        </x-slot:header-buttons>
 
-        @if ($label->children->count())
+        @if ($children->count())
             <x-form.sortable
-                wire:sorted="sortChildren"
+                wire:sorted="sort"
                 :config="['handle' => '.sort-handle']"
                 class="grid divide-y"
             >
-                @foreach ($label->children()->orderBy('seq')->get() as $child)
+                @foreach ($children as $child)
                     <div class="flex gap-2 px-2" data-sortable-id="{{ $child->id }}">
                         <div class="shrink-0 cursor-move sort-handle flex justify-center text-gray-400 py-2">
                             <x-icon name="sort-alt-2"/>
@@ -24,7 +21,7 @@
                     
                         <div class="grow self-center">
                             <div class="py-2 px-4 hover:bg-gray-100">
-                                <a wire:click="edit({{ $child->id }})">
+                                <a wire:click="$emitTo('{{ lw('app.label.update.child-form-modal') }}', 'open', {{ $child->id }})">
                                     {{ $child->locale('name') }}
                                 </a>
 
@@ -51,26 +48,8 @@
         @endif
     </x-box>
 
-    <x-modal uid="child-form-modal" :header="(data_get($form, 'id') ? 'Update' : 'Create').' Label Child'">
-        <form wire:submit.prevent="submit" class="grid gap-4">
-            @foreach ($locales->sort() as $locale)
-                <x-form.text
-                    label="Child Label Name"
-                    :label-tag="$locales->count() > 1 ? data_get(metadata()->locales($locale), 'name') : null"
-                    wire:model.defer="form.name.{{ $locale }}"
-                    :error="$errors->first('form.name.'.$locale)"
-                    required
-                />
-            @endforeach
-    
-            <x-form.slug 
-                label="Child Label Slug"
-                wire:model.defer="form.slug" 
-                prefix="/"
-                caption="Leave empty to auto generate"
-            />
-
-            <x-button.submit/>
-        </form>
-    </x-modal>
+    @livewire(lw('app.label.update.child-form-modal'), [
+        'parent' => $label,
+        'locales' => $locales,
+    ])
 </div>

@@ -19,10 +19,12 @@
             if (itemHref) window.location = itemHref
             else select(itemName)
         "
-        x-bind:class="active
-            ? 'font-bold text-theme-inverted bg-theme rounded-l rounded-r md:border-r-2 md:border-theme-dark md:text-theme-dark md:bg-gray-200 md:rounded-r-none'
-            : ('font-medium text-gray-600 hover:font-bold md:flex ' + (!show && 'hidden'))
-        "
+        x-bind:class="{
+            'font-bold text-theme-inverted bg-theme rounded-md md:border-r-2 md:border-theme-dark md:text-theme-dark md:bg-gray-200 md:rounded-r-none': active && show,
+            'font-bold bg-white ring-theme ring-2 ring-offset-2 rounded-md md:border-r-2 md:border-theme-dark md:text-theme-dark md:bg-gray-200 md:rounded-r-none md:ring-0': active && !show,
+            'hidden font-medium text-gray-600 hover:font-bold md:flex': !active && !show,
+            'font-medium text-gray-600 hover:font-bold md:flex': !active && show,
+        }"
         class="py-2 px-4 flex items-center gap-2 cursor-pointer"
         {{ $attributes->except(['name', 'active']) }}
     >
