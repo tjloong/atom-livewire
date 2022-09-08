@@ -17,35 +17,16 @@
             selected: @js($selected),
             multiple: @js($multiple),
             get list () {
-                let list = this.options || []
-                if (this.paginator.data) list = this.paginator.data
+                let list = []
+                let opts = this.options || []
+                if (this.paginator.data) opts = this.paginator.data
+
+                opts.forEach(opt => {
+                    list.push(this.getOpt(opt))
+                    if (opt.children) opt.children.forEach(child => list.push(this.getOpt(child)))
+                })
 
                 return list
-                    .map(opt => ({
-                        value: opt.value || opt.id || opt.code,
-                        label: opt.label || opt.name || opt.title,
-                        small: opt.small || opt.description || opt.caption,
-                        image: opt.image,
-                        avatar: opt.avatar,
-                        flag: opt.flag,
-                        status: {
-                            text: opt.status,
-                            color: opt.status_color ? opt.status_color.values().join(' ') : null,
-                        },
-                        remark: opt.remark,
-                    }))
-                    .map(opt => typeof opt.label === 'object'
-                        ? { ...opt, label: opt.label[@js(app()->currentLocale())] }
-                        : opt
-                    )
-                    .map(opt => typeof opt.image === 'object'
-                        ? { ...opt, image: opt.image.url }
-                        : opt
-                    )
-                    .map(opt => typeof opt.avatar === 'object'
-                        ? { ...opt, avatar: opt.avatar.url }
-                        : opt
-                    )
             },
             get results () {
                 if (this.text) {
@@ -66,6 +47,34 @@
                         ? this.list.filter(opt => (this.value.includes(opt.value)))
                         : this.list.find(opt => (opt.value === this.value))
                 }
+            },
+            getOpt (val) {
+                let opt = {
+                    value: val.value || val.id || val.code,
+                    label: val.label || val.name || val.title,
+                    small: val.small || val.description || val.caption,
+                }
+
+                if (val.hasOwnProperty('children')) {
+                    opt.isGroup = true
+                }
+                else {
+                    opt.isGroup = false
+                    opt.image = val.image
+                    opt.avatar = val.avatar
+                    opt.flag = val.flag
+                    opt.remark = val.remark
+                    opt.status = {
+                        text: val.status,
+                        color: val.status_color ? val.status_color.values().join(' ') : null,
+                    }
+                }
+
+                if (typeof opt.label === 'object') opt.label = opt.label[@js(app()->currentLocale())]
+                if (typeof opt.image === 'object') opt.image = opt.image.url
+                if (typeof opt.avatar === 'object') opt.avatar = opt.avatar.url
+
+                return opt
             },
             open () {
                 this.close()
@@ -241,9 +250,13 @@
 
                 <div x-show="!loading && list.length > 0">
                     <template x-for="opt in results">
-                        <div 
-                            x-on:click="select(opt)"
-                            class="py-2 px-4 cursor-pointer flex items-center gap-3 border-b last:border-b-0 hover:bg-slate-100"
+                        <div
+                            x-on:click="!opt.isGroup && select(opt)"
+                            x-bind:class="{
+                                'bg-gray-100': opt.isGroup,
+                                'cursor-pointer hover:bg-slate-100': !opt.isGroup
+                            }" 
+                            class="py-2 px-4 flex items-center gap-3 border-b last:border-b-0"
                         >
                             <div 
                                 x-show="opt.avatar || opt.image || opt.flag"
@@ -264,10 +277,16 @@
                                 >
                             </div>
 
-                            <div class="grow grid">
+                            <div 
+                                x-bind:class="results.some(res => (res.isGroup)) && !opt.isGroup && 'ml-4'"
+                                class="grow grid"
+                            >
                                 <div 
                                     x-text="opt.label" 
-                                    x-bind:class="opt.small && 'font-semibold'"
+                                    x-bind:class="{
+                                        'font-bold': opt.isGroup,
+                                        'font-semibold': !opt.isGroup && opt.small,
+                                    }"
                                     class="truncate"
                                 ></div>
                                 <div x-show="opt.small" x-text="opt.small" class="truncate font-medium text-sm text-gray-400"></div>
