@@ -70,11 +70,10 @@
         @endmodule
 
         @module('teams')
-            <x-form.picker 
+            <x-form.select 
                 label="Teams"
                 wire:model="selectedTeams"
                 :options="data_get($this->options, 'teams')"
-                :selected="$selectedTeams"
                 multiple
             />
         @endmodule

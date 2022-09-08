@@ -6,6 +6,97 @@ use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
+ * Get status color
+ */
+function get_status_color($status)
+{
+    $color = [
+        'due' => 'red',
+        'error' => 'red',
+        'failed' => 'red',
+
+        'new' => 'yellow',
+        'admin' => 'yellow',
+        'unpaid' => 'yellow',
+        'opened' => 'yellow',
+        'queueing' => 'yellow',
+        'submitted' => 'yellow',
+        'checked-out' => 'yellow',
+
+        'ready' => 'blue',
+        'default' => 'blue',
+        'partial' => 'blue',
+        'pending' => 'blue',
+        'shipped' => 'blue',
+        'feedback' => 'blue',
+        'processing' => 'blue',
+
+        'paid' => 'green',
+        'sent' => 'green',
+        'active' => 'green',
+        'billed' => 'green',
+        'closed' => 'green',
+        'success' => 'green',
+        'invoiced' => 'green',
+        'verified' => 'green',
+        'certified' => 'green',
+        'delivered' => 'green',
+        'published' => 'green',
+        'completed' => 'green',
+        'onboarded' => 'green',
+        'offered' => 'green',
+        'accepted' => 'green',
+
+        'blocked' => 'black',
+        'trashed' => 'black',
+        'voided' => 'black',
+    ][$status] ?? null;
+
+    return [
+        'green' => [
+            'text' => 'text-green-800',
+            'bg' => 'bg-green-100',
+            'border' => 'border border-green-200',
+        ],
+        'red' => [
+            'text' => 'text-red-800',
+            'bg' => 'bg-red-100',
+            'border' => 'border border-red-200',
+        ],
+        'blue' => [
+            'text' => 'text-blue-800',
+            'bg' => 'bg-blue-100',
+            'border' => 'border border-blue-200',
+        ],
+        'yellow' => [
+            'text' => 'text-yellow-800',
+            'bg' => 'bg-yellow-100',
+            'border' => 'border border-yellow-200',
+        ],
+        'indigo' => [
+            'text' => 'text-indigo-800',
+            'bg' => 'bg-indigo-100',
+            'border' => 'border border-indigo-200',
+        ],
+        'orange' => [
+            'text' => 'text-orange-800',
+            'bg' => 'bg-orange-100',
+            'border' => 'border border-orange-200',
+        ],
+        'black' => [
+            'text' => 'text-white',
+            'bg' => 'bg-black',
+            'border' => null,
+        ],
+        'gray' => [
+            'text' => 'text-gray-800',
+            'bg' => 'bg-gray-100',
+            'border' => null,
+        ],
+    ][$color] ?? null;
+}
+
+/**
  * Recaptcha verification
  */
 function verify_recaptcha($token, $secret = null)

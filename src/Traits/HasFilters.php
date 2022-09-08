@@ -43,6 +43,14 @@ trait HasFilters
     }
 
     /**
+     * Scope for paginateToPage
+     */
+    public function scopePaginateToPage($query, $rows, $page)
+    {
+        return $query->paginate($rows, ['*'], 'page', $page);
+    }
+
+    /**
      * Check model has a specific column
      * 
      * @return boolean

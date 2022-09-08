@@ -4,11 +4,10 @@
         <div class="font-medium text-gray-500">{{ $plan->excerpt }}</div>
     </x-form.field>
 
-    <x-form.picker 
+    <x-form.select 
         label="Available for Country"
         wire:model="planPrice.country"
-        options="country"
-        :selected="$planPrice->country"
+        :options="metadata()->countries()"
     />
 
     @if ($this->readonly)

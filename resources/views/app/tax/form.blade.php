@@ -6,11 +6,10 @@
         required
     />
 
-    <x-form.picker
+    <x-form.select
         label="Country"
         wire:model="tax.country"
-        options="country"
-        :selected="$tax->country"
+        :options="metadata()->countries()"
         required
     />
 

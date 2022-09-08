@@ -40,19 +40,17 @@
         wire:model.defer="plan.cta"
     />
 
-    <x-form.picker 
+    <x-form.select 
         label="Upgradable To"
         wire:model="upgradables" 
         :options="data_get($this->options, 'upgradables')"
-        :selected="$upgradables"
         multiple
     />
 
-    <x-form.picker 
+    <x-form.select 
         label="Downgradable To"
         wire:model="downgradables" 
         :options="data_get($this->options, 'downgradables')"
-        :selected="$downgradables"
         multiple
     />
 

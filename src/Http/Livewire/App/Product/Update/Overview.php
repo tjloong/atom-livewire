@@ -14,7 +14,6 @@ class Overview extends Component
     public $selected = [
         'taxes' => [],
         'categories' => [],
-        'autocode' => false,
     ];
 
     /**

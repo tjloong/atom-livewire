@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Services;
 
+use Illuminate\Support\Arr;
+
 class Metadata
 {
     /**
@@ -10,9 +12,13 @@ class Metadata
     public function countries($code = null) {
         $path = __DIR__.'/../../resources/json/countries.json';
         $json = json_decode(file_get_contents($path));
-        $countries = collect($json);
+        $countries = collect($json)
+            ->map(fn($val) => array_merge(
+                Arr::only((array)$val, ['name', 'dial_code', 'flag', 'currency', 'region', 'states']),
+                ['code' => data_get($val, 'iso_code')]
+            ));
 
-        if ($code) return $countries->firstWhere('iso_code', $code) ?? $countries->firstWhere('name', $code);
+        if ($code) return $countries->firstWhere('code', $code) ?? $countries->firstWhere('name', $code);
 
         return $countries;
     }
@@ -22,9 +28,10 @@ class Metadata
      */
     public function states($country)
     {
-        $states = optional($this->countries($country))->states ?? [];
+        $country = $this->countries($country);
+        $states = data_get($country, 'states', []);
 
-        return collect($states)->sortBy('code');
+        return collect($states)->sortBy('code')->map(fn($val) => (array)$val)->values();
     }
 
     /**

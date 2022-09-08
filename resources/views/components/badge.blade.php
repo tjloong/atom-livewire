@@ -57,7 +57,7 @@
     'px-2 inline-flex text-sm leading-6 font-semibold rounded-full',
     $attributes->get('color')
         ? $colors[$attributes->get('color')]
-        : ($colors[$status[$label ?? strtolower($slot->toHtml())] ?? 'gray'])
+        : ($colors[$status[$label ?? strip_tags(strtolower($slot->toHtml()))] ?? 'gray'])
 ]) }} class="bg-gray-100 text-gray-800">
     @if ($label) {{ __($label) }}
     @else {{ $slot }}

@@ -67,7 +67,6 @@ class Listing extends Component
                 ->belongsToAccount()
                 ->where('type', 'product-category')
                 ->orderBy('name')
-                ->selectRaw('id as value, name as label')
                 ->get(),
         ];
     }

@@ -11,11 +11,16 @@ class Index extends Component
     /**
      * Mount
      */
-    public function mount($label)
+    public function mount($labelId)
     {
         $this->label = model('label')
+            ->whereNull('parent_id')
             ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
-            ->findOrFail($label);
+            ->when(
+                is_numeric($labelId),
+                fn($q) => $q->findOrFail($labelId),
+                fn($q) => $q->where('slug', $labelId)->firstOrFail()
+            );
 
         breadcrumbs()->push($this->label->locale('name'));
     }

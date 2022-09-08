@@ -107,9 +107,9 @@ class Index extends Component
             'icon' => [
                 'name' => is_string($this->icon) ? $this->icon : data_get($this->icon, 'name'),
                 'size' => [
-                    'xs' => '12px',
-                    'sm' => '14px',
-                    'base' => '16px',
+                    'xs' => '10px',
+                    'sm' => '12px',
+                    'base' => '14px',
                     'md' => '18px',
                     'lg' => '20px',
                 ][$this->size],

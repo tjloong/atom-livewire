@@ -35,14 +35,6 @@ class Form extends Component
     }
 
     /**
-     * Mount
-     */
-    public function mount()
-    {
-        //
-    }
-
-    /**
      * Submit
      */
     public function submit()

@@ -22,11 +22,10 @@
         />
     </div>
 
-    <x-form.picker 
+    <x-form.select 
         label="Categories"
         wire:model="selectedLabels" 
         :options="$this->labels"
-        :selected="$this->selectedLabels"
         multiple
     />
 

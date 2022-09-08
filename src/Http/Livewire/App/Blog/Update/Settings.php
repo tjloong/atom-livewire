@@ -35,11 +35,7 @@ class Settings extends Component
         return model('label')
             ->where('type', 'blog-category')
             ->orderBy('name')
-            ->get()
-            ->map(fn($label) => [
-                'value' => $label->id,
-                'label' => $label->locale('name'),
-            ]);
+            ->get();
     }
 
     /**

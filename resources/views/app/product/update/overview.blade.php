@@ -27,13 +27,18 @@
         class="grid gap-2 md:grid-cols-2"
     />
 
-    <x-form.picker
+    <x-form.select
         label="Category"
         wire:model="selected.categories"
         :options="data_get($this->options, 'categories')"
-        :selected="data_get($this->selected, 'categories')"
         multiple
-    />
+    >
+        <x-slot:footlink 
+            label="New Category" 
+            icon="plus"
+            :href="route('app.label.create', ['product-category'])"
+        ></x-slot:footlink>
+    </x-form.select>
 
     @if ($product->type === 'normal')
         <x-form.number
@@ -42,19 +47,30 @@
         />
     @endif
 
-    @if ($product->type !== 'variant')
-        <x-form.picker
-            label="Taxes"
-            wire:model="selected.taxes"
-            :selected="data_get($this->selected, 'taxes')"
-            :options="data_get($this->options, 'taxes')"
-            multiple
-        />
+    <x-form.select
+        label="Taxes"
+        wire:model="selected.taxes"
+        :options="data_get($this->options, 'taxes')"
+        multiple
+    >
+        <x-slot:footlink
+            label="New Tax"
+            icon="plus"
+            :href="route('app.tax.create')"
+        ></x-slot:footlink>
+    </x-form.select>
 
+    @if ($product->type === 'variant')
+        <x-form.field label="Price">
+            <div class="flex items-center gap-2 text-sm">
+                <x-icon name="circle-info" size="14px" class="text-gray-400"/>
+                {{ __('Selling prices will follow each variant configuration.') }}
+            </div>
+        </x-form.field>
+    @else
         <x-form.amount
             label="Price"
             wire:model.defer="product.price"
-            prefix="MYR"
         />
     @endif
 

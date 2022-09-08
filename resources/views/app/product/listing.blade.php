@@ -9,24 +9,21 @@
     <x-table :total="$this->products->total()" :links="$this->products->links()">
         <x-slot:toolbar>
             <div class="flex items-center gap-2">
-                <x-form.picker
+                <x-form.select
                     wire:model="filters.status"
                     :options="data_get($this->options, 'statuses')"
-                    :selected="data_get($filters, 'status')"
                     placeholder="All Status"
                 />
 
-                <x-form.picker
+                <x-form.select
                     wire:model="filters.type"
                     :options="data_get($this->options, 'types')"
-                    :selected="data_get($filters, 'type')"
                     placeholder="All Product Types"
                 />
 
-                <x-form.picker
+                <x-form.select
                     wire:model="filters.product_category"
                     :options="data_get($this->options, 'product_categories')"
-                    :selected="data_get($filters, 'product_category')"
                     placeholder="All Categories"
                 />
             </div>

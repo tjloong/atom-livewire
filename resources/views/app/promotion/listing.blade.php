@@ -8,10 +8,9 @@
 
     <x-table :total="$this->promotions->total()" :links="$this->promotions->links()">
         <x-slot:toolbar>
-            <x-form.picker
+            <x-form.select
                 wire:model="filters.status"
                 :options="data_get($this->options, 'statuses')"
-                :selected="data_get($filters, 'status')"
                 placeholder="All Status"
             />
         </x-slot:toolbar>

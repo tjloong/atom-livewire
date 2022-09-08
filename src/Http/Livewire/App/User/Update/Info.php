@@ -63,12 +63,12 @@ class Info extends Component
     {
         return [
             'roles' => model('role')
-                ->select('id as value', 'name as label')
+                ->when(model('role')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
                 ->orderBy('name')
                 ->get(),
 
             'teams' => model('team')
-                ->select('id as value', 'name as label')
+                ->when(model('team')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
                 ->orderBy('name')
                 ->get(),
 
