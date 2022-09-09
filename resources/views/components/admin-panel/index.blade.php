@@ -11,7 +11,7 @@
             document.querySelector('html').style.fontSize = '14px'
         },
     }"
-    class="min-h-screen bg-gray-50 admin-panel" 
+    class="min-h-screen h-px admin-panel" 
 >
     <div
         x-ref="void"
@@ -70,14 +70,14 @@
 
     <main
         x-ref="container"
-        class="w-full"
+        class="w-full h-full flex flex-col"
         :class="{
             'transition-0 duration-100 ease-in-out': animate,
             'lg:pl-0': toggled,
             'lg:pl-56': !toggled,
         }"
     >
-        <x-navbar class="bg-white py-3 px-4 shadow" sticky>
+        <x-navbar class="shrink-0 bg-white py-3 px-4 border-b" sticky>
             <x-slot:logo>
                 @isset($logo)
                     {{ $logo }}
@@ -99,10 +99,10 @@
             @endisset
         </x-navbar>
 
-        <x-breadcrumbs class="bg-white py-1 px-4 shadow"/>
+        <x-breadcrumbs class="shrink-0 bg-white py-1 px-4 border-b"/>
     
         @if ($unverified)
-            <div class="py-3 px-4 bg-yellow-100 shadow" x-data>
+            <div x-data class="shrink-0 py-3 px-4 bg-yellow-100 shadow">
                 <div class="md:flex md:items-center md:space-x-2">
                     <x-icon name="error" class="flex-shrink-0 text-yellow-400"/>
                     <div class="flex-grow font-medium text-yellow-600">
@@ -115,8 +115,10 @@
             </div> 
         @endif
 
-        <div class="px-5 pt-5 pb-20 md:px-8 md:pt-8 overflow-y-auto">
-            {{ $slot }}
+        <div class="grow bg-gray-50">
+            <div class="px-5 pt-5 pb-20 md:px-8 md:pt-8 overflow-y-auto h-full">
+                {{ $slot }}
+            </div>
         </div>
     </main>
 </div>

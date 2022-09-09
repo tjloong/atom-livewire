@@ -8,47 +8,33 @@
             page: 1,
             show: false,
             text: null,
+            list: [],
             loading: false,
-            searchfocus: false,
+            searchable: false,
             paginator: {},
             value: @entangle($attributes->wire('model')),
             callback: @js($attributes->get('callback')),
             options: @js($options),
             selected: @js($selected),
             multiple: @js($multiple),
-            get list () {
-                let list = []
-                let opts = this.options || []
-                if (this.paginator.data) opts = this.paginator.data
-
-                opts.forEach(opt => {
-                    list.push(this.getOpt(opt))
-                    if (opt.children) opt.children.forEach(child => list.push(this.getOpt(child)))
-                })
-
-                return list
-            },
-            get results () {
-                if (this.text) {
-                    const text = this.text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, `\\$&`)
-                    const regex = text ? new RegExp(text, 'i') : null
-                    if (regex) return this.list.filter(opt => (regex.test(opt.label)))
-                }
-
-                return this.list
-            },
             get isEmpty () {
                 return !this.placeholder || (Array.isArray(this.placeholder) && !this.placeholder.length)
             },
-            get placeholder () {
-                if (this.selected) return this.selected
-                else {
-                    return this.multiple
-                        ? this.list.filter(opt => (this.value.includes(opt.value)))
-                        : this.list.find(opt => (opt.value === this.value))
-                }
+            getOptions () {
+                let options = []
+                let data = this.options || []
+                if (this.paginator.data) data = this.paginator.data
+
+                data.forEach(val => {
+                    options.push(this.formatOption(val))
+                    if (val.children) val.children.forEach(child => options.push(this.formatOption(child)))
+                })
+
+                return options
             },
-            getOpt (val) {
+            formatOption (val) {
+                if (typeof val === 'string') return { value: val, label: val }
+
                 let opt = {
                     value: val.value || val.id || val.code,
                     label: val.label || val.name || val.title,
@@ -76,13 +62,38 @@
 
                 return opt
             },
+            getPlaceholder () {
+                if (this.selected) return this.selected
+                else {
+                    const options = this.getOptions()
+
+                    if (this.multiple) {
+                        const filtered = options.filter(opt => (this.value.includes(opt.value)))
+                        return filtered.length ? filtered : null
+                    }
+                    else return options.find(opt => (opt.value === this.value)) || null
+                }
+            },
+            search () {
+                this.list = this.getOptions()
+
+                if (this.text) {
+                    const text = this.text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, `\\$&`)
+                    const regex = text ? new RegExp(text, 'i') : null
+                    if (regex) this.list = this.list.filter(opt => (regex.test(opt.label) || regex.test(opt.small)))
+                }
+            },
             open () {
-                this.close()
-                this.show = true
-                this.$nextTick(() => {
-                    floatDropdown(this.$refs.anchor, this.$refs.dd)
-                    this.$refs.search && this.$refs.search.focus()
-                })
+                if (this.show) this.close()
+                else {
+                    this.show = true
+                    this.$nextTick(() => {
+                        floatDropdown(this.$refs.anchor, this.$refs.dd)
+                        this.$refs.search && this.$refs.search.focus()
+                        this.retrieve()
+                        this.searchable = this.list.length > 10 || this.callback
+                    })
+                }
             },
             close () {
                 this.show = false
@@ -100,6 +111,15 @@
             remove (sel) {
                 this.value = this.value.filter(val => val !== sel.value)
             },
+            clearValue () {
+                if (this.multiple) this.value = []
+                else this.value = null
+                this.$nextTick(() => this.close())
+            },
+            clearText () {
+                this.text = null
+                this.$nextTick(() => this.retrieve())
+            },
             next () {
                 this.page++
                 this.retrieve()
@@ -109,30 +129,41 @@
                 this.retrieve()
             },
             retrieve () {
-                if (!this.callback) return
-                this.loading = true
-                this.$wire.call(this.callback, this.text, this.page)
-                    .then(res => this.paginator = res)
-                    .finally(() => this.loading = false)
+                if (!this.callback) this.search()
+                else {
+                    this.loading = true
+                    this.$wire.call(this.callback, this.text, this.page)
+                        .then(res => this.paginator = res)
+                        .then(() => this.search())
+                        .finally(() => this.loading = false)
+                }
             },
         }"
-        x-init="retrieve()"
         x-on:click.away="close()"
         class="relative"
+        @if (!$attributes->get('callback')) id="{{ $uid }}" @endif
     >
         <div
             x-ref="anchor" 
             x-on:click="open()" 
             x-bind:class="{
                 'active': show,
-                'select': isEmpty,
+                'select': getPlaceholder() === null,
             }"
-            class="form-input w-full"
+            class="form-input w-full {{ $attributes->get('error') ? 'error' : '' }}"
         >
-            <template x-if="Array.isArray(placeholder) && placeholder.length">
+            <template x-if="getPlaceholder() === null">
+                <div class="text-gray-400 grid">
+                    <div class="truncate">
+                        {{ __($attributes->get('placeholder', 'Select '.($label ?? 'an option'))) }}
+                    </div>
+                </div>
+            </template>
+
+            <template x-if="getPlaceholder() !== null && multiple">
                 <div class="flex gap-2">
                     <div class="grow flex flex-wrap gap-2">
-                        <template x-for="sel in placeholder">
+                        <template x-for="sel in getPlaceholder()">
                             <div class="bg-slate-200 rounded-md py-1 px-2 text-sm font-medium border border-gray-200 flex items-center gap-2 max-w-[200px]">
                                 <div class="grid">
                                     <div x-text="sel.label" class="truncate text-xs"></div>
@@ -144,28 +175,20 @@
                         </template>
                     </div>
 
-                    <a x-on:click="value = []" class="flex shrink-0 text-gray-500">
+                    <a x-on:click="clearValue()" class="flex shrink-0 text-gray-500">
                         <x-icon name="xmark" size="16px" class="m-auto"/>
                     </a>
                 </div>
             </template>
 
-            <template x-if="!Array.isArray(placeholder) && placeholder">
+            <template x-if="getPlaceholder() !== null && !multiple">
                 <div class="flex items-center justify-between gap-2">
                     <div class="grid">
-                        <div x-text="placeholder.label" class="truncate"></div>
+                        <div x-text="getPlaceholder()?.label" class="truncate"></div>
                     </div>
-                    <a x-on:click="value = null" x-on:click.stop class="flex shrink-0 text-gray-500">
+                    <a x-on:click="clearValue()" x-on:click.stop class="flex shrink-0 text-gray-500">
                         <x-icon name="xmark" size="16px" class="m-auto"/>
                     </a>
-                </div>
-            </template>
-
-            <template x-if="isEmpty">
-                <div class="text-gray-400 grid">
-                    <div class="truncate">
-                        {{ __($attributes->get('placeholder', 'Select '.($label ?? 'an option'))) }}
-                    </div>
                 </div>
             </template>
         </div>
@@ -176,30 +199,26 @@
             x-transition.opacity
             class="absolute z-20 bg-white shadow-lg rounded-md border border-gray-300 overflow-hidden w-full min-w-[300px]"
         >
-            <div x-show="list.length > 10" class="p-3 border-b">
-                <div 
-                    x-bind:class="searchfocus && 'active'"
-                    class="py-2 px-4 flex items-center gap-2 form-input"
-                >
+            <div x-show="searchable" class="p-3 border-b">
+                <div class="py-2 px-4 flex items-center gap-2 form-input">
                     <x-icon name="search" size="15px" class="text-gray-400"/>
                     <div class="grow">
                         <input type="text"
                             x-ref="search"
                             x-model="text"
-                            x-on:focus="searchfocus = true"
-                            x-on:blur="searchfocus = false"
+                            x-on:input.debounce.400ms="retrieve()"
                             placeholder="{{ __('Search') }}"
                             class="form-input transparent w-full"
                         >
                     </div>
-                    <a x-show="text" x-on:click="text = null" class="flex">
+                    <a x-show="text" x-on:click="clearText()" class="flex">
                         <x-icon name="xmark" size="15px" class="text-gray-500 m-auto"/>
                     </a>
                 </div>
             </div>
 
             <div 
-                x-bind:class="list.length > 10 ? 'h-[250px]' : 'max-h-[250px]'"
+                x-bind:class="getOptions().length > 10 ? 'h-[250px]' : 'max-h-[250px]'"
                 class="overflow-auto"
             >
                 <div x-show="loading" class="p-6 flex items-center justify-center h-full w-full text-theme">
@@ -249,7 +268,7 @@
                 </div>
 
                 <div x-show="!loading && list.length > 0">
-                    <template x-for="opt in results">
+                    <template x-for="opt in list">
                         <div
                             x-on:click="!opt.isGroup && select(opt)"
                             x-bind:class="{
@@ -278,7 +297,7 @@
                             </div>
 
                             <div 
-                                x-bind:class="results.some(res => (res.isGroup)) && !opt.isGroup && 'ml-4'"
+                                x-bind:class="list.some(res => (res.isGroup)) && !opt.isGroup && 'ml-4'"
                                 class="grow grid"
                             >
                                 <div 

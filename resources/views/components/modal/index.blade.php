@@ -18,16 +18,13 @@
     <div 
         x-show="show" 
         x-transition.opacity 
-        x-on:click="close()"
-        class="fixed inset-0 z-50 bg-black/80 overflow-auto"
+        class="fixed inset-0 z-50 overflow-auto"
     >
-        <div class="px-6 py-10">
-            <{{ $el }} x-on:click.stop {{ 
+        <div x-on:click="close()" class="absolute inset-0 bg-black/80"></div>
+        <div class="absolute left-1/2 -translate-x-1/2 px-6 py-10 w-full mx-auto {{ $attributes->get('class', 'max-w-lg') }}">
+            <{{ $el }} {{ 
                 $attributes->merge([
-                    'class' => collect([
-                        'mx-auto bg-white rounded-xl border shadow-lg',
-                        !$attributes->get('class') ? 'max-w-lg' : null,
-                    ])->filter()->join(' '),
+                    'class' => 'bg-white rounded-xl border shadow-lg',
                     'wire:submit.prevent' => $el === 'form' ? 'submit' : null,
                 ])->except(['uid', 'header', 'form']) 
             }}>

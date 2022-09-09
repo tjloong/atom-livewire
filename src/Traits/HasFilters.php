@@ -45,7 +45,7 @@ trait HasFilters
     /**
      * Scope for paginateToPage
      */
-    public function scopePaginateToPage($query, $rows, $page)
+    public function scopeToPage($query, $page = 1, $rows = 50)
     {
         return $query->paginate($rows, ['*'], 'page', $page);
     }

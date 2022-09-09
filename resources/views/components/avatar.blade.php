@@ -4,7 +4,12 @@
 >
     <figure
         {{ $attributes
-            ->merge(['class' => 'rounded-full shadow flex w-full h-full overflow-hidden']) 
+            ->merge([
+                'class' => collect([
+                    'shadow flex w-full h-full overflow-hidden',
+                    $attributes->get('shape', 'circle') === 'square' ? 'rounded-md' : 'rounded-full',
+                ])->filter()->join(' ')
+            ]) 
             ->except(['url', 'placeholder', 'wire:remove'])
         }}
         style="background-color: {{ collect($colors)->random() }};"

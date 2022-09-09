@@ -1,5 +1,5 @@
 <label
-    class="inline-flex gap-2"
+    class="inline-flex gap-2 {{ $attributes->get('class') }}"
     x-data="{ get show () { return this.$refs.checkbox.checked }}"
     @if ($attributes->get('disabled')) disabled @endif
 >
