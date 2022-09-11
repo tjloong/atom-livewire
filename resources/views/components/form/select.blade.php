@@ -1,8 +1,4 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption']) }}>
-    @if ($label = $attributes->get('label'))
-        <x-slot:label>{{ $label }}</x-slot:label>
-    @endif
-
+<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
     <div 
         x-data="{
             page: 1,

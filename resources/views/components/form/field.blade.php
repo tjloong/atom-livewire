@@ -1,11 +1,11 @@
 <div {{ $attributes->class(['flex flex-col gap-2']) }}>
     @if ($label = $label ?? $attributes->get('label'))
-        <label class="form-label">
-            {{ is_string($label) ? __($label) : $label }}
+        <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
+            {{ is_string($label) ? __(strtoupper($label)) : $label }}
 
             @if ($tag = $attributes->get('label-tag'))
                 <span class="bg-blue-100 text-blue-500 font-medium text-xs px-2 py-0.5 rounded-md">
-                    {{ $tag }}
+                    {{ __($tag) }}
                 </span>
             @endif
 

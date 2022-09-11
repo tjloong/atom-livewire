@@ -7,7 +7,7 @@
         @foreach ($errors as $error)
             <div class="flex items-center gap-2">
                 <x-icon :name="$icon" class="{{ data_get($color, 'icon') }} shrink-0" size="20px"/>
-                <div class="{{ data_get($color, 'text') }} font-medium">{{ $error }}</div>
+                <div class="{{ data_get($color, 'text') }} font-medium">{{ __($error) }}</div>
             </div>
         @endforeach
     </div>
@@ -21,9 +21,13 @@
         
         <div class="grow grid gap-2 self-center">
             @isset($title) 
-                <div class="{{ data_get($color, 'title') }} font-semibold text-lg">{{ $title }}</div>
+                <div class="{{ data_get($color, 'title') }} font-semibold text-lg">
+                    {{ $title }}
+                </div>
             @elseif ($title = $attributes->get('title'))
-                <div class="{{ data_get($color, 'title') }} font-semibold text-lg">{{ str(__($title))->toHtmlString() }}</div>
+                <div class="{{ data_get($color, 'title') }} font-semibold text-lg">
+                    {{ __(str(__($title))->toHtmlString()) }}
+                </div>
             @endisset
 
             <div class="{{ data_get($color, 'text') }} font-medium">

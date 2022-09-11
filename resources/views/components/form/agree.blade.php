@@ -14,7 +14,7 @@
             <div class="flex flex-col md:flex-row md:flex-wrap md:items-center md:gap-2">
             @foreach ($links as $label => $href)
                 <a href="{{ $href }}" target="_blank" class="shrink-0 text-sm">
-                    {{ $label }}
+                    {{ __($label) }}
                 </a>
                 @if ($label !== array_key_last($links)) <span class="hidden md:block">|</span> @endif
             @endforeach

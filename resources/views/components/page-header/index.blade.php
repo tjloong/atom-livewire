@@ -13,7 +13,7 @@
         @endif
 
         @isset($title)
-            <div class="self-center">
+            <div {{ $title->attributes->merge(['class' => 'self-center']) }}>
                 {{ $title }}
             </div>
         @elseif ($title = $attributes->get('title'))

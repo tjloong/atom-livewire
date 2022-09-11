@@ -1,8 +1,4 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption']) }}>
-    @if ($label = $attributes->get('label'))
-        <x-slot:label>{{ __($label) }}</x-slot:label>
-    @endif
-
+<x-form.field {{ $attributes->only(['label', 'error', 'required', 'caption']) }}>
     <input type="email" {{ $attributes->class([
         'form-input w-full',
         'error' => !empty($attributes->get('error')),

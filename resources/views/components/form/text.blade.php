@@ -1,8 +1,4 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label-tag']) }}>
-    @if ($label = $attributes->get('label'))
-        <x-slot:label>{{ __($label) }}</x-slot:label>
-    @endif
-
+<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label', 'label-tag']) }}>
     @if ($attributes->has('transparent'))
         <div class="relative" x-data>
             <input 

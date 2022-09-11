@@ -48,7 +48,7 @@
                                 type="text"
                                 wire:model.debounce.500ms="filters.search"
                                 class="w-full bg-transparent appearance-none border-0 p-0 focus:ring-0"
-                                placeholder="Search"
+                                placeholder="{{ __('Search') }}"
                             >
                         </div>
                         <a 
@@ -183,7 +183,7 @@
 
 @isset($filters)
     <x-drawer uid="{{ $uid }}-drawer">
-        <x-slot name="title">Filters</x-slot>
+        <x-slot name="title">{{ __('Filters') }}</x-slot>
 
         <div class="grid gap-8">
             <div class="grid gap-6">

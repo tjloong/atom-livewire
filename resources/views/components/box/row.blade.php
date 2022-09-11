@@ -5,7 +5,7 @@
     <div class="md:col-span-2">
         <div class="font-medium text-gray-400">
             @if ($label = $label ?? $attributes->get('label'))
-                {{ is_string($label) ? __($label) : $label }}
+                {{ is_string($label) ? __(strtoupper($label)) : $label }}
             @endif
         </div>
     </div>

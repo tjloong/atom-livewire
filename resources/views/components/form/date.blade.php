@@ -1,15 +1,11 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption']) }}>
-    @if ($label = $attributes->get('label'))
-        <x-slot:label>{{ $label }}</x-slot:label>
-    @endif
-
+<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
     <div
         x-data="{
             show: false,
             value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
             settings: @js($attributes->get('settings')),
             calendar: null,
-            placeholder: @js($attributes->get('placeholder', 'Select Date')),
+            placeholder: @js(__($attributes->get('placeholder', 'Select Date'))),
             open () {
                 if (this.show) return this.close()
                 this.show = true

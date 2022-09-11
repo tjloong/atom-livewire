@@ -1,5 +1,5 @@
 <th 
-    class="py-1 px-2 bg-gray-100 font-medium text-sm uppercase border-b border-gray-200 leading-6 tracking-wider"
+    class="py-1 px-2 bg-gray-100 font-medium text-sm border-b border-gray-200 leading-6 tracking-wider"
     {{ $attributes->except(['sort', 'label']) }}
 >
     @if ($sort = $attributes->get('sort'))
@@ -22,7 +22,7 @@
             class="flex items-center gap-1 py-1"
         >
             <a x-on:click.prevent="sort()" {{ $attributes->class(['grow', 'text-left', 'text-gray-600']) }}">
-                @if ($label = $attributes->get('label')) {{ __($label) }}
+                @if ($label = $attributes->get('label')) {{ __(strtoupper($label)) }}
                 @else {{ $slot }}
                 @endif
             </a>
@@ -31,7 +31,7 @@
         </div>
     @else
         <div {{ $attributes->class(['text-gray-500 py-1 px-2', 'text-left']) }}">
-            @if ($label = $attributes->get('label')) {{ __($label) }}
+            @if ($label = $attributes->get('label')) {{ __(strtoupper($label)) }}
             @else {{ $slot }}
             @endif
         </div>
