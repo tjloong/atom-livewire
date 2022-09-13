@@ -402,6 +402,22 @@ function timezone()
 }
 
 /**
+ * Format address
+ */
+function format_address($value)
+{
+    $l1 = preg_replace('/,$/im', '', data_get($value, 'address_1'));
+    $l2 = preg_replace('/,$/im', '', data_get($value, 'address_2'));
+    $l3 = collect([data_get($value, 'zip'), data_get($value, 'city')])->filter()->join(' ');
+    $l4 = collect([
+        data_get($value, 'state'), 
+        data_get(metadata()->countries(data_get($value, 'country')), 'name'),
+    ])->filter()->join(' ');
+
+    return collect([$l1, $l2, $l3, $l4])->filter()->join(', ');
+}
+
+/**
  * Format date to string
  * 
  * @return string

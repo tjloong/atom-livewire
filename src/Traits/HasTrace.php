@@ -66,7 +66,7 @@ trait HasTrace
     /**
      * Get owned by user for model
      */
-    public function owned_by_user()
+    public function ownedBy()
     {
         return $this->belongsTo(get_class(model('user')), 'owned_by');
     }
@@ -74,7 +74,7 @@ trait HasTrace
     /**
      * Get created_by_user for model
      */
-    public function created_by_user()
+    public function createdBy()
     {
         return $this->belongsTo(get_class(model('user')), 'created_by');
     }
@@ -82,7 +82,7 @@ trait HasTrace
     /**
      * Get updated_by_user for model
      */
-    public function updated_by_user()
+    public function updatedBy()
     {
         return $this->belongsTo(get_class(model('user')), 'updated_by');
     }
@@ -90,7 +90,7 @@ trait HasTrace
     /**
      * Get deleted_by_user for model
      */
-    public function deleted_by_user()
+    public function deletedBy()
     {
         return $this->belongsTo(get_class(model('user')), 'deleted_by');
     }
@@ -98,7 +98,7 @@ trait HasTrace
     /**
      * Get blocked_by_user for model
      */
-    public function blocked_by_user()
+    public function blockedBy()
     {
         return $this->belongsTo(get_class(model('user')), 'blocked_by');
     }

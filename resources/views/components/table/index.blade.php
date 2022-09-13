@@ -1,3 +1,5 @@
+@props(['header' => $header ?? $attributes->get('header')])
+
 <div class="grid gap-4">
     <div 
         x-data="{
@@ -21,15 +23,21 @@
         x-on:table-checkbox-checked.window="checkedValues = $event.detail"
         class="relative shadow rounded-lg border bg-white overflow-hidden"
     >
-        @if (isset($header))
-            <div class="p-4 font-bold text-lg border-b">
-                {{ $header }}
+        @if ($header || isset($headerButtons))
+            <div class="flex flex-wrap items-center gap-3 p-4 border-b">
+                @if ($header)
+                    <div class="grow font-bold text-lg">
+                        {{ is_string($header) ? __($header) : $header }}
+                    </div>
+                @endif
+
+                @isset($headerButtons)
+                    <div class="shrink-0">
+                        {{ $headerButtons }}
+                    </div>
+                @endisset
             </div>
-        @elseif ($header = $attributes->get('header'))
-            <div class="p-4 font-bold text-lg border-b">
-                {{ __($header) }}
-            </div>
-        @endisset
+        @endif
 
         <div class="py-3 px-4 flex flex-wrap justify-between items-center gap-2 border-b">
             <div class="text-gray-800 flex items-end gap-1.5">

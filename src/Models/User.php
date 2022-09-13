@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Jiannius\Atom\Traits\HasTrace;
 use Jiannius\Atom\Traits\HasFilters;
+use Jiannius\Atom\Traits\HasVisibility;
 use Jiannius\Atom\Notifications\ActivateAccountNotification;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -22,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens;
     use HasTrace;
     use HasFilters;
+    use HasVisibility;
 
     protected $guarded = ['password'];
 
@@ -116,7 +118,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope for is role
      */
-    public function scopeWhereIsRole($query, $name)
+    public function scopeIsRole($query, $name)
     {
         return $query->when(
             enabled_module('roles'), 
@@ -125,9 +127,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Scope for team id
+     * Scope for in team
      */
-    public function scopeTeamId($query, $id)
+    public function scopeInTeam($query, $id)
     {
         return $query->when(
             enabled_module('teams'),

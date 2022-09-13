@@ -36,32 +36,62 @@
         <div>{{ format_date($datetime) }}</div>
         <div class="text-sm text-gray-500">{{ format_date($datetime, 'time') }}</div>
     
-    @elseif ($href = $attributes->get('href'))
-        <div class="grid">
-            <a 
-                href="{{ $href }}" 
-                class="{{ $tooltip ? '' : 'truncate' }}" 
-                target="{{ $attributes->get('target', '_self') }}"
-                @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
-            >
-                {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
-            </a>
+    @elseif ($attributes->has('avatar'))
+        <div class="flex items-center gap-3">
+            <div class="shrink-0 flex items-center justify-center">
+                <x-avatar 
+                    :url="$attributes->get('avatar')" 
+                    :placeholder="$label ?? $slot->toString()" 
+                    size="36"
+                />
+            </div>
 
-            @if ($small = $attributes->get('small'))
-                <div class="text-sm text-gray-500 truncate font-medium">
-                    {{ $small }}
-                </div>
-            @endif
+            <div class="grid">
+                @if ($href = $attributes->get('href'))
+                    <a 
+                        href="{{ $href }}" 
+                        class="{{ $tooltip ? '' : 'truncate' }}" 
+                        target="{{ $attributes->get('target', '_self') }}"
+                        @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
+                    >
+                        {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
+                    </a>
+                @else
+                    <div 
+                        class="{{ $tooltip ? '' : 'truncate' }}" 
+                        @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
+                    >
+                        {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
+                    </div>
+                @endif
+    
+                @if ($small = $attributes->get('small'))
+                    <div class="text-sm text-gray-500 truncate font-medium">
+                        {{ $small }}
+                    </div>
+                @endif
+            </div>
         </div>
 
     @else
         <div class="grid">
-            <div 
-                class="{{ $tooltip ? '' : 'truncate' }}" 
-                @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
-            >
-                {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
-            </div>
+            @if ($href = $attributes->get('href'))
+                <a 
+                    href="{{ $href }}" 
+                    class="{{ $tooltip ? '' : 'truncate' }}" 
+                    target="{{ $attributes->get('target', '_self') }}"
+                    @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
+                >
+                    {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
+                </a>
+            @else
+                <div 
+                    class="{{ $tooltip ? '' : 'truncate' }}" 
+                    @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
+                >
+                    {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
+                </div>
+            @endif
 
             @if ($small = $attributes->get('small'))
                 <div class="text-sm text-gray-500 truncate font-medium">
@@ -69,6 +99,6 @@
                 </div>
             @endif
         </div>
-        
+
     @endif
 </td>
