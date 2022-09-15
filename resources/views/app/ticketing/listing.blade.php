@@ -1,6 +1,6 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Support Tickets">
-        <x-button.create :href="route('app.ticketing.create')" label="New Ticket"/>
+        <x-button :href="route('app.ticketing.create')" label="New Ticket"/>
     </x-page-header>
 
     <x-table :total="$this->tickets->total()" :links="$this->tickets->links()">

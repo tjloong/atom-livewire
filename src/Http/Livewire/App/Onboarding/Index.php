@@ -22,9 +22,10 @@ class Index extends Component
             ? collect($this->tabs)->map(fn($tab) => [
                 'value' => data_get($tab, 'slug', $tab),
                 'label' => data_get($tab, 'label') ?? str()->headline($tab),
+                'livewire' => data_get($tab, 'livewire'),
                 'completed' => false,
             ])
-            : collect([]);
+            : collect();
 
         $this->next();
     }
@@ -70,6 +71,11 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::app.onboarding.index');
+        return view('atom::app.onboarding.index', [
+            'livewire' => lw(
+                data_get($this->steps->firstWhere('value', $this->step), 'livewire')
+                ?? 'app.onboarding.'.$this->step
+            ),
+        ]);
     }
 }

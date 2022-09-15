@@ -1,3 +1,8 @@
+@props([
+    'icon' => $attributes->get('icon'),
+    'label' => $attributes->get('label'),
+])
+
 <a {{ $attributes->merge([
     'class' => '
         inline-flex items-center justify-center gap-3 
@@ -5,14 +10,11 @@
         md:hover:bg-gray-100 md:justify-start
     '
 ]) }}>
-    @if ($icon = $attributes->get('icon'))
-        <x-icon :name="$icon" 
-            size="18px" 
-            class="text-gray-400" 
-        />
+    @if ($icon !== false)
+        <x-icon :name="$icon ?? $label" size="16" class="text-gray-400"/>
     @endif
 
-    @if ($label = $attributes->get('label')) {{ __($label) }}
+    @if ($label) {{ __($label) }}
     @else {{ $slot }}
     @endif
 

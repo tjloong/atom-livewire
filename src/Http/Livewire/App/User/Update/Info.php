@@ -104,7 +104,7 @@ class Info extends Component
             $this->user->teams()->sync($this->selectedTeams);
         }
 
-        if ($this->user->wasRecentlyCreated) return redirect()->route('app.user.listing');
+        if ($this->user->wasRecentlyCreated) return redirect()->route('app.settings', ['users']);
         else $this->popup('User Updated');
     }
 

@@ -2,13 +2,11 @@
     <x-page-header :title="$role->name" back>
         <div class="flex items-center gap-2">
             @if ($role->slug !== 'admin')
-                <x-button icon="copy" color="gray" 
+                <x-button.confirm color="gray" 
                     label="Duplicate"
-                    x-on:click="$dispatch('confirm', {
-                        title: '{{ __('Duplicate Role') }}',
-                        message: '{{ __('Are you sure to duplicate this role?') }}',
-                        onConfirmed: () => $wire.duplicate(),
-                    })"
+                    title="Duplicate Role"
+                    message="Are you sure to duplicate this role?"
+                    callback="duplicate"
                 />
             @endif
 

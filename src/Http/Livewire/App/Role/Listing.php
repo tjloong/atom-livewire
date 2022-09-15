@@ -4,7 +4,6 @@ namespace Jiannius\Atom\Http\Livewire\App\Role;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Jiannius\Atom\Models\Role;
 
 class Listing extends Component
 {
@@ -22,20 +21,12 @@ class Listing extends Component
     ];
 
     /**
-     * Mount
-     */
-    public function mount()
-    {
-        breadcrumbs()->home('Roles');
-    }
-
-    /**
      * Get roles property
      */
     public function getRolesProperty()
     {
         return model('role')
-            ->belongsToAccount()
+            ->when(model('role')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->withCount('users')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)

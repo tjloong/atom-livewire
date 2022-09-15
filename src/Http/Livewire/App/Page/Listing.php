@@ -11,22 +11,14 @@ class Listing extends Component
 
     public $sortBy = 'updated_at';
     public $sortOrder = 'desc';
-    public $filters = ['search' => ''];
+    public $filters = ['search' => null];
 
     protected $queryString = [
-        'filters', 
+        'filters' => ['search' => null], 
         'sortBy' => ['except' => 'updated_at'],
         'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
     ];
-
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        breadcrumbs()->home('Site Pages');
-    }
 
     /**
      * Get pages property
@@ -35,7 +27,8 @@ class Listing extends Component
     {
         return model('page')
             ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder);
+            ->orderBy($this->sortBy, $this->sortOrder)
+            ->get();
     }
 
     /**
@@ -51,8 +44,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.page.listing', [
-            'pages' => $this->pages->paginate(30),
-        ]);
+        return view('atom::app.page.listing');
     }
 }

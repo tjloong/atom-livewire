@@ -13,13 +13,13 @@
         
                             @if ($phone = $this->contact['phone'] ?? null)
                                 <div class="flex items-center gap-2">
-                                    <x-icon name="phone" size="xs" class="text-gray-400"/> {{ $phone }}
+                                    <x-icon name="phone" class="text-gray-400"/> {{ $phone }}
                                 </div>
                             @endif
         
                             @if ($email = $this->contact['email'] ?? null)
                                 <div class="flex items-center gap-2">
-                                    <x-icon name="envelope" size="xs" class="text-gray-400"/> {{ $email }}
+                                    <x-icon name="envelope" class="text-gray-400"/> {{ $email }}
                                 </div>
                             @endif
                         </div>

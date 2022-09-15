@@ -1,8 +1,8 @@
 @props([
     'icons' => [
-        ['type' => 'info', 'name' => 'info-circle', 'bg' => 'bg-blue-100', 'text' => 'text-blue-400'],
-        ['type' => 'error', 'name' => 'error', 'bg' => 'bg-red-100', 'text' => 'text-red-400'],
-        ['type' => 'warning', 'name' => 'error', 'bg' => 'bg-yellow-100', 'text' => 'text-yellow-400'],
+        ['type' => 'info', 'name' => 'info', 'bg' => 'bg-blue-100', 'text' => 'text-blue-400'],
+        ['type' => 'error', 'name' => 'xmark', 'bg' => 'bg-red-100', 'text' => 'text-red-400'],
+        ['type' => 'warning', 'name' => 'triangle-exclamation', 'bg' => 'bg-yellow-100', 'text' => 'text-yellow-400'],
         ['type' => 'success', 'name' => 'check', 'bg' => 'bg-green-100', 'text' => 'text-green-400'],
     ],
 ])
@@ -41,7 +41,7 @@
                             x-show="config.type === '{{ data_get($icon, 'type') }}'" 
                             class="w-10 h-10 rounded-full flex {{ data_get($icon, 'bg') }}"
                         >
-                            <x-icon :name="data_get($icon, 'name')" size="xs" class="m-auto {{ data_get($icon, 'text') }}"/>
+                            <x-icon :name="data_get($icon, 'name')" class="m-auto {{ data_get($icon, 'text') }}"/>
                         </div>
                     @endforeach
                 </div>

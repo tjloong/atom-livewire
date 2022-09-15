@@ -8,14 +8,12 @@ class Update extends Component
 {
     public $tax;
 
-    protected $listeners = ['saved'];
-
     /**
      * Mount
      */
-    public function mount($tax)
+    public function mount($taxId)
     {
-        $this->tax = model('tax')->findOrFail($tax);
+        $this->tax = model('tax')->findOrFail($taxId);
 
         breadcrumbs()->push($this->tax->name);
     }
@@ -27,17 +25,7 @@ class Update extends Component
     {
         $this->tax->delete();
 
-        session()->flash('flash', __('Tax deleted'));
-        
-        return redirect()->route('app.tax.listing');
-    }
-
-    /**
-     * Saved
-     */
-    public function saved()
-    {
-        $this->dispatchBrowserEvent('toast', ['message' => __('Tax Updated'), 'type' => 'success']);
+        return redirect()->route('app.settings', ['taxes'])->with('info', 'Tax Deleted.');
     }
 
     /**

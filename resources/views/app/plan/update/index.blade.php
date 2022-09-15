@@ -22,7 +22,7 @@
         </div>
 
         <div class="md:col-span-9">
-            @if ($com = livewire_name('app/plan/update/'.$tab))
+            @if ($com = lw('app.plan.update.'.$tab))
                 @livewire($com, compact('plan'), key($tab))
             @endif
         </div>

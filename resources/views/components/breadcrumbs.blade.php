@@ -7,18 +7,18 @@
     <li class="py-2 flex items-center gap-2" itemscope itemprop="itemListElement" itemtype="https://schema.org/ListItem">
         @if ($attributes->has('icon'))
             <x-icon 
-                name="{{ $attributes->get('icon') }}" 
-                type="{{ $attributes->get('icon-type') ?? 'regular' }}" 
+                :name="$attributes->get('icon') ?? data_get($item, 'label')"
                 class="text-gray-400"
-                size="xs"
             />
         @endif
 
         @if ($attributes->has('last'))
-            <span itemprop="name" class="text-gray-500 font-medium">{{ str($item['label'])->limit(20) }}</span>
+            <span itemprop="name" class="text-gray-500 font-medium">
+                {{ str(data_get($item, 'label'))->limit(20) }}
+            </span>
         @else
-            <a itemprop="item" href="{{ $item['url'] }}" class="text-gray-800 font-medium">
-                <span itemprop="name">{{ str($item['label'])->limit(20) }}</span>
+            <a itemprop="item" href="{{ data_get($item, 'url') }}" class="text-gray-800 font-medium">
+                <span itemprop="name">{{ str(data_get($item, 'label'))->limit(20) }}</span>
             </a>
         @endif
     </li>

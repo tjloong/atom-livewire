@@ -1,12 +1,13 @@
 <div class="max-w-screen-lg mx-auto">
-    <x-page-header title="Roles">
-        <x-button.create
-            label="New Role"
-            :href="route('app.role.create')"
-        />
-    </x-page-header>
+    <x-table 
+        header="Roles"
+        :total="$this->roles->total()" 
+        :links="$this->roles->links()"
+    >
+        <x-slot:header-buttons>
+            <x-button size="sm" label="New Role" :href="route('app.role.create')"/>
+        </x-slot:header-buttons>
 
-    <x-table :total="$this->roles->total()" :links="$this->roles->links()">
         <x-slot:head>
             <x-table.th label="Name" sort="name"/>
             @module('permissions') <x-table.th label="Permissions" class="text-right"/> @endmodule

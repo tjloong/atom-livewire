@@ -21,16 +21,16 @@
             x-bind:class="sorted ? 'bg-gray-200 rounded px-3' : 'px-2'"
             class="flex items-center gap-1 py-1"
         >
-            <a x-on:click.prevent="sort()" {{ $attributes->class(['grow', 'text-left', 'text-gray-600']) }}">
+            <a x-on:click.prevent="sort()" {{ $attributes->class(['grow', 'text-left', 'text-gray-600', 'whitespace-nowrap']) }}">
                 @if ($label = $attributes->get('label')) {{ __(strtoupper($label)) }}
                 @else {{ $slot }}
                 @endif
             </a>
-            <x-icon x-show="sorted && $wire.get('sortOrder') === 'desc'" name="chevron-up" size="10px"/>
-            <x-icon x-show="sorted && $wire.get('sortOrder') === 'asc'" name="chevron-down" size="10px"/>
+            <x-icon x-show="sorted && $wire.get('sortOrder') === 'desc'" name="chevron-up" size="10px" class="shrink-0"/>
+            <x-icon x-show="sorted && $wire.get('sortOrder') === 'asc'" name="chevron-down" size="10px" class="shrink-0"/>
         </div>
     @else
-        <div {{ $attributes->class(['text-gray-500 py-1 px-2', 'text-left']) }}">
+        <div {{ $attributes->class(['text-gray-500 py-1 px-2', 'text-left', 'whitespace-nowrap']) }}">
             @if ($label = $attributes->get('label')) {{ __(strtoupper($label)) }}
             @else {{ $slot }}
             @endif

@@ -13,7 +13,6 @@ class Listing extends Component
 
     public $role;
     public $account;
-    public $fullpage;
     public $sortBy = 'name';
     public $sortOrder = 'asc';
     public $filters = [
@@ -30,16 +29,6 @@ class Listing extends Component
             'status' => null,
         ]], 
     ];
-
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        if ($this->fullpage = current_route('app.user.listing')) {
-            breadcrumbs()->home('Users');
-        }
-    }
 
     /**
      * Get tabs property

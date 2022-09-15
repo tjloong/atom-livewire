@@ -11,7 +11,8 @@
             class="absolute top-0 right-0 bottom-0 px-4 flex items-center justify-center text-gray-900"
             x-on:click="show = !show"
         >
-            <x-icon x-bind:name="show ? 'hide' : 'show'"/>
+            <x-icon x-show="!show" name="show"/>
+            <x-icon x-show="show" name="hide"/>
         </a>
     </div>
 </x-form.field>

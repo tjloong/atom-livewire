@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Team\Update;
 
+use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
 
 class Users extends Component
 {
+    use WithPopupNotify;
+
     public $team;
     public $search;
 
@@ -22,15 +25,12 @@ class Users extends Component
      */
     public function getOptionsProperty()
     {
-        if (!$this->search) return [];
-
         return model('user')
             ->when($this->search, fn($q) => $q->search($this->search))
             ->where('account_id', auth()->user()->account_id)
             ->where('id', '<>', auth()->id())
             ->whereDoesntHave('teams', fn($q) => $q->where('teams.id', $this->team->id))
             ->orderBy('name')
-            ->take(50)
             ->get();
     }
 
@@ -43,10 +43,7 @@ class Users extends Component
 
         if (!$user->teams()->find($this->team->id)) $user->teams()->attach($this->team->id);
 
-        $this->dispatchBrowserEvent('toast', [
-            'message' => 'Added team user.',
-            'type' => 'success',
-        ]);
+        $this->popup('Added Team User.');
     }
 
     /**
@@ -55,10 +52,7 @@ class Users extends Component
     public function leave($id)
     {
         $this->team->users()->detach($id);
-
-        $this->dispatchBrowserEvent('toast', [
-            'message' => 'Remove team user.',
-        ]);
+        $this->popup('Removed Team User.');
     }
 
     /**

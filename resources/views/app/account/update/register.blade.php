@@ -5,7 +5,7 @@
                 <div>{{ $account->name }}</div>
                 @if ($account->status === 'blocked')
                     <div class="text-red-500 text-sm flex items-center gap-1">
-                        <x-icon name="error-circle" size="xs" class="flex-shrink-0"/>
+                        <x-icon name="error-circle" class="flex-shrink-0"/>
                         <div>Blocked at {{ format_date($account->blocked_at, 'datetime') }} by {{ $account->blocked_by_user->name ?? 'Unknown' }}</div>
                     </div>
                 @endif

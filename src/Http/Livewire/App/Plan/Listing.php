@@ -11,22 +11,14 @@ class Listing extends Component
 
     public $sortBy = 'name';
     public $sortOrder = 'asc';
-    public $filters = ['search' => ''];
+    public $filters = ['search' => null];
 
     protected $queryString = [
-        'filters', 
+        'filters' => ['search' => null], 
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
         'page' => ['except' => 1],
     ];
-
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        breadcrumbs()->home('Plans');
-    }
 
     /**
      * Get plans property
@@ -36,7 +28,7 @@ class Listing extends Component
         return model('plan')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(30);
+            ->paginate(50);
     }
 
     /**

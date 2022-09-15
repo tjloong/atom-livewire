@@ -3,28 +3,18 @@
 
     <x-table :total="$this->accounts->total()" :links="$this->accounts->links()" export>
         <x-slot:head>
-            <x-table.th sort="created_at">Join Date</x-table.th>
-            <x-table.th sort="name">Name</x-table.th>
-            <x-table.th>Contact</x-table.th>
-            
-            @module('plans')
-                <x-table.th class="text-right">Plans</x-table.th>
-            @endmodule
-
-            <x-table.th/>
+            <x-table.th label="Name" sort="name"/>
+            <x-table.th label="Contact"/>
+            @module('plans') <x-table.th label="Plans" class="text-right"/> @endmodule
+            <x-table.th width="100"/>
+            <x-table.th label="Join Date" sort="created_at" class="text-right"/>
         </x-slot:head>
 
         <x-slot:body>
             @foreach ($this->accounts as $account)
                 <x-table.tr>
-                    <x-table.td :datetime="$account->created_at"/>
                     <x-table.td :label="$account->name" :href="route('app.account.update', [$account->id])"/>
-
-                    <x-table.td>
-                        @foreach (array_filter([$account->email, $account->phone ?? null]) as $contact)
-                            <div>{{ $contact }}</div>
-                        @endforeach
-                    </x-table.td>
+                    <x-table.td :label="$account->email"/>
 
                     @module('plans')
                         <x-table.td class="text-right">
@@ -43,6 +33,7 @@
                     @endmodule
 
                     <x-table.td :status="$account->status" class="text-right"/>
+                    <x-table.td :date="$account->created_at" class="text-right"/>
                 </x-table.tr>
             @endforeach
         </x-slot:body>

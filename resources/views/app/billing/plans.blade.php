@@ -24,7 +24,7 @@
                             )
                                 <div class="flex items-center justify-between gap-4">
                                     <div class="text-gray-500 flex items-center gap-2">
-                                        <x-icon name="check" size="xs"/> 
+                                        <x-icon name="check"/> 
                                         <div class="font-medium">
                                             {{ __('Currently Subscribed') }}
                                         </div>

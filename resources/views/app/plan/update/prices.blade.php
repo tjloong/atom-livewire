@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between gap-2">
             {{ __('Plan Prices') }}
 
-            <x-button.create size="sm"
+            <x-button size="sm"
                 label="New Price"
                 :href="route('app.plan-price.create', [$plan->id])"
             />

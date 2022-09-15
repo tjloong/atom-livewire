@@ -107,8 +107,6 @@ class AtomServiceProvider extends ServiceProvider
             // account
             'atom.app.account.listing' => 'App\Account\Listing',
             'atom.app.account.update' => 'App\Account\Update\Index',
-            'atom.app.account.update.login' => 'App\Account\Update\Login',
-            'atom.app.account.update.password' => 'App\Account\Update\Password',
             'atom.app.account.update.register' => 'App\Account\Update\Register',
 
             // account payments
@@ -225,20 +223,22 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.ticketing.update' => 'App\Ticketing\Update',
             'atom.app.ticketing.comments' => 'App\Ticketing\Comments',
 
-            // site settings
-            'atom.app.site-settings.index' => 'App\SiteSettings\Index',
-            'atom.app.site-settings.profile' => 'App\SiteSettings\Profile',
-            'atom.app.site-settings.seo' => 'App\SiteSettings\Seo',
-            'atom.app.site-settings.analytics' => 'App\SiteSettings\Analytics',
-            'atom.app.site-settings.social-media' => 'App\SiteSettings\SocialMedia',
-            'atom.app.site-settings.announcements' => 'App\SiteSettings\Announcements',
-            'atom.app.site-settings.whatsapp' => 'App\SiteSettings\Whatsapp',
-            'atom.app.site-settings.system.email' => 'App\SiteSettings\System\Email',
-            'atom.app.site-settings.system.storage' => 'App\SiteSettings\System\Storage',
-            'atom.app.site-settings.payment-gateway.stripe' => 'App\SiteSettings\PaymentGateway\Stripe',
-            'atom.app.site-settings.payment-gateway.gkash' => 'App\SiteSettings\PaymentGateway\Gkash',
-            'atom.app.site-settings.payment-gateway.ozopay' => 'App\SiteSettings\PaymentGateway\Ozopay',
-            'atom.app.site-settings.payment-gateway.ipay' => 'App\SiteSettings\PaymentGateway\Ipay',
+            // settings
+            'atom.app.settings.index' => 'App\Settings\Index',
+            'atom.app.settings.account.login' => 'App\Settings\Account\Login',
+            'atom.app.settings.account.password' => 'App\Settings\Account\Password',
+            'atom.app.settings.website.profile' => 'App\Settings\Website\Profile',
+            'atom.app.settings.website.seo' => 'App\Settings\Website\Seo',
+            'atom.app.settings.website.analytics' => 'App\Settings\Website\Analytics',
+            'atom.app.settings.website.social-media' => 'App\Settings\Website\SocialMedia',
+            'atom.app.settings.website.announcement' => 'App\Settings\Website\Announcement',
+            'atom.app.settings.integration.email' => 'App\Settings\Integration\Email',
+            'atom.app.settings.integration.storage' => 'App\Settings\Integration\Storage',
+            'atom.app.settings.integration.payment' => 'App\Settings\Integration\Payment\Index',
+            'atom.app.settings.integration.payment.stripe' => 'App\Settings\Integration\Payment\Stripe',
+            'atom.app.settings.integration.payment.gkash' => 'App\Settings\Integration\Payment\Gkash',
+            'atom.app.settings.integration.payment.ozopay' => 'App\Settings\Integration\Payment\Ozopay',
+            'atom.app.settings.integration.payment.ipay' => 'App\Settings\Integration\Payment\Ipay',
         ];
 
         foreach ($components as $name => $class) {
@@ -283,7 +283,7 @@ class AtomServiceProvider extends ServiceProvider
             if (!enabled_module('permissions')) return true;
 
             [$module, $action] = explode('.', $permission);
-            $isActionDefined = in_array($action, config('atom.app.permissions.'.$module, []));
+            $isActionDefined = in_array($action, config('atom.app.permissions.'.$user->account->type.'.'.$module, []));
 
             if (!$isActionDefined) return true;
             if ($user->isAccountType('root')) return true;

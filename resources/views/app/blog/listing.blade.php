@@ -1,6 +1,6 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Blogs">
-        <x-button.create label="New Blog" href="{{ route('app.blog.create') }}"/>
+        <x-button label="New Blog" href="{{ route('app.blog.create') }}"/>
     </x-page-header>
 
     <x-table :total="$this->blogs->total()" :links="$this->blogs->links()">

@@ -4,9 +4,12 @@ namespace Jiannius\Atom\Http\Livewire\App\Plan\Update;
 
 use Livewire\Component;
 use Illuminate\Validation\Rule;
+use Jiannius\Atom\Traits\WithPopupNotify;
 
 class Info extends Component
 {
+    use WithPopupNotify;
+    
     public $plan;
     public $features;
     public $upgradables;
@@ -94,7 +97,9 @@ class Info extends Component
         $this->plan->downgradables()->sync($this->downgradables);
 
         $this->setFeatures();
-        $this->emitUp('saved', $this->plan->id);
+
+        if ($this->plan->wasRecentlyCreated) return redirect()->route('app.settings', ['plans']);
+        else $this->popup('Plan Updated.');
     }
 
     /**

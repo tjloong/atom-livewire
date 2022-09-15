@@ -8,7 +8,6 @@ class Index extends Component
 {
     public $tab;
     public $account;
-    public $isHome;
 
     protected $queryString = ['tab'];
 
@@ -17,16 +16,13 @@ class Index extends Component
      */
     public function mount($account = null)
     {
-        $this->isHome = current_route('app.account.home');
-
-        $this->account = !$this->isHome && auth()->user()->isAccountType('root')
+        $this->account = auth()->user()->isAccountType('root')
             ? model('account')->findOrFail($account)
             : auth()->user()->account;
 
-        $this->tab = $this->tab ?? $this->getFirstTab();
+        $this->tab = $this->tab ?? data_get($this->getFlatTabs()->first(), 'slug');
 
-        if ($this->isHome) breadcrumbs()->flush();
-        else  breadcrumbs()->push($this->account->name);
+        breadcrumbs()->push($this->account->name);
     }
 
     /**
@@ -34,40 +30,22 @@ class Index extends Component
      */
     public function getTabsProperty()
     {
-        // my account
-        if ($this->isHome) {
-            return [
-                ['icon' => 'arrow-right-to-bracket', 'slug' => 'login', 'label' => 'Login Information'],
-                ['icon' => 'lock', 'slug' => 'password', 'label' => 'Change Password'],
-                enabled_module('plans') && auth()->user()->isAccountType('signup')
-                    ? ['icon' => 'file-invoice-dollar', 'slug' => 'billing', 'label' => 'Billing', 'href' => route('app.billing.home')]
-                    : null,
-            ];
-        }
-        // update account
-        else {
-            return [
-                ['icon' => 'address-card', 'slug' => 'register', 'label' => 'Registration Overview'],
+        return [
+            ['group' => 'General', 'tabs' => [
+                ['slug' => 'register', 'label' => 'Registration', 'icon' => 'address-card'],
                 enabled_module('plans')
-                    ? ['icon' => 'file-invoice-dollar', 'slug' => 'billing', 'label' => 'Billing']
+                    ? ['slug' => 'billing', 'label' => 'Billing', 'icon' => 'file-invoice-dollar']
                     : null,
-            ];
-        }
+            ]],
+        ];
     }
 
     /**
-     * Get first tab
+     * Get flat tabs
      */
-    public function getFirstTab()
+    public function getFlatTabs()
     {
-        $slugs = [];
-
-        collect($this->tabs)->each(function($tab) use (&$slugs) {
-            if ($children = data_get($tab, 'tabs')) $slugs = array_merge($slugs, collect($children)->pluck('slug')->toArray());
-            else array_push($slugs, data_get($tab, 'slug'));
-        });
-
-        return head($slugs);
+        return collect($this->tabs)->pluck('tabs')->collapse()->values();
     }
 
     /**
@@ -97,9 +75,7 @@ class Index extends Component
     {
         $this->account->delete();
         
-        session()->flash('flash', 'Account Deleted');
-
-        return redirect($this->redirectTo());
+        return redirect($this->redirectTo())->with('info', 'Account Deleted');
     }
 
     /**

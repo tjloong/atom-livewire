@@ -68,7 +68,7 @@ class Info extends Component
             'name' => $this->names,
         ])->save();
 
-        if ($this->label->wasRecentlyCreated) return redirect()->route('app.label.listing', ['type' => $this->label->type]);
+        if ($this->label->wasRecentlyCreated) return redirect()->route('app.settings', ['labels']);
         else $this->popup('Label Updated');
     }
 

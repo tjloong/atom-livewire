@@ -8,8 +8,6 @@ class Create extends Component
 {
     public $tax;
 
-    protected $listeners = ['saved'];
-
     /**
      * Mount
      */
@@ -17,16 +15,7 @@ class Create extends Component
     {
         $this->tax = model('tax')->fill(['is_active' => true]);
         
-        breadcrumbs()->push('Create Role');
-    }
-
-    /**
-     * Saved
-     */
-    public function saved($id)
-    {
-        session()->flash('flash', __('Tax Created').'::success');
-        return redirect()->route('app.tax.listing');
+        breadcrumbs()->push('Create Tax');
     }
 
     /**

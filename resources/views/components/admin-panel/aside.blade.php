@@ -1,3 +1,9 @@
+@props([
+    'icon' => $attributes->get('icon'),
+    'logo' => $attributes->get('logo'),
+    'label' => $attributes->get('label'),
+])
+
 @if ($attributes->has('can') && !auth()->user()->can($attributes->get('can')))
     {{-- No permission --}}
 @elseif ($href || ($route && Route::has($route)))
@@ -8,14 +14,14 @@
                 {{ $isActive ? 'font-semibold bg-white/20 border-r-8 border-theme' : 'font-medium hover:bg-white/10' }}
             "
         >
-            @if ($icon = $attributes->get('icon'))
-                <x-icon name="{{ $icon }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="18px"/>
-            @elseif ($logo = $attributes->get('logo'))
-                <x-logo :src="$logo" class="brightness-0 invert" style="width: 20px; height: 20px;"/>
+            @if ($logo)
+                <x-logo :src="$logo" class="brightness-0 invert opacity-70" style="width: 20px; height: 20px;"/>
+            @elseif ($icon !== false)
+                <x-icon :name="$icon ?? $label" size="16" class="opacity-70"/>
             @endif
 
             <div class="truncate">
-                @if ($label = $attributes->get('label')) {{ __($label) }}
+                @if ($label) {{ __($label) }}
                 @else {{ $slot }}
                 @endif
             </div>
@@ -31,14 +37,14 @@
                 x-bind:class="active && 'bg-white/10'"
                 class="flex items-center gap-3 rounded-l-md px-4 py-2.5 font-medium text-white"
             >
-                @if ($icon = $attributes->get('icon'))
-                    <x-icon name="{{ $icon }}" type="{{ $attributes->get('icon-type') ?? 'regular' }}" size="20px"/>
-                @elseif ($logo = $attributes->get('logo'))
-                    <x-logo :src="$logo" class="brightness-0 invert" style="width: 20px; height: 20px;"/>
+                @if ($logo)
+                    <x-logo :src="$logo" class="brightness-0 invert opacity-70" style="width: 20px; height: 20px;"/>
+                @elseif ($icon !== false)
+                    <x-icon :name="$icon ?? $label" size="16" class="opacity-70"/>
                 @endif
 
                 <div class="grow truncate">
-                    @if ($label = $attributes->get('label')) {{ __($label) }}
+                    @if ($label) {{ __($label) }}
                     @else {{ $slot }}
                     @endif
                 </div>

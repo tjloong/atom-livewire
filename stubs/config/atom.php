@@ -28,9 +28,12 @@ return [
         ],
         
         'permissions' => [
-            'user' => ['manage'],
-            'label' => ['manage'],
-            'file' => ['manage'],
+            'root' => [],
+            'signup' => [
+                'user' => ['manage'],
+                'label' => ['manage'],
+                'file' => ['manage'],
+            ],
         ],
     ],
 ];

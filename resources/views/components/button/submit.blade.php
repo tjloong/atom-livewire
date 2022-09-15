@@ -1,10 +1,9 @@
 <x-button 
-    :icon="$attributes->get('icon', 'check')"
     :color="$attributes->get('color', 'green')"
+    :label="$attributes->get('label', 'Save')"
     {{ 
         $attributes->merge([
             'type' => 'submit',
-            'label' => $attributes->get('label', 'Save')
-        ])->except(['icon', 'color'])
+        ])->except(['icon', 'color', 'label'])
     }}
 />

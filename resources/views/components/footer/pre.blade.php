@@ -24,13 +24,13 @@
                     <div class="grid gap-2">
                         @if (!empty($company['phone']))
                             <a href="tel: {{ $company['phone'] }}" class="flex items-center gap-2 font-medium {{ $color->text }}">
-                                <x-icon name="phone" size="xs"/> {{ $company['phone'] }}
+                                <x-icon name="phone"/> {{ $company['phone'] }}
                             </a>
                         @endif
 
                         @if (!empty($company['email']))
                             <a href="mailto: {{ $company['email'] }}" class="flex items-center gap-2 font-medium {{ $color->text }}">
-                                <x-icon name="envelope" size="xs"/> {{ $company['email'] }}
+                                <x-icon name="envelope"/> {{ $company['email'] }}
                             </a>
                         @endif
                     </div>

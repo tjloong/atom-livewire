@@ -8,20 +8,8 @@ use Livewire\Component;
 class Listing extends Component
 {
     use WithPopupNotify;
-    
+
     public $type;
-
-    protected $queryString = ['type'];
-
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        if (!$this->type) $this->type = head($this->types);
-
-        breadcrumbs()->home('Labels');
-    }
 
     /**
      * Get types property
@@ -32,30 +20,10 @@ class Listing extends Component
     }
 
     /**
-     * Get labels property
+     * Sort
      */
-    public function getLabelsProperty()
+    public function sort($data)
     {
-        return model('label')
-            ->withCount('children')
-            ->when(
-                model('label')->enabledBelongsToAccountTrait, 
-                fn($q) => $q->belongsToAccount()
-            )
-            ->where('type', $this->type)
-            ->whereNull('parent_id')
-            ->orderBy('seq')
-            ->orderBy('name->'.app()->currentLocale())
-            ->get();
-    }
-
-    /**
-     * Sort labels
-     */
-    public function sortLabels($data = null)
-    {
-        if (!$data) return;
-
         foreach ($data as $index => $id) {
             model('label')->where('id', $id)->update(['seq' => $index + 1]);
         }
@@ -68,6 +36,20 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.label.listing');
+        return view('atom::app.label.listing', [
+            'labels' => $this->type
+                ? model('label')
+                    ->withCount('children')
+                    ->when(
+                        model('label')->enabledBelongsToAccountTrait, 
+                        fn($q) => $q->belongsToAccount()
+                    )
+                    ->where('type', $this->type)
+                    ->whereNull('parent_id')
+                    ->orderBy('seq')
+                    ->orderBy('name->'.app()->currentLocale())
+                    ->get()
+                : null,
+        ]);
     }
 }

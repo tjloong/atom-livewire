@@ -20,6 +20,7 @@
             type="number"
             class="form-input transparent grow"
             step=".01"
+            placeholder="{{ __($attributes->get('placeholder')) }}"
         >
 
         @if ($postfix = $attributes->get('postfix'))

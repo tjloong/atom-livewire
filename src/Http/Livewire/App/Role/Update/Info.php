@@ -4,9 +4,12 @@ namespace Jiannius\Atom\Http\Livewire\App\Role\Update;
 
 use Livewire\Component;
 use Illuminate\Validation\Rule;
+use Jiannius\Atom\Traits\WithPopupNotify;
 
 class Info extends Component
 {
+    use WithPopupNotify;
+    
     public $role;
 
     /**
@@ -47,13 +50,8 @@ class Info extends Component
             'slug' => str($this->role->name)->slug(),
         ])->save();
 
-        if ($this->role->wasRecentlyCreated) return redirect()->route('app.role.listing');
-        else {
-            $this->dispatchBrowserEvent('toast', [
-                'message' => __('Role Updated'),
-                'type' => 'success',
-            ]);
-        }
+        if ($this->role->wasRecentlyCreated) return redirect()->route('app.settings', ['roles']);
+        else $this->popup('Role Updated.');
     }
 
     /**

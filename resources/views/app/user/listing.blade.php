@@ -1,22 +1,18 @@
 <div class="max-w-screen-lg mx-auto">
-    @if ($fullpage)
-        <x-page-header title="Users">
-            <x-button.create label="New User" :href="route('app.user.create')"/>
-        </x-page-header>
-    @endif
-
-    <x-table :total="$this->users->total()" :links="$this->users->links()">
-        @if ($account)
-            <x-slot:header>
-                <div class="flex items-center gap-4 justify-between">
-                    <div>{{ __('Users') }}</div>
-                    <x-button.create size="sm"
-                        label="New User" 
-                        :href="route('app.user.create', ['account' => $account->id])"
-                    />
-                </div>
-            </x-slot:header>
-        @endif
+    <x-table 
+        header="Users"
+        :total="$this->users->total()" 
+        :links="$this->users->links()"
+    >
+        <x-slot:header-buttons>
+            <x-button size="sm"
+                label="New User" 
+                :href="route('app.user.create', [
+                    'account' => optional($account)->id,
+                    'role' => optional($role)->id,
+                ])"
+            />
+        </x-slot:header>
 
         @if (count($this->tabs) > 1)
             <x-slot:toolbar :trashed="data_get($filters, 'status') === 'trashed'">

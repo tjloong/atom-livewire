@@ -24,7 +24,7 @@
                 <a x-on:click.prevent="clear()" class="absolute inset-0 opacity-0 hover:opacity-100">
                     <div class="absolute inset-0 bg-black opacity-50"></div>
                     <div class="absolute inset-0 flex items-center justify-center text-white">
-                        <x-icon name="x-circle" size="40px"/>
+                        <x-icon name="circle-xmark" size="40px"/>
                     </div>
                 </a>
             </div>
@@ -35,7 +35,7 @@
                 x-on:{{ $uid }}-uploader-completed.window="select($event.detail[0])"
                 class="w-full h-full border-4 border-dashed border-gray-400 text-gray-400 cursor-pointer flex items-center justify-center {{ $attributes->has('circle') ? 'rounded-full' : 'rounded-md' }}"
             >
-                <x-icon name="image-add" size="40px"/>
+                <x-icon name="image" size="32"/>
             </div>
         </div>
     </div>

@@ -21,8 +21,8 @@
     @endif
 
     <div class="{{ $this->steps->count() > 1 ? 'md:col-span-9' : 'md:col-span-12' }}">
-        @if ($com = livewire_name('app/onboarding/'.$step))
-            @livewire($com, key($step))
-        @endif
+        @livewire($livewire, [
+            'onboarding' => true,
+        ], key($step))
     </div>
 </div>

@@ -175,7 +175,7 @@ if (!config('atom.static_site')) {
             define_route()->prefix('tax')->as('app.tax.')->group(function() {
                 define_route('listing', 'App\Tax\Listing')->name('listing');
                 define_route('create', 'App\Tax\Create')->name('create');
-                define_route('{tax}', 'App\Tax\Update')->name('update');
+                define_route('{taxId}', 'App\Tax\Update')->name('update');
             });
         }
 
@@ -214,7 +214,6 @@ if (!config('atom.static_site')) {
          * Users
          */
         define_route()->prefix('user')->as('app.user.')->group(function () {
-            define_route('listing', 'App\User\Listing')->name('listing');
             define_route('create', 'App\User\Create')->name('create');
             define_route('{user}', 'App\User\Update\Index')->name('update');
         });
@@ -245,11 +244,11 @@ if (!config('atom.static_site')) {
          * Files
          */
         define_route('files', 'App\File\Listing')->name('app.files');
-    
+
         /**
-         * Site Settings
+         * Settings
          */
-        define_route('site-settings', 'App\SiteSettings\Index')->name('app.site-settings');
+        define_route('settings/{tab?}', 'App\Settings\Index')->name('app.settings')->where('tab', '.*');
     });
 }
 

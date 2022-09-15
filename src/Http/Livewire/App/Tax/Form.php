@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Tax;
 
+use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
 
 class Form extends Component
 {
+    use WithPopupNotify;
+
     public $tax;
 
     /**
@@ -44,7 +47,8 @@ class Form extends Component
 
         $this->tax->save();
 
-        $this->emitUp('saved', $this->tax->id);
+        if ($this->tax->wasRecentlyCreated) return redirect()->route('app.settings', ['taxes']);
+        else $this->popup('Tax Updated.');
     }
 
     /**

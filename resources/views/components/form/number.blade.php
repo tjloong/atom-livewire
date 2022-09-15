@@ -5,11 +5,7 @@
     ],
 ])
 
-<x-form.field {{ $attributes->only(['error', 'required', 'caption']) }}>
-    @if ($label = $attributes->get('label'))
-        <x-slot:label>{{ __($label) }}</x-slot:label>
-    @endif
-
+<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
     <div 
         x-data="{ focus: false }"
         x-bind:class="focus && 'active'"

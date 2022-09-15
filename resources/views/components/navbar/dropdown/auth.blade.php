@@ -6,7 +6,7 @@
             {{ str(auth()->user()->name)->limit(15) }}
         </div>
 
-        <x-navbar.dropdown.item :href="route('app.account.home')" icon="address-card" label="Account"/>
+        <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
 
         {{ $slot }}
 
@@ -14,7 +14,7 @@
             <x-navbar.dropdown.item :href="auth()->user()->home()" icon="house" label="Back to App"/>
         @endif
 
-        <x-navbar.dropdown.item :href="route('login', ['logout' => true])" icon="logout" label="Logout"/>
+        <x-navbar.dropdown.item :href="route('login', ['logout' => true])" label="Logout"/>
 
         @isset($foot)
             {{ $foot }}
@@ -31,15 +31,15 @@
             </x-slot:anchor>
     
             <div class="grid divide-y">
-                <x-navbar.dropdown.item :href="route('app.account.home')" icon="address-card" label="My Account"/>
+                <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
     
                 {{ $slot }}
     
                 @if ($canBackToApp)
-                    <x-navbar.dropdown.item :href="auth()->user()->home()" icon="house" label="Back to App"/>
+                    <x-navbar.dropdown.item :href="auth()->user()->home()" label="Back to App"/>
                 @endif
     
-                <x-navbar.dropdown.item :href="route('login', ['logout' => true])" icon="logout" label="Logout"/>
+                <x-navbar.dropdown.item :href="route('login', ['logout' => true])" label="Logout"/>
 
                 @isset($foot)
                     {{ $foot }}

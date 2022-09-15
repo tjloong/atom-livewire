@@ -11,10 +11,10 @@ class Listing extends Component
 
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
-    public $filters = ['search' => ''];
+    public $filters = ['search' => null];
 
     protected $queryString = [
-        'filters' => ['except' => ['search' => '']],
+        'filters' => ['except' => ['search' => null]],
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
         'page' => ['except' => 1],

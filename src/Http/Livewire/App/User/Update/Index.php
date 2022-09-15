@@ -30,7 +30,7 @@ class Index extends Component
     {
         $tabs = array_filter([
             ['slug' => 'info', 'label' => 'User Information'],
-            enabled_module('permissions')
+            enabled_module('permissions') && count(config('atom.app.permissions.'.auth()->user()->account->type))
                 ? ['slug' => 'permissions', 'label' => 'Permissions']
                 : null,
         ]);
@@ -84,7 +84,7 @@ class Index extends Component
      */
     public function redirectTo()
     {
-        return route('app.user.listing');
+        return route('app.settings', ['users']);
     }
 
     /**

@@ -50,7 +50,7 @@ class Index extends Component
     {
         $this->label->delete();
 
-        return redirect()->route('app.label.listing', [$this->label->type])->with('info', 'Label Deleted');
+        return redirect()->route('app.settings', ['labels'])->with('info', 'Label Deleted');
     }
 
     /**

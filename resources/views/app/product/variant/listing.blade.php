@@ -1,8 +1,7 @@
 <x-box header="Product Variants">
     <x-slot:header-buttons>
-        <x-button.create
+        <x-button size="sm"
             label="New Variant"
-            size="sm"
             :href="route('app.product.variant.create', ['productId' => $product->id])"
         />
     </x-slot:header-buttons>
@@ -19,7 +18,7 @@
                     data-sortable-id="{{ $productVariant->id }}"
                 >
                     <div class="shrink-0 cursor-move sort-handle flex text-gray-400">
-                        <x-icon name="sort-alt-2" class="m-auto"/>
+                        <x-icon name="sort" class="m-auto"/>
                     </div>
 
                     <div class="shrink-0">

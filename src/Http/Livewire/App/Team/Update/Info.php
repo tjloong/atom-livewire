@@ -5,9 +5,12 @@ namespace Jiannius\Atom\Http\Livewire\App\Team\Update;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Schema;
+use Jiannius\Atom\Traits\WithPopupNotify;
 
 class Info extends Component
 {
+    use WithPopupNotify;
+
     public $team;
 
     /**
@@ -41,14 +44,6 @@ class Info extends Component
     }
 
     /**
-     * Mount
-     */
-    public function mount()
-    {
-        //
-    }
-
-    /**
      * Submit
      */
     public function submit()
@@ -58,15 +53,8 @@ class Info extends Component
 
         $this->team->save();
 
-        if ($this->team->wasRecentlyCreated) {
-            return redirect()->route('app.team.listing');
-        }
-        else {
-            $this->dispatchBrowserEvent('toast', [
-                'message' => __('Team Updated.'),
-                'type' => 'success',
-            ]);
-        }
+        if ($this->team->wasRecentlyCreated) return redirect()->route('app.settings', ['teams']);
+        else $this->popup('Team Updated.');
     }
 
     /**

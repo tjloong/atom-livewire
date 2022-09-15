@@ -1,6 +1,6 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header title="Promotions">
-        <x-button.create 
+        <x-button 
             label="New Promotion" 
             :href="route('app.promotion.create')"
         />

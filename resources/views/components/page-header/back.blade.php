@@ -10,5 +10,5 @@
     @else x-data x-on:click.prevent="history.back()"
     @endif
 >
-    <x-icon name="left-arrow-alt"/>
+    <x-icon name="back"/>
 </a>

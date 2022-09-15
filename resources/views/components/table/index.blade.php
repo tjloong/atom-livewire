@@ -1,6 +1,6 @@
 @props(['header' => $header ?? $attributes->get('header')])
 
-<div class="grid gap-4">
+<div class="relative flex flex-col gap-4">
     <div 
         x-data="{
             name: @js($uid),
@@ -21,10 +21,10 @@
             },
         }"
         x-on:table-checkbox-checked.window="checkedValues = $event.detail"
-        class="relative shadow rounded-lg border bg-white overflow-hidden"
+        class="relative shadow rounded-lg border bg-white flex flex-col divide-y"
     >
         @if ($header || isset($headerButtons))
-            <div class="flex flex-wrap items-center gap-3 p-4 border-b">
+            <div class="flex flex-wrap items-center gap-3 p-4 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
                 @if ($header)
                     <div class="grow font-bold text-lg">
                         {{ is_string($header) ? __($header) : $header }}
@@ -39,7 +39,7 @@
             </div>
         @endif
 
-        <div class="py-3 px-4 flex flex-wrap justify-between items-center gap-2 border-b">
+        <div class="py-3 px-4 flex flex-wrap justify-between items-center gap-2 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
             <div class="text-gray-800 flex items-end gap-1.5">
                 @if ($attributes->has('total'))
                     <div class="text-lg font-medium leading-snug">{{ $attributes->get('total') }}</div>
@@ -49,8 +49,8 @@
 
             <div x-show="!checkedCount" class="flex flex-wrap items-center gap-2">
                 @if ($search = $attributes->get('search') ?? true)
-                    <div class="w-60 rounded-md border bg-gray-100 shadow flex items-center gap-2 px-3 py-0.5">
-                        <x-icon name="search" class="text-gray-500" size="xs"/>
+                    <div class="w-60 rounded-md border bg-gray-100 shadow flex items-center gap-2 px-3 py-1.5">
+                        <x-icon name="search" class="text-gray-400" size="14"/>
                         <div class="flex-grow">
                             <input 
                                 type="text"
@@ -65,7 +65,7 @@
                             x-on:click.prevent="$wire.set('filters.search', null)" 
                             class="flex items-center justify-center text-gray-800"
                         >
-                            <x-icon name="x" size="xs"/>
+                            <x-icon name="xmark"/>
                         </a>
                     </div>
                 @endif
@@ -114,7 +114,7 @@
             </div>
         </div>
 
-        <div x-show="checkedCount" class="py-3 px-4 flex items-center justify-between border-b">
+        <div x-show="checkedCount" class="py-3 px-4 flex items-center justify-between first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
             <div class="grid">
                 <div class="flex items-center gap-1.5">
                     <div class="font-medium" x-text="checkedCount"></div>
@@ -135,7 +135,7 @@
         </div>
 
         @isset($toolbar)
-            <div x-show="!checkedCount" class="py-3 px-4 flex items-center justify-between gap-2 border-b">
+            <div x-show="!checkedCount" class="py-3 px-4 flex items-center justify-between gap-2 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
                 <div>
                     {{ $toolbar }}
                 </div>
@@ -154,7 +154,7 @@
         @endisset
     
         @if ($attributes->get('total'))
-            <div class="w-full overflow-auto max-h-screen">
+            <div class="w-full overflow-auto max-h-screen first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
                 <table class="w-max divide-y divide-gray-200 md:w-full md:max-w-full" uid="{{ $uid }}">
                     @isset($head)
                         <thead>

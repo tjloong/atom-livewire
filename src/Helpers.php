@@ -93,7 +93,7 @@ function get_status_color($status)
             'bg' => 'bg-gray-100',
             'border' => null,
         ],
-    ][$color] ?? null;
+    ][$color ?? 'gray'];
 }
 
 /**
@@ -127,6 +127,7 @@ function verify_recaptcha($token, $secret = null)
  */
 function lw($name)
 {
+    $name = str()->replace('/', '.', $name);
     $segments = explode('.', $name);
     $slashed = collect($segments)->map(fn($str) => str()->studly($str))->filter()->join('\\');
     $class = collect([

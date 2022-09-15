@@ -21,20 +21,12 @@ class Listing extends Component
     ];
 
     /**
-     * Mount
-     */
-    public function mount()
-    {
-        breadcrumbs()->home('Teams');
-    }
-
-    /**
      * Get teams property
      */
     public function getTeamsProperty()
     {
         return model('team')
-            ->belongsToAccount()
+            ->when(model('team')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->withCount('users')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)

@@ -9,7 +9,7 @@
                         </div>
 
                         @if ($comment->created_by === auth()->id())
-                            <x-button.delete inverted size="xs"
+                            <x-button.delete inverted
                                 title="Delete Comment"
                                 message="Are you sure to delete this comment?"
                                 :params="$comment->id"

@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Role\Update;
 
+use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
 
 class Index extends Component
 {
+    use WithPopupNotify;
+
     public $tab = 'info';
     public $role;
 
@@ -17,7 +20,7 @@ class Index extends Component
     public function mount($role)
     {
         $this->role = model('role')
-            ->belongsToAccount()
+            ->when(model('role')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->findOrFail($role);
 
         breadcrumbs()->push($this->role->name);
@@ -48,16 +51,14 @@ class Index extends Component
     public function delete()
     {
         if ($this->role->users()->count() > 0) {
-            $this->dispatchBrowserEvent('alert', [
+            $this->popup([
                 'title' => 'Unable to Delete', 
                 'message' => 'This role has users assigned to it.', 
-                'type' => 'error',
-            ]);
+            ], 'alert', 'error');
         }
         else {
             $this->role->delete();
-            session()->flash('flash', 'Role Deleted');
-            return redirect()->route('app.role.listing');
+            return redirect()->route('app.settings', ['roles'])->with('info', 'Role Deleted');
         }
     }
 

@@ -1,7 +1,7 @@
 <div>
     <x-box header="Label Children">
         <x-slot:header-buttons>
-            <x-button icon="plus" size="sm" color="gray" 
+            <x-button size="sm" color="gray" 
                 label="Add"
                 wire:click="$emitTo('{{ lw('app.label.update.child-form-modal') }}', 'open')"
             />
@@ -16,7 +16,7 @@
                 @foreach ($children as $child)
                     <div class="flex gap-2 px-2" data-sortable-id="{{ $child->id }}">
                         <div class="shrink-0 cursor-move sort-handle flex justify-center text-gray-400 py-2">
-                            <x-icon name="sort-alt-2"/>
+                            <x-icon name="sort"/>
                         </div>
                     
                         <div class="grow self-center">

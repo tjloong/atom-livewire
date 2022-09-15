@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Team\Update;
 
+use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
 
 class Index extends Component
 {
+    use WithPopupNotify;
+
     public $tab = 'info';
     public $team;
 
@@ -17,7 +20,7 @@ class Index extends Component
     public function mount($team)
     {
         $this->team = model('team')
-            ->belongsToAccount()
+            ->when(model('team')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->findOrFail($team);
 
         breadcrumbs()->push($this->team->name);
@@ -29,10 +32,8 @@ class Index extends Component
     public function delete()
     {
         $this->team->delete();
-        
-        session()->flash('flash', 'Team Deleted');
 
-        return redirect()->route('app.team.listing');
+        return redirect()->route('app.settings', ['teams'])->with('info', 'Team Deleted.');
     }
 
     /**

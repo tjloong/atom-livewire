@@ -35,7 +35,6 @@
     >
         <x-slot:footlink 
             label="New Category" 
-            icon="plus"
             :href="route('app.label.create', ['product-category'])"
         ></x-slot:footlink>
     </x-form.select>
@@ -55,7 +54,6 @@
     >
         <x-slot:footlink
             label="New Tax"
-            icon="plus"
             :href="route('app.tax.create')"
         ></x-slot:footlink>
     </x-form.select>

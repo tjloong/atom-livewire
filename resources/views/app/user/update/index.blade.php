@@ -1,9 +1,9 @@
-<div class="max-w-screen-lg mx-auto">
+<div class="mx-auto {{ $this->tabs ? 'max-w-screen-lg' : 'max-w-screen-sm' }}">
     <x-page-header :title="$user->name" back>
         @if ($user->id !== auth()->id())
             <div class="flex items-center gap-2">
                 @if ($user->status === 'trashed')
-                    <x-button color="gray" icon="trash-arrow-up" 
+                    <x-button color="gray"
                         label="Restore"
                         wire:click="restore"
                     />
@@ -16,14 +16,14 @@
                     />
                 @else
                     @if ($user->status === 'blocked')
-                        <x-button.confirm color="gray" icon="play"
+                        <x-button.confirm color="gray"
                             label="Unblock"
                             title="Unblock User"
                             message="Are you sure to unblock this user?"
                             callback="unblock"
                         />
                     @else
-                        <x-button.confirm color="red" icon="block" inverted
+                        <x-button.confirm color="red" inverted
                             label="Block"
                             title="Block User"
                             message="Are you sure to block this user?"
@@ -48,6 +48,7 @@
                         <x-sidenav.item
                             :name="data_get($item, 'slug')"
                             :label="data_get($item, 'label')"
+                            :icon="false"
                         />
                     @endforeach
                 </x-sidenav>

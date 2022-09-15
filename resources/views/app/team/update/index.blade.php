@@ -23,10 +23,7 @@
         </div>
 
         <div class="md:col-span-9">
-            @if ($com = lw([
-                'info' => 'app.team.update.info',
-                'users' => 'app.team.update.users',
-            ][$tab]))
+            @if ($com = lw('app.team.update.'.$tab))
                 @livewire($com, compact('team'), key($tab))
             @endif
         </div>

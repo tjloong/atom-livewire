@@ -25,7 +25,7 @@
                 @endisset
 
                 <a x-on:click="show = !show" class="flex items-center justify-center text-gray-400 md:hidden">
-                    <x-icon name="menu" size="md"/>
+                    <x-icon name="bars" size="20"/>
                 </a>
             </div>
 
@@ -67,7 +67,7 @@
 
                 <a x-on:click="show = false" class="absolute top-4 right-2 block w-8 h-8 md:hidden">
                     <div class="w-full h-full rounded-full bg-white shadow flex">
-                        <x-icon name="x" size="20px" class="m-auto"/>
+                        <x-icon name="xmark" class="m-auto text-gray-400"/>
                     </div>
                 </a>
             </div>

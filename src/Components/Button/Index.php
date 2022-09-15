@@ -9,6 +9,7 @@ class Index extends Component
     public $mode;
     public $icon;
     public $size;
+    public $label;
     public $block;
     public $color;
     public $renderable;
@@ -21,7 +22,8 @@ class Index extends Component
      */
     public function __construct(
         $icon = null,
-        $size = 'base', 
+        $label = null,
+        $size = 'base',
         $color = 'theme',
         $block = false,
         $inverted = false, 
@@ -31,6 +33,7 @@ class Index extends Component
     ) {
         $this->renderable = !$hide && (!$can || ($can && auth()->user()->can($can)));
         $this->icon = $icon;
+        $this->label = $label;
         $this->size = $size;
         $this->color = $color;
         $this->block = $block;
@@ -105,13 +108,15 @@ class Index extends Component
                 'color' => $color[$this->color][$this->mode],
             ],
             'icon' => [
-                'name' => is_string($this->icon) ? $this->icon : data_get($this->icon, 'name'),
+                'name' => is_string($this->icon) 
+                    ? $this->icon 
+                    : data_get($this->icon, 'name') ?? $this->label,
                 'size' => [
-                    'xs' => '10px',
-                    'sm' => '12px',
-                    'base' => '14px',
-                    'md' => '18px',
-                    'lg' => '20px',
+                    'xs' => '10',
+                    'sm' => '12',
+                    'base' => '14',
+                    'md' => '18',
+                    'lg' => '20',
                 ][$this->size],
                 'position' => is_string($this->icon) ? 'left' : data_get($this->icon, 'position', 'left'),
             ],

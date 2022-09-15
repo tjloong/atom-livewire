@@ -1,41 +1,37 @@
 <div class="max-w-screen-xl mx-auto">
-    @if ($isHome)
-        <x-page-header title="Account Settings"/>
-    @else
-        <x-page-header :title="$account->name" back>
-            @accounttype('root')
-                <div class="flex items-center gap-2">
-                    @if ($account->status === 'blocked')
-                        <x-button inverted icon="play" x-on:click="$dispatch('confirm', {
-                            title: '{{ __('Unblock Account') }}',
-                            message: '{{ __('Are you sure to unblock this account?') }}',
-                            onConfirmed: () => $wire.unblock(),
-                        })">
-                            Unblock
-                        </x-button>
-                    @else
-                        <x-button inverted icon="block" color="red" x-on:click="$dispatch('confirm', {
-                            title: '{{ __('Block Account') }}',
-                            message: '{{ __('Are you sure to block this account?') }}',
-                            type: 'error',
-                            onConfirmed: () => $wire.block(),
-                        })">
-                            Block
-                        </x-button>
-                    @endif
-
-                    <x-button inverted icon="trash" color="red" x-on:click="$dispatch('confirm', {
-                        title: '{{ __('Delete Account') }}',
-                        message: '{{ __('Are you sure to delete this account?') }}',
-                        type: 'error',
-                        onConfirmed: () => $wire.delete()
+    <x-page-header :title="$account->name" back>
+        @accounttype('root')
+            <div class="flex items-center gap-2">
+                @if ($account->status === 'blocked')
+                    <x-button inverted icon="play" x-on:click="$dispatch('confirm', {
+                        title: '{{ __('Unblock Account') }}',
+                        message: '{{ __('Are you sure to unblock this account?') }}',
+                        onConfirmed: () => $wire.unblock(),
                     })">
-                        Delete
+                        Unblock
                     </x-button>
-                </div>
-            @endaccounttype
-        </x-page-header>
-    @endif
+                @else
+                    <x-button inverted icon="block" color="red" x-on:click="$dispatch('confirm', {
+                        title: '{{ __('Block Account') }}',
+                        message: '{{ __('Are you sure to block this account?') }}',
+                        type: 'error',
+                        onConfirmed: () => $wire.block(),
+                    })">
+                        Block
+                    </x-button>
+                @endif
+
+                <x-button inverted icon="trash" color="red" x-on:click="$dispatch('confirm', {
+                    title: '{{ __('Delete Account') }}',
+                    message: '{{ __('Are you sure to delete this account?') }}',
+                    type: 'error',
+                    onConfirmed: () => $wire.delete()
+                })">
+                    Delete
+                </x-button>
+            </div>
+        @endaccounttype
+    </x-page-header>
 
     <div class="grid gap-6 md:grid-cols-12">
         <div class="md:col-span-3">
@@ -68,7 +64,7 @@
 
         <div class="md:col-span-9 flex flex-col gap-6">
             @if ($tab)
-                @if ($com = livewire_name('app/account/update/'.$tab))
+                @if ($com = lw('app.account.update.'.$tab))
                     @livewire($com, compact('account'), key($tab))
                 @endif
             @endif

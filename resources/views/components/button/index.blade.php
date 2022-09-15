@@ -21,7 +21,7 @@
             <x-icon :name="$config->icon->name" :size="$config->icon->size"></x-icon>
         @endif
 
-        @if ($label = $attributes->get('label')) {!! __($label) !!}
+        @if ($label) {{ __($label) }}
         @else {{ $slot }}
         @endif
 

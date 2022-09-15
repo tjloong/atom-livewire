@@ -11,22 +11,14 @@ class Listing extends Component
 
     public $sortBy = 'name';
     public $sortOrder = 'asc';
-    public $filters = ['search' => ''];
+    public $filters = ['search' => null];
 
     protected $queryString = [
-        'filters' => ['except' => ['search' => '']], 
+        'filters' => ['except' => ['search' => null]], 
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
         'page' => ['except' => 1],
     ];
-
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        breadcrumbs()->home('Taxes');
-    }
 
     /**
      * Get taxes property
@@ -37,7 +29,7 @@ class Listing extends Component
             ->when(model('tax')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(30);
+            ->paginate(50);
     }
 
     /**

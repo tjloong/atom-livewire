@@ -9,15 +9,13 @@ class Index extends Component
     public $tab = 'prices';
     public $plan;
 
-    protected $listeners = ['saved'];
-    protected $queryString = ['tab'];
-
     /**
      * Mount
      */
     public function mount($plan)
     {
         $this->plan = model('plan')->findOrFail($plan);
+
         breadcrumbs()->push($this->plan->name);
     }
 
@@ -28,17 +26,7 @@ class Index extends Component
     {
         $this->plan->delete();
 
-        session()->flash('flash', 'Plan Deleted');
-        
-        return redirect()->route('app.plan.listing');
-    }
-
-    /**
-     * Saved
-     */
-    public function saved()
-    {
-        $this->dispatchBrowserEvent('toast', ['message' => 'Plan Updated', 'type' => 'success']);
+        return redirect()->route('app.settings', ['plans'])->with('info', 'Plan Deleted');
     }
 
     /**
