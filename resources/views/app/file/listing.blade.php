@@ -36,14 +36,16 @@
             @if ($selected)
                 <div class="flex flex-wrap items-center gap-2">
                     @if (count($selected) < count($this->files->items()))
-                        <x-button wire:click="select('all')" icon="select-multiple" color="gray" inverted>
-                            Select All
-                        </x-button>
+                        <x-button icon="select-multiple" color="gray" inverted
+                            label="Select All"
+                            wire:click="select('all')"
+                        />
                     @endif
         
-                    <x-button wire:click="$set('selected', [])" icon="x" color="gray" inverted>
-                        Deselect All
-                    </x-button>
+                    <x-button icon="circle-xmark" color="gray" inverted
+                        label="Deselect All"
+                        wire:click="$set('selected', [])"
+                    />
         
                     <x-button.delete inverted
                         :label="'Delete ('.count($selected).')'"

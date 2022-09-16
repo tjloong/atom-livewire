@@ -18,7 +18,7 @@
                 @endisset
         
                 <a class="text-gray-800 flex items-center justify-center" x-on:click.prevent="$dispatch('{{ $uid }}-close')">
-                    <x-icon name="x"/>
+                    <x-icon name="xmark"/>
                 </a>
             </div>
 

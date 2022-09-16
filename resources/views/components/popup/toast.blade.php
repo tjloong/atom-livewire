@@ -71,7 +71,7 @@
             </div>
 
             <a class="text-gray-500 py-1" x-on:click.prevent="close()">
-                <x-icon name="x"/>
+                <x-icon name="xmark"/>
             </a>
         </div>
     </div>

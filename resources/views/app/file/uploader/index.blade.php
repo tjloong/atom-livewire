@@ -14,7 +14,7 @@
                         </div>
         
                         <a wire:click="$set('open', false)" class="flex items-center justify-center text-gray-800">
-                            <x-icon name="x"/>
+                            <x-icon name="xmark"/>
                         </a>
                     </div>
         

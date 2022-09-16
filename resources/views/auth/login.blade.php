@@ -17,13 +17,7 @@
                 @endif
 
                 @if ($errors->any())
-                    <div class="bg-red-100 text-red-800 rounded p-4 grid gap-2">
-                        @foreach ($errors->all() as $error)
-                            <div class="flex items-center gap-1">
-                                <x-icon name="x"/> {{ $error }}
-                            </div>
-                        @endforeach
-                    </div>
+                    <x-alert :errors="$errors->all()"/>
                 @endif
 
                 <div class="grid gap-4">

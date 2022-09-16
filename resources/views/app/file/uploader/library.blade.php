@@ -13,7 +13,7 @@
 
         @if (!empty($search))
             <a wire:click="$set('search', '')" class="text-gray-500 absolute top-0 right-0 bottom-0 flex items-center justify-center px-2">
-                <x-icon name="x" size="18px"/>
+                <x-icon name="xmark" size="18px"/>
             </a>
         @endif
     </div>

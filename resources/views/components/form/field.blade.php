@@ -10,7 +10,7 @@
             @endif
 
             @if ($attributes->get('required'))
-                <x-icon name="health" size="8px" class="text-red-400"/>
+                <x-icon name="asterisk" size="10" class="text-red-400"/>
             @endif
         </label>
     @endif

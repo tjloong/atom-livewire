@@ -11,10 +11,12 @@ use Rap2hpoutre\FastExcel\FastExcel;
 function get_status_color($status)
 {
     $color = [
+        'red' => 'red',
         'due' => 'red',
         'error' => 'red',
         'failed' => 'red',
 
+        'yellow' => 'yellow',
         'new' => 'yellow',
         'admin' => 'yellow',
         'unpaid' => 'yellow',
@@ -23,6 +25,7 @@ function get_status_color($status)
         'submitted' => 'yellow',
         'checked-out' => 'yellow',
 
+        'blue' => 'blue',
         'ready' => 'blue',
         'default' => 'blue',
         'partial' => 'blue',
@@ -31,6 +34,7 @@ function get_status_color($status)
         'feedback' => 'blue',
         'processing' => 'blue',
 
+        'green' => 'green',
         'paid' => 'green',
         'sent' => 'green',
         'active' => 'green',
@@ -47,6 +51,7 @@ function get_status_color($status)
         'offered' => 'green',
         'accepted' => 'green',
 
+        'black' => 'black',
         'blocked' => 'black',
         'trashed' => 'black',
         'voided' => 'black',

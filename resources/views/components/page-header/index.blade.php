@@ -39,6 +39,18 @@
                 @endif
             </div>
         @endif
+
+        @if ($tinylink = $attributes->get('tinylink'))
+            <div>
+                <a 
+                    href="{{ data_get($tinylink, 'href') }}"
+                    x-tooltip:right="{{ data_get($tinylink, 'label') }}"
+                    class="text-gray-400 text-xs flex items-center gap-1 py-1" 
+                >
+                    <x-icon :name="data_get($tinylink, 'icon', 'gear')" size="12"/>
+                </a>
+            </div>
+        @endif
     </div>
 
     <div class="shrink-0 self-center my-1">

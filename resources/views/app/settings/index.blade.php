@@ -29,7 +29,9 @@
         </div>
 
         <div class="md:col-span-9">
-            @livewire($livewire, key($tab))
+            @livewire($livewire, [
+                'account' => auth()->user()->account,
+            ], key($tab))
         </div>
     </div>
 </div>

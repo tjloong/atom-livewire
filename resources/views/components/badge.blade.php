@@ -15,7 +15,8 @@
     ),
 
     collect(get_status_color(
-        $label 
+        $attributes->get('color')
+        ?? $label 
         ?? strip_tags(strtolower($slot->toHtml()))
     ))->values()->join(' '),
 ]) }}>

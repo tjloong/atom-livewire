@@ -9,7 +9,7 @@
     <div 
         x-data="{ focus: false }"
         x-bind:class="focus && 'active'"
-        class="form-input w-full flex items-center gap-2"
+        class="form-input w-full flex items-center gap-2 {{ $attributes->get('error') ? 'error' : '' }}"
     >
         <input type="number"
             x-on:focus="focus = true"

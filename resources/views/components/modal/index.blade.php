@@ -36,7 +36,7 @@
                     @endif
 
                     <a class="text-gray-500 flex items-center justify-center" x-on:click.prevent="close()">
-                        <x-icon name="x"/>
+                        <x-icon name="xmark"/>
                     </a>
                 </div>
 
