@@ -1,7 +1,7 @@
 <x-form header="User Information">
     @if (auth()->user()->isAccountType('root') && $user->account->type !== 'root')
         <x-box>
-            <div class="p-5">
+            <div class="p-4 grid gap-4">
                 <x-form.field label="Account Name">
                     <div class="text-lg font-bold">{{ $user->account->name }}</div>
                     <div class="font-medium text-gray-500">

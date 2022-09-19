@@ -18,7 +18,7 @@ class Info extends Component
      */
     protected function rules()
     {
-        return [
+        $rules = [
             'user.name' => 'required|string|max:255',
             'user.email' => [
                 'required',
@@ -27,9 +27,12 @@ class Info extends Component
             ],
             'user.visibility' => 'nullable',
             'user.activated_at' => 'nullable',
-            'user.role_id' => 'nullable',
             'user.account_id' => 'nullable',
         ];
+
+        if (enabled_module('roles')) $rules['role_id'] = 'nullable';
+        
+        return $rules;
     }
 
     /**
@@ -98,14 +101,22 @@ class Info extends Component
         $this->resetValidation();
         $this->validate();
 
+        $this->persist();
+
+        if ($this->user->wasRecentlyCreated) return redirect()->route('app.settings', ['users']);
+        else $this->popup('User Updated');
+    }
+
+    /**
+     * Persist
+     */
+    public function persist()
+    {
         $this->user->save();
 
         if (enabled_module('teams')) {
             $this->user->teams()->sync($this->selectedTeams);
         }
-
-        if ($this->user->wasRecentlyCreated) return redirect()->route('app.settings', ['users']);
-        else $this->popup('User Updated');
     }
 
     /**

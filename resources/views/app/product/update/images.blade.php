@@ -1,7 +1,7 @@
 <div>
     <x-box header="Product Images">
         <x-slot:header-buttons>
-            <x-button size="sm" icon="image-add" 
+            <x-button size="sm"
                 label="Add Image"
                 x-on:click="$dispatch('uploader-open')"
             />

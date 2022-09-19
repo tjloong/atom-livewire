@@ -17,7 +17,7 @@
         data_get($color, 'bg'), 
         data_get($color, 'border'),
     ])->except('errors') }}>
-        <x-icon name="{{ $icon }}" class="{{ data_get($color, 'icon') }} shrink-0 py-0.5"/>
+        <x-icon name="{{ $icon }}" class="{{ data_get($color, 'icon') }} shrink-0 py-0.5" size="20"/>
         
         <div class="grow grid gap-2 self-center">
             @isset($title) 

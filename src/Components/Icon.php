@@ -155,8 +155,11 @@ class Icon extends Component
         'unblock' => 'play',
         'duplicate' => 'copy',
         'upload' => 'cloud-arrow-up',
+        'accounts' => 'user-plus',
         'finance' => 'magnifying-glass-dollar',
         'financial' => 'magnifying-glass-dollar',
+        'address' => 'location-dot',
+        'location' => 'location-dot',
     ];
 
     /**
@@ -175,8 +178,9 @@ class Icon extends Component
      */
     public function getSvg($name)
     {
+        
         if ($svg = data_get($this->svgs, strtolower($name))) return $svg;
-
+        
         if ($label = collect($this->labels)->first(fn($val, $key) => str($name)->lower()->is($key.'*'))) {
             if ($svg = data_get($this->svgs, $label)) return $svg;
         }

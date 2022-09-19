@@ -4,7 +4,7 @@
     x-on:click.outside="show = false"
     class="relative cursor-pointer flex flex-col gap-1 items-center justify-center {{ $attributes->get('class') ?? 'text-gray-900 hover:text-theme' }}"
 >
-    <x-icon name="language" size="18px"/>
+    <x-icon name="language" size="20"/>
     <div class="text-center" style="font-size: 0.6rem;">
         {{ __('Language') }}
     </div>

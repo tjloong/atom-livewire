@@ -52,12 +52,14 @@ class Listing extends Component
     {
         return model('user')
             ->when(
-                auth()->user()->isAccountType('root'), 
-                fn($q) => $q->whereHas('account', fn($q) => $q->where('accounts.type', 'root')),
+                $this->role, 
+                fn($q) => $q->where('role_id', $this->role->id)
+            )
+            ->when(
+                $this->account && auth()->user()->isAccountType('root'), 
+                fn($q) => $q->where('account_id', $this->account->id),
                 fn($q) => $q->where('account_id', auth()->user()->account_id)
             )
-            ->when($this->role, fn($q) => $q->where('role_id', $this->role->id))
-            ->when($this->account, fn($q) => $q->where('account_id', $this->account->id))
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
     }

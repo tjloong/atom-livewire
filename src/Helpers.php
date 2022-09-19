@@ -309,7 +309,14 @@ function define_route($path = null, $action = null, $method = 'get')
             'App\Http\Livewire\\'.$action.'\Index',
             'Jiannius\Atom\Http\Livewire\\'.$action,
             'Jiannius\Atom\Http\Livewire\\'.$action.'\Index',
-        ])->first(fn($val) => class_exists($val));
+        ])->first(function($ns) {
+            $filepath = str()->replace('\\', '/', $ns).'.php';
+
+            if (str($filepath)->startsWith('App')) $filepath = app_path(str()->replaceFirst('App/', '', $filepath));
+            if (str($filepath)->startsWith('Jiannius/Atom')) $filepath = atom_path('src/'.str()->replaceFirst('Jiannius/Atom/', '', $filepath));
+
+            return file_exists($filepath);
+        });
 
         return app('router')->$method($path, $class);
     }
@@ -505,4 +512,12 @@ function html_excerpt($html)
 
     if ($length > 100) return str()->limit($content, 100);
     else return $content;
+}
+
+/**
+ * Get atom path
+ */
+function atom_path($path = null)
+{
+    return base_path('vendor/jiannius/atom-livewire'.($path ? '/'.$path : ''));
 }
