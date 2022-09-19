@@ -35,6 +35,9 @@
     @elseif ($datetime = $attributes->get('datetime'))
         <div>{{ format_date($datetime) }}</div>
         <div class="text-sm text-gray-500">{{ format_date($datetime, 'time') }}</div>
+
+    @elseif ($fromNow = $attributes->get('from-now'))
+        {{ format_date($fromNow, 'human') }}
     
     @elseif ($attributes->has('avatar'))
         <div class="flex items-center gap-3">

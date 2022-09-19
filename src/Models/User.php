@@ -229,7 +229,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if ($portal === 'app') {
             return current_route([
-                'app.account.*', 
+                'app.settings', 
                 'app.ticketing.*', 
                 'app.billing.*',
                 'app.onboarding.*',

@@ -63,11 +63,7 @@
         </div>
 
         <div class="md:col-span-9 flex flex-col gap-6">
-            @if ($tab)
-                @if ($com = lw('app.account.update.'.$tab))
-                    @livewire($com, compact('account'), key($tab))
-                @endif
-            @endif
+            @livewire($livewire, compact('account'), key($tab))
         </div>
     </div>
 </div>
