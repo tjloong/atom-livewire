@@ -37,6 +37,7 @@ function get_status_color($status)
         'green' => 'green',
         'paid' => 'green',
         'sent' => 'green',
+        'show' => 'green',
         'active' => 'green',
         'billed' => 'green',
         'closed' => 'green',

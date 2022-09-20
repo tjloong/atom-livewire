@@ -95,6 +95,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.email',
             'form.field',
             'form.image',
+            'form.items',
             'form.phone',
             'form.radio',
             'form.state',
