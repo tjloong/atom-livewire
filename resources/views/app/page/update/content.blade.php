@@ -3,20 +3,15 @@
         {{ $page->name }}
     </x-form.field>
 
-    <x-form.text
-        label="Page Title"
+    <x-form.text label="Page Title"
         wire:model.defer="page.title"
     />
 
-    <x-form.slug
-        label="Page Slug"
-        wire:model.defer="page.slug" 
-        prefix="/" 
-        required
-    />
+    <x-form.field label="Page Slug">
+        {{ '/'.$page->slug }}
+    </x-form.field>
 
-    <x-form.richtext
-        label="Page Content"
+    <x-form.richtext label="Page Content"
         wire:model.defer="page.content"
     />
 

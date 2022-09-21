@@ -10,12 +10,8 @@
     @foreach ($this->pages as $page)
         <x-table.tr>
             <x-table.td :label="$page->name" :href="route('app.page.update', [$page])"/>
-            @if (count(config('atom.locales')) > 1)
-                <x-table.td>
-                    <x-badge :label="$page->locale" class="uppercase"/>
-                </x-table.td>
-            @endif
-            <x-table.td :label="$page->title"/>
+            @if (count(config('atom.locales')) > 1) <x-table.td :status="$page->locale"/> @endif
+            <x-table.td :label="$page->title" :href="route('app.page.update', [$page])"/>
             <x-table.td :date="$page->updated_at" class="text-right"/>
         </x-table.tr>
     @endforeach
