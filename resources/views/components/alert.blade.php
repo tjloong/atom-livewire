@@ -20,13 +20,9 @@
         <x-icon name="{{ $icon }}" class="{{ data_get($color, 'icon') }} shrink-0 py-0.5" size="20"/>
         
         <div class="grow grid gap-2 self-center">
-            @isset($title) 
+            @if ($title = $title ?? $attributes->get('title'))
                 <div class="{{ data_get($color, 'title') }} font-semibold text-lg">
-                    {{ $title }}
-                </div>
-            @elseif ($title = $attributes->get('title'))
-                <div class="{{ data_get($color, 'title') }} font-semibold text-lg">
-                    {{ __(str(__($title))->toHtmlString()) }}
+                    {{ is_string($title) ? __($title) : $title }}
                 </div>
             @endisset
 

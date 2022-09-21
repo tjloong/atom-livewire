@@ -25,11 +25,17 @@
                 return (this.itemHref && this.itemHref === @js(url()->current()))
                     || (this.itemName && value === this.itemName)
             },
+            select () {
+                if (this.active) return show = !show
+
+                if (this.itemHref) window.location = this.itemHref
+                else {
+                    show = !show
+                    value = this.itemName
+                }
+            }
         }"
-        x-on:click="
-            if (itemHref) window.location = itemHref
-            else select(itemName)
-        "
+        x-on:click="select"
         x-bind:class="{
             'font-bold text-theme-inverted bg-theme rounded-md md:border-r-2 md:border-theme-dark md:text-theme-dark md:bg-gray-200 md:rounded-r-none': active && show,
             'font-bold bg-white ring-theme ring-2 rounded-md md:border-r-2 md:border-theme-dark md:text-theme-dark md:bg-gray-200 md:rounded-r-none md:ring-0': active && !show,

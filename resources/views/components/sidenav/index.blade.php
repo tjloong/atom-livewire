@@ -2,12 +2,6 @@
     x-data="{
         show: false,
         value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
-
-        select (val) {
-            this.show = !this.show
-            this.value = val
-            this.$nextTick(() => this.$dispatch('input', this.value))
-        }
     }"
     x-bind:class="show && 'fixed inset-0 z-20 md:static'"
     {{ $attributes->whereStartsWith('wire') }}
