@@ -9,8 +9,8 @@ class Listing extends Component
 {
     use WithPagination;
 
-    public $sortBy = 'updated_at';
-    public $sortOrder = 'desc';
+    public $sortBy = 'name';
+    public $sortOrder = 'asc';
     public $filters = ['search' => null];
 
     protected $queryString = [

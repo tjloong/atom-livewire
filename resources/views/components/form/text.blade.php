@@ -1,7 +1,9 @@
+@props([
+    'prefix' => $prefix ?? $attributes->get('prefix'),
+    'postfix' => $postfix ?? $attributes->get('postfix'),
+])
+
 <x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label', 'label-tag']) }}>
-    @php $prefix = $prefix ?? $attributes->get('prefix') @endphp
-    @php $postfix = $postfix ?? $attributes->get('postfix') @endphp
-    
     <div 
         x-data="{ focus: false }"
         x-bind:class="focus && 'active'"
@@ -24,7 +26,7 @@
                     ->merge([
                         'placeholder' => __($attributes->get('placeholder')),
                     ])
-                    ->only(['class', 'placeholder']) 
+                    ->except(['error', 'required', 'caption', 'label', 'label-tag', 'prefix', 'postfix'])
                 }}
             >
         </div>
