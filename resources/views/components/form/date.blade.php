@@ -5,7 +5,7 @@
             value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
             settings: @js($attributes->get('settings')),
             calendar: null,
-            placeholder: @js(__($attributes->get('placeholder', 'Select Date'))),
+            placeholder: @js(__($attributes->get('placeholder', 'Select '.$attributes->get('label', 'Date')))),
             open () {
                 if (this.show) return this.close()
                 this.show = true
@@ -45,10 +45,16 @@
     >
         <div
             x-ref="anchor" 
-            x-bind:class="show && 'active'"
-            class="flex items-center gap-2 form-input w-full {{ !empty($attributes->get('error')) ? 'error' : '' }}"
+            x-bind:class="{
+                'active': show,
+                'select': !value,
+            }"
+            {{ $attributes->class([
+                'flex items-center gap-2 form-input w-full',
+                'error' => !empty($attributes->get('error')),
+            ]) }}
         >
-            <x-icon name="calendar" size="18px" class="text-gray-400"/>
+            <x-icon name="calendar" class="text-gray-400"/>
 
             <div 
                 x-on:click="open()" 
@@ -57,8 +63,8 @@
                 class="grow cursor-pointer">
             </div>
 
-            <a x-show="value" x-on:click="clear()" class="px-2 flex">
-                <x-icon name="xmark" size="15px" class="m-auto"/>
+            <a x-show="value" x-on:click="clear()" class="flex text-gray-500">
+                <x-icon name="xmark" class="m-auto"/>
             </a>
         </div>
 

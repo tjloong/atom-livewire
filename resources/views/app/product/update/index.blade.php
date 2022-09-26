@@ -26,13 +26,7 @@
         </div>
 
         <div class="md:col-span-9">
-            @if (
-                $com = $tab === 'variants'
-                    ? lw('app.product.variant.listing')
-                    : lw('app.product.update.'.$tab)
-            )
-                @livewire($com, compact('product'), key($tab))
-            @endif
+            @livewire($livewire, compact('product'), key($tab))
         </div>
     </div>
 </div>

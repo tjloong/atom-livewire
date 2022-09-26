@@ -12,27 +12,19 @@ class Listing extends Component
     use WithPopupNotify;
 
     public $product;
-    public $filters = ['search' => ''];
+    public $filters = ['search' => null];
 
     protected $queryString = [
         'page' => ['except' => 1],
-        'filters' => ['except' => ['search' => '']],
+        'filters' => ['except' => ['search' => null]],
     ];
 
     /**
-     * Mount
+     * Get variants property
      */
-    public function mount()
+    public function getVariantsProperty()
     {
-        //
-    }
-
-    /**
-     * Get product variants property
-     */
-    public function getProductVariantsProperty()
-    {
-        return $this->product->productVariants()
+        return $this->product->variants()
             ->filter($this->filters)
             ->orderBy('seq')
             ->get();

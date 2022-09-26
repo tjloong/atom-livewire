@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class Form extends Component
 {
-    public $productVariant;
+    public $variant;
 
     /**
      * Validation rules
@@ -14,27 +14,36 @@ class Form extends Component
     protected function rules()
     {
         return [
-            'productVariant.name' => 'required',
+            'variant.name' => 'required',
 
-            'productVariant.code' => [
+            'variant.code' => [
                 function ($attr, $value, $fail) {
                     if ($value) {
-                        $dup = model('product')->belongsToAccount()->where('code', $value)->count() > 0
-                            || model('product_variant')
-                                ->whereHas('product', fn($q) => $q->belongsToAccount())
-                                ->where('code', $value)->count() > 0;
+                        $count = model('product')->when(
+                            model('product')->enabledBelongsToAccountTrait,
+                            fn($q) => $q->belongsToAccount()
+                        )->where('code', $value)->count();
 
-                        if ($dup) $fail(__('Variant code is taken.'));
+                        if (!$count) {
+                            $count = model('product_variant')
+                                ->whereHas('product', fn($q) => $q->when(
+                                    model('product')->enabledBelongsToAccountTrait,
+                                    fn($q) => $q->belongsToAccount()        
+                                ))
+                                ->where('code', $value)->count();
+                        }
+
+                        if ($count) $fail(__('Variant code is taken.'));
                     }
                 },
             ],
 
-            'productVariant.price' => 'nullable|numeric',
-            'productVariant.stock' => 'nullable|numeric',
-            'productVariant.is_default' => 'nullable',
-            'productVariant.is_active' => 'nullable',
-            'productVariant.image_id' => 'nullable',
-            'productVariant.product_id' => 'required',
+            'variant.price' => 'nullable|numeric',
+            'variant.stock' => 'nullable|numeric',
+            'variant.is_default' => 'nullable',
+            'variant.is_active' => 'nullable',
+            'variant.image_id' => 'nullable',
+            'variant.product_id' => 'required',
         ];
     }
 
@@ -44,10 +53,10 @@ class Form extends Component
     protected function messages()
     {
         return [
-            'productVariant.name.required' => __('Variant name is required.'),
-            'productVariant.price.numeric' => __('Invalid price.'),
-            'productVariant.stock.numeric' => __('Invalid stock.'),
-            'productVariant.product_id.required' => __('Unknown product.'),
+            'variant.name.required' => __('Variant name is required.'),
+            'variant.price.numeric' => __('Invalid price.'),
+            'variant.stock.numeric' => __('Invalid stock.'),
+            'variant.product_id.required' => __('Unknown product.'),
         ];
     }
 
@@ -56,18 +65,9 @@ class Form extends Component
      */
     public function generateCode()
     {
-        $code = null;
-        $dup = true;
-
-        while ($dup) {
-            $code = str()->upper(str()->random(6));
-            $dup = model('product')->belongsToAccount()->where('code', $code)->count() > 0
-                || model('product_variant')
-                    ->whereHas('product', fn($q) => $q->belongsToAccount())
-                    ->where('code', $code)->count() > 0;
-        }
-
-        $this->productVariant->fill(['code' => $code]);
+        $this->variant->fill([
+            'code' => model('product_variant')->generateCode(),
+        ]);
     }
 
     /**
@@ -87,11 +87,11 @@ class Form extends Component
      */
     public function persist()
     {
-        if ($this->productVariant->is_default) {
-            $this->productVariant->product->productVariants()->update(['is_default' => false]);
+        if ($this->variant->is_default) {
+            $this->variant->product->variants()->update(['is_default' => false]);
         }
         
-        $this->productVariant->save();
+        $this->variant->save();
     }
 
     /**
@@ -100,7 +100,7 @@ class Form extends Component
     public function submitted()
     {
         return redirect()->route('app.product.update', [
-            'productId' => $this->productVariant->product_id, 
+            'productId' => $this->variant->product_id, 
             'tab' => 'variants',
         ]);
     }

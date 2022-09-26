@@ -19,7 +19,7 @@
             getOptions () {
                 let options = []
                 let data = this.options || []
-                if (this.paginator.data) data = this.paginator.data
+                if (this.paginator?.data) data = this.paginator.data
 
                 data.forEach(val => {
                     options.push(this.formatOption(val))
@@ -42,19 +42,19 @@
                 }
                 else {
                     opt.isGroup = false
-                    opt.image = val.image
-                    opt.avatar = val.avatar
-                    opt.flag = val.flag
-                    opt.remark = val.remark
-                    opt.status = {
+                    opt.image = val.image || null
+                    opt.avatar = val.avatar || null
+                    opt.flag = val.flag || null
+                    opt.remark = val.remark || null
+                    opt.status = val.status ? {
                         text: val.status,
-                        color: val.status_color ? val.status_color.values().join(' ') : null,
-                    }
+                        color: val.status_color || 'text-gray-800 bg-gray-100',
+                    } : null
                 }
 
-                if (typeof opt.label === 'object') opt.label = opt.label[@js(app()->currentLocale())]
-                if (typeof opt.image === 'object') opt.image = opt.image.url
-                if (typeof opt.avatar === 'object') opt.avatar = opt.avatar.url
+                if (opt.label && typeof opt.label === 'object') opt.label = opt.label[@js(app()->currentLocale())]
+                if (opt.image && typeof opt.image === 'object') opt.image = opt.image.url
+                if (opt.avatar && typeof opt.avatar === 'object') opt.avatar = opt.avatar.url
 
                 return opt
             },
@@ -83,11 +83,11 @@
                 if (this.show) this.close()
                 else {
                     this.show = true
+                    this.searchable = this.list.length > 10 || this.callback
                     this.$nextTick(() => {
-                        floatDropdown(this.$refs.anchor, this.$refs.dd)
                         this.$refs.search && this.$refs.search.focus()
+                        floatDropdown(this.$refs.anchor, this.$refs.dd)
                         this.retrieve()
-                        this.searchable = this.list.length > 10 || this.callback
                     })
                 }
             },
@@ -146,12 +146,15 @@
                 'active': show,
                 'select': getPlaceholder() === null,
             }"
-            class="form-input w-full {{ $attributes->get('error') ? 'error' : '' }}"
+            {{ $attributes->class([
+                'form-input w-full',
+                'error' => !empty($attributes->get('error')),
+            ])->only('class') }}
         >
             <template x-if="getPlaceholder() === null">
                 <div class="text-gray-400 grid">
                     <div class="truncate">
-                        {{ __($attributes->get('placeholder', 'Select '.($label ?? 'an option'))) }}
+                        {{ __($attributes->get('placeholder', 'Select '.($attributes->get('label', 'an option')))) }}
                     </div>
                 </div>
             </template>
@@ -235,14 +238,14 @@
                 </div>
 
                 <div 
-                    x-show="paginator.last_page > 1" 
+                    x-show="paginator?.last_page > 1" 
                     class="relative px-4 py-2 flex items-center justify-evenly gap-4 text-sm border-b"
                 >
                     <div x-show="loading" class="absolute inset-0 bg-white/50"></div>
 
                     <div class="shrink-0">
                         <a 
-                            x-show="paginator.current_page > 1"
+                            x-show="paginator?.current_page > 1"
                             x-on:click="prev()" 
                             class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
                         >
@@ -250,11 +253,11 @@
                         </a>
                     </div>
 
-                    <div x-text="`${paginator.current_page}/${paginator.last_page}`" class="grow text-center text-sm font-medium"></div>
+                    <div x-text="`${paginator?.current_page}/${paginator?.last_page}`" class="grow text-center text-sm font-medium"></div>
 
                     <div class="shrink-0">
                         <a 
-                            x-show="paginator.current_page < paginator.last_page"
+                            x-show="paginator?.current_page < paginator?.last_page"
                             x-on:click="next()" 
                             class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
                         >
@@ -266,6 +269,9 @@
                 <div x-show="!loading && list.length > 0">
                     <template x-for="opt in list">
                         <div
+                            x-data="{
+                                hasSmall: list.some(val => val.small),
+                            }"
                             x-on:click="!opt.isGroup && select(opt)"
                             x-bind:class="{
                                 'bg-gray-100': opt.isGroup,
@@ -300,17 +306,21 @@
                                     x-text="opt.label" 
                                     x-bind:class="{
                                         'font-bold': opt.isGroup,
-                                        'font-semibold': !opt.isGroup && opt.small,
+                                        'font-medium': !opt.isGroup && hasSmall,
                                     }"
                                     class="truncate"
                                 ></div>
-                                <div x-show="opt.small" x-text="opt.small" class="truncate font-medium text-sm text-gray-400"></div>
+                                <div 
+                                    x-show="hasSmall" 
+                                    x-text="opt.small" 
+                                    class="truncate font-medium text-sm text-gray-400">
+                                </div>
                             </div>
 
-                            <div x-show="opt.badge || opt.remark" class="shrink-0 flex flex-col gap-1 items-end">
+                            <div x-show="opt.status || opt.remark" class="shrink-0 flex flex-col gap-1 items-end">
                                 <div 
-                                    x-text="opt.badge" 
-                                    x-bind:class="['text-sm px-2 font-medium rounded-full shadow'].concat(opt.badge_colors)"
+                                    x-text="opt.status?.text" 
+                                    x-bind:class="['text-sm px-2 font-medium rounded-full shadow'].concat(opt.status?.color)"
                                 ></div>
                                 <div x-text="opt.remark" class="text-sm font-medium text-gray-500"></div>
                             </div>
@@ -325,11 +335,12 @@
                         href="{{ $footlink->attributes->get('href') }}"
                         class="p-4 text-center flex items-center justify-center gap-2 hover:bg-slate-100"
                     >
-                        @if ($icon = $footlink->attributes->get('icon'))
-                            <x-icon :name="$icon" size="14px"/>
-                        @endif
+                        @php $icon = $footlink->attributes->get('icon') @endphp
+                        @php $label = $footlink->attributes->get('label') @endphp
 
-                        @if ($label = $footlink->attributes->get('label')) {{ __($label) }}
+                        <x-icon :name="$icon ?? $label"/>
+
+                        @if ($label) {{ __($label) }}
                         @else {{ $footlink }}
                         @endif
                     </a>

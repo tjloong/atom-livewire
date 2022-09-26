@@ -29,6 +29,16 @@ class Tax extends Model
     }
 
     /**
+     * Get label attribute
+     */
+    public function getLabelAttribute()
+    {
+        $rate = $this->rate.'%';
+
+        return collect([$this->name, $rate])->join(' ');
+    }
+
+    /**
      * Calculate tax amount
      */
     public function calculate($amount = 0)

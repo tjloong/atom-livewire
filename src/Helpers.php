@@ -8,7 +8,7 @@ use Rap2hpoutre\FastExcel\FastExcel;
 /**
  * Get status color
  */
-function get_status_color($status)
+function get_status_color($status = null)
 {
     $color = [
         'red' => 'red',

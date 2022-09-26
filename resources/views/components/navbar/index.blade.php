@@ -25,7 +25,7 @@
                 @endisset
 
                 <a x-on:click="show = !show" class="flex items-center justify-center text-gray-400 md:hidden">
-                    <x-icon name="bars" size="20"/>
+                    <x-icon name="chevron-down" size="20"/>
                 </a>
             </div>
 

@@ -7,8 +7,8 @@ use Livewire\Component;
 class Images extends Component
 {
     public $image;
+    public $images;
     public $product;
-    public $productImages;
 
     protected $listeners = ['uploader-completed' => 'attach'];
 
@@ -25,7 +25,7 @@ class Images extends Component
      */
     public function setImages()
     {
-        $this->productImages = $this->product->productImages()
+        $this->images = $this->product->images()
             ->orderBy('seq')
             ->orderBy('id')
             ->get()
@@ -41,9 +41,9 @@ class Images extends Component
     public function attach($files)
     {
         foreach ($files as $file) {
-            if ($this->productImages->where('id', data_get($file, 'id'))->count()) continue;
+            if ($this->images->where('id', data_get($file, 'id'))->count()) continue;
 
-            $this->product->productImages()->attach(data_get($file, 'id'));
+            $this->product->images()->attach(data_get($file, 'id'));
         }
         
         $this->setImages();
@@ -54,7 +54,7 @@ class Images extends Component
      */
     public function remove($id)
     {
-        $this->product->productImages()->detach($id);
+        $this->product->images()->detach($id);
         $this->setImages();
     }
 
@@ -64,7 +64,7 @@ class Images extends Component
     public function sort($data)
     {
         collect($data)->filter()->each(function($id, $index) {
-            $image = $this->product->productImages->where('id', $id)->first();
+            $image = $this->product->images->where('id', $id)->first();
             $image->pivot->seq = $index;
             $image->pivot->save();
         });

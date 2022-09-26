@@ -131,7 +131,7 @@ if (!config('atom.static_site')) {
 
                 define_route()->prefix('{productId}/variant')->as('variant.')->group(function() {
                     define_route('create', 'App\Product\Variant\Create')->name('create');
-                    define_route('{productVariantId}', 'App\Product\Variant\Update')->name('update');
+                    define_route('{variantId}', 'App\Product\Variant\Update')->name('update');
                 });
             });
         }

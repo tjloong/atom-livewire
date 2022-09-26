@@ -6,16 +6,16 @@
         />
     </x-slot:header-buttons>
 
-    @if (count($this->productVariants))
+    @if (count($this->variants))
         <x-form.sortable 
             wire:sorted="sort" 
             :config="['handle' => '.sort-handle']"
             class="grid divide-y"
         >
-            @foreach ($this->productVariants as $productVariant)
+            @foreach ($this->variants as $variant)
                 <div 
                     class="flex items-center gap-4 py-2 px-4 hover:bg-gray-100"
-                    data-sortable-id="{{ $productVariant->id }}"
+                    data-sortable-id="{{ $variant->id }}"
                 >
                     <div class="shrink-0 cursor-move sort-handle flex text-gray-400">
                         <x-icon name="sort" class="m-auto"/>
@@ -23,7 +23,7 @@
 
                     <div class="shrink-0">
                         <figure class="w-8 h-8 bg-gray-100 rounded shadow overflow-hidden">
-                            @if ($url = optional($productVariant->image)->url)
+                            @if ($url = optional($variant->image)->url)
                                 <img src="{{ $url }}" class="w-full h-full object-cover">
                             @endif
                         </figure>
@@ -34,12 +34,12 @@
                             <div class="grid">
                                 <a href="{{ route('app.product.variant.update', [
                                     'productId' => $product->id,
-                                    'productVariantId' => $productVariant->id,
+                                    'variantId' => $variant->id,
                                 ]) }}" class="grow">
-                                    {{ $productVariant->name }}
+                                    {{ $variant->name }}
                                 </a>
 
-                                @if ($code = $productVariant->code)
+                                @if ($code = $variant->code)
                                     <div class="text-sm text-gray-400 font-medium">
                                         {{ $code }}
                                     </div>
@@ -47,21 +47,21 @@
                             </div>
 
                             <div class="shrink-0">
-                                @if ($productVariant->is_default)
+                                @if ($variant->is_default)
                                     <x-badge label="default"/>
                                 @endif
-                                <x-badge :label="$productVariant->is_active ? 'active' : 'inactive'"/>
+                                <x-badge :label="$variant->is_active ? 'active' : 'inactive'"/>
                             </div>
                         </div>
                     </div>
 
                     <div class="shrink-0">
-                        @if (is_numeric($productVariant->price)) 
-                            {{ currency($productVariant->price) }}
+                        @if (is_numeric($variant->price)) 
+                            {{ currency($variant->price) }}
                         @else
                             {{ currency(
-                                data_get($productVariant->price, 'amount'), 
-                                data_get($productVariant->price, 'currency')
+                                data_get($variant->price, 'amount'), 
+                                data_get($variant->price, 'currency')
                             ) }}
                         @endif
                     </div>

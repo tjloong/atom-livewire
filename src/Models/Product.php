@@ -30,7 +30,7 @@ class Product extends Model
     /**
 	 * Get images for product
 	 */
-	public function productImages()
+	public function images()
 	{
 		return $this->belongsToMany(get_class(model('file')), 'product_images')->withPivot('seq');
 	}
@@ -38,7 +38,7 @@ class Product extends Model
     /**
      * Get product categories for product
      */
-    public function productCategories()
+    public function categories()
     {
         return $this->belongsToMany(get_class(model('label')), 'product_categories');
     }
@@ -46,7 +46,7 @@ class Product extends Model
     /**
      * Get product variants for product
      */
-    public function productVariants()
+    public function variants()
     {
         return $this->hasMany(get_class(model('product_variant')));
     }
@@ -64,14 +64,6 @@ class Product extends Model
     }
 
     /**
-     * Scope for product category
-     */
-    public function scopeProductCategory($query, $categories)
-    {
-        return $query->whereHas('productCategories', fn($q) => $q->whereIn('labels.id', (array)$categories));
-    }
-
-    /**
      * Get types
      */
     public function getTypes()
@@ -80,5 +72,27 @@ class Product extends Model
             ['value' => 'normal', 'label' => 'Normal', 'description' => 'Single item product, eg. can drink, book, phone.'],
             ['value' => 'variant', 'label' => 'With multiple variants', 'description' => 'Product with multiple options, eg. shirt with multiple sizes'],
         ];
+    }
+
+    /**
+     * Generate code
+     */
+    public function generateCode()
+    {
+        $code = null;
+        $dup = true;
+
+        while ($dup) {
+            $code = str()->upper(str()->random(6));
+            $dup = model('product')
+                ->when(
+                    $this->enabledHasTraceTrait, 
+                    fn($q) => $q->belongsToAccount()
+                )
+                ->where('code', $code)
+                ->count() > 0;
+        }
+
+        return $code;
     }
 }

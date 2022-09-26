@@ -85,8 +85,8 @@
                     <div class="flex items-center gap-2">
                         <x-logo class="h-[40px] md:hidden" small/>
 
-                        <a class="flex-shrink-0 text-gray-800 flex items-center justify-center" @click="toggled = !toggled; animate = true">
-                            <x-icon name="dots-vertical"/>
+                        <a class="flex-shrink-0 text-gray-800 flex items-center justify-center px-2" @click="toggled = !toggled; animate = true">
+                            <x-icon name="bars" size="18"/>
                         </a>
                     </div>
                 @endisset

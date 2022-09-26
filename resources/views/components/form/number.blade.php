@@ -1,10 +1,3 @@
-@props([
-    'class' => [
-        'transparent' => 'w-full border-0 p-0 pr-10 focus:ring-0',
-        'normal' => 'form-input w-full',
-    ],
-])
-
 <x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
     <div 
         x-data="{ focus: false }"
@@ -14,11 +7,12 @@
         <input type="number"
             x-on:focus="focus = true"
             x-on:blur="focus = false"
-            class="appearance-none bg-transaprent border-0 p-0 focus:ring-0 w-full"
-            {{ $attributes->except(['error', 'caption']) }}
+            {{ $attributes->class([
+                'appearance-none bg-transaprent border-0 p-0 focus:ring-0 w-full'
+            ])->except(['error', 'caption']) }}
         >
 
-        @if ($unit = $attributes->get('unit'))
+        @if ($unit = $attributes->get('unit') ?? $attributes->get('postfix'))
             <div class="font-medium text-gray-500">{{ __($unit) }}</div>
         @endif
     </div>

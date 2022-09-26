@@ -1,15 +1,16 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Product\Update;
+namespace Jiannius\Atom\Http\Livewire\App\Product;
 
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use Jiannius\Atom\Traits\WithPopupNotify;
 
-class Overview extends Component
+class Form extends Component
 {
     use WithPopupNotify;
 
+    public $header;
     public $product;
     public $selected = [
         'taxes' => [],
@@ -62,7 +63,7 @@ class Overview extends Component
     {
         $this->fill([
             'selected.taxes' => $this->product->taxes->pluck('id')->toArray(),
-            'selected.categories' => $this->product->productCategories->pluck('id')->toArray(),
+            'selected.categories' => $this->product->categories->pluck('id')->toArray(),
         ]);
     }
 
@@ -104,18 +105,9 @@ class Overview extends Component
      */
     public function generateCode()
     {
-        $code = null;
-        $dup = true;
-
-        while ($dup) {
-            $code = str()->upper(str()->random(6));
-            $dup = model('product')
-                ->belongsToAccount()
-                ->where('code', $code)
-                ->count() > 0;
-        }
-
-        $this->product->fill(['code' => $code]);
+        $this->product->fill([
+            'code' => model('product')->generateCode(),
+        ]);
     }
 
     /**
@@ -137,7 +129,7 @@ class Overview extends Component
     {
         $this->product->save();
         $this->product->taxes()->sync(data_get($this->selected, 'taxes'));
-        $this->product->productCategories()->sync(data_get($this->selected, 'categories'));
+        $this->product->categories()->sync(data_get($this->selected, 'categories'));
     }
 
     /**
@@ -159,6 +151,6 @@ class Overview extends Component
      */
     public function render()
     {
-        return view('atom::app.product.update.overview');
+        return view('atom::app.product.form');
     }
 }

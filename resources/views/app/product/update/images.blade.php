@@ -8,7 +8,7 @@
         </x-slot:header-buttons>
 
         <div class="p-5">
-            @if ($productImages->count())
+            @if ($images->count())
                 <x-form.sortable 
                     wire:sorted="sort" 
                     :config="[
@@ -17,7 +17,7 @@
                     ]"
                     class="grid gap-4 grid-cols-2 md:grid-cols-6"
                 >
-                    @foreach ($productImages as $img)
+                    @foreach ($images as $img)
                         <div 
                             class="relative pt-[100%] bg-gray-100 rounded-md shadow overflow-hidden"
                             data-sortable-id="{{ data_get($img, 'id') }}"

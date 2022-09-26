@@ -1,4 +1,4 @@
-<x-form header="Product Overview">
+<x-form :header="$header">
     <x-form.text
         label="Product Name"
         wire:model.defer="product.name"

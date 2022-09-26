@@ -7,7 +7,7 @@ use Livewire\Component;
 class Create extends Component
 {
     public $product;
-    public $productVariant;
+    public $variant;
 
     /**
      * Mount
@@ -21,7 +21,7 @@ class Create extends Component
             )
             ->findOrFail($productId);
 
-        $this->productVariant = model('product_variant')->fill([
+        $this->variant = model('product_variant')->fill([
             'is_default' => false,
             'is_active' => true,
             'product_id' => $this->product->id,

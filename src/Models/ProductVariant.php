@@ -36,4 +36,30 @@ class ProductVariant extends Model
     {
         return $this->belongsTo(get_class(model('file')), 'image_id');
     }
+
+    /**
+     * Generate code
+     */
+    public function generateCode()
+    {
+        $code = null;
+        $dup = true;
+
+        while ($dup) {
+            $code = str()->upper(str()->random(6));
+            $dup = model('product')
+                ->when(
+                    model('product')->enabledBelongsToAccountTrait,
+                    fn($q) => $q->belongsToAccount()
+                )->where('code', $code)->count() > 0
+                || model('product_variant')
+                    ->whereHas('product', fn($q) => $q->when(
+                        model('product')->enabledBelongsToAccountTrait,
+                        fn($q) => $q->belongsToAccount()    
+                    ))
+                    ->where('code', $code)->count() > 0;
+        }
+
+        return $code;
+    }
 }
