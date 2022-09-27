@@ -1,11 +1,29 @@
+@props([
+    'uid' => make_component_uid([
+        $attributes->wire('model')->value(),
+        $attributes->get('label'),
+        'date-input',
+    ]),
+    'placeholder' => __($attributes->get('placeholder')
+        ?? 'Select '.$attributes->get('label', 'Date')),
+    'wire' => $attributes->wire('model'),
+])
+
 <x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+    <div x-data x-on:{{ $uid }}.window="$dispatch('input', $event.detail)" {{ $wire }}></div>
+
     <div
         x-data="{
             show: false,
-            value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
+            uid: @js($uid),
+            wire: @js($wire),
+            value: @js($attributes->get('value')),
             settings: @js($attributes->get('settings')),
             calendar: null,
-            placeholder: @js(__($attributes->get('placeholder', 'Select '.$attributes->get('label', 'Date')))),
+            placeholder: @js($placeholder),
+            init () {
+                if (this.wire) this.value = this.$wire.get(this.wire.value)
+            },
             open () {
                 if (this.show) return this.close()
                 this.show = true
@@ -23,8 +41,12 @@
                 })
             },
             clear () {
-                this.value = null
+                this.input()
                 this.close()
+            },
+            input (val = null) {
+                this.value = val
+                this.$dispatch(this.uid, this.value)
             },
             setCalendar () {
                 if (!this.calendar) {
@@ -32,7 +54,7 @@
                         inline: true,
                         dateFormat: 'Y-m-d',
                         onClose: () => this.close(),
-                        onChange: (selectedDate, dateStr) => this.value = dateStr,
+                        onChange: (selectedDate, dateStr) => this.input(dateStr),
                         ...this.settings,
                     })
                 }

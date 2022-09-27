@@ -1,21 +1,19 @@
 @props([
-    'class' => 'py-3 px-5 flex items-center gap-3 text-gray-800 hover:bg-gray-100',
-    'except' => ['href', 'icon', 'icon-type', 'icon-color'],
-    'label' => $attributes->get('label'),
+    'label' => $label ?? $attributes->get('label'),
+    'icon' => $icon ?? $attributes->get('icon'),
 ])
 
 @if ($attributes->has('href') || $attributes->wire('click')->value())
-    <a {{ $attributes->merge(['class' => $class])->except(['icon', 'icon-type', 'icon-color']) }}>
-        @if ($icon = $attributes->get('icon'))
-            <x-icon 
-                :name="$attributes->get('icon')"
-                :type="$attributes->get('icon-type', 'regular')"
-                size="18px"
-                class="text-gray-400"
-            />
+    <a {{ $attributes->merge([
+        'class' => 'py-3 px-5 flex items-center gap-3 text-gray-800 hover:bg-gray-100'
+    ])->except(['label', 'icon']) }}>
+        @if (is_string($icon)) <x-icon :name="$icon ?? (is_string($label) ? $label : null)" class="text-gray-400"/>
+        @elseif ($icon) {{ $icon }}
         @endif
 
-        {{ $label ? __($label) : $slot }}
+        @if (is_string($label)) {{ __($label) }}
+        @else {{ $slot }}
+        @endif
     </a>
 @else
     <div {{ $attributes }}>

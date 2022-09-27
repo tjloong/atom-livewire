@@ -6,6 +6,17 @@ use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 /**
+ * Make component uid
+ */
+function make_component_uid($names)
+{
+    return collect($names)
+        ->filter()
+        ->map(fn($name) => str()->slug($name))
+        ->join('-');
+}
+
+/**
  * Get status color
  */
 function get_status_color($status = null)
