@@ -6,9 +6,11 @@
             text: null,
             list: [],
             loading: false,
-            searchable: false,
+            searchable: true,
             paginator: {},
-            value: @entangle($attributes->wire('model')),
+            wire: @js(!empty($attributes->wire('model')->value())),
+            value: @js($attributes->get('value')),
+            entangle: @entangle($attributes->wire('model')->value()),
             callback: @js($attributes->get('callback')),
             options: @js($options),
             selected: @js($selected),
@@ -26,7 +28,13 @@
                     if (val.children) val.children.forEach(child => options.push(this.formatOption(child)))
                 })
 
-                return options
+                return options.filter(Boolean)
+            },
+            init () {
+                if (this.wire) {
+                    this.value = this.entangle
+                    this.$watch('entangle', (val) => this.value = val)
+                }
             },
             formatOption (val) {
                 if (typeof val === 'string') return { value: val, label: val }
@@ -72,6 +80,7 @@
             },
             search () {
                 this.list = this.getOptions()
+                this.searchable = this.list.length > 10 || this.callback
 
                 if (this.text) {
                     const text = this.text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, `\\$&`)
@@ -83,7 +92,6 @@
                 if (this.show) this.close()
                 else {
                     this.show = true
-                    this.searchable = this.list.length > 10 || this.callback
                     this.$nextTick(() => {
                         this.$refs.search && this.$refs.search.focus()
                         floatDropdown(this.$refs.anchor, this.$refs.dd)
@@ -101,6 +109,9 @@
                     this.value.push(opt.value)
                 }
                 else this.value = opt.value
+
+                if (this.wire) this.entangle = this.value
+                else this.$dispatch('input', this.value)
 
                 this.$nextTick(() => this.close())
             },
@@ -137,7 +148,9 @@
         }"
         x-on:click.away="close()"
         class="relative"
-        @if (!$attributes->get('callback')) id="{{ $uid }}" @endif
+        {{ $attributes->merge([
+            'id' => $attributes->has('callback') ? null : $uid
+        ])->except(['error', 'required', 'caption', 'label', 'callback', 'class']) }}
     >
         <div
             x-ref="anchor" 
@@ -269,9 +282,6 @@
                 <div x-show="!loading && list.length > 0">
                     <template x-for="opt in list">
                         <div
-                            x-data="{
-                                hasSmall: list.some(val => val.small),
-                            }"
                             x-on:click="!opt.isGroup && select(opt)"
                             x-bind:class="{
                                 'bg-gray-100': opt.isGroup,
@@ -304,14 +314,11 @@
                             >
                                 <div 
                                     x-text="opt.label" 
-                                    x-bind:class="{
-                                        'font-bold': opt.isGroup,
-                                        'font-medium': !opt.isGroup && hasSmall,
-                                    }"
-                                    class="truncate"
+                                    x-bind:class="opt.isGroup && 'font-bold'"
+                                    class="truncate font-medium"
                                 ></div>
                                 <div 
-                                    x-show="hasSmall" 
+                                    x-show="opt.small" 
                                     x-text="opt.small" 
                                     class="truncate font-medium text-sm text-gray-400">
                                 </div>

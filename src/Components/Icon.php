@@ -6,7 +6,7 @@ use Illuminate\View\Component;
 
 class Icon extends Component
 {
-    public $svg;
+    public $icon;
     public $size;
 
     public $svgs = [
@@ -177,16 +177,15 @@ class Icon extends Component
         $name = null,
         $size = '15'
     ) {
-        $this->svg = $this->getSvg($name);
+        $this->icon = $this->getIcon($name);
         $this->size = str()->replace('px', '', $size);
     }
 
     /**
-     * Get Svg
+     * Get Icon
      */
-    public function getSvg($name)
+    public function getIcon($name)
     {
-        
         if ($svg = data_get($this->svgs, strtolower($name))) return $svg;
         
         if ($label = collect($this->labels)->first(fn($val, $key) => str($name)->lower()->is($key.'*'))) {

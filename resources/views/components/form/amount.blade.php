@@ -1,31 +1,25 @@
 @props([
-    'uid' => implode('-', array_filter([
-        str()->slug(
-            $attributes->wire('model')->value()
-            ?? $attributes->get('label')
-        ),
-        'amount-input',
-    ])),
     'prefix' => $prefix ?? $attributes->get('prefix'),
     'postfix' => $postfix ?? $attributes->get('postfix'),
-    'wire' => $attributes->wire('model'),
+    'uid' => make_component_uid([
+        $attributes->wire('model')->value(),
+        $attributes->get('label'),
+        'amount-input',
+    ]),
 ])
 
 <x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
     <div 
-        x-data 
-        x-on:{{ $uid }}.window="$dispatch('input', $event.detail)" 
-        {{ $wire }}
-    ></div>
-
-    <div 
         x-data="{
-            uid: @js($uid),
-            wire: @js($wire),
+            wire: @js(!empty($attributes->wire('model')->value())),
             value: @js($attributes->get('value')),
+            entangle: @entangle($attributes->wire('model')),
             focus: false,
             init () {
-                if (this.wire) this.value = currency(parseFloat(this.$wire.get(this.wire.value)) || 0)
+                if (this.wire) {
+                    this.value = this.entangle
+                    this.$watch('entangle', (val) => this.value = val)
+                }
             },
             onFocus () {
                 this.focus = true
@@ -40,12 +34,15 @@
                 const tail = num.slice(-2)
 
                 this.value = [(+head).toString(), tail].join('.')
-                this.$dispatch(this.uid, this.value)
+
+                if (this.wire) this.entangle = this.value
+                else this.$dispatch('input', this.value)
             },
 
         }"
         x-bind:class="focus && 'active'"
         class="form-input w-full flex items-center gap-2 {{ !empty($attributes->get('error')) ? 'error' : '' }}"
+        id="{{ $uid }}"
     >
         @if (is_string($prefix))
             @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>

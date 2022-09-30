@@ -84,9 +84,9 @@ class Form extends Component
                     model('tax')->enabledBelongsToAccountTrait, 
                     fn($q) => $q->belongsToAccount()
                 )
-                ->selectRaw('id as value, concat(name, " ", rate, "%") as label')
                 ->orderBy('name')
-                ->get(),
+                ->get()
+                ->map(fn($tax) => ['value' => $tax->id, 'label' => $tax->label]),
 
             'categories' => model('label')
                 ->when(
