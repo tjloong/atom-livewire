@@ -154,24 +154,10 @@ function lw($name)
         'Jiannius\Atom\Http\Livewire\\'.$slashed.'\Index',
     ])->first(fn($ns) => class_exists($ns));
 
-    if (str($class)->startsWith('Jiannius\Atom')) return 'atom.'.$name;
-    else return $name;
-}
-
-/**
- * Get livewire component name
- */
-function livewire_name($path = null)
-{
-    if (!$path) return;
-
-    $dotted = implode('.', explode('/', $path));
-    $slashed = collect(explode('/', $path))->map(fn($str) => str()->studly($str))->filter()->join('\\');
-
-    if (class_exists('App\\Http\\Livewire\\'.$slashed)) return $dotted;
-    else if (class_exists('App\\Http\\Livewire\\'.$slashed.'\\Index')) return $dotted.'.index';
-    else if (class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$slashed)) return "atom.{$dotted}";
-    else if (class_exists('Jiannius\\Atom\\Http\\Livewire\\'.$slashed.'\\Index')) return "atom.{$dotted}.index";
+    if ($class) {
+        if (str($class)->startsWith('Jiannius\Atom')) return 'atom.'.$name;
+        else return $name;
+    }
 }
 
 /**

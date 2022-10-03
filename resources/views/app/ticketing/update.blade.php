@@ -38,7 +38,5 @@
         </div>
     </x-box>
 
-    @if ($component = livewire_name('ticketing/comments'))
-        @livewire($component, compact('ticket'), key('comments'))
-    @endif
+    @livewire(lw('app.ticketing.comments'), compact('ticket'), key('comments'))
 </div>

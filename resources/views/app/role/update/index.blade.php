@@ -31,6 +31,7 @@
                         :name="data_get($item, 'slug')" 
                         :label="data_get($item, 'label')"
                         :count="data_get($item, 'count')"
+                        :icon="false"
                     />
                 @endforeach
             </x-sidenav>

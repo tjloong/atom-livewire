@@ -13,9 +13,7 @@
         </x-slot:title>
     </x-page-header>
 
-    @if ($component = livewire_name('app/page/update/'.$this->slug))
-        @livewire($component, compact('page'))
-    @else
-        @livewire('atom.app.page.update.content', compact('page'))
+    @if ($com = lw('app.page.update.'.$this->slug) ?? lw('app.page.update.content'))
+        @livewire($com, compact('page'))
     @endif
 </div>

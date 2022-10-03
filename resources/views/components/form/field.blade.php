@@ -1,4 +1,4 @@
-<div {{ $attributes->class(['flex flex-col gap-2']) }}>
+<div {{ $attributes->class(['flex flex-col gap-1']) }}>
     @if ($label = $label ?? $attributes->get('label'))
         <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
             {{ is_string($label) ? __(strtoupper($label)) : $label }}

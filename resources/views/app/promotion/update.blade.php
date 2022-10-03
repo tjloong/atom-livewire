@@ -6,7 +6,5 @@
         />
     </x-page-header>
 
-    @if ($component = livewire_name('app/promotion/form'))
-        @livewire($component, compact('promotion'))
-    @endif
+    @livewire(lw('app.promotion.form'), compact('promotion'))
 </div>
