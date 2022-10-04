@@ -1,4 +1,7 @@
-<figure {{ $attributes->except('name') }}>
+<figure 
+    {{ $attributes->except('name') }}
+    @if ($size) style="width: {{ $size }}px; height: {{ $size }}px;" @endif
+>
     @if (str($src)->startsWith('<svg'))
         {!! $src !!}
     @elseif ($attributes->has('src'))

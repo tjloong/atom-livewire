@@ -8,6 +8,7 @@ class Logo extends Component
 {
     public $src;
     public $name;
+    public $size;
     public $small;
 
     public $sources = [
@@ -32,9 +33,11 @@ class Logo extends Component
      */
     public function __construct(
         $name = null,
+        $size = null,
         $small = false,
     ) {
         $this->name = $name;
+        $this->size = $size ? str($size)->replace('px', '')->toString() : null;
         $this->small = $small;
         $this->src = $this->getSrc(); 
     }
