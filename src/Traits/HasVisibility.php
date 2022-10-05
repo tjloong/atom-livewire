@@ -16,8 +16,11 @@ trait HasVisibility
         $user = $user ?? auth()->user();
 
         if (!config('atom.app.user.data_visibility')) return $query;
-        if ($user->isAccountType('root') || $user->isRole('admin')) return $query;
-        if ($user->visibility === 'global') return $query;
+        
+        if ($user->isAccountType('root') || $user->isRole('admin') || $user->visibility === 'global') {
+            if ($this->enabledBelongsToAccountTrait) return $query->where('account_id', $user->account_id);
+            else return $query;
+        }
 
         if ($user->visibility === 'restrict') {
             return $query->where(fn($q) => $q

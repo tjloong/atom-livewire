@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
+use Jiannius\Atom\Traits\WithPopupNotify;
 use Livewire\Component;
 
 class Storage extends Component
 {
+    use WithPopupNotify;
+    
     public $settings;
 
     /**

@@ -14,13 +14,13 @@ class Listing extends Component
     public $sortOrder = 'desc';
     public $filters = [
         'type' => null,
-        'search' => '',
+        'search' => null,
     ];
 
     protected $queryString = [
         'filters' => ['except' => [
             'type' => null,
-            'search' => '',
+            'search' => null,
         ]],
         'page' => ['except' => 1],
     ];

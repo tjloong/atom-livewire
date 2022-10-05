@@ -2,7 +2,7 @@
     x-data
     class="flex items-center py-2 px-3 rounded-md gap-2 shadow w-full {{ $attributes->get('class', 'bg-gray-100') }}"
 >
-    <x-icon name="search" size="18px" class="text-gray-400"/>
+    <x-icon name="search" class="text-gray-400"/>
 
     <input
         type="text"
@@ -17,6 +17,6 @@
         class="flex text-gray-600"
         x-on:click="$wire.set('search', null)"
     >
-        <x-icon name="xmark" size="15px" class="m-auto"/>
+        <x-icon name="xmark" class="m-auto"/>
     </a>
 </div>

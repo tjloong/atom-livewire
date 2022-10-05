@@ -1,115 +1,85 @@
-<x-drawer uid="file-form">
-    <x-slot:title>File Details</x-slot:title>
-
+<x-drawer uid="file-form" header="File Information">
     @if ($file)
         <div class="grid gap-6">
-            @if ($file->type === 'youtube')
-                <figure class="relative rounded-md pt-[60%] shadow overflow-hidden bg-gray-100">
-                    <a class="absolute inset-0" href="{{ $file->url }}" target="_blank">
-                        <img src="{{ $file->youtube_thumbnail }}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-8 h-8 bg-white"></div>
-                        </div>
-                        <div class="absolute inset-0 flex items-center justify-center text-red-600">
-                            <x-icon name="youtube" type="logo" size="64px"/>
-                        </div>
-                    </a>
-                </figure>
-            @elseif ($file->is_video)
-                <figure class="relative rounded-md pt-[60%] shadow overflow-hidden bg-gray-100">
-                    <a class="absolute inset-0" href="{{ $file->url }}" target="_blank">
-                        <video class="w-full h-full object-cover">
-                            <source src="{{ $file->url }}"/>
-                        </video>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-12 h-12 bg-blue-500 rounded-full text-white flex items-center justify-center">
-                                <x-icon name="play" size="28px"/>
-                            </div>
-                        </div>
-                    </a>
-                </figure>
-            @elseif ($file->is_image)
-                <div class="grid gap-2">
+            <div class="rounded-lg bg-slate-100 flex flex-col overflow-hidden shadow">
+                @if ($file->is_video || $file->is_image || $file->type === 'youtube')
                     <a href="{{ $file->url }}" target="_blank">
-                        <figure class="relative rounded-md pt-[60%] shadow overflow-hidden bg-gray-100">
-                            <div class="absolute inset-0">
-                                <img src="{{ $file->url }}" class="h-full w-full object-cover">
-                            </div>
-                        </figure>
+                        <x-thumbnail 
+                            :file="$file" 
+                            :square="false" 
+                            class="rounded-b-none"
+                        />
                     </a>
-                    <a class="text-sm" href="{{ $file->url }}" target="_blank">
-                        View full image
-                    </a>
-                </div>
-            @endif
-        
-            <x-form.text 
-                :label="$file->type === 'youtube' ? 'Video Name' : 'File Name'"
-                wire:model.debounce.500ms="file.name" 
-                transparent
-            />
-        
-            @if ($file->type !== 'youtube')
-                <x-form.field label="File Type">
-                    {{ $file->mime }}
-                </x-form.field>
-        
-                <x-form.field label="File URL">
-                    <div class="grid">
-                        <a class="truncate" href="{{ $file->url }}" target="_blank">
-                            {{ $file->url }}
+                @endif
+
+                @if ($file->type !== 'youtube')
+                    <div class="flex flex-col divide-y">
+                        <div class="p-4 grid gap-4">
+                            <x-form.field label="File Type">
+                                {{ $file->mime }}
+                            </x-form.field>
+                    
+                            <x-form.field label="File URL">
+                                <div class="grid">
+                                    <a class="truncate" href="{{ $file->url }}" target="_blank">
+                                        {{ $file->url }}
+                                    </a>
+                                </div>
+                            </x-form.field>
+                    
+                            @if ($file->size)
+                                <x-form.field label="File Size">
+                                    {{ $file->size }}
+                                </x-form.field>
+                            @endif
+                    
+                            @if ($dim = $file->data->dimension ?? null)
+                                <x-form.field label="Dimension">
+                                    {{ $dim }}
+                                </x-form.field>
+                            @endif
+                        </div>
+
+                        <a 
+                            target="_blank"
+                            href="{{ $file->url }}"
+                            class="py-2 px-4 flex items-center justify-center gap-2"
+                        >
+                            <x-icon name="download"/>
+                            {{ __('Download') }}
                         </a>
                     </div>
-                </x-form.field>
-        
-                @if ($file->size)
-                    <x-form.field label="File Size">
-                        {{ $file->size }}
-                    </x-form.field>
                 @endif
-        
-                @if ($dim = $file->data->dimension ?? null)
-                    <x-form.field label="Dimension">
-                        {{ $dim }}
-                    </x-form.field>
-                @endif
-        
-                @if ($file->is_image)
-                    <x-form.text 
-                        label="Alt Text"
-                        wire:model.debounce.500ms="file.data.alt" 
-                        transparent 
-                        placeholder="Insert Alt Text"
-                    />
-        
-                    <x-form.text 
-                        label="Description"
-                        wire:model.debounce.500ms="file.data.description" 
-                        transparent 
-                        placeholder="Insert Image Description"
-                    />
-                @endif
+            </div>
+
+            <x-form.text 
+                :label="$file->type === 'youtube' ? 'Video Name' : 'File Name'"
+                wire:model.defer="file.name" 
+            />
+
+            @if ($file->is_image)
+                <x-form.text 
+                    label="Alt Text"
+                    wire:model.defer="file.data.alt" 
+                    placeholder="Insert Alt Text"
+                />
+
+                <x-form.text 
+                    label="Description"
+                    wire:model.defer="file.data.description" 
+                    placeholder="Insert Image Description"
+                />
             @endif
         
-            <div class="flex flex-wrap gap-2">
-                @if ($file->type !== 'youtube')
-                    <x-button icon="download" target="_blank"
-                        label="Download"
-                        href="{{ $file->url }}"
-                    />
-                @endif
-        
-                <x-button color="red" icon="trash" inverted 
-                    label="Delete"
-                    x-on:click="$dispatch('confirm', {
-                        title: '{{ __('Delete File') }}',
-                        message: '{{ __('Are you sure to delete this file?') }}',
-                        type: 'error',
-                        onConfirmed: () => {
-                            $wire.emitUp('delete', {{ $file->id }})
-                            $dispatch('file-form-close')
-                        },
-                    })"
+            <div class="flex items-center justify-between gap-2">
+                <x-button.submit type="button"
+                    wire:click="submit"
+                />
+
+                <x-button.delete inverted
+                    title="Delete File"
+                    message="Are you sure to delete this file?"
+                    :params="$file->id"
                 />
             </div>
         </div>

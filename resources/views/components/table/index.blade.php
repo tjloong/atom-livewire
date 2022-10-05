@@ -1,4 +1,7 @@
-@props(['header' => $header ?? $attributes->get('header')])
+@props([
+    'header' => $header ?? $attributes->get('header'),
+    'search' => $attributes->get('search', 'filters.search'),
+])
 
 <div class="relative flex flex-col gap-4">
     <div 
@@ -48,26 +51,18 @@
             </div>
 
             <div x-show="!checkedCount" class="flex flex-wrap items-center gap-2">
-                @if ($search = $attributes->get('search') ?? true)
-                    <div class="w-60 rounded-md border bg-gray-100 shadow flex items-center gap-2 px-3 py-1.5">
-                        <x-icon name="search" class="text-gray-400" size="14"/>
-                        <div class="flex-grow">
-                            <input 
-                                type="text"
-                                wire:model.debounce.500ms="filters.search"
-                                class="w-full bg-transparent appearance-none border-0 p-0 focus:ring-0"
-                                placeholder="{{ __('Search') }}"
-                            >
-                        </div>
-                        <a 
-                            x-data
-                            x-show="$wire.get('filters.search')" 
-                            x-on:click.prevent="$wire.set('filters.search', null)" 
-                            class="flex items-center justify-center text-gray-800"
-                        >
-                            <x-icon name="xmark"/>
-                        </a>
-                    </div>
+                @if ($search !== false)
+                    <x-form.text placeholder="Search"
+                        wire:model.debounce.400ms="{{ $search }}"
+                        prefix="icon:search"
+                    >
+                        <x-slot:postfix>
+                            <x-close
+                                x-show="$wire.get('{{ $search }}')"
+                                x-on:click="$wire.set('{{ $search }}', null)"
+                            />
+                        </x-slot:postfix>
+                    </x-form.text>
                 @endif
 
                 @if ($attributes->get('total'))

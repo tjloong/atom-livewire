@@ -2,16 +2,19 @@
     'title' => __($attributes->get('title', 'No Results')),
     'subtitle' => __($attributes->get('subtitle', 'There is nothing returned from the search')),
     'size' => $attributes->get('size'),
+    'icon' => $attributes->get('icon'),
 ])
 
 <div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center py-8 px-4 gap-3']) }}>
-    <div class="{{ $size === 'sm' ? 'w-12 h-12' : 'w-20 h-20' }} rounded-full bg-slate-100 shadow flex border">
-        <x-icon 
-            :name="$attributes->get('icon', 'folder-open')" 
-            :size="$size === 'sm' ? '18px' : '32px'"
-            class="text-gray-400 m-auto"
-        />
-    </div>
+    @if ($icon !== false)
+        <div class="{{ $size === 'sm' ? 'w-12 h-12' : 'w-20 h-20' }} rounded-full bg-slate-100 shadow flex border">
+            <x-icon 
+                :name="$icon ?? 'folder-open'" 
+                :size="$size === 'sm' ? '18px' : '32px'"
+                class="text-gray-400 m-auto"
+            />
+        </div>
+    @endif
 
     <div class="grid gap-4">
         <div class="text-center">

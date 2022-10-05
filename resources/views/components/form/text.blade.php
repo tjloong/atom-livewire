@@ -1,6 +1,7 @@
 @props([
     'prefix' => $prefix ?? $attributes->get('prefix'),
     'postfix' => $postfix ?? $attributes->get('postfix'),
+    'clear' => $attributes->get('clear', false),
 ])
 
 <x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label', 'label-tag']) }}>
@@ -31,7 +32,13 @@
             >
         </div>
 
-        @if (is_string($postfix))
+        @if ($clear)
+            @if ($wire = $attributes->whereStartsWith('wire:model')->first()) 
+                <x-close wire:click="$set('{{ $wire }}', null)" class="-m-1"/>
+            @else 
+                <x-close x-on:click="$dispatch('clear')" class="-m-1"/>
+            @endif
+        @elseif (is_string($postfix))
             @if (str($postfix)->is('icon:*')) <x-icon :name="str($postfix)->replace('icon:', '')->toString()" class="text-gray-400"/>
             @else <div class="shrink-0 text-gray-500 font-medium">{{ __($postfix) }}</div>
             @endif

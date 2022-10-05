@@ -7,18 +7,12 @@ use Livewire\Component;
 class Library extends Component
 {
     public $page = 1;
-    public $search;
     public $accept;
     public $multiple;
-    public $selected;
-
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        //
-    }
+    public $selected = [];
+    public $filters = [
+        'search' => null,
+    ];
 
     /**
      * Get files property
@@ -27,7 +21,7 @@ class Library extends Component
     {
         return model('file')
             ->type($this->accept)
-            ->when($this->search, fn($q) => $q->search($this->search))
+            ->when(data_get($this->filters, 'search'), fn($q, $search) => $q->search($search))
             ->orderBy('created_at', 'desc')
             ->paginate(40, ['*'], 'page', $this->page);
     }
@@ -37,13 +31,13 @@ class Library extends Component
      */
     public function select($id)
     {
-        if (!$this->selected) $this->selected = collect([]);
+        $selected = collect($this->selected);
 
-        if ($this->multiple) {
-            if ($this->selected->contains($id)) $this->selected = $this->selected->reject(fn($val) => $val === $id);
-            else $this->selected->push($id);
-        }
-        else $this->selected = [$id];
+        if ($selected->contains($id)) $selected = $selected->reject($id);
+        else if ($this->multiple) $selected->push($id);
+        else $selected = collect([$id]);
+
+        $this->selected = $selected->toArray();
     }
 
     /**

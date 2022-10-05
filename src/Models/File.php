@@ -180,15 +180,19 @@ class File extends Model
     }
 
     /**
-     * Get youtube thumbnail attribute
-     * 
-     * @return string
+     * Get icon attribute
      */
-    public function getYoutubeThumbnailAttribute()
+    public function getIconAttribute()
     {
-        return $this->mime === 'youtube'
-            ? 'https://img.youtube.com/vi/' . ($this->data->vid ?? '') . '/default.jpg'
-            : null;
+        if ($this->is_image) return 'image';
+        elseif ($this->is_video) return 'play';
+        elseif ($this->is_audio) return 'music';
+        elseif ($this->type === 'word') return 'word';
+        elseif ($this->type === 'excel') return 'excel';
+        elseif ($this->type === 'ppt') return 'ppt';
+        elseif ($this->type === 'pdf') return 'pdf';
+
+        return 'file';
     }
 
     /**

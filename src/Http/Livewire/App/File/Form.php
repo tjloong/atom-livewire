@@ -33,14 +33,6 @@ class Form extends Component
     }
 
     /**
-     * Mount
-     */
-    public function mount()
-    {
-        //
-    }
-
-    /**
      * Open
      */
     public function open($id)
@@ -50,12 +42,21 @@ class Form extends Component
     }
 
     /**
-     * Updated file
+     * Delete
      */
-    public function updatedFile()
+    public function delete($id)
+    {
+        $this->emitUp('delete', $id);
+    }
+
+    /**
+     * Submit
+     */
+    public function submit()
     {
         $this->file->save();
         $this->emitUp('saved');
+        $this->dispatchBrowserEvent('file-form-close');
     }
 
     /**

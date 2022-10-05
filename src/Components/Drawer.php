@@ -11,9 +11,9 @@ class Drawer extends Component
     /**
      * Contructor
      */
-    public function __construct($uid = null)
+    public function __construct($uid = 'drawer')
     {
-        $this->uid = $uid ?? 'drawer-'.uniqid();
+        $this->uid = $uid;
     }
 
     /**

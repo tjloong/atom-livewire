@@ -38,6 +38,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'lightbox',
             'statsbox',
             'checkbox',
+            'thumbnail',
             'file-card',
             'cdn-scripts',
             'empty-state',
@@ -47,6 +48,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'announcements',
             'payment-gateway',
             
+            'close.index',
+            'close.delete',
+
             'admin-panel.index',
             'admin-panel.aside',
             

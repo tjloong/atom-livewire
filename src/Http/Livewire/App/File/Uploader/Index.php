@@ -22,7 +22,7 @@ class Index extends Component
      * Mount
      */
     public function mount(
-        $uid = null,
+        $uid = 'uploader',
         $title = 'File Manager',
         $private = false,
         $multiple = false,
@@ -90,8 +90,7 @@ class Index extends Component
 
         $this->emit($eventname, $files);
         $this->dispatchBrowserEvent($eventname, $files);
-        
-        $this->open = false;
+        $this->dispatchBrowserEvent($this->uid.'-close');
     }
 
     /**

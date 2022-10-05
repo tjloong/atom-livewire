@@ -5,13 +5,11 @@
 >
     <x-page-header title="Files">
         @if (!$selected)
-            <x-button icon="upload" x-on:click="$dispatch('uploader-open')">
-                Upload
-            </x-button>
+            <x-button label="Upload" x-on:click="$dispatch('uploader-open')"/>
         @endif
     </x-page-header>
 
-    @livewire('atom.app.file.uploader', [
+    @livewire(lw('app.file.uploader'), [
         'uid' => 'uploader',
         'title' => 'Upload Files',
         'multiple' => true,
@@ -36,13 +34,13 @@
             @if ($selected)
                 <div class="flex flex-wrap items-center gap-2">
                     @if (count($selected) < count($this->files->items()))
-                        <x-button icon="select-multiple" color="gray" inverted
+                        <x-button color="gray" inverted
                             label="Select All"
                             wire:click="select('all')"
                         />
                     @endif
         
-                    <x-button icon="circle-xmark" color="gray" inverted
+                    <x-button color="gray" inverted
                         label="Deselect All"
                         wire:click="$set('selected', [])"
                     />
@@ -54,9 +52,11 @@
                     />
                 </div>
             @else
-                <div>
-                    <x-form.search placeholder="Search files"/>
-                </div>
+                <x-form.text placeholder="Search Files"
+                    prefix="icon:search"
+                    wire:model.debounce.300ms="filters.search"
+                    :clear="!empty(data_get($filters, 'search'))"
+                />
             @endif
         </div>
         
@@ -68,53 +68,31 @@
                     @endif
                     class="grid gap-1 cursor-pointer"
                 >
-                    <figure class="relative rounded-md shadow bg-gray-200 pt-[100%] overflow-hidden mb-2">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            @if ($file->type === 'youtube')
-                                <img src="{{ $file->youtube_thumbnail }}" class="h-full w-full object-cover">
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="w-4 h-4 bg-white"></div>
-                                </div>
-                                <div class="absolute inset-0 flex items-center justify-center text-red-500">
-                                    <x-icon name="youtube" type="logo" size="48px" />
-                                </div>
-                            @elseif ($file->is_video)
-                                <video class="w-full h-full object-cover">
-                                    <source src="{{ $file->url }}"/>
-                                </video>
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
-                                        <x-icon name="play" size="28px"/>
-                                    </div>
-                                </div>
-                            @elseif ($file->is_audio)
-                                <x-icon name="music" size="48px"/>
-                            @elseif ($file->is_image)
-                                <img src="{{ $file->url }}" class="h-full w-full object-cover">
-                            @elseif ($file->type === 'pdf')
-                                <x-icon name="file-pdf" type="solid" size="48px"/>
-                            @else
-                                <x-icon name="file" size="48px"/>
-                            @endif
-                        </div>
-        
+                    <div class="relative rounded-md overflow-hidden shadow">
+                        <x-thumbnail :file="$file"/>
+
                         @if (in_array($file->id, $selected) || $selected === 'full')
-                            <div class="absolute inset-0 bg-black opacity-50"></div>
+                            <div class="absolute inset-0 bg-black/50"></div>
                         @endif
 
-                        <div class="absolute top-0 left-0 right-0 p-2 bg-gradient-to-b from-gray-500 to-transparent">
-                            <a wire:click.stop="select({{ $file->id }})" class="{{ in_array($file->id, $selected) ? 'text-green-500' : 'text-white' }}">
-                                <x-icon name="check-circle" type="solid"/>
-                            </a>
+                        <div
+                            wire:click.stop="select(@js($file->id))"
+                            class="absolute top-0 left-0 right-0 p-2 bg-gradient-to-b from-gray-500 to-transparent cursor-pointer"
+                        >
+                            <div class="flex items-center justify-between">
+                                <x-icon name="circle-check" class="{{ in_array($file->id, $selected) ? 'text-green-500' : 'text-white' }}"/>
+
+                                @if ($type = $file->type)
+                                    <x-badge :label="$type" size="xs"/>
+                                @endif
+                            </div>
                         </div>
-                    </figure>
-    
-                    <div class="font-semibold truncate">
-                        {{ $file->name }}
                     </div>
-                    
-                    <div class="text-sm font-semibold text-gray-500 capitalize mb-1.5">
-                        {{ $file->type }}
+    
+                    <div class="grid">
+                        <div class="font-medium text-gray-500 px-1 truncate text-sm">
+                            {{ $file->name }}
+                        </div>
                     </div>
                 </div>
             @empty
