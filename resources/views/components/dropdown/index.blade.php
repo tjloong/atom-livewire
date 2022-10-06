@@ -14,8 +14,13 @@
     class="relative"
 >
     @if ($label = $attributes->get('label'))
-        <a x-ref="anchor" x-on:click="open()" class="inline-flex items-center gap-2">
-            {{ __($label) }} <x-icon name="chevron-down" size="12"/>
+        <a x-ref="anchor" x-on:click="open()" {{ $attributes->class([
+            'inline-flex items-center gap-2',
+            $attributes->get('class'),
+        ])->only('class') }}">
+            @if ($icon = $attributes->get('icon')) <x-icon :name="$icon"/> @endif
+            {{ __($label) }} 
+            <x-icon name="chevron-down" size="12"/>
         </a>
     @elseif (isset($anchor))
         <div x-ref="anchor" x-on:click="open()" class="cursor-pointer">

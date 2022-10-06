@@ -39,7 +39,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'statsbox',
             'checkbox',
             'thumbnail',
-            'file-card',
             'cdn-scripts',
             'empty-state',
             'alpine-data',
@@ -69,6 +68,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'button.index',
             'button.submit',
             'button.delete',
+            'button.trashed',
             'button.confirm',
             
             'dropdown.index',

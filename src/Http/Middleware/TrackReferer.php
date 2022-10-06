@@ -25,7 +25,7 @@ class TrackReferer
             Cookie::queue('_ref', $ref, $duration);
         }
         // got ref cookie, append the ref={cookie} to url
-        else if ($cookie) {
+        else if (!$this->isTrackable($ref) && $cookie) {
             return redirect($request->fullUrlWithQuery(
                 array_merge($request->query(), ['ref' => $cookie])
             ));

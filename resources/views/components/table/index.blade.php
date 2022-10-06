@@ -42,109 +42,105 @@
             </div>
         @endif
 
-        <div class="py-3 px-4 flex flex-wrap justify-between items-center gap-2 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
-            <div class="text-gray-800 flex items-end gap-1.5">
-                @if ($attributes->has('total'))
-                    <div class="text-lg font-medium leading-snug">{{ $attributes->get('total') }}</div>
-                    <div class="text-gray-500">{{ __('total rows') }}</div>
-                @endif
+        <div class="py-3 px-4 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
+            <div x-show="checkedCount" class="flex flex-wrap justify-between items-center gap-3">
+                <div class="shrink-0 flex items-center gap-2">
+                    <div class="flex items-center gap-2 py-1 px-3 rounded-full text-sm bg-gray-200">
+                        <x-icon name="check" class="text-green-500"/>
+                        <div class="flex items-center gap-1 font-medium">
+                            <div x-text="checkedCount"></div>
+                            <div>{{ __('Selected Rows') }}</div>
+                        </div>
+                    </div>
+
+                    @if ($attributes->get('allow-select-everything', true))
+                        <a 
+                            x-show="total > totalRows && checkedValues.includes('all')" 
+                            x-on:click="selectTotal"
+                            class="text-sm"
+                        >
+                            {{ __('Select all :total rows', ['total' => $attributes->get('total')]) }}
+                        </a>
+                    @endif
+                </div>
+
+                @isset($checked) {{ $checked }} @endisset
             </div>
 
-            <div x-show="!checkedCount" class="flex flex-wrap items-center gap-2">
-                @if ($search !== false)
-                    <x-form.text placeholder="Search"
-                        wire:model.debounce.400ms="{{ $search }}"
-                        prefix="icon:search"
-                    >
-                        <x-slot:postfix>
-                            <x-close
-                                x-show="$wire.get('{{ $search }}')"
-                                x-on:click="$wire.set('{{ $search }}', null)"
-                            />
-                        </x-slot:postfix>
-                    </x-form.text>
-                @endif
+            <div x-show="!checkedCount" class="flex flex-wrap justify-between items-center gap-3">
+                <div class="text-gray-800 flex items-end gap-1.5">
+                    @if ($attributes->has('total'))
+                        <div class="text-lg font-medium leading-snug">{{ $attributes->get('total') }}</div>
+                        <div class="text-gray-500">{{ __('total rows') }}</div>
+                    @endif
+                </div>
 
-                @if ($attributes->get('total'))
-                    @if ($export = $attributes->get('export'))
-                        @if (is_array($export))
-                            <x-dropdown right>
-                                <x-slot:anchor>
-                                    <div class="p-1.5 rounded-md flex items-center justify-center text-gray-900 hover:bg-gray-100 hover:border hover:shadow">
-                                        <x-icon name="download" size="18px"/>
-                                    </div>
-                                </x-slot:anchor>
-
-                                @foreach ($export as $val)
-                                    <x-dropdown.item
-                                        :label="data_get($val, 'label')"
-                                        wire:click="export('{{ data_get($val, 'value') }}')"
-                                    />
-                                @endforeach
-                            </x-dropdown>
-                        @else
-                            <a
-                                x-data
-                                x-tooltip="Export"
-                                wire:click.prevent="export"
-                                class="p-1.5 rounded-md flex items-center justify-center text-gray-900 hover:bg-gray-100 hover:border hover:shadow"
-                            >
-                                <x-icon name="download" size="18px" />
-                            </a>
+                <div class="shrink-0 flex items-center gap-2">
+                    @if ($search !== false)
+                        <x-form.text placeholder="Search"
+                            wire:model.debounce.400ms="{{ $search }}"
+                            prefix="icon:search"
+                        >
+                            <x-slot:postfix>
+                                <x-close
+                                    x-show="$wire.get('{{ $search }}')"
+                                    x-on:click="$wire.set('{{ $search }}', null)"
+                                />
+                            </x-slot:postfix>
+                        </x-form.text>
+                    @endif
+    
+                    @if ($attributes->get('total'))
+                        @if ($export = $attributes->get('export'))
+                            <div class="shrink-0">
+                                @if (is_array($export))
+                                    <x-dropdown right>
+                                        <x-slot:anchor>
+                                            <div class="p-2 rounded-full flex text-gray-500 hover:text-gray-800 hover:bg-gray-200">
+                                                <x-icon name="export" class="m-auto"/>
+                                            </div>
+                                        </x-slot:anchor>
+        
+                                        @foreach ($export as $val)
+                                            <x-dropdown.item
+                                                :label="data_get($val, 'label')"
+                                                wire:click="export('{{ data_get($val, 'value') }}')"
+                                            />
+                                        @endforeach
+                                    </x-dropdown>
+                                @else
+                                    <a
+                                        x-data
+                                        x-tooltip="Export"
+                                        wire:click.prevent="export"
+                                        class="p-2 rounded-full flex text-gray-500 hover:text-gray-800 hover:bg-gray-200"
+                                    >
+                                        <x-icon name="export" class="m-auto"/>
+                                    </a>
+                                @endif
+                            </div>
                         @endif
                     @endif
-                    
-                @endif
-                    
-                @isset($filters)
-                    <a
-                        x-data
-                        x-tooltip="Filters"
-                        x-on:click.prevent="$dispatch('{{ $uid }}-drawer-open')"
-                        class="p-1.5 rounded-md flex items-center justify-center text-gray-900 hover:bg-gray-100 hover:border hover:shadow"
-                    >
-                        <x-icon name="slider" size="18px" />
-                    </a>
-                @endif
-            </div>
-        </div>
-
-        <div x-show="checkedCount" class="py-3 px-4 flex items-center justify-between first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
-            <div class="grid">
-                <div class="flex items-center gap-1.5">
-                    <div class="font-medium" x-text="checkedCount"></div>
-                    <div class="text-gray-500">{{ __('selected rows') }}</div>
+                        
+                    @isset($filters)
+                        <div class="shrink-0">
+                            <a
+                                x-data
+                                x-tooltip="Filters"
+                                x-on:click.prevent="$dispatch('{{ $uid }}-drawer-open')"
+                                class="p-2 rounded-full flex text-gray-500 hover:text-gray-800 hover:bg-gray-200"
+                            >
+                                <x-icon name="sliders" class="m-auto"/>
+                            </a>
+                        </div>
+                    @endif
                 </div>
-                <a 
-                    x-show="total > totalRows && checkedValues.includes('all')" 
-                    x-on:click="selectTotal"
-                    class="text-sm"
-                >
-                    {{ __('Select all :total rows', ['total' => $attributes->get('total')]) }}
-                </a>
-            </div>
-
-            <div>
-                {{ $checked ?? null }}
             </div>
         </div>
 
         @isset($toolbar)
-            <div x-show="!checkedCount" class="py-3 px-4 flex items-center justify-between gap-2 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
-                <div>
-                    {{ $toolbar }}
-                </div>
-
-                @if ($toolbar->attributes->get('trashed'))
-                    <x-button color="red" icon="trash-alt" inverted size="sm" x-on:click="$dispatch('confirm', {
-                        title: '{{ __('Empty Trashed') }}',
-                        message: '{{ __('Are you sure to clear all trashed records?') }}',
-                        type: 'warning',
-                        onConfirmed: () => $wire.emptyTrashed().then(() => location.reload()),
-                    })">
-                        Empty Trashed
-                    </x-button>
-                @endif
+            <div x-show="!checkedCount" class="py-3 px-4 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
+                {{ $toolbar }}
             </div>
         @endisset
     
