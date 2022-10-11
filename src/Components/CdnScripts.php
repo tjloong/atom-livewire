@@ -40,6 +40,10 @@ class CdnScripts extends Component
             'chartjs' => [
                 'https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js',
             ],
+            'colorpicker' => [
+                'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css',
+                'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js',
+            ],
             'ckeditor' => [
                 '/ckeditor/ckeditor.js',
             ],

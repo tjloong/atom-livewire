@@ -55,28 +55,29 @@ class Listing extends Component
     }
 
     /**
+     * Export
+     */
+    public function export()
+    {
+        return excel(
+            $this->query->get(), 
+            ['filename' => 'enquiries-'.time()],
+            fn($enquiry) => [
+                'Date' => $enquiry->created_at->toDatetimeString(),
+                'Name' => $enquiry->name,
+                'Phone' => $enquiry->phone,
+                'Email' => $enquiry->email,
+                'Message' => $enquiry->message,
+                'Status' => $enquiry->status,
+            ]
+        );
+    }
+
+    /**
      * Render
      */
     public function render()
     {
         return view('atom::app.enquiry.listing');
-    }
-
-    /**
-     * Export
-     */
-    public function export()
-    {
-        $filename = 'enquiries-' . rand(1000, 9999) . '.xlsx';
-        $enquiries = $this->query->get();
-
-        return export_to_excel($filename, $enquiries, fn($enquiry) => [
-            'Date' => $enquiry->created_at->toDatetimeString(),
-            'Name' => $enquiry->name,
-            'Phone' => $enquiry->phone,
-            'Email' => $enquiry->email,
-            'Message' => $enquiry->message,
-            'Status' => $enquiry->status,
-        ]);
     }
 }

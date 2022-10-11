@@ -2,6 +2,7 @@
     'sizes' => [
         'xs' => 'text-xs px-1.5',
         'sm' => 'text-sm px-2',
+        'md' => 'text-base px-3',
     ],
     'label' => $attributes->get('label'),
 ])

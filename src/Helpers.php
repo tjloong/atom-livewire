@@ -1,9 +1,11 @@
 <?php
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Rap2hpoutre\FastExcel\SheetCollection;
 
 /**
  * Make component uid
@@ -29,6 +31,7 @@ function get_status_color($status = null)
 
         'yellow' => 'yellow',
         'new' => 'yellow',
+        'sent' => 'yellow',
         'admin' => 'yellow',
         'unpaid' => 'yellow',
         'opened' => 'yellow',
@@ -47,7 +50,6 @@ function get_status_color($status = null)
 
         'green' => 'green',
         'paid' => 'green',
-        'sent' => 'green',
         'show' => 'green',
         'active' => 'green',
         'billed' => 'green',
@@ -233,15 +235,77 @@ function site_settings($name, $default = null)
 }
 
 /**
- * Export collection to excel
+ * Export data to pdf
  */
-function export_to_excel($filename, $collection, $iterator = null)
+function pdf($view, $data)
+{
+    return Pdf::loadView($view, $data);
+}
+
+/**
+ * Export to word
+ */
+function word($lines, $config = [])
 {
     $dir = storage_path('export');
-
     if (!File::exists($dir)) File::makeDirectory($dir);
 
-    (new FastExcel($collection))->export($dir . '/' . $filename, $iterator);
+    $filename = data_get($config, 'filename', 'word-export-'.time());
+    $path = str()->finish($dir.'/'.$filename, '.docx');
+
+    $phpword = new \PhpOffice\PhpWord\PhpWord();
+    $section = $phpword->addSection();
+
+    foreach ($lines as $line) {
+        if (is_null($line)) $section->addTextBreak();
+        else if (is_string($line)) $section->addText($line);
+        else $section->addText(data_get($line, 'text'), data_get($line, 'font'));
+    }
+    
+    $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpword, 'Word2007');
+    $writer->save($path);
+
+    return redirect()->route('__export', [$filename]);
+
+}
+
+/**
+ * Export collection to excel
+ */
+function excel($collection, $config = [], $iterator = null)
+{
+    $dir = storage_path('export');
+    if (!File::exists($dir)) File::makeDirectory($dir);
+
+    $filename = data_get($config, 'filename', 'excel-export-'.time());
+    $fastexcel = (new FastExcel($collection));
+    
+    $fastexcel->export(
+        str()->finish($dir.'/'.$filename, '.xlsx'),
+        $iterator
+    );
+
+    return redirect()->route('__export', [$filename]);
+}
+
+/**
+ * Export to excel sheets
+ */
+function excelsheets($sheets, $config = [], $iterator = null)
+{
+    $dir = storage_path('export');
+    if (!File::exists($dir)) File::makeDirectory($dir);
+
+    $sheets = new SheetCollection($sheets);
+    $filename = data_get($config, 'filename', 'sheets-export-'.time());
+    $fastexcel = (new FastExcel($sheets));
+
+    if (!data_get($config, 'header', true)) $fastexcel->withoutHeaders();
+    
+    $fastexcel->export(
+        str()->finish($dir.'/'.$filename, '.xlsx'),
+        $iterator
+    );
 
     return redirect()->route('__export', [$filename]);
 }

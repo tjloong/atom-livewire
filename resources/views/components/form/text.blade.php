@@ -38,11 +38,28 @@
             @else 
                 <x-close x-on:click="$dispatch('clear')" class="-m-1"/>
             @endif
-        @elseif (is_string($postfix))
-            @if (str($postfix)->is('icon:*')) <x-icon :name="str($postfix)->replace('icon:', '')->toString()" class="text-gray-400"/>
-            @else <div class="shrink-0 text-gray-500 font-medium">{{ __($postfix) }}</div>
+        @else
+            @if (is_string($postfix))
+                @if (str($postfix)->is('icon:*')) <x-icon :name="str($postfix)->replace('icon:', '')->toString()" class="text-gray-400"/>
+                @else <div class="shrink-0 text-gray-500 font-medium">{{ __($postfix) }}</div>
+                @endif
+            @elseif ($postfix)
+                {{ $postfix }}
             @endif
-        @else {{ $postfix }}
+
+            @isset($button)
+                @php $label = $button->attributes->get('label') @endphp 
+                @php $icon = $button->attributes->get('icon') @endphp 
+                <a {{ $button->attributes->class([
+                    'flex items-center justify-center gap-1 rounded-full -mr-1 text-sm',
+                    $label ? 'px-2 py-0.5' : null,
+                    !$label && $icon ? 'p-1' : null,
+                    $button->attributes->get('class', 'text-gray-800 bg-gray-200'),
+                ]) }}">
+                    @if ($icon) <x-icon :name="$icon" size="12"/> @endif
+                    {{ __($label) }}
+                </a>
+            @endisset
         @endif
     </div>
 </x-form.field>

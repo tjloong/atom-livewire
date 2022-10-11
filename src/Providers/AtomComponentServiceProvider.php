@@ -46,6 +46,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'social-share',
             'announcements',
             'payment-gateway',
+            'placeholder-bar',
             
             'close.index',
             'close.delete',
@@ -73,6 +74,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             
             'dropdown.index',
             'dropdown.item',
+            'dropdown.delete',
             
             'modal.index',
             'modal.row',
@@ -96,6 +98,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.slug',
             'form.text',
             'form.agree',
+            'form.color',
             'form.email',
             'form.field',
             'form.image',

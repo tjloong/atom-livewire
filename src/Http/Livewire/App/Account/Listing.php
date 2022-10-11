@@ -68,18 +68,19 @@ class Listing extends Component
      */
     public function export()
     {
-        $filename = 'accounts-' . rand(1000, 9999) . '.xlsx';
-        $accounts = $this->query->get();
-
-        return export_to_excel($filename, $accounts, fn($account) => [
-            'Date' => $account->created_at->toDatetimeString(),
-            'Name' => $account->name,
-            'Email' => $account->email,
-            'Agreed to T&C' => $account->agree_tnc ? 'Yes' : 'No',
-            'Agreed to Marketing' => $account->agree_marketing ? 'Yes' : 'No',
-            'Status' => $account->status,
-            'Blocked Date' => optional($account->blocked_at)->toDatetimeString(),
-        ]);
+        return excel(
+            $this->query->get(),
+            ['filename' => 'accounts-'.time()],
+            fn($account) => [
+                'Date' => $account->created_at->toDatetimeString(),
+                'Name' => $account->name,
+                'Email' => $account->email,
+                'Agreed to T&C' => $account->agree_tnc ? 'Yes' : 'No',
+                'Agreed to Marketing' => $account->agree_marketing ? 'Yes' : 'No',
+                'Status' => $account->status,
+                'Blocked Date' => optional($account->blocked_at)->toDatetimeString(),
+            ]
+        );
     }
 
     /**

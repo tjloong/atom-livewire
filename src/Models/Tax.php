@@ -16,6 +16,8 @@ class Tax extends Model
         'is_active' => 'boolean',
     ];
 
+    protected $appends = ['label'];
+
     /**
      * Scope for search
      */

@@ -16,7 +16,7 @@ class PdfController extends Controller
         $model = model(request()->query('model'))->find(request()->query('find'));
         $pdf = $model->pdf(request()->all());
         $instance = data_get($pdf, 'instance');
-        $filename = data_get($pdf, 'filename');
+        $filename = str()->finish(data_get($pdf, 'filename'), '.pdf');
 
         return (bool)request()->query('stream') === true
             ? $instance->stream($filename)

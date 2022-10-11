@@ -8,6 +8,7 @@
     }"
     x-on:{{ $uid }}-open.window="open()"
     x-on:{{ $uid }}-close.window="close()"
+    x-cloak
 >
     <div 
         x-show="show" 
@@ -27,9 +28,12 @@
                 ])->except(['uid', 'header', 'form']) 
             }}>
                 <div class="p-4 flex items-center justify-between border-b">
-                    @if ($header = $header ?? $attributes->get('header'))
-                        <div class="font-semibold text-lg">
-                            {{ is_string($header) ? __($header) : $header }}
+                    @isset($header)
+                        <div class="font-semibold text-lg">{{ $header }}</div>
+                    @elseif ($header = $attributes->get('header'))
+                        <div class="flex items-center gap-3">
+                            @if ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/> @endif
+                            <div class="font-semibold text-lg">{{ __($header) }}</div>
                         </div>
                     @endif
 
