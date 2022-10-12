@@ -245,25 +245,51 @@ function pdf($view, $data)
 /**
  * Export to word
  */
-function word($lines, $config = [])
+function word($pages, $config = [])
 {
+    $phpword = new \PhpOffice\PhpWord\PhpWord();
+
+    $phpword->addTitleStyle(
+        data_get($config, 'title_style.depth', 1), 
+        data_get($config, 'title_style.font', ['size' => 14, 'bold' => true]), 
+        data_get($config, 'title_style.paragraph', ['spaceAfter' => 240]),
+    );
+
+    $section = $phpword->addSection();
+
+    foreach ($pages as $i => $page) {
+        if ($i > 0) $section->addPageBreak();
+
+        if ($title = data_get($page, 'title')) {
+            $section->addTitle(
+                htmlspecialchars(is_string($title) ? $title : data_get($title, 'text')),
+                data_get($title, 'depth', 1),
+            );
+        }
+
+        foreach (data_get($page, 'lines') as $line) {
+            if (is_null($line)) $section->addTextBreak();
+            else if (is_string($line)) $section->addText(htmlspecialchars($line));
+            else {
+                $section->addText(
+                    htmlspecialchars(data_get($line, 'text')), 
+                    data_get($line, 'font'),
+                    data_get($line, 'paragraph'),
+                );
+            }
+        }
+    }
+
     $dir = storage_path('export');
     if (!File::exists($dir)) File::makeDirectory($dir);
 
-    $filename = data_get($config, 'filename', 'word-export-'.time());
-    $path = str()->finish($dir.'/'.$filename, '.docx');
+    $filename = str()->finish(
+        data_get($config, 'filename', 'word-export-'.time()),
+        '.docx'
+    );
 
-    $phpword = new \PhpOffice\PhpWord\PhpWord();
-    $section = $phpword->addSection();
-
-    foreach ($lines as $line) {
-        if (is_null($line)) $section->addTextBreak();
-        else if (is_string($line)) $section->addText($line);
-        else $section->addText(data_get($line, 'text'), data_get($line, 'font'));
-    }
-    
     $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpword, 'Word2007');
-    $writer->save($path);
+    $writer->save($dir.'/'.$filename);
 
     return redirect()->route('__export', [$filename]);
 
@@ -277,13 +303,12 @@ function excel($collection, $config = [], $iterator = null)
     $dir = storage_path('export');
     if (!File::exists($dir)) File::makeDirectory($dir);
 
-    $filename = data_get($config, 'filename', 'excel-export-'.time());
-    $fastexcel = (new FastExcel($collection));
-    
-    $fastexcel->export(
-        str()->finish($dir.'/'.$filename, '.xlsx'),
-        $iterator
+    $filename = str()->finish(
+        data_get($config, 'filename', 'excel-export-'.time()),
+        '.xlsx'
     );
+
+    (new FastExcel($collection))->export($dir.'/'.$filename, $iterator);
 
     return redirect()->route('__export', [$filename]);
 }
@@ -297,15 +322,16 @@ function excelsheets($sheets, $config = [], $iterator = null)
     if (!File::exists($dir)) File::makeDirectory($dir);
 
     $sheets = new SheetCollection($sheets);
-    $filename = data_get($config, 'filename', 'sheets-export-'.time());
+    $filename = str()->finish(
+        data_get($config, 'filename', 'sheets-export-'.time()),
+        '.xlsx'
+    );
+
     $fastexcel = (new FastExcel($sheets));
 
     if (!data_get($config, 'header', true)) $fastexcel->withoutHeaders();
     
-    $fastexcel->export(
-        str()->finish($dir.'/'.$filename, '.xlsx'),
-        $iterator
-    );
+    $fastexcel->export($dir.'/'.$filename, $iterator);
 
     return redirect()->route('__export', [$filename]);
 }
