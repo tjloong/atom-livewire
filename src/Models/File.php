@@ -6,8 +6,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Intervention\Image\ImageManagerStatic as Image;
-use Jiannius\Atom\Traits\HasTrace;
-use Jiannius\Atom\Traits\HasFilters;
+use Jiannius\Atom\Traits\Models\HasTrace;
+use Jiannius\Atom\Traits\Models\HasFilters;
 
 class File extends Model
 {

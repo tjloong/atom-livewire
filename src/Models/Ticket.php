@@ -4,9 +4,9 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
-use Jiannius\Atom\Traits\HasTrace;
-use Jiannius\Atom\Traits\HasFilters;
-use Jiannius\Atom\Traits\HasUniqueNumber;
+use Jiannius\Atom\Traits\Models\HasTrace;
+use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\HasUniqueNumber;
 use Jiannius\Atom\Notifications\TicketCreateNotification;
 
 class Ticket extends Model

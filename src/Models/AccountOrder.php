@@ -3,7 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Jiannius\Atom\Traits\HasUniqueNumber;
+use Jiannius\Atom\Traits\Models\HasUniqueNumber;
 
 class AccountOrder extends Model
 {

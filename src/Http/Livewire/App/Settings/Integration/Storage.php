@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
-use Jiannius\Atom\Traits\WithPopupNotify;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Storage extends Component

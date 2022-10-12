@@ -5,8 +5,8 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Jiannius\Atom\Traits\HasSlug;
-use Jiannius\Atom\Traits\HasFilters;
+use Jiannius\Atom\Traits\Models\HasSlug;
+use Jiannius\Atom\Traits\Models\HasFilters;
 
 class Page extends Model
 {

@@ -3,7 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Jiannius\Atom\Traits\HasFilters;
+use Jiannius\Atom\Traits\Models\HasFilters;
 
 class Enquiry extends Model
 {

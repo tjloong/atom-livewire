@@ -2,6 +2,7 @@
     'cdn' => [
         'sortable', 
         'chartjs', 
+        'clipboard',
         current_route([
             'app.blog.*', 
             'app.page.*', 

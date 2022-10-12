@@ -46,7 +46,8 @@
         },
     }"
     x-on:toast.window="open($event.detail)"
-    class="fixed top-12 right-4 pt-2 pb-6 px-2 overflow-hidden space-y-2 z-40"
+    class="fixed top-12 right-4 pt-2 pb-6 px-2 overflow-hidden space-y-2"
+    style="z-index: 9000"
 >
     <div
         x-show="show"

@@ -10,9 +10,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
-use Jiannius\Atom\Traits\HasTrace;
-use Jiannius\Atom\Traits\HasFilters;
-use Jiannius\Atom\Traits\HasVisibility;
+use Jiannius\Atom\Traits\Models\HasTrace;
+use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\HasVisibility;
 use Jiannius\Atom\Notifications\ActivateAccountNotification;
 
 class User extends Authenticatable implements MustVerifyEmail

@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Product\Variant;
 
-use Jiannius\Atom\Traits\WithPopupNotify;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 use Livewire\WithPagination;
 

@@ -2,8 +2,8 @@
 
 namespace Jiannius\Atom\Models;
 
-use Jiannius\Atom\Traits\HasTrace;
-use Jiannius\Atom\Traits\HasFilters;
+use Jiannius\Atom\Traits\Models\HasTrace;
+use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model

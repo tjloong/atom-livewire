@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
-use Jiannius\Atom\Traits\HasTrace;
+use Jiannius\Atom\Traits\Models\HasTrace;
 use Illuminate\Database\Eloquent\Model;
 
 class PlanPrice extends Model

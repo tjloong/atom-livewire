@@ -4,8 +4,8 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Barryvdh\DomPDF\Facade as PDF;
-use Jiannius\Atom\Traits\HasFilters;
-use Jiannius\Atom\Traits\HasUniqueNumber;
+use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\HasUniqueNumber;
 
 class AccountPayment extends Model
 {

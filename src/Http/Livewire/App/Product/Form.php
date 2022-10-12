@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Product;
 
 use Livewire\Component;
 use Illuminate\Validation\Rule;
-use Jiannius\Atom\Traits\WithPopupNotify;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Form extends Component
 {

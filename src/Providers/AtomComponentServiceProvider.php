@@ -38,6 +38,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'lightbox',
             'statsbox',
             'checkbox',
+            'shareable',
             'thumbnail',
             'cdn-scripts',
             'empty-state',

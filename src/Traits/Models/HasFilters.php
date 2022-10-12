@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Traits;
+namespace Jiannius\Atom\Traits\Models;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
@@ -94,7 +94,7 @@ trait HasFilters
     {
         $parsed = [];
 
-        foreach ($filters as $key => $value) {
+        foreach (($filters ?? []) as $key => $value) {
             if (empty($value)) continue;
 
             $column = preg_replace('/^(from_|to_)/', '', $key);

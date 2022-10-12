@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Label\Update;
 
-use Jiannius\Atom\Traits\WithPopupNotify;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Info extends Component

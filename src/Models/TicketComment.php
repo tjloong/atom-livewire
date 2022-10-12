@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
-use Jiannius\Atom\Traits\HasTrace;
+use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Notifications\TicketCommentNotification;
 
 class TicketComment extends Model

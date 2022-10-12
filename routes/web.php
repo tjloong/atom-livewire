@@ -253,6 +253,15 @@ if (!config('atom.static_site')) {
 }
 
 /**
+ * Shareable
+ */
+if (enabled_module('shareables')) {
+    define_route('shareable/{uuid}', function() {
+        return 'shareable';
+    })->name('shareable');
+}
+
+/**
  * Web
  */
 if (enabled_module('blogs')) {

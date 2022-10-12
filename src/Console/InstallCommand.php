@@ -45,6 +45,7 @@ class InstallCommand extends Command
         'plans',
         'products', 
         'promotions',
+        'shareables',
     ];
 
     /**
@@ -123,6 +124,29 @@ class InstallCommand extends Command
         $value = $enabled->unique()->values()->all();
 
         $query->update(['value' => json_encode($value)]);
+    }
+
+    /**
+     * Install shareables
+     */
+    private function installShareables()
+    {
+        $this->newLine();
+        $this->info('Installing shareables table...');
+
+        if (Schema::hasTable('shareables')) $this->warn('shareables table exists, skipped.');
+        else {
+            Schema::create('shareables', function($table) {
+                $table->id();
+                $table->uuid();
+                $table->integer('valid_for')->nullable();
+                $table->json('data')->nullable();
+                $table->timestamp('expired_at')->nullable();
+                $table->timestamps();
+            });
+
+            $this->line('shareables table created successfully.');
+        }
     }
 
     /**

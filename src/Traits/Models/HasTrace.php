@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Traits;
+namespace Jiannius\Atom\Traits\Models;
 
 use Illuminate\Support\Facades\Schema;
 

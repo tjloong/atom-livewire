@@ -44,6 +44,9 @@ class CdnScripts extends Component
                 'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css',
                 'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js',
             ],
+            'clipboard' => [
+                'https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js',
+            ],
             'ckeditor' => [
                 '/ckeditor/ckeditor.js',
             ],

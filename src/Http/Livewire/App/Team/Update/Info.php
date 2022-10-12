@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Team\Update;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Schema;
-use Jiannius\Atom\Traits\WithPopupNotify;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Info extends Component
 {

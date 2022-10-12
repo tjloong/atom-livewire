@@ -30,7 +30,8 @@
     <div
         x-show="show"
         x-transition.opacity
-        class="fixed inset-0 z-40 flex items-center justify-center"
+        class="fixed inset-0 flex items-center justify-center"
+        style="z-index: 9000"
     >
         <div class="absolute bg-black w-full h-full opacity-80" x-on:click="close()"></div>
         <div class="relative p-4">
