@@ -1,3 +1,13 @@
+// check for emptyness
+window.empty = (value) => {
+    value = JSON.parse(JSON.stringify(value))
+
+    return value === undefined
+        || value === null
+        || (Array.isArray(value) && !value.length)
+        || (typeof value === 'object' && !Object.keys(value).length && Object.getPrototypeOf(value) === Object.prototype)
+}
+
 // format date
 window.formatDate = (value, option) => {
     const date = dayjs(value, 'YYYY-MM-DD HH:mm:ss')

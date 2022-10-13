@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\PlanPrice;
 
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithPopupNotify;
+
     public $plan;
     public $planPrice;
 
@@ -27,7 +30,7 @@ class Update extends Component
      */
     public function saved()
     {
-        $this->dispatchBrowserEvent('toast', ['message' => 'Plan Price Updated', 'type' => 'success']);
+        $this->popup('Plan Price Updated');
     }
 
     /**
@@ -36,14 +39,11 @@ class Update extends Component
     public function delete()
     {
         if ($this->planPrice->accounts->count()) {
-            $this->dispatchBrowserEvent('alert', ['message' => 'There are subscribers under this plan price.', 'type' => 'error']);
+            $this->popup('There are subscribers under this plan price.', 'alert', 'error');
         }
         else {
             $this->planPrice->delete();
-
-            session()->flash('flash', 'Plan Price Deleted');
-
-            return redirect()->route('app.plan.update', [$this->plan->id]);
+            return redirect()->route('app.plan.update', [$this->plan->id])->with('info', 'Plan Price Deleted.');
         }
     }
 

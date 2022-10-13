@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Account;
 
+use Illuminate\Auth\Events\PasswordReset;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
@@ -50,9 +51,11 @@ class Password extends Component
         $this->resetValidation();
         $this->validate();
 
-        auth()->user()->fill([
-            'password' => bcrypt($this->password['new']),
+        auth()->user()->forceFill([
+            'password' => bcrypt(data_get($this->password, 'new')),
         ])->save();
+
+        event(new PasswordReset(auth()->user()));
 
         $this->reset('password');
         $this->popup('Updated Password');

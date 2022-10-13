@@ -14,7 +14,7 @@ function make_component_uid($names)
 {
     return collect($names)
         ->filter()
-        ->map(fn($name) => str()->slug($name))
+        ->map(fn($name) => str($name)->replace('.', '-')->slug()->toString())
         ->join('-');
 }
 

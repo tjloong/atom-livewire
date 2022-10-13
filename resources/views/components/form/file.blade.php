@@ -8,7 +8,9 @@
             const files = Array.from(e.target.files)
             const exceeded = files.find(file => file.size >= this.max)
 
-            if (exceeded) this.$dispatch('alert', { message: 'Selected files must be less than {{ $max }}MB.', type: 'error' })
+            if (exceeded) {
+                this.$dispatch('alert', { message: @js(__('Selected files must be less than :max MB.', ['max' => $max])), type: 'error' })
+            }
             else {
                 this.loading = true
 
@@ -17,7 +19,7 @@
                         '{{ $attributes->wire('model')->value() }}', 
                         files,
                         () => this.loading = false, 
-                        () => this.$dispatch('alert', { message: 'Unable to upload files', type: 'error' }),
+                        () => this.$dispatch('alert', { message: @js(__('Unable to upload files')), type: 'error' }),
                         (event) => this.progress = event.detail.progress
                     )
                 }
@@ -26,7 +28,7 @@
                         '{{ $attributes->wire('model')->value() }}', 
                         files[0], 
                         () => this.loading = false, 
-                        () => this.$dispatch('alert', { message: 'Unable to upload file', type: 'error' }),
+                        () => this.$dispatch('alert', { message: @js(__('Unable to upload file')), type: 'error' }),
                         (event) => this.progress = event.detail.progress
                     )
                 }

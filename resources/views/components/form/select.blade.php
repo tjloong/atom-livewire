@@ -1,40 +1,110 @@
+@props([
+    'uid' => make_component_uid([
+        $attributes->wire('model')->value() ?? $attributes->get('label'),
+        'select-input',
+    ]),
+    'config' => [
+        'options' => $attributes->get('options'),
+        'callback' => $attributes->get('callback'),
+        'multiple' => $attributes->get('multiple'),
+        'placeholder' => __($attributes->get(
+            'placeholder', 
+            'Select '.($attributes->get('label', 'an option'))
+        )),
+    ],
+])
+
 <x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
-    <div 
+    <data
+        x-cloak
         x-data="{
-            page: 1,
             show: false,
             text: null,
-            list: [],
-            loading: false,
-            searchable: true,
-            paginator: {},
+            config: @js($config),
             wire: @js(!empty($attributes->wire('model')->value())),
             value: @js($attributes->get('value')),
-            entangle: @entangle($attributes->wire('model')->value()),
-            callback: @js($attributes->get('callback')),
-            options: @js($options),
-            selected: @js($selected),
-            multiple: @js($multiple),
-            get isEmpty () {
-                return !this.placeholder || (Array.isArray(this.placeholder) && !this.placeholder.length)
-            },
-            getOptions () {
-                let options = []
-                let data = this.options || []
-                if (this.paginator?.data) data = this.paginator.data
-
-                data.forEach(val => {
-                    options.push(this.formatOption(val))
-                    if (val.children) val.children.forEach(child => options.push(this.formatOption(child)))
-                })
-
-                return options.filter(Boolean)
+            entangle: @entangle($attributes->wire('model')),
+            options: [],
+            loading: false,
+            paginator: {},
+            searchable: true,
+            get searchable () {
+                return this.config.callback || (this.config.options || []).length > 10
             },
             init () {
                 if (this.wire) {
                     this.value = this.entangle
                     this.$watch('entangle', (val) => this.value = val)
                 }
+
+                this.$watch('text', (val) => this.$nextTick(() => this.float()))
+                this.setOptions()
+            },
+            open () {
+                if (this.show) this.close()
+                else {
+                    this.show = true
+                    this.$nextTick(() => {
+                        this.$refs.search.querySelector('input')?.focus()
+                        this.float()
+                        this.retrieve()
+                    })
+                }
+            },
+            close () {
+                this.show = false
+                this.text = null
+            },
+            float () {
+                floatDropdown(this.$refs.anchor, this.$refs.dd)
+            },
+            retrieve (page = 1) {
+                if (!this.config.callback) return
+
+                this.loading = true
+                this.$wire.call(this.config.callback, this.text, page)
+                    .then(res => this.paginator = res)
+                    .then(() => this.setOptions())
+                    .finally(() => this.loading = false)
+            },
+            setOptions () {
+                let options = (this.config.options || [])
+
+                if (this.paginator?.data) {
+                    options = options.concat(this.paginator.data)
+                    // unique by value
+                    options = [...new Map(
+                        options.map(opt => [opt['value'], opt])
+                    ).values()]
+                }
+
+                this.options = options.map(opt => this.formatOption(opt))
+            },
+            getFilteredOptions () {
+                if (!this.text) return this.options
+                
+                return this.options.filter(opt => (
+                    opt.label?.toLowerCase().includes(this.text) || opt.small?.toLowerCase().includes(this.text)
+                ))
+            },
+            select (val = null) {
+                if (this.config.multiple) {
+                    if (!this.value) this.value = []
+                    if (val !== null) this.value.push(val)
+                    else this.value = []
+                }
+                else this.value = val
+
+                this.input()
+                this.$nextTick(() => this.close())
+            },
+            remove (sel) {
+                this.value = this.value.filter(val => val !== sel)
+                this.input()
+            },
+            input () {
+                if (this.wire) this.entangle = this.value
+                else this.$dispatch('input', this.value)
             },
             formatOption (val) {
                 if (typeof val === 'string') return { value: val, label: val }
@@ -66,141 +136,56 @@
 
                 return opt
             },
-            getPlaceholder () {
-                if (this.selected) return this.selected
-                else {
-                    const options = this.getOptions()
-
-                    if (this.multiple) {
-                        const filtered = options.filter(opt => (this.value.includes(opt.value)))
-                        return filtered.length ? filtered : null
-                    }
-                    else return options.find(opt => (opt.value === this.value)) || null
-                }
-            },
-            search () {
-                this.list = this.getOptions()
-                this.searchable = this.list.length > 10 || this.callback
-
-                if (this.text) {
-                    const text = this.text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, `\\$&`)
-                    const regex = text ? new RegExp(text, 'i') : null
-                    if (regex) this.list = this.list.filter(opt => (regex.test(opt.label) || regex.test(opt.small)))
-                }
-            },
-            open () {
-                if (this.show) this.close()
-                else {
-                    this.show = true
-                    this.$nextTick(() => {
-                        this.$refs.search && this.$refs.search.focus()
-                        floatDropdown(this.$refs.anchor, this.$refs.dd)
-                        this.retrieve()
-                    })
-                }
-            },
-            close () {
-                this.show = false
-                this.text = null
-            },
-            select (opt) {
-                if (this.multiple) {
-                    if (!this.value) this.value = []
-                    this.value.push(opt.value)
-                }
-                else this.value = opt.value
-
-                if (this.wire) this.entangle = this.value
-                else this.$dispatch('input', this.value)
-
-                this.$nextTick(() => this.close())
-            },
-            remove (sel) {
-                this.value = this.value.filter(val => val !== sel.value)
-            },
-            clearValue () {
-                if (this.multiple) this.value = []
-                else this.value = null
-                this.$nextTick(() => this.close())
-            },
-            clearText () {
-                this.text = null
-                this.$nextTick(() => this.retrieve())
-            },
-            next () {
-                this.page++
-                this.retrieve()
-            },
-            prev () {
-                this.page--
-                this.retrieve()
-            },
-            retrieve () {
-                if (!this.callback) this.search()
-                else {
-                    this.loading = true
-                    this.$wire.call(this.callback, this.text, this.page)
-                        .then(res => this.paginator = res)
-                        .then(() => this.search())
-                        .finally(() => this.loading = false)
-                }
-            },
         }"
         x-on:click.away="close()"
         class="relative"
-        {{ $attributes->merge([
-            'id' => $attributes->has('callback') ? null : $uid
-        ])->except(['error', 'required', 'caption', 'label', 'callback', 'class']) }}
     >
         <div
             x-ref="anchor" 
             x-on:click="open()" 
-            x-bind:class="{
-                'active': show,
-                'select': getPlaceholder() === null,
-            }"
+            x-bind:class="{ 'active': show, 'select': empty(value) }"
             {{ $attributes->class([
                 'form-input w-full',
                 'error' => !empty($attributes->get('error')),
             ])->only('class') }}
         >
-            <template x-if="getPlaceholder() === null">
-                <div class="text-gray-400 grid">
-                    <div class="truncate">
-                        {{ __($attributes->get('placeholder', 'Select '.($attributes->get('label', 'an option')))) }}
-                    </div>
-                </div>
-            </template>
-
-            <template x-if="getPlaceholder() !== null && multiple">
-                <div class="flex gap-2">
+            <template x-if="!empty(value)">
+                <div
+                    x-bind:class="!config.multiple && 'items-center'"
+                    class="flex gap-2"
+                >
                     <div class="grow flex flex-wrap gap-2">
-                        <template x-for="sel in getPlaceholder()">
-                            <div class="bg-slate-200 rounded-md py-1 px-2 text-sm font-medium border border-gray-200 flex items-center gap-2 max-w-[200px]">
-                                <div class="grid">
-                                    <div x-text="sel.label" class="truncate text-xs"></div>
+                        <template x-if="config.multiple">
+                            <template 
+                                x-for="(val, i) in options.filter(opt => (value.includes(opt.value)))"
+                                x-bind:key="`${val.value}-${i}`"
+                            >
+                                <div class="bg-slate-200 rounded-md py-1 px-2 text-sm font-medium border border-gray-200 flex items-center gap-2 max-w-[200px]">
+                                    <div class="grid">
+                                        <div x-text="val.label" class="truncate text-xs"></div>
+                                    </div>
+                                    <a x-on:click="remove(val.value)" class="flex text-gray-500">
+                                        <x-icon name="xmark" size="12"/>
+                                    </a>
                                 </div>
-                                <a x-on:click="remove(sel)" class="flex text-gray-500">
-                                    <x-icon name="xmark" size="12px"/>
-                                </a>
+                            </template>
+                        </template>
+
+                        <template x-if="!config.multiple">
+                            <div class="grid">
+                                <div x-text="options.find(opt => (opt.value === value))?.label" class="truncate"></div>
                             </div>
                         </template>
                     </div>
-
-                    <a x-on:click="clearValue()" class="flex shrink-0 text-gray-500">
-                        <x-icon name="xmark" size="16px" class="m-auto"/>
-                    </a>
+                    <div class="shrink-0 flex items-center justify-center">
+                        <x-close x-on:click="select()"/>
+                    </div>
                 </div>
             </template>
 
-            <template x-if="getPlaceholder() !== null && !multiple">
-                <div class="flex items-center justify-between gap-2">
-                    <div class="grid">
-                        <div x-text="getPlaceholder()?.label" class="truncate"></div>
-                    </div>
-                    <a x-on:click="clearValue()" x-on:click.stop class="flex shrink-0 text-gray-500">
-                        <x-icon name="xmark" size="16px" class="m-auto"/>
-                    </a>
+            <template x-if="empty(value)">
+                <div class="text-gray-400 grid">
+                    <div class="truncate" x-text="config.placeholder"></div>
                 </div>
             </template>
         </div>
@@ -211,154 +196,114 @@
             x-transition.opacity
             class="absolute z-20 bg-white shadow-lg rounded-md border border-gray-300 overflow-hidden w-full min-w-[300px]"
         >
-            <div x-show="searchable" class="p-3 border-b">
-                <div class="py-2 px-4 flex items-center gap-2 form-input">
-                    <x-icon name="search" size="15px" class="text-gray-400"/>
-                    <div class="grow">
-                        <input type="text"
-                            x-ref="search"
-                            x-model="text"
-                            x-on:input.debounce.400ms="retrieve()"
-                            placeholder="{{ __('Search') }}"
-                            class="form-input transparent w-full"
-                        >
-                    </div>
-                    <a x-show="text" x-on:click="clearText()" class="flex">
-                        <x-icon name="xmark" size="15px" class="text-gray-500 m-auto"/>
-                    </a>
-                </div>
+            <div x-ref="search" x-show="searchable" class="p-3 border-b">
+                <x-form.text
+                    x-model="text"
+                    x-on:input.debounce.300ms="retrieve()"
+                    placeholder="Search"
+                    prefix="icon:search"
+                >
+                    <x-slot:postfix>
+                        <x-close x-show="text" x-on:click="text = null"/>
+                    </x-slot:postfix>
+                </x-form.text>
             </div>
 
             <div 
-                x-bind:class="getOptions().length > 10 ? 'h-[250px]' : 'max-h-[250px]'"
-                class="overflow-auto"
+                x-show="paginator?.last_page > 1" 
+                class="relative px-4 py-2 flex items-center justify-evenly gap-4 text-sm border-b"
             >
-                <div x-show="loading" class="p-6 flex items-center justify-center h-full w-full text-theme">
-                    <svg class="animate-spin"
-                        xmlns="http://www.w3.org/2000/svg" 
-                        fill="none" 
-                        viewBox="0 0 24 24"
-                        style="width: 45px; height: 45px"
+                <div x-show="loading" class="absolute inset-0 bg-white/50"></div>
+
+                <div class="shrink-0">
+                    <a 
+                        x-show="paginator?.current_page > 1"
+                        x-on:click="retrieve(paginator?.current_page - 1)" 
+                        class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
                     >
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                        <x-icon name="chevron-left" size="12"/> {{ __('Previous') }}
+                    </a>
                 </div>
 
-                <div x-show="!loading && !list.length" class="p-6 flex items-center justify-center gap-3">
-                    <x-icon name="folder-open" size="20px" class="text-gray-400"/>
-                    <div class="text-gray-500 font-medium">{{ __('The list is empty') }}</div>
+                <div x-text="`${paginator?.current_page}/${paginator?.last_page}`" class="grow text-center text-sm font-medium"></div>
+
+                <div class="shrink-0">
+                    <a 
+                        x-show="paginator?.current_page < paginator?.last_page"
+                        x-on:click="retrieve(paginator?.current_page + 1)" 
+                        class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
+                    >
+                        {{ __('Next') }} <x-icon name="chevron-right" size="12"/>
+                    </a>
                 </div>
+            </div>
 
-                <div 
-                    x-show="paginator?.last_page > 1" 
-                    class="relative px-4 py-2 flex items-center justify-evenly gap-4 text-sm border-b"
-                >
-                    <div x-show="loading" class="absolute inset-0 bg-white/50"></div>
+            <div x-show="loading" class="py-4 flex items-center justify-center h-full w-full text-theme">
+                <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 45px; height: 45px">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
 
-                    <div class="shrink-0">
-                        <a 
-                            x-show="paginator?.current_page > 1"
-                            x-on:click="prev()" 
-                            class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
-                        >
-                            <x-icon name="chevron-left" size="12px"/> {{ __('Previous') }}
-                        </a>
-                    </div>
-
-                    <div x-text="`${paginator?.current_page}/${paginator?.last_page}`" class="grow text-center text-sm font-medium"></div>
-
-                    <div class="shrink-0">
-                        <a 
-                            x-show="paginator?.current_page < paginator?.last_page"
-                            x-on:click="next()" 
-                            class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
-                        >
-                            {{ __('Next') }} <x-icon name="chevron-right" size="12px"/>
-                        </a>
-                    </div>
-                </div>
-
-                <div x-show="!loading && list.length > 0">
-                    <template x-for="opt in list">
-                        <div
-                            x-on:click="!opt.isGroup && select(opt)"
+            <div x-show="!loading && !getFilteredOptions().length">
+                <x-empty-state title="The list is empty" subtitle="" size="sm"/>
+            </div>
+            
+            <div x-show="!loading && getFilteredOptions().length" class="max-h-[250px] overflow-auto">
+                <template x-for="opt in getFilteredOptions()">
+                    <div
+                        x-on:click="!opt.isGroup && select(opt.value)"
+                        x-bind:class="{
+                            'bg-gray-100': opt.isGroup,
+                            'cursor-pointer hover:bg-slate-100': !opt.isGroup
+                        }" 
+                        class="py-2 px-4 flex items-center gap-3 border-b last:border-b-0"
+                    >
+                        <div 
+                            x-show="opt.avatar || opt.image || opt.flag"
                             x-bind:class="{
-                                'bg-gray-100': opt.isGroup,
-                                'cursor-pointer hover:bg-slate-100': !opt.isGroup
-                            }" 
-                            class="py-2 px-4 flex items-center gap-3 border-b last:border-b-0"
+                                'w-8 h-8 rounded-full': opt.avatar,
+                                'w-8 h-8 rounded-md shadow': opt.image,
+                                'w-4 h-4': opt.flag,
+                            }"
+                            class="shrink-0 bg-gray-100 overflow-hidden"
+                        >
+                            <img
+                                x-bind:src="opt.avatar || opt.image || opt.flag" 
+                                x-bind:class="{
+                                    'object-cover': opt.avatar || opt.image,
+                                    'object-contain object-center': opt.flag,
+                                }"
+                                class="w-full h-full object-cover"
+                            >
+                        </div>
+
+                        <div 
+                            x-bind:class="{ 'ml-4': getFilteredOptions().some(res => (res.isGroup)) && !opt.isGroup }"
+                            class="grow grid"
                         >
                             <div 
-                                x-show="opt.avatar || opt.image || opt.flag"
-                                x-bind:class="{
-                                    'w-8 h-8 rounded-full': opt.avatar,
-                                    'w-8 h-8 rounded-md shadow': opt.image,
-                                    'w-4 h-4': opt.flag,
-                                }"
-                                class="shrink-0 bg-gray-100 overflow-hidden"
-                            >
-                                <img
-                                    x-bind:src="opt.avatar || opt.image || opt.flag" 
-                                    x-bind:class="{
-                                        'object-cover': opt.avatar || opt.image,
-                                        'object-contain object-center': opt.flag,
-                                    }"
-                                    class="w-full h-full object-cover"
-                                >
-                            </div>
-
+                                x-text="opt.label" 
+                                x-bind:class="opt.isGroup && 'font-bold'"
+                                class="truncate font-medium"
+                            ></div>
                             <div 
-                                x-bind:class="list.some(res => (res.isGroup)) && !opt.isGroup && 'ml-4'"
-                                class="grow grid"
-                            >
-                                <div 
-                                    x-text="opt.label" 
-                                    x-bind:class="opt.isGroup && 'font-bold'"
-                                    class="truncate font-medium"
-                                ></div>
-                                <div 
-                                    x-show="opt.small" 
-                                    x-text="opt.small" 
-                                    class="truncate font-medium text-sm text-gray-400">
-                                </div>
-                            </div>
-
-                            <div x-show="opt.status || opt.remark" class="shrink-0 flex flex-col gap-1 items-end">
-                                <div 
-                                    x-text="opt.status?.text" 
-                                    x-bind:class="['text-sm px-2 font-medium rounded-full shadow'].concat(opt.status?.color)"
-                                ></div>
-                                <div x-text="opt.remark" class="text-sm font-medium text-gray-500"></div>
+                                x-show="opt.small" 
+                                x-text="opt.small" 
+                                class="truncate font-medium text-sm text-gray-400">
                             </div>
                         </div>
-                    </template>
-                </div>
-            </div>
 
-            <div class="border-t grid divide-y">
-                @isset($footlink)
-                    <a 
-                        href="{{ $footlink->attributes->get('href') }}"
-                        class="p-4 text-center flex items-center justify-center gap-2 hover:bg-slate-100"
-                    >
-                        @php $icon = $footlink->attributes->get('icon') @endphp
-                        @php $label = $footlink->attributes->get('label') @endphp
-
-                        <x-icon :name="$icon ?? $label"/>
-
-                        @if ($label) {{ __($label) }}
-                        @else {{ $footlink }}
-                        @endif
-                    </a>
-                @endisset
-
-                @if ($slot->isNotEmpty())
-                    <div class="py-2 px-4">
-                        {{ $slot }}
+                        <div x-show="opt.status || opt.remark" class="shrink-0 flex flex-col gap-1 items-end">
+                            <div 
+                                x-text="opt.status?.text" 
+                                x-bind:class="['text-sm px-2 font-medium rounded-full shadow'].concat(opt.status?.color)"
+                            ></div>
+                            <div x-text="opt.remark" class="text-sm font-medium text-gray-500"></div>
+                        </div>
                     </div>
-                @endif
+                </template>
             </div>
         </div>
-    </div>
+    </data>
 </x-form.field>
