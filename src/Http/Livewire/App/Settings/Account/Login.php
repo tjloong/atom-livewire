@@ -66,6 +66,6 @@ class Login extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.account.login');
+        return atom_view('app.settings.account.login');
     }
 }

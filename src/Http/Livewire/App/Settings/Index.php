@@ -102,7 +102,7 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.index', [
+        return atom_view('app.settings', [
             'livewire' => lw(
                 data_get($this->getFlatTabs()->firstWhere('slug', $this->tab), 'livewire')
                 ?? [

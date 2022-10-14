@@ -125,6 +125,6 @@ class Blog extends Component
      */
     public function render()
     {
-        return view('atom::web.blog')->layout('layouts.web');
+        return atom_view('web.blog');
     }
 }

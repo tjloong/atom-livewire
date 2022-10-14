@@ -55,6 +55,6 @@ class Library extends Component
      */
     public function render()
     {
-        return view('atom::app.file.uploader.library');
+        return atom_view('app.file.uploader.library');
     }
 }

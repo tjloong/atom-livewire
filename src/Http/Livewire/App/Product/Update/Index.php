@@ -55,7 +55,7 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::app.product.update.index', [
+        return atom_view('app.product.update', [
             'livewire' => lw(
                 data_get(collect($this->tabs)->firstWhere('slug', $this->tab), 'livewire')
                 ?? 'app.product.update.'.$this->tab

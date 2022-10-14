@@ -61,6 +61,6 @@ class Children extends Component
      */
     public function render()
     {
-        return view('atom::app.label.update.children');
+        return atom_view('app.label.update.children');
     }
 }

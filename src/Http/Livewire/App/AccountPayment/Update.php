@@ -39,6 +39,6 @@ class Update extends Component
      */
     public function render()
     {
-        return view('atom::app.account-payment.update');
+        return atom_view('app.account-payment.update');
     }
 }

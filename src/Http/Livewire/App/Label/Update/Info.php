@@ -77,6 +77,6 @@ class Info extends Component
      */
     public function render()
     {
-        return view('atom::app.label.update.info');
+        return atom_view('app.label.update.info');
     }
 }

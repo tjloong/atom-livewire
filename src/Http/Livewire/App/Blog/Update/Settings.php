@@ -67,6 +67,6 @@ class Settings extends Component
      */
     public function render()
     {
-        return view('atom::app.blog.update.settings');
+        return atom_view('app.blog.update.settings');
     }
 }

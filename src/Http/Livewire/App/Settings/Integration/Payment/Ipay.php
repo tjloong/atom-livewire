@@ -61,6 +61,6 @@ class Ipay extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.integration.payment.ipay');
+        return atom_view('app.settings.integration.payment.ipay');
     }
 }

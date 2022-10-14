@@ -64,6 +64,6 @@ class Content extends Component
      */
     public function render()
     {
-        return view('atom::app.blog.update.content');
+        return atom_view('app.blog.update.content');
     }
 }

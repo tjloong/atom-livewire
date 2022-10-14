@@ -85,6 +85,6 @@ class Comments extends Component
      */
     public function render()
     {
-        return view('atom::app.ticketing.comments');
+        return atom_view('app.ticketing.comments');
     }
 }

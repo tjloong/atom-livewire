@@ -36,7 +36,7 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.label.listing', [
+        return atom_view('app.label.listing', [
             'labels' => $this->type
                 ? model('label')
                     ->withCount('children')

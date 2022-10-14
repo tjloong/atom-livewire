@@ -76,6 +76,6 @@ class Email extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.integration.email');
+        return atom_view('app.settings.integration.email');
     }
 }

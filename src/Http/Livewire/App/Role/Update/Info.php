@@ -59,6 +59,6 @@ class Info extends Component
      */
     public function render()
     {
-        return view('atom::app.role.update.info');
+        return atom_view('app.role.update.info');
     }
 }

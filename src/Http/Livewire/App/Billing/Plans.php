@@ -59,6 +59,6 @@ class Plans extends Component
      */
     public function render()
     {
-        return view('atom::app.billing.plans');
+        return atom_view('app.billing.plans');
     }
 }

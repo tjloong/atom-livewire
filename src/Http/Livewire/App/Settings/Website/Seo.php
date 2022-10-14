@@ -35,6 +35,6 @@ class Seo extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.website.seo');
+        return atom_view('app.settings.website.seo');
     }
 }

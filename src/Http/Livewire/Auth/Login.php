@@ -124,6 +124,6 @@ class Login extends Component
      */
     public function render()
     {
-        return view('atom::auth.login')->layout('layouts.auth');
+        return atom_view('auth.login');
     }
 }

@@ -33,6 +33,6 @@ class Update extends Component
      */
     public function render()
     {
-        return view('atom::app.tax.update');
+        return atom_view('app.tax.update');
     }
 }

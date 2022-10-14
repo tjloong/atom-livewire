@@ -64,6 +64,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.ticketing.listing');
+        return atom_view('app.ticketing.listing');
     }
 }

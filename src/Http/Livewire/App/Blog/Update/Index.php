@@ -59,6 +59,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::app.blog.update.index');
+        return atom_view('app.blog.update');
     }
 }

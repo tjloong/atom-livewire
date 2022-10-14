@@ -56,6 +56,6 @@ class Form extends Component
      */
     public function render()
     {
-        return view('atom::app.tax.form');
+        return atom_view('app.tax.form');
     }
 }

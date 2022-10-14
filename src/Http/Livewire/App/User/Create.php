@@ -32,6 +32,6 @@ class Create extends Component
      */
     public function render()
     {
-        return view('atom::app.user.create');
+        return atom_view('app.user.create');
     }
 }

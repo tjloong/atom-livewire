@@ -25,6 +25,6 @@ class CurrentSubscriptions extends Component
      */
     public function render()
     {
-        return view('atom::app.billing.current-subscriptions');
+        return atom_view('app.billing.current-subscriptions');
     }
 }

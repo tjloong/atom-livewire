@@ -13,6 +13,6 @@ class Prices extends Component
      */
     public function render()
     {
-        return view('atom::app.plan.update.prices');
+        return atom_view('app.plan.update.prices');
     }
 }

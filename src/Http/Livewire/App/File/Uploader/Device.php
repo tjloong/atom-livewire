@@ -34,6 +34,6 @@ class Device extends Component
      */
     public function render()
     {
-        return view('atom::app.file.uploader.device');
+        return atom_view('app.file.uploader.device');
     }
 }

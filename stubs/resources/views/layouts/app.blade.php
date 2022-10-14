@@ -11,10 +11,22 @@
 ])
 
 @section('content')
-    @route('app.onboarding.*')
-        <x-popup/>
-        <x-loader/>
+    {{-- Auth layout --}}
+    @route(['login', 'register', 'password.*', 'verification.*'])
+        <div class="min-h-screen relative bg-gray-100 px-4 py-12 md:py-20">
+            {{ $slot }}
+        </div>
 
+    {{-- Shareable layout --}}
+    @elseroute(['shareable', 'shareable.*'])
+        <div class="min-h-screen relative bg-gray-100">
+            <main class="max-w-screen-xl mx-auto px-4 py-12">
+                {{ $slot }}
+            </main>
+        </div>
+
+    {{-- Onboarding layout --}}
+    @elseroute('app.onboarding.*')
         <div class="min-h-screen bg-gray-100 p-6">
             <main class="max-w-screen-xl mx-auto grid gap-10">
                 <nav class="flex flex-wrap items-center justify-between gap-2">
@@ -41,7 +53,9 @@
                 {{ $slot }}
             </main>
         </div>
-    @else
+    
+    {{-- App layout --}}
+    @elseroute('app.*')
         <x-admin-panel>
             <x-slot:links>
                 <a href="/" class="text-gray-800">Go To Site</a>
@@ -75,5 +89,21 @@
 
             {{ $slot }}
         </x-admin-panel>
+
+    {{-- Web layout --}}
+    @else
+        <x-navbar align="right">
+            @module('blogs')
+                <x-navbar.item href="/blog" label="Blogs"/>
+            @endmodule
+
+            <x-navbar.item href="/contact-us?ref=landing" label="Contact"/>
+        </x-navbar>
+        
+        {{ $slot }}
+
+        <footer>
+            <x-footer/>
+        </footer>
     @endroute
 @endsection

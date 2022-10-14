@@ -21,6 +21,6 @@ class Register extends Component
      */
     public function render()
     {
-        return view('atom::app.account.update.register');
+        return atom_view('app.account.update.register');
     }
 }

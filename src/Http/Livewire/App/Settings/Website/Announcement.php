@@ -136,6 +136,6 @@ class Announcement extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.website.announcement');
+        return atom_view('app.settings.website.announcement');
     }
 }

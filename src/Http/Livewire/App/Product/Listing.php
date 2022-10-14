@@ -12,19 +12,19 @@ class Listing extends Component
     public $sortBy = 'updated_at';
     public $sortOrder = 'desc';
     public $filters = [
-        'type' => '',
-        'status' => '',
-        'product_category' => '',
-        'search' => '',
+        'type' => null,
+        'status' => null,
+        'product_category' => null,
+        'search' => null,
     ];
 
     protected $queryString = [
         'page' => ['except' => 1],
         'filters' => ['except' => [
-            'type' => '',
-            'status' => '',
-            'product_category' => '',
-            'search' => '',
+            'type' => null,
+            'status' => null,
+            'product_category' => null,
+            'search' => null,
         ]],
         'sortBy' => ['except' => 'updated_at'],
         'sortOrder' => ['except' => 'desc'],
@@ -96,6 +96,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.product.listing');
+        return atom_view('app.product.listing');
     }
 }

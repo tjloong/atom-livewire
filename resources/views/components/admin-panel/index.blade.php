@@ -1,7 +1,5 @@
-<x-popup/>
-<x-loader/>
-
 <div 
+    x-cloak
     x-data="{ 
         toggled: false, 
         animate: false,

@@ -70,6 +70,6 @@ class Storage extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.integration.storage');
+        return atom_view('app.settings.integration.storage');
     }
 }

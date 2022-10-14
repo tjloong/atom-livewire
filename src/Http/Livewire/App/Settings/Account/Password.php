@@ -66,6 +66,6 @@ class Password extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.account.password');
+        return atom_view('app.settings.account.password');
     }
 }

@@ -62,6 +62,6 @@ class Stripe extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.integration.payment.stripe');
+        return atom_view('app.settings.integration.payment.stripe');
     }
 }

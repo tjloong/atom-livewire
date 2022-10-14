@@ -34,6 +34,6 @@ class CancelAutoBillingModal extends Component
      */
     public function render()
     {
-        return view('atom::app.billing.cancel-auto-billing-modal');
+        return atom_view('app.billing.cancel-auto-billing-modal');
     }
 }

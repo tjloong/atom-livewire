@@ -107,6 +107,6 @@ class Info extends Component
      */
     public function render()
     {
-        return view('atom::app.plan.update.info');
+        return atom_view('app.plan.update.info');
     }
 }

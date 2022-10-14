@@ -72,6 +72,6 @@ class Dashboard extends Component
      */
     public function render()
     {
-        return view('atom::app.dashboard');
+        return atom_view('app.dashboard');
     }
 }

@@ -61,6 +61,6 @@ class Create extends Component
      */
     public function render()
     {
-        return view('atom::app.ticketing.create');
+        return atom_view('app.ticketing.create');
     }
 }

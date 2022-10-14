@@ -64,7 +64,7 @@
             <a x-on:click="open()" class="grow text-gray-900">
                 <div class="flex flex-wrap items-center gap-2">
                     <div x-text="formatDate(from) || '{{ __('From') }}'" class="p-1 rounded"></div>
-                    <x-icon name="right-arrow-alt"/>
+                    <x-icon name="arrow-right"/>
                     <div x-text="formatDate(to) || '{{ __('To') }}'" class="p-1 rounded"></div>
                     <x-icon name="chevron-down" size="15px"/>
                 </div>

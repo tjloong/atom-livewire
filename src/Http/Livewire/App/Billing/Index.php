@@ -23,6 +23,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::app.billing.index');
+        return atom_view('app.billing');
     }
 }

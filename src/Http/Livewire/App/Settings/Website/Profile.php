@@ -41,6 +41,6 @@ class Profile extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.website.profile');
+        return atom_view('app.settings.website.profile');
     }
 }

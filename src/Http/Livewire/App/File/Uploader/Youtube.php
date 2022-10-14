@@ -45,6 +45,6 @@ class Youtube extends Component
      */
     public function render()
     {
-        return view('atom::app.file.uploader.youtube');
+        return atom_view('app.file.uploader.youtube');
     }
 }

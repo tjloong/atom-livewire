@@ -98,6 +98,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::app.file.uploader.index');
+        return atom_view('app.file.uploader');
     }
 }

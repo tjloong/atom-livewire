@@ -10,16 +10,6 @@ class ForgotPassword extends Component
     public $email;
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::auth.forgot-password')->layout('layouts.auth');
-    }
-
-    /**
      * Send password reset request
      */
     public function send()
@@ -29,5 +19,13 @@ class ForgotPassword extends Component
             else $this->addError('email', 'Unable to reset password');
         }
         else $this->addError('email', 'Email not found');
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return atom_view('auth.forgot-password');
     }
 }

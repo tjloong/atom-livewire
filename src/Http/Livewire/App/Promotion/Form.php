@@ -70,6 +70,6 @@ class Form extends Component
      */
     public function render()
     {
-        return view('atom::app.promotion.form');
+        return atom_view('app.promotion.form');
     }
 }

@@ -36,11 +36,7 @@ class CatchAll extends Component
      */
     public function getLivewireProperty()
     {
-        return lw(
-            $this->slug
-                ? 'web.'.$this->slug
-                : 'web.index'
-        );
+        return lw('web.'.($this->slug ?? 'index'));
     }
 
     /**
@@ -48,6 +44,6 @@ class CatchAll extends Component
      */
     public function render()
     {
-        return view('atom::web.catchall')->layout('layouts.web');
+        return atom_view('web.catchall');
     }
 }

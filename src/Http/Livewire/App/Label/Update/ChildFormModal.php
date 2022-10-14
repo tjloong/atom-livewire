@@ -84,6 +84,6 @@ class ChildFormModal extends Component
      */
     public function render()
     {
-        return view('atom::app.label.update.child-form-modal');
+        return atom_view('app.label.update.child-form-modal');
     }
 }

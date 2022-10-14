@@ -46,6 +46,6 @@ class SocialMedia extends Component
      */
     public function render()
     {
-        return view('atom::app.settings.website.social-media');
+        return atom_view('app.settings.website.social-media');
     }
 }

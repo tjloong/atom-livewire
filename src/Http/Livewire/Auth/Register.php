@@ -163,6 +163,6 @@ class Register extends Component
      */
     public function render()
     {
-        return view('atom::auth.register')->layout('layouts.auth');
+        return atom_view('auth.register');
     }
 }

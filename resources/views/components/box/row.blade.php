@@ -3,7 +3,7 @@
     {{ $attributes->except(['class', 'label']) }}
 >
     <div class="md:col-span-2">
-        <div class="font-medium text-gray-400">
+        <div class="font-medium text-gray-400 text-sm">
             @if ($label = $label ?? $attributes->get('label'))
                 {{ is_string($label) ? __(strtoupper($label)) : $label }}
             @endif

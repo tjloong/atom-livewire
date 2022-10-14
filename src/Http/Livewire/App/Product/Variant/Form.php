@@ -110,6 +110,6 @@ class Form extends Component
      */
     public function render()
     {
-        return view('atom::app.product.variant.form');
+        return atom_view('app.product.variant.form');
     }
 }

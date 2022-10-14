@@ -100,6 +100,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.permission.listing');
+        return atom_view('app.permission.listing');
     }
 }

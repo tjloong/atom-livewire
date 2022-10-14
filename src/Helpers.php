@@ -609,3 +609,31 @@ function atom_path($path = null)
 {
     return base_path('vendor/jiannius/atom-livewire'.($path ? '/'.$path : ''));
 }
+
+/**
+ * Get atom view
+ */
+function atom_view($name, $data = [])
+{
+    $path = str($name)->replace('.', '/');
+
+    $view = collect([
+        base_path('resources/views/livewire/'.$path) => 'livewire.'.$name,
+        base_path('resources/views/livewire/'.$path.'/index') => 'livewire.'.$name.'.index',
+        base_path('resources/views/'.$path) => $name,
+        base_path('resources/views/'.$path.'/index') => $name.'.index',
+        atom_path('resources/views/livewire/'.$path) => 'atom::livewire.'.$name,
+        atom_path('resources/views/livewire/'.$path.'/index') => 'atom::livewire.'.$name.'.index',
+        atom_path('resources/views/'.$path) => 'atom::'.$name,
+        atom_path('resources/views/'.$path.'/index') => 'atom::'.$name.'.index',
+    ])->first(fn($val, $key) => file_exists(str($key)->finish('.blade.php')));
+
+    if ($view) {
+        $main = head(explode('.', $name));
+
+        if (file_exists(base_path('resources/views/layouts/'.$main.'.blade.php'))) {
+            return view($view, $data)->layout('layouts.'.$main);
+        }
+        else return view($view, $data);
+    }
+}

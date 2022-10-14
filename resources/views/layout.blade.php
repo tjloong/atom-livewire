@@ -55,6 +55,9 @@
         <x-analytics.fbpixel noscript/>
     @endif
 
+    <x-popup/>
+    <x-loader/>
+
     @yield('content')
 
     @if ($enabledLivewire = $livewire ?? true)

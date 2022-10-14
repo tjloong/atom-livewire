@@ -77,6 +77,6 @@ class Images extends Component
      */
     public function render()
     {
-        return view('atom::app.product.update.images');
+        return atom_view('app.product.update.images');
     }
 }

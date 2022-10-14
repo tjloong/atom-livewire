@@ -304,6 +304,30 @@
                     </div>
                 </template>
             </div>
+
+            <div class="border-t grid divide-y">
+                @isset($footlink)
+                    <a 
+                        href="{{ $footlink->attributes->get('href') }}"
+                        class="p-4 text-center flex items-center justify-center gap-2 hover:bg-slate-100"
+                    >
+                        @php $icon = $footlink->attributes->get('icon') @endphp
+                        @php $label = $footlink->attributes->get('label') @endphp
+
+                        <x-icon :name="$icon ?? $label"/>
+
+                        @if ($label) {{ __($label) }}
+                        @else {{ $footlink }}
+                        @endif
+                    </a>
+                @endisset
+
+                @if ($slot->isNotEmpty())
+                    <div class="py-2 px-4">
+                        {{ $slot }}
+                    </div>
+                @endif
+            </div>
         </div>
     </data>
 </x-form.field>

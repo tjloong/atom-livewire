@@ -40,6 +40,6 @@ class WebImage extends Component
      */
     public function render()
     {
-        return view('atom::app.file.uploader.web-image');
+        return atom_view('app.file.uploader.web-image');
     }
 }

@@ -11,6 +11,6 @@ class ThankYou extends Component
      */
     public function render()
     {
-        return view('atom::web.contact-us.thank-you')->layout('layouts.web');
+        return atom_view('web.contact-us.thank-you');
     }
 }

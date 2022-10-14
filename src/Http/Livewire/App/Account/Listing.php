@@ -88,6 +88,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return view('atom::app.account.listing');
+        return atom_view('app.account.listing');
     }
 }

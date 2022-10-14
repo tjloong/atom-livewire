@@ -23,16 +23,6 @@ class ResetPassword extends Component
     }
 
     /**
-     * Rendering livewire view
-     * 
-     * @return Response
-     */
-    public function render()
-    {
-        return view('atom::auth.reset-password')->layout('layouts.auth');
-    }
-
-    /**
      * Save password
      */
     public function save()
@@ -66,8 +56,6 @@ class ResetPassword extends Component
 
     /**
      * Validate inputs
-     * 
-     * @return void
      */
     private function validateinputs()
     {
@@ -92,5 +80,13 @@ class ResetPassword extends Component
                 'password.confirmed' => 'Please confirm your password.',    
             ]
         )->validate();
+    }
+
+    /**
+     * Render
+     */
+    public function render()
+    {
+        return atom_view('auth.reset-password');
     }
 }

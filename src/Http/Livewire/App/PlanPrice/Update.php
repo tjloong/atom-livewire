@@ -52,6 +52,6 @@ class Update extends Component
      */
     public function render()
     {
-        return view('atom::app.plan-price.update');
+        return atom_view('app.plan-price.update');
     }
 }

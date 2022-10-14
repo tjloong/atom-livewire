@@ -21,6 +21,6 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::web.index')->layout('layouts.web');
+        return atom_view('web');
     }
 }

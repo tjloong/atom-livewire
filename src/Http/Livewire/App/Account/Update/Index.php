@@ -91,7 +91,7 @@ class Index extends Component
      */
     public function render()
     {
-        return view('atom::app.account.update.index', [
+        return atom_view('app.account.update', [
             'livewire' => lw(
                 data_get($this->getFlatTabs()->firstWhere('slug', $this->tab), 'livewire')
                 ?? 'app.account.update.'.$this->tab

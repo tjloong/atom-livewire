@@ -33,6 +33,6 @@ class Create extends Component
      */
     public function render()
     {
-        return view('atom::app.blog.create');
+        return atom_view('app.blog.create');
     }
 }

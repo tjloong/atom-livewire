@@ -19,6 +19,6 @@ class Completed extends Component
      */
     public function render()
     {
-        return view('atom::app.onboarding.completed');
+        return atom_view('app.onboarding.completed');
     }
 }
