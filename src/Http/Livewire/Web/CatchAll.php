@@ -36,7 +36,7 @@ class CatchAll extends Component
      */
     public function getLivewireProperty()
     {
-        return lw('web.'.($this->slug ?? 'index'));
+        return $this->slug ? lw('web.'.$this->slug) : lw('web');
     }
 
     /**

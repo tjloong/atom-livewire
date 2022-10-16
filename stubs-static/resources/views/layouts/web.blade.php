@@ -5,11 +5,11 @@
 ])
 
 @section('content')
-    <x-navbar align="right">
-        <x-navbar.item href="/contact-us?ref=landing" label="Contact"/>
+    <x-navbar>
+        <x-slot:body>
+            <x-navbar.item href="/contact-us?ref=landing" label="Contact"/>
+        </x-slot:body>
     </x-navbar>
-
-    <x-loader/>
     
     {{ $slot }}
 

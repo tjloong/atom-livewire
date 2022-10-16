@@ -13,8 +13,7 @@
         ?? (file_exists(storage_path('app/public/img/favicon.svg')) ? asset('storage/img/favicon.svg') : null)
         ?? (file_exists(storage_path('app/public/img/favicon.jpg')) ? asset('storage/img/favicon.jpg') : null)
     }}">
-    <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'>
-
+    
     @if (isset($gfont) && $gfont !== false)
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 define_route('__sitemap', 'SitemapController@index')->name('__sitemap');
 define_route('__pdf', 'PdfController@index')->name('__pdf');
 define_route('__export/{filename}', 'ExportController@download')->name('__export');

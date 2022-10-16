@@ -15,7 +15,7 @@
                 @isset($logo)
                     {{ $logo }}
                 @else
-                    <a href="/" class="{{ $attributes->get('class.logo') ?? 'max-w-[100px] max-h-[50px] md:max-w-[150px] md:max-h-[75px]' }}">
+                    <a href="/" class="max-w-[100px] max-h-[50px] md:max-w-[150px] md:max-h-[75px]">
                         @if ($attributes->get('logo'))
                             <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain">
                         @else
@@ -24,9 +24,11 @@
                     </a>
                 @endisset
 
-                <a x-on:click="show = !show" class="flex items-center justify-center text-gray-400 md:hidden">
-                    <x-icon name="chevron-down" size="20"/>
-                </a>
+                <div x-on:click="show = !show" class="flex cursor-pointer md:hidden">
+                    @isset($burger) {{ $burger }}
+                    @else <x-icon name="chevron-down" size="20" class="m-auto"/>
+                    @endisset
+                </div>
             </div>
 
             <div 

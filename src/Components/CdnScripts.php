@@ -47,6 +47,9 @@ class CdnScripts extends Component
             'clipboard' => [
                 'https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js',
             ],
+            'shuffle' => [
+                'https://cdn.jsdelivr.net/npm/shufflejs@6.1.0/dist/shuffle.min.js',
+            ],
             'ckeditor' => [
                 '/ckeditor/ckeditor.js',
             ],

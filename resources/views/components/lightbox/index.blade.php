@@ -1,3 +1,5 @@
+@props(['uid' => $attributes->get('uid', 'lightbox')])
+
 <div
     x-cloak
     x-data="{
@@ -56,7 +58,7 @@
     x-transition.opacity
     x-on:{{ $uid }}-open.window="open($event.detail)"
     x-on:click="close()"
-    class="fixed inset-0 bg-black/80 z-30 py-20 px-6"
+    class="fixed inset-0 bg-black/80 z-40 py-20 px-6"
 >
     <a class="absolute top-4 right-8 w-10 h-10 bg-white shadow rounded-full flex">
         <x-icon name="xmark" class="m-auto" size="16px"/>

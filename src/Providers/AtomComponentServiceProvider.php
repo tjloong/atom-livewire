@@ -35,7 +35,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'loader',
             'drawer',
             'pricing',
-            'lightbox',
             'statsbox',
             'checkbox',
             'shareable',
@@ -49,6 +48,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'payment-gateway',
             'placeholder-bar',
             
+            'lightbox.index',
+            'lightbox.slide',
+
             'close.index',
             'close.delete',
 
