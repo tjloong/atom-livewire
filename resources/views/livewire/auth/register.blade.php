@@ -5,7 +5,7 @@
 
     <div class="grid gap-6">
         <form wire:submit.prevent="submit">
-            <x-box>
+            <x-box class="rounded-xl">
                 <div class="grid gap-8 p-5 md:p-10">
                     <div class="text-2xl font-bold text-gray-600">
                         Create your account

@@ -4,7 +4,7 @@
     </a>
 
     <form wire:submit.prevent="login" class="grid gap-6">
-        <x-box>
+        <x-box class="rounded-xl">
             <div class="grid gap-6 p-5 md:p-10">
                 <div class="text-2xl font-bold">
                     {{ __('Sign in to your account') }}

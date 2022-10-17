@@ -1,5 +1,5 @@
 @props([
-    'uid' => make_component_uid([
+    'uid' => $attributes->get('uid') ?? make_component_uid([
         $attributes->wire('model')->value() ?? $attributes->get('label'),
         'select-input',
     ]),
@@ -33,7 +33,7 @@
             },
             init () {
                 if (this.wire) {
-                    this.value = this.entangle
+                    this.value = this.entangle || null
                     this.$watch('entangle', (val) => this.value = val)
                 }
 
@@ -139,6 +139,7 @@
         }"
         x-on:click.away="close()"
         class="relative"
+        {{ $attributes->merge(['id' => $uid])->whereStartsWith(['x-', 'id']) }}
     >
         <div
             x-ref="anchor" 

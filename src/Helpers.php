@@ -215,7 +215,12 @@ function account_settings($name, $default = null)
 
     $settings = auth()->user()->account->accountSettings;
 
-    if (is_string($name)) return data_get($settings, $name, $default);
+    if (is_string($name)) {
+        $col = head(explode('.', $name));
+        $name = str($name)->replaceFirst($col, str()->replace('-', '_', $col))->toString();
+
+        return data_get($settings, $name, $default);
+    }
     else $settings->fill($name)->save();
 }
 

@@ -36,13 +36,13 @@
                 this.value = [(+head).toString(), tail].join('.')
 
                 if (this.wire) this.entangle = this.value
-                else this.$dispatch('input', this.value)
             },
 
         }"
         x-bind:class="focus && 'active'"
         class="form-input w-full flex items-center gap-2 {{ !empty($attributes->get('error')) ? 'error' : '' }}"
-        id="{{ $uid }}"
+        {{ $attributes->merge(['id' => $uid])->whereStartsWith(['x-', 'id']) }}
+
     >
         @if (is_string($prefix))
             @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>
