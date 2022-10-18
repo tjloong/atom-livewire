@@ -13,20 +13,16 @@
     x-on:click.away="close()"
     class="relative"
 >
-    @if ($label = $attributes->get('label'))
-        <a x-ref="anchor" x-on:click="open()" {{ $attributes->class([
-            'inline-flex items-center gap-2',
-            $attributes->get('class'),
-        ])->only('class') }}">
+    <div x-ref="anchor" x-on:click="open()" {{ $attributes->merge([
+        'class' => 'inline-flex items-center gap-2 cursor-pointer',
+    ]) }}>
+        @isset($anchor) {{ $anchor }}
+        @else
             @if ($icon = $attributes->get('icon')) <x-icon :name="$icon"/> @endif
-            {{ __($label) }} 
+            @if ($label = $attributes->get('label')) {{ __($label) }} @endif
             <x-icon name="chevron-down" size="12"/>
-        </a>
-    @elseif (isset($anchor))
-        <div x-ref="anchor" x-on:click="open()" class="cursor-pointer">
-            {{ $anchor }}
-        </div>
-    @endif
+        @endisset
+    </div>
 
     <div
         x-ref="dd"

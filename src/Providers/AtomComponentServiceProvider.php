@@ -136,6 +136,8 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'tab.index',
             'tab.item',
+            'tab.dropdown.index',
+            'tab.dropdown.item',
 
             'blog.index',
             'blog.card',
