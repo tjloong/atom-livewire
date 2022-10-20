@@ -6,23 +6,26 @@
     ]),
     'placeholder' => __($attributes->get('placeholder')
         ?? 'Select '.$attributes->get('label', 'Date')),
-    'wire' => $attributes->wire('model'),
 ])
 
 <x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
-    <div x-data x-on:{{ $uid }}.window="$dispatch('input', $event.detail)" {{ $wire }}></div>
-
     <div
         x-data="{
             show: false,
-            uid: @js($uid),
-            wire: @js($wire),
+            wire: @js(!empty($attributes->wire('model')->value())),
             value: @js($attributes->get('value')),
+            entangle: @entangle($attributes->wire('model')),
             settings: @js($attributes->get('settings')),
             calendar: null,
             placeholder: @js($placeholder),
             init () {
-                if (this.wire) this.value = this.$wire.get(this.wire.value)
+                if (this.wire) {
+                    this.value = this.entangle
+                    this.$watch('entangle', (val) => {
+                        this.value = val
+                        if (this.calendar) this.calendar.setDate(val)
+                    })
+                }
             },
             open () {
                 if (this.show) return this.close()
@@ -45,8 +48,11 @@
                 this.close()
             },
             input (val = null) {
-                this.value = val
-                this.$dispatch(this.uid, this.value)
+                if (this.wire) this.entangle = val
+                else {
+                    this.value = val
+                    this.$dispatch('input', val)
+                }
             },
             setCalendar () {
                 if (!this.calendar) {

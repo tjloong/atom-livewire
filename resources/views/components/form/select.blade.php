@@ -68,17 +68,20 @@
                     .finally(() => this.loading = false)
             },
             setOptions () {
-                let options = (this.config.options || [])
+                let list = (this.config.options || [])
+                if (this.paginator?.data) list = list.concat(this.paginator.data)
 
-                if (this.paginator?.data) {
-                    options = options.concat(this.paginator.data)
-                    // unique by value
-                    options = [...new Map(
-                        options.map(opt => [opt['value'], opt])
-                    ).values()]
-                }
+                this.options = []
 
-                this.options = options.map(opt => this.formatOption(opt))
+                list.forEach(item => {
+                    if (item.hasOwnProperty('children')) {
+                        this.options.push(this.formatOption({ ...item, isGroup: true }))
+                        item.children.forEach(child => this.options.push(this.formatOption(child)))
+                    }
+                    else if (!this.options.some(opt => opt.value === item.value)) {
+                        this.options.push(this.formatOption(item))
+                    }
+                })
             },
             getFilteredOptions () {
                 if (!this.text) return this.options
@@ -113,22 +116,17 @@
                     value: val.value || val.id || val.code,
                     label: val.label || val.name || val.title,
                     small: val.small || val.description || val.caption,
+                    isGroup: val.isGroup || false,
                 }
 
-                if (val.hasOwnProperty('children')) {
-                    opt.isGroup = true
-                }
-                else {
-                    opt.isGroup = false
-                    opt.image = val.image || null
-                    opt.avatar = val.avatar || null
-                    opt.flag = val.flag || null
-                    opt.remark = val.remark || null
-                    opt.status = val.status ? {
-                        text: val.status,
-                        color: val.status_color || 'text-gray-800 bg-gray-100',
-                    } : null
-                }
+                opt.image = val.image || null
+                opt.avatar = val.avatar || null
+                opt.flag = val.flag || null
+                opt.remark = val.remark || null
+                opt.status = val.status ? {
+                    text: val.status,
+                    color: val.status_color || 'text-gray-800 bg-gray-100',
+                } : null
 
                 if (opt.label && typeof opt.label === 'object') opt.label = opt.label[@js(app()->currentLocale())]
                 if (opt.image && typeof opt.image === 'object') opt.image = opt.image.url
