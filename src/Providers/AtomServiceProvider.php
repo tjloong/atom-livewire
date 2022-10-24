@@ -160,20 +160,6 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.page.update' => 'App\Page\Update\Index',
             'atom.app.page.update.content' => 'App\Page\Update\Content',
 
-            // label
-            'atom.app.label.listing' => 'App\Label\Listing',
-            'atom.app.label.create' => 'App\Label\Create',
-            'atom.app.label.update' => 'App\Label\Update\Index',
-            'atom.app.label.update.info' => 'App\Label\Update\Info',
-            'atom.app.label.update.children' => 'App\Label\Update\Children',
-            'atom.app.label.update.child-form-modal' => 'App\Label\Update\ChildFormModal',
-
-            // tax
-            'atom.app.tax.listing' => 'App\Tax\Listing',
-            'atom.app.tax.create' => 'App\Tax\Create',
-            'atom.app.tax.update' => 'App\Tax\Update',
-            'atom.app.tax.form' => 'App\Tax\Form',
-
             // role
             'atom.app.role.listing' => 'App\Role\Listing',
             'atom.app.role.create' => 'App\Role\Create',
@@ -239,6 +225,12 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.settings.integration.payment.gkash' => 'App\Settings\Integration\Payment\Gkash',
             'atom.app.settings.integration.payment.ozopay' => 'App\Settings\Integration\Payment\Ozopay',
             'atom.app.settings.integration.payment.ipay' => 'App\Settings\Integration\Payment\Ipay',
+            
+            // preferences
+            'atom.app.preferences.labels' => 'App\Preferences\Labels',
+            'atom.app.preferences.label-form-modal' => 'App\Preferences\LabelFormModal',
+            'atom.app.preferences.taxes' => 'App\Preferences\Taxes',
+            'atom.app.preferences.tax-form-modal' => 'App\Preferences\TaxFormModal',
         ];
 
         foreach ($components as $name => $class) {

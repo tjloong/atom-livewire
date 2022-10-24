@@ -59,12 +59,6 @@ class Index extends Component
                     ? ['slug' => 'teams', 'label' => 'Teams', 'icon' => 'people-group']
                     : null,
 
-                ['slug' => 'labels', 'label' => 'Labels', 'icon' => 'tags'],
-                
-                enabled_module('taxes')
-                    ? ['slug' => 'taxes', 'label' => 'Taxes', 'icon' => 'percent']
-                    : null,
-
                 enabled_module('plans') 
                     ? ['slug' => 'plans', 'label' => 'Plans', 'icon' => 'cube'] 
                     : null,

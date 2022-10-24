@@ -62,29 +62,16 @@
             </x-slot:links>
 
             <x-slot:aside>
-                <x-admin-panel.aside label="Dashboard" icon="chart-line" route="app.dashboard"/>    
-                <x-admin-panel.aside label="Blogs" icon="feather-pointed" route="app.blog.listing"/>    
-                <x-admin-panel.aside label="Enquiries" icon="paper-plane" route="app.enquiry.listing"/>    
-                <x-admin-panel.aside label="Accounts" icon="user-plus" route="app.account.listing" :active="current_route('app.account.*') && !current_route('app.account.home')"/>
-                
-                <x-admin-panel.aside label="Settings" icon="gear">
-                    <x-slot:subitems>
-                        <x-admin-panel.aside label="Roles" route="app.role.listing"/>    
-                        <x-admin-panel.aside label="Users" route="app.user.listing"/>    
-                        <x-admin-panel.aside label="Teams" route="app.team.listing"/>    
-                        <x-admin-panel.aside label="Labels" route="app.label.listing"/>    
-                        <x-admin-panel.aside label="Plans" route="app.plan.listing"/>    
-                        <x-admin-panel.aside label="Pages" route="app.page.listing"/>    
-                        <x-admin-panel.aside label="Files" route="app.files"/>    
-                        <x-admin-panel.aside label="Taxes" route="app.tax.listing"/>    
-                        <x-admin-panel.aside label="Site Settings" route="app.site-settings"/>
-                    </x-slot:subitems>
-                </x-admin-panel.aside>
+                <x-admin-panel.aside label="Dashboard" route="app.dashboard"/>    
+                <x-admin-panel.aside label="Blogs" route="app.blog.listing"/>    
+                <x-admin-panel.aside label="Enquiries" route="app.enquiry.listing"/>    
+                <x-admin-panel.aside label="Accounts" route="app.account.listing"/>
+                <x-admin-panel.aside label="Support Tickets" route="app.ticketing.listing"/>
             </x-slot:aside>
 
             <x-slot:asidefoot>
-                <x-admin-panel.aside label="My Account" icon="address-card" route="app.account.home" :active="current_route('app.account.home')"/>
-                <x-admin-panel.aside label="Support Tickets" icon="life-ring" route="app.ticketing.listing"/>
+                <x-admin-panel.aside label="Settings" route="app.settings"/>
+                <x-admin-panel.aside label="Preferences" route="app.preferences"/>
             </x-slot:asidefoot>
 
             {{ $slot }}

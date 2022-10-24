@@ -6,9 +6,11 @@
             {{ str(auth()->user()->name)->limit(15) }}
         </div>
 
-        <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
-
-        {{ $slot }}
+        @if ($slot->isNotEmpty()) {{ $slot }}
+        @else 
+            <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
+            <x-navbar.dropdown.item :href="route('app.preferences')" label="Preferences"/>
+        @endif
 
         @if ($canBackToApp)
             <x-navbar.dropdown.item :href="auth()->user()->home()" icon="house" label="Back to App"/>
@@ -31,10 +33,12 @@
             </x-slot:anchor>
     
             <div class="grid divide-y">
-                <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
-    
-                {{ $slot }}
-    
+                @if ($slot->isNotEmpty()) {{ $slot }}
+                @else 
+                    <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
+                    <x-navbar.dropdown.item :href="route('app.preferences')" label="Preferences"/>
+                @endif
+                    
                 @if ($canBackToApp)
                     <x-navbar.dropdown.item :href="auth()->user()->home()" label="Back to App"/>
                 @endif

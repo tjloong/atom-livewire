@@ -167,17 +167,6 @@ if (!config('atom.static_site')) {
         }
 
         /**
-         * Taxes
-         */
-        if (enabled_module('taxes')) {
-            define_route()->prefix('tax')->as('app.tax.')->group(function() {
-                define_route('listing', 'App\Tax\Listing')->name('listing');
-                define_route('create', 'App\Tax\Create')->name('create');
-                define_route('{taxId}', 'App\Tax\Update')->name('update');
-            });
-        }
-
-        /**
          * Teams
          */
         if (enabled_module('teams')) {
@@ -198,15 +187,6 @@ if (!config('atom.static_site')) {
                 define_route('{role}', 'App\Role\Update\Index')->name('update');
             });
         }
-    
-        /**
-         * Label
-         */
-        define_route()->prefix('label')->as('app.label.')->group(function () {
-            define_route('listing', 'App\Label\Listing')->name('listing');
-            define_route('create/{type}', 'App\Label\Create')->name('create');
-            define_route('{labelId}', 'App\Label\Update\Index')->name('update');
-        });
         
         /**
          * Users
@@ -247,6 +227,11 @@ if (!config('atom.static_site')) {
          * Settings
          */
         define_route('settings/{tab?}', 'App\Settings\Index')->name('app.settings')->where('tab', '.*');
+
+        /**
+         * Preferences
+         */
+        define_route('preferences/{tab?}', 'App\Preferences\Index')->name('app.preferences')->where('tab', '.*');
     });
 }
 

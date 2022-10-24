@@ -91,9 +91,7 @@
                 class="grow cursor-pointer">
             </div>
 
-            <a x-show="value" x-on:click="clear()" class="flex text-gray-500">
-                <x-icon name="xmark" class="m-auto"/>
-            </a>
+            <x-close x-show="value" x-on:click="clear()"/>
         </div>
 
         <div

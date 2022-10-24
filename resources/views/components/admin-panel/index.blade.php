@@ -95,6 +95,14 @@
                     {{ $links }}
                 </x-slot:body>
             @endisset
+
+            @isset($auth)
+                <x-slot:auth>
+                    <x-navbar.dropdown.auth>
+                        {{ $auth }}
+                    </x-navbar.dropdown.auth>
+                </x-slot:auth>
+            @endisset
         </x-navbar>
 
         <x-breadcrumbs class="shrink-0 bg-white py-1 px-4 border-b"/>

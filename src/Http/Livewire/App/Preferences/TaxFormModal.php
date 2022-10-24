@@ -1,15 +1,14 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Tax;
+namespace Jiannius\Atom\Http\Livewire\App\Preferences;
 
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class Form extends Component
+class TaxFormModal extends Component
 {
-    use WithPopupNotify;
-
     public $tax;
+
+    protected $listeners = ['open'];
 
     /**
      * Validation rules
@@ -38,6 +37,23 @@ class Form extends Component
     }
 
     /**
+     * Open
+     */
+    public function open($id = null)
+    {
+        $this->tax = $id
+            ? model('tax')
+                ->when(model('tax')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+                ->findOrFail($id)
+            : model('tax')->fill([
+                'country' => optional(auth()->user()->account)->country,
+                'is_active' => true,
+            ]);
+        
+        $this->dispatchBrowserEvent('tax-form-modal-open');
+    }
+
+    /**
      * Submit
      */
     public function submit()
@@ -47,8 +63,8 @@ class Form extends Component
 
         $this->tax->save();
 
-        if ($this->tax->wasRecentlyCreated) return redirect()->route('app.settings', ['taxes']);
-        else $this->popup('Tax Updated.');
+        $this->emitUp('refresh');
+        $this->dispatchBrowserEvent('tax-form-modal-close');
     }
 
     /**
@@ -56,6 +72,6 @@ class Form extends Component
      */
     public function render()
     {
-        return atom_view('app.tax.form');
+        return atom_view('app.preferences.tax-form-modal');
     }
 }
