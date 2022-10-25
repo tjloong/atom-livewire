@@ -461,6 +461,18 @@ function youtube_vid($url)
 }
 
 /**
+ * Short number
+ */
+function short_number($n, $locale = null)
+{
+    if ($n > 999999999) return round(($n/1000000000), 2).'B';
+    if ($n > 999999) return round(($n/1000000), 2).'M';
+    if ($n > 999) return round(($n/1000), 2).'K';
+
+    return $n;
+}
+
+/**
  * Format number to currency
  *
  * @return string

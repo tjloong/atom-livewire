@@ -70,8 +70,12 @@
             <div x-show="!checkedCount" class="flex flex-wrap justify-between items-center gap-3">
                 <div class="text-gray-800 flex items-end gap-1.5">
                     @if ($attributes->has('total'))
-                        <div class="text-lg font-medium leading-snug">{{ $attributes->get('total') }}</div>
-                        <div class="text-gray-500">{{ __('total rows') }}</div>
+                        <div class="text-lg font-medium leading-snug">
+                            {{ short_number($attributes->get('total')) }}
+                        </div>
+                        <div class="text-gray-500">
+                            {{ __('total rows') }}
+                        </div>
                     @endif
                 </div>
 

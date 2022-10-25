@@ -38,7 +38,7 @@
                 }
 
                 this.$watch('text', (val) => this.$nextTick(() => this.float()))
-                this.setOptions()
+                this.retrieve()
             },
             open () {
                 if (this.show) this.close()
@@ -59,28 +59,24 @@
                 floatDropdown(this.$refs.anchor, this.$refs.dd)
             },
             retrieve (page = 1) {
-                if (!this.config.callback) return
+                if (!this.config.callback) return this.setOptions()
 
                 this.loading = true
-                this.$wire.call(this.config.callback, this.text, page)
+                this.$wire.call(this.config.callback, this.text, page, [this.value].filter(Boolean).flat())
                     .then(res => this.paginator = res)
                     .then(() => this.setOptions())
                     .finally(() => this.loading = false)
             },
             setOptions () {
-                let list = (this.config.options || [])
-                if (this.paginator?.data) list = list.concat(this.paginator.data)
+                this.options = this.config.options || []
 
-                this.options = []
+                const paginatorData = this.paginator?.data || []
 
-                list.forEach(item => {
-                    if (item.hasOwnProperty('children')) {
-                        this.options.push(this.formatOption({ ...item, isGroup: true }))
-                        item.children.forEach(child => this.options.push(this.formatOption(child)))
-                    }
-                    else if (!this.options.some(opt => opt.value === item.value)) {
-                        this.options.push(this.formatOption(item))
-                    }
+                paginatorData.forEach(item => {
+                    const index = this.options.findIndex(opt => opt.value === item.value)
+
+                    if (index !== -1) this.options[index] = this.formatOption(item)
+                    else this.options.push(this.formatOption(item))
                 })
             },
             getFilteredOptions () {
@@ -195,113 +191,133 @@
             x-transition.opacity
             class="absolute z-20 bg-white shadow-lg rounded-md border border-gray-300 overflow-hidden w-full min-w-[300px]"
         >
-            <div x-ref="search" x-show="searchable" class="p-3 border-b">
-                <x-form.text
-                    x-model="text"
-                    x-on:input.debounce.300ms="retrieve()"
-                    placeholder="Search"
-                    prefix="icon:search"
-                >
-                    <x-slot:postfix>
-                        <x-close x-show="text" x-on:click="text = null"/>
-                    </x-slot:postfix>
-                </x-form.text>
-            </div>
+            <div class="relative">
+                <div x-ref="search" x-show="searchable" class="p-3 border-b">
+                    <x-form.text
+                        x-model="text"
+                        x-on:input.debounce.300ms="retrieve()"
+                        placeholder="Search"
+                        prefix="icon:search"
+                    >
+                        <x-slot:postfix>
+                            <x-close x-show="text" x-on:click="text = null"/>
+                        </x-slot:postfix>
+                    </x-form.text>
+                </div>
 
+                <div 
             <div 
+                <div 
+                    x-show="paginator?.last_page > 1" 
                 x-show="paginator?.last_page > 1" 
-                class="relative px-4 py-2 flex items-center justify-evenly gap-4 text-sm border-b"
-            >
-                <div x-show="loading" class="absolute inset-0 bg-white/50"></div>
+                    x-show="paginator?.last_page > 1" 
+                    class="relative px-4 py-2 flex items-center justify-evenly gap-4 text-sm border-b"
+                >
+                    <div x-show="loading" class="absolute inset-0 bg-white/50"></div>
 
-                <div class="shrink-0">
+                    <div class="shrink-0">
+                        <a 
                     <a 
-                        x-show="paginator?.current_page > 1"
+                        <a 
+                            x-show="paginator?.current_page > 1"
+                            x-on:click="retrieve(paginator?.current_page - 1)" 
                         x-on:click="retrieve(paginator?.current_page - 1)" 
-                        class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
-                    >
-                        <x-icon name="chevron-left" size="12"/> {{ __('Previous') }}
-                    </a>
-                </div>
+                            x-on:click="retrieve(paginator?.current_page - 1)" 
+                            class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
+                        >
+                            <x-icon name="chevron-left" size="12"/> {{ __('Previous') }}
+                        </a>
+                    </div>
 
-                <div x-text="`${paginator?.current_page}/${paginator?.last_page}`" class="grow text-center text-sm font-medium"></div>
+                    <div x-text="`${paginator?.current_page}/${paginator?.last_page}`" class="grow text-center text-sm font-medium"></div>
 
-                <div class="shrink-0">
+                    <div class="shrink-0">
+                        <a 
                     <a 
-                        x-show="paginator?.current_page < paginator?.last_page"
+                        <a 
+                            x-show="paginator?.current_page < paginator?.last_page"
+                            x-on:click="retrieve(paginator?.current_page + 1)" 
                         x-on:click="retrieve(paginator?.current_page + 1)" 
-                        class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
-                    >
-                        {{ __('Next') }} <x-icon name="chevron-right" size="12"/>
-                    </a>
+                            x-on:click="retrieve(paginator?.current_page + 1)" 
+                            class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
+                        >
+                            {{ __('Next') }} <x-icon name="chevron-right" size="12"/>
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-            <div x-show="loading" class="py-4 flex items-center justify-center h-full w-full text-theme">
-                <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 45px; height: 45px">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-            </div>
+                <div x-show="!getFilteredOptions().length">
+                    <x-empty-state title="The list is empty" subtitle="" size="sm"/>
+                </div>
 
-            <div x-show="!loading && !getFilteredOptions().length">
-                <x-empty-state title="The list is empty" subtitle="" size="sm"/>
-            </div>
-            
-            <div x-show="!loading && getFilteredOptions().length" class="max-h-[250px] overflow-auto">
-                <template x-for="opt in getFilteredOptions()">
-                    <div
-                        x-on:click="!opt.isGroup && select(opt.value)"
-                        x-bind:class="{
-                            'bg-gray-100': opt.isGroup,
-                            'cursor-pointer hover:bg-slate-100': !opt.isGroup
-                        }" 
-                        class="py-2 px-4 flex items-center gap-3 border-b last:border-b-0"
-                    >
-                        <div 
-                            x-show="opt.avatar || opt.image || opt.flag"
+                <div x-show="getFilteredOptions().length" class="max-h-[250px] overflow-auto">
+                    <template x-for="(opt, index) in getFilteredOptions()" x-bind:key="`${opt.value}-${index}`">
+                        <div
+                            x-on:click="!opt.isGroup && select(opt.value)"
                             x-bind:class="{
-                                'w-8 h-8 rounded-full': opt.avatar,
-                                'w-8 h-8 rounded-md shadow': opt.image,
-                                'w-4 h-4': opt.flag,
-                            }"
-                            class="shrink-0 bg-gray-100 overflow-hidden"
+                                'bg-gray-100': opt.isGroup,
+                                'cursor-pointer hover:bg-slate-100': !opt.isGroup,
+                            }" 
+                            class="py-2 px-4 flex items-center gap-3 border-b last:border-b-0"
                         >
-                            <img
-                                x-bind:src="opt.avatar || opt.image || opt.flag" 
+                            <div 
+                                x-show="opt.avatar || opt.image || opt.flag"
                                 x-bind:class="{
-                                    'object-cover': opt.avatar || opt.image,
-                                    'object-contain object-center': opt.flag,
+                                    'w-8 h-8 rounded-full': opt.avatar,
+                                    'w-8 h-8 rounded-md shadow': opt.image,
+                                    'w-4 h-4': opt.flag,
                                 }"
-                                class="w-full h-full object-cover"
+                                class="shrink-0 bg-gray-100 overflow-hidden"
                             >
-                        </div>
+                                <img
+                                    x-bind:src="opt.avatar || opt.image || opt.flag" 
+                                    x-bind:class="{
+                                        'object-cover': opt.avatar || opt.image,
+                                        'object-contain object-center': opt.flag,
+                                    }"
+                                    class="w-full h-full object-cover"
+                                >
+                            </div>
 
-                        <div 
-                            x-bind:class="{ 'ml-4': getFilteredOptions().some(res => (res.isGroup)) && !opt.isGroup }"
-                            class="grow grid"
-                        >
-                            <div 
-                                x-text="opt.label" 
-                                x-bind:class="opt.isGroup && 'font-bold'"
-                                class="truncate font-medium"
-                            ></div>
-                            <div 
-                                x-show="opt.small" 
-                                x-text="opt.small" 
-                                class="truncate font-medium text-sm text-gray-400">
+                            <div class="grow">
+                                <div class="flex gap-3 flex-wrap">
+                                    <div 
+                                        x-text="opt.label"
+                                        x-bind:class="opt.isGroup && 'font-bold'"
+                                        class="grow"
+                                    ></div>
+
+                                    <div 
+                                        x-show="opt.remark" 
+                                        x-text="opt.remark"
+                                        class="shrink-0 text-sm font-medium text-gray-500"
+                                    ></div>
+                                </div>
+
+                                <div class="flex gap-3 flex-wrap">
+                                    <div 
+                                        x-show="opt.small" 
+                                        x-text="opt.small" 
+                                        class="truncate font-medium text-sm text-gray-400"
+                                    ></div>
+
+                                    <div
+                                        x-show="opt.status"
+                                        x-text="opt.status?.text" 
+                                        x-bind:class="['text-sm px-2 font-medium rounded-full shadow'].concat(opt.status?.color)"
+                                    ></div>
+                                </div>
                             </div>
                         </div>
+                    </template>
+                </div>
 
-                        <div x-show="opt.status || opt.remark" class="shrink-0 flex flex-col gap-1 items-end">
-                            <div 
-                                x-text="opt.status?.text" 
-                                x-bind:class="['text-sm px-2 font-medium rounded-full shadow'].concat(opt.status?.color)"
-                            ></div>
-                            <div x-text="opt.remark" class="text-sm font-medium text-gray-500"></div>
-                        </div>
-                    </div>
-                </template>
+                <div x-show="loading" class="absolute inset-0 bg-white/80 flex items-center justify-center text-theme">
+                    <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 45px; height: 45px">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
             </div>
 
             <div class="border-t grid divide-y">
