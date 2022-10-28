@@ -1,13 +1,26 @@
+@props([
+    'fixed' => $attributes->get('fixed', false),
+    'sticky' => $attributes->get('sticky', false),
+    'scrollBreakpoint' => $attributes->get('scroll-breakpoint', 300),
+])
+
 <nav 
     x-cloak
-    x-data="{ show: false }"
-    class="{{
-        collect([
-            ($fixed ? 'fixed top-0 left-0 right-0 z-40' : null),
-            ($sticky ? 'sticky top-0 z-10' : null),
-            ($attributes->get('class') ?? 'p-4 relative'),
-        ])->filter()->join(' ')
-    }}"
+    x-data="{ 
+        show: false,
+        scrollBreakpoint: @js($scrollBreakpoint),
+        init () {
+            this.$nextTick(() => this.$dispatch('scroll-unbreak'))
+        },
+    }"
+    x-on:scroll.window="window.pageYOffset >= scrollBreakpoint 
+        ? $dispatch('scroll-break') 
+        : $dispatch('scroll-unbreak')"
+    {{ $attributes->class([
+        $fixed ? 'fixed top-0 left-0 right-0 z-40' : 'relative',
+        $sticky ? 'stickty top-0 z-10 relative' : null,
+        $attributes->get('class', 'transition p-4'),
+    ])->except(['fixed', 'sticky', 'scroll']) }}
 >
     <div class="max-w-screen-xl mx-auto grid divide-y">
         <div class="grid gap-4 items-center md:flex">
@@ -24,7 +37,7 @@
                     </a>
                 @endisset
 
-                <div x-on:click="show = !show" class="flex cursor-pointer md:hidden">
+                <div x-on:click="show = !show" id="navbar-burger" class="flex cursor-pointer md:hidden">
                     @isset($burger) {{ $burger }}
                     @else <x-icon name="chevron-down" size="20" class="m-auto"/>
                     @endisset
@@ -44,7 +57,10 @@
                 ">
                     <div class="grow">
                         @isset($body)
-                            <div {{ $body->attributes->merge(['class' => 'flex flex-col items-center gap-3 md:flex-row']) }}>
+                            <div {{ $body->attributes->merge([
+                                'class' => 'flex flex-col items-center gap-3 md:flex-row',
+                                'id' => 'navbar-body',
+                            ]) }}>
                                 {{ $body }}
                             </div>
                         @endisset

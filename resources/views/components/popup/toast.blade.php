@@ -1,9 +1,9 @@
 @props([
-    'icons' => [
-        ['type' => 'info', 'name' => 'info', 'bg' => 'bg-blue-100', 'text' => 'text-blue-400'],
-        ['type' => 'error', 'name' => 'xmark', 'bg' => 'bg-red-100', 'text' => 'text-red-400'],
-        ['type' => 'warning', 'name' => 'triangle-exclamation', 'bg' => 'bg-yellow-100', 'text' => 'text-yellow-400'],
-        ['type' => 'success', 'name' => 'check', 'bg' => 'bg-green-100', 'text' => 'text-green-400'],
+    'colors' => [
+        'info' => ['icon' => 'bg-blue-100 text-blue-500'],
+        'error' => ['icon' => 'bg-red-100 text-red-500'],
+        'warning' => ['icon' => 'bg-yellow-100 text-yellow-500'],
+        'success' => ['icon' => 'bg-green-100 text-green-500'],
     ],
 ])
 
@@ -12,68 +12,65 @@
     x-data="{
         show: false,
         timer: null,
-        title: null,
-        message: null,
-        duration: 5000,
-        type: 'info',
-        setContent (config) {
-            if (config === 'formError') this.message = 'Whoops! Something went wrong.'
-            else {
-                this.title = config?.title || null
-                this.message = config?.message || null
-                this.type = config?.type || 'info'
-            }
+        toasts: [],
+        config: {
+            title: null,
+            message: null,
+            type: 'info',
+            duration: 4000,
+            colors: @js($colors),
         },
-        open (config) {
-            // when aldy got other toast, close them first
-            if (this.show) {
-                this.close()
-                setTimeout(() => {
-                    this.setContent(config)
-                    this.show = true
-                }, 50)
-            }
-            else {
-                this.setContent(config)
-                this.show = true
+        open (val) {
+            const uid = random()
+            const config = { ...this.config, ...val, uid }
+
+            if (!config.title && config.message) {
+                config.title = config.message
+                config.message = null
             }
 
-            this.timer = setTimeout(() => this.close(), this.duration)
+            this.toasts.unshift(config)
+            setTimeout(() => this.close(uid), config.duration)
         },
-        close () {
-            clearInterval(this.timer)
-            this.show = false
+        close (uid) {
+            this.toasts = this.toasts.filter(toast => toast.uid !== uid)
         },
     }"
     x-on:toast.window="open($event.detail)"
-    class="fixed top-12 right-4 pt-2 pb-6 px-2 overflow-hidden space-y-2"
+    x-bind:class="toasts.length && 'pt-2 px-2 pb-6 w-[300px]'"
+    class="fixed top-12 right-4 overflow-hidden flex flex-col gap-2"
     style="z-index: 9000"
 >
-    <div
-        x-show="show"
-        x-transition
-        class="max-w-sm mx-auto min-w-[300px] bg-white rounded-md shadow-lg border p-4"
-    >
-        <div class="flex gap-3">
-            <div class="shrink-0">
-                @foreach ($icons as $icon)
-                    <div
-                        x-show="type === '{{ data_get($icon, 'type') }}'" 
-                        class="w-8 h-8 rounded-full flex {{ data_get($icon, 'bg') }}"
+    <template x-for="toast in toasts" x-bind:key="toast.uid">
+        <div class="bg-white rounded-lg shadow-lg border p-4">
+            <div class="flex flex-col gap-3">
+                <div class="flex items-center gap-3">
+                    <div 
+                        x-bind:class="toast.colors[toast.type].icon" 
+                        class="shrink-0 rounded-full flex items-center justify-center"
+                        style="width: 22px; height: 22px"
                     >
-                        <x-icon :name="data_get($icon, 'name')" class="m-auto {{ data_get($icon, 'text') }}"/>
+                        <x-icon x-show="toast.type === 'info'" name="info" size="12"/>
+                        <x-icon x-show="toast.type === 'error'" name="xmark" size="12"/>
+                        <x-icon x-show="toast.type === 'success'" name="check" size="12"/>
+                        <x-icon x-show="toast.type === 'warning'" name="triangle-exclamation" size="12"/>
                     </div>
-                @endforeach
-            </div>
 
-            <div class="grow self-center">
-                <div class="font-semibold" x-show="title" x-text="title"></div>
-                <div class="text-gray-500 font-medium" x-text="message"></div>
-            </div>
+                    <div
+                        x-text="toast.title"
+                        x-bind:class="toast.message ? 'font-semibold' : 'font-medium'"
+                        class="grow"
+                    ></div>
 
-            <a class="text-gray-500 py-1" x-on:click.prevent="close()">
-                <x-icon name="xmark"/>
-            </a>
+                    <div class="shrink-0">
+                        <x-close x-on:click="close(toast.uid)"/>
+                    </div>
+                </div>
+
+                <template x-if="toast.message">
+                    <div x-text="toast.message" class="text-sm text-gray-500"></div>
+                </template>
+            </div>
         </div>
-    </div>
+    </template>
 </div>

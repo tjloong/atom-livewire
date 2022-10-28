@@ -246,11 +246,11 @@ if (enabled_module('shareables')) {
  * Web
  */
 if (enabled_module('blogs')) {
-    define_route('blog/{slug?}', 'Web\Blog');
+    define_route('blog/{slug?}', 'Web\Blog')->name('web.blog');
 }
 
-define_route('contact-us', 'Web\ContactUs\Index');
-define_route('contact-us/thank-you', 'Web\ContactUs\ThankYou');
+// define_route('contact-us', 'Web\ContactUs\Index');
+// define_route('contact-us/thank-you', 'Web\ContactUs\ThankYou');
 
 // A catch all route after the app is booted
 // so this route will be register after the consuming app's routes
@@ -266,5 +266,6 @@ app()->booted(function() {
             'reset-password',
             'email',
             '__',
-        ]).').*$']);
+        ]).').*$'])
+        ->name('web.catchall');
 });

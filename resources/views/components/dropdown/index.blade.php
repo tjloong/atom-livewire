@@ -15,7 +15,7 @@
 >
     <div x-ref="anchor" x-on:click="open()" {{ $attributes->merge([
         'class' => 'inline-flex items-center gap-2 cursor-pointer',
-    ]) }}>
+    ])->except(['icon', 'label']) }}>
         @isset($anchor) {{ $anchor }}
         @else
             @if ($icon = $attributes->get('icon')) <x-icon :name="$icon"/> @endif

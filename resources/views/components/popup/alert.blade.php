@@ -1,9 +1,9 @@
 @props([
-    'icons' => [
-        ['type' => 'info', 'name' => 'info', 'bg' => 'bg-blue-100', 'text' => 'text-blue-400'],
-        ['type' => 'error', 'name' => 'xmark', 'bg' => 'bg-red-100', 'text' => 'text-red-400'],
-        ['type' => 'warning', 'name' => 'triangle-exclamation', 'bg' => 'bg-yellow-100', 'text' => 'text-yellow-400'],
-        ['type' => 'success', 'name' => 'check', 'bg' => 'bg-green-100', 'text' => 'text-green-400'],
+    'colors' => [
+        'info' => ['icon' => 'bg-blue-100 text-blue-500'],
+        'error' => ['icon' => 'bg-red-100 text-red-500'],
+        'warning' => ['icon' => 'bg-yellow-100 text-yellow-500'],
+        'success' => ['icon' => 'bg-green-100 text-green-500'],
     ],
 ])
 
@@ -15,6 +15,7 @@
             title: null,
             message: null,
             type: 'info',
+            colors: @js($colors),
         },
         open (config) {
             this.config = { ...this.config, ...config }
@@ -33,30 +34,37 @@
         class="fixed inset-0 flex items-center justify-center"
         style="z-index: 9000"
     >
-        <div class="absolute bg-black w-full h-full opacity-80" x-on:click="close()"></div>
+        <div class="absolute inset-0 bg-black/80" x-on:click="close()"></div>
         <div class="relative p-4">
-            <div class="max-w-lg mx-auto min-w-[250px] bg-white rounded-md border p-4 shadow-lg flex gap-3">
-                <div class="shrink-0">
-                    @foreach ($icons as $icon)
-                        <div
-                            x-show="config.type === '{{ data_get($icon, 'type') }}'" 
-                            class="w-10 h-10 rounded-full flex {{ data_get($icon, 'bg') }}"
+            <div class="max-w-lg mx-auto min-w-[250px] bg-white rounded-xl border shadow overflow-hidden">
+                <div class="flex flex-col gap-4 p-6">
+                    <div class="flex items-center gap-3">
+                        <div 
+                            x-bind:class="config.colors[config.type].icon" 
+                            class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
                         >
-                            <x-icon :name="data_get($icon, 'name')" class="m-auto {{ data_get($icon, 'text') }}"/>
+                            <x-icon name="info" x-show="config.type === 'info'"/>
+                            <x-icon name="xmark" x-show="config.type === 'error'"/>
+                            <x-icon name="check" x-show="config.type === 'success'"/>
+                            <x-icon name="triangle-exclamation" x-show="config.type === 'warning'"/>
                         </div>
-                    @endforeach
+
+                        <div 
+                            x-text="config.title" 
+                            class="grow font-semibold text-lg"
+                        ></div>
+                    </div>
+
+                    <div x-text="config.message" class="text-gray-700 font-medium"></div>
                 </div>
 
-                <div class="flex-grow self-center">
-                    <div class="space-y-2 mb-4">
-                        <div class="font-semibold text-lg mb-2" x-show="config.title" x-text="config.title"></div>
-                        <div class="text-gray-500" x-text="config.message"></div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <a class="py-1.5 px-3 font-medium rounded-md text-gray-900 bg-gray-100" x-on:click.prevent="close()">
-                            Close
-                        </a>
-                    </div>
+                <div class="bg-gray-100 py-4 px-6 flex items-center gap-2">
+                    <a 
+                        x-on:click.prevent="close()"
+                        class="text-gray-900" 
+                    >
+                        {{ __('Close') }}
+                    </a>
                 </div>
             </div>
         </div>
