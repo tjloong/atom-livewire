@@ -25,10 +25,29 @@
 
     {{-- desktop view --}}
     <div class="hidden md:block">
-        <x-navbar.dropdown>
+        <x-dropdown>
             <x-slot:anchor>
-                <div class="flex items-center justify-center gap-2">
-                    <x-icon name="circle-user" size="18px" class="text-gray-500"/> {{ str(auth()->user()->name)->limit(15) }}
+                <div 
+                    x-data="{
+                        classes: {},
+                        init () {
+                            if (this.config.scrollHide) this.toggleScroll(false)
+                        },
+                        toggleScroll (bool) {
+                            const revealClassName = this.config.scrollReveal?.item
+                            const hideClassName = this.config.scrollHide?.item
+                            if (revealClassName) this.classes[revealClassName] = bool
+                            if (hideClassName) this.classes[hideClassName] = !bool
+                        },
+                    }"
+                    x-on:scroll-reveal.window="toggleScroll(true)"
+                    x-on:scroll-hide.window="toggleScroll(false)"
+                    x-bind:class="classes"
+                    class="flex items-center justify-center gap-2 px-3 text-center font-medium"
+                >
+                    <x-icon name="circle-user" size="18" class="opacity-60"/> 
+                    {{ str(auth()->user()->name)->limit(15) }}
+                    <x-icon name="chevron-down" size="12"/>
                 </div>
             </x-slot:anchor>
     
@@ -49,6 +68,6 @@
                     {{ $foot }}
                 @endisset
             </div>
-        </x-navbar.dropdown>
+        </x-dropdown>
     </div>
 @endauth

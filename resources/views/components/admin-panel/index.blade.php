@@ -13,14 +13,13 @@
 >
     <div
         x-ref="void"
-        class="opacity-0"
-        :class="{
+        x-on:click="toggled = false"
+        x-bind:class="{
             'transition-0 duration-100 ease-in-out': animate,
             'fixed inset-0 z-20 bg-black opacity-80 lg:hidden': toggled,
         }"
-        @click="toggled = false"
-    >
-    </div>
+        class="opacity-0"
+    ></div>
 
     <aside 
         x-ref="aside"
@@ -75,7 +74,10 @@
             'lg:pl-56': !toggled,
         }"
     >
-        <x-navbar class="shrink-0 bg-white py-3 px-4 border-b" sticky>
+        <x-navbar 
+            :config="['sticky' => true]"
+            class="shrink-0 bg-white py-3 px-4 border-b"
+        >
             <x-slot:logo>
                 @isset($logo)
                     {{ $logo }}
@@ -96,13 +98,11 @@
                 </x-slot:body>
             @endisset
 
-            @isset($auth)
-                <x-slot:auth>
-                    <x-navbar.dropdown.auth>
-                        {{ $auth }}
-                    </x-navbar.dropdown.auth>
-                </x-slot:auth>
-            @endisset
+            <x-slot:auth>
+                @isset($auth) {{ $auth }}
+                @else <x-navbar.auth/>
+                @endif
+            </x-slot:auth>
         </x-navbar>
 
         <x-breadcrumbs class="shrink-0 bg-white py-1 px-4 border-b"/>

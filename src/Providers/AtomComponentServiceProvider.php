@@ -143,12 +143,11 @@ class AtomComponentServiceProvider extends ServiceProvider
             'blog.card',
 
             'navbar.index',
+            'navbar.auth',
             'navbar.item',
-            'navbar.login',
             'navbar.locale',
             'navbar.dropdown.index',
             'navbar.dropdown.item',
-            'navbar.dropdown.auth',
             'navbar.mobile.index',
             'navbar.mobile.item',
             'navbar.mobile.locale',

@@ -4,21 +4,25 @@
 >
     @if (str($src)->startsWith('<svg'))
         {!! $src !!}
-    @elseif ($attributes->has('src'))
-        <img 
-            src="{{ $attributes->get('src') }}" 
-            class="w-full h-full object-contain" 
-            width="100" 
-            height="100" 
-            alt="{{ $attributes->get('alt') ?? str($name)->headline() }}"
-        >
-    @elseif ($src)
-        <img 
-            src="{{ $src }}" 
-            class="w-full h-full object-contain" 
-            width="100" 
-            height="100" 
-            alt="{{ $attributes->get('alt') ?? str($name)->headline() }}"
-        >
+    @elseif ($src = $attributes->get('src') ?? $src)
+        @if ($href = $attributes->get('href'))
+            <a href="{{ $href }}">
+                <img 
+                    src="{{ $src }}" 
+                    class="w-full h-full object-contain" 
+                    width="100" 
+                    height="100" 
+                    alt="{{ $attributes->get('alt') ?? str($name)->headline() }}"
+                >
+            </a>
+        @else
+            <img 
+                src="{{ $src }}" 
+                class="w-full h-full object-contain" 
+                width="100" 
+                height="100" 
+                alt="{{ $attributes->get('alt') ?? str($name)->headline() }}"
+            >
+        @endif
     @endif
 </figure>

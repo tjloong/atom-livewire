@@ -1,26 +1,43 @@
-@props([
-    'fixed' => $attributes->get('fixed', false),
-    'sticky' => $attributes->get('sticky', false),
-    'scrollBreakpoint' => $attributes->get('scroll-breakpoint', 300),
-])
-
 <nav 
     x-cloak
-    x-data="{ 
+    x-data="{
         show: false,
-        scrollBreakpoint: @js($scrollBreakpoint),
+        classes: {},
+        scrollPos: 0,
+        config: {
+            fixed: false,
+            sticky: false,
+            scrollBreakpoint: 300,
+            ...@js($attributes->get('config', [])),
+        },
         init () {
-            this.$nextTick(() => this.$dispatch('scroll-unbreak'))
+            this.classes = {
+                'fixed top-0 left-0 right-0 z-40': this.config.fixed,
+                'stickty top-0 z-10': this.config.sticky,
+                'relative': !this.config.fixed,
+            }
+
+            if (this.config.scrollHide) this.toggleScroll(false)
+        },
+        detectScroll () {
+            this.scrollPos = window.pageYOffset
+            if (this.scrollPos >= this.config.scrollBreakpoint) this.$dispatch('scroll-reveal', this.$el.id)
+            else this.$dispatch('scroll-hide', this.$el.id)
+        },
+        toggleScroll (bool) {
+            const revealClassName = this.config.scrollReveal?.nav
+            const hideClassName = this.config.scrollHide?.nav
+            if (revealClassName) this.classes[revealClassName] = bool
+            if (hideClassName) this.classes[hideClassName] = !bool
         },
     }"
-    x-on:scroll.window="window.pageYOffset >= scrollBreakpoint 
-        ? $dispatch('scroll-break') 
-        : $dispatch('scroll-unbreak')"
-    {{ $attributes->class([
-        $fixed ? 'fixed top-0 left-0 right-0 z-40' : 'relative',
-        $sticky ? 'stickty top-0 z-10 relative' : null,
+    x-on:scroll.window="detectScroll"
+    x-on:scroll-reveal="toggleScroll(true)"
+    x-on:scroll-hide="toggleScroll(false)"
+    x-bind:class="classes"
+    {{ $attributes->merge(['id' => 'navbar'])->class([
         $attributes->get('class', 'transition p-4'),
-    ])->except(['fixed', 'sticky', 'scroll']) }}
+    ])->except(['config']) }}
 >
     <div class="max-w-screen-xl mx-auto grid divide-y">
         <div class="grid gap-4 items-center md:flex">
@@ -37,7 +54,7 @@
                     </a>
                 @endisset
 
-                <div x-on:click="show = !show" id="navbar-burger" class="flex cursor-pointer md:hidden">
+                <div x-on:click="show = !show" id="navbar-burger" class="flex px-2 cursor-pointer md:hidden">
                     @isset($burger) {{ $burger }}
                     @else <x-icon name="chevron-down" size="20" class="m-auto"/>
                     @endisset
@@ -67,19 +84,21 @@
                     </div>
 
                     <div class="shrink-0 w-full md:w-auto">
-                        @auth
-                            @isset($auth)
-                                {{ $auth }}
-                            @else
-                                <x-navbar.dropdown.auth/>
-                            @endisset
+                        @isset($auth) {{ $auth }}
                         @else
-                            @isset($notauth)
-                                {{ $notauth }}
+                            @auth <x-navbar.auth/>
                             @else
-                                <x-navbar.login/>
-                            @endisset
-                        @endauth
+                                <div class="flex items-center justify-center gap-3">
+                                    @if (Route::has('login'))
+                                        <x-navbar.item href="/login" label="Login"/>
+                                    @endif
+
+                                    @if (Route::has('register'))
+                                        <x-button href="/register?ref=navbar" label="Register"/>
+                                    @endif
+                                </div>                        
+                            @endauth
+                        @endisset
                     </div>
                 </div>
 

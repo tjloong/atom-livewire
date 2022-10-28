@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Components\Navbar\Dropdown;
+namespace Jiannius\Atom\Components\Navbar;
 
 use Illuminate\View\Component;
 
@@ -25,6 +25,6 @@ class Auth extends Component
      */
     public function render()
     {
-        return view('atom::components.navbar.dropdown.auth');
+        return view('atom::components.navbar.auth');
     }
 }

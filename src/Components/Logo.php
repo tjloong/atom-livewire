@@ -28,8 +28,6 @@ class Logo extends Component
 
     /**
      * Contructor
-     * 
-     * @return void
      */
     public function __construct(
         $name = null,
@@ -72,8 +70,6 @@ class Logo extends Component
 
     /**
      * Render component
-     * 
-     * @return Response
      */
     public function render()
     {
