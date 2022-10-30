@@ -79,12 +79,14 @@
 
     {{-- Web layout --}}
     @else
-        <x-navbar align="right">
-            @module('blogs')
-                <x-navbar.item href="/blog" label="Blogs"/>
-            @endmodule
+        <x-navbar>
+            <x-slot:body class="justify-end">
+                @module('blogs')
+                    <x-navbar.item href="/blog" label="Blogs"/>
+                @endmodule
 
-            <x-navbar.item href="/contact-us?ref=landing" label="Contact"/>
+                <x-navbar.item href="/contact-us?ref=landing" label="Contact Us"/>
+            </x-slot:body>
         </x-navbar>
         
         {{ $slot }}

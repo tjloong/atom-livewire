@@ -20,6 +20,20 @@ class FileController extends Controller
     }
 
     /**
+     * Upload
+     */
+    public function upload()
+    {
+        $upload = request()->file('upload');
+        $location = request()->input('location', 'uploads');
+        $visibility = request()->input('visibility', 'public');
+
+        $file = model('file')->store($upload, $location, $visibility);
+
+        return response()->json($file);
+    }
+
+    /**
      * Download
      */
     public function download($id)

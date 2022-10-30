@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Models;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -39,14 +38,14 @@ class File extends Model
 
         static::deleting(function($file) {
             $path = data_get($file->data, 'path');
-            $provider = data_get($file->data, 'provider', 'local');
+            $provider = data_get($file->data, 'provider') ?? data_get($file->data, 'disk') ?? 'local';
             $env = data_get($file->data, 'env', 'production');
 
             if ($path) {
                 if ($env === 'production' && !app()->environment('production')) {
                     abort(400, 'Do not delete production file in '.app()->environment().' environment!');
                 }
-                else if ($disk = model('file')->getStorageDisk($provider)) {
+                else if ($disk = $file->getDisk($provider)) {
                     $disk->delete($path);
                 }
             }
@@ -106,7 +105,7 @@ class File extends Model
      */
     public function getIsImageAttribute()
     {
-        return Str::startsWith($this->mime, 'image/');
+        return str()->startsWith($this->mime, 'image/');
     }
 
     /**
@@ -116,7 +115,7 @@ class File extends Model
      */
     public function getIsVideoAttribute()
     {
-        return Str::startsWith($this->mime, 'video/');
+        return str()->startsWith($this->mime, 'video/');
     }
 
     /**
@@ -126,7 +125,7 @@ class File extends Model
      */
     public function getIsAudioAttribute()
     {
-        return Str::startsWith($this->mime, 'audio/');
+        return str()->startsWith($this->mime, 'audio/');
     }
 
     /**
@@ -137,9 +136,7 @@ class File extends Model
      */
     public function getSizeAttribute($size)
     {
-        if ($size <= 0) return null;
-        else if ($size < 1) return round($size * 1000, 2) . ' KB';
-        else return round($size, 2) . ' MB';
+        return format_filesize($size, 'KB');
     }
 
     /**
@@ -149,13 +146,13 @@ class File extends Model
      */
     public function getUrlAttribute($url)
     {
-        $path = data_get($this->data, 'path');
+        // $path = data_get($this->data, 'path');
         $visibility = data_get($this->data, 'visibility', 'public');
-        $provider = data_get($this->data, 'provider', 'local');
+        // $provider = data_get($this->data, 'provider', 'local');
 
         if ($visibility === 'private') return route('__file', [$this->id]);
-        else if ($url) return $url;
-        else if ($path) return $this->getStorageDisk($provider)->url($path);
+        else return $url;
+        // else if ($path) return $this->getStorageDisk($provider)->url($path);
     }
 
     /**
@@ -196,154 +193,166 @@ class File extends Model
     }
 
     /**
-     * Store file
+     * Store file content
      */
-    public static function store($file, $location = 'public/uploads')
+    public function store($content, $location = 'uploads', $visibility = 'public')
     {
-        $visibility = str($location)->is('public/*') ? 'public' : 'private';
-        $dimension = self::compress($file);
-        $path = $file->store($location);
-        $meta = self::getFileMeta($file);
-        $data = [
-            'dimension' => $dimension,
-            'visibility' => $visibility,
-            'env' => app()->environment(),
-        ];
+        $this->compress($content);
 
-        // local disk
-        if (site_settings('filesystem') === 'local') {
-            $url = $visibility === 'public' ? asset('storage/' . str_replace('public/', '', $path)) : null;
-            $data = array_merge($data, [
-                'path' => $path,
-                'provider' => 'local',
-            ]);
-        }
-        // upload file to 3rd party disk
-        else if ($disk = self::getStorageDisk()) {
-            $folder = site_settings('do_spaces_folder').'/'.str()->replaceFirst('public/', '', $location);
-            $storedpath = $disk->putFile($folder, storage_path('app/'.$path), $visibility);
-            $url = $disk->url($storedpath);
-            $data = array_merge($data, [
-                'path' => $storedpath,
-                'provider' => site_settings('filesystem'),
-            ]);
+        $meta = $this->getMeta($content);
+        
+        if (!$meta) return;
+        if (data_get($meta, 'size')) {
+            $fs = site_settings('filesystem', 'local');
+    
+            if ($fs === 'local') $stored = $this->storeToLocal($content, $location, $visibility);
+            else if ($fs === 'do') $stored = $this->storeToDO($content, $location, $visibility);
 
-            // delete the local copy
-            Storage::delete($path);
+            $meta = array_merge($meta, $stored);
         }
 
-        $file = model('file')->fill([
+        return model('file')->create([
             'name' => data_get($meta, 'name'),
             'size' => data_get($meta, 'size'),
             'mime' => data_get($meta, 'mime'),
-            'url' => $url,
-            'data' => $data,
+            'url' => data_get($meta, 'url'),
+            'data' => array_filter([
+                'vid' => data_get($meta, 'vid'),
+                'path' => data_get($meta, 'path'),
+                'disk' => data_get($meta, 'disk'),
+                'dimension' => data_get($meta, 'dimension'),
+                'visibility' => $visibility,
+                'env' => app()->environment(),
+            ]),
         ]);
-        
-        $file->save();
-
-        return $file;
     }
 
     /**
-     * Store image url
+     * Store file content to local disk
      */
-    public static function storeImageUrl($url)
+    public function storeToLocal($content, $location, $visibility)
     {
-        $img = Image::make($url);
-        $mime = $img->mime();
+        $location = $visibility === 'public' 
+            ? str()->start($location, 'public/') 
+            : $location;
 
-        $file = model('file');
-        $file->name = $url;
-        $file->mime = $mime;
-        $file->url = $url;
-        $file->data = ['dimension' => $img->width() . 'x' . $img->height()];
-        $file->save();
+        $path = $content->store($location);
 
-        return $file;
+        $url = $visibility === 'public'
+            ? asset('storage/'.str()->replaceFirst('public/', '', $path))
+            : null;
+
+        return [
+            'url' => $url,
+            'path' => $path,
+            'disk' => 'local',
+        ];
     }
 
     /**
-     * Store youtube url
+     * Store file content to digital ocean spaces
      */
-    public static function storeYoutubeUrl($url)
+    public function storeToDO($content, $location, $visibility)
     {
-        $file = model('file');
-        $file->name = $url;
-        $file->mime = 'youtube';
-        $file->url = 'https://www.youtube.com/embed/' . $url;
-        $file->data = ['vid' => $url];
-        $file->save();
+    
+        $disk = $this->getDisk('do');
+        $folder = site_settings('do_spaces_folder').'/'.$location;
+        $path = $disk->putFile($folder, $content->path(), $visibility);
+        $url = $disk->url($path);
 
-        return $file;
+        return [
+            'url' => $url,
+            'path' => $path,
+            'disk' => 'do',
+        ];
     }
 
     /**
-     * Get file meta
+     * Get file content meta
      */
-    public static function getFileMeta($file)
+    public function getMeta($content)
     {
-        $name = $file->getClientOriginalName();
-        $size = round($file->getSize()/1024/1024, 5);
-        $ext = $file->extension();
-
-        if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) $mime = "image/$ext";
-        else $mime = $file->getMimeType();
-
-        return compact('name', 'size', 'mime', 'ext');
-    }
-
-    /**
-     * Compress files
-     */
-    public static function compress($file)
-    {
-        $path = $file->path();
-        $ext = $file->extension();
-
-        // resize image
-        if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
-            $img = Image::make($path);
-
-            $img->resize(1440, 1440, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })->save();
-
-            clearstatcache();
-
-            return $img->width() . 'x' . $img->height();
+        if ($vid = youtube_vid($content)) {
+            return [
+                'name' => $vid,
+                'mime' => 'youtube',
+                'url' => 'https://www.youtube.com/embed/'.$vid,
+                'vid' => $vid,
+            ];
         }
-    }
+        else if (is_string($content)) {
+            try {
+                $img = Image::make($content);
 
-    /**
-     * Get storage disk
-     */
-    public static function getStorageDisk($provider = null)
-    {
-        $provider = $provider ?? site_settings('filesystem');
-
-        if ($provider === 'do') {
-            $key = site_settings('do_spaces_key');
-            $secret = site_settings('do_spaces_secret');
-
-            if ($key && $secret) {
-                config([
-                    'filesystems.disks.do' => [
-                        'driver' => 's3',
-                        'key' => $key,
-                        'secret' => $secret,
-                        'region' => site_settings('do_spaces_region'),
-                        'bucket' => site_settings('do_spaces_bucket'),
-                        'folder' => site_settings('do_spaces_folder'),
-                        'endpoint' => site_settings('do_spaces_endpoint'),
-                        'use_path_style_endpoint' => false,
-                    ],
-                ]);
-        
-                return Storage::disk('do');
+                return [
+                    'name' => $content,
+                    'mime' => $img->mime(),
+                    'url' => $content,
+                    'dimension' => $img->width().'x'.$img->height(),
+                ];
+            } catch (\Throwable $th) {
+                return [];
             }
         }
-        else if ($provider) return Storage::disk($provider);
+        else {
+            $name = $content->getClientOriginalName();
+            $ext = $content->extension();
+            $size = round($content->getSize()/1024, 5);
+            $mime = in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])
+                ? 'image/'.$ext
+                : $content->getMimeType();
+            
+            if (str($mime)->is('image/*')) {
+                $img = Image::make($content->path());
+                $dimension = $img->width().'x'.$img->height();
+
+                return compact('name', 'ext', 'size', 'mime', 'dimension');
+            }
+            else return compact('name', 'ext', 'size', 'mime');
+        }
+    }
+
+    /**
+     * Compress file content
+     */
+    public static function compress($content)
+    {
+        if (is_string($content)) return;
+
+        $path = $content->path();
+        $ext = $content->extension();
+
+        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) return;
+
+        $img = Image::make($path);
+
+        $img->resize(1440, 1440, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        })->save();
+
+        clearstatcache();
+    }
+
+    /**
+     * Get disk
+     */
+    public function getDisk($provider)
+    {
+        // digital ocean
+        config([
+            'filesystems.disks.do' => [
+                'driver' => 's3',
+                'key' => site_settings('do_spaces_key'),
+                'secret' => site_settings('do_spaces_secret'),
+                'region' => site_settings('do_spaces_region'),
+                'bucket' => site_settings('do_spaces_bucket'),
+                'folder' => site_settings('do_spaces_folder'),
+                'endpoint' => site_settings('do_spaces_endpoint'),
+                'use_path_style_endpoint' => false,
+            ],
+        ]);
+
+        return Storage::disk($provider);
     }
 }

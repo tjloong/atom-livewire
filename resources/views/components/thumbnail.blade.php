@@ -1,5 +1,5 @@
 <figure {{ $attributes->class([
-    'relative rounded-md shadow bg-gray-200 overflow-hidden',
+    'relative rounded-lg shadow bg-gray-200 overflow-hidden',
     $attributes->get('class'),
     $square ? 'pt-[100%]' : 'pt-[60%]',
 ])->except(['file', 'url','icon','youtube','video', 'square']) }}>
@@ -19,4 +19,12 @@
             @endif
         </div>
     @endif
+
+    @isset($buttons)
+        <div class="absolute top-0 right-0 left-0 bg-gradient-to-b from-gray-500 to-transparent pt-2 px-2 pb-4">
+            <div class="flex items-center gap-2 justify-end">
+                {{ $buttons }}
+            </div>
+        </div>
+    @endisset
 </figure>

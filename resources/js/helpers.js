@@ -1,3 +1,11 @@
+// format file size
+window.formatFilesize = (value) => {
+    let n = value/1024
+
+    if (n >= 1024) return `${(n/1024).toFixed(2)} MB`
+    else return `${n.toFixed(2)} KB`
+}
+
 // check for emptyness
 window.empty = (value) => {
     value = JSON.parse(JSON.stringify(value))

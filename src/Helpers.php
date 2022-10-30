@@ -453,6 +453,8 @@ function mask_email($email)
  */
 function youtube_vid($url)
 {
+    if (!is_string($url)) return;
+    
     $regex = '/(?<=(?:v|i)=)[a-zA-Z0-9-]+(?=&)|(?<=(?:v|i)\/)[^&\n]+|(?<=embed\/)[^"&\n]+|(?<=(?:v|i)=)[^&\n]+|(?<=youtu.be\/)[^&\n]+/';
 
     preg_match($regex, $url, $matches);
@@ -517,6 +519,25 @@ function timezone()
     }
 
     return config('atom.timezone');
+}
+
+/**
+ * Format filesize
+ */
+function format_filesize($value, $initUnit = 'B')
+{
+    if (!is_numeric($value)) return $value;
+
+    $n = $value;
+    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    $index = array_search($initUnit, $units);
+
+    while ($n > 1024) {
+        $n = $n/1024;
+        $index = $index + 1;
+    }
+
+    return round($n, 2).' '.$units[$index];
 }
 
 /**

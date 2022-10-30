@@ -4,7 +4,7 @@
         'select-input',
     ]),
     'config' => [
-        'options' => $attributes->get('options'),
+        'options' => $attributes->get('options', []),
         'callback' => $attributes->get('callback'),
         'multiple' => $attributes->get('multiple'),
         'placeholder' => __($attributes->get(
@@ -68,15 +68,29 @@
                     .finally(() => this.loading = false)
             },
             setOptions () {
-                this.options = this.config.options || []
+                this.options = []
+                
+                this.config.options.forEach(opt => {
+                    this.options.push(this.formatOption({ ...opt, isGroup: opt.hasOwnProperty('subs') }))
+                    if (opt.hasOwnProperty('subs')) opt.subs.forEach(sub => this.options.push(this.formatOption(sub)))
+                })
 
                 const paginatorData = this.paginator?.data || []
-
                 paginatorData.forEach(item => {
                     const index = this.options.findIndex(opt => opt.value === item.value)
+                    const val = { ...item, isGroup: item.hasOwnProperty('subs') }
 
-                    if (index !== -1) this.options[index] = this.formatOption(item)
-                    else this.options.push(this.formatOption(item))
+                    if (index !== -1) this.options[index] = this.formatOption(val)
+                    else this.options.push(this.formatOption(val))
+
+                    if (item.hasOwnProperty('subs')) {
+                        item.subs.forEach(sub => {
+                            const subindex = this.options.findIndex(opt => opt.value === sub.value)
+
+                            if (subindex !== -1) this.options[subindex] = this.formatOption(sub)
+                            else this.options.push(this.formatOption(sub))
+                        })
+                    }
                 })
             },
             getFilteredOptions () {

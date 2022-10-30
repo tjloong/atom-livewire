@@ -9,40 +9,43 @@
 ])
 
 <x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
-    <div 
+    <div
         x-data="{
-            wire: @js(!empty($attributes->wire('model')->value())),
-            value: @js($attributes->get('value')),
-            entangle: @entangle($attributes->wire('model')),
             focus: false,
-            init () {
-                if (this.wire) {
-                    this.value = this.entangle
-                    this.$watch('entangle', (val) => this.value = val)
+            value: @js($attributes->get('value')),
+            wire: @js($attributes->wire('model')->value()),
+            get formatted () {
+                if (!this.value) return null
+
+                const split = `${this.value}`.split('.')
+
+                if (split.length === 2 && split[1].length > 2) {
+                    split[1] = split[1].substring(0, 2)
+                    return split.join('.')
                 }
+
+                return this.value
             },
-            onFocus () {
-                this.focus = true
-                const end = this.$refs.input.value.length
-                this.$nextTick(() => this.$refs.input.setSelectionRange(end, end))
+            init () {
+                if (this.wire) this.value = this.$wire.get(this.wire)
+
+                this.$watch('formatted', (val) => {
+                    this.$dispatch(@js($uid.'-updated'), val)
+                })
             },
-            input (e) {
-                let num = e.target.value.replace(/\D/g, '').trim()
-                if (num.length < 3) num = num.padStart(3, '0')
-
-                const head = num.slice(0, num.length - 2)
-                const tail = num.slice(-2)
-
-                this.value = [(+head).toString(), tail].join('.')
-
-                if (this.wire) this.entangle = this.value
+            setFocus (bool) {
+                this.focus = bool
             },
-
         }"
         x-bind:class="focus && 'active'"
-        class="form-input w-full flex items-center gap-2 {{ !empty($attributes->get('error')) ? 'error' : '' }}"
-        {{ $attributes->merge(['id' => $uid])->whereStartsWith(['x-', 'id']) }}
-
+        {{ $attributes
+            ->merge(['id' => $uid])
+            ->class([
+                'form-input w-full flex items-center gap-2',
+                $attributes->get('class'),
+                !empty($attributes->get('error')) ? 'error' : null,
+            ])
+            ->only(['id', 'class']) }}
     >
         @if (is_string($prefix))
             @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>
@@ -51,21 +54,26 @@
         @else {{ $prefix }}
         @endif
 
-        <input type="text"
-            x-ref="input"
-            x-model="value"
-            x-on:focus="onFocus"
-            x-on:blur="focus = false"
-            x-on:input="input"
-            {{ $attributes
-                ->class(['form-input transparent w-full'])
-                ->merge([
-                    'step' => '.01',
-                    'placeholder' => __($attributes->get('placeholder')),
-                ])
-                ->only(['class', 'step', 'placeholder']) 
-            }}
-        >
+        {{-- must use number input to have numpad in mobile --}}
+        <div class="grow">
+            <input type="number"
+                x-bind:value="formatted"
+                x-on:focus="setFocus(true)"
+                x-on:blur="setFocus(false)"
+                x-on:input="value = $event.target.value"
+                class="w-full"
+                {{ $attributes
+                    ->filter(fn($val, $key) => !str($key)->is('wire:*'))
+                    ->except(['error', 'required', 'caption', 'label', 'id', 'class']) }}
+            >
+
+            <div
+                x-ref="input"
+                x-on:{{ $uid }}-updated.window="$dispatch('input', $event.detail)"
+                class="hidden"
+                {{ $attributes->whereStartsWith('wire:') }}
+            ></div>
+        </div>
 
         @if (is_string($postfix))
             @if (str($postfix)->is('icon:*')) <x-icon :name="str($postfix)->replace('icon:', '')->toString()" class="text-gray-400"/>
