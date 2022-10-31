@@ -71,24 +71,25 @@
                 this.options = []
                 
                 this.config.options.forEach(opt => {
-                    this.options.push(this.formatOption({ ...opt, isGroup: opt.hasOwnProperty('subs') }))
+                    this.options.push(this.formatOption(opt))
                     if (opt.hasOwnProperty('subs')) opt.subs.forEach(sub => this.options.push(this.formatOption(sub)))
                 })
 
                 const paginatorData = this.paginator?.data || []
                 paginatorData.forEach(item => {
-                    const index = this.options.findIndex(opt => opt.value === item.value)
-                    const val = { ...item, isGroup: item.hasOwnProperty('subs') }
+                    const val = this.formatOption(item)
+                    const index = this.options.findIndex(opt => opt.value === val.value)
 
-                    if (index !== -1) this.options[index] = this.formatOption(val)
-                    else this.options.push(this.formatOption(val))
+                    if (index !== -1) this.options[index] = val
+                    else this.options.push(val)
 
                     if (item.hasOwnProperty('subs')) {
                         item.subs.forEach(sub => {
-                            const subindex = this.options.findIndex(opt => opt.value === sub.value)
+                            const subval = this.formatOption(sub)
+                            const subindex = this.options.findIndex(opt => opt.value === subval.value)
 
-                            if (subindex !== -1) this.options[subindex] = this.formatOption(sub)
-                            else this.options.push(this.formatOption(sub))
+                            if (subindex !== -1) this.options[subindex] = subval
+                            else this.options.push(subval)
                         })
                     }
                 })
@@ -120,13 +121,13 @@
                 else this.$dispatch('input', this.value)
             },
             formatOption (val) {
-                if (typeof val === 'string') return { value: val, label: val }
+                if (['string', 'number'].includes(typeof val)) return { value: val, label: val }
 
                 let opt = {
                     value: val.value || val.id || val.code,
                     label: val.label || val.name || val.title,
                     small: val.small || val.description || val.caption,
-                    isGroup: val.isGroup || false,
+                    isGroup: val.hasOwnProperty('subs') || val.hasOwnProperty('children'),
                 }
 
                 opt.image = val.image || null
