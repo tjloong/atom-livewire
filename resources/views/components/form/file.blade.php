@@ -10,6 +10,7 @@
 ])
 
 <div
+    x-cloak
     x-data="{
         bucket: [],
         loading: false,
@@ -88,12 +89,12 @@
 
             if (this.config.wire) this.$wire.set(this.config.wire, value)
 
-            this.$dispatch('input', value)
+            this.$dispatch('uploaded', value)
             this.bucket = []
             this.$dispatch('toast', { message: @js(__('Upload Completed')) })
         },
     }"
-    {{ $attributes->merge(['id' => $uid])->only('id') }}
+    {{ $attributes->merge(['id' => $uid])->whereStartsWith(['id', 'x-', 'wire:uploaded']) }}
 >
     <input 
         x-ref="fileinput" 
@@ -103,96 +104,99 @@
         {{ $attributes->only(['accept', 'multiple']) }}
     >
 
-    <div 
-        x-on:dragover.prevent="scan"
-        x-on:dragenter.prevent="scan"
-        x-on:dragleave.prevent="dropzone = 'idle'"
-        x-on:dragend.prevent="dropzone = 'idle'"
-        x-on:drop.prevent="read($event.dataTransfer.files)"
-        x-bind:class="{
-            'border-green-500': dropzone === 'ok',
-            'border-red-500': dropzone === 'error',
-            'border-gray-300': dropzone === 'idle',
-        }"
-        {{ $attributes->class([
-            'w-full h-full min-h-[80px] border-4 border-dashed rounded-xl',
-            'flex items-center justify-center p-4',
-            $attributes->get('class'),
-        ])->only('class') }}
-    >
-        <div x-show="bucket.length" class="grid gap-1 w-full">
-            <template x-for="(item, i) in bucket">
-                <div class="border shadow rounded-lg overflow-hidden">
-                    <div class="py-2 px-4 flex items-center gap-3">
-                        <figure x-show="item.src" class="shrink-0 w-8 h-8">
-                            <img x-bind:src="item.src" class="w-full h-full object-cover">
-                        </figure>
-                        
-                        <x-icon x-show="!item.src" name="file" class="shrink-0" size="20"></x-icon>
-
-                        <div class="text-sm font-medium grow grid">
-                            <div x-text="item.file.name" class="truncate"></div>
-                            <div x-show="item.error" class="flex items-center gap-1 text-red-500">
-                                <x-icon name="circle-info" size="10"/>
-                                <div x-text="item.error" class="text-xs"></div>
-                            </div>
-                            <div x-show="!item.error" x-text="formatFilesize(item.file.size)" class="text-xs text-gray-500"></div>
-                        </div>
-
-                        <div x-show="item.progress < 100" x-text="`${item.progress}%`" class="shrink-0 text-sm"></div>
-
-                        <div x-show="item.progress >= 100" class="shrink-0 flex">
-                            <x-icon name="circle-check" class="text-green-500 m-auto"></x-icon>
-                        </div>
-
-                        <div x-show="item.progress === 0" class="shrink-0">
-                            <x-close color="red" x-on:click.stop="remove(i)"/>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-300">
-                        <div x-bind:style="{ width: `${item.progress}%` }" class="bg-green-500 h-1"></div>
-                    </div>
-                </div>
-            </template>
-
-            <div x-show="config.multiple" x-on:click="open" class="cursor-pointer flex items-center gap-2 mt-4">
-                <x-icon name="upload" class="text-gray-500"/> {{ __('Upload more') }}
-            </div>
+    @if ($slot->isNotEmpty())
+        <div x-on:click="open" class="cursor-pointer">
+            {{ $slot }}
         </div>
+    @else
+        <div 
+            x-on:dragover.prevent="scan"
+            x-on:dragenter.prevent="scan"
+            x-on:dragleave.prevent="dropzone = 'idle'"
+            x-on:dragend.prevent="dropzone = 'idle'"
+            x-on:drop.prevent="read($event.dataTransfer.files)"
+            x-bind:class="{
+                'border-green-500': dropzone === 'ok',
+                'border-red-500': dropzone === 'error',
+                'border-gray-300': dropzone === 'idle',
+            }"
+            {{ $attributes->class([
+                'relative w-full h-full border-4 border-dashed rounded-xl',
+                'flex items-center justify-center',
+                $attributes->get('class'),
+            ])->only('class') }}
+        >
+            <div x-show="bucket.length" class="grid gap-1 w-full p-4">
+                <template x-for="(item, i) in bucket">
+                    <div class="border shadow rounded-lg overflow-hidden">
+                        <div class="py-2 px-4 flex items-center gap-3">
+                            <figure x-show="item.src" class="shrink-0 w-8 h-8">
+                                <img x-bind:src="item.src" class="w-full h-full object-cover">
+                            </figure>
+                            
+                            <x-icon x-show="!item.src" name="file" class="shrink-0" size="20"></x-icon>
 
-        <div x-show="!bucket.length" class="flex items-center justify-center">
-            <template x-if="dropzone === 'idle'">
-                <div x-on:click="open" class="cursor-pointer">
-                    @if ($slot->isNotEmpty()) {{ $slot }}
-                    @else
-                        <div class="flex items-center justify-center gap-2">
-                            <x-icon name="upload" class="text-gray-500" size="18"/> 
-                            <div class="font-medium">{{ __('Browse') }}</div>
-                        </div>
-                        <div class="text-gray-500 font-medium text-center">
-                            {{ __('Or drop '.(data_get($config, 'multiple') ? 'files' : 'file').' here to upload') }}
-                        </div>
-                        @if ($caption = $attributes->get('caption', 'File must be :max or smaller.'))
-                            <div class="text-sm font-medium text-gray-400 text-center">
-                                {{  __($caption, ['max' => format_filesize(data_get($config, 'max'), 'MB')]) }}
+                            <div class="text-sm font-medium grow grid">
+                                <div x-text="item.file.name" class="truncate"></div>
+                                <div x-show="item.error" class="flex items-center gap-1 text-red-500">
+                                    <x-icon name="circle-info" size="10"/>
+                                    <div x-text="item.error" class="text-xs"></div>
+                                </div>
+                                <div x-show="!item.error" x-text="formatFilesize(item.file.size)" class="text-xs text-gray-500"></div>
                             </div>
-                        @endif
-                    @endif
-                </div>
-            </template>
 
-            <template x-if="dropzone === 'ok'">
-                <div class="text-green-500 text-center font-medium">
+                            <div x-show="item.progress < 100" x-text="`${item.progress}%`" class="shrink-0 text-sm"></div>
+
+                            <div x-show="item.progress >= 100" class="shrink-0 flex">
+                                <x-icon name="circle-check" class="text-green-500 m-auto"></x-icon>
+                            </div>
+
+                            <div x-show="item.progress === 0" class="shrink-0">
+                                <x-close color="red" x-on:click.stop="remove(i)"/>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-300">
+                            <div x-bind:style="{ width: `${item.progress}%` }" class="bg-green-500 h-1"></div>
+                        </div>
+                    </div>
+                </template>
+
+                <div x-show="config.multiple" x-on:click="open" class="cursor-pointer flex items-center gap-2 mt-4">
+                    <x-icon name="upload" class="text-gray-500"/> {{ __('Upload more') }}
+                </div>
+            </div>
+
+            <div 
+                x-show="!bucket.length" 
+                x-on:click="open" 
+                class="flex flex-col items-center justify-center p-6 cursor-pointer"
+            >
+                <div class="flex items-center justify-center gap-2">
+                    <x-icon name="upload" class="text-gray-500" size="18"/> 
+                    <div class="font-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="text-gray-500 font-medium text-center">
+                    {{ __('Or drop '.(data_get($config, 'multiple') ? 'files' : 'file').' here to upload') }}
+                </div>
+                @if ($caption = $attributes->get('caption', 'File must be :max or smaller.'))
+                    <div class="text-sm font-medium text-gray-400 text-center">
+                        {{  __($caption, ['max' => format_filesize(data_get($config, 'max'), 'MB')]) }}
+                    </div>
+                @endif
+            </div>
+
+            <div x-show="dropzone === 'ok'" class="absolute inset-0 bg-green-100 flex rounded-xl">
+                <div class="text-green-500 text-center font-medium m-auto">
                     {{ __('Drop here to upload') }}
                 </div>
-            </template>
+            </div>
 
-            <template x-if="dropzone === 'error'">
-                <div class="text-red-500 text-center font-medium">
+            <div x-show="dropzone === 'error'" class="absolute inset-0 bg-red-100 flex rounded-xl">
+                <div class="text-red-500 text-center font-medium m-auto">
                     {{ __('File type is not supported') }}
                 </div>
-            </template>
+            </div>
         </div>
-    </div>
+    @endif
 </div>
