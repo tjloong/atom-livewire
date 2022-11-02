@@ -12,6 +12,7 @@ trait HasFilters
      */
     public function scopeStatus($query, $status)
     {
+        if ($status === 'trashed') return $query->onlyTrashed();
         if ($status === 'active' && $this->hasColumn('is_active')) return $query->where('is_active', true);
         if ($status === 'inactive' && $this->hasColumn('is_active')) return $query->where('is_active', false);
 

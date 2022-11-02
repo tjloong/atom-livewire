@@ -6,16 +6,6 @@ use Illuminate\View\Component;
 
 class Index extends Component
 {
-    public $uid;
-    
-    /**
-     * Constructor
-     */
-    public function __construct($uid = null)
-    {
-        $this->uid = $uid ?? 'table';
-    }
-
     /**
      * Render
      */

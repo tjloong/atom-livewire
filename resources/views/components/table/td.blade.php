@@ -1,5 +1,22 @@
 <td {{ $attributes->class(['align-top py-3 px-4 whitespace-nowrap']) }}>
-    @if ($attributes->has('status'))
+    @if ($checkbox = $attributes->get('checkbox'))
+        <div
+            x-data="{
+                value: @js($checkbox),
+                checked: false,
+            }"
+            x-on:click="$wire.toggleCheckbox({ name: uid, value })"
+            x-on:table-checkboxes-changed.window="
+                checked = $event.detail.indexOf(value) > -1
+                    || JSON.stringify($event.detail) === JSON.stringify(['*'])
+                    || JSON.stringify($event.detail) === JSON.stringify(['**'])
+            "
+            x-bind:class="checked ? 'bg-theme ring-theme' : 'bg-white ring-gray-300'"
+            class="mx-2 w-4 h-4 rounded ring-2 ring-offset-2 m-1"
+            id="{{ str()->slug('table-checkbox-'.$checkbox) }}"
+        ></div>
+
+    @elseif ($attributes->has('status'))
         @if ($status = $attributes->get('status'))
             <x-badge :label="$status"/>
         @endif

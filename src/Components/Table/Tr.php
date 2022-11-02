@@ -11,10 +11,6 @@ class Tr extends Component
      */
     public function render()
     {
-        return <<<blade
-            <tr class="border-b last:border-0 hover:bg-slate-100">
-                {{ \$slot }}
-            </tr>
-        blade;
+        return view('atom::components.table.tr');
     }
 }

@@ -1,5 +1,5 @@
 <x-close color="red"
-    x-on:click="$dispatch('confirm', {
+    x-on:click.stop="$dispatch('confirm', {
         title: '{{ __($attributes->get('title')) }}',
         message: '{{ __($attributes->get('message')) }}',
         type: 'error',

@@ -86,7 +86,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'table.th',
             'table.tr',
             'table.td',
-            'table.checkbox',
             
             'sidenav.index',
             'sidenav.group',

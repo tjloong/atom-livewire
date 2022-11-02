@@ -1,29 +1,27 @@
 @props([
+    'uid' => $attributes->get('uid', 'table'),
     'header' => $header ?? $attributes->get('header'),
     'search' => $attributes->get('search', 'filters.search'),
 ])
 
 <div class="relative flex flex-col gap-4">
     <div 
+        x-cloak
         x-data="{
-            name: @js($uid),
+            uid: @js($uid),
             total: @js($attributes->get('total', 0)),
-            checkedValues: [],
+            checkedCount: 0,
             get totalRows () {
-                return $el.querySelectorAll('table tbody tr').length
+                return $el.querySelectorAll('table > tbody > tr').length
             },
-            get checkedCount () {
-                if (this.checkedValues.includes('all')) return this.totalRows
-                else if (this.checkedValues.includes('everything')) return this.total
-                else return this.checkedValues.length
-            },
-            selectTotal () {
-                const data = { name: this.name, value: 'everything' }
-                this.$dispatch('table-checkbox-check', data)
-                this.$wire && this.$wire.emit('table-checkbox-check', data)
-            },
+            setCheckedCount (cbs) {
+                if (!cbs.length) this.checkedCount = 0
+                else if (cbs[0] === '*') this.checkedCount = this.totalRows
+                else if (cbs[0] === '**') this.checkedCount = this.total
+                else this.checkedCount = cbs.length
+            }
         }"
-        x-on:table-checkbox-checked.window="checkedValues = $event.detail"
+        x-on:table-checkboxes-changed.window="setCheckedCount($event.detail)"
         class="relative shadow rounded-lg border bg-white flex flex-col divide-y"
     >
         @if ($header || isset($headerButtons))
@@ -53,10 +51,10 @@
                         </div>
                     </div>
 
-                    @if ($attributes->get('allow-select-everything', true))
+                    @if ($attributes->get('allow-select-everything', false))
                         <a 
-                            x-show="total > totalRows && checkedValues.includes('all')" 
-                            x-on:click="selectTotal"
+                            x-show="total > totalRows && checkedCount === totalRows" 
+                            x-on:click="$wire.toggleCheckbox({ name: uid, value: '**' })"
                             class="text-sm"
                         >
                             {{ __('Select all :total rows', ['total' => $attributes->get('total')]) }}

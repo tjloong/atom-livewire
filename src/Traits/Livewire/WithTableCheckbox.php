@@ -4,46 +4,57 @@ namespace Jiannius\Atom\Traits\Livewire;
 
 trait WithTableCheckbox
 {
-    public $checkedTableRows = [];
-
-    public function getListeners()
-    {
-        return $this->listeners + [
-            'table-checkbox-check' => 'tableCheckboxCheck',
-        ];
-    }
-
-    public function tableCheckboxCheck($data)
+    public $checkboxes = [];
+    
+    /**
+     * Toggle checkbox
+     */
+    public function toggleCheckbox($data)
     {
         $name = data_get($data, 'name');
         $value = data_get($data, 'value');
-        $checked = collect(data_get($this->checkedTableRows, $name, []));
+        $cbs = collect($this->checkboxes)->where('name', data_get($data, 'name'))->map('collect');
 
-        if ($checked->contains($value)) $checked = $checked->reject(fn($val) => $val === $value);
-        else if (in_array($value, ['all', 'everything'])) $checked = collect([$value]);
-        else $checked->push($value);
-
-        if ($checked->count() > 1 && in_array($checked->first(), ['all', 'everything'])) $checked->shift();
-
-        $this->checkedTableRows[$name] = $checked;
-        $this->dispatchBrowserEvent('table-checkbox-checked', $this->getCheckedTableRows($name));
-    }
-
-    public function getCheckedTableRows($name = null)
-    {
-        if ($name) return $this->checkedTableRows[$name];
-        else {
-            $keys = array_keys($this->checkedTableRows);
-    
-            if (count($keys) === 1) return $this->checkedTableRows[head($keys)];
-    
-            return $this->checkedTableRows;
+        if (in_array($value, ['*', '**'])) {
+            $this->checkboxes = in_array(optional($cbs->first())->get('value'), ['*', '**'])
+                ? [] : [$data];
         }
+        else {
+            $cbs = $cbs->reject(fn($cb) => in_array($cb->get('value'), ['*', '**']));
+            $exists = $cbs->where('value', $value)->count() > 0;
+    
+            $this->checkboxes = (
+                $exists
+                    ? $cbs->where('value', '!==', $value)
+                    : $cbs->concat([$data])
+            )->values()->all();
+        }
+
+        $this->dispatchBrowserEvent('table-checkboxes-changed', $this->getTableCheckboxes($name));
     }
 
-    public function resetTableCheckbox()
+    /**
+     * Get table checkboxes
+     */
+    public function getTableCheckboxes($name = 'table')
     {
-        $this->checkedTableRows = [];
-        $this->dispatchBrowserEvent('table-checkbox-checked', []);
+        return collect($this->checkboxes)
+            ->where('name', $name)
+            ->pluck('value')
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Reset table checkboxes
+     */
+    public function resetTableCheckboxes($name = 'table')
+    {
+        $this->checkboxes = collect($this->checkboxes)
+            ->reject(fn($val) => data_get($val, 'name') === $name)
+            ->values()
+            ->all();
+
+        $this->dispatchBrowserEvent('table-checkboxes-changed', $this->checkboxes);
     }
 }

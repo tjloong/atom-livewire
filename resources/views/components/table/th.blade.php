@@ -2,7 +2,18 @@
     class="py-1 px-2 bg-gray-100 font-medium text-sm border-b border-gray-200 leading-6 tracking-wider"
     {{ $attributes->except(['sort', 'label']) }}
 >
-    @if ($sort = $attributes->get('sort'))
+    @if ($attributes->get('checkbox'))
+        <div
+            x-data="{
+                checked: false,
+            }"
+            x-on:click="$wire.toggleCheckbox({ name: uid, value: '*' })"
+            x-on:table-checkboxes-changed.window="checked = JSON.stringify($event.detail) === JSON.stringify(['*'])"
+            x-bind:class="checked ? 'bg-theme ring-theme' : 'bg-white ring-gray-300'"
+            class="mx-4 w-4 h-4 rounded ring-2 ring-offset-2 shadow"
+        ></div>
+
+    @elseif ($sort = $attributes->get('sort'))
         <div 
             x-data="{
                 field: @js($attributes->get('sort')),

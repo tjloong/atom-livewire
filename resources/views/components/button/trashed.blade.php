@@ -1,4 +1,4 @@
-<x-button color="red" icon="trash" inverted 
+<x-button color="red" icon="trash-can" inverted 
     label="Empty Trashed"
     x-on:click="$dispatch('confirm', {
         title: '{{ __('Empty Trashed') }}',
