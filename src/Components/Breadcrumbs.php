@@ -6,7 +6,6 @@ use Illuminate\View\Component;
 
 class Breadcrumbs extends Component
 {
-    public $home;
     public $trails = [];
 
     /**
@@ -20,16 +19,8 @@ class Breadcrumbs extends Component
         $trails = breadcrumbs()->get('trails');
         $fallback = breadcrumbs()->get('fallback');
 
-        if ($home && $trails) {
-            $this->home = $home;
-            $this->trails = array_filter($trails);
-        }
-        else if ($fallback) {
-            $this->home = $fallback[0];
-
-            array_shift($fallback);
-            $this->trails = array_filter($fallback);
-        }
+        if ($home && $trails) $this->trails = array_merge([$home], array_filter($trails));
+        else if ($fallback) $this->trails = array_filter($fallback);
     }
 
     /**
