@@ -10,18 +10,14 @@
         x-data="{
             uid: @js($uid),
             total: @js($attributes->get('total', 0)),
-            checkedCount: 0,
+            get checkboxes () {
+                const checkboxes = this.$wire.get('checkboxes')
+                return (checkboxes || []).filter(box => (box.name === this.uid)).map(box => (box.value))
+            },
             get totalRows () {
                 return $el.querySelectorAll('table > tbody > tr').length
             },
-            setCheckedCount (cbs) {
-                if (!cbs.length) this.checkedCount = 0
-                else if (cbs[0] === '*') this.checkedCount = this.totalRows
-                else if (cbs[0] === '**') this.checkedCount = this.total
-                else this.checkedCount = cbs.length
-            }
         }"
-        x-on:table-checkboxes-changed.window="setCheckedCount($event.detail)"
         class="relative shadow rounded-lg border bg-white flex flex-col divide-y"
     >
         @if ($header || isset($headerButtons))
@@ -41,19 +37,38 @@
         @endif
 
         <div class="py-3 px-4 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
-            <div x-show="checkedCount" class="flex flex-wrap justify-between items-center gap-3">
+            <div x-show="checkboxes.length" class="flex flex-wrap justify-between items-center gap-3">
                 <div class="shrink-0 flex items-center gap-2">
-                    <div class="flex items-center gap-2 py-1 px-3 rounded-full text-sm bg-gray-200">
-                        <x-icon name="check" class="text-green-500"/>
-                        <div class="flex items-center gap-1 font-medium">
-                            <div x-text="checkedCount"></div>
-                            <div>{{ __('Selected Rows') }}</div>
+                    <div class="flex items-center divide-x divide-gray-300 rounded-full text-sm bg-gray-200">
+                        <div class="flex items-center gap-2 py-1 px-3">
+                            <x-icon name="check" class="text-green-500"/>
+                            <div class="flex items-center gap-1 font-medium">
+                                <div x-text="checkboxes[0] === '*' ? totalRows : checkboxes.length"></div>
+                                <div>{{ __('Selected') }}</div>
+                            </div>
+                        </div>
+
+                        <div 
+                            x-show="checkboxes[0] !== '*'"
+                            x-on:click="$wire.toggleCheckbox({ name: uid, value: '*' })"
+                            class="flex items-center gap-2 justify-center py-1 px-3 cursor-pointer"
+                        >
+                            <x-icon name="check-double" class="text-gray-400" size="12"/>
+                            {{ __('Select All') }}
+                        </div>
+
+                        <div 
+                            x-on:click="$wire.resetTableCheckboxes()"
+                            class="flex items-center gap-2 justify-center py-1 px-3 cursor-pointer"
+                        >
+                            <x-icon name="xmark" class="text-gray-400" size="12"/>
+                            {{ __('De-select All') }}
                         </div>
                     </div>
-
+    
                     @if ($attributes->get('allow-select-everything', false))
                         <a 
-                            x-show="total > totalRows && checkedCount === totalRows" 
+                            x-show="total > totalRows && checkboxes.length === totalRows" 
                             x-on:click="$wire.toggleCheckbox({ name: uid, value: '**' })"
                             class="text-sm"
                         >
@@ -61,11 +76,11 @@
                         </a>
                     @endif
                 </div>
-
+    
                 @isset($checked) {{ $checked }} @endisset
             </div>
 
-            <div x-show="!checkedCount" class="flex flex-wrap justify-between items-center gap-3">
+            <div x-show="!checkboxes.length" class="flex flex-wrap justify-between items-center gap-3">
                 <div class="text-gray-800 flex items-end gap-1.5">
                     @if ($attributes->has('total'))
                         <div class="text-lg font-medium leading-snug">
@@ -141,7 +156,7 @@
         </div>
 
         @isset($toolbar)
-            <div x-show="!checkedCount" class="py-3 px-4 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
+            <div x-show="!checkboxes.length" class="py-3 px-4 first-of-type:rounded-t-lg last-of-type:rounded-b-lg">
                 {{ $toolbar }}
             </div>
         @endisset
