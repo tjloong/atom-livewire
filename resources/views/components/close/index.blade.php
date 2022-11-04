@@ -9,10 +9,10 @@
     ][$attributes->get('color', 'gray')],
 ])
 
-<a {{ $attributes->class([
-    'flex p-1 rounded-full',
+<div {{ $attributes->class([
+    'inline-flex p-1 rounded-full cursor-pointer',
     $colors,
     $attributes->get('class'),
 ]) }}>
     <x-icon name="xmark"/>
-</a>
+</div>

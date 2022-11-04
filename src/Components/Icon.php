@@ -177,6 +177,7 @@ class Icon extends Component
         'financial' => 'magnifying-glass-dollar',
         'help' => 'life-ring',
         'hide' => 'eye-slash',
+        'import' => 'cloud-arrow-up',
         'invoice' => 'file-invoice-dollar',
         'location' => 'location-dot',
         'new' => 'plus',

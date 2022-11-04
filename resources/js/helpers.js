@@ -8,11 +8,11 @@ window.formatFilesize = (value) => {
 
 // check for emptyness
 window.empty = (value) => {
+    if (value === undefined || value === null) return true
+
     value = JSON.parse(JSON.stringify(value))
 
-    return value === undefined
-        || value === null
-        || (Array.isArray(value) && !value.length)
+    return (Array.isArray(value) && !value.length)
         || (typeof value === 'object' && !Object.keys(value).length && Object.getPrototypeOf(value) === Object.prototype)
 }
 

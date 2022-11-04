@@ -1,19 +1,21 @@
-@if ($checkbox = $attributes->get('checkbox'))
+@if ($value = $attributes->get('checkbox'))
     <td class="align-top py-3 px-2 w-10">
         <div
             x-data="{
-                value: @js($checkbox),
-                checked: false,
+                value: @js($value),
+                get checkboxes () {
+                    return this.$wire.get('checkboxes')
+                },
+                get checked () {
+                    return this.checkboxes.includes('*')
+                        || this.checkboxes.includes('**')
+                        || this.checkboxes.includes(this.value)
+                },
             }"
-            x-on:click="$wire.toggleCheckbox({ name: uid, value })"
-            x-on:table-checkboxes-changed.window="
-                checked = $event.detail.indexOf(value) > -1
-                    || JSON.stringify($event.detail) === JSON.stringify(['*'])
-                    || JSON.stringify($event.detail) === JSON.stringify(['**'])
-            "
+            x-on:click="$wire.toggleCheckbox(value)"
             x-bind:class="checked ? 'border-theme border-2' : 'bg-white border-gray-300'"
             class="mx-4 w-6 h-6 p-0.5 rounded shadow border cursor-pointer"
-            id="{{ str()->slug('table-checkbox-'.$checkbox) }}"
+            id="{{ str()->slug('table-checkbox-'.$value) }}"
         >
             <div x-bind:class="checked ? 'block' : 'hidden'" class="w-full h-full bg-theme"></div>
         </div>

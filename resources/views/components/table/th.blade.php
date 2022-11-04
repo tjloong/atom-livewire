@@ -5,13 +5,17 @@
 ])
 
 @if ($checkbox)
-    <th class="py-1 px-2 bg-gray-100 border-b border-gray-200 w-10">
+    <th class="py-1 px-2 bg-slate-100 border-b border-gray-200 w-10">
         <div
             x-data="{
-                checked: false,
+                get checkboxes () {
+                    return this.$wire.get('checkboxes')
+                },
+                get checked () {
+                    return this.checkboxes.includes('*')
+                },
             }"
-            x-on:click="$wire.toggleCheckbox({ name: uid, value: '*' })"
-            x-on:table-checkboxes-changed.window="checked = JSON.stringify($event.detail) === JSON.stringify(['*'])"
+            x-on:click="$wire.toggleCheckbox('*')"
             x-bind:class="checked ? 'border-theme border-2' : 'bg-white border-gray-300'"
             class="mx-4 w-6 h-6 p-0.5 rounded shadow border cursor-pointer"
             id="table-checkbox-all"
@@ -20,7 +24,7 @@
         </div>
     </th>
 @else
-    <th class="py-1 px-2 bg-gray-100 font-medium text-sm border-b border-gray-200 leading-6 tracking-wider">
+    <th class="py-1 px-2 bg-slate-100 font-medium text-sm border-b border-gray-200 leading-6 tracking-wider">
         <div 
             x-data="{
                 sortBy: @js($sortBy),
