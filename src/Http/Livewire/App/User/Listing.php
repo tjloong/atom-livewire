@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -10,6 +11,7 @@ class Listing extends Component
 {
     use WithPagination;
     use WithPopupNotify;
+    use WithTable;
 
     public $role;
     public $account;
@@ -31,18 +33,11 @@ class Listing extends Component
     ];
 
     /**
-     * Get tabs property
+     * Get trashed count property
      */
-    public function getTabsProperty()
+    public function getTrashedCountProperty()
     {
-        $trashed = (clone $this->query)->status('trashed')->count();
-
-        return array_filter([
-            ['slug' => null, 'label' => 'All'],
-            $trashed
-                ? ['slug' => 'trashed', 'label' => 'Trashed', 'count' => $trashed]
-                : null,
-        ]);
+        return (clone $this->query)->status('trashed')->count();
     }
 
     /**
@@ -69,15 +64,7 @@ class Listing extends Component
      */
     public function getUsersProperty()
     {
-        return $this->query->paginate(50);
-    }
-
-    /**
-     * Updated filters
-     */
-    public function updatedFilters()
-    {
-        $this->resetPage();
+        return $this->query->paginate($this->maxRows);
     }
 
     /**

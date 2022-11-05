@@ -1,16 +1,21 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Enquiries"/>
 
-    <x-table :total="$this->enquiries->total()" :links="$this->enquiries->links()" export>
-        <x-slot:head>
+    <x-table>
+        <x-slot:header>
+            <x-table.searchbar :total="$this->enquiries->total()">
+                <x-table.export/>
+            </x-table.searchbar>
+        </x-slot:header>
+
+        <x-slot:thead>
             <x-table.th sort="created_at">Date</x-table.th>
             <x-table.th sort="name">Name</x-table.th>
             <x-table.th sort="phone">Phone</x-table.th>
             <x-table.th sort="email">Email</x-table.th>
             <x-table.th class="text-right">Status</x-table.th>
-        </x-slot:head>
+        </x-slot:thead>
 
-        <x-slot:body>
         @foreach ($this->enquiries as $enquiry)
             <x-table.tr>
                 <x-table.td>
@@ -26,6 +31,7 @@
                 <x-table.td :status="$enquiry->status" class="text-right"/>
             </x-table.tr>
         @endforeach
-        </x-slot:body>
     </x-table>
+
+    {!! $this->enquiries->links() !!}
 </div>

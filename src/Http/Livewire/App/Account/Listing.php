@@ -2,12 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Account;
 
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithPagination;
+    use WithTable;
 
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
@@ -52,7 +54,7 @@ class Listing extends Component
      */
     public function getAccountsProperty()
     {
-        return $this->query->paginate(100);
+        return $this->query->paginate($this->maxRows);
     }
 
     /**

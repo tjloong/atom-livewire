@@ -2,23 +2,25 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Blog;
 
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithPagination;
+    use WithTable;
 
     public $sortBy = 'updated_at';
     public $sortOrder = 'desc';
     public $filters = [
-        'search' => '',
+        'search' => null,
         'status' => null,
     ];
 
     protected $queryString = [
         'filters' => ['except' => [
-            'search' => '',
+            'search' => null,
             'status' => null,
         ]], 
         'sortBy' => ['except' => 'updated_at'],
@@ -42,15 +44,7 @@ class Listing extends Component
         return model('blog')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(30);
-    }
-
-    /**
-     * Updated filters
-     */
-    public function updatedFilters()
-    {
-        $this->resetPage();
+            ->paginate($this->maxRows);
     }
 
     /**

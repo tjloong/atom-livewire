@@ -1,11 +1,15 @@
-<x-table header="Pages" :total="$this->pages->count()">
-    <x-slot:head>
+<x-table>
+    <x-slot:header>
+        <x-table.header label="Pages"/>
+        <x-table.searchbar :total="$this->pages->count()"/>
+    </x-slot:header>
+
+    <x-slot:thead>
         <x-table.th sort="name" label="Page"/>
         @if (count(config('atom.locales')) > 1) <x-table.th class="text-right"/> @endif
         <x-table.th sort="title" label="Title"/>
-    </x-slot:head>
+    </x-slot:thead>
 
-    <x-slot:body>
     @foreach ($this->pages as $page)
         <x-table.tr>
             <x-table.td :label="$page->name" :href="route('app.page.update', [$page])"/>
@@ -13,5 +17,4 @@
             <x-table.td :label="$page->title" :href="route('app.page.update', [$page])"/>
         </x-table.tr>
     @endforeach
-    </x-slot:body>
 </x-table>

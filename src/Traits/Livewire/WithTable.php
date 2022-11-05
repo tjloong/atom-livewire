@@ -6,6 +6,15 @@ trait WithTable
 {
     public $maxRows = 100;
     public $checkboxes = [];
+
+    /**
+     * Updated filters
+     */
+    public function updatedFilters()
+    {
+        $this->resetPage();
+        $this->resetCheckboxes();
+    }
     
     /**
      * Toggle checkbox
