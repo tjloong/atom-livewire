@@ -3,30 +3,34 @@
         <x-button label="New Product" :href="route('app.product.create')"/>
     </x-page-header>
 
-    <x-table :total="$this->products->total()" :links="$this->products->links()">
-        <x-slot:toolbar>
-            <div class="flex items-center gap-2">
-                <x-form.select
-                    wire:model="filters.status"
-                    :options="data_get($this->options, 'statuses')"
-                    placeholder="All Status"
-                />
+    <x-table>
+        <x-slot:header>
+            <x-table.header :total="$this->products->total()"/>
 
-                <x-form.select
-                    wire:model="filters.type"
-                    :options="data_get($this->options, 'types')"
-                    placeholder="All Product Types"
-                />
+            <x-table.toolbar>
+                <div class="flex items-center gap-2">
+                    <x-form.select
+                        wire:model="filters.status"
+                        :options="data_get($this->options, 'statuses')"
+                        placeholder="All Status"
+                    />
+    
+                    <x-form.select
+                        wire:model="filters.type"
+                        :options="data_get($this->options, 'types')"
+                        placeholder="All Product Types"
+                    />
+    
+                    <x-form.select
+                        wire:model="filters.product_category"
+                        :options="data_get($this->options, 'product_categories')"
+                        placeholder="All Categories"
+                    />
+                </div>
+            </x-table.toolbar>
+        </x-slot:header>
 
-                <x-form.select
-                    wire:model="filters.product_category"
-                    :options="data_get($this->options, 'product_categories')"
-                    placeholder="All Categories"
-                />
-            </div>
-        </x-slot:toolbar>
-
-        <x-slot:head>
+        <x-slot:thead>
             <x-table.th sort="code" label="Code"/>
             <x-table.th sort="name" label="Name"/>
             <x-table.th label="Category"/>
@@ -35,48 +39,48 @@
                 <x-table.th sort="sold" label="Sold" class="text-right"/>
             @endif
             <x-table.th/>
-        </x-slot:head>
+        </x-slot:thead>
 
-        <x-slot:body>
-            @foreach ($this->products as $product)
-                <x-table.tr>
+        @foreach ($this->products as $product)
+            <x-table.tr>
+                <x-table.td
+                    :href="route('app.product.update', [$product->id])"
+                    :label="$product->code"
+                />
+                
+                <x-table.td
+                    :href="route('app.product.update', [$product->id])"
+                    :label="$product->name"
+                    :small="
+                        $product->type === 'variant'
+                            ? __(
+                                ':count '.str()->plural('variant', $product->variants->count()),
+                                ['count' => $product->variants->count()]
+                            )
+                            : null
+                    "
+                />
+
+                <x-table.td :tags="$product->categories->pluck('name.'.app()->currentLocale())"/>
+                
+                @if (is_numeric($product->price))
+                    <x-table.td :amount="$product->price" class="text-right"/>
+                @else
                     <x-table.td
-                        :href="route('app.product.update', [$product->id])"
-                        :label="$product->code"
+                        :amount="data_get($product->price, 'amount')"
+                        :currency="data_get($product->price, 'currency')"
+                        class="text-right"
                     />
-                    
-                    <x-table.td
-                        :href="route('app.product.update', [$product->id])"
-                        :label="$product->name"
-                        :small="
-                            $product->type === 'variant'
-                                ? __(
-                                    ':count '.str()->plural('variant', $product->variants->count()),
-                                    ['count' => $product->variants->count()]
-                                )
-                                : null
-                        "
-                    />
+                @endif
 
-                    <x-table.td :tags="$product->categories->pluck('name.'.app()->currentLocale())"/>
-                    
-                    @if (is_numeric($product->price))
-                        <x-table.td :amount="$product->price" class="text-right"/>
-                    @else
-                        <x-table.td
-                            :amount="data_get($product->price, 'amount')"
-                            :currency="data_get($product->price, 'currency')"
-                            class="text-right"
-                        />
-                    @endif
+                @if ($this->hasSoldColumn)
+                    <x-table.td :label="$product->sold" class="text-right"/>
+                @endif
 
-                    @if ($this->hasSoldColumn)
-                        <x-table.td :label="$product->sold" class="text-right"/>
-                    @endif
-
-                    <x-table.td :active="$product->is_active" class="text-right"/>
-                </x-table.tr>
-            @endforeach
-        </x-slot:body>
+                <x-table.td :active="$product->is_active" class="text-right"/>
+            </x-table.tr>
+        @endforeach
     </x-table>
+
+    {!! $this->products->links() !!}
 </div>
