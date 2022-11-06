@@ -2,25 +2,27 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Promotion;
 
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithPagination;
+    use WithTable;
 
     public $sortBy = 'updated_at';
     public $sortOrder = 'desc';
     public $filters = [
-        'status' => '',
-        'search' => '',
+        'status' => null,
+        'search' => null,
     ];
 
     protected $queryString = [
         'page' => ['except' => 1],
         'filters' => ['except' => [
-            'status' => '',
-            'search' => '',
+            'status' => null,
+            'search' => null,
         ]],
         'sortBy' => ['except' => 'updated_at'],
         'sortOrder' => ['except' => 'desc'],
@@ -43,7 +45,7 @@ class Listing extends Component
             ->when(model('promotion')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(30);
+            ->paginate($this->maxRows);
     }
 
     /**
@@ -57,14 +59,6 @@ class Listing extends Component
                 'label' => str()->headline($val),
             ]),
         ];
-    }
-
-    /**
-     * Reset filters
-     */
-    public function resetFilters()
-    {
-        $this->reset('filters');
     }
 
     /**

@@ -2,21 +2,23 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\AccountPayment;
 
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithPagination;
+    use WithTable;
 
     public $account;
     public $fullpage;
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
-    public $filters = ['search' => ''];
+    public $filters = ['search' => null];
 
     protected $queryString = [
-        'filters' => ['except' => ['search' => '']],
+        'filters' => ['except' => ['search' => null]],
         'sortBy' => ['except' => 'created_at'],
         'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
@@ -53,15 +55,7 @@ class Listing extends Component
             )
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(30);
-    }
-
-    /**
-     * Updated filters
-     */
-    public function updatedFilters()
-    {
-        $this->resetPage();
+            ->paginate($this->maxRows);
     }
 
     /**

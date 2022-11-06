@@ -2,23 +2,25 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Ticketing;
 
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithPagination;
+    use WithTable;
 
     public $sortBy = 'created_at';
     public $sortOrder = 'desc';
     public $filters = [
-        'search' => '',
+        'search' => null,
         'status' => null,
     ];
 
     protected $queryString = [
         'filters' => ['except' => [
-            'search' => '',
+            'search' => null,
             'status' => null,
         ]],
         'sortBy' => ['except' => 'created_at'],
@@ -48,15 +50,7 @@ class Listing extends Component
             ->filter($this->filters)
             ->orderBy('seq')
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(50);
-    }
-
-    /**
-     * Updated filters
-     */
-    public function updatedFilters()
-    {
-        $this->resetPage();
+            ->paginate($this->maxRows);
     }
 
     /**

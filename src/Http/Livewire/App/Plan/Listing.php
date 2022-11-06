@@ -2,12 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Plan;
 
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithPagination;
+    use WithTable;
 
     public $sortBy = 'name';
     public $sortOrder = 'asc';
@@ -28,15 +30,7 @@ class Listing extends Component
         return model('plan')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate(50);
-    }
-
-    /**
-     * Updated filters
-     */
-    public function updatedFilters()
-    {
-        $this->resetPage();
+            ->paginate($this->maxRows);
     }
 
     /**
