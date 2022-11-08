@@ -247,10 +247,6 @@ class AtomServiceProvider extends ServiceProvider
     {
         $router = app('router');
         $router->aliasMiddleware('track-ref', \Jiannius\Atom\Http\Middleware\TrackReferer::class);
-
-        \Livewire\Livewire::addPersistentMiddleware([
-            \Jiannius\Atom\Http\Middleware\PortalGuard::class,
-        ]);
     }
 
     /**
