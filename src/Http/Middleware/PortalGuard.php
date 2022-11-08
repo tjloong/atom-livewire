@@ -16,16 +16,6 @@ class PortalGuard
      */
     public function handle(Request $request, Closure $next)
     {
-        // prevent host poisoning
-        if ($allowedHosts = collect([config('app.url')])
-            ->concat(config('atom.allowed_hosts', []))
-            ->filter()
-            ->map(fn($host) => str($host)->replaceFirst('http://', '')->toString())
-            ->map(fn($host) => str($host)->replaceFirst('https://', '')->toString())
-        ) {
-            if (!$allowedHosts->contains($request->host())) abort(400);
-        }
-
         if ((bool)$request->query('webview')) {
             session(['webview' => $request->userAgent()]);
         }

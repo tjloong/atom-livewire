@@ -29,7 +29,16 @@ npm install
 'static_site' => true,
 ```
 
-4. Start development
+4. Add middleware to app\Http\Kernel.php
+
+```
+protected $middleware = [
+    ...
+    \Jiannius\Atom\Http\Middleware\SiteSecurity::class, // for site security like https redirect etc
+];
+```
+
+5. Start development
 
 ```
 npm run dev
@@ -89,14 +98,19 @@ npm install
 php artisan atom:install
 ```
 
-8. Add PortalGuard middleware to the web group in app\Http\Kernel.php
+8. Add middleware to app\Http\Kernel.php
 
 ```
-...
+protected $middleware = [
+    ...
+    \Jiannius\Atom\Http\Middleware\SiteSecurity::class, // for site security like https redirect etc
+];
+
 protected $middlewareGroups = [
     'web' => [
         ...
-        \Jiannius\Atom\Http\Middleware\PortalGuard::class,
+        \Jiannius\Atom\Http\Middleware\PortalGuard::class,  // for checking blocked account etc
+        \Jiannius\Atom\Http\Middleware\PlanGuard::class,    // only if using plans module
     ],
 
     'api' => [
@@ -105,24 +119,7 @@ protected $middlewareGroups = [
 ];
 ```
 
-9. (Optional) Add PlanGuard middleware to web group in app\Http\Kernel.php (only if using plans module).
-
-```
-...
-protected $middlewareGroups = [
-    'web' => [
-        ...
-        \Jiannius\Atom\Http\Middleware\PortalGuard::class,
-        \Jiannius\Atom\Http\Middleware\PlanGuard::class,
-    ],
-
-    'api' => [
-        ...
-    ],
-];
-```
-
-10. Start development
+9. Start development
 
 ```
 npm run dev
