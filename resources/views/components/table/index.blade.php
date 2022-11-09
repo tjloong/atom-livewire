@@ -22,7 +22,13 @@
         @endif
     </div>
 
-    <div x-show="!isEmpty" class="w-full overflow-auto max-h-screen rounded-b-lg">
+    <div 
+        x-show="!isEmpty" 
+        {{ $attributes->class([
+            'w-full overflow-auto rounded-b-lg',
+            $attributes->get('class', 'max-h-screen'),
+        ])->only('class') }}
+    >
         <table class="w-max divide-y divide-gray-200 md:w-full md:max-w-full">
             @isset($thead)
                 <thead>

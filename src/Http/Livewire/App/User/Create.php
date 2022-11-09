@@ -13,12 +13,15 @@ class Create extends Component
      */
     public function mount()
     {
-        $this->user = model('user');
-        
-        if ($accountId = request()->query('account')) {
-            if (auth()->user()->isAccountType('root')) $this->user->fill(['account_id' => (integer)$accountId]);
+        $this->user = model('user')->fill([
+            'account_id' => auth()->user()->account_id,
+        ]);
+
+        if (request()->query('account') && auth()->user()->isAccountType('root')) {
+            $this->user->fill([
+                'account_id' => (integer)request()->query('account'),
+            ]);
         }
-        else $this->user->fill(['account_id' => auth()->user()->account_id]);
 
         if ($roleId = request()->query('role')) {
             $this->user->fill(['role_id' => (integer)$roleId]);
