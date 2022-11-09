@@ -35,7 +35,10 @@ class SiteSecurity
 
         // add HSTS header
         $response = $next($request);
-        $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubdomains');
+
+        if (!$request->is('livewire/*')) {
+            $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubdomains');
+        }
 
         return $response;
     }
