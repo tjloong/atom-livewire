@@ -9,16 +9,28 @@ class Content extends Component
     public $blog;
     public $autosavedAt;
 
-    protected $rules = [
-        'blog.title' => 'required|string|max:255',
-        'blog.excerpt' => 'nullable',
-        'blog.content' => 'nullable',
-    ];
+    /**
+     * Validation rules
+     */
+    protected function rules()
+    {
+        return [
+            'blog.title' => 'required|string|max:255',
+            'blog.excerpt' => 'nullable',
+            'blog.content' => 'nullable',
+        ];
+    }
 
-    protected $messages = [
-        'blog.title.required' => 'Blog title is required.',
-        'blog.title.max' => 'Blog title has a maximum of 255 characters.',
-    ];
+    /**
+     * Validation messages
+     */
+    protected function messages()
+    {
+        return [
+            'blog.title.required' => 'Blog title is required.',
+            'blog.title.max' => 'Blog title has a maximum of 255 characters.',
+        ];
+    }
 
     /**
      * Mount

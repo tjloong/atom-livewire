@@ -10,6 +10,9 @@ class Settings extends Component
     public $status;
     public $selectedLabels;
 
+    /**
+     * Validation rules
+     */
     protected function rules()
     {
         return [

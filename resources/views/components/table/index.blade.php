@@ -16,37 +16,34 @@
 >
     @isset($header) {{ $header }} @endif
 
-    <div x-show="isEmpty">
+    @if ($slot->isEmpty())
         @isset($empty) {{ $empty }}
         @else <x-empty-state/>
         @endif
-    </div>
-
-    <div 
-        x-show="!isEmpty" 
-        {{ $attributes->class([
+    @else
+        <div {{ $attributes->class([
             'w-full overflow-auto rounded-b-lg',
             $attributes->get('class', 'max-h-screen'),
-        ])->only('class') }}
-    >
-        <table class="w-max divide-y divide-gray-200 md:w-full md:max-w-full">
-            @isset($thead)
-                <thead>
-                    <tr>
-                        {{ $thead }}
-                    </tr>
-                </thead>
-            @endisset
+        ])->only('class') }}>
+            <table class="w-max min-w-full divide-y divide-gray-200">
+                @isset($thead)
+                    <thead>
+                        <tr>
+                            {{ $thead }}
+                        </tr>
+                    </thead>
+                @endisset
 
-            <tbody class="bg-white">
-                {{ $slot }}
-            </tbody>
+                <tbody class="bg-white">
+                    {{ $slot }}
+                </tbody>
 
-            @isset($tfoot)
-                <tfoot>
-                    {{ $tfoot }}
-                </tfoot>
-            @endisset
-        </table>
-    </div>
+                @isset($tfoot)
+                    <tfoot>
+                        {{ $tfoot }}
+                    </tfoot>
+                @endisset
+            </table>
+        </div>
+    @endif
 </div>

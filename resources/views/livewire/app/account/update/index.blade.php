@@ -33,8 +33,8 @@
         @endaccounttype
     </x-page-header>
 
-    <div class="grid gap-6 md:grid-cols-12">
-        <div class="md:col-span-3">
+    <div class="flex flex-col gap-6 md:flex-row">
+        <div class="md:w-1/4">
             <x-sidenav wire:model="tab">
                 @foreach ($this->tabs as $item)
                     @if ($children = data_get($item, 'tabs'))
@@ -62,7 +62,7 @@
             </x-sidenav>
         </div>
 
-        <div class="md:col-span-9 flex flex-col gap-6">
+        <div class="md:w-3/4 flex flex-col gap-6">
             @livewire($livewire, compact('account'), key($tab))
         </div>
     </div>

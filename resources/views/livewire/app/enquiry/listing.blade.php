@@ -9,22 +9,16 @@
         </x-slot:header>
 
         <x-slot:thead>
-            <x-table.th sort="created_at">Date</x-table.th>
-            <x-table.th sort="name">Name</x-table.th>
-            <x-table.th sort="phone">Phone</x-table.th>
-            <x-table.th sort="email">Email</x-table.th>
-            <x-table.th class="text-right">Status</x-table.th>
+            <x-table.th label="Date" sort="created_at"/>
+            <x-table.th label="Name" sort="name"/>
+            <x-table.th label="Phone" sort="phone"/>
+            <x-table.th label="Email" sort="email"/>
+            <x-table.th label="Status" class="text-right"/>
         </x-slot:thead>
 
         @foreach ($this->enquiries as $enquiry)
             <x-table.tr>
-                <x-table.td>
-                    {{ format_date($enquiry->created_at) }}
-                    <div class="text-gray-500">
-                        {{ format_date($enquiry->created_at, 'time') }}
-                    </div>
-                </x-table.td>
-
+                <x-table.td :datetime="$enquiry->created_at"/>
                 <x-table.td :label="$enquiry->name" :href="route('app.enquiry.update', [$enquiry->id])"/>
                 <x-table.td :label="$enquiry->phone"/>
                 <x-table.td :label="$enquiry->email"/>

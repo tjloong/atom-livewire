@@ -34,7 +34,7 @@
 
                     @notroute('app.onboarding.completed')
                         <a href="{{ route('app.home') }}" class="flex items-center gap-1">
-                            <x-icon name="left-arrow-alt" size="20px"/> {{ __('I\'ll do this later') }}
+                            <x-icon name="arrow-left"/> {{ __('I\'ll do this later') }}
                         </a>
                     @endnotroute
                 </nav>
