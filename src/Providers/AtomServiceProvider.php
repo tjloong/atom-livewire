@@ -139,9 +139,9 @@ class AtomServiceProvider extends ServiceProvider
             // product
             'atom.app.product.listing' => 'App\Product\Listing',
             'atom.app.product.create' => 'App\Product\Create',
-            'atom.app.product.update' => 'App\Product\Update\Index',
-            'atom.app.product.update.overview' => 'App\Product\Update\Overview',
-            'atom.app.product.update.images' => 'App\Product\Update\Images',
+            'atom.app.product.update' => 'App\Product\Update',
+            'atom.app.product.form.info' => 'App\Product\Form\Info',
+            'atom.app.product.form.image' => 'App\Product\Form\Image',
 
             // product variant
             'atom.app.product.variant.listing' => 'App\Product\Variant\Listing',
@@ -159,37 +159,6 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.page.listing' => 'App\Page\Listing',
             'atom.app.page.update' => 'App\Page\Update\Index',
             'atom.app.page.update.content' => 'App\Page\Update\Content',
-
-            // role
-            'atom.app.role.listing' => 'App\Role\Listing',
-            'atom.app.role.create' => 'App\Role\Create',
-            'atom.app.role.update' => 'App\Role\Update\Index',
-            'atom.app.role.update.info' => 'App\Role\Update\Info',
-
-            // permission
-            'atom.app.permission.listing' => 'App\Permission\Listing',
-
-            // user
-            'atom.app.user.listing' => 'App\User\Listing',
-            'atom.app.user.create' => 'App\User\Create',
-            'atom.app.user.update' => 'App\User\Update\Index',
-            'atom.app.user.update.info' => 'App\User\Update\Info',
-
-            // team
-            'atom.app.team.listing' => 'App\Team\Listing',
-            'atom.app.team.create' => 'App\Team\Create',
-            'atom.app.team.update' => 'App\Team\Update\Index',
-            'atom.app.team.update.info' => 'App\Team\Update\Info',
-            'atom.app.team.update.users' => 'App\Team\Update\Users',
-
-            // file
-            'atom.app.file.form' => 'App\File\Form',
-            'atom.app.file.listing' => 'App\File\Listing',
-            'atom.app.file.uploader' => 'App\File\Uploader\Index',
-            'atom.app.file.uploader.device' => 'App\File\Uploader\Device',
-            'atom.app.file.uploader.web-image' => 'App\File\Uploader\WebImage',
-            'atom.app.file.uploader.youtube' => 'App\File\Uploader\Youtube',
-            'atom.app.file.uploader.library' => 'App\File\Uploader\Library',
 
             // plan
             'atom.app.plan.listing' => 'App\Plan\Listing',
@@ -213,6 +182,16 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.settings.index' => 'App\Settings\Index',
             'atom.app.settings.account.login' => 'App\Settings\Account\Login',
             'atom.app.settings.account.password' => 'App\Settings\Account\Password',
+            'atom.app.settings.system.user' => 'App\Settings\System\User',
+            'atom.app.settings.system.user-drawer' => 'App\Settings\System\UserDrawer',
+            'atom.app.settings.system.user-form-modal' => 'App\Settings\System\UserFormModal',
+            'atom.app.settings.system.role' => 'App\Settings\System\Role',
+            'atom.app.settings.system.role-form-modal' => 'App\Settings\System\RoleFormModal',
+            'atom.app.settings.system.team' => 'App\Settings\System\Team',
+            'atom.app.settings.system.team-form-modal' => 'App\Settings\System\TeamFormModal',
+            'atom.app.settings.system.file' => 'App\Settings\System\File',
+            'atom.app.settings.system.file-form-modal' => 'App\Settings\System\FileFormModal',
+            'atom.app.settings.system.permission-form-modal' => 'App\Settings\System\PermissionFormModal',
             'atom.app.settings.website.profile' => 'App\Settings\Website\Profile',
             'atom.app.settings.website.seo' => 'App\Settings\Website\Seo',
             'atom.app.settings.website.analytics' => 'App\Settings\Website\Analytics',

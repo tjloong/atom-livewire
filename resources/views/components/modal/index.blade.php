@@ -1,8 +1,12 @@
-@props(['el' => $attributes->get('form') ? 'form' : 'div'])
+@props([
+    'el' => $attributes->get('form') ? 'form' : 'div',
+    'bgclose' => $attributes->get('bgclose', true),
+])
 
 <div
     x-data="{
         show: false,
+        bgclose: @js($bgclose),
         open () { this.show = true },
         close () { this.show = false },
     }"
@@ -16,8 +20,8 @@
         class="fixed inset-0 z-50 overflow-auto"
     >
         <div
-            x-on:click="$dispatch('{{ $uid }}-close')"
-            class="absolute inset-0 bg-black/80">
+            x-on:click="bgclose && $dispatch('{{ $uid }}-close')"
+            class="fixed inset-0 bg-black/80">
         </div>
 
         <div class="absolute left-1/2 -translate-x-1/2 px-6 py-10 w-full mx-auto {{ $attributes->get('class', 'max-w-lg') }}">

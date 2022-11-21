@@ -22,7 +22,10 @@
     </td>
 @else
     <td {{ $attributes
-        ->class(['align-top py-3 px-4 whitespace-nowrap'])
+        ->class([
+            'py-3 px-4 whitespace-nowrap',
+            $attributes->has('dropdown') ? 'w-4 align-middle' : 'align-top',
+        ])
         ->except(['checkbox', 'status', 'active', 'tags', 'date', 'datetime', 'from-now', 'avatar'])
     }}>
         @if ($attributes->has('status'))
@@ -102,6 +105,10 @@
                 </div>
             </div>
 
+        @elseif ($attributes->has('dropdown'))
+            <x-dropdown icon="ellipsis-vertical">
+                {{ $slot }}
+            </x-dropdown>
         @else
             <div class="grid">
                 @if ($href = $attributes->get('href'))
@@ -115,7 +122,10 @@
                     </a>
                 @else
                     <div 
-                        class="{{ $tooltip ? '' : 'truncate' }}" 
+                        class="{{ collect([
+                            $tooltip ? null : 'truncate',
+                            $attributes->has('wire:click') || $attributes->has('x-on:click') ? 'cursor-pointer font-semibold text-blue-500' : null,
+                        ])->filter()->join(' ') }}"
                         @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
                     >
                         {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
@@ -124,7 +134,7 @@
 
                 @if ($small = $attributes->get('small'))
                     <div class="text-sm text-gray-500 truncate font-medium">
-                        {{ $small }}
+                        {!! $small !!}
                     </div>
                 @endif
             </div>

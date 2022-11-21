@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Product\Variant;
 
+use Jiannius\Atom\Traits\Livewire\WithFile;
 use Livewire\Component;
 
 class Form extends Component
 {
+    use WithFile;
+
     public $variant;
 
     /**
@@ -30,6 +33,10 @@ class Form extends Component
                                     model('product')->enabledBelongsToAccountTrait,
                                     fn($q) => $q->belongsToAccount()        
                                 ))
+                                ->when(
+                                    data_get($this->variant, 'id'),
+                                    fn($q, $id) => $q->where('id', '<>', $id)
+                                )
                                 ->where('code', $value)->count();
                         }
 

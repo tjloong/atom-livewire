@@ -14,23 +14,24 @@ use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasVisibility;
 use Jiannius\Atom\Notifications\ActivateAccountNotification;
+use Jiannius\Atom\Traits\Models\BelongsToAccount;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use BelongsToAccount;
+    use HasApiTokens;
+    use HasFactory;
+    use HasFilters;
+    use HasTrace;
+    use HasVisibility;
     use Notifiable;
     use SoftDeletes;
-    use HasFactory;
-    use HasApiTokens;
-    use HasTrace;
-    use HasFilters;
-    use HasVisibility;
 
     protected $guarded = ['password'];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
-        'account_id' => 'integer',
         'activated_at' => 'datetime',
         'email_verified_at' => 'datetime',
     ];
@@ -63,14 +64,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if ($this->isAccountType('signup')) return '/';
         else return route('app.home');
-    }
-
-    /**
-     * Get account for user
-     */
-    public function account()
-    {
-        return $this->belongsTo(get_class(model('account')));
     }
 
     /**

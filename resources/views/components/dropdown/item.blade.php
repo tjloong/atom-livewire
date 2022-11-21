@@ -4,7 +4,7 @@
 ])
 
 @if ($label)
-    @if ($attributes->has('href') || $attributes->wire('click')->value())
+    @if ($attributes->has('href') || $attributes->has('x-on:click') || $attributes->wire('click')->value())
         <a {{ $attributes->merge([
             'class' => 'py-3 px-5 flex items-center gap-3 text-gray-800 font-normal hover:bg-gray-100'
         ])->except(['label', 'icon']) }}>

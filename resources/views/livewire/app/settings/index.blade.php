@@ -30,6 +30,7 @@
 
         <div class="md:col-span-9">
             @livewire($livewire, [
+                'tab' => $tab,
                 'account' => auth()->user()->account,
             ], key($tab))
         </div>

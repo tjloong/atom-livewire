@@ -30,11 +30,12 @@
         wire:model.defer="variant.stock"
     />
 
-    <x-form.image
-        label="Image"
-        wire:model="variant.image_id"
-        :placeholder="data_get($productVariant->image, 'url')"
-    />
+    <x-form.field label="Image">
+        <x-form.file
+            wire:model="variant.image_id"
+            accept="image/*"
+        />
+    </x-form.field>
 
     <div class="grid gap-2">
         <x-form.checkbox wire:model="variant.is_default" label="This is default variant"/>

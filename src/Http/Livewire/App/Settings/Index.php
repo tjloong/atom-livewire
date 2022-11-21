@@ -49,14 +49,14 @@ class Index extends Component
             ]],
             
             ['group' => 'System', 'tabs' => [
-                ['slug' => 'users', 'label' => 'Users', 'icon' => 'users'],
+                ['slug' => 'system/user', 'label' => 'Users', 'icon' => 'users'],
 
                 enabled_module('roles')
-                    ? ['slug' => 'roles', 'label' => 'Roles', 'icon' => 'user-tag']
+                    ? ['slug' => 'system/role', 'label' => 'Roles', 'icon' => 'user-tag']
                     : null,
                 
                 enabled_module('teams')
-                    ? ['slug' => 'teams', 'label' => 'Teams', 'icon' => 'people-group']
+                    ? ['slug' => 'system/team', 'label' => 'Teams', 'icon' => 'people-group']
                     : null,
 
                 enabled_module('plans') 
@@ -64,7 +64,7 @@ class Index extends Component
                     : null,
 
                 ['slug' => 'pages', 'label' => 'Pages', 'icon' => 'file'],
-                ['slug' => 'files', 'label' => 'Files and Media', 'href' => route('app.files'), 'icon' => 'folder'],
+                ['slug' => 'system/file', 'label' => 'Files and Media', 'icon' => 'folder'],
             ]],
 
             ['group' => 'Website', 'tabs' => [
@@ -100,13 +100,9 @@ class Index extends Component
             'livewire' => lw(
                 data_get($this->getFlatTabs()->firstWhere('slug', $this->tab), 'livewire')
                 ?? [
-                    'users' => 'app.user.listing',
                     'labels' => 'app.label.listing',
                     'pages' => 'app.page.listing',
                     'plans' => 'app.plan.listing',
-                    'roles' => 'app.role.listing',
-                    'teams' => 'app.team.listing',
-                    'taxes' => 'app.tax.listing',
                 ][$this->tab] 
                 ?? 'app.settings.'.$this->tab
             ),

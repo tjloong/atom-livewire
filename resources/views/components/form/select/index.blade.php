@@ -310,16 +310,19 @@
                                 </div>
 
                                 <div class="flex gap-3 flex-wrap">
-                                    <div 
-                                        x-show="opt.small" 
-                                        x-text="opt.small" 
-                                        class="truncate font-medium text-sm text-gray-400"
-                                    ></div>
+                                    <div class="grow grid">
+                                        <div 
+                                            x-show="opt.small" 
+                                            x-text="opt.small" 
+                                            class="truncate font-medium text-sm text-gray-400"
+                                        ></div>
+                                    </div>
 
                                     <div
                                         x-show="opt.status"
                                         x-text="opt.status?.text" 
                                         x-bind:class="['text-sm px-2 font-medium rounded-full shadow'].concat(opt.status?.color)"
+                                        class="shrink-0"
                                     ></div>
                                 </div>
                             </div>

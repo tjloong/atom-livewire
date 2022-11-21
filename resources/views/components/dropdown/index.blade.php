@@ -1,3 +1,8 @@
+@props([
+    'icon' => $attributes->get('icon'),
+    'label' => $attributes->get('label'),
+])
+
 <div
     x-cloak
     x-data="{ 
@@ -11,24 +16,31 @@
         },
     }"
     x-on:click.away="close()"
-    class="relative"
+    {{ $attributes->class([
+        $icon && !$label ? 'flex items-center justify-center' : null,
+    ])->except(['icon', 'label']) }}
 >
-    <div x-ref="anchor" x-on:click="open()" {{ $attributes->merge([
-        'class' => 'inline-flex items-center gap-2 cursor-pointer',
-    ])->except(['icon', 'label']) }}>
-        @isset($anchor) {{ $anchor }}
-        @else
-            @if ($icon = $attributes->get('icon')) <x-icon :name="$icon"/> @endif
-            @if ($label = $attributes->get('label')) {{ __($label) }} @endif
-            <x-icon name="chevron-down" size="12"/>
-        @endisset
-    </div>
+    @isset($anchor)
+        <div x-ref="anchor" x-on:click="open()" {{ $anchor->attributes->class([
+            'inline-flex items-center justify-center gap-2 cursor-pointer',
+        ]) }}>
+            {{ $anchor }}
+        </div>
+    @else
+        <div x-ref="anchor" x-on:click="open()" class="inline-flex items-center gap-2 cursor-pointer">
+            @if ($icon) <x-icon :name="$icon"/> @endif
+            @if ($label) 
+                {{ __($label) }} 
+                <x-icon name="chevron-down" size="12"/>
+            @endif
+        </div>
+    @endisset
 
     <div
         x-ref="dd"
         x-show="show"
         x-transition.opacity
-        class="absolute z-20 w-full bg-white border border-gray-300 shadow-lg rounded-md max-w-md min-w-[250px] overflow-hidden"
+        class="absolute z-20 w-max bg-white border border-gray-300 shadow-lg rounded-md max-w-md min-w-[250px] overflow-hidden"
     >
         {{ $slot }}
     </div>

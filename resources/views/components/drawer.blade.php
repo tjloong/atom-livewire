@@ -24,8 +24,16 @@
                     {{ $header }}
                 @else
                     <div class="flex items-center justify-between gap-3 p-4">
-                        <div class="text-lg font-semibold">
-                            {{ __($attributes->get('header')) }}
+                        <div class="flex items-center gap-2">
+                            @if ($icon = $attributes->get('icon'))
+                                <x-icon :name="$icon" class="text-gray-400"/>
+                            @endif
+    
+                            @if ($header = $attributes->get('header'))
+                                <div class="text-lg font-semibold">
+                                    {{ __($header) }}
+                                </div>
+                            @endif
                         </div>
 
                         <x-close x-on:click="$dispatch('{{ $uid }}-close')"/>

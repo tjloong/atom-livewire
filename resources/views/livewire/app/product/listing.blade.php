@@ -5,7 +5,7 @@
 
     <x-table>
         <x-slot:header>
-            <x-table.header :total="$this->products->total()"/>
+            <x-table.searchbar :total="$this->products->total()"/>
 
             <x-table.toolbar>
                 <div class="flex items-center gap-2">

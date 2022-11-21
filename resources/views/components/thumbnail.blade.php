@@ -22,9 +22,18 @@
 
     @isset($buttons)
         <div class="absolute top-0 right-0 left-0 bg-gradient-to-b from-gray-500 to-transparent pt-2 px-2 pb-4">
-            <div class="flex items-center gap-2 justify-end">
+            <div class="flex items-center gap-2">
                 {{ $buttons }}
             </div>
         </div>
     @endisset
+
+    @if ($attributes->has('wire:remove'))
+        <a 
+            class="absolute top-0 -right-4 w-8 h-8 bg-white border shadow flex rounded-full text-red-500"
+            wire:click="{{ $attributes->get('wire:remove') }}"
+        >
+            <x-icon name="xmark" class="m-auto" size="18px"/>
+        </a>
+    @endif
 </figure>

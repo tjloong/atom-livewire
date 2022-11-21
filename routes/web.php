@@ -126,7 +126,7 @@ if (!config('atom.static_site')) {
             define_route()->prefix('product')->as('app.product.')->group(function() {
                 define_route('listing', 'App\Product\Listing')->name('listing');
                 define_route('create', 'App\Product\Create')->name('create');
-                define_route('{productId}', 'App\Product\Update\Index')->name('update');
+                define_route('{productId}', 'App\Product\Update')->name('update');
 
                 define_route()->prefix('{productId}/variant')->as('variant.')->group(function() {
                     define_route('create', 'App\Product\Variant\Create')->name('create');
@@ -166,36 +166,6 @@ if (!config('atom.static_site')) {
                 define_route('{accountPayment}', 'App\AccountPayment\Update')->name('update');
             });
         }
-
-        /**
-         * Teams
-         */
-        if (enabled_module('teams')) {
-            define_route()->prefix('team')->as('app.team.')->group(function () {
-                define_route('listing', 'App\Team\Listing')->name('listing');
-                define_route('create', 'App\Team\Create')->name('create');
-                define_route('{team}', 'App\Team\Update\Index')->name('update');
-            });
-        }
-        
-        /**
-         * Roles
-         */
-        if (enabled_module('roles')) {
-            define_route()->prefix('role')->as('app.role.')->group(function () {
-                define_route('listing', 'App\Role\Listing')->name('listing');
-                define_route('create', 'App\Role\Create')->name('create');
-                define_route('{role}', 'App\Role\Update\Index')->name('update');
-            });
-        }
-        
-        /**
-         * Users
-         */
-        define_route()->prefix('user')->as('app.user.')->group(function () {
-            define_route('create', 'App\User\Create')->name('create');
-            define_route('{user}', 'App\User\Update\Index')->name('update');
-        });
 
         /**
          * Ticketing

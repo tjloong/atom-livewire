@@ -1,10 +1,17 @@
 <x-form label="Blog Settings">
-    <x-form.image 
-        label="Cover"
-        wire:model="blog.cover_id" 
-        dimension="150x100" 
-        :placeholder="$blog->cover->url ?? null"
-    />
+    <x-form.field label="Cover">
+        @if ($blog->cover)
+            <x-thumbnail
+                :url="$blog->cover->url"
+                wire:remove="$set('blog.cover_id', null)"
+            />
+        @else
+            <x-form.file
+                wire:model="blog.cover_id"
+                accept="image/*"
+            />
+        @endif
+    </x-form.field>
 
     <x-form.select 
         label="Status"
