@@ -1,8 +1,8 @@
 <x-form label="Blog Settings">
     <x-form.field label="Cover">
-        @if ($blog->cover)
+        @if ($blog->cover_id)
             <x-thumbnail
-                :url="$blog->cover->url"
+                :url="model('file')->find($blog->cover_id)->url"
                 wire:remove="$set('blog.cover_id', null)"
             />
         @else

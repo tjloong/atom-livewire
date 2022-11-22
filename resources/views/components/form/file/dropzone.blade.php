@@ -4,7 +4,7 @@
         'multiple' => $attributes->get('multiple', false),
         'accept' => $attributes->get('accept'),
         'visibility' => $attributes->get('visibility', 'public'),
-        'location' => $attributes->get('location'),
+        'location' => $attributes->get('location', 'uploads'),
         'wire' => $attributes->wire('model')->value(),
     ],
     'uid' => $attributes->get('uid', 'file-dropzone'),
@@ -90,7 +90,9 @@
         },
         uploadCompleted (data) {
             const index = this.bucket.findIndex((val) => (val.uploadedFilename === data.filename))
-            this.bucket[index].fileId = data.file_id
+            if (index === -1) return
+
+            this.bucket[index].file = data.file
             this.bucket[index].progress = 100
             this.bucket[index].completed = true
             this.input()
@@ -98,13 +100,13 @@
         input () {
             if (this.bucket.some(item => (!item.completed))) return
 
-            let value = this.bucket.map(val => (val.fileId)).filter(Boolean)
-            if (!this.config.multiple) value = value[0]
+            const bucket = this.bucket.map(val => (val.file))
+            const value = this.config.multiple ? bucket : bucket[0]
 
-            if (this.config.wire) this.$wire.set(this.config.wire, value)
+            if (this.config.wire) this.$wire.set(this.config.wire, value.map(val => (val.id)))
 
+            this.$dispatch(@js($uid.'-uploaded'), value)
             this.bucket = []
-            this.$dispatch('uploaded', value)
         },
     }"
     x-on:upload-completed.window="uploadCompleted($event.detail)"

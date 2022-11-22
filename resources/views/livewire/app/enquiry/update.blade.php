@@ -1,4 +1,4 @@
-<div class="max-w-lg mx-auto">
+<div class="max-w-screen-sm mx-auto">
     <x-page-header title="Enquiry" back>
         <x-button.delete inverted
             title="Delete Enquiry"
@@ -6,39 +6,45 @@
         />
     </x-page-header>
 
-    <x-form>
-        <x-form.field label="Name">
-            {{ $enquiry->name }}
-        </x-form.field>
-
-        <x-form.field label="Phone">
-            {{ $enquiry->phone }}
-        </x-form.field>
-
-        <x-form.field label="Email">
-            {{ $enquiry->email }}
-        </x-form.field>
-
-        <x-form.field label="Message">
-            {!! nl2br($enquiry->message) !!}
-        </x-form.field>
-
-        <x-form.textarea 
-            label="Remark"
-            wire:model.defer="enquiry.remark"
-        />
-
-        <x-form.select 
-            label="Status"
-            wire:model="enquiry.status" 
-            :options="[
-                ['value' => 'pending', 'label' => 'Pending'],
-                ['value' => 'closed', 'label' => 'Closed'],
-            ]"
-        />
+    <x-box>
+        <div class="grid divide-y">
+            <x-box.row label="Name">
+                {{ $enquiry->name }}
+            </x-box.row>
+    
+            <x-box.row label="Phone">
+                {{ $enquiry->phone }}
+            </x-box.row>
+    
+            <x-box.row label="Email">
+                {{ $enquiry->email }}
+            </x-box.row>
+    
+            <x-box.row label="Message">
+                {!! nl2br($enquiry->message) !!}
+            </x-box.row>
+    
+            <div class="p-4">
+                <x-form.textarea 
+                    label="Remark"
+                    wire:model.defer="enquiry.remark"
+                />
+            </div>
+    
+            <div class="p-4">
+                <x-form.select 
+                    label="Status"
+                    wire:model="enquiry.status" 
+                    :options="[
+                        ['value' => 'pending', 'label' => 'Pending'],
+                        ['value' => 'closed', 'label' => 'Closed'],
+                    ]"
+                />
+            </div>
+        </div>
 
         <x-slot:foot>
-            <x-button.submit/>
+            <x-button.submit type="button" wire:click="submit"/>
         </x-slot:foot>
-    </x-form>
+    </x-box>
 </div>

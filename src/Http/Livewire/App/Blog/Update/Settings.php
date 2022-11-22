@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Blog\Update;
 
+use Jiannius\Atom\Traits\Livewire\WithFile;
 use Livewire\Component;
 
 class Settings extends Component
 {
+    use WithFile;
+    
     public $blog;
     public $status;
     public $selectedLabels;

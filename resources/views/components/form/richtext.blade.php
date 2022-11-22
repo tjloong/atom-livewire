@@ -1,8 +1,4 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption']) }}>
-    @if ($label = $attributes->get('label'))
-        <x-slot:label>{{ $label }}</x-slot:label>
-    @endif
-
+<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
     <div 
         wire:ignore 
         x-data="{
@@ -28,10 +24,10 @@
                     
                     // insert media
                     editor.ui.view.toolbar.on('insert-media:click', () => {
-                        this.$dispatch(`${this.uid}-uploader-open`)
+                        this.$dispatch(@js($uid.'-library-open'))
 
                         const insert = (event) => {
-                            const files = event.detail
+                            const files = [event.detail].flat()
 
                             files.forEach(file => {
                                 if (file.is_image) {
@@ -59,10 +55,10 @@
                                 }
                             })
 
-                            window.removeEventListener(`${this.uid}-uploader-completed`, insert)
+                            window.removeEventListener(@js($uid.'-library-selected'), insert)
                         }
 
-                        window.addEventListener(`${this.uid}-uploader-completed`, insert)
+                        window.addEventListener(@js($uid.'-library-selected'), insert)
                     })
                 })
             },
@@ -70,12 +66,6 @@
         class="{{ $attributes->get('class') }}"
     >
         <div x-ref="ckeditor" x-show="!loading"></div>
-
-        @livewire('atom.app.file.uploader', [
-            'uid' => $uid.'-uploader',
-            'title' => 'Insert Media',
-            'accept' => ['image', 'video', 'audio', 'youtube'],
-            'sources' => ['device', 'web-image', 'youtube', 'library'],
-        ], key($uid.'-uploader'))
+        <x-form.file.library :uid="$uid.'-library'"/>
     </div>
 </x-form.field>

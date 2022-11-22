@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Preferences;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class Labels extends Component
+class Label extends Component
 {
     use WithPopupNotify;
 
@@ -77,6 +77,6 @@ class Labels extends Component
      */
     public function render()
     {
-        return atom_view('app.preferences.labels');
+        return atom_view('app.preferences.label');
     }
 }

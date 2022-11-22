@@ -47,12 +47,15 @@
                 })
             },
             submit () {
-                const value = this.multiple ? this.selected : this.selected[0]
+                const selected = this.selected.map(sel => (this.files.find(file => (file.id === sel))))
+                const value = this.multiple ? selected : selected[0]
 
-                if (this.wire) this.$wire.set(this.wire, value)
-                else this.$dispatch('selected', value)
+                if (this.wire) this.$wire.set(this.wire, value.map(val => (val.id)))
                 
                 this.files = this.files.map(file => ({ ...file, is_checked: false }))
+
+                this.$dispatch(@js($uid.'-selected'), value)
+                this.$dispatch(@js($uid.'-close'))
             }
         }"
         x-on:{{ $uid }}-open.window="open"

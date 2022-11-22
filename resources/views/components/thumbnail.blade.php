@@ -1,24 +1,64 @@
-<figure {{ $attributes->class([
-    'relative rounded-lg shadow bg-gray-200 overflow-hidden',
-    $attributes->get('class'),
-    $square ? 'pt-[100%]' : 'pt-[60%]',
-])->except(['file', 'url','icon','youtube','video', 'square']) }}>
-    <div class="absolute inset-0">
-        @if ($video) <video class="w-full h-full object-cover"><source src="{{ $video }}"></video>
-        @elseif ($youtube) <img src="{{ $youtube }}" class="w-full h-full object-cover">
-        @elseif ($image) <img src="{{ $image }}" class="w-full h-full object-cover">
+@props([
+    'file' => $attributes->get('file'),
+    'url' => $attributes->get('url'),
+    'icon' => $attributes->get('icon'),
+    'size' => $attributes->get('size', '100'),
+    'circle' => $attributes->get('circle', false),
+    'color' => $attributes->get('color', 'bg-gray-200'),
+    'colors' => [
+        '#feca57',
+        '#ee5253',
+        '#5f27cd',
+        '#2e86de',
+        '#01a3a4',
+        '#0abde3',
+        '#222f3e',
+        '#f368e0',
+    ],
+])
+
+<figure 
+    class="relative"
+    style="width: {{ str($size)->finish('px') }}; height: {{ str($size)->finish('px') }};"
+    {{ $attributes->except(['file', 'url', 'icon', 'size', 'circle', 'color', 'class']) }}
+>
+    <div 
+        {{ $attributes->class([
+            'shadow overflow-hidden w-full h-full',
+            $color !=='random' ? $color : null,
+            $circle ? 'rounded-full' : 'rounded-lg',
+        ])->only('class') }}
+        @if ($color === 'random') style="background-color: {{ collect($colors)->random() }};" @endif
+    >
+        @if ($file)
+            @if ($file->is_video) <video class="w-full h-full object-cover"><source src="{{ $file->url }}"></video>
+            @elseif ($file->is_image) <img src="{{ $file->url }}" class="w-full h-full object-cover">
+            @elseif ($file->type === 'youtube') <img src="https://img.youtube.com/vi/{{ data_get($file->data, 'vid') }}/default.jpg" class="w-full h-full object-cover">
+            @endif
+
+            @if (!$file->is_image)
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <x-icon 
+                        :name="$file->icon" 
+                        :size="$size * 0.3"
+                        class="{{
+                            $file->type === 'youtube' ? 'text-red-500' : (
+                                $file->is_video ? 'text-blue-500' : 'text-gray-800'
+                            )
+                        }}"
+                    />
+                </div>
+            @endif
+        @elseif ($url)
+            <img src="{{ $url }}" class="w-full h-full object-cover">
+
+            @if ($icon)
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <x-icon :name="$icon" :size="$size * 0.3"/>
+                </div>
+            @endif
         @endif
     </div>
-
-    @if ($youtube || $video || $icon)
-        @php $width = $square ? '25%' : '15%' @endphp
-        <div class="absolute inset-0 flex items-center justify-center">
-            @if ($youtube) <x-icon name="youtube" class="text-red-500" style="width: {{ $width }};"/>
-            @elseif ($video) <x-icon name="play" class="text-blue-500" style="width: {{ $width }};"/>
-            @else <x-icon :name="$icon" style="width: {{ $width }};"/>
-            @endif
-        </div>
-    @endif
 
     @isset($buttons)
         <div class="absolute top-0 right-0 left-0 bg-gradient-to-b from-gray-500 to-transparent pt-2 px-2 pb-4">
@@ -29,11 +69,8 @@
     @endisset
 
     @if ($attributes->has('wire:remove'))
-        <a 
-            class="absolute top-0 -right-4 w-8 h-8 bg-white border shadow flex rounded-full text-red-500"
-            wire:click="{{ $attributes->get('wire:remove') }}"
-        >
-            <x-icon name="xmark" class="m-auto" size="18px"/>
-        </a>
+        <div class="absolute -top-2 -right-4 bg-white rounded-full shadow">
+            <x-close wire:click="{{ $attributes->get('wire:remove') }}" color="red"/>
+        </div>
     @endif
 </figure>

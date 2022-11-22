@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Preferences;
 
 use Livewire\Component;
 
-class Taxes extends Component
+class Tax extends Component
 {
     protected $listeners = ['refresh' => '$refresh'];
 
@@ -45,6 +45,6 @@ class Taxes extends Component
      */
     public function render()
     {
-        return atom_view('app.preferences.taxes');
+        return atom_view('app.preferences.tax');
     }
 }

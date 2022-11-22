@@ -206,9 +206,9 @@ class AtomServiceProvider extends ServiceProvider
             'atom.app.settings.integration.payment.ipay' => 'App\Settings\Integration\Payment\Ipay',
             
             // preferences
-            'atom.app.preferences.labels' => 'App\Preferences\Labels',
+            'atom.app.preferences.label' => 'App\Preferences\Label',
             'atom.app.preferences.label-form-modal' => 'App\Preferences\LabelFormModal',
-            'atom.app.preferences.taxes' => 'App\Preferences\Taxes',
+            'atom.app.preferences.tax' => 'App\Preferences\Tax',
             'atom.app.preferences.tax-form-modal' => 'App\Preferences\TaxFormModal',
         ];
 

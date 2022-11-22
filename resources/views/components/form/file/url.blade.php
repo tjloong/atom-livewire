@@ -4,12 +4,14 @@
         $attributes->get('youtube', true) ? 'Youtube' : null,
     ])->filter()->join('/').' URL',
     'multiple' => $attributes->get('multiple', false),
+    'uid' => $attributes->get('uid', 'file-url'),
 ])
 
 <div 
     x-data="{
         text: null,
         urls: [],
+        wire: @js($attributes->wire('model')->value()),
         loading: false,
         multiple: @js($multiple),
         split () {
@@ -30,7 +32,11 @@
         submit () {
             this.$wire
                 .addFileUrls(this.urls.map(url => (url.url)))
-                .then(res => this.$dispatch('add-urls', this.multiple ? res : res[0]))
+                .then(res => {
+                    const value = this.multiple ? res : res[0]
+                    if (this.wire) this.$wire.set(this.wire, value.map(val => (val.id)))
+                    this.$dispatch(@js($uid.'-added'), value)
+                })
                 .then(() => {
                     this.urls = []
                     this.text = null

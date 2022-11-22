@@ -40,13 +40,13 @@ class Index extends Component
         return [
             ['group' => 'General', 'tabs' => [
                 ['slug' => 'blog-categories', 'label' => 'Blog Categories', 'livewire' => [
-                    'name' => 'app.preferences.labels',
+                    'name' => 'app.preferences.label',
                     'data' => [
                         'type' => 'blog-category',
                         'sublabel' => false,
                     ],
                 ]],
-                ['slug' => 'taxes', 'label' => 'Taxes', 'disabled' => !enabled_module('taxes')],
+                ['slug' => 'tax', 'label' => 'Taxes', 'disabled' => !enabled_module('taxes')],
             ]],
         ];
     }

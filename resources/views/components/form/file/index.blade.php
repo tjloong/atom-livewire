@@ -2,9 +2,9 @@
     'multiple' => $attributes->get('multiple', false),
     'accept' => $attributes->get('accept'),
     'visibility' => $attributes->get('visibility', 'public'),
-    'webImage' => $attributes->get('web-image', true),
     'youtube' => $attributes->get('youtube', false),
     'library' => $attributes->get('library', true),
+    'url' => $attributes->get('web-image', true) || $attributes->get('youtube', false),
     'uid' => $attributes->get('uid', 'file-input'),
 ])
 
@@ -13,9 +13,6 @@
         value: @entangle($attributes->wire('model')),
         files: [],
         multiple: @js($multiple),
-        get showDropzone () {
-            return this.multiple || (!this.multiple && empty(this.value))
-        },
         init () {
             this.getFiles()
             this.$watch('value', () => this.getFiles())
@@ -37,19 +34,24 @@
 
             this.$dispatch('remove', fileId)
         },
-        input (val) {
-            if (empty(val)) return
-            this.value = val
-            this.$dispatch('input', val)
-            this.$dispatch(@js($uid.'-library-close'))
+        input (files) {
+            if (empty(files)) return
+
+            files = [files].flat().map(file => (file.id))
+            
+            this.value = this.multiple ? files : files[0]
+            this.$dispatch('file', this.value)
         },
     }"
-    x-on:uploaded="input($event.detail)"
-    x-on:selected="input($event.detail)"
-    x-on:add-urls="input($event.detail)"
-    {{ $attributes->merge(['id' => $uid])->whereStartsWith(['id', 'x-', 'wire:']) }}
+    x-on:{{ $uid }}-dropzone-uploaded="input($event.detail)"
+    x-on:{{ $uid }}-library-selected="input($event.detail)"
+    x-on:{{ $uid }}-url-added="input($event.detail)"
+    {{ $attributes
+        ->merge(['id' => $uid])
+        ->whereStartsWith(['id', 'x-', 'wire:'])
+        ->except('wire:model') }}
 >
-    <div x-bind:class="showDropzone && 'pb-4'">
+    {{-- <div x-bind:class="showDropzone && 'pb-4'">
         @isset($list)
             {{ $list }}
         @else
@@ -80,7 +82,7 @@
                 <x-form.file.preview :uid="$uid.'-preview'"/>
             </div>
         @endisset
-    </div>
+    </div> --}}
 
     <div 
         x-data="{
@@ -90,13 +92,12 @@
                 this.tab = tab
             }
         }"
-        x-show="showDropzone"
         class="flex flex-col gap-2"
     >
         @php
             $tabs = array_filter([
                 'upload',
-                $webImage || $youtube ? 'url' : null,
+                $url ? 'url' : null,
                 $library ? 'library' : null,
             ])
         @endphp
@@ -133,14 +134,16 @@
             />
         </div>
 
-        <div x-show="tab === 'url'">
-            <x-form.file.url
-                :uid="$uid.'-url'"
-                :multiple="$multiple"
-                :youtube="$youtube"
-                :web-image="$webImage"
-            />
-        </div>
+        @if ($url)
+            <div x-show="tab === 'url'">
+                <x-form.file.url
+                    :uid="$uid.'-url'"
+                    :multiple="$multiple"
+                    :youtube="$attributes->get('youtube')"
+                    :web-image="$attributes->get('web-image')"
+                />
+            </div>
+        @endif
     </div>
 
     @if (in_array('library', $tabs))

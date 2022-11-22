@@ -29,7 +29,10 @@ class File extends Component
     public function getFilesProperty()
     {
         return model('file')
-            ->belongsToAccount()
+            ->when(
+                model('file')->enabledBelongsToAccount,
+                fn($q) => $q->belongsToAccount(),
+            )
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate(120);

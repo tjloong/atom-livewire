@@ -29,7 +29,10 @@ class PermissionFormModal extends Component
     {
         $permissions = [];
 
-        foreach (config('atom.app.permissions.'.auth()->user()->account->type) as $module => $actions) {
+        foreach (
+            config('atom.app.permissions.'.auth()->user()->account->type) ?? []
+            as $module => $actions
+        ) {
             $permissions[$module] = collect($actions)->map(function($action) use ($module) {
                 $ability = $module.'.'.$action;
                 $permission = ['name' => $action];

@@ -19,7 +19,7 @@
                         x-data="{ show: false }" 
                         data-sortable-id="{{ $label->id }}"
                     >
-                        <div x-on:click="show = !show" class="flex items-center gap-3 hover:bg-slate-100">
+                        <div class="flex items-center gap-3 hover:bg-slate-100">
                             <div class="shrink-0 cursor-move p-2 label-sorter flex">
                                 <x-icon name="sort" class="m-auto text-gray-400"/>
                             </div>
@@ -33,7 +33,10 @@
                                     </div>
 
                                     @if ($sublabel)
-                                        <div class="shrink-0 px-4 text-sm font-medium text-gray-500 flex items-center gap-2">
+                                        <div 
+                                            x-on:click="show = !show"
+                                            class="shrink-0 px-4 text-sm font-medium text-gray-500 flex items-center gap-2 cursor-pointer"
+                                        >
                                             {{ __(':count '.str()->plural('sublabel', $count), ['count' => $count]) }}
                                             <x-icon name="chevron-down" size="12"/>
                                         </div>

@@ -20,15 +20,15 @@ trait WithFile
     public function updatedUploadFile()
     {
         $upload = data_get($this->upload, 'file');
-        $location = data_get($this->upload, 'location');
-        $visibility = data_get($this->upload, 'visibility');
+        $location = data_get($this->upload, 'location', 'uploads');
+        $visibility = data_get($this->upload, 'visibility', 'public');
         $filename = $upload->getFilename();
 
         $file = model('file')->store($upload, $location, $visibility);
 
         $this->dispatchBrowserEvent('upload-completed', [
             'filename' => $filename,
-            'file_id' => $file->id,
+            'file' => $file->toArray(),
         ]);
     }
 
@@ -44,7 +44,7 @@ trait WithFile
             return model('file')->whereIn('id', (array)$data)->latest('id')->get()->toArray();
         }
         else {
-            $paginator = model('file')->filter($filters)->latest('id')->toPage($page ?? 1, 100);
+            $paginator = model('file')->filter($filters)->latest('id')->toPage($page ?? 1, 30);
             return $paginator->items();
         }
     }
@@ -84,11 +84,9 @@ trait WithFile
      */
     public function addFileUrls($urls)
     {
-        $urls = collect($urls)->map(function($url) {
-            $file = model('file')->store($url);
-            return $file->id;
-        });
-
-        return $urls->values()->all();
+        return collect($urls)
+            ->map(fn($url) => model('file')->store($url))
+            ->values()
+            ->all();
     }
 }
