@@ -26,8 +26,8 @@ class Create extends Component
     protected function messages()
     {
         return [
-            'ticket.subject.required' => 'Ticket subject is required.',
-            'ticket.description.required' => 'Ticket description is required.',
+            'ticket.subject.required' => __('Ticket subject is required.'),
+            'ticket.description.required' => __('Ticket description is required.'),
         ];
     }
 
@@ -50,8 +50,6 @@ class Create extends Component
 
         $this->ticket->save();
         $this->ticket->notify();
-
-        session()->flash('flash', 'Ticket Created::success');
 
         return redirect()->route('app.ticketing.listing');
     }

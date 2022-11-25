@@ -2,12 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Ticketing;
 
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Comments extends Component
 {
     use WithPagination;
+    use WithPopupNotify;
 
     public $ticket;
     public $content;
@@ -32,7 +34,7 @@ class Comments extends Component
     protected function messages()
     {
         return [
-            'content.required' => 'Comment is required.',
+            'content.required' => __('Comment is required.'),
         ];
     }
 
@@ -66,7 +68,7 @@ class Comments extends Component
         $comment->notify();
 
         $this->content = null;
-        $this->dispatchBrowserEvent('toast', ['message' => 'Comment Saved', 'type' => 'success']);
+        $this->popup('Comment Saved.');
     }
 
     /**
@@ -74,9 +76,9 @@ class Comments extends Component
      */
     public function delete($id)
     {
-        if ($comment = $this->ticket->comments()->where('created_by', auth()->id())->find($id)) {
+        if ($comment = $this->ticket->comments()->where('created_by', auth()->user()->id)->find($id)) {
             $comment->delete();
-            $this->dispatchBrowserEvent('toast', ['message' => 'Comment Deleted']);
+            $this->popup('Comment Deleted.');
         }
     }
 

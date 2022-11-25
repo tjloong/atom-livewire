@@ -23,8 +23,6 @@ class Listing extends Component
             'search' => null,
             'status' => null,
         ]],
-        'sortBy' => ['except' => 'created_at'],
-        'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
     ];
 
@@ -44,8 +42,8 @@ class Listing extends Component
         return model('ticket')
             ->selectRaw('tickets.*, if (tickets.status = "new", 0, 1) as seq')
             ->when(
-                !auth()->user()->isAccountType(['root', 'system']), 
-                fn($q) => $q->where('created_by', auth()->id())
+                !auth()->user()->isAccountType('root'), 
+                fn($q) => $q->where('created_by', auth()->user()->id)
             )
             ->filter($this->filters)
             ->orderBy('seq')

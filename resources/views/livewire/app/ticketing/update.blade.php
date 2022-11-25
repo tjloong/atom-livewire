@@ -6,37 +6,47 @@
         />
     </x-page-header>
 
-    <x-box>
-        <div class="p-5">
-            <x-form.field label="Ticket Number">
-                {{ $ticket->number }}
-            </x-form.field>
+    <div class="flex flex-col gap-6">
+        <x-box header="Ticket Information">
+            <div class="flex flex-col divide-y">
+                <x-box.row label="Ticket Number">
+                    {{ $ticket->number }}
+                </x-box.row>
+    
+                <x-box.row label="Issue Description">
+                    {!! nl2br($ticket->description) !!}
+                </x-box.row>
+    
+                <x-box.row label="Status">
+                    @if (
+                        (enabled_module('permissions') && auth()->user()->can('ticketing.status'))
+                        || (enabled_module('roles') && auth()->user()->isRole('admin'))
+                        || (
+                            !enabled_module('roles') 
+                            && !enabled_module('permissions') 
+                            && auth()->user()->isAccountType(['root', 'system'])
+                        )
+                    )
+                        <x-dropdown>
+                            <x-slot:anchor>
+                                <x-badge :label="$ticket->status"/>
+                                <x-icon name="chevron-down" size="12"/>
+                            </x-slot:anchor>
 
-            <x-form.field label="Issue Description">
-                {!! nl2br($ticket->description) !!}
-            </x-form.field>
+                            @foreach (['pending', 'closed'] as $item)
+                                <x-dropdown.item 
+                                    :label="ucfirst($item)"
+                                    wire:click="$set('ticket.status', '{{ $item }}')"
+                                />
+                            @endforeach
+                        </x-dropdown>
+                    @else
+                        <x-badge :label="$ticket->status"/>
+                    @endif
+                </x-box.row>
+            </div>
+        </x-box>
 
-            @if (
-                (enabled_module('permissions') && auth()->user()->can('ticketing.status'))
-                || (enabled_module('roles') && auth()->user()->isRole('admin'))
-                || (
-                    !enabled_module('roles') 
-                    && !enabled_module('permissions') 
-                    && auth()->user()->isAccountType(['root', 'system'])
-                )
-            )
-                <x-form.select
-                    label="Status"
-                    wire:model="ticket.status"
-                    :options="collect(['pending', 'closed'])->map(fn($val) => ['value' => $val, 'label' => str()->headline($val)])"
-                />
-            @else
-                <x-form.field label="Status">
-                    <x-badge :label="$ticket->status"/>
-                </x-form.field>
-            @endif
-        </div>
-    </x-box>
-
-    @livewire(lw('app.ticketing.comments'), compact('ticket'), key('comments'))
+        @livewire(lw('app.ticketing.comments'), compact('ticket'), key('comments'))
+    </div>
 </div>

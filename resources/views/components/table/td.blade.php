@@ -71,10 +71,11 @@
         @elseif ($attributes->has('avatar'))
             <div class="flex items-center gap-3">
                 <div class="shrink-0 flex items-center justify-center">
-                    <x-avatar 
-                        :url="$attributes->get('avatar')" 
-                        :placeholder="$label ?? $slot->toString()" 
+                    <x-thumbnail
+                        :url="$attributes->get('avatar')"
                         size="36"
+                        circle
+                        color="random"
                     />
                 </div>
 

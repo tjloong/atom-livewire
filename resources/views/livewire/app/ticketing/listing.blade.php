@@ -8,11 +8,13 @@
             <x-table.searchbar :total="$this->tickets->total()"/>
 
             <x-table.toolbar>
-                <x-tab wire:model="filters.status">
-                    @foreach (['all', 'pending', 'closed'] as $item)
-                        <x-tab.item :name="$item === 'all' ? null : $item" :label="str()->headline($item)"/>
-                    @endforeach
-                </x-tab>
+                <x-form.select
+                    wire:model="filters.status"
+                    :options="collect(['pending', 'closed'])->map(fn($val) => [
+                        'value' => $val, 'label' => ucfirst($val),
+                    ])"
+                    placeholder="All Status"
+                />
             </x-table.toolbar>
         </x-slot:header>
         

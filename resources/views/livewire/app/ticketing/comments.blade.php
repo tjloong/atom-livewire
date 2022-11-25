@@ -5,11 +5,11 @@
                 <div class="p-4 grid gap-2">
                     <div class="flex items-center justify-between gap-4">
                         <div class="text-sm font-medium">
-                            {{ $comment->created_by_user->name }} - <span class="text-gray-400">{{ format_date($comment->created_at, 'datetime') }}</span>
+                            {{ $comment->createdBy->name }} - <span class="text-gray-400">{{ format_date($comment->created_at, 'datetime') }}</span>
                         </div>
 
-                        @if ($comment->created_by === auth()->id())
-                            <x-button.delete inverted
+                        @if ($comment->created_by === auth()->user()->id)
+                            <x-button.delete inverted size="sm"
                                 title="Delete Comment"
                                 message="Are you sure to delete this comment?"
                                 :params="$comment->id"
@@ -23,7 +23,7 @@
 
             @if ($this->comments->hasPages())
                 <div class="p-4">
-                    {{ $this->comments->links() }}
+                    {!! $this->comments->links() !!}
                 </div>
             @endif
         @endif
@@ -37,7 +37,10 @@
         </div>
     </div>
 
-    <x-slot:buttons>
-        <x-button icon="check" color="green" wire:click="submit" label="Post Comment"/>
-    </x-slot:buttons>
+    <x-slot:foot>
+        <x-button.submit type="button" icon="send"
+            label="Post Comment"
+            wire:click="submit" 
+        />
+    </x-slot:foot>
 </x-box>
