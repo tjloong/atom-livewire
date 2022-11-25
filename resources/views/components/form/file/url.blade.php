@@ -1,7 +1,7 @@
 @props([
     'label' => collect([
         $attributes->get('web-image', true) ? 'Image' : null,
-        $attributes->get('youtube', true) ? 'Youtube' : null,
+        $attributes->get('youtube', false) ? 'Youtube' : null,
     ])->filter()->join('/').' URL',
     'multiple' => $attributes->get('multiple', false),
     'uid' => $attributes->get('uid', 'file-url'),

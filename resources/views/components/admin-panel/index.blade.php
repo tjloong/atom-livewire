@@ -105,7 +105,9 @@
             </x-slot:auth>
         </x-navbar>
 
-        <x-breadcrumbs class="shrink-0 bg-white py-1 px-4 border-b"/>
+        <div class="shrink-0 bg-white px-4 border-b">
+            <x-breadcrumbs class="max-w-screen-xl mx-auto"/>
+        </div>
     
         @if ($unverified)
             <div x-data class="shrink-0 py-3 px-4 bg-yellow-100 shadow">

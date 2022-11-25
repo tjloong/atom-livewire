@@ -17,6 +17,8 @@
     ],
 ])
 
+@php $file = is_numeric($file) ? model('file')->find($file) : $file @endphp
+
 <figure 
     class="relative"
     style="width: {{ str($size)->finish('px') }}; height: {{ str($size)->finish('px') }};"
@@ -58,15 +60,15 @@
                 </div>
             @endif
         @endif
-    </div>
 
-    @isset($buttons)
-        <div class="absolute top-0 right-0 left-0 bg-gradient-to-b from-gray-500 to-transparent pt-2 px-2 pb-4">
-            <div class="flex items-center gap-2">
-                {{ $buttons }}
+        @isset($buttons)
+            <div class="absolute top-0 right-0 left-0 bg-gradient-to-b from-gray-500 to-transparent pt-2 px-2 pb-4 {{ $circle ? 'rounded-t-full' : 'rounded-t-lg' }}">
+                <div class="flex items-center gap-2">
+                    {{ $buttons }}
+                </div>
             </div>
-        </div>
-    @endisset
+        @endisset
+    </div>
 
     @if ($attributes->has('wire:remove'))
         <div class="absolute -top-2 -right-4 bg-white rounded-full shadow">

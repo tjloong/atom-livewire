@@ -31,10 +31,9 @@
     />
 
     <x-form.field label="Image">
-        <x-form.file
-            wire:model="variant.image_id"
-            accept="image/*"
-        />
+        @if ($variant->image_id) <x-thumbnail :file="$variant->image_id" wire:remove="$set('variant.image_id', null)"/>
+        @else <x-form.file wire:model="variant.image_id" accept="image/*"/>
+        @endif
     </x-form.field>
 
     <div class="grid gap-2">

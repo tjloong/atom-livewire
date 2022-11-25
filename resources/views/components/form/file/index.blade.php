@@ -2,7 +2,6 @@
     'multiple' => $attributes->get('multiple', false),
     'accept' => $attributes->get('accept'),
     'visibility' => $attributes->get('visibility', 'public'),
-    'youtube' => $attributes->get('youtube', false),
     'library' => $attributes->get('library', true),
     'url' => $attributes->get('web-image', true) || $attributes->get('youtube', false),
     'uid' => $attributes->get('uid', 'file-input'),

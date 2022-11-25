@@ -6,26 +6,42 @@
 <div
     x-data="{
         show: false,
-        bgclose: @js($bgclose),
+        config: {
+            bgclose: @js($bgclose),
+        },
         open () { this.show = true },
         close () { this.show = false },
+        onBgClose (e) {
+            if (!this.config.bgclose) return
+            if (e.target.getAttribute('x-ref') !== 'container') return
+            this.close()
+        }
     }"
     x-show="show"
     x-transition.opacity
     x-on:{{ $uid }}-open.window="open()"
     x-on:{{ $uid }}-close.window="close()"
     x-cloak
-    x-bind:class="show && 'inset-0 z-50 overflow-auto flex px-6 py-10'"
+    x-bind:class="show && 'inset-0 z-50 overflow-auto'"
     class="fixed"
 >
-    <div x-on:click="bgclose && close()" class="fixed inset-0 bg-black/80"></div>
+    <div class="fixed inset-0 bg-black/80"></div>
 
-    <div class="relative w-full mx-auto {{ $attributes->get('class', 'max-w-lg') }}">
+    <div 
+        x-ref="container"
+        x-on:click="onBgClose" 
+        class="absolute inset-0 px-6 py-10"
+    >
         <{{ $el }} {{ 
-            $attributes->merge([
-                'class' => 'bg-white rounded-xl border shadow-lg',
-                'wire:submit.prevent' => $el === 'form' ? 'submit' : null,
-            ])->except(['uid', 'header', 'form']) 
+            $attributes
+                ->class([
+                    'bg-white rounded-xl border shadow-lg mx-auto',
+                    $attributes->get('class', 'max-w-lg'),
+                ])
+                ->merge([
+                    'wire:submit.prevent' => $el === 'form' ? 'submit' : null,
+                ])
+                ->except(['uid', 'header', 'form'])
         }}>
             <div class="p-4 flex items-center justify-between border-b">
                 @isset($header)

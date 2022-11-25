@@ -76,7 +76,10 @@ class UserFormModal extends Component
         if ($id) $this->user = model('user')->findOrFail($id);
         else {
             $this->user = model('user')->fill(array_merge(
-                ['visibility' => 'restrict'],
+                [
+                    'visibility' => 'restrict',
+                    'account_id' => auth()->user()->account_id,
+                ],
                 $data ?? [],
             ));
 
