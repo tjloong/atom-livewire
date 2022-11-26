@@ -22,7 +22,7 @@
     x-on:{{ $uid }}-open.window="open()"
     x-on:{{ $uid }}-close.window="close()"
     x-cloak
-    x-bind:class="show && 'inset-0 z-50 overflow-auto'"
+    x-bind:class="show && 'inset-0 z-50'"
     class="fixed"
 >
     <div class="fixed inset-0 bg-black/80"></div>
@@ -30,7 +30,7 @@
     <div 
         x-ref="container"
         x-on:click="onBgClose" 
-        class="absolute inset-0 px-6 py-10"
+        class="absolute inset-0 overflow-auto px-6 py-10"
     >
         <{{ $el }} {{ 
             $attributes

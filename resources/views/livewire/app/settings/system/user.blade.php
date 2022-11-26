@@ -41,7 +41,9 @@
                     <x-table.td :label="data_get($user->role, 'name')" class="text-right"/>
                 @endmodule
 
-                @if ($user->id !== auth()->id())
+                @if ($user->id === auth()->user()->id)
+                    <x-table.td/>
+                @else
                     <x-table.td dropdown>
                         <x-dropdown.item label="Edit" icon="edit" wire:click="open('edit', {{ $user->id }})"/>
 

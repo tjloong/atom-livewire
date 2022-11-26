@@ -13,6 +13,14 @@
         required
     />
 
+    @module('roles')
+        @if ($role = optional($user->role)->name)
+            <x-form.field label="Role">
+                {{ $role }}
+            </x-form.field>
+        @endif
+    @endmodule
+
     <x-slot:foot>
         <x-button.submit label="Update Login Information"/>
     </x-slot:foot>

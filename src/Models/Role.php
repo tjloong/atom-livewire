@@ -47,7 +47,7 @@ class Role extends Model
     public function can($permission)
     {
         if (!enabled_module('permissions')) return true;
-        
+
         return in_array($this->slug, ['admin', 'administrator'])
             || $this->permissions()->granted($permission)->count() > 0;
     }

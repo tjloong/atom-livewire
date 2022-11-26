@@ -9,7 +9,7 @@
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else 
             <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
-            <x-navbar.dropdown.item :href="route('app.preferences')" label="Preferences"/>
+            @can('preference.manage') <x-navbar.dropdown.item :href="route('app.preferences')" label="Preferences"/> @endcan
         @endif
 
         @if ($canBackToApp)
@@ -55,7 +55,7 @@
                 @if ($slot->isNotEmpty()) {{ $slot }}
                 @else 
                     <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
-                    <x-navbar.dropdown.item :href="route('app.preferences')" label="Preferences"/>
+                    @can('preference.manage') <x-navbar.dropdown.item :href="route('app.preferences')" label="Preferences"/> @endcan
                 @endif
                     
                 @if ($canBackToApp)

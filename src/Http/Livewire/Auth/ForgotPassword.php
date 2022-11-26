@@ -10,15 +10,15 @@ class ForgotPassword extends Component
     public $email;
 
     /**
-     * Send password reset request
+     * Submit
      */
-    public function send()
+    public function submit()
     {
         if ($user = User::where('email', $this->email)->first()) {
             if ($status = $user->sendPasswordResetLink()) return redirect()->route('login')->with(['flash' => __($status)]);
-            else $this->addError('email', 'Unable to reset password');
+            else $this->addError('email', __('Unable to reset password'));
         }
-        else $this->addError('email', 'Email not found');
+        else $this->addError('email', __('Email not found'));
     }
 
     /**

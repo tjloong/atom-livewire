@@ -23,9 +23,9 @@ class ResetPassword extends Component
     }
 
     /**
-     * Save password
+     * Submit
      */
-    public function save()
+    public function submit()
     {
         $this->validateinputs();
 

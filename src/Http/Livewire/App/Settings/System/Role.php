@@ -49,10 +49,6 @@ class Role extends Component
     }
 
     /**
-     * 
-     */
-
-    /**
      * Duplicate
      */
     public function duplicate($id)

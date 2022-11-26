@@ -22,7 +22,7 @@ class Td extends Component
     ) {
         $this->tooltip = $tooltip;
 
-        if ($label) $this->label = $label;
+        if (!is_null($label)) $this->label = $label;
         else if (is_numeric($amount)) $this->label = currency($amount, $currency);
         else if (!empty($percentage)) $this->label = number_format($percentage, 2).'%';
 

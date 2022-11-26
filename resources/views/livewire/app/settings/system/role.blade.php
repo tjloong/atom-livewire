@@ -36,7 +36,7 @@
                                 ) }}
                             </a>
                         @endif
-                    </x-table.td>    
+                    </x-table.td>
                 @endmodule
 
                 <x-table.td class="text-right">

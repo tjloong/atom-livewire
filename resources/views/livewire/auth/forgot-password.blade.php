@@ -3,34 +3,32 @@
         <x-logo class="w-40"/>
     </a>
 
-    <form wire:submit.prevent="send">
-        <x-box>
-            <div class="grid gap-6 p-5 md:p-10">
-                <div class="text-2xl font-bold">
-                    {{ __('Reset Password Request') }}
-                </div>
-
-                @if ($errors->any())
-                    <x-alert :errors="$errors->all()"/>
-                @endif
-
-                <x-form.email 
-                    label="Your registered email"
-                    wire:model.defer="email"
-                    required
-                    autofocus
-                />
-
-                <x-button.submit size="md" color="theme"
+    <div class="flex flex-col gap-4">
+        <x-form>
+            <div class="text-2xl font-bold">
+                {{ __('Reset Password Request') }}
+            </div>
+    
+            @if ($errors->any())
+                <x-alert :errors="$errors->all()"/>
+            @endif
+    
+            <x-form.email 
+                label="Your registered email"
+                wire:model.defer="email"
+                required
+                autofocus
+            />
+    
+            <x-slot:foot>
+                <x-button.submit size="md" block
                     label="Send Request"
                 />
-            </div>
-        </x-box>
-
-        <div class="mt-4">
-            <a href="{{ route('login') }}" class="flex items-center">
-                <x-icon name="left-arrow-alt"></x-icon> {{ __('Back to login') }}
-            </a>
-        </div>
-    </form>
+            </x-slot:foot>
+        </x-form>
+        
+        <a href="{{ route('login') }}" class="flex items-center gap-2">
+            <x-icon name="arrow-left"></x-icon> {{ __('Back to login') }}
+        </a>
+    </div>
 </div>

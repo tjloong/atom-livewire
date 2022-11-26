@@ -110,7 +110,7 @@
             <x-dropdown icon="ellipsis-vertical">
                 {{ $slot }}
             </x-dropdown>
-        @else
+        @elseif (isset($label) || $slot->isNotEmpty())
             <div class="grid">
                 @if ($href = $attributes->get('href'))
                     <a 
@@ -119,7 +119,7 @@
                         target="{{ $attributes->get('target', '_self') }}"
                         @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
                     >
-                        {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
+                        {{ $label ?: (($slot->isNotEmpty() ? $slot : null) ?? '--') }}
                     </a>
                 @else
                     <div 
@@ -129,7 +129,7 @@
                         ])->filter()->join(' ') }}"
                         @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
                     >
-                        {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
+                        {{ $label ?: (($slot->isNotEmpty() ? $slot : null) ?? '--') }}
                     </div>
                 @endif
 
@@ -139,7 +139,6 @@
                     </div>
                 @endif
             </div>
-
         @endif
     </td>
 @endif

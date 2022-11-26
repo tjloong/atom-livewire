@@ -1,7 +1,10 @@
-<form {{ $attributes->merge([
-    'class' => 'bg-white shadow rounded-lg border',
-    'wire:submit.prevent' => 'submit',
-]) }}>
+<form {{ $attributes
+    ->class([
+        'bg-white shadow border',
+        $attributes->get('class', 'rounded-xl'),
+    ])
+    ->merge(['wire:submit.prevent' => 'submit'])
+}}>
     <div class="p-1">
         @if ($header = $attributes->get('header'))
             <div class="py-3 px-4 text-lg font-bold border-b">
