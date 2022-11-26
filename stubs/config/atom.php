@@ -5,6 +5,7 @@ return [
     'max_upload_size' => 8,
     'timezone' => 'Asia/Kuala_Lumpur',
     'payment_gateway' => [],
+    'allowed_hosts' => [],
 
     /**
      * Account Portal
@@ -30,9 +31,8 @@ return [
         'permissions' => [
             'root' => [],
             'signup' => [
-                'user' => ['manage'],
-                'label' => ['manage'],
-                'file' => ['manage'],
+                'setting' => ['manage'],
+                'preference' => ['manage'],
             ],
         ],
     ],

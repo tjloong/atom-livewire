@@ -253,11 +253,12 @@ class AtomServiceProvider extends ServiceProvider
         Gate::before(function ($user, $permission) {
             if (!enabled_module('permissions')) return true;
 
-            [$module, $action] = explode('.', $permission);
-            $isActionDefined = in_array(
-                $action, 
-                config('atom.app.permissions.'.$user->account->type.'.'.$module, [])
-            );
+            $permission = str($permission)->replace('-', '_')->toString();
+            $splits = explode('.', $permission);
+            $module = $splits[0];
+            $action = $splits[1] ?? null;
+            $actions = config('atom.app.permissions.'.$user->account->type.'.'.$module, []);
+            $isActionDefined = in_array($action, $actions);
 
             if (!$isActionDefined) return true;
             if ($user->isAccountType('root')) return true;

@@ -70,10 +70,10 @@ if (!config('atom.static_site')) {
          * Blogs
          */
         if (enabled_module('blogs')) {
-            define_route()->prefix('blog')->as('app.blog.')->group(function () {
+            define_route()->prefix('blog')->as('app.blog.')->middleware('can:blog.manage')->group(function () {
                 define_route('listing', 'App\Blog\Listing')->name('listing');
                 define_route('create', 'App\Blog\Create')->name('create');
-                define_route('{blog}', 'App\Blog\Update\Index')->name('update');
+                define_route('{blog}', 'App\Blog\Update')->name('update');
             });
         }
 
@@ -81,7 +81,7 @@ if (!config('atom.static_site')) {
          * Enquiries
          */
         if (enabled_module('enquiries')) {
-            define_route()->prefix('enquiry')->as('app.enquiry.')->group(function () {
+            define_route()->prefix('enquiry')->as('app.enquiry.')->middleware('can:enquiry.manage')->group(function () {
                 define_route('listing',  'App\Enquiry\Listing')->name('listing');
                 define_route('{enquiry}', 'App\Enquiry\Update')->name('update');
             });
@@ -123,7 +123,7 @@ if (!config('atom.static_site')) {
          * Products
          */
         if (enabled_module('products')) {
-            define_route()->prefix('product')->as('app.product.')->group(function() {
+            define_route()->prefix('product')->as('app.product.')->middleware('can:product.manage')->group(function() {
                 define_route('listing', 'App\Product\Listing')->name('listing');
                 define_route('create', 'App\Product\Create')->name('create');
                 define_route('{productId}', 'App\Product\Update')->name('update');
@@ -139,7 +139,7 @@ if (!config('atom.static_site')) {
          * Promotions
          */
         if (enabled_module('promotions')) {
-            define_route()->prefix('promotion')->as('app.promotion.')->group(function() {
+            define_route()->prefix('promotion')->as('app.promotion.')->middleware('can:promotion.manage')->group(function() {
                 define_route('listing', 'App\Promotion\Listing')->name('listing');
                 define_route('create', 'App\Promotion\Create')->name('create');
                 define_route('{promotion}', 'App\Promotion\Update')->name('update');
@@ -171,7 +171,7 @@ if (!config('atom.static_site')) {
          * Ticketing
          */
         if (enabled_module('ticketing')) {
-            define_route()->prefix('ticketing')->as('app.ticketing.')->group(function() {
+            define_route()->prefix('ticketing')->as('app.ticketing.')->middleware('can:ticketing.manage')->group(function() {
                 define_route('listing', 'App\Ticketing\Listing')->name('listing');
                 define_route('create', 'App\Ticketing\Create')->name('create');
                 define_route('{ticketId}', 'App\Ticketing\Update')->name('update');
@@ -188,21 +188,21 @@ if (!config('atom.static_site')) {
                 define_route('checkout', 'App\Billing\Checkout')->name('checkout');
             });    
         }
-        
-        /**
-         * Files
-         */
-        define_route('files', 'App\File\Listing')->name('app.files');
 
         /**
          * Settings
          */
-        define_route('settings/{tab?}', 'App\Settings\Index')->name('app.settings')->where('tab', '.*');
+        define_route('settings/{tab?}', 'App\Settings\Index')
+            ->name('app.settings')
+            ->where('tab', '.*');
 
         /**
          * Preferences
          */
-        define_route('preferences/{tab?}', 'App\Preferences\Index')->name('app.preferences')->where('tab', '.*');
+        define_route('preferences/{tab?}', 'App\Preferences\Index')
+            ->middleware('can:preference.manage')
+            ->name('app.preferences')
+            ->where('tab', '.*');
     });
 }
 
