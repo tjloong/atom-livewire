@@ -15,7 +15,7 @@ class Index extends Component
      * Mount
      */
     public function mount($tab = null)
-    {        
+    {
         if (!$tab || !$this->getFlatTabs()->firstWhere('slug', $tab)) {
             return redirect()->route('app.settings', [
                 data_get($this->getFlatTabs()->first(), 'slug')
