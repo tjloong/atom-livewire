@@ -21,7 +21,7 @@ class UserFormModal extends Component
      */
     protected function rules()
     {
-        return [
+        $rules = [
             'user.name' => 'required|string|max:255',
             'user.email' => [
                 'required',
@@ -31,8 +31,11 @@ class UserFormModal extends Component
             'user.visibility' => 'nullable',
             'user.activated_at' => 'nullable',
             'user.account_id' => 'nullable',
-            'user.role_id' => 'nullable',
         ];
+
+        if (enabled_module('roles')) $rules['user.role_id'] = 'nullable';
+
+        return $rules;
     }
 
     /**
@@ -112,12 +115,9 @@ class UserFormModal extends Component
     {
         $this->resetValidation();
         $this->validate();
-
         $this->persist();
-
-        if (!$this->user->wasRecentlyCreated) $this->popup('User Updated');
-
         $this->dispatchBrowserEvent('user-form-modal-close');
+        $this->popup('User Updated');
         $this->emitUp('refresh');
     }
 

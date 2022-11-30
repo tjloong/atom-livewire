@@ -4,7 +4,11 @@
             <x-table.header label="Users">
                 <x-button size="sm" color="gray"
                     label="New User" 
-                    wire:click="open('create')"
+                    wire:click="open('create', null, {{ json_encode(
+                        $account && auth()->user()->isAccountType('root')
+                            ? ['account_id' => $account->id]
+                            : null
+                    ) }})"
                 />
             </x-table.header>
 
