@@ -46,6 +46,7 @@ class InstallCommand extends Command
         'products', 
         'promotions',
         'shareables',
+        'contacts',
     ];
 
     /**
@@ -124,6 +125,179 @@ class InstallCommand extends Command
         $value = $enabled->unique()->values()->all();
 
         $query->update(['value' => json_encode($value)]);
+    }
+
+    /**
+     * Install documents
+     */
+    private function installDocuments()
+    {
+        $this->newLine();
+        $this->info('Installing documents table...');
+
+        $this->installContacts();
+        $this->installProducts();
+        $this->installTaxes();
+
+        if (Schema::hasTable('documents')) $this->warn('documents table exists, skipped.');
+        else {
+            Schema::create('documents', function($table) {
+                $table->id();
+                $table->string('type')->nullable();
+                $table->string('prefix')->nullable();
+                $table->string('postfix')->nullable();
+                $table->string('rev')->nullable();
+                $table->string('number')->nullable()->indexed();
+                $table->string('name')->nullable();
+                $table->string('address')->nullable();
+                $table->string('person')->nullable();
+                $table->string('reference')->nullable();
+                $table->string('payterm')->nullable();
+                $table->text('description')->nullable();
+                $table->text('summary')->nullable();
+                $table->string('currency')->nullable();
+                $table->decimal('currency_rate', 20, 2)->nullable();
+                $table->decimal('subtotal', 20, 2)->nullable();
+                $table->decimal('discount_total', 20, 2)->nullable();
+                $table->decimal('tax_total', 20, 2)->nullable();
+                $table->decimal('paid_total', 20, 2)->nullable();
+                $table->decimal('grand_total', 20, 2)->nullable();
+                $table->decimal('splitted_total', 20, 2)->nullable()->after('grand_total');
+                $table->text('footer')->nullable();
+                $table->text('note')->nullable();
+                $table->json('data')->nullable();
+                $table->foreignId('contact_id')->constrained('contacts')->onDelete('cascade');
+                $table->foreignId('revision_for_id')->nullable()->constrained('documents')->onDelete('cascade');
+                $table->foreignId('converted_from_id')->nullable()->constrained('documents')->onDelete('set null');
+                $table->foreignId('splitted_from_id')->after('data')->nullable()->constrained('documents')->onDelete('cascade');
+                $table->date('issued_at')->nullable();
+                $table->date('due_at')->nullable();
+                $table->timestamp('last_sent_at')->nullable();
+                $table->timestamp('delivered_at')->nullable();
+                $table->timestamps();
+                $table->timestamp('deleted_at')->nullable();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('owned_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+        }
+
+        if (Schema::hasTable('document_items')) $this->warn('document_items table exists, skipped.');
+        else {
+            Schema::create('document_items', function($table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->longText('description')->nullable();
+                $table->decimal('qty', 20, 2)->nullable();
+                $table->decimal('amount', 20, 2)->nullable();
+                $table->decimal('subtotal', 20, 2)->nullable();
+                $table->integer('seq')->nullable();
+                $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('set null');
+                $table->foreignId('product_variant_id')->nullable()->constrained('product_variants')->onDelete('set null');
+                $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
+
+        if (Schema::hasTable('document_item_taxes')) $this->warn('document_item_taxes table exists, skipped.');
+        else {
+            Schema::create('document_item_taxes', function($table) {
+                $table->id();
+                $table->decimal('amount', 20, 2)->nullable();
+                $table->foreignId('tax_id')->nullable()->constrained('taxes')->onDelete('set null');
+                $table->foreignId('document_item_id')->constrained('document_items')->onDelete('cascade');
+            });
+        }
+
+        if (Schema::hasTable('document_files')) $this->warn('document_files table exists, skipped.');
+        else {
+            Schema::create('document_files', function($table) {
+                $table->id();
+                $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
+                $table->foreignId('file_id')->constrained('files')->onDelete('cascade');
+            });
+        }
+
+        if (Schema::hasTable('document_emails')) $this->warn('document_emails table exists, skipped.');
+        else {
+            Schema::create('document_emails', function($table) {
+                $table->id();
+                $table->json('from')->nullable();
+                $table->json('to')->nullable();
+                $table->json('cc')->nullable();
+                $table->json('bcc')->nullable();
+                $table->string('subject')->nullable();
+                $table->longText('body')->nullable();
+                $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
+                $table->timestamps();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+        }
+
+        if (Schema::hasTable('document_payments')) $this->warn('document_payments table exists, skipped.');
+        else {
+            Schema::create('document_payments', function($table) {
+                $table->id();
+                $table->string('number')->indexed();
+                $table->string('paymode')->nullable();
+                $table->string('currency')->nullable();
+                $table->decimal('currency_rate', 20, 2)->nullable();
+                $table->decimal('amount', 20, 2)->nullable();
+                $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
+                $table->date('paid_at')->nullable();
+                $table->timestamps();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+        }
+    }
+
+    /**
+     * Install contacts
+     */
+    private function installContacts()
+    {
+        $this->newLine();
+        $this->info('Installing contacts table...');
+
+        if (Schema::hasTable('contacts')) $this->warn('contacts table exists, skipped.');
+        else {
+            Schema::create('contacts', function($table) {
+                $table->id();
+                $table->string('type')->nullable();
+                $table->string('name')->nullable();
+                $table->string('email')->nullable();
+                $table->string('phone')->nullable();
+                $table->string('fax')->nullable();
+                $table->string('brn')->nullable();
+                $table->string('tax_number')->nullable();
+                $table->string('website')->nullable();
+                $table->string('address_1')->nullable();
+                $table->string('address_2')->nullable();
+                $table->string('zip')->nullable();
+                $table->string('city')->nullable();
+                $table->string('state')->nullable();
+                $table->string('country')->nullable();
+                $table->json('data')->nullable();
+                $table->foreignId('logo_id')->nullable()->constrained('files')->onDelete('set null');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('owned_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->timestamps();
+            });
+        }
+
+        if (Schema::hasTable('contact_persons')) $this->warn('contact_persons table exists, skipped.');
+        else {
+            Schema::create('contact_persons', function($table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('salutation')->nullable();
+                $table->string('email')->nullable();
+                $table->string('phone')->nullable();
+                $table->string('designation')->nullable();
+                $table->foreignId('contact_id')->nullable()->constrained('contacts')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

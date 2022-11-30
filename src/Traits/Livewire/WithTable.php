@@ -2,8 +2,12 @@
 
 namespace Jiannius\Atom\Traits\Livewire;
 
+use Livewire\WithPagination;
+
 trait WithTable
 {
+    use WithPagination;
+    
     public $maxRows = 100;
     public $checkboxes = [];
 

@@ -120,6 +120,16 @@ if (!config('atom.static_site')) {
         }
 
         /**
+         * Contacts
+         */
+        define_route()->prefix('contact')->as('app.contact.')->group(function() {
+            define_route('listing/{type}', 'App\Contact\Listing')->middleware('can:contact.view')->name('listing');
+            define_route('create/{type}', 'App\Contact\Create')->middleware('can:contact.create')->name('create');
+            define_route('{contactId}', 'App\Contact\View')->middleware('can:contact.view')->name('view');
+            define_route('{contactId}/update', 'App\Contact\Update')->middleware('can:contact.update')->name('update');
+        });
+
+        /**
          * Products
          */
         if (enabled_module('products')) {

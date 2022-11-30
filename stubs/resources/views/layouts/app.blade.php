@@ -62,16 +62,24 @@
             </x-slot:links>
 
             <x-slot:aside>
-                <x-admin-panel.aside label="Dashboard" route="app.dashboard"/>    
-                <x-admin-panel.aside label="Blogs" route="app.blog.listing"/>    
-                <x-admin-panel.aside label="Enquiries" route="app.enquiry.listing"/>    
-                <x-admin-panel.aside label="Accounts" route="app.account.listing"/>
-                <x-admin-panel.aside label="Support Tickets" route="app.ticketing.listing"/>
+                <x-admin-panel.aside label="Dashboard" route="app.dashboard"/>
+                
+                <x-admin-panel.aside label="Contact" can="contact.view">
+                    <x-slot:subitems>
+                        <x-admin-panel.aside label="Clients" :href="route('app.contact.listing', ['client'])" :icon="false"/>
+                        <x-admin-panel.aside label="Vendors" :href="route('app.contact.listing', ['vendor'])" :icon="false"/>
+                    </x-slot:subitems>
+                </x-admin-panel.aside>
+
+                <x-admin-panel.aside label="Blogs" route="app.blog.listing" can="blog.manage"/>
+                <x-admin-panel.aside label="Enquiries" route="app.enquiry.listing" can="enquiry.manage"/>
+                <x-admin-panel.aside label="Accounts" route="app.account.listing" can="account.manage"/>
+                <x-admin-panel.aside label="Support Tickets" route="app.ticketing.listing" can="ticketing.manage"/>
             </x-slot:aside>
 
             <x-slot:asidefoot>
                 <x-admin-panel.aside label="Settings" route="app.settings"/>
-                <x-admin-panel.aside label="Preferences" route="app.preferences"/>
+                <x-admin-panel.aside label="Preferences" route="app.preferences" can="preference.manage"/>
             </x-slot:asidefoot>
 
             {{ $slot }}

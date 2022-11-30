@@ -4,9 +4,6 @@ namespace Jiannius\Atom\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Jiannius\Atom\Console\RemoveCommand;
-use Jiannius\Atom\Console\InstallCommand;
-use Jiannius\Atom\Console\PublishCommand;
 
 class AtomServiceProvider extends ServiceProvider
 {
@@ -46,9 +43,9 @@ class AtomServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             // commands
             $this->commands([
-                InstallCommand::class,
-                RemoveCommand::class,
-                PublishCommand::class,
+                \Jiannius\Atom\Console\InstallCommand::class,
+                \Jiannius\Atom\Console\RemoveCommand::class,
+                \Jiannius\Atom\Console\PublishCommand::class,
             ]);
 
             // publishing

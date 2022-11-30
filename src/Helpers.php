@@ -154,7 +154,7 @@ function lw($name)
         'App\Http\Livewire\\'.$slashed.'\Index',
         'Jiannius\Atom\Http\Livewire\\'.$slashed,
         'Jiannius\Atom\Http\Livewire\\'.$slashed.'\Index',
-    ])->first(fn($ns) => class_exists($ns));
+    ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
 
     if ($class) {
         if (str($class)->startsWith('Jiannius\Atom')) return 'atom.'.$name;
@@ -350,11 +350,13 @@ function excelsheets($sheets, $config = [], $iterator = null)
 function model($name)
 {
     $name = str()->studly($name);
-    $try = 'App\\Models\\'.$name;
-    $fallback = 'Jiannius\\Atom\\Models\\'.$name;
-    $classname = class_exists($try) ? $try : $fallback;
 
-    return app($classname);
+    $class = collect([
+        'App\\Models\\'.$name,
+        'Jiannius\\Atom\\Models\\'.$name,
+    ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
+
+    return app($class);
 }
 
 /**
@@ -391,7 +393,7 @@ function define_route($path = null, $action = null, $method = 'get')
         $class = collect([
             'App\Http\Controllers\\'.$postfix,
             'Jiannius\Atom\Http\Controllers\\'.$postfix,
-        ])->first(fn($val) => class_exists($val));
+        ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
 
         return app('router')->$method($path, [$class, $classmethod]);
     }
@@ -402,14 +404,7 @@ function define_route($path = null, $action = null, $method = 'get')
             'App\Http\Livewire\\'.$action.'\Index',
             'Jiannius\Atom\Http\Livewire\\'.$action,
             'Jiannius\Atom\Http\Livewire\\'.$action.'\Index',
-        ])->first(function($ns) {
-            $filepath = str()->replace('\\', '/', $ns).'.php';
-
-            if (str($filepath)->startsWith('App')) $filepath = app_path(str()->replaceFirst('App/', '', $filepath));
-            if (str($filepath)->startsWith('Jiannius/Atom')) $filepath = atom_path('src/'.str()->replaceFirst('Jiannius/Atom/', '', $filepath));
-
-            return file_exists($filepath);
-        });
+        ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
 
         return app('router')->$method($path, $class);
     }
@@ -646,6 +641,19 @@ function html_excerpt($html)
 function atom_path($path = null)
 {
     return base_path('vendor/jiannius/atom-livewire'.($path ? '/'.$path : ''));
+}
+
+/**
+ * Get atom class path
+ */
+function atom_ns_path($ns)
+{
+    $filepath = str($ns)->replace("\\", "/")->toString().'.php';
+
+    if (str($filepath)->startsWith('App')) $filepath = app_path(str()->replaceFirst('App/', '', $filepath));
+    if (str($filepath)->startsWith('Jiannius/Atom')) $filepath = atom_path('src/'.str()->replaceFirst('Jiannius/Atom/', '', $filepath));
+
+    return $filepath;
 }
 
 /**

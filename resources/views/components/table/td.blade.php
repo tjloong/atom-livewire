@@ -28,14 +28,10 @@
         ])
         ->except(['checkbox', 'status', 'active', 'tags', 'date', 'datetime', 'from-now', 'avatar'])
     }}>
-        @if ($attributes->has('status'))
-            @if ($status = $attributes->get('status'))
-                <x-badge :label="$status"/>
-            @endif
-
+        @if ($attributes->has('status') && !empty($attributes->get('status')))
+            <x-badge :label="$attributes->get('status')"/>
         @elseif ($attributes->has('active'))
             <x-badge :label="$attributes->get('active') ? 'active' : 'inactive'"/>
-
         @elseif ($tags = $attributes->get('tags'))
             @if (count($tags))
                 <div class="flex items-center gap-2">
