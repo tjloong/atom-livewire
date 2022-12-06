@@ -47,6 +47,7 @@ class InstallCommand extends Command
         'promotions',
         'shareables',
         'contacts',
+        'documents',
     ];
 
     /**
@@ -162,14 +163,15 @@ class InstallCommand extends Command
                 $table->decimal('tax_total', 20, 2)->nullable();
                 $table->decimal('paid_total', 20, 2)->nullable();
                 $table->decimal('grand_total', 20, 2)->nullable();
-                $table->decimal('splitted_total', 20, 2)->nullable()->after('grand_total');
+                $table->decimal('splitted_total', 20, 2)->nullable();
                 $table->text('footer')->nullable();
                 $table->text('note')->nullable();
                 $table->json('data')->nullable();
                 $table->foreignId('contact_id')->constrained('contacts')->onDelete('cascade');
+                $table->foreignId('shareable_id')->nullable()->constrained('shareables')->onDelete('set null');
                 $table->foreignId('revision_for_id')->nullable()->constrained('documents')->onDelete('cascade');
                 $table->foreignId('converted_from_id')->nullable()->constrained('documents')->onDelete('set null');
-                $table->foreignId('splitted_from_id')->after('data')->nullable()->constrained('documents')->onDelete('cascade');
+                $table->foreignId('splitted_from_id')->nullable()->constrained('documents')->onDelete('cascade');
                 $table->date('issued_at')->nullable();
                 $table->date('due_at')->nullable();
                 $table->timestamp('last_sent_at')->nullable();

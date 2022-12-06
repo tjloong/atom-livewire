@@ -101,6 +101,26 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.promotion.update' => 'App\Promotion\Update',
             'atom.app.promotion.form' => 'App\Promotion\Form',
 
+            // document
+            'atom.app.document.listing' => 'App\Document\Listing',
+            'atom.app.document.create' => 'App\Document\Create',
+            'atom.app.document.update' => 'App\Document\Update',
+            'atom.app.document.view' => 'App\Document\View\Index',
+            'atom.app.document.view.info' => 'App\Document\View\Info',
+            'atom.app.document.view.item' => 'App\Document\View\Item',
+            'atom.app.document.view.file' => 'App\Document\View\File',
+            'atom.app.document.view.bill' => 'App\Document\View\Bill',
+            'atom.app.document.view.invoice' => 'App\Document\View\Invoice',
+            'atom.app.document.view.email-form-modal' => 'App\Document\View\EmailFormModal',
+            'atom.app.document.view.split' => 'App\Document\View\Split',
+            'atom.app.document.view.split-form-modal' => 'App\Document\View\SplitFormModal',
+            'atom.app.document.view.payment' => 'App\Document\View\Payment',
+            'atom.app.document.view.payment-form-modal' => 'App\Document\View\PaymentFormModal',
+            'atom.app.document.form' => 'App\Document\Form\Index',
+            'atom.app.document.form.item' => 'App\Document\Form\Item',
+            'atom.app.document.form.product-modal' => 'App\Document\Form\ProductModal',
+            'atom.app.document.form.currency-modal' => 'App\Document\Form\CurrencyModal',
+
             // page
             'atom.app.page.listing' => 'App\Page\Listing',
             'atom.app.page.update' => 'App\Page\Update\Index',

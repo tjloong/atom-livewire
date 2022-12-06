@@ -125,6 +125,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.picker',
             'form.search',
             'form.select.index',
+            'form.select.owner',
             'form.select.state',
             'form.select.gender',
             'form.select.country',

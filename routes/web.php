@@ -122,12 +122,14 @@ if (!config('atom.static_site')) {
         /**
          * Contacts
          */
-        define_route()->prefix('contact')->as('app.contact.')->group(function() {
-            define_route('listing/{type}', 'App\Contact\Listing')->middleware('can:contact.view')->name('listing');
-            define_route('create/{type}', 'App\Contact\Create')->middleware('can:contact.create')->name('create');
-            define_route('{contactId}', 'App\Contact\View')->middleware('can:contact.view')->name('view');
-            define_route('{contactId}/update', 'App\Contact\Update')->middleware('can:contact.update')->name('update');
-        });
+        if (enabled_module('contacts')) {
+            define_route()->prefix('contact')->as('app.contact.')->group(function() {
+                define_route('listing/{type}', 'App\Contact\Listing')->middleware('can:contact.view')->name('listing');
+                define_route('create/{type}', 'App\Contact\Create')->middleware('can:contact.create')->name('create');
+                define_route('{contactId}', 'App\Contact\View')->middleware('can:contact.view')->name('view');
+                define_route('{contactId}/update', 'App\Contact\Update')->middleware('can:contact.update')->name('update');
+            });
+        }
 
         /**
          * Products
@@ -153,6 +155,20 @@ if (!config('atom.static_site')) {
                 define_route('listing', 'App\Promotion\Listing')->name('listing');
                 define_route('create', 'App\Promotion\Create')->name('create');
                 define_route('{promotion}', 'App\Promotion\Update')->name('update');
+            });
+        }
+
+        /**
+         * Documents
+         */
+        if (enabled_module('documents')) {
+            define_route()->prefix('document')->as('app.document.')->group(function() {
+                $types = config('atom.app.document.types', []);
+
+                define_route('{type}/listing', 'App\Document\Listing')->name('listing')->whereIn('type', $types);
+                define_route('{type}/create', 'App\Document\Create')->name('create')->whereIn('type', $types);
+                define_route('{documentId}', 'App\Document\View')->name('view');
+                define_route('{documentId}/update', 'App\Document\Update')->name('update');
             });
         }
 
