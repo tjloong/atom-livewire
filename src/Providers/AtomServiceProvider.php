@@ -44,13 +44,13 @@ class AtomServiceProvider extends ServiceProvider
             // commands
             $this->commands([
                 \Jiannius\Atom\Console\InstallCommand::class,
-                \Jiannius\Atom\Console\RemoveCommand::class,
                 \Jiannius\Atom\Console\PublishCommand::class,
+                \Jiannius\Atom\Console\ViewCommand::class,
             ]);
 
             // publishing
             $this->registerStaticPublishing();
-            $this->registerPublishing();
+            $this->registerBasePublishing();
         }
 
         model('site_setting')->configureSMTP();
@@ -77,11 +77,11 @@ class AtomServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register publishing
+     * Register base publishing
      * 
      * @return void
      */
-    public function registerPublishing()
+    public function registerBasePublishing()
     {
         $this->publishes([
             __DIR__.'/../../stubs/config' => base_path('config'),
@@ -89,34 +89,11 @@ class AtomServiceProvider extends ServiceProvider
             __DIR__.'/../../stubs/tailwind.config.js' => base_path('tailwind.config.js'),
             __DIR__.'/../../stubs/postcss.config.js' => base_path('postcss.config.js'),
             __DIR__.'/../../stubs/vite.config.js' => base_path('vite.config.js'),
-            __DIR__.'/../../stubs/resources/views/layouts' => resource_path('views/layouts'),
-            __DIR__.'/../../stubs/resources/css' => resource_path('css'),
-            __DIR__.'/../../stubs/resources/js' => resource_path('js'),
-            __DIR__.'/../../resources/views/errors' => resource_path('views/errors'),
-            __DIR__.'/../../resources/views/vendor' => resource_path('views/vendor'),
+            __DIR__.'/../../stubs/resources/views/layouts' => base_path('resources/views/layouts'),
+            __DIR__.'/../../stubs/resources/css' => base_path('resources/css'),
+            __DIR__.'/../../stubs/resources/js' => base_path('resources/js'),
+            __DIR__.'/../../resources/views/errors' => base_path('resources/views/errors'),
+            __DIR__.'/../../resources/views/vendor' => base_path('resources/views/vendor'),
         ], 'atom-base');
-
-        foreach ([
-            'app/account',
-            'app/user', 
-            'app/role', 
-            'app/onboarding',
-            'app/file', 
-            'app/site-settings', 
-            'app/label', 
-            'app/page', 
-            'app/permission', 
-            'app/team', 
-            'app/blog', 
-            'app/enquiry', 
-            'app/plan',
-            'app/ticketing',
-            'web',
-            'auth',
-        ] as $module) {
-            $this->publishes([
-                __DIR__.'/../../resources/views/'.$module => resource_path('views/vendor/atom/'.$module),
-            ], 'atom-views-'.(str_replace('app/', 'app-', $module)));
-        }
     }
 }

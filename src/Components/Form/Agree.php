@@ -23,7 +23,7 @@ class Agree extends Component
 
         $this->links = $links;
 
-        if (!$this->links && $this->type === 'tnc') {
+        if (!$this->links && $this->type === 'tnc' && enabled_module('pages')) {
             $this->links = model('page')->whereIn('name', ['Terms', 'Privacy'])
                 ->get()
                 ->mapWithKeys(fn($page) => [$page->title => '/'.$page->slug])
