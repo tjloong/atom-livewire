@@ -5,7 +5,6 @@ namespace Jiannius\Atom\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use App\Models\User;
 
 class InstallCommand extends Command
 {
@@ -1143,19 +1142,21 @@ class InstallCommand extends Command
             $this->line('Added deleted_by column to users table.');
         }
         
-        if (DB::table('users')->where('email', User::ROOT_EMAIL)->count()) $this->warn('Root user exists, skipped.');
+        // create root user
+        $rootEmail = 'root@jiannius.com';
+        if (DB::table('users')->where('email', $rootEmail)->count()) $this->warn('Root user exists, skipped.');
         else {
             $accountId = DB::table('accounts')->insert([
                 'type' => 'root',
                 'name' => 'Root',
-                'email' => User::ROOT_EMAIL,
+                'email' => $rootEmail,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
             DB::table('users')->insert([
                 'name' => 'Root',
-                'email' => User::ROOT_EMAIL,
+                'email' => $rootEmail,
                 'password' => bcrypt('password'),
                 'visibility' => 'global',
                 'account_id' => $accountId,
@@ -1227,6 +1228,7 @@ class InstallCommand extends Command
             '--force' => $this->option('force'),
         ]);
 
+        $this->removeLaravelInstalltionFiles();
         $this->installAccounts();
         $this->installUsers();
         $this->installLabels();
@@ -1315,6 +1317,22 @@ class InstallCommand extends Command
         if (!file_exists(public_path('storage'))) {
             $this->call('storage:link');
         }
+    }
+
+    /**
+     * Remove laravel installation files
+     */
+    private function removeLaravelInstalltionFiles()
+    {
+        collect([
+            base_path('resources/views/welcome.blade.php'),
+            base_path('resources/js/bootstrap.js'),
+        ])->each(function($file) {
+            if (file_exists($file)) unlink($file);
+        });
+
+        $routes = base_path('routes/web.php');
+        file_put_contents($routes, '');
     }
 
     /**
