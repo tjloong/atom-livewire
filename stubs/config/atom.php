@@ -35,5 +35,16 @@ return [
                 'preference' => ['manage'],
             ],
         ],
+
+        'document' => [
+            'types' => [
+                'quotation', 
+                'sales-order', 
+                'delivery-order', 
+                'invoice', 
+                'purchase-order', 
+                'bill',
+            ],
+        ],
     ],
 ];

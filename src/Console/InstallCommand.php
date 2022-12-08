@@ -1324,6 +1324,8 @@ class InstallCommand extends Command
      */
     private function removeLaravelInstalltionFiles()
     {
+        if (!$this->option('force')) return;
+        
         collect([
             base_path('resources/views/welcome.blade.php'),
             base_path('resources/js/bootstrap.js'),

@@ -204,12 +204,16 @@ class Index extends Component
      */
     public function setCurrency($data = null)
     {
-        if (!$data && $this->currencies) {
-            $currency = collect($this->currencies)->first();
-            $data = [
-                'currency' => data_get($currency, 'currency'),
-                'currency_rate' => data_get($currency, 'rate'),
-            ];
+        if ($this->currencies) {
+            if (!$data) $currency = collect($this->currencies)->first();
+            else if (is_string($data)) $currency = collect($this->currencies)->firstWhere('currency', $data);
+
+            if (isset($currency)) {
+                $data = [
+                    'currency' => data_get($currency, 'currency'),
+                    'currency_rate' => data_get($currency, 'rate'),
+                ];
+            }
         }
 
         if ($data) $this->document->fill($data);

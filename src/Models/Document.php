@@ -311,7 +311,6 @@ class Document extends Model
                 'splitted_total' => $this->grand_total * (($split->data->percentage ?? 0)/100),
                 'footer' => $this->footer,
                 'note' => $this->note,
-                'project_id' => $this->project_id,
                 'contact_id' => $this->contact_id,
                 'shareable_id' => $this->shareable_id,
                 'revision_for_id' => $this->revision_for_id,
