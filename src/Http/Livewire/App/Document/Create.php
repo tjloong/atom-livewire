@@ -19,13 +19,7 @@ class Create extends Component
     {
         $this->authorize($this->type.'.create');
 
-        $this->document = model('document')->fill([
-            'type' => $this->type,
-            'owned_by' => auth()->user()->id,
-        ]);
-
-        $this->document->setPrefixAndPostfix();
-        
+        $this->setDocument();
         $this->setConvertFrom();
         $this->setContact();
         $this->setExtraData();
@@ -39,6 +33,19 @@ class Create extends Component
     public function getTitleProperty()
     {
         return str()->headline('Create '.$this->type);
+    }
+
+    /**
+     * Set document
+     */
+    public function setDocument()
+    {
+        $this->document = model('document')->fill([
+            'type' => $this->type,
+            'owned_by' => auth()->user()->id,
+        ]);
+
+        $this->document->setPrefixAndPostfix();
     }
 
     /**
@@ -72,7 +79,7 @@ class Create extends Component
                 ?? model('contact')->when(
                     model('contact')->enabledBelongsToAccountTrait,
                     fn($q) => $q->belongsToAccount(),
-                )->find(request()->query('contact'))
+                )->find(request()->query('contactId'))
         ) {
             $this->document->fill(['contact_id' => $contact->id]);
         }

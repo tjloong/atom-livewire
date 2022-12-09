@@ -91,7 +91,9 @@ class Index extends Component
      */
     public function getSettingsProperty()
     {
-        return account_settings($this->document->type);
+        return model('document')->enabledBelongsToAccountTrait
+            ? account_settings($this->document->type)
+            : site_settings('app.document.'.$this->document->type);
     }
 
     /**
@@ -241,28 +243,7 @@ class Index extends Component
         if ($ids) $this->document->items()->whereNotIn('id', $ids)->delete();
 
         foreach (($this->items ?? []) as $i => $input) {
-            $data = array_merge(Arr::only($input, [
-                'name', 'description', 'qty', 'amount', 'subtotal',
-                'product_id', 'product_variant_id', 'sale_coa_id', 'purchase_coa_id',      
-            ]), ['seq' => $i]);
-
-            if ($item = $this->document->items()->find(data_get($input, 'id'))) {
-                $item->fill($data)->save();
-            }
-            else {
-                if (!data_get($data, 'product_id')) {
-                    $product = $this->createProductFromDocumentItem($data);
-                    $data = array_merge($data, ['product_id' => $product->id]);
-                }
-
-                $item = $this->document->items()->create($data);
-            }
-
-            if ($taxes = collect(data_get($input, 'taxes'))->mapWithKeys(fn($val) => [
-                data_get($val, 'id') => ['amount' => data_get($val, 'amount')],
-            ])) {
-                $item->taxes()->sync($taxes);
-            }
+            $this->updateOrCreateDocumentItem($input);
         }
 
         $this->document->sumTotal();
@@ -273,28 +254,67 @@ class Index extends Component
     }
 
     /**
+     * Update or create document item
+     */
+    public function updateOrCreateDocumentItem($input)
+    {
+        $data = array_merge(
+            Arr::only($input, [
+                'id',
+                'name', 
+                'description', 
+                'qty', 
+                'amount', 
+                'subtotal',
+                'product_id', 
+                'product_variant_id',
+            ]),
+            ['product_id' => data_get($this->createProductFromDocumentItem($input), 'product_id')],
+        );
+
+        $item = $this->document->items()->find(data_get($data, 'id'));
+
+        if ($item) $item->fill($data)->save();
+        else $item = $this->document->items()->create($data);
+
+        $this->syncDocumentItemTaxes($item, $input);
+    }
+
+    /**
+     * Sync document item taxes
+     */
+    public function syncDocumentItemTaxes($item, $input)
+    {
+        if ($taxes = collect(data_get($input, 'taxes'))->mapWithKeys(fn($val) => [
+            data_get($val, 'id') => ['amount' => data_get($val, 'amount')],
+        ])) {
+            $item->taxes()->sync($taxes);
+        }
+    }
+
+    /**
      * Create product from document item
      */
-    public function createProductFromDocumentItem($data)
+    public function createProductFromDocumentItem($input)
     {
+        if (data_get($input, 'product_id')) return $input;
+
         $product = model('product')->create([
-            'name' => data_get($data, 'name'),
+            'name' => data_get($input, 'name'),
             'type' => 'normal',
-            'description' => data_get($data, 'description'),
+            'description' => data_get($input, 'description'),
             'is_active' => true,
-            'sale_coa_id' => data_get($data, 'sale_coa_id'),
-            'purchase_coa_id' => data_get($data, 'purchase_coa_id'),
+
+            'cost' => in_array($this->document->type, ['purchase-order', 'bill'])
+                ? data_get($input, 'amount')
+                : null,
+
+            'price' => in_array($this->document->type, ['purchase-order', 'bill'])
+                ? null
+                : data_get($input, 'amount'),
         ]);
 
-        if (in_array($this->document->type, ['purchase-order', 'bill'])) $prices = $product->costs();
-        else $prices = $product->prices();
-
-        $prices->create([
-            'currency' => $this->document->currency,
-            'amount' => data_get($data, 'amount'),
-        ]);
-
-        return $product;
+        return array_merge($input, ['product_id' => $product->id]);
     }
 
     /**

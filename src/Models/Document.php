@@ -192,7 +192,15 @@ class Document extends Model
             'splitted_total',
         ]))->map(fn($n) => $n * ($this->currency_rate ?? 1));
 
-        return $key ? $totals->get($key) : $totals;
+        $currency = model('document')->enabledBelongsToAccountTrait
+            ? account_settings('default_currency')
+            : site_settings('default_currency');
+
+        if ($key) return ['currency' => $currency, 'amount' => $totals->get($key)];
+        else {
+            $totals->put('currency', $currency);
+            return $totals;
+        }
     }
 
     /**

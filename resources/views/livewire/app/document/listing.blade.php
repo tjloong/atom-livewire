@@ -67,7 +67,7 @@
 
                             @if ($converted = $document->getConvertedTotal('grand_total'))
                                 <div class="text-sm text-gray-500 font-medium">
-                                    {{ currency($converted, default_currency()) }}
+                                    {{ currency(data_get($converted, 'amount'), data_get($converted, 'currency')) }}
                                 </div>
                             @endif
                         </div>

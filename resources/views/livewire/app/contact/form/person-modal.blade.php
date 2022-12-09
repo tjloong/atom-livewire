@@ -48,10 +48,12 @@
             <div class="flex items-center gap-2">
                 <x-button.submit/>
     
-                <x-button.delete inverted
-                    title="Delete Person"
-                    message="Are you sure to delete this person?"
-                />
+                @if (data_get($input, 'id'))
+                    <x-button.delete inverted
+                        title="Delete Person"
+                        message="Are you sure to delete this person?"
+                    />
+                @endif
             </div>
         </x-slot:foot>
     @endif

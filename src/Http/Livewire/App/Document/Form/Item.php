@@ -10,16 +10,18 @@ class Item extends Component
     use WithPopupNotify;
 
     public $items;
+    public $columns;
     public $document;
 
     protected $listeners = ['addItem'];
-
+    protected $rules = ['document.type' => 'required'];
+    
     /**
      * Mount
      */
     public function mount()
     {
-        $this->initItems();
+        $this->init();
     }
 
     /**
@@ -37,14 +39,6 @@ class Item extends Component
     }
 
     /**
-     * Get columns property
-     */
-    public function getColumnsProperty()
-    {
-        return $this->document->getcolumns();
-    }
-
-    /**
      * Updated items
      */
     public function updatedItems()
@@ -53,11 +47,13 @@ class Item extends Component
     }
 
     /**
-     * Init items
+     * Init
      * For initialize items on first load, subsequent update will call syncItems
      */
-    public function initItems()
+    public function init()
     {
+        $this->columns = $this->document->getColumns();
+
         $items = $this->document->items()->with('taxes')->get()->toArray();
 
         $this->items = collect($items)->map('collect')
@@ -132,8 +128,8 @@ class Item extends Component
         $product = $metadata->get('product');
         $variant = $metadata->get('variant');
         $price = in_array($this->document->type, ['purchase-order', 'bill'])
-            ? optional($variant ?? $product)->cost
-            : optional($variant ?? $product)->price;
+            ? optional($variant ?? $product)->get('cost')
+            : optional($variant ?? $product)->get('price');
 
         $metadata->put('recommended_price', [
             'amount' => $price,

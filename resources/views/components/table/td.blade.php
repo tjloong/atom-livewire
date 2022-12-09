@@ -28,9 +28,9 @@
         ])
         ->except(['checkbox', 'status', 'active', 'tags', 'date', 'datetime', 'from-now', 'avatar'])
     }}>
-        @if ($attributes->has('status') && !empty($attributes->get('status')))
-            <x-badge :label="$attributes->get('status')"/>
-        @elseif ($attributes->has('active'))
+        @if ($status = $attributes->get('status'))
+            <x-badge :label="$status"/>
+        @elseif (is_bool($attributes->get('active')))
             <x-badge :label="$attributes->get('active') ? 'active' : 'inactive'"/>
         @elseif ($tags = $attributes->get('tags'))
             @if (count($tags))
@@ -53,22 +53,19 @@
             @else
                 --
             @endif
-
         @elseif ($date = $attributes->get('date'))
             {{ format_date($date) }}
-        
         @elseif ($datetime = $attributes->get('datetime'))
             <div>{{ format_date($datetime) }}</div>
             <div class="text-sm text-gray-500">{{ format_date($datetime, 'time') }}</div>
-
         @elseif ($fromNow = $attributes->get('from-now'))
             {{ format_date($fromNow, 'human') }}
-    
-        @elseif ($attributes->has('avatar'))
+        @elseif ($attributes->get('avatar') || $attributes->get('avatar-placeholder'))
             <div class="flex items-center gap-3">
                 <div class="shrink-0 flex items-center justify-center">
                     <x-thumbnail
                         :url="$attributes->get('avatar')"
+                        :placeholder="$attributes->get('avatar-placeholder')"
                         size="36"
                         circle
                         color="random"
@@ -101,8 +98,7 @@
                     @endif
                 </div>
             </div>
-
-        @elseif ($attributes->has('dropdown'))
+        @elseif ($attributes->get('dropdown'))
             <x-dropdown icon="ellipsis-vertical">
                 {{ $slot }}
             </x-dropdown>

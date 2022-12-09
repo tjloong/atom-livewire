@@ -5,6 +5,7 @@
     'size' => $attributes->get('size', '100'),
     'circle' => $attributes->get('circle', false),
     'color' => $attributes->get('color', 'bg-gray-200'),
+    'placeholder' => $attributes->get('placeholder'),
     'colors' => [
         '#feca57',
         '#ee5253',
@@ -59,6 +60,13 @@
                     <x-icon :name="$icon" :size="$size * 0.3"/>
                 </div>
             @endif
+        @elseif ($placeholder)
+            <div 
+                class="absolute inset-0 flex items-center justify-center text-white font-bold"
+                style="font-size: {{ $size * 0.35 }}px;"
+            >
+                {{ strtoupper(substr($placeholder, 0, 2)) }}
+            </div>
         @endif
 
         @isset($buttons)

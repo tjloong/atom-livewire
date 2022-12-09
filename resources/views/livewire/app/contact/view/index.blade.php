@@ -2,10 +2,12 @@
     <x-page-header back>
         <x-slot:title>
             <div class="flex items-center gap-3">
-                <x-avatar 
+                <x-thumbnail 
                     :url="optional($contact->logo)->url" 
                     :placeholder="$contact->name"
                     size="60"
+                    circle
+                    color="random"
                 />
                 <div>
                     <div class="text-2xl font-bold">{{ $contact->name }}</div>
