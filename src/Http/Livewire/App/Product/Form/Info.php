@@ -119,7 +119,12 @@ class Info extends Component
         $this->validate();
         $this->persist();
 
-        return $this->submitted();
+        return redirect()->route('app.product.update', [
+            'productId' => $this->product->id,
+            'tab' => $this->product->type === 'variant' && $this->product->wasRecentlyCreated
+                ? 'variant'
+                : null,
+        ]);
     }
 
     /**
@@ -133,24 +138,10 @@ class Info extends Component
     }
 
     /**
-     * Submitted
-     */
-    public function submitted()
-    {
-        if ($this->product->wasRecentlyCreated) {
-            return redirect()->route('app.product.update', [
-                'productId' => $this->product->id,
-                'tab' => $this->product->type === 'variant' ? 'variants' : null,
-            ])->with('success', 'Product Created');
-        }
-        else $this->popup('Product Updated');
-    }
-
-    /**
      * Render
      */
     public function render()
     {
-        return atom_view('app.product.form');
+        return atom_view('app.product.form.info');
     }
 }

@@ -27,7 +27,11 @@
         </div>
 
         <div class="md:w-3/4">
-            @livewire($livewire, compact('product'), key($tab))
+            @if ($component = data_get(collect($this->tabs)->firstWhere('slug', $tab), 'livewire'))
+                @livewire(lw($component), compact('product'), key($tab))
+            @else
+                @livewire(lw('app.product.form.'.$tab), compact('product'), key($tab))
+            @endif
         </div>
     </div>
 </div>

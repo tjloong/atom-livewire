@@ -4,11 +4,9 @@ namespace Jiannius\Atom\Http\Livewire\App\Product;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
-    use WithPagination;
     use WithTable;
 
     public $sortBy = 'updated_at';
@@ -46,10 +44,46 @@ class Listing extends Component
     public function getProductsProperty()
     {
         return model('product')
-            ->belongsToAccount()
+            ->when(
+                model('product')->enabledBelongsToAccountTrait,
+                fn($q) => $q->belongsToAccount(),
+            )
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows);
+            ->paginate($this->maxRows)
+            ->through(fn($product) => [
+                [
+                    'column_name' => 'Code',
+                    'column_sort' => 'code',
+                    'label' => $product->code,
+                    'href' => route('app.product.update', [$product->id]),
+                ],
+                [
+                    'column_name' => 'Product',
+                    'column_sort' => 'name',
+                    'label' => $product->name,
+                    'href' => route('app.product.update', [$product->id]),
+                    'small' => $product->type === 'variant'
+                        ? __(':count '.str('variant')->plural($product->variants->count()), [
+                            'count' => $product->variants->count()
+                        ])
+                        : null
+                ],
+                [
+                    'active' => $product->is_active,
+                ],
+                [
+                    'column_name' => 'Category',
+                    'tags' => $product->categories->pluck('name.'.app()->currentLocale()),
+                ],
+                [
+                    'column_name' => 'Price',
+                    'column_sort' => 'price',
+                    'column_class' => 'text-right',
+                    'amount' => $product->price,
+                    'class' => 'text-right',
+                ],
+            ]);
     }
 
     /**
@@ -71,18 +105,6 @@ class Listing extends Component
                 ->orderBy('name')
                 ->get(),
         ];
-    }
-
-    /**
-     * Get has sold column property
-     */
-    public function getHasSoldColumnProperty()
-    {
-        if ($product = $this->products->first()) {
-            return in_array('sold', array_keys($product->toArray()));
-        }
-
-        return false;
     }
 
     /**

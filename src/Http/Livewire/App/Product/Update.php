@@ -57,11 +57,6 @@ class Update extends Component
      */
     public function render()
     {
-        return atom_view('app.product.update', [
-            'livewire' => lw(
-                data_get(collect($this->tabs)->firstWhere('slug', $this->tab), 'livewire')
-                ?? 'app.product.form.'.$this->tab
-            ),
-        ]);
+        return atom_view('app.product.update');
     }
 }

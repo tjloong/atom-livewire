@@ -65,6 +65,7 @@
                                         :small="data_get($col, 'small')"
                                         :avatar="data_get($col, 'avatar')"
                                         :avatar-placeholder="data_get($col, 'avatar-placeholder')"
+                                        :active="data_get($col, 'active')"
                                         :class="data_get($col, 'class') ?? (
                                             $i === array_key_last(array_values($row))
                                                 ? 'text-right'
