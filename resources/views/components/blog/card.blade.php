@@ -1,40 +1,46 @@
-@if ($attributes->get('size') === 'sm')
-    <a href="{{ $attributes->get('href') }}" class="grid gap-1 bg-white border p-4 rounded-md shadow text-gray-800">
+@props([
+    'size' => $attributes->get('size'),
+    'href' => $attributes->get('href'),
+    'cover' => $attributes->get('cover'),
+    'title' => $attributes->get('title'),
+    'excerpt' => $attributes->get('excerpt'),
+    'date' => $attributes->get('date'),
+])
+
+@if ($size === 'sm')
+    <a href="{{ $href }}" class="grid gap-1 bg-white border p-4 rounded-md shadow text-gray-800">
         <div class="font-bold truncate">
-            {{ $attributes->get('title') }}
+            {{ $excerpt }}
         </div>
 
         <div class="text-gray-400 text-sm font-medium">
-            {{ $attributes->get('excerpt') }}
+            {{ $excerpt }}
         </div>
 
         <div class="text-gray-500 text-sm">
-            {{ format_date($attributes->get('date')) }}
+            {{ format_date($date) }}
         </div>
     </a>
-
 @else
-    <div class="bg-white rounded-md shadow overflow-hidden transition-all hover:shadow-lg">
-        <a href="{{ $attributes->get('href') }}" class="text-gray-800">
-            <div class="relative pt-[60%] bg-gray-200 overflow-hidden">
-                @if ($cover = $attributes->get('cover'))
-                    <figure class="absolute inset-0">
-                        <img
-                            src="{{ $attributes->get('cover') }}"
-                            alt="{{ $attributes->get('title') }}"
-                            class="w-full h-full object-cover transition-all duration-500 hover:transform hover:scale-125"
-                        >
-                    </figure>
-                @endif
-            </div>
+    <div class="bg-white rounded-xl shadow overflow-hidden transition-all flex flex-col divide-y hover:shadow-lg">
+        <a href="{{ $href }}" class="bg-gray-200 overflow-hidden relative pt-[60%]">
+            @if ($cover)
+                <figure class="absolute inset-0">
+                    <img
+                        src="{{ $cover }}"
+                        alt="{{ $title }}"
+                        class="w-full h-full object-cover transition-all duration-500 hover:transform hover:scale-125"
+                    >
+                </figure>
+            @endif
+        </a>
 
-            <div class="p-4 border border-t-0 rounded-b-md">
-                <div class="text-lg font-bold truncate mb-2">
-                    {{ $attributes->get('title') }}
-                </div>
-                <div class="text-sm text-gray-400">
-                    {{ str()->limit($attributes->get('excerpt'), 100) }}
-                </div>
+        <a class="p-4 bg-white grid gap-2">
+            <div class="text-lg font-bold truncate text-gray-800">
+                {{ $title }}
+            </div>
+            <div class="text-sm text-gray-400 font-medium">
+                {!! str($excerpt)->limit(100) !!}
             </div>
         </a>
     </div>

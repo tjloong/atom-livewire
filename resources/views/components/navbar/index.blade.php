@@ -13,8 +13,8 @@
         init () {
             this.classes = {
                 'fixed top-0 left-0 right-0 z-40': this.config.fixed,
-                'stickty top-0 z-10': this.config.sticky,
-                'relative': !this.config.fixed,
+                'sticky top-0 z-10': this.config.sticky,
+                'relative': !this.config.fixed && !this.config.sticky,
             }
 
             if (this.config.scrollHide) this.toggleScroll(false)

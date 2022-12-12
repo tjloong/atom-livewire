@@ -98,7 +98,8 @@
                 if (!this.text) return this.options
                 
                 return this.options.filter(opt => (
-                    opt.label?.toLowerCase().includes(this.text) || opt.small?.toLowerCase().includes(this.text)
+                    opt.label?.toLowerCase().includes(this.text.toLowerCase()) 
+                        || opt.small?.toLowerCase().includes(this.text.toLowerCase())
                 ))
             },
             select (val = null) {
@@ -262,7 +263,7 @@
                 </div>
 
                 <div x-show="!getFilteredOptions().length">
-                    <x-empty-state title="The list is empty" subtitle="" size="sm"/>
+                    <x-empty-state title="No options available" subtitle="" size="sm"/>
                 </div>
 
                 <div x-show="getFilteredOptions().length" class="max-h-[250px] overflow-auto">

@@ -76,6 +76,7 @@
                                 :count="$widget->get('count')"
                                 :amount="$widget->get('amount')"
                                 :currency="$widget->get('currency')"
+                                :percentage="$widget->get('percentage')"
                                 :class="$widget->get('class')"
                             />
                         @elseif ($widget->get('type') === 'livewire')
