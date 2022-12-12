@@ -5,7 +5,10 @@
     'percentage' => $attributes->get('percentage'),
 ])
 
-<div class="p-5 bg-white rounded-md border shadow grid gap-1.5">
+<div {{ $attributes->class([
+    'p-5 bg-white rounded-xl border shadow grid gap-1.5',
+    $attributes->get('class'),
+]) }}>
     @if ($title = $attributes->get('title'))
         <div class="font-semibold text-gray-500">
             {{ __($title) }}

@@ -36,7 +36,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'drawer',
             'pricing',
             'spinner',
-            'statsbox',
             'checkbox',
             'shareable',
             'thumbnail',
@@ -48,6 +47,8 @@ class AtomComponentServiceProvider extends ServiceProvider
             'announcements',
             'payment-gateway',
             'placeholder-bar',
+            
+            'dashboard.statbox',
             
             'lightbox.index',
             'lightbox.slide',

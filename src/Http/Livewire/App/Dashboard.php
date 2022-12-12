@@ -6,7 +6,10 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    public $date;
+    public $filters = [
+        'date' => [],
+        'team' => null,
+    ];
 
     /**
      * Mount
@@ -15,10 +18,12 @@ class Dashboard extends Component
     {
         breadcrumbs()->home('Dashboard');
 
-        $this->date = [
-            format_date(today()->startOfDay()->subDays(30), 'carbon')->toDateString(),
-            format_date(now(), 'carbon')->toDateString(),
-        ];
+        $this->fill([
+            'filters.date' => [
+                format_date(today()->startOfDay()->subDays(30), 'carbon')->toDateString(),
+                format_date(now(), 'carbon')->toDateString(),
+            ],
+        ]);
     }
 
     /**
@@ -26,9 +31,11 @@ class Dashboard extends Component
      */
     public function getDateRangeProperty()
     {
+        $date = data_get($this->filters, 'date');
+
         // range in utc
-        $from = format_date($this->date[0], 'carbon')->startOfDay()->setTimezone('utc');
-        $to = format_date($this->date[1], 'carbon')->endOfDay()->setTimezone('utc');
+        $from = format_date($date[0], 'carbon')->startOfDay()->setTimezone('utc');
+        $to = format_date($date[1], 'carbon')->endOfDay()->setTimezone('utc');
 
         return [
             'from' => $from,
@@ -42,28 +49,50 @@ class Dashboard extends Component
     }
 
     /**
-     * Get blogs property
+     * Get teams property
      */
-    public function getBlogsProperty()
+    public function getTeamsProperty()
     {
-        if (!enabled_module('blogs')) return;
-
-        return [
-            'count' => model('blog')->whereBetween('created_at', $this->date)->count(),
-            'published' => model('blog')->whereBetween('published_at', $this->date)->count(),
-        ];
+        return model('team')
+            ->when(
+                model('team')->enabledBelongsToAccountTrait,
+                fn($q) => $q->belongsToAccount(),
+            )
+            ->orderBy('name')
+            ->get();
     }
 
     /**
-     * Get enquiries property
+     * Get sections property
      */
-    public function getEnquiriesProperty()
+    public function getSectionsProperty()
     {
-        if (!enabled_module('enquiries')) return;
-
         return [
-            'count' => model('enquiry')->whereBetween('created_at', $this->date)->count(),
-            'pending' => model('enquiry')->whereBetween('created_at', $this->date)->where('status', 'pending')->count(),
+            [
+                enabled_module('blogs') ? [
+                    'title' => 'Total Articles',
+                    'type' => 'statbox',
+                    'count' => model('blog')->whereBetween('created_at', data_get($this->filters, 'date'))->count(),
+                ] : null,
+
+                enabled_module('blogs') ? [
+                    'title' => 'Total Published',
+                    'type' => 'statbox',
+                    'count' => model('blog')->whereBetween('published_at', data_get($this->filters, 'date'))->count(),
+                ] : null,
+
+                enabled_module('enquiries') ? [
+                    'title' => 'Total Enquiries',
+                    'type' => 'statbox',
+                    'count' => model('enquiry')->whereBetween('created_at', data_get($this->filters, 'date'))->count(),
+                ] : null,
+
+                enabled_module('enquiries') ? [
+                    'title' => 'Total Pending Enquiries',
+                    'type' => 'statbox',
+                    'count' => model('enquiry')->whereBetween('created_at', data_get($this->filters, 'date'))->where('status', 'pending')->count(),
+                ] : null,
+            ],
         ];
     }
 
