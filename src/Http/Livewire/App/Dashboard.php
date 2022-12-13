@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Http\Livewire\App;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 
 class Dashboard extends Component
 {
@@ -103,6 +104,80 @@ class Dashboard extends Component
                 ] : null,
             ],
         ];
+    }
+
+    /**
+     * Get chart date range breakdown
+     */
+    public function getChartDateRangeBreakdown($eloq = null)
+    {
+        $from = data_get($this->dateRange, 'from')->setTimezone(account_settings('timezone'));
+        $breakdown = [];
+
+        $interval = 'daily';
+        if (data_get($this->dateRange, 'diff.months') > 12) $interval = 'yearly';
+        elseif (data_get($this->dateRange, 'diff.months') > 1) $interval = 'monthly';
+
+        $n = [
+            'daily' => data_get($this->dateRange, 'diff.days'),
+            'monthly' => data_get($this->dateRange, 'diff.months'),
+            'yearly' => data_get($this->dateRange, 'diff.years'),
+        ][$interval];
+
+        for ($i = 0; $i <= $n; $i++) {
+            $carbon = [
+                'daily' => $from->copy()->addDays($i),
+                'monthly' => $from->copy()->addMonths($i),
+                'yearly' => $from->copy()->addYears($i),
+            ][$interval];
+
+            $label = [
+                'daily' => $carbon->day.' '.$carbon->shortEnglishMonth,
+                'monthly' => $carbon->shortEnglishMonth.'\''.$carbon->format('y'),
+                'yearly' => $carbon->year,
+            ][$interval];
+
+            if ($eloq) {
+                $query = DB::query()->fromSub($eloq, 'data')
+                    ->when($interval === 'daily', fn($q) => $q
+                        ->selectRaw('DAY(date) AS day, DATE_FORMAT(date, "%c") AS month, SUM(total) AS total')
+                        ->groupBy(['day', 'month'])
+                        ->orderBy('day')
+                        ->orderBy('month')
+                    )
+                    ->when($interval === 'monthly', fn($q) => $q
+                        ->selectRaw('DATE_FORMAT(date, "%c") AS month, YEAR(date) AS year, SUM(total) AS total')
+                        ->groupBy(['month', 'year'])
+                        ->orderBy('month')
+                        ->orderBy('year')
+                    )
+                    ->when($interval === 'yearly', fn($q) => $q
+                        ->selectRaw('YEAR(date) AS year, SUM(total) AS total')
+                        ->groupBy('year')
+                        ->orderBy('year')
+                    )
+                    ->get();
+
+                $result = $query
+                    ->when($interval === 'daily', fn($col) => $col
+                        ->where('day', $carbon->day)
+                        ->where('month', $carbon->month)
+                    )
+                    ->when($interval === 'monthly', fn($col) => $col
+                        ->where('month', $carbon->month)
+                        ->where('year', $carbon->year)
+                    )
+                    ->when($interval === 'yearly', fn($col) => $col
+                        ->where('year', $carbon->year)
+                    )
+                    ->first();
+
+                $breakdown[$label] = $result ? (float)$result->total : 0;
+            }
+            else array_push($breakdown, $label);
+        }
+
+        return $breakdown;
     }
 
     /**

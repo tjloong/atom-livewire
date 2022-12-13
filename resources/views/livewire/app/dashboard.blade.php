@@ -85,6 +85,12 @@
                                 :charts="$widget->get('charts')"
                                 wire:key="{{ uniqid() }}"
                             />
+                        @elseif ($widget->get('type') === 'list')
+                            <x-dashboard.listing
+                                :title="$widget->get('title')"
+                                :subtitle="$widget->get('subtitle')"
+                                :data="$widget->get('data')"
+                            />
                         @elseif ($widget->get('type') === 'livewire')
                             @livewire(
                                 lw($widget->get('component')),

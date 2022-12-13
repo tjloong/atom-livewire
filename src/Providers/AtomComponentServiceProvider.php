@@ -49,6 +49,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'placeholder-bar',
             
             'dashboard.chart',
+            'dashboard.listing',
             'dashboard.statbox',
             
             'lightbox.index',
