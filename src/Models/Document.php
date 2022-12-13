@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasShareable;
 use Jiannius\Atom\Traits\Models\HasTrace;
+use Jiannius\Atom\Traits\Models\HasVisibility;
 
 class Document extends Model
 {
@@ -14,6 +15,7 @@ class Document extends Model
     use HasFilters;
     use HasShareable;
     use HasTrace;
+    use HasVisibility;
 
     protected $guarded = [];
 
@@ -44,6 +46,10 @@ class Document extends Model
         static::saving(function($document) {
             $document->number = $document->prefix.$document->postfix.($document->rev ? '.'.$document->rev : '');
             $document->issued_at = $document->issued_at ?? now();
+
+            if (is_numeric($document->payterm)) {
+                $document->due_at = $document->issued_at->addDays($document->payterm);
+            }
         });
     }
 

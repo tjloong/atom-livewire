@@ -12,7 +12,7 @@
             @elseif ($icon) {{ $icon }}
             @endif
 
-            @if (is_string($label)) {{ __($label) }}
+            @if (is_string($label)) {!! __($label) !!}
             @else {{ $slot }}
             @endif
         </a>
@@ -24,7 +24,7 @@
             @elseif ($icon) {{ $icon }}
             @endif
 
-            @if (is_string($label)) {{ __($label) }}
+            @if (is_string($label)) {!! __($label) !!}
             @else {{ $slot }}
             @endif
         </div>

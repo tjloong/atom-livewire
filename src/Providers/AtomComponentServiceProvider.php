@@ -48,6 +48,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'payment-gateway',
             'placeholder-bar',
             
+            'dashboard.chart',
             'dashboard.statbox',
             
             'lightbox.index',

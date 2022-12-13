@@ -73,17 +73,23 @@
                         @if ($widget->get('type') === 'statbox')
                             <x-dashboard.statbox
                                 :title="$widget->get('title')"
+                                :subtitle="$widget->get('subtitle')"
                                 :count="$widget->get('count')"
                                 :amount="$widget->get('amount')"
                                 :currency="$widget->get('currency')"
                                 :percentage="$widget->get('percentage')"
                                 :class="$widget->get('class')"
                             />
+                        @elseif ($widget->get('type') === 'chart')
+                            <x-dashboard.chart 
+                                :charts="$widget->get('charts')"
+                                wire:key="{{ uniqid() }}"
+                            />
                         @elseif ($widget->get('type') === 'livewire')
                             @livewire(
                                 lw($widget->get('component')),
                                 $widget->except(['type', 'component', 'col'])->merge(['filters' => $filters])->toArray(),
-                                key($widget->get('component')),
+                                key(uniqid()),
                             )
                         @endif
                     </div>

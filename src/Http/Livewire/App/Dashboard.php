@@ -11,6 +11,13 @@ class Dashboard extends Component
         'team' => null,
     ];
 
+    protected $queryString = [
+        'filters' => ['except' => [
+            'date' => [],
+            'team' => null,    
+        ]],
+    ];
+
     /**
      * Mount
      */
@@ -18,12 +25,14 @@ class Dashboard extends Component
     {
         breadcrumbs()->home('Dashboard');
 
-        $this->fill([
-            'filters.date' => [
-                format_date(today()->startOfDay()->subDays(30), 'carbon')->toDateString(),
-                format_date(now(), 'carbon')->toDateString(),
-            ],
-        ]);
+        if (!data_get($this->filters, 'date')) {
+            $this->fill([
+                'filters.date' => [
+                    format_date(today()->startOfDay()->subDays(30), 'carbon')->toDateString(),
+                    format_date(now(), 'carbon')->toDateString(),
+                ],
+            ]);
+        }
     }
 
     /**
