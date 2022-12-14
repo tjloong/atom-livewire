@@ -8,8 +8,6 @@ class Create extends Component
 {
     public $plan;
 
-    protected $listeners = ['saved'];
-
     /**
      * Mount
      */
@@ -17,16 +15,9 @@ class Create extends Component
     {
         breadcrumbs()->push('Create Plan');
 
-        $this->plan = model('plan');
-        $this->plan->is_active = true;
-    }
-
-    /**
-     * Saved
-     */
-    public function saved($id)
-    {
-        return redirect()->route('app.plan.update', [$id]);
+        $this->plan = model('plan')->fill([
+            'is_active' => true,
+        ]);
     }
 
     /**

@@ -17,6 +17,8 @@ class Td extends Component
         $percentage = null,
         $amount = null,
         $currency = null,
+        $count = null,
+        $uom = null,
         $limit = null,
         $tooltip = null
     ) {
@@ -25,6 +27,11 @@ class Td extends Component
         if (!is_null($label)) $this->label = $label;
         else if (is_numeric($amount)) $this->label = currency($amount, $currency);
         else if (!empty($percentage)) $this->label = number_format($percentage, 2).'%';
+        else if (is_numeric($count)) {
+            $this->label = $count 
+                ? implode(' ', array_filter([$count, $uom ? str($uom)->plural() : null]))
+                : null;
+        }
 
         if ($limit) {
             $this->label = str()->limit($this->label, $limit);

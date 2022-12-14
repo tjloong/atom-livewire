@@ -129,14 +129,14 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // plan
             'atom.app.plan.listing' => 'App\Plan\Listing',
             'atom.app.plan.create' => 'App\Plan\Create',
-            'atom.app.plan.update' => 'App\Plan\Update\Index',
-            'atom.app.plan.update.info' => 'App\Plan\Update\Info',
-            'atom.app.plan.update.prices' => 'App\Plan\Update\Prices',
+            'atom.app.plan.update' => 'App\Plan\Update',
+            'atom.app.plan.form' => 'App\Plan\Form',
 
             // plan price
-            'atom.app.plan-price.create' => 'App\PlanPrice\Create',
-            'atom.app.plan-price.update' => 'App\PlanPrice\Update',
-            'atom.app.plan-price.form' => 'App\PlanPrice\Form',
+            'atom.app.plan.price.listing' => 'App\Plan\Price\Listing',
+            'atom.app.plan.price.create' => 'App\Plan\Price\Create',
+            'atom.app.plan.price.update' => 'App\Plan\Price\Update',
+            'atom.app.plan.price.form' => 'App\Plan\Price\Form',
 
             // ticket
             'atom.app.ticketing.listing' => 'App\Ticketing\Listing',

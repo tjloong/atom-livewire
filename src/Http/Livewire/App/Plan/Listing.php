@@ -4,11 +4,9 @@ namespace Jiannius\Atom\Http\Livewire\App\Plan;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
-    use WithPagination;
     use WithTable;
 
     public $sortBy = 'name';
@@ -16,11 +14,19 @@ class Listing extends Component
     public $filters = ['search' => null];
 
     protected $queryString = [
-        'filters' => ['search' => null], 
+        'filters' => ['except' => ['search' => null]], 
         'sortBy' => ['except' => 'name'],
         'sortOrder' => ['except' => 'asc'],
         'page' => ['except' => 1],
     ];
+
+    /**
+     * Mount
+     */
+    public function mount()
+    {
+        breadcrumbs()->home('Plans');
+    }
 
     /**
      * Get plans property
@@ -30,7 +36,21 @@ class Listing extends Component
         return model('plan')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows);
+            ->paginate($this->maxRows)
+            ->through(fn($plan) => [
+                [
+                    'column_name' => 'Plan',
+                    'column_sort' => 'name',
+                    'label' => $plan->name,
+                    'href' => route('app.plan.update', [$plan->id]),
+                ],
+
+                [
+                    'column_name' => 'Trial',
+                    'count' => $plan->trial,
+                    'uom' => 'day',
+                ],
+            ]);
     }
 
     /**

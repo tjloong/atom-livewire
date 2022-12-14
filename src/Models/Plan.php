@@ -22,9 +22,9 @@ class Plan extends Model
     ];
 
     /**
-     * Get plan price for plan
+     * Get prices for plan
      */
-    public function planPrices()
+    public function prices()
     {
         return $this->hasMany(get_class(model('plan_price')));
     }
@@ -47,10 +47,6 @@ class Plan extends Model
 
     /**
      * Scope for fussy search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
     public function scopeSearch($query, $search)
     {

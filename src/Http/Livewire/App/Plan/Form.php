@@ -1,12 +1,12 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Plan\Update;
+namespace Jiannius\Atom\Http\Livewire\App\Plan;
 
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
-class Info extends Component
+class Form extends Component
 {
     use WithPopupNotify;
     
@@ -98,8 +98,7 @@ class Info extends Component
 
         $this->setFeatures();
 
-        if ($this->plan->wasRecentlyCreated) return redirect()->route('app.settings', ['plans']);
-        else $this->popup('Plan Updated.');
+        return redirect()->route('app.plan.listing');
     }
 
     /**
@@ -107,6 +106,6 @@ class Info extends Component
      */
     public function render()
     {
-        return atom_view('app.plan.update.info');
+        return atom_view('app.plan.form');
     }
 }

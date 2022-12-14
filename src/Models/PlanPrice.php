@@ -48,11 +48,10 @@ class PlanPrice extends Model
      */
     public function getRecurringAttribute()
     {
-        if (is_numeric($this->expired_after)) {
-            if ($this->expired_after === 1) return __('monthly');
-            else if ($this->expired_after === 12) return __('yearly');
-            else return __(':total months', ['total' => $this->expired_after]);
-        }
-        else return __('lifetime');
+        if (!$this->expired_after) return __('lifetime');
+        if ($this->expired_after === 1) return __('monthly');
+        if ($this->expired_after === 12) return __('yearly');
+        
+        return __(':total months', ['total' => $this->expired_after]);
     }
 }
