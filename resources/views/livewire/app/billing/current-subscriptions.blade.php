@@ -31,17 +31,19 @@
                         @endif
                     </div>
 
-                    @if ($isAutoBilling)
-                        <a
-                            class="text-sm"
-                            wire:click="openCancelAutoBillingModal({{ $subs->id }})"
-                        >
-                            {{ __('Cancel') }}
-                        </a>
-                    @elseif ($subs->status === 'active')
-                        <a href="{{ route('app.billing.plan', ['plan' => $subs->planPrice->plan->slug]) }}" class="text-sm">
-                            {{ $subs->expired_at ? __('Renew Plan') : __('Change Plan') }}
-                        </a>
+                    @if (auth()->user()->account_id === $account->id)
+                        @if ($isAutoBilling)
+                            <a
+                                class="text-sm"
+                                wire:click="openCancelAutoBillingModal({{ $subs->id }})"
+                            >
+                                {{ __('Cancel') }}
+                            </a>
+                        @elseif ($subs->status === 'active')
+                            <a href="{{ route('app.billing.plan', ['plan' => $subs->planPrice->plan->slug]) }}" class="text-sm">
+                                {{ $subs->expired_at ? __('Renew Plan') : __('Change Plan') }}
+                            </a>
+                        @endif
                     @endif
                 </div>
             </div>

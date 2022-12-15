@@ -63,7 +63,12 @@
         </div>
 
         <div class="md:w-3/4 flex flex-col gap-6">
-            @livewire($livewire, compact('account'), key($tab))
+            @if (
+                $com = data_get($this->flatTabs->firstWhere('slug', $this->tab), 'livewire')
+                    ?? 'app.account.update.'.$tab
+            )
+                @livewire(lw($com), compact('account'), key($tab))
+            @endif
         </div>
     </div>
 </div>

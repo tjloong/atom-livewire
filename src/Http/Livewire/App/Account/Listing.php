@@ -4,11 +4,9 @@ namespace Jiannius\Atom\Http\Livewire\App\Account;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
-    use WithPagination;
     use WithTable;
 
     public $sortBy = 'created_at';
@@ -54,7 +52,40 @@ class Listing extends Component
      */
     public function getAccountsProperty()
     {
-        return $this->query->paginate($this->maxRows);
+        return $this->query
+            ->paginate($this->maxRows)
+            ->through(fn($account) => [
+                [
+                    'column_name' => 'Name',
+                    'column_sort' => 'name',
+                    'label' => $account->name,
+                    'href' => route('app.account.update', [$account->id]),
+                ],
+
+                [
+                    'column_name' => 'Email',
+                    'label' => $account->email,
+                ],
+
+                enabled_module('plans')
+                    ? [
+                        'column_name' => 'Plan',
+                        'tags' => $account->accountSubscriptions
+                            ->map(fn($sub) => $sub->planPrice->plan->name)
+                            ->unique()
+                            ->toArray(),
+                    ] : null,
+
+                [
+                    'column_name' => 'Status',
+                    'status' => $account->status,
+                ],
+
+                [
+                    'column_name' => 'Join Date',
+                    'date' => $account->created_at,
+                ],
+            ]);
     }
 
     /**

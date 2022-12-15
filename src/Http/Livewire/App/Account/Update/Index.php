@@ -20,7 +20,7 @@ class Index extends Component
             ? model('account')->findOrFail($account)
             : auth()->user()->account;
 
-        $this->tab = $this->tab ?? data_get($this->getFlatTabs()->first(), 'slug');
+        $this->tab = $this->tab ?? data_get($this->flatTabs->first(), 'slug');
 
         breadcrumbs()->push($this->account->name);
     }
@@ -31,19 +31,25 @@ class Index extends Component
     public function getTabsProperty()
     {
         return [
-            ['group' => 'General', 'tabs' => [
-                ['slug' => 'register', 'label' => 'Registration', 'icon' => 'address-card'],
+            ['group' => 'Account', 'tabs' => array_merge(
+                [
+                    ['slug' => 'register', 'label' => 'Registration', 'icon' => 'address-card'],
+                ],
+
                 enabled_module('plans')
-                    ? ['slug' => 'billing', 'label' => 'Billing', 'icon' => 'file-invoice-dollar']
+                    ? [
+                        ['slug' => 'subscription', 'label' => 'Subscriptions', 'icon' => 'bolt', 'livewire' => 'app.billing.current-subscriptions'],
+                        ['slug' => 'payment', 'label' => 'Payment History', 'icon' => 'dollar-sign', 'livewire' => 'app.account-payment.listing'],
+                    ]
                     : null,
-            ]],
+            )],
         ];
     }
 
     /**
-     * Get flat tabs
+     * Get flat tabs property
      */
-    public function getFlatTabs()
+    public function getFlatTabsProperty()
     {
         return collect($this->tabs)->pluck('tabs')->collapse()->values();
     }
@@ -91,11 +97,6 @@ class Index extends Component
      */
     public function render()
     {
-        return atom_view('app.account.update', [
-            'livewire' => lw(
-                data_get($this->getFlatTabs()->firstWhere('slug', $this->tab), 'livewire')
-                ?? 'app.account.update.'.$this->tab
-            ),
-        ]);
+        return atom_view('app.account.update');
     }
 }
