@@ -213,7 +213,7 @@ function account_settings($name, $default = null)
         || !auth()->user()->account
     ) return $default;
 
-    $settings = auth()->user()->account->accountSettings;
+    $settings = auth()->user()->account->settings;
 
     if (is_string($name)) {
         $col = head(explode('.', $name));
@@ -515,7 +515,7 @@ function uncurrency($string)
 function timezone()
 {
     if ($account = optional(auth()->user())->account) {
-        if ($tz = $account->accountSettings->timezone ?? null) {
+        if ($tz = $account->settings->timezone ?? null) {
             return $tz;
         }
     }

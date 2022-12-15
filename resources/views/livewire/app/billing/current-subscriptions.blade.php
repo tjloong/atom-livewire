@@ -14,10 +14,8 @@
 
                 <div class="md:text-right">
                     @if ($isAutoBilling = !empty(data_get($subs->data, 'stripe_subscription_id')))
-                        <div class="flex items-center gap-2">
-                            <div class="text-green-500 text-sm flex items-center gap-1">
-                                <x-icon name="check" size="12px"/> {{ __('Auto billing enabled') }}
-                            </div>
+                        <div class="text-green-500 text-sm flex items-center gap-2 md:justify-end">
+                            <x-icon name="check"/> {{ __('Auto billing enabled') }}
                         </div>
                     @endif
 
@@ -36,12 +34,12 @@
                     @if ($isAutoBilling)
                         <a
                             class="text-sm"
-                            wire:click="$emitTo('atom.app.billing.cancel-auto-billing-modal', 'open', {{ $subs->id }})"
+                            wire:click="openCancelAutoBillingModal({{ $subs->id }})"
                         >
                             {{ __('Cancel') }}
                         </a>
                     @elseif ($subs->status === 'active')
-                        <a href="{{ route('app.billing.plans', ['plan' => $subs->planPrice->plan->slug]) }}" class="text-sm">
+                        <a href="{{ route('app.billing.plan', ['plan' => $subs->planPrice->plan->slug]) }}" class="text-sm">
                             {{ $subs->expired_at ? __('Renew Plan') : __('Change Plan') }}
                         </a>
                     @endif
@@ -51,7 +49,7 @@
             <x-empty-state title="No subscription" subtitle="You do not have any active subscription">
                 <x-button
                     label="Subscribe a plan"
-                    :href="route('app.billing.plans')"
+                    :href="route('app.billing.plan')"
                 />
             </x-empty-state>        
         @endforelse

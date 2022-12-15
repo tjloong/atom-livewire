@@ -1,11 +1,11 @@
-<div>
+<div class="max-w-screen-xl mx-auto">
     <x-box header="Taxes">
-        <x-slot:header-buttons>
+        <x-slot:buttons>
             <x-button size="sm" color="gray"
-                label="New"
+                label="New Tax"
                 wire:click="open"
             />
-        </x-slot:header-buttons>
+        </x-slot:buttons>
     
         <div class="grid divide-y">
             @forelse ($this->taxes as $tax)
@@ -43,6 +43,15 @@
                 </x-empty-state>
             @endforelse
         </div>
+
+        @if ($onboarding)
+            <x-slot:foot>
+                <x-button color="green" icon="check"
+                    label="Continue"
+                    wire:click="$emitUp('next')"
+                />
+            </x-slot:foot>
+        @endif
     </x-box>
 
     @livewire(lw('app.preferences.tax-form-modal'))

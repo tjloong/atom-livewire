@@ -140,7 +140,7 @@ class OzopayController extends Controller
     public function getOzopayKeys($accountId = null)
     {
         $account = $accountId ? model('account')->find($accountId) : null;
-        $settings = optional($account)->accountSettings;
+        $settings = optional($account)->settings;
 
         $tid = $account
             ? data_get($settings, 'ozopay_tid') ?? data_get(optional($settings->ozopay), 'tid')

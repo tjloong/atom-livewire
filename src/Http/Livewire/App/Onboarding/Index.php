@@ -71,11 +71,6 @@ class Index extends Component
      */
     public function render()
     {
-        return atom_view('app.onboarding', [
-            'livewire' => lw(
-                data_get($this->steps->firstWhere('value', $this->step), 'livewire')
-                ?? 'app.onboarding.'.$this->step
-            ),
-        ]);
+        return atom_view('app.onboarding');
     }
 }

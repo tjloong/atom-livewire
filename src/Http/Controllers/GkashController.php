@@ -129,7 +129,7 @@ class GkashController extends Controller
     public function getGkashKeys($accountId = null)
     {
         $account = $accountId ? model('account')->find($accountId) : null;
-        $settings = optional($account)->accountSettings;
+        $settings = optional($account)->settings;
 
         $mid = $account
             ? data_get($settings, 'gkash_mid') ?? data_get(optional($settings->gkash), 'mid')

@@ -6,6 +6,8 @@ use Livewire\Component;
 
 class Tax extends Component
 {
+    public $onboarding;
+
     protected $listeners = ['refresh' => '$refresh'];
 
     /**
@@ -14,7 +16,10 @@ class Tax extends Component
     public function getTaxesProperty()
     {
         return model('tax')
-            ->when(model('tax')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+            ->when(
+                model('tax')->enabledBelongsToAccountTrait, 
+                fn($q) => $q->belongsToAccount(),
+            )
             ->orderBy('country')
             ->orderBy('region')
             ->orderBy('name')

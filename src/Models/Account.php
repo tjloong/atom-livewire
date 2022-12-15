@@ -31,9 +31,9 @@ class Account extends Model
     }
 
     /**
-     * Get account settings for account
+     * Get settings for account
      */
-    public function accountSettings()
+    public function settings()
     {
         return $this->hasOne(get_class(model('account_setting')));
     }

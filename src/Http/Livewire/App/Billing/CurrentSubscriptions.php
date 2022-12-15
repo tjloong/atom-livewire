@@ -21,6 +21,14 @@ class CurrentSubscriptions extends Component
     }
 
     /**
+     * Open cancel auto billing modal
+     */
+    public function openCancelAutoBillingModal($subscriptionId)
+    {
+        $this->emitTo(lw('app.billing.cancel-auto-billing-modal'), 'open', $subscriptionId);
+    }
+
+    /**
      * Render
      */
     public function render()

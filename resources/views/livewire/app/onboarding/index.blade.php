@@ -1,6 +1,6 @@
-<div class="grid gap-6 md:grid-cols-12">
+<div class="flex flex-col gap-6 md:flex-row">
     @if ($this->steps->count() > 1)
-        <div class="md:col-span-3">
+        <div class="md:w-1/4">
             <x-sidenav wire:model="step">
                 @foreach ($this->steps as $item)
                     @if ($val = data_get($item, 'value'))
@@ -20,9 +20,15 @@
         </div>
     @endif
 
-    <div class="{{ $this->steps->count() > 1 ? 'md:col-span-9' : 'md:col-span-12' }}">
-        @livewire($livewire, [
-            'onboarding' => true,
-        ], key($step))
+    <div class="{{ $this->steps->count() > 1 ? 'md:w-3/4' : '' }}">
+        @if (
+            $com = data_get($this->steps->firstWhere('value', $step), 'livewire')
+                ?? 'app.onboarding.'.$step
+        )
+            @livewire(lw($com), [
+                'onboarding' => true,
+                'account' => auth()->user()->account,
+            ], key($step))
+        @endif
     </div>
 </div>

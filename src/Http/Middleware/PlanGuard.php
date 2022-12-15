@@ -29,7 +29,7 @@ class PlanGuard
                 $subscribedPlans = $mustHavePlans->filter(fn($val) => $request->user()->account->hasPlan($val)); 
 
                 if (!$subscribedPlans->count() && !$request->user()->isAccountType('root')) {
-                    if (Route::has('app.billing.plans')) return redirect()->route('app.billing.plans');
+                    if (Route::has('app.billing.plan')) return redirect()->route('app.billing.plan');
                     else abort(403);
                 }
             }

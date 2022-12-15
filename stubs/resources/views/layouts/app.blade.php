@@ -39,7 +39,7 @@
                     <x-logo class="w-14"/>
 
                     @notroute('app.onboarding.completed')
-                        <a href="{{ route('app.home') }}" class="flex items-center gap-1">
+                        <a href="{{ auth()->user()->home() }}" class="flex items-center gap-1">
                             <x-icon name="arrow-left"/> {{ __('I\'ll do this later') }}
                         </a>
                     @endnotroute

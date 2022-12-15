@@ -214,7 +214,7 @@ if (!config('atom.static_site')) {
         if (enabled_module('plans')) {
             define_route()->prefix('billing')->as('app.billing.')->group(function() {
                 define_route('/', 'App\Billing\Index')->name('home');
-                define_route('plans', 'App\Billing\Plans')->name('plans');
+                define_route('plan', 'App\Billing\Plan')->name('plan');
                 define_route('checkout', 'App\Billing\Checkout')->name('checkout');
             });    
         }

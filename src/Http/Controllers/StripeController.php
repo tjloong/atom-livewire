@@ -167,7 +167,7 @@ class StripeController extends Controller
     public function getStripeKeys($accountId = null)
     {
         $account = $accountId ? model('account')->find($accountId) : null;
-        $settings = optional($account)->accountSettings;
+        $settings = optional($account)->settings;
 
         $pk = $account
             ? data_get($settings, 'stripe_public_key') ?? data_get(optional($settings->stripe), 'public_key')

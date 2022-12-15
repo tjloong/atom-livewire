@@ -62,24 +62,24 @@ class Checkout extends Component
     /**
      * Add account order item
      */
-    public function addAccountOrderItem($planId, $planPriceId)
+    public function addAccountOrderItem($planId, $priceId)
     {
-        if (!$this->accountOrderItems) $this->accountOrderItems = collect([]);
+        if (!$this->accountOrderItems) $this->accountOrderItems = collect();
 
         $plan = model('plan')->where('slug', $planId)->status('active')->firstOrFail();
-        $planPrice = $plan->planPrices()->findOrFail($planPriceId);
-        $trial = $plan->trial && !auth()->user()->account->hasPlanPrice($planPrice->id) ? $plan->trial : false;
-        $discount = $trial ? $planPrice->amount : $planPrice->discount;
+        $price = $plan->prices()->findOrFail($priceId);
+        $trial = $plan->trial && !auth()->user()->account->hasPlanPrice($price->id) ? $plan->trial : false;
+        $discount = $trial ? $price->amount : $price->discount;
         $item = [
-            'currency' => $planPrice->currency,
-            'amount' => $planPrice->amount,
+            'currency' => $price->currency,
+            'amount' => $price->amount,
             'discounted_amount' => $discount,
-            'grand_total' => $planPrice->amount - ($discount ?? 0),
-            'plan_price_id' => $planPrice->id,
+            'grand_total' => $price->amount - ($discount ?? 0),
+            'plan_price_id' => $price->id,
             'data' => [
                 'trial' => $trial,
-                'recurring' => $planPrice->is_recurring
-                    ? ['interval' => 'month', 'count' => $planPrice->expired_after]
+                'recurring' => $price->is_recurring
+                    ? ['interval' => 'month', 'count' => $price->expired_after]
                     : false,
             ],
         ];

@@ -42,7 +42,7 @@ class PaymentGateway extends Component
     public function getStripeKeys($account)
     {
         if ($account) {
-            $settings = $account->accountSettings;
+            $settings = $account->settings;
             $pk = data_get($settings, 'stripe_public_key') ?? data_get(optional($settings->stripe), 'public_key');
             $sk = data_get($settings, 'stripe_secret_key') ?? data_get(optional($settings->stripe), 'secret_key');
         }
@@ -60,7 +60,7 @@ class PaymentGateway extends Component
     public function getOzopayKeys($account)
     {
         if ($account) {
-            $settings = $account->accountSettings;
+            $settings = $account->settings;
             $tid = data_get($settings, 'ozopay_tid') ?? data_get(optional($settings->ozopay), 'tid');
             $sec = data_get($settings, 'ozopay_secret') ?? data_get(optional($settings->ozopay), 'secret');
         }
@@ -82,7 +82,7 @@ class PaymentGateway extends Component
     public function getGkashKeys($account)
     {
         if ($account) {
-            $settings = $account->accountSettings;
+            $settings = $account->settings;
             $mid = data_get($settings, 'gkash_mid') ?? data_get(optional($settings->gkash), 'mid');
             $sk = data_get($settings, 'gkash_signature_key') ?? data_get(optional($settings->gkash), 'signature_key');
         }
@@ -104,7 +104,7 @@ class PaymentGateway extends Component
     public function getIpayKeys($account)
     {
         if ($account) {
-            $settings = $account->accountSettings;
+            $settings = $account->settings;
             $mc = data_get($settings, 'ipay_merchant_code') ?? data_get(optional($settings->ipay), 'merchant_code');
             $mk = data_get($settings, 'ipay_merchant_key') ?? data_get(optional($settings->ipay), 'merchant_key');
         }

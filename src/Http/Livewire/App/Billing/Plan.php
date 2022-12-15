@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Billing;
 
 use Livewire\Component;
 
-class Plans extends Component
+class Plan extends Component
 {
     public $plan;
 
@@ -48,7 +48,7 @@ class Plans extends Component
 
                 $q->whereIn('id', $id);
             })
-            ->with(['planPrices' => fn($q) => $q->where('country', $country)])
+            ->with(['prices' => fn($q) => $q->where('country', $country)])
             ->status('active')
             ->orderBy('id')
             ->get();
@@ -59,6 +59,6 @@ class Plans extends Component
      */
     public function render()
     {
-        return atom_view('app.billing.plans');
+        return atom_view('app.billing.plan');
     }
 }

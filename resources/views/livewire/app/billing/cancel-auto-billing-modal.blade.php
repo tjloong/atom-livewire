@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <x-slot:buttons>
+        <x-slot:foot>
             <div class="flex items-center gap-2">
                 <x-button icon="circle-exclamation" color="red"
                     label="Cancel Auto Billing"
@@ -48,6 +48,6 @@
                     x-on:click="$dispatch('cancel-auto-billing-modal-close')"
                 />
             </div>
-        </x-slot:buttons>
+        </x-slot:foot>
     @endif
 </x-modal>

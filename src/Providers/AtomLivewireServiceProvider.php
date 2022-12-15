@@ -52,7 +52,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // billing
             'atom.app.billing.home' => 'App\Billing\Index',
-            'atom.app.billing.plans' => 'App\Billing\Plans',
+            'atom.app.billing.plan' => 'App\Billing\Plan',
             'atom.app.billing.checkout' => 'App\Billing\Checkout',
             'atom.app.billing.current-subscriptions' => 'App\Billing\CurrentSubscriptions',
             'atom.app.billing.cancel-auto-billing-modal' => 'App\Billing\CancelAutoBillingModal',

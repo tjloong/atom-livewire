@@ -76,7 +76,6 @@ class AccountPayment extends Model
     public function provision($metadata = null)
     {
         if ($this->status !== 'success') return;
-        if ($this->provisioned_at) return;
 
         // stripe info
         $stripeData = array_filter([
@@ -85,39 +84,51 @@ class AccountPayment extends Model
         ]);
 
         foreach ($this->accountOrder->accountOrderItems as $item) {
-            $planPrice = $item->planPrice;
-
-            // trial
-            if ($planPrice->plan->trial && !$this->account->hasPlanPrice($planPrice->id)) {
-                $fields = [
-                    'is_trial' => true,
-                    'start_at' => $this->created_at,
-                    'expired_at' => $this->created_at->addDays($planPrice->plan->trial),
-                ];
+            if ($subscription = model('account_subscription')->firstWhere('account_order_item_id', $item->id)) {
+                $subscription->fill(['data' => array_merge((array)$subscription->data, $stripeData)])->save();
             }
-            // non-trial
             else {
-                $lastSubscription = $this->account->accountSubscriptions()->where('plan_price_id', $planPrice->id)->latest()->first();
-                $start = $lastSubscription ? $lastSubscription->expired_at->addSecond() : $this->created_at;
-                $end = $planPrice->is_lifetime
-                    ? null
-                    : $start->copy()->addMonths($planPrice->expired_after);
+                $planPrice = $item->planPrice;
+    
+                // trial
+                if ($planPrice->plan->trial && !$this->account->hasPlanPrice($planPrice->id)) {
+                    $fields = [
+                        'is_trial' => true,
+                        'start_at' => $this->created_at,
+                        'expired_at' => $this->created_at->addDays($planPrice->plan->trial),
+                    ];
+                }
+                // non-trial
+                else {
+                    $lastSubscription = $this->account->accountSubscriptions()
+                        ->where('plan_price_id', $planPrice->id)
+                        ->latest()
+                        ->first();
 
-                $fields = [
-                    'is_trial' => false,
-                    'start_at' => $start,
-                    'expired_at' => $end,
-                ];
+                    $start = $lastSubscription 
+                        ? $lastSubscription->expired_at->addSecond() 
+                        : $this->created_at;
+
+                    $end = $planPrice->is_lifetime
+                        ? null
+                        : $start->copy()->addMonths($planPrice->expired_after);
+    
+                    $fields = [
+                        'is_trial' => false,
+                        'start_at' => $start,
+                        'expired_at' => $end,
+                    ];
+                }
+                    
+                $this->account->accountSubscriptions()->create(array_merge(
+                    $fields, 
+                    ['data' => $stripeData],
+                    [
+                        'account_order_item_id' => $item->id,
+                        'plan_price_id' => $planPrice->id,
+                    ]
+                ));
             }
-                
-            $this->account->accountSubscriptions()->create(array_merge(
-                $fields, 
-                ['data' => $stripeData],
-                [
-                    'account_order_item_id' => $item->id,
-                    'plan_price_id' => $planPrice->id,
-                ]
-            ));
         }
 
         $this->fill(['provisioned_at' => now()])->save();
