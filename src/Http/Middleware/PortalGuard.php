@@ -27,6 +27,8 @@ class PortalGuard
                 dd('Your account is blocked');
             }
             else {
+                $user->fill(['last_active_at' => now()])->saveQuietly();
+
                 $paths = explode('/', $request->path());
                 $portal = head($paths);
     

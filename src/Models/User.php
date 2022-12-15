@@ -33,6 +33,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $casts = [
         'activated_at' => 'datetime',
+        'login_at' => 'datetime',
+        'last_active_at' => 'datetime',
         'email_verified_at' => 'datetime',
     ];
 

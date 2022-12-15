@@ -1,4 +1,9 @@
-<div class="box bg-white border shadow {{ $attributes->get('class', 'rounded-md') }}">
+<div {{
+    $attributes->class([
+        'box bg-white border shadow',
+        $attributes->get('class', 'rounded-xl'),
+    ])->except('header')
+}}>
     <div class="p-1 flex flex-col divide-y">
         @isset($header)
             <div {{ $header->attributes->class([

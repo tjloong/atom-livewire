@@ -35,7 +35,7 @@
             @endif
         </a>
 
-        <a class="p-4 bg-white grid gap-2">
+        <a href="{{ $href }}" class="p-4 bg-white grid gap-2">
             <div class="text-lg font-bold truncate text-gray-800">
                 {{ $title }}
             </div>
