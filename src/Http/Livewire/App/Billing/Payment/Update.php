@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\AccountPayment;
+namespace Jiannius\Atom\Http\Livewire\App\Billing\Payment;
 
 use Livewire\Component;
 
@@ -49,6 +49,6 @@ class Update extends Component
      */
     public function render()
     {
-        return atom_view('app.account-payment.update');
+        return atom_view('app.billing.payment.update');
     }
 }

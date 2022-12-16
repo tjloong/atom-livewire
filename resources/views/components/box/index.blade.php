@@ -42,7 +42,10 @@
     </div>
 
     @isset ($foot)
-        <div class="bg-gray-100 p-4 rounded-b-md">
+        <div {{ $foot->attributes->class([
+            'bg-gray-100 rounded-b-md',
+            $foot->attributes->get('class', 'p-4'),
+        ]) }}">
             {{ $foot }}
         </div>
     @endisset

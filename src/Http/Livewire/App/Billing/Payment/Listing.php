@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\AccountPayment;
+namespace Jiannius\Atom\Http\Livewire\App\Billing\Payment;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
@@ -29,7 +29,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        if ($this->fullpage = current_route('app.account-payment.listing')) {
+        if ($this->fullpage = current_route('app.billing.payment.listing')) {
             breadcrumbs()->home($this->title);
         }
     }
@@ -39,7 +39,7 @@ class Listing extends Component
      */
     public function getTitleProperty()
     {
-        return 'Account Payments';
+        return 'Billing';
     }
 
     /**
@@ -60,14 +60,28 @@ class Listing extends Component
                 [
                     'column_name' => 'Date',
                     'column_sort' => 'created_at',
-                    'date' => $payment->created_at,
+                    'datetime' => $payment->created_at,
                 ],
+                
                 [
                     'column_name' => 'Receipt Number',
                     'label' => $payment->number,
-                    'href' => route('app.account-payment.update', [$payment->id]),
+                    'href' => route('app.billing.payment.update', [$payment->id]),
                     'small' => $payment->description,
                 ],
+
+                $this->fullpage ? [
+                    'column_name' => 'Account',
+                    'label' => $payment->account->name,
+                    'href' => route('app.account.update', [$payment->account_id]),
+                ] : null,
+
+                $this->fullpage ? [
+                    'column_name' => 'Method',
+                    'column_sort' => 'provider',
+                    'label' => str($payment->provider)->title(),
+                ] : null,
+
                 [
                     'column_name' => 'Status',
                     'status' => array_filter([
@@ -75,6 +89,7 @@ class Listing extends Component
                         $payment->is_auto_billing ? 'auto' : null,
                     ]),
                 ],
+                
                 [
                     'column_name' => 'Amount',
                     'column_sort' => 'amount',
@@ -89,6 +104,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return atom_view('app.account-payment.listing');
+        return atom_view('app.billing.payment.listing');
     }
 }

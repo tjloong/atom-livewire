@@ -45,7 +45,7 @@ class Checkout extends Component
 
             breadcrumbs()->push('Order Summary');
         }
-        else return redirect()->route('app.billing.home');
+        else return redirect()->route('app.billing.view');
     }
 
     /**

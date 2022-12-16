@@ -49,7 +49,7 @@ class AccountPaymentProvision implements ShouldQueue
             $this->provisionAccountPayment();
         }
 
-        return redirect()->route('app.billing.home', ['status' => $this->status]);
+        return redirect()->route('app.billing.view', ['status' => $this->status]);
     }
 
     /**

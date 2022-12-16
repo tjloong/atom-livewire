@@ -46,16 +46,16 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.account.update' => 'App\Account\Update\Index',
             'atom.app.account.update.register' => 'App\Account\Update\Register',
 
-            // account payments
-            'atom.app.account-payment.listing' => 'App\AccountPayment\Listing',
-            'atom.app.account-payment.update' => 'App\AccountPayment\Update',
-
             // billing
-            'atom.app.billing.home' => 'App\Billing\Index',
+            'atom.app.billing.view' => 'App\Billing\View',
             'atom.app.billing.plan' => 'App\Billing\Plan',
             'atom.app.billing.checkout' => 'App\Billing\Checkout',
             'atom.app.billing.current-subscriptions' => 'App\Billing\CurrentSubscriptions',
             'atom.app.billing.cancel-auto-billing-modal' => 'App\Billing\CancelAutoBillingModal',
+
+            // account payment
+            'atom.app.billing.payment.listing' => 'App\Billing\Payment\Listing',
+            'atom.app.billing.payment.update' => 'App\Billing\Payment\Update',
 
             // onboarding
             'atom.app.onboarding.home' => 'App\Onboarding\Index',

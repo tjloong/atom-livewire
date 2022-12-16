@@ -16,7 +16,7 @@ class CurrentSubscriptions extends Component
         return model('account_subscription')
             ->where('account_id', $this->account->id)
             ->status(['active', 'pending'])
-            ->latest()
+            ->oldest()
             ->get();
     }
 

@@ -39,7 +39,7 @@ class Index extends Component
                 enabled_module('plans')
                     ? [
                         ['slug' => 'subscription', 'label' => 'Subscriptions', 'icon' => 'bolt', 'livewire' => 'app.billing.current-subscriptions'],
-                        ['slug' => 'payment', 'label' => 'Payment History', 'icon' => 'dollar-sign', 'livewire' => 'app.account-payment.listing'],
+                        ['slug' => 'payment', 'label' => 'Payment History', 'icon' => 'dollar-sign', 'livewire' => 'app.billing.payment.listing'],
                     ]
                     : null,
             )],

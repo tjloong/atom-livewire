@@ -171,6 +171,17 @@ if (!config('atom.static_site')) {
         }
 
         /**
+         * Ticketing
+         */
+        if (enabled_module('ticketing')) {
+            define_route()->prefix('ticketing')->as('app.ticketing.')->middleware('can:ticketing.manage')->group(function() {
+                define_route('listing', 'App\Ticketing\Listing')->name('listing');
+                define_route('create', 'App\Ticketing\Create')->name('create');
+                define_route('{ticketId}', 'App\Ticketing\Update')->name('update');
+            });
+        }
+
+        /**
          * Plans
          */
         if (enabled_module('plans')) {
@@ -188,22 +199,6 @@ if (!config('atom.static_site')) {
                     });
                 });
             });
-
-            define_route()->prefix('account-payment')->as('app.account-payment.')->group(function() {
-                define_route('listing', 'App\AccountPayment\Listing')->name('listing');
-                define_route('{paymentId}', 'App\AccountPayment\Update')->name('update');
-            });
-        }
-
-        /**
-         * Ticketing
-         */
-        if (enabled_module('ticketing')) {
-            define_route()->prefix('ticketing')->as('app.ticketing.')->middleware('can:ticketing.manage')->group(function() {
-                define_route('listing', 'App\Ticketing\Listing')->name('listing');
-                define_route('create', 'App\Ticketing\Create')->name('create');
-                define_route('{ticketId}', 'App\Ticketing\Update')->name('update');
-            });
         }
 
         /**
@@ -211,10 +206,15 @@ if (!config('atom.static_site')) {
          */
         if (enabled_module('plans')) {
             define_route()->prefix('billing')->as('app.billing.')->group(function() {
-                define_route('/', 'App\Billing\Index')->name('home');
+                define_route('/', 'App\Billing\View')->name('view');
                 define_route('plan', 'App\Billing\Plan')->name('plan');
                 define_route('checkout', 'App\Billing\Checkout')->name('checkout');
-            });    
+
+                define_route()->prefix('payment')->as('payment.')->group(function() {
+                    define_route('listing', 'App\Billing\Payment\Listing')->name('listing');
+                    define_route('{paymentId}', 'App\Billing\Payment\Update')->name('update');
+                });
+            });
         }
 
         /**

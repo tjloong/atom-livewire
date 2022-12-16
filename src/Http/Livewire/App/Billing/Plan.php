@@ -17,7 +17,7 @@ class Plan extends Component
             ? model('plan')->where('slug', request()->query('plan'))->where('is_active', true)->first()
             : null;
 
-        if ($this->subscriptions->count() && !$this->plan) return redirect()->route('app.billing.home');
+        if ($this->subscriptions->count() && !$this->plan) return redirect()->route('app.billing.view');
 
         breadcrumbs()->push('Update Plan');        
     }

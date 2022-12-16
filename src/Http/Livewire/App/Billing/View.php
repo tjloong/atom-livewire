@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Billing;
 
 use Livewire\Component;
 
-class Index extends Component
+class View extends Component
 {
     public $account;
     
@@ -23,6 +23,6 @@ class Index extends Component
      */
     public function render()
     {
-        return atom_view('app.billing');
+        return atom_view('app.billing.view');
     }
 }
