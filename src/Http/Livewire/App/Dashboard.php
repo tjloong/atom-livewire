@@ -50,8 +50,9 @@ class Dashboard extends Component
         return [
             'from' => $from,
             'to' => $to,
+            'range' => [$from->toDateString(), $to->toDateString()],
             'diff' => [
-                'days' => $from->copy()->diffInDays($to),
+                'days' => $from->copy()->diffInDays($to) + 1,
                 'months' => $from->copy()->diffInMonths($to->copy()->endOfMonth()),
                 'years' => $from->copy()->diffInYears($to->copy()->endOfYear()),
             ],
@@ -127,7 +128,7 @@ class Dashboard extends Component
         for ($i = 0; $i <= $n; $i++) {
             $carbon = [
                 'daily' => $from->copy()->addDays($i),
-                'monthly' => $from->copy()->addMonths($i),
+                'monthly' => $from->copy()->addMonthsNoOverflow($i),
                 'yearly' => $from->copy()->addYears($i),
             ][$interval];
 
