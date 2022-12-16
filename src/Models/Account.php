@@ -39,25 +39,25 @@ class Account extends Model
     }
 
     /**
-     * Get account subscriptions for account
+     * Get subscriptions for account
      */
-    public function accountSubscriptions()
+    public function subscriptions()
     {
         return $this->hasMany(get_class(model('account_subscription')));
     }
 
     /**
-     * Get account orders for account
+     * Get orders for account
      */
-    public function accountOrders()
+    public function orders()
     {
         return $this->hasMany(get_class(model('account_order')));
     }
 
     /**
-     * Get account payments for account
+     * Get payments for account
      */
-    public function accountPayments()
+    public function payments()
     {
         return $this->hasMany(get_class(model('account_payment')));
     }
@@ -105,7 +105,8 @@ class Account extends Model
     {
         if (!enabled_module('plans')) return false;
 
-        return $this->accountSubscriptions()->status('active')
+        return $this->subscriptions()
+            ->status('active')
             ->when(is_numeric($id), 
                 fn($q) => $q->whereHas('planPrice', fn($q) => $q->where('plan_prices.plan_id', $id)),
                 fn($q) => $q->whereHas('planPrice', fn($q) => $q->whereHas('plan', fn($q) => 
@@ -121,7 +122,7 @@ class Account extends Model
     public function hasPlanPrice($id)
     {
         if (!enabled_module('plans')) return false;
-        
-        return $this->accountSubscriptions()->status('active')->where('plan_price_id', $id)->count() > 0;
+
+        return $this->subscriptions()->status('active')->where('plan_price_id', $id)->count() > 0;
     }
 }

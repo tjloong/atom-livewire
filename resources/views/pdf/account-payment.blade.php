@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>{{ $title }}</title>
+    <title>{{ $filename }}</title>
 
     <style type="text/css">
         @page {
@@ -48,8 +48,8 @@
                     <div style="font-weight: 700; margin-bottom: 0.1cm;">
                         Bill To
                     </div>
-                    {{ $accountPayment->account->name }}<br>
-                    {{ $accountPayment->account->address ?? '' }}
+                    {{ $payment->account->name }}<br>
+                    {{ $payment->account->address ?? '' }}
                 </td>
                 <td style="padding-left: 0.3cm; vertical-align: top;">
                     <div style="font-weight: 700; margin-bottom: 0.1cm;">
@@ -59,17 +59,17 @@
                         @if ($doc === 'invoice')
                             <tr>
                                 <td>Invoice Number:</td>
-                                <td style="text-align: right;">{{ $accountPayment->accountOrder->number }}</td>
+                                <td style="text-align: right;">{{ $payment->order->number }}</td>
                             </tr>
                         @elseif ($doc === 'receipt')
                             <tr>
                                 <td>Receipt Number:</td>
-                                <td style="text-align: right;">{{ $accountPayment->number }}</td>
+                                <td style="text-align: right;">{{ $payment->number }}</td>
                             </tr>
                         @endif
                         <tr>
                             <td>Issue Date:</td>
-                            <td style="text-align: right;">{{ $accountPayment->created_at->toFormattedDateString() }}</td>
+                            <td style="text-align: right;">{{ $payment->created_at->toFormattedDateString() }}</td>
                         </tr>
                     </table>
                 </td>
@@ -95,7 +95,7 @@
             </thead>
 
             <tbody>
-                @foreach ($accountPayment->accountOrder->accountOrderItems as $item)
+                @foreach ($payment->order->items as $item)
                     <tr>
                         <td style="width: 80%; padding: 0.2cm 0; vertical-align: top;">
                             {{ $item->name }}
@@ -113,7 +113,7 @@
                         Grand Total
                     </td>
                     <td style="text-align: right; font-size: 14pt; padding: 0.2cm 0; border-top: 1px solid #aaa;">
-                        {{ currency($accountPayment->amount, $accountPayment->currency) }}
+                        {{ currency($payment->amount, $payment->currency) }}
                     </td>
                 </tr>
             </tfoot>

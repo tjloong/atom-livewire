@@ -14,10 +14,10 @@ class Index extends Component
     /**
      * Mount
      */
-    public function mount($account = null)
+    public function mount($accountId = null)
     {
         $this->account = auth()->user()->isAccountType('root')
-            ? model('account')->findOrFail($account)
+            ? model('account')->findOrFail($accountId)
             : auth()->user()->account;
 
         $this->tab = $this->tab ?? data_get($this->flatTabs->first(), 'slug');

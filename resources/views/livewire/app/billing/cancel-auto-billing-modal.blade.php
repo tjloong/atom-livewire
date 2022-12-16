@@ -3,14 +3,14 @@
     uid="cancel-auto-billing-modal"
     class="max-w-screen-sm"
 >
-    @if ($count = count($accountSubscriptions ?? []))
+    @if ($count = count($subscriptions ?? []))
         <div class="grid gap-4">
             <x-alert>
                 {{ __('The following subscriptions are within the same auto billing cycle. All of them will be canceled. This operation is irreversible.') }}
             </x-alert>
 
             <div class="grid gap-2">
-                @foreach ($accountSubscriptions as $subs)
+                @foreach ($subscriptions as $subs)
                     <div class="p-4 bg-gray-100 rounded-lg flex items-center justify-between gap-2">
                         <div class="font-medium">
                             {{ $subs->planPrice->plan->name }}

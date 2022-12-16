@@ -4,11 +4,9 @@ namespace Jiannius\Atom\Http\Livewire\App\AccountPayment;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
-    use WithPagination;
     use WithTable;
 
     public $account;
@@ -18,10 +16,12 @@ class Listing extends Component
     public $filters = ['search' => null];
 
     protected $queryString = [
-        'filters' => ['except' => ['search' => null]],
         'sortBy' => ['except' => 'created_at'],
         'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
+        'filters' => ['except' => [
+            'search' => null,
+        ]],
     ];
 
     /**
@@ -45,7 +45,7 @@ class Listing extends Component
     /**
      * Get account payments property
      */
-    public function getAccountPaymentsProperty()
+    public function getPaymentsProperty()
     {
         return model('account_payment')
             ->when(
@@ -55,7 +55,33 @@ class Listing extends Component
             )
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows);
+            ->paginate($this->maxRows)
+            ->through(fn($payment) => [
+                [
+                    'column_name' => 'Date',
+                    'column_sort' => 'created_at',
+                    'date' => $payment->created_at,
+                ],
+                [
+                    'column_name' => 'Receipt Number',
+                    'label' => $payment->number,
+                    'href' => route('app.account-payment.update', [$payment->id]),
+                    'small' => $payment->description,
+                ],
+                [
+                    'column_name' => 'Status',
+                    'status' => array_filter([
+                        $payment->status,
+                        $payment->is_auto_billing ? 'auto' : null,
+                    ]),
+                ],
+                [
+                    'column_name' => 'Amount',
+                    'column_sort' => 'amount',
+                    'amount' => $payment->amount,
+                    'currency' => $payment->currency,
+                ],
+            ]);
     }
 
     /**

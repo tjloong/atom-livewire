@@ -9,9 +9,9 @@ class CurrentSubscriptions extends Component
     public $account;
 
     /**
-     * Get account subscriptions property
+     * Get subscriptions property
      */
-    public function getAccountSubscriptionsProperty()
+    public function getSubscriptionsProperty()
     {
         return model('account_subscription')
             ->where('account_id', $this->account->id)

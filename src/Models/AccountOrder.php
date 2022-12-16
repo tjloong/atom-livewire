@@ -26,25 +26,25 @@ class AccountOrder extends Model
     }
 
     /**
-     * Get account order items for account order
+     * Get items for account order
      */
-    public function accountOrderItems()
+    public function items()
     {
         return $this->hasMany(get_class(model('account_order_item')));
     }
 
     /**
-     * Get account subscriptions for account order
+     * Get subscriptions for account order
      */
-    public function accountSubscriptions()
+    public function subscriptions()
     {
         return $this->hasMany(get_class(model('account_subscription')));
     }
 
     /**
-     * Get account payments for account order
+     * Get payments for account order
      */
-    public function accountPayments()
+    public function payments()
     {
         return $this->hasMany(get_class(model('account_payment')));
     }
@@ -54,6 +54,6 @@ class AccountOrder extends Model
      */
     public function getDescriptionAttribute()
     {
-        return $this->accountOrderItems->pluck('name')->join(', ');
+        return $this->items->pluck('name')->join(', ');
     }
 }

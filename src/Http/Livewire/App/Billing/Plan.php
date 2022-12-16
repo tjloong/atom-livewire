@@ -27,7 +27,7 @@ class Plan extends Component
      */
     public function getSubscriptionsProperty()
     {
-        return auth()->user()->account->accountSubscriptions()
+        return auth()->user()->account->subscriptions()
             ->status('active')
             ->get();
     }
@@ -37,7 +37,8 @@ class Plan extends Component
      */
     public function getPlansProperty()
     {
-        $country = geoip()->getLocation()->iso_code;
+        $country = auth()->user()->account->country
+            ?? geoip()->getLocation()->iso_code;
 
         return model('plan')
             ->when($this->subscriptions->count(), function($q) {

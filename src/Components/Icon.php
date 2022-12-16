@@ -163,6 +163,7 @@ class Icon extends Component
         'article' => 'feather-pointed',
         'assign' => 'plus',
         'back' => 'arrow-left',
+        'billing' => 'file-invoice-dollar',
         'block' => 'ban',
         'blog' => 'feather-pointed',
         'buy' => 'bag-shopping',

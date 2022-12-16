@@ -30,11 +30,11 @@ class AccountPayment extends Model
     }
 
     /**
-     * Get account order for account payment
+     * Get order for account payment
      */
-    public function accountOrder()
+    public function order()
     {
-        return $this->belongsTo(get_class(model('account_order')));
+        return $this->belongsTo(get_class(model('account_order')), 'account_order_id');
     }
 
     /**
@@ -42,7 +42,7 @@ class AccountPayment extends Model
      */
     public function getDescriptionAttribute()
     {
-        return $this->accountOrder->description;
+        return $this->order->description;
     }
 
     /**
@@ -51,23 +51,6 @@ class AccountPayment extends Model
     public function getIsAutoBillingAttribute()
     {
         return data_get($this->data, 'pay_response.data.object.billing_reason') === 'subscription_cycle';
-    }
-
-    /**
-     * Generate pdf
-     */
-    public function pdf($request)
-    {
-        $filename = 'billing-payment-'.$this->number.'.pdf';
-        $path = 'pdf.account-payment';
-        $view = view()->exists($path) ? $path : 'atom::'.$path;
-        $instance = PDF::loadView($view, [
-            'accountPayment' => $this,
-            'title' => $filename,
-            'doc' => data_get($request, 'doc'),
-        ]);
-
-        return (object)compact('filename', 'instance');
     }
 
     /**
@@ -83,7 +66,7 @@ class AccountPayment extends Model
             'stripe_subscription_id' => data_get($metadata, 'stripe_subscription_id'),
         ]);
 
-        foreach ($this->accountOrder->accountOrderItems as $item) {
+        foreach ($this->order->items as $item) {
             if ($subscription = model('account_subscription')->firstWhere('account_order_item_id', $item->id)) {
                 $subscription->fill(['data' => array_merge((array)$subscription->data, $stripeData)])->save();
             }
@@ -100,7 +83,7 @@ class AccountPayment extends Model
                 }
                 // non-trial
                 else {
-                    $lastSubscription = $this->account->accountSubscriptions()
+                    $lastSubscription = $this->account->subscriptions()
                         ->where('plan_price_id', $planPrice->id)
                         ->latest()
                         ->first();
@@ -120,7 +103,7 @@ class AccountPayment extends Model
                     ];
                 }
                     
-                $this->account->accountSubscriptions()->create(array_merge(
+                $this->account->subscriptions()->create(array_merge(
                     $fields, 
                     ['data' => $stripeData],
                     [

@@ -1,6 +1,6 @@
 <x-box header="Current Subscription Plans">
     <div class="grid divide-y">
-        @forelse ($this->accountSubscriptions as $subs)
+        @forelse ($this->subscriptions as $subs)
             <div class="p-4 flex flex-wrap items-center justify-between gap-2 hover:bg-slate-100">
                 <div class="font-medium flex items-center gap-2">
                     {{ $subs->planPrice->plan->name }}
@@ -53,7 +53,7 @@
                     label="Subscribe a plan"
                     :href="route('app.billing.plan')"
                 />
-            </x-empty-state>        
+            </x-empty-state>
         @endforelse
     </div>
 </x-box>

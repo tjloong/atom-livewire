@@ -30,9 +30,9 @@ class AccountSubscription extends Model
     }
 
     /**
-     * Get account order item for account subscription
+     * Get order item for account subscription
      */
-    public function accountOrderItem()
+    public function orderItem()
     {
         return $this->belongsTo(get_class(model('account_order_item')));
     }
@@ -47,15 +47,11 @@ class AccountSubscription extends Model
 
     /**
      * Scope for fussy search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
     public function scopeSearch($query, $search)
     {
         return $query->where(fn($q) => $q
-            ->whereHas('plan_price', fn($q) => $q
+            ->whereHas('planPrice', fn($q) => $q
                 ->whereHas('plan', fn($q) => $q->search($search))
             )
             ->whereHas('account', fn($q) => $q->search($search))
@@ -64,10 +60,6 @@ class AccountSubscription extends Model
 
     /**
      * Scope for status
-     * 
-     * @param Builder $query
-     * @param mixed $statuses
-     * @return Builder
      */
     public function scopeStatus($query, $statuses)
     {
@@ -93,8 +85,6 @@ class AccountSubscription extends Model
 
     /**
      * Get status attribute
-     * 
-     * @return string
      */
     public function getStatusAttribute()
     {

@@ -6,8 +6,9 @@ use Livewire\Component;
 
 class CancelAutoBillingModal extends Component
 {
+    public $subscriptions;
     public $stripeSubscriptionId;
-    public $accountSubscriptions;
+    
     public $listeners = ['open'];
 
     /**
@@ -22,7 +23,7 @@ class CancelAutoBillingModal extends Component
             'data.stripe_subscription_id'
         );
 
-        $this->accountSubscriptions = model('account_subscription')
+        $this->subscriptions = model('account_subscription')
             ->where('data->stripe_subscription_id', $this->stripeSubscriptionId)
             ->get();
 

@@ -70,7 +70,7 @@ class Listing extends Component
                 enabled_module('plans')
                     ? [
                         'column_name' => 'Plan',
-                        'tags' => $account->accountSubscriptions
+                        'tags' => $account->subscriptions
                             ->map(fn($sub) => $sub->planPrice->plan->name)
                             ->unique()
                             ->toArray(),

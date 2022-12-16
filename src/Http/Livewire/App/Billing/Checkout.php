@@ -6,8 +6,8 @@ use Livewire\Component;
 
 class Checkout extends Component
 {
-    public $accountOrder;
-    public $accountOrderItems;
+    public $order;
+    public $orderItems;
 
     /**
      * Validation rules
@@ -15,8 +15,8 @@ class Checkout extends Component
     protected function rules()
     {
         return [
-            'accountOrder.data.agree_tnc' => 'accepted',
-            'accountOrder.data.enable_auto_billing' => 'nullable',
+            'order.data.agree_tnc' => 'accepted',
+            'order.data.enable_auto_billing' => 'nullable',
         ];
     }
 
@@ -26,7 +26,7 @@ class Checkout extends Component
     protected function messages()
     {
         return [
-            'accountOrder.data.agree_tnc.accepted' => __('Please accept terms & conditions and privacy policy.'),
+            'order.data.agree_tnc.accepted' => __('Please accept terms & conditions and privacy policy.'),
         ];
     }
 
@@ -36,12 +36,12 @@ class Checkout extends Component
     public function mount()
     {
         if (request()->query('plan') && request()->query('price')) {
-            $this->accountOrder = ['data' => [
+            $this->order = ['data' => [
                 'agree_tnc' => false, 
                 'enable_auto_billing' => false,
             ]];
 
-            $this->addAccountOrderItem(request()->query('plan'), request()->query('price'));
+            $this->addOrderItem(request()->query('plan'), request()->query('price'));
 
             breadcrumbs()->push('Order Summary');
         }
@@ -53,18 +53,18 @@ class Checkout extends Component
      */
     public function getTotalProperty()
     {
-        $currency = data_get($this->accountOrderItems->first(), 'currency');
-        $amount = $this->accountOrderItems->sum('grand_total');
+        $currency = data_get($this->orderItems->first(), 'currency');
+        $amount = $this->orderItems->sum('grand_total');
 
         return compact('currency', 'amount');
     }
 
     /**
-     * Add account order item
+     * Add order item
      */
-    public function addAccountOrderItem($planId, $priceId)
+    public function addOrderItem($planId, $priceId)
     {
-        if (!$this->accountOrderItems) $this->accountOrderItems = collect();
+        if (!$this->orderItems) $this->orderItems = collect();
 
         $plan = model('plan')->where('slug', $planId)->status('active')->firstOrFail();
         $price = $plan->prices()->findOrFail($priceId);
@@ -98,7 +98,7 @@ class Checkout extends Component
 
         $item['name'] = implode(' ', $str);
 
-        $this->accountOrderItems->push($item);
+        $this->orderItems->push($item);
     }
 
     /**
@@ -109,26 +109,26 @@ class Checkout extends Component
         $this->resetValidation();
         $this->validate();
 
-        $accountOrder = model('account_order')->create(array_merge($this->accountOrder, [
+        $order = model('account_order')->create(array_merge($this->order, [
             'currency' => data_get($this->total, 'currency'),
             'amount' => data_get($this->total, 'amount'),
             'account_id' => auth()->user()->account_id,
         ]));
 
-        foreach ($this->accountOrderItems as $accountOrderItem) {
-            $accountOrder->accountOrderItems()->create($accountOrderItem);
+        foreach ($this->orderItems as $orderItem) {
+            $order->items()->create($orderItem);
         }
 
-        $accountPayment = $accountOrder->accountPayments()->create([
+        $payment = $order->payments()->create([
             'provider' => $provider ?? 'manual',
-            'currency' => $accountOrder->currency,
-            'amount' => $accountOrder->amount,
-            'status' => $accountOrder->amount > 0 ? 'draft' : 'success',
+            'currency' => $order->currency,
+            'amount' => $order->amount,
+            'status' => $order->amount > 0 ? 'draft' : 'success',
             'account_id' => auth()->user()->account_id,
         ]);
 
         // payment gateway
-        if ($accountPayment->amount > 0 && $provider) {
+        if ($payment->amount > 0 && $provider) {
             $data = ['pay_request' => [
                 'job' => 'AccountPaymentProvision',
                 'customer' => array_merge(
@@ -137,27 +137,27 @@ class Checkout extends Component
                         ? ['stripe_customer_id' => $this->getStripeCustomerId()]
                         : []
                 ),
-                'payment_id' => $accountPayment->id,
-                'payment_description' => 'Account Order #'.$accountOrder->number,
-                'currency' => $accountPayment->currency,
-                'amount' => currency($accountPayment->amount),
-                'items' => $accountOrder->accountOrderItems->map(fn($accountOrderItem) => [
-                    'name' => $accountOrderItem->name,
-                    'amount' => currency($accountOrderItem->grand_total),
-                    'currency' => $accountOrderItem->currency,
+                'payment_id' => $payment->id,
+                'payment_description' => 'Account Order #'.$order->number,
+                'currency' => $payment->currency,
+                'amount' => currency($payment->amount),
+                'items' => $order->items->map(fn($item) => [
+                    'name' => $item->name,
+                    'amount' => currency($item->grand_total),
+                    'currency' => $item->currency,
                     'qty' => 1,
-                    'recurring' => data_get($accountOrder->data, 'enable_auto_billing')
-                        ? data_get($accountOrderItem->data, 'recurring')
+                    'recurring' => data_get($order->data, 'enable_auto_billing')
+                        ? data_get($item->data, 'recurring')
                         : false,
                 ])->all(),
             ]];
 
-            $accountPayment->fill(compact('data'))->save();
+            $payment->fill(compact('data'))->save();
 
             return redirect()->route('__'.$provider.'.checkout')->with($data);
         }
         // no payment amount, provision straight away
-        else $accountPayment->provision();
+        else $payment->provision();
 
         return auth()->user()->account->status === 'new'
             ? redirect()->route('app.onboarding.home')
@@ -169,14 +169,14 @@ class Checkout extends Component
      */
     public function getStripeCustomerId()
     {
-        $previousAccountPayment = model('account_payment')
+        $previousPayment = model('account_payment')
             ->where('account_id', auth()->user()->account_id)
             ->where('provider', 'stripe')
             ->whereNotNull('data->metadata->stripe_customer_id')
             ->latest()
             ->first();
 
-        return data_get($previousAccountPayment, 'data.metadata.stripe_customer_id');
+        return data_get($previousPayment, 'data.metadata.stripe_customer_id');
     }
 
     /**

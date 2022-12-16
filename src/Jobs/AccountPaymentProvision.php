@@ -97,10 +97,10 @@ class AccountPaymentProvision implements ShouldQueue
      */
     public function duplicateAccountPayment()
     {
-        $accountOrder = $this->accountPayment->accountOrder;
+        $accountOrder = $this->accountPayment->order;
 
         // only use recurring order items
-        $accountOrderItems = $accountOrder->accountOrderItems
+        $accountOrderItems = $accountOrder->items
             ->filter(fn($item) => is_numeric(data_get($item->data, 'recurring.count')));
 
         $newAccountOrder = model('account_order')->create([
@@ -111,7 +111,7 @@ class AccountPaymentProvision implements ShouldQueue
         ]);
 
         foreach ($accountOrderItems as $item) {
-            $newAccountOrder->accountOrderItems()->create([
+            $newAccountOrder->items()->create([
                 'name' => $item->name,
                 'currency' => $item->currency,
                 'amount' => $item->amount,
@@ -122,7 +122,7 @@ class AccountPaymentProvision implements ShouldQueue
             ]);
         }
 
-        $newAccountPayment = $newAccountOrder->accountPayments()->create([
+        $newAccountPayment = $newAccountOrder->payments()->create([
             'currency' => $this->accountPayment->currency,
             'amount' => $newAccountOrder->amount,
             'status' => $newAccountOrder->amount > 0 ? 'draft' : 'success',

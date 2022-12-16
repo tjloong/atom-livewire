@@ -33,12 +33,12 @@ class CancelAccountSubscription implements ShouldQueue
     public function handle()
     {
         $stripeSubscriptionId = data_get($this->params, 'subscription_id');
-        $accountSubscriptions = model('account_subscription')
+        $subscriptions = model('account_subscription')
             ->where('data->stripe_subscription_id', $stripeSubscriptionId)
             ->get();
 
-        $accountSubscriptions->each(fn($subs) => $subs->fill([
-            'data' => array_merge((array)$subs->data, [
+        $subscriptions->each(fn($subscription) => $subscription->fill([
+            'data' => array_merge((array)$subscription->data, [
                 'stripe_subscription_id' => null,
             ]),
         ])->save());

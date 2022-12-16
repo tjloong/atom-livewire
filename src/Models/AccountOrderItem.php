@@ -18,17 +18,17 @@ class AccountOrderItem extends Model
     ];
 
     /**
-     * Get account order for account order item
+     * Get order for account order item
      */
-    public function accountOrder()
+    public function order()
     {
         return $this->belongsTo(get_class(model('account_order')));
     }
 
     /**
-     * Get account subscription for account order items
+     * Get subscription for account order items
      */
-    public function accountSubscription()
+    public function subscription()
     {
         return $this->hasOne(get_class(model('account_subscription')));
     }

@@ -6,20 +6,21 @@ use Livewire\Component;
 
 class Update extends Component
 {
-    public $accountPayment;
+    public $payment;
 
     /**
      * Mount
      */
-    public function mount($accountPayment)
+    public function mount($paymentId)
     {
-        $this->accountPayment = model('account_payment')
-            ->when(auth()->user()->isAccountType('signup'), 
+        $this->payment = model('account_payment')
+            ->when(
+                !auth()->user()->isAccountType('root'), 
                 fn($q) => $q->where('account_id', auth()->user()->account_id)
             )
-            ->findOrFail($accountPayment);
+            ->findOrFail($paymentId);
 
-        breadcrumbs()->push('Payment #'.$this->accountPayment->number);
+        breadcrumbs()->push('Payment #'.$this->payment->number);
     }
 
     /**
@@ -27,11 +28,20 @@ class Update extends Component
      */
     public function download($doc)
     {
-        return redirect()->route('__pdf', [
-            'model' => 'account-payment',
-            'find' => $this->accountPayment->id,
+        $filename = 'billing-payment-'.$this->payment->number.'.pdf';
+        $path = storage_path($filename);
+        $view = view()->exists('pdf.account-payment') 
+            ? 'pdf.account-payment' 
+            : 'atom::pdf.account-payment';
+
+
+        pdf($view, [
+            'payment' => $this->payment,
             'doc' => $doc,
-        ]);
+            'filename' => $filename,
+        ])->save($path);
+
+        return response()->download($path)->deleteFileAfterSend(true);
     }
 
     /**

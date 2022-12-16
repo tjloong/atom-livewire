@@ -55,12 +55,6 @@ class Index extends Component
         $account = ['group' => 'Account', 'tabs' => [
             ['slug' => 'account/login', 'label' => 'Login Information', 'icon' => 'arrow-right-to-bracket'],
             ['slug' => 'account/password', 'label' => 'Change Password', 'icon' => 'lock'],
-            
-            enabled_module('plans') 
-            && auth()->user()->isAccountType('signup')
-            && $authorize
-                ? ['label' => 'Billing', 'href' => route('app.billing.home'), 'icon' => 'file-invoice-dollar']
-                : null,
         ]];
 
         $system = $authorize ? ['group' => 'System', 'tabs' => [
