@@ -14,7 +14,7 @@
         onBgClose (e) {
             if (!this.config.bgclose) return
             if (e.target.getAttribute('x-ref') !== 'container') return
-            this.close()
+            this.$dispatch(@js($uid.'-close'))
         }
     }"
     x-show="show"
