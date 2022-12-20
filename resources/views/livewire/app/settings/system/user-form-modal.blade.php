@@ -36,7 +36,7 @@
                 :caption="$user->exists ? 'User will need to verify the email again if you change this.' : ''"
                 required
             />
-    
+
             @if (!$user->isAccountType('root') && (
                 config('atom.app.user.data_visibility')
                 || enabled_module('roles')

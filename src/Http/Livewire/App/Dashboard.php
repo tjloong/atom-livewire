@@ -79,7 +79,7 @@ class Dashboard extends Component
     public function getSectionsProperty()
     {
         return [
-            [
+            collect([
                 enabled_module('blogs') ? [
                     'title' => 'Total Articles',
                     'type' => 'statbox',
@@ -103,7 +103,7 @@ class Dashboard extends Component
                     'type' => 'statbox',
                     'count' => model('enquiry')->whereBetween('created_at', data_get($this->filters, 'date'))->where('status', 'pending')->count(),
                 ] : null,
-            ],
+            ])->filter()->values()->all(),
         ];
     }
 

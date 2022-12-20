@@ -23,7 +23,10 @@ class RoleFormModal extends Component
             'role.name' => [
                 'required',
                 Rule::unique('roles', 'name')
-                    ->where(fn($q) => $q->where('account_id', $this->role->account_id ?? auth()->user()->account_id))
+                    ->when(
+                        model('role')->enabledBelongsToAccountTrait,
+                        fn($q) => $q->where('account_id', $this->role->account_id ?? auth()->user()->account_id)
+                    )
                     ->ignore($this->role->id),
             ],
         ];
@@ -46,7 +49,12 @@ class RoleFormModal extends Component
     public function open($id = null)
     {
         $this->role = $id
-            ? model('role')->belongsToAccount()->findOrFail($id)
+            ? model('role')
+                ->when(
+                    model('role')->enabledBelongstoAccountTrait,
+                    fn($q) => $q->belongsToAccount(),
+                )
+                ->findOrFail($id)
             : model('role');
 
         $this->dispatchBrowserEvent('role-form-modal-open');

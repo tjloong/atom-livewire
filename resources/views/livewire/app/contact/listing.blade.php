@@ -1,4 +1,4 @@
-<div class="max-w-scree-xl mx-auto">
+<div class="max-w-screen-xl mx-auto">
     <x-page-header 
         :title="str()->title(str()->plural($type))"
         :tinylink="$this->preferencesRoute && auth()->user()->can('preference.manage')

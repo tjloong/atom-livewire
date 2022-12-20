@@ -57,9 +57,24 @@ class UserFormModal extends Component
      */
     public function getOptionsProperty()
     {
-        return [
-            'roles' => model('role')->belongsToAccount()->orderBy('name')->get(),
-            'teams' => model('team')->belongsToAccount()->orderBy('name')->get(),
+        return array_filter([
+            'roles' => model('role')
+                ->when(
+                    model('role')->enabledBelongsToAccountTrait,
+                    fn($q) => $q->belongsToAccount(),
+                )
+                ->orderBy('name')
+                ->get(),
+
+            'teams' => enabled_module('teams')
+                ? model('team')
+                    ->when(
+                        model('team')->enabledBelongsToAccountTrait,
+                        fn($q) => $q->belongsToAccount(),
+                    )
+                    ->orderBy('name')
+                    ->get()
+                : null,
 
             'visibilities' => array_filter([
                 ['value' => 'restrict', 'label' => 'Restrict', 'description' => 'Can view data created by ownself.'],
@@ -68,7 +83,7 @@ class UserFormModal extends Component
                     : null,
                 ['value' => 'global', 'label' => 'Global', 'description' => 'Can view all data.'],    
             ]),
-        ];
+        ]);
     }
 
     /**
@@ -94,7 +109,7 @@ class UserFormModal extends Component
         if (enabled_module('teams')) {
             $this->teams = $this->user->teams->pluck('id')->toArray();
         }
-    
+
         $this->dispatchBrowserEvent('user-form-modal-open');
     }
 

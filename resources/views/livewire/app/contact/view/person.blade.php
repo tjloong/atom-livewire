@@ -35,5 +35,7 @@
     </x-table>
 
     {!! $this->persons->links() !!}
+
+    @livewire(lw('app.contact.form.person-modal'), compact('contact'), key('person-modal'))
 </div>
 

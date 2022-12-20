@@ -82,14 +82,23 @@
 
         <div class="md:w-2/3">
             <div class="flex flex-col gap-6">
-                <x-tab wire:model="tab">
-                    <x-tab.item name="person" label="Contact Persons"/>
-                </x-tab>
+                @if ($this->tabs)
+                    <x-tab wire:model="tab">
+                        @foreach ($this->tabs as $item)
+                            <x-tab.item 
+                                :name="data_get($item, 'slug')" 
+                                :label="data_get($item, 'label')"
+                                :icon="data_get($item, 'icon')"
+                                :count="data_get($item, 'count')"
+                            />
+                        @endforeach
+                    </x-tab>
+                @endif
 
-                @livewire(lw('app.contact.view.'.$tab), compact('contact'), key($tab))
+                @if ($tab)
+                    @livewire(lw('app.contact.view.'.$tab), compact('contact'), key($tab))
+                @endif
             </div>
         </div>
     </div>
-
-    @livewire(lw('app.contact.form.person-modal'), compact('contact'), key('person-modal'))
 </div>

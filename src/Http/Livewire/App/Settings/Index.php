@@ -72,7 +72,10 @@ class Index extends Component
                 ? ['slug' => 'plans', 'label' => 'Plans', 'icon' => 'cube'] 
                 : null,
 
-            ['slug' => 'pages', 'label' => 'Pages', 'icon' => 'file'],
+            enabled_module('pages')
+                ? ['slug' => 'pages', 'label' => 'Pages', 'icon' => 'file']
+                : null,
+                
             ['slug' => 'system/file', 'label' => 'Files and Media', 'icon' => 'folder'],
         ]] : null;
 
@@ -87,7 +90,10 @@ class Index extends Component
         $integration = $authorize ? ['group' => 'Integration', 'tabs' => [
             ['slug' => 'integration/email', 'label' => 'Email', 'icon' => 'paper-plane'],
             ['slug' => 'integration/storage', 'label' => 'Storage', 'icon' => 'hard-drive'],
-            ['slug' => 'integration/payment', 'label' => 'Payment', 'icon' => 'money-bill'],
+
+            count(config('atom.payment_gateway'))
+                ? ['slug' => 'integration/payment', 'label' => 'Payment', 'icon' => 'money-bill']
+                : null,
         ]] : null;
 
         return array_filter([$account, $system, $website, $integration]);

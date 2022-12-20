@@ -5,11 +5,9 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings\System;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Role extends Component
 {
-    use WithPagination;
     use WithPopupNotify;
     use WithTable;
 
@@ -25,7 +23,10 @@ class Role extends Component
     public function getRolesProperty()
     {
         return model('role')
-            ->belongsToAccount()
+            ->when(
+                model('role')->enabledBelongsToAccountTrait,
+                fn($q) => $q->belongsToAccount(),
+            )
             ->withCount('users')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)

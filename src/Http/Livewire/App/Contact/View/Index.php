@@ -11,7 +11,7 @@ class Index extends Component
     use AuthorizesRequests;
     use WithPopupNotify;
 
-    public $tab = 'person';
+    public $tab;
     public $contact;
 
     protected $queryString = ['tab'];
@@ -29,7 +29,19 @@ class Index extends Component
             )
             ->findOrFail($contactId);
 
+        $this->tab = $this->tab ?? data_get(collect($this->tabs)->first(), 'slug');
+
         breadcrumbs()->push($this->contact->name);
+    }
+
+    /**
+     * Get tabs property
+     */
+    public function getTabsProperty()
+    {
+        return [
+            ['slug' => 'person', 'label' => 'Contact Persons'],
+        ];
     }
 
     /**

@@ -93,6 +93,11 @@ class Index extends Component
                 'inverted' => 'border-2 border-transparent hover:bg-gray-100 hover:border-gray-100 text-gray-800',
                 'outlined' => 'bg-white border-2 border-gray-800 text-gray-800',
             ],
+            'black' => [
+                'normal' => 'bg-black border-2 border-black text-white',
+                'inverted' => 'border-2 border-transparent hover:bg-black hover:border-black text-black',
+                'outlined' => 'bg-white border-2 border-black text-black',
+            ],
         ];
 
         return json_decode(json_encode([

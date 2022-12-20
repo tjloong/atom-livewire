@@ -89,10 +89,7 @@ class Info extends Component
      */
     public function setFields()
     {
-        $this->fields = [
-            ['label' => 'Field 1', 'type' => 'text'],
-            ['label' => 'Field 2', 'type' => 'number'],
-        ];
+        $this->fields = [];
     }
 
     /**
