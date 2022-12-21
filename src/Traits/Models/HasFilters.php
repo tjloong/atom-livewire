@@ -101,7 +101,7 @@ trait HasFilters
             $column = preg_replace('/^(from_|to_)/', '', $key);
             $fn = str()->camel($column);
 
-            if (method_exists($this, 'scope'.ucfirst($fn))) {
+            if ($this->hasNamedScope($fn)) {
                 array_push($parsed, ['column' => $column, 'value' => $value, 'scope' => $fn]);
             }
             else {

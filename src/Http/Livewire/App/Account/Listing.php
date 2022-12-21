@@ -15,8 +15,8 @@ class Listing extends Component
 
     protected $queryString = [
         'filters' => ['except' => ['search' => null]],
-        'sortBy' => ['except' => 'name'],
-        'sortOrder' => ['except' => 'asc'],
+        'sortBy' => ['except' => 'created_at'],
+        'sortOrder' => ['except' => 'desc'],
         'page' => ['except' => 1],
     ];
 

@@ -62,6 +62,7 @@
                                         :currency="data_get($col, 'currency')"
                                         :count="data_get($col, 'count')"
                                         :uom="data_get($col, 'uom')"
+                                        :percentage="data_get($col, 'percentage')"
                                         :status="data_get($col, 'status')"
                                         :tags="data_get($col, 'tags')"
                                         :small="data_get($col, 'small')"

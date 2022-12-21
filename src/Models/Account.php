@@ -74,6 +74,38 @@ class Account extends Model
     }
 
     /**
+     * Scope for status
+     */
+    public function scopeStatus($query, $status)
+    {
+        return $query->where(function($q) use ($status) {
+            foreach ((array)$status as $item) {
+                if ($status === 'trashed') {
+                    $q->orWhere(fn($q) => $q->onlyTrashed());
+                }
+                if ($status === 'blocked') {
+                    $q->orWhereRaw('blocked_at <= now()');
+                }
+                if ($status === 'onboarded') {
+                    $q->orWhere(fn($q) => $q->where('accounts.type', 'signup')->whereNotNull('onboarded_at'));
+                }
+                if ($status === 'new') {
+                    $q->orWhere(fn($q) => $q->where('accounts.type', 'signup')->whereNull('onboarded_at'));
+                }
+                if ($status === 'active') {
+                    $q->orWhere(fn($q) => $q
+                        ->where('accounts.type', '<>', 'signup')
+                        ->where(fn($q) => $q
+                            ->whereNull('blocked_at')
+                            ->orWhereRaw('blocked_at > now()')
+                        )
+                    );
+                }
+            }
+        });
+    }
+
+    /**
      * Get status attribute
      */
     public function getStatusAttribute()
