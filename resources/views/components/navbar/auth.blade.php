@@ -45,7 +45,15 @@
                     x-bind:class="classes"
                     class="flex items-center justify-center gap-2 px-3 text-center font-medium"
                 >
-                    <x-icon name="circle-user" size="18" class="opacity-60"/> 
+                    @if (
+                        $avatar = $attributes->get('avatar')
+                            ?? optional(auth()->user()->avatar)->url
+                    )
+                        <x-thumbnail :url="$avatar" size="24" circle/>
+                    @else
+                        <x-icon name="circle-user" size="18" class="opacity-60"/> 
+                    @endif
+
                     {{ str(auth()->user()->name)->limit(15) }}
                     <x-icon name="chevron-down" size="12"/>
                 </div>
