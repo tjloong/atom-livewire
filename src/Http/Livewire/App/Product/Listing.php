@@ -55,8 +55,8 @@ class Listing extends Component
                 [
                     'column_name' => 'Code',
                     'column_sort' => 'code',
-                    'label' => $product->code,
-                    'href' => route('app.product.update', [$product->id]),
+                    'label' => $product->code ?? '--',
+                    'href' => $product->code ? route('app.product.update', [$product->id]) : null,
                 ],
                 [
                     'column_name' => 'Product',

@@ -86,7 +86,7 @@ class Product extends Model
             $code = str()->upper(str()->random(6));
             $dup = model('product')
                 ->when(
-                    $this->enabledHasTraceTrait, 
+                    $this->enabledBelongsToAccountTrait, 
                     fn($q) => $q->belongsToAccount()
                 )
                 ->where('code', $code)

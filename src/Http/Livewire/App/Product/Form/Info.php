@@ -40,7 +40,6 @@ class Info extends Component
             'product.price' => 'nullable|numeric',
             'product.stock' => 'nullable|numeric',
             'product.is_active' => 'nullable|boolean',
-            'product.account_id' => 'nullable',
         ];
     }
 
