@@ -88,6 +88,11 @@ class Index extends Component
                 'inverted' => 'border-2 border-transparent hover:bg-yellow-200 hover:border-yellow-200 text-orange-800',
                 'outlined' => 'bg-white border-2 border-yellow-600 text-yellow-600',
             ],
+            'amber' => [
+                'normal' => 'bg-amber-400 border-2 border-amber-400 text-white',
+                'inverted' => 'border-2 border-transparent hover:bg-amber-400 hover:border-amber-400 text-amber-400',
+                'outlined' => 'bg-white border-2 border-amber-400 text-amber-400',
+            ],
             'gray' => [
                 'normal' => 'bg-gray-200 border-2 border-gray-200 text-gray-800',
                 'inverted' => 'border-2 border-transparent hover:bg-gray-100 hover:border-gray-100 text-gray-800',

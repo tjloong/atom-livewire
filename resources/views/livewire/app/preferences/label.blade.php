@@ -1,11 +1,11 @@
 <div class="max-w-screen-lg mx-auto">
     <x-box :header="$this->title">
-        <x-slot:header-buttons>
+        <x-slot:buttons>
             <x-button size="sm" color="gray"
                 label="New"
                 wire:click="open"
             />
-        </x-slot:header-buttons>
+        </x-slot:buttons>
 
         @if ($this->labels->count())
             <x-form.sortable
@@ -99,11 +99,11 @@
             </x-form.sortable>
         @else
             <x-empty-state
-                title="No Labels"
-                subtitle="The labels list is empty."
+                :title="'No '.str($type ?? 'Label')->headline()"
+                :subtitle="'You do not have any '.str($type ?? 'label')->headline()->lower()"
             >
                 <x-button color="gray"
-                    label="New Label"
+                    :label="'New '.str($type ?? 'Label')->headline()"
                     wire:click="open"
                 />
             </x-empty-state>
