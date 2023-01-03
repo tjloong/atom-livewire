@@ -46,19 +46,19 @@
                 autoplay: {
                     delay: 3500,
                 },
-                navigation: {
+                navigation: this.slides.length > 1 ? {
                     nextEl: '#swiper-next',
                     prevEl: '#swiper-prev',
                     disabledClass: 'hidden',
                     hiddenClass: 'hidden',
-                },
-                pagination: {
+                } : { enabled: false },
+                pagination: this.slides.length > 1 ? {
                     el: '.swiper-pagination',
                     clickable: true,
                     hiddenClass: 'hidden',
                     bulletClass: 'inline-block mx-1 rounded-full bg-gray-100 w-2 h-2 drop-shadow',
                     bulletActiveClass: 'bg-theme px-4',
-                },
+                } : { enabled: false },
                 ...this.slider.config,
             }
 
@@ -74,7 +74,6 @@
             }
         },
     }"
-    x-init="init()"
     class="{{ $attributes->get('class') }}"
 >
     <div x-ref="slider" class="swiper w-full h-full">

@@ -1,5 +1,6 @@
 @props([
     'url' => data_get($image, 'url'),
+    'href' => $attributes->get('href'),
     'img' => '
         <img
             src="'.data_get($image, 'url').'"
@@ -16,7 +17,13 @@
     ',
 ])
 
-@if ($href = $attributes->get('href'))
+@if (!$href && !$url && $slot->isNotEmpty())
+    <div {{ $attributes->class([
+        'swiper-slide w-full h-full',
+    ])->only('class') }}>
+        {{ $slot }}
+    </div>
+@elseif ($href)
     <a 
         href="{{ $href }}" 
         target="{{ $attributes->get('target', '_blank') }}"
@@ -45,4 +52,3 @@
         @endif
     </div>
 @endif
-
