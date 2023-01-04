@@ -1,10 +1,10 @@
 <x-box header="Product Variants">
-    <x-slot:header-buttons>
-        <x-button size="sm"
+    <x-slot:buttons>
+        <x-button size="sm" color="gray"
             label="New Variant"
             :href="route('app.product.variant.create', ['productId' => $product->id])"
         />
-    </x-slot:header-buttons>
+    </x-slot:buttons>
 
     @if (count($this->variants))
         <x-form.sortable 

@@ -1,5 +1,5 @@
 <x-box header="Product Images">
-    <x-slot:header-buttons>
+    <x-slot:buttons>
         @if ($selected)
             <x-button.delete inverted size="sm"
                 label="Delete Images ({{ count($selected) }})"
@@ -7,7 +7,7 @@
                 message="This will delete the selected {{ count($selected) }} image(s). Are you sure?"
             />
         @endif
-    </x-slot:header-buttons>
+    </x-slot:buttons>
 
     <div class="p-4 flex flex-col gap-4">
         @if ($product->images->count())

@@ -36,7 +36,7 @@ class Update extends Component
         return [
             ['slug' => 'info', 'label' => 'Product Information', 'icon' => 'circle-info', 'livewire' => 'app.product.form.info'],
             $this->product->type === 'variant'
-                ? ['slug' => 'variants', 'label' => 'Product Variants', 'icon' => 'cubes', 'count' => $this->product->variants()->count(), 'livewire' => 'app.product.variant.listing']
+                ? ['slug' => 'variant', 'label' => 'Product Variants', 'icon' => 'cubes', 'count' => $this->product->variants()->count(), 'livewire' => 'app.product.variant.listing']
                 : null,
             ['slug' => 'image', 'label' => 'Product Images', 'icon' => 'image', 'count' => $this->product->images()->count()],
         ];

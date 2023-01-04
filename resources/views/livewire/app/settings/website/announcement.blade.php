@@ -1,11 +1,11 @@
 <div>
     <x-box header="Website Announcement">
-        <x-slot:header-buttons>
-            <x-button size="sm" 
+        <x-slot:buttons>
+            <x-button size="sm" color="gray"
                 label="New Announcement"
                 wire:click="open"
             />
-        </x-slot:header-buttons>
+        </x-slot:buttons>
 
         @if ($announcements->count())
             <x-form.sortable 

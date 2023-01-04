@@ -108,7 +108,7 @@ class Form extends Component
     {
         return redirect()->route('app.product.update', [
             'productId' => $this->variant->product_id, 
-            'tab' => 'variants',
+            'tab' => 'variant',
         ]);
     }
 

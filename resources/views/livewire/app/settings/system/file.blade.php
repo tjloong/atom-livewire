@@ -3,14 +3,14 @@
     class="max-w-screen-xl mx-auto"
 >
     <x-box header="Files and Media" class="rounded-lg">
-        <x-slot:header-buttons>
+        <x-slot:buttons>
             @if (!$selected)
                 <x-button color="gray" 
                     label="Upload" 
                     x-on:click="show = !show"
                 />
             @endif
-        </x-slot:header-buttons>
+        </x-slot:buttons>
         
         <div class="flex flex-col divide-y">
             <div class="p-4 flex items-center justify-between gap-3">
