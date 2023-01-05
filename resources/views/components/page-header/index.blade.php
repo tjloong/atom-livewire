@@ -1,6 +1,6 @@
 @props(['size' => $attributes->get('size')])
 
-<div class="w-full flex flex-wrap justify-between {{ $size === 'sm' ? 'mb-4' : 'mb-6' }}">
+<div class="w-full flex flex-wrap justify-between md:flex-nowrap {{ $size === 'sm' ? 'mb-4' : 'mb-6' }}">
     <div class="grow flex gap-4 my-1">
         @if (request()->query('back'))
             <div class="shrink-0 py-2">
