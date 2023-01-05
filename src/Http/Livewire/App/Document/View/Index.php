@@ -102,6 +102,14 @@ class Index extends Component
     }
 
     /**
+     * PDF
+     */
+    public function pdf()
+    {
+        return $this->document->pdf();
+    }
+
+    /**
      * Render
      */
     public function render()

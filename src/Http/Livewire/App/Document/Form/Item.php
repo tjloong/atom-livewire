@@ -128,8 +128,8 @@ class Item extends Component
         $product = $metadata->get('product');
         $variant = $metadata->get('variant');
         $price = in_array($this->document->type, ['purchase-order', 'bill'])
-            ? optional($variant ?? $product)->get('cost')
-            : optional($variant ?? $product)->get('price');
+            ? data_get(optional($variant ?? $product), 'cost')
+            : data_get(optional($variant ?? $product), 'price');
 
         $metadata->put('recommended_price', [
             'amount' => $price,

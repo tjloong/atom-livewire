@@ -344,8 +344,11 @@ class Document extends Model
     {
         $filename = $this->type.'-'.$this->number.'.pdf';
         $path = storage_path($filename);
+        $view = view()->exists('pdf.document')
+            ? 'pdf.document'
+            : 'atom::pdf.document';
 
-        pdf('atom::pdf.document', [
+        pdf($view, [
             'document' => $this,
             'filename' => $filename,
         ])->save($path);
