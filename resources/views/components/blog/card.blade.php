@@ -10,7 +10,7 @@
 @if ($size === 'sm')
     <a href="{{ $href }}" class="grid gap-1 bg-white border p-4 rounded-md shadow text-gray-800">
         <div class="font-bold truncate">
-            {{ $excerpt }}
+            {{ $title }}
         </div>
 
         <div class="text-gray-400 text-sm font-medium">

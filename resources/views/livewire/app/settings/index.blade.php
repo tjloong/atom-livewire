@@ -1,8 +1,8 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header :title="$this->title"/>
 
-    <div class="grid gap-6 md:grid-cols-12">
-        <div class="md:col-span-3">
+    <div class="flex flex-col gap-6 md:flex-row">
+        <div class="md:w-1/4">
             <x-sidenav wire:model="tab">
                 @foreach (array_filter($this->tabs) as $item)
                     @if ($children = data_get($item, 'tabs'))
@@ -28,7 +28,7 @@
             </x-sidenav>
         </div>
 
-        <div class="md:col-span-9">
+        <div class="md:w-3/4">
             @livewire($livewire, [
                 'tab' => $tab,
                 'account' => auth()->user()->account,

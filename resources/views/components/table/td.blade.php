@@ -108,7 +108,7 @@
             <div class="grid">
                 @if ($href = $attributes->get('href'))
                     <a 
-                        href="{{ $href }}" 
+                        href="{!! $href !!}" 
                         class="{{ $tooltip ? '' : 'truncate' }}" 
                         target="{{ $attributes->get('target', '_self') }}"
                         @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
