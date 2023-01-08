@@ -165,6 +165,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.settings.website.announcement' => 'App\Settings\Website\Announcement',
             'atom.app.settings.integration.email' => 'App\Settings\Integration\Email',
             'atom.app.settings.integration.storage' => 'App\Settings\Integration\Storage',
+            'atom.app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',
             'atom.app.settings.integration.payment' => 'App\Settings\Integration\Payment\Index',
             'atom.app.settings.integration.payment.stripe' => 'App\Settings\Integration\Payment\Stripe',
             'atom.app.settings.integration.payment.gkash' => 'App\Settings\Integration\Payment\Gkash',

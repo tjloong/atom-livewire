@@ -2,25 +2,24 @@
 
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
-use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Laravel\Socialite\Facades\Socialite;
+use Livewire\Component;
 
 class Register extends Component
 {
     public $ref;
     public $plan;
     public $price;
-    public $user;
-    public $account;
-    public $redirect;
+    public $token;
+    public $provider;
 
     public $form = [
         'agree_tnc' => false,
         'agree_marketing' => true,
     ];
 
-    protected $queryString = ['ref', 'plan', 'price', 'redirect'];
+    protected $queryString = ['ref', 'token', 'provider', 'plan', 'price'];
     
     /**
      * Validation rules
@@ -59,7 +58,45 @@ class Register extends Component
      */
     public function mount()
     {
-        if (!$this->ref) return redirect('/');
+        if (!$this->ref && !$this->token && !$this->provider) return redirect('/');        
+        if ($this->token && $this->provider) return $this->socialLogin();
+    }
+
+    /**
+     * Social login
+     */
+    public function socialLogin()
+    {
+        rescue(function() use (&$user) {
+            $user = Socialite::driver($this->provider)->userFromToken($this->token);
+        });
+
+        if (!$user) return;
+
+        if (model('user')->firstWhere('email', $user->getEmail())) {
+            return redirect()->route('login', array_merge([
+                'token' => $this->token,
+                'provider' => $this->provider,
+            ], request()->query()));
+        }
+
+        return $this->createUser([
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'password' => str()->snake($user->getName()).'_oauth',
+            'agree_tnc' => true,
+            'agree_marketing' => true,
+            'data' => ['oauth' => [
+                'provider' => $this->provider,
+                'id' => $user->getId(),
+                'nickname' => $user->getNickname(),
+                'avatar' => $user->getAvatar(),
+                'token' => $user->token,
+                'token_secret' => $user->tokenSecret,
+                'refresh_token' => $user->refreshToken,
+                'expires_in' => $user->expiresIn,
+            ]],
+        ], false);
     }
 
     /**
@@ -70,72 +107,54 @@ class Register extends Component
         $this->resetValidation();
         $this->validate();
 
-        $this->createAccount();
-        $this->createUser();
-        $this->registered();
-
-        return redirect($this->redirectTo());
-    }
-
-    /**
-     * Create account
-     */
-    public function createAccount()
-    {
-        $this->account = model('account')->create([
-            'type' => 'signup',
-            'name' => $this->form['name'],
-            'email' => $this->form['email'],
-            'agree_tnc' => $this->form['agree_tnc'],
-            'agree_marketing' => $this->form['agree_marketing'],
-            'data' => $this->accountMetadata(),
-        ]);
-
-        $this->account->settings()->create([
-            'timezone' => config('atom.timezone'), 
-            'locale' => head(config('atom.locales', [])) ?? null,
-        ]);
+        return $this->createUser($this->form);
     }
 
     /**
      * Create user
      */
-    public function createUser()
+    public function createUser($inputs, $verify = true)
     {
-        $this->user = model('user');
-        $this->user->name = $this->form['name'];
-        $this->user->email = $this->form['email'];
-        $this->user->password = bcrypt($this->form['password']);
-        $this->user->activated_at = now();
-        $this->user->account_id = $this->account->id;
+        $account = model('account')->create([
+            'type' => 'signup',
+            'name' => data_get($inputs, 'name'),
+            'email' => data_get($inputs, 'email'),
+            'agree_tnc' => data_get($inputs, 'agree_tnc'),
+            'agree_marketing' => data_get($inputs, 'agree_marketing'),
+            'data' => [
+                'register_geo' => geoip()->getLocation()->toArray(),
+                'register_channel' => $this->ref,
+            ],
+        ]);
 
-        $this->user->save();
-    }
+        $account->settings()->create([
+            'timezone' => config('atom.timezone'), 
+            'locale' => head(config('atom.locales', [])) ?? null,
+        ]);
 
-    /**
-     * Get account metadata
-     */
-    public function accountMetadata()
-    {
-        return [
-            'register_geo' => geoip()->getLocation()->toArray(),
-            'register_channel' => $this->ref,
-        ];
+        $user = $account->users()->create([
+            'name' => data_get($inputs, 'name'),
+            'email' => data_get($inputs, 'email'),
+            'password' => bcrypt(data_get($inputs, 'password')),
+            'data' => data_get($inputs, 'data'),
+            'activated_at' => now(),
+            'login_at' => now(),
+        ]);
+
+        if (config('atom.accounts.verify') && $verify) $user->sendEmailVerificationNotification();
+
+        auth()->login($user);
+
+        $this->registered($user->fresh());
+
+        return redirect($this->redirectTo($user->fresh()));
     }
 
     /**
      * Post registration
      */
-    public function registered()
+    public function registered($user)
     {
-        if (config('atom.accounts.verify')) {
-            $this->user->sendEmailVerificationNotification();
-        }
-
-        $this->user->fill(['login_at' => now()])->saveQuietly();
-
-        Auth::login($this->user);
-
         // clear refcode
         Cookie::expire('_ref');
     }
@@ -143,19 +162,15 @@ class Register extends Component
     /**
      * Redirect after registration
      */
-    public function redirectTo()
+    public function redirectTo($user)
     {
-        $url = '/';
-
         if (enabled_module('plans') && $this->plan && $this->price) {
-            $url = route('app.billing.checkout', [
+            return route('app.billing.checkout', [
                 'plan' => $this->plan, 
                 'price' => $this->price,
             ]);
         }
-        else $url = route('app.onboarding.home');
-
-        return $url;
+        else return route('app.onboarding.home');
     }
 
     /**

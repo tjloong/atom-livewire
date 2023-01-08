@@ -94,6 +94,10 @@ class Index extends Component
             count(config('atom.payment_gateway'))
                 ? ['slug' => 'integration/payment', 'label' => 'Payment', 'icon' => 'money-bill']
                 : null,
+
+            count(config('atom.accounts.login'))
+                ? ['slug' => 'integration/social-login', 'label' => 'Social Login', 'icon' => 'login']
+                : null,
         ]] : null;
 
         return array_filter([$account, $system, $website, $integration]);

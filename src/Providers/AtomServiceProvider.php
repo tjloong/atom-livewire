@@ -52,8 +52,6 @@ class AtomServiceProvider extends ServiceProvider
             $this->registerStaticPublishing();
             $this->registerBasePublishing();
         }
-
-        model('site_setting')->configureSMTP();
     }
 
     /**

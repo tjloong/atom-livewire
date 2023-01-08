@@ -6,6 +6,7 @@
         "barryvdh/laravel-dompdf": "^1.0.0",
         "doctrine/dbal": "^3.3",
         "intervention/image": "^2.7",
+        "laravel/socialite": "^5.5",
         "livewire/livewire": "^2.10",
         "orchestra/testbench": "^7.0",
         "rap2hpoutre/fast-excel": "^3.2",
@@ -34,6 +35,8 @@
                 "Jiannius\\Atom\\Providers\\AtomBladeServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomComponentServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomGateServiceProvider",
+                "Jiannius\\Atom\\Providers\\AtomEmailServiceProvider",
+                "Jiannius\\Atom\\Providers\\AtomSocialiteServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomLivewireServiceProvider"
             ]
         }

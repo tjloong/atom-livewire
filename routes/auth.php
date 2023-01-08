@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 if (!config('atom.static_site')) {
+    define_route('__auth/{provider}/redirect', 'SocialiteController@redirect')->name('socialite.redirect');
+    define_route('__auth/{provider}/callback', 'SocialiteController@callback')->name('socialite.callback');
+
     define_route('login', 'Auth\Login')->name('login');
     define_route('forgot-password', 'Auth\ForgotPassword')->middleware('guest')->name('password.forgot');
     define_route('reset-password', 'Auth\ResetPassword')->name('password.reset');

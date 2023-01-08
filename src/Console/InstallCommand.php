@@ -979,6 +979,16 @@ class InstallCommand extends Command
             ['name' => 'do_spaces_bucket', 'value' => null],
             ['name' => 'do_spaces_endpoint', 'value' => 'https://sgp1.digitaloceanspaces.com'],
             ['name' => 'do_spaces_folder', 'value' => null],
+            ['name' => 'google_client_id', 'value' => null],
+            ['name' => 'google_client_secret', 'value' => null],
+            ['name' => 'facebook_client_id', 'value' => null],
+            ['name' => 'facebook_client_secret', 'value' => null],
+            ['name' => 'linkedin_client_id', 'value' => null],
+            ['name' => 'linkedin_client_secret', 'value' => null],
+            ['name' => 'github_client_id', 'value' => null],
+            ['name' => 'github_client_secret', 'value' => null],
+            ['name' => 'twitter_client_id', 'value' => null],
+            ['name' => 'twitter_client_secret', 'value' => null],
             ['name' => 'stripe_public_key', 'value' => null],
             ['name' => 'stripe_secret_key', 'value' => null],
             ['name' => 'stripe_webhook_signing_secret', 'value' => null],
@@ -1105,6 +1115,14 @@ class InstallCommand extends Command
                 $table->string('visibility')->nullable()->after('remember_token');
             });
             $this->line('Added visibility column to users table.');
+        }
+
+        if (Schema::hasColumn('users', 'data')) $this->warn('users table already has data column, skipped.');
+        else {
+            Schema::table('users', function($table) {
+                $table->json('data')->nullable()->after('remember_token');
+            });
+            $this->line('Added data column to users table.');
         }
 
         if (Schema::hasColumn('users', 'blocked_at')) $this->warn('users table already has blocked_at column, skipped.');

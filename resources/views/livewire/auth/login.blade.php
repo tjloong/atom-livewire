@@ -35,6 +35,11 @@
             <x-button type="submit" size="md" block
                 label="Login"
             />
+
+            <x-button.social-login 
+                size="md"
+                divider="OR LOGIN WITH"
+            />
         </x-slot:foot>
     </x-form>
 

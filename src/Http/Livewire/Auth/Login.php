@@ -2,16 +2,18 @@
 
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
+use Laravel\Socialite\Facades\Socialite;
+use Livewire\Component;
 
 class Login extends Component
 {
     public $email;
     public $password;
     public $remember;
+    public $socialUser;
 
     /**
      * Mount
@@ -20,6 +22,17 @@ class Login extends Component
     {
         if (request()->query('logout')) return $this->logout();
         else if ($user = auth()->user()) return redirect($this->redirectTo($user));
+        else {
+            rescue(function() {
+                $token = request()->query('token');
+                $provider = request()->query('provider');
+
+                if ($this->socialUser = Socialite::driver($provider)->userFromToken($token)) {
+                    $this->email = $this->socialUser->getEmail();
+                    $this->login();
+                }
+            });
+        }
     }
 
     /**
@@ -35,7 +48,7 @@ class Login extends Component
             ->first();
 
         if ($user) {
-            if (app()->environment('local')) Auth::login($user);
+            if (app()->environment('local') || $this->socialUser) Auth::login($user);
             else {
                 $this->ensureIsNotRateLimited();
         

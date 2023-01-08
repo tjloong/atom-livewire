@@ -32,6 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
+        'data' => 'object',
         'activated_at' => 'datetime',
         'login_at' => 'datetime',
         'last_active_at' => 'datetime',

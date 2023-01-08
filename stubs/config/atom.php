@@ -23,8 +23,8 @@ return [
         'verify' => true,
         'register' => true,
         'login' => [
-            'facebook',
             'google',
+            'facebook',
             'linkedin',    
         ],
     ],
