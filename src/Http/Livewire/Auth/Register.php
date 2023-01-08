@@ -86,6 +86,7 @@ class Register extends Component
             'password' => str()->snake($user->getName()).'_oauth',
             'agree_tnc' => true,
             'agree_marketing' => true,
+            'email_verified_at' => now(),
             'data' => ['oauth' => [
                 'provider' => $this->provider,
                 'id' => $user->getId(),
@@ -96,7 +97,7 @@ class Register extends Component
                 'refresh_token' => $user->refreshToken,
                 'expires_in' => $user->expiresIn,
             ]],
-        ], false);
+        ]);
     }
 
     /**
@@ -113,7 +114,7 @@ class Register extends Component
     /**
      * Create user
      */
-    public function createUser($inputs, $verify = true)
+    public function createUser($inputs)
     {
         $account = model('account')->create([
             'type' => 'signup',
@@ -137,11 +138,14 @@ class Register extends Component
             'email' => data_get($inputs, 'email'),
             'password' => bcrypt(data_get($inputs, 'password')),
             'data' => data_get($inputs, 'data'),
+            'email_verified_at' => data_get($inputs, 'email_verified_at'),
             'activated_at' => now(),
             'login_at' => now(),
         ]);
 
-        if (config('atom.accounts.verify') && $verify) $user->sendEmailVerificationNotification();
+        if (config('atom.accounts.verify') && !data_get($inputs, 'email_verified_at')) {
+            $user->sendEmailVerificationNotification();
+        }
 
         auth()->login($user);
 
