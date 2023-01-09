@@ -41,9 +41,6 @@ class Index extends Component
      */
     public function mount()
     {
-        // prevent bot
-        if (request()->query('ref')) return redirect('/');
-
         $this->enquiry = enabled_module('enquiries')
             ? model('enquiry')
             : [

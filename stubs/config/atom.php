@@ -5,7 +5,7 @@ return [
     'max_upload_size' => 8,
     'timezone' => 'Asia/Kuala_Lumpur',
     'payment_gateway' => [],
-    
+
     /**
      * This will enable the hsts header in every request
      */

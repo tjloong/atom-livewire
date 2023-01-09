@@ -6,7 +6,14 @@ use Livewire\Component;
 
 class CatchAll extends Component
 {
+    public $ref;
     public $slug;
+
+    public $preventBot = [
+        'contact-us',
+    ];
+
+    protected $queryString = ['ref'];
 
     /**
      * Mount

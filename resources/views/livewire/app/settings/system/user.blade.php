@@ -28,14 +28,14 @@
 
         <x-slot:thead>
             <x-table.th label="Name" sort="name"/>
-            <x-table.th/>
+            <x-table.th label="Status" class="text-right"/>
             @module('roles') <x-table.th label="Role" class="text-right"/> @endmodule
             <x-table.th class="w-4"/>
         </x-slot:thead>
 
         @foreach ($this->users as $user)
             <x-table.tr>
-                @if ($user->id === auth()->id()) <x-table.td :label="$user->name.'('.__('You').')'"/>
+                @if ($user->id === auth()->id()) <x-table.td :label="$user->name.' ('.__('You').')'"/>
                 @else <x-table.td :label="$user->name" :small="$user->email" wire:click="open('edit', {{ $user->id }})"/>
                 @endif
 
