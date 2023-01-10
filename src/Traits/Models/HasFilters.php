@@ -96,7 +96,7 @@ trait HasFilters
         $parsed = [];
 
         foreach (($filters ?? []) as $key => $value) {
-            if (empty($value)) continue;
+            if (is_null($value)) continue;
 
             $column = preg_replace('/^(from_|to_)/', '', $key);
             $fn = str()->camel($column);
