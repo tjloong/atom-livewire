@@ -128,6 +128,9 @@ ClassicEditor.defaultConfig = {
             'mergeTableCells'
         ]
     },
+    mediaEmbed: {
+        previewsInData: true,
+    },
     htmlSupport: {
         allow: [
             {

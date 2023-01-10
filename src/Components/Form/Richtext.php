@@ -23,7 +23,7 @@ class Richtext extends Component
                 'heading',
                 '|', 'bold', 'italic', 'underline', 'fontSize', 'fontColor', 'link', 'bulletedList', 'numberedList',
                 '|', 'alignment', 'outdent', 'indent', 'horizontalLine',
-                '|', 'blockQuote', 'insertMedia', 'insertTable', 'undo', 'redo',
+                '|', 'blockQuote', 'insertMedia', 'mediaEmbed', 'insertTable', 'undo', 'redo',
                 '|', 'sourceEditing',
             ];
     }

@@ -11,7 +11,10 @@
 
             init () {
                 ClassicEditor
-                .create(this.$refs.ckeditor, { placeholder: this.placeholder, toolbar: this.toolbar })
+                .create(this.$refs.ckeditor, { 
+                    placeholder: this.placeholder, 
+                    toolbar: this.toolbar,
+                })
                 .then(editor => {
                     // initial content
                     if (this.value) editor.setData(this.value)
