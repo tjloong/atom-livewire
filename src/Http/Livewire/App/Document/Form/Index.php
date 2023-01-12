@@ -198,12 +198,15 @@ class Index extends Component
         if ($contact = $this->document->contact) {
             $this->document->fill([
                 'name' => $contact->name,
+
                 'address' => $contact->addresses
                     ? format_address($contact->addresses->first())
                     : format_address($contact),
-                'person' => $contact->persons
+
+                'person' => $contact->persons->count()
                     ? $contact->persons->first()->name
                     : null,
+                    
                 'payterm' => $this->document->type === 'delivery-order' 
                     ? null 
                     : data_get($contact, 'payterm'),

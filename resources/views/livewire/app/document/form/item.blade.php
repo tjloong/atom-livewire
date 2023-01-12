@@ -78,7 +78,7 @@
 
         @if ($columns->has('tax'))
             <div class="bg-slate-100 rounded-lg flex flex-col divide-y">
-                @if (count($this->taxes) || data_get($item, 'taxes'))
+                @if (count($this->taxes) || count(data_get($item, 'taxes', [])))
                     <div class="p-3">
                         <x-form.field :label="$columns->get('tax')">
                             <div class="flex flex-col gap-2">
