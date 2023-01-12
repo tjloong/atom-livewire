@@ -9,19 +9,66 @@ class Item extends Component
 {
     use WithPopupNotify;
 
-    public $items;
+    public $item;
     public $columns;
     public $document;
 
-    protected $listeners = ['addItem'];
-    protected $rules = ['document.type' => 'required'];
-    
+    protected $rules = [
+        'item.name' => 'required',
+        'item.qty' => 'required',
+        'item.amount' => 'required',
+        'item.description' => 'nullable',
+        'item.taxes' => 'array',
+    ];
+
     /**
-     * Mount
+     * Get listeners
      */
-    public function mount()
+    protected function getListeners()
     {
-        $this->init();
+        $id = data_get($this->item, 'id') ?? data_get($this->item, 'ulid');
+
+        return [
+            'setProduct:'.$id => 'setProduct',
+        ];
+    }
+
+    /**
+     * Get product property
+     */
+    public function getProductProperty()
+    {
+        if (!data_get($this->item, 'product_id')) return;
+
+        return model('product')->find(data_get($this->item, 'product_id'));
+    }
+
+    /**
+     * Get variant property
+     */
+    public function getVariantProperty()
+    {
+        if (!$this->product) return;
+
+        return $this->product->variants()->find(data_get($this->item, 'product_variant_id'));
+    }
+
+    /**
+     * Get recommended price property
+     */
+    public function getRecommendedPriceProperty()
+    {
+        return in_array($this->document->type, ['purchase-order', 'bill'])
+            ? optional($this->variant ?? $this->product)->cost
+            : optional($this->variant ?? $this->product)->price;
+    }
+
+    /**
+     * Get subtotal property
+     */
+    public function getSubtotalProperty()
+    {
+        return data_get($this->item, 'qty') * data_get($this->item, 'amount');
     }
 
     /**
@@ -39,216 +86,100 @@ class Item extends Component
     }
 
     /**
-     * Updated items
+     * Updated item
      */
-    public function updatedItems()
+    public function updatedItem()
     {
-        $this->syncItems();
-    }
-
-    /**
-     * Init
-     * For initialize items on first load, subsequent update will call syncItems
-     */
-    public function init()
-    {
-        $this->columns = $this->document->getColumns();
-
-        $items = $this->document->items()->with('taxes')->get()->toArray();
-
-        $this->items = collect($items)->map('collect')
-            ->map(fn($item) => $item->merge($this->getItemLatestProduct($item)))
-            ->map(fn($item) => $item->merge($this->getItemRecommendedPrice($item)))
-            ->map(fn($item) => $item->merge($this->getItemInfo($item)))
-            ->each(function($item) {
-                $taxes = collect($item->get('taxes'))->map(fn($tax) => [
-                    'id' => data_get($tax, 'id'),
-                    'label' => data_get($tax, 'label'),
-                    'amount' => data_get($tax, 'pivot.amount'),
-                ]);
-
-                $item->put('taxes', $taxes);
-            })
-            ->toArray();
-    }
-
-    /**
-     * Sync items
-     * Will be called whenever items changed, except on first load it will call initItems
-     */
-    public function syncItems()
-    {
-        $this->items = collect($this->items)->map('collect')
-            ->map(fn($item) => $item->merge($this->getItemLatestProduct($item)))
-            ->map(fn($item) => $item->merge($this->getItemRecommendedPrice($item)))
-            ->map(fn($item) => $item->merge($this->getItemInfo($item)))
-            ->map(fn($item) => $item->merge($this->getItemTaxes($item)))
-            ->toArray();
-
-        $this->emitUp('setItems', $this->items);
+        $this->setTaxes();
+        $this->emitEvent();
     }
 
     /**
      * Open product modal
      */
-    public function openProductModal()
+    public function open()
     {
-        $this->emitTo(lw('app.document.form.product-modal'), 'open', $this->document->currency);
+        $this->emitTo(lw('app.document.form.product-modal'), 'open', $this->item);
     }
 
     /**
-     * Get item latest product
+     * Clear product
      */
-    public function getItemLatestProduct($item)
+    public function clearProduct()
     {
-        $metadata = collect($item->get('metadata')) ?? collect();
-        if ($metadata->get('product')) return $item;
-
-        $product = model('product')->find($item->get('product_id'));
-
-        if ($product) {
-            $taxes = $product->taxes->map(fn($tax) => ['id' => $tax->id, 'label' => $tax->label]);
-            $variant = $product->variants()->find($item->get('product_variant_id'));
-            $metadata->put('product', collect(array_merge($product->toArray(), ['taxes' => $taxes])));
-            $metadata->put('variant', $variant ? collect($variant->toArray()) : null);
-        }
-        else {
-            $metadata->put('product', null);
-        }
-
-        return ['metadata' => $metadata->toArray()];
-    }
-
-    /**
-     * Get item recommended price
-     */
-    public function getItemRecommendedPrice($item)
-    {
-        $metadata = collect($item->get('metadata')) ?? collect();
-        $product = $metadata->get('product');
-        $variant = $metadata->get('variant');
-        $price = in_array($this->document->type, ['purchase-order', 'bill'])
-            ? data_get(optional($variant ?? $product), 'cost')
-            : data_get(optional($variant ?? $product), 'price');
-
-        $metadata->put('recommended_price', [
-            'amount' => $price,
+        $this->fill([
+            'item.name' => null,
+            'item.product_id' => null,
+            'item.taxes' => [],
         ]);
 
-        return ['metadata' => $metadata];
+        $this->emitEvent();
     }
 
     /**
-     * Get item info
+     * Set product
      */
-    public function getItemInfo($item)
+    public function setProduct($data)
     {
-        $info = collect([
-            'name' => $item->get('name', collect([
-                data_get($item, 'metadata.product.name'),
-                data_get($item, 'metadata.variant.name'),
-            ])->filter()->whenNotEmpty(fn($name) => $name->join(' - '))),
-
-            'description' => $item->get('description', data_get($item, 'metadata.product.description')),
-            'qty' => $item->get('qty', 1),
-        ]);
-
-        if ($this->columns->get('price')) {
-            $amount = $item->get('amount') ?: data_get($item, 'metadata.recommended_price.amount', 0);
-
-            $info->put('amount', $amount);
-            $info->put('subtotal', data_get($info, 'qty') * data_get($info, 'amount'));
-        }
-
-        return $info->toArray();
+        $this->fill(['item' => $data]);
+        $this->emitEvent();
     }
 
     /**
-     * Get item taxes
+     * Set taxes
      */
-    public function getItemTaxes($item)
+    public function setTaxes()
     {
-        $taxes = $item->has('taxes')
-            ? collect($item->get('taxes'))
-            : collect(data_get($item, 'metadata.product.taxes'))->map(fn($tax) => [
-                'id' => data_get($tax, 'id'),
-                'label' => data_get($tax, 'label'),
-            ]);
+        $taxes = collect(data_get($this->item, 'taxes'))->map(fn($tax) => array_merge($tax, [
+            'amount' => optional($this->taxes->firstWhere('id', data_get($tax, 'id')))
+                ->calculate($this->subtotal),
+        ]));
 
-        $taxes = $taxes->map(function($tax) use ($item) {
-            $qty = $item->get('qty', 1);
-            $sel = $this->taxes->firstWhere('id', data_get($tax, 'id'));
-            $amount = $sel ? ($qty * $sel->calculate($item->get('amount', 0))) : false;
-
-            return array_merge($tax, ['amount' => $amount]);
-        });
-
-
-        return ['taxes' => $taxes->toArray()];
-    }
-
-    /**
-     * Add item
-     */
-    public function addItem($data)
-    {
-        $this->items = collect($this->items)->push($data);
-        $this->syncItems();
-    }
-
-    /**
-     * Remove item
-     */
-    public function removeItem($i)
-    {
-        $this->items = collect($this->items)
-            ->reject(fn($item, $key) => $key === $i)
-            ->values()
-            ->toArray();
-
-        $this->syncItems();
-    }
-
-    /**
-     * Sort items
-     */
-    public function sortItems($data)
-    {
-        $this->items = collect($data)
-            ->map(fn($i) => $this->items[$i])
-            ->values()
-            ->toArray();
+        $this->fill(['item.taxes' => $taxes]);
     }
 
     /**
      * Add tax
      */
-    public function addTax($index, $taxId)
+    public function addTax($taxId)
     {
-        $addedTaxes = collect(data_get($this->items, $index.'.taxes'));
+        $addedTaxes = collect(data_get($this->item, 'taxes'));
 
         if ($addedTaxes->firstWhere('id', $taxId)) {
             $this->popup('Tax already added.', 'alert');
         }
         else if ($tax = $this->taxes->firstWhere('id', $taxId)) {
-            $addedTaxes->push(['id' => $tax->id, 'label' => $tax->label]);
+            $addedTaxes->push([
+                'id' => $tax->id, 
+                'label' => $tax->label,
+                'amount' => $tax->calculate(data_get($this->item, 'amount')) * data_get($this->item, 'qty'),
+            ]);
 
-            $this->fill(['items.'.$index.'.taxes' => $addedTaxes->toArray()]);
-            $this->syncItems();
+            $this->fill(['item.taxes' => $addedTaxes->toArray()]);
+            $this->emitEvent();
         }
     }
 
     /**
      * Remove tax
      */
-    public function removeTax($index, $taxId)
+    public function removeTax($taxId)
     {
-        $addedTaxes = collect(data_get($this->items, $index.'.taxes'))->reject(
+        $addedTaxes = collect(data_get($this->item, 'taxes'))->reject(
             fn($tax) => data_get($tax, 'id') === $taxId
         );
 
-        $this->fill(['items.'.$index.'.taxes' => $addedTaxes->toArray()]);
-        $this->syncItems();
+        $this->fill(['item.taxes' => $addedTaxes->toArray()]);
+        $this->emitEvent();
+    }
+
+    /**
+     * Emit event
+     */
+    public function emitEvent()
+    {
+        $this->fill(['item.subtotal' => $this->subtotal]);
+        $this->emitUp('setItem', $this->item);
     }
 
     /**

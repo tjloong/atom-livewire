@@ -28,6 +28,10 @@ class DocumentItem extends Model
     {
         parent::boot();
 
+        static::saving(function($item) {
+            $item->name = $item->name ?? 'Unknown Item';
+        });
+
         static::updated(function($item) {
             $item->document->setSummary();
         });

@@ -61,6 +61,19 @@ class CurrencyModal extends Component
     }
 
     /**
+     * Updated inputs currency
+     */
+    public function updatedInputsCurrency($val)
+    {
+        $this->fill([
+            'inputs.currency_rate' => data_get(
+                collect($this->currencies)->firstWhere('currency', $val),
+                'rate',
+            ),
+        ]);
+    }
+
+    /**
      * Submit
      */
     public function submit()
@@ -68,7 +81,7 @@ class CurrencyModal extends Component
         $this->resetValidation();
         $this->validate();
 
-        $this->emitUp('setCurrency', $this->inputs);
+        $this->emit('setCurrency', $this->inputs);
         $this->dispatchBrowserEvent('currency-modal-close');
     }
 

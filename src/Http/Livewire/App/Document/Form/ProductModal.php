@@ -6,6 +6,7 @@ use Livewire\Component;
 
 class ProductModal extends Component
 {
+    public $item;
     public $page;
     public $product;
     public $currency;
@@ -17,9 +18,11 @@ class ProductModal extends Component
     /**
      * Open
      */
-    public function open($currency)
+    public function open($item)
     {
-        $this->currency = $currency;
+        if (!$item) return;
+
+        $this->item = $item;
         $this->dispatchBrowserEvent('product-modal-open');
     }
 
@@ -50,6 +53,7 @@ class ProductModal extends Component
             'code' => $product->code,
             'type' => $product->type,
             'price' => $this->showCost ? $product->cost : $product->price,
+            'taxes' => $product->taxes,
         ];
 
         if ($product->type === 'variant' && $product->variants) {
@@ -79,9 +83,43 @@ class ProductModal extends Component
             }
         }
 
-        $this->emitUp('addItem', $data);
+        $this->setProductToItem($data);
         $this->reset('product');
         $this->dispatchBrowserEvent('product-modal-close');
+    }
+
+    /**
+     * Set product to item
+     */
+    public function setProductToItem($data)
+    {
+        $list = collect($this->products->items());
+        $product = $list->firstWhere('id', data_get($data, 'product_id'));
+        $variant = optional(data_get($product, 'variants'))->firstWhere('id', data_get($data, 'product_variant_id'));
+        $qty = data_get($this->item, 'qty', 1);
+        $amount = data_get($variant ?? $product, 'price');
+        $taxes = data_get($product, 'taxes')->map(fn($tax) => [
+            'id' => $tax->id,
+            'label' => $tax->label,
+            'amount' => $tax->calculate($amount) * $qty,
+        ]);
+
+        $this->emitTo(
+            lw('app.document.form.item'), 
+            'setProduct:'.(data_get($this->item, 'id') ?? data_get($this->item, 'ulid')),
+            array_merge($this->item, [
+                'name' => collect([data_get($product, 'name'), data_get($variant, 'name')])
+                    ->filter()
+                    ->whenNotEmpty(fn($name) => $name->join(' - ')),
+
+                'description' => data_get($product, 'description'),
+                'qty' => $qty,
+                'amount' => $amount,
+                'taxes' => $taxes,
+                'product_id' => data_get($product, 'id'),
+                'product_variant_id' => data_get($variant, 'id'),
+            ])
+        );
     }
 
     /**

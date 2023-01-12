@@ -126,9 +126,11 @@
                         </div>
 
                         @if ($converted = $document->getConvertedTotal('grand_total'))
-                            <div class="text-sm text-right font-medium text-gray-500">
-                                {{ currency($converted, account_settings('default_currency')) }}
-                            </div>
+                            @if (data_get($converted, 'currency') !== $document->currency)
+                                <div class="text-sm text-right font-medium text-gray-500">
+                                    {{ currency(data_get($converted, 'amount'), data_get($converted, 'currency')) }}
+                                </div>
+                            @endif
                         @endif
                     </div>
 
@@ -140,9 +142,11 @@
                             </div>
 
                             @if ($converted = $document->getConvertedTotal('splitted_total'))
-                                <div class="text-sm text-right font-medium text-gray-500">
-                                    {{ currency($converted, account_settings('default_currency')) }}
-                                </div>
+                                @if (data_get($converted, 'currency') !== $document->currency)
+                                    <div class="text-sm text-right font-medium text-gray-500">
+                                        {{ currency(data_get($converted, 'amount'), data_get($converted, 'currency')) }}
+                                    </div>
+                                @endif
                             @endif
                         </div>
                     @endif

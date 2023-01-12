@@ -11,10 +11,12 @@ class Index extends Component
     use WithPopupNotify;
 
     public $items;
+    public $columns;
     public $document;
 
     protected $listeners = [
-        'setItems',
+        'setItem',
+        'removeItem',
         'setCurrency', 
     ];
 
@@ -80,6 +82,20 @@ class Index extends Component
      */
     public function mount()
     {
+        $this->columns = $this->document->getColumns();
+
+        $this->items = $this->document->items()
+            ->with('taxes')
+            ->get()
+            ->transform(fn($item) => array_merge($item->toArray(), [
+                'taxes' => $item->taxes->map(fn($tax) => [
+                    'id' => $tax->id,
+                    'label' => $tax->label,
+                    'amount' => $tax->pivot->amount,
+                ])->toArray(),
+            ]))
+            ->toArray();
+
         if (!$this->document->exists) {
             $this->setCurrency();
             $this->setContactInfo();
@@ -182,7 +198,12 @@ class Index extends Component
         if ($contact = $this->document->contact) {
             $this->document->fill([
                 'name' => $contact->name,
-                'address' => format_address($contact),
+                'address' => $contact->addresses
+                    ? format_address($contact->addresses->first())
+                    : format_address($contact),
+                'person' => $contact->persons
+                    ? $contact->persons->first()->name
+                    : null,
                 'payterm' => $this->document->type === 'delivery-order' 
                     ? null 
                     : data_get($contact, 'payterm'),
@@ -222,11 +243,58 @@ class Index extends Component
     }
 
     /**
-     * Set items
+     * Add item
      */
-    public function setItems($items)
+    public function addItem()
     {
-        $this->fill(['items' => $items]);
+        $this->items = collect($this->items)->push([
+            'ulid' => (string) str()->ulid(),
+            'name' => null,
+            'description' => null,
+            'qty' => 1,
+            'amount' => null,
+        ])->toArray();
+    }
+
+    /**
+     * Remove item
+     */
+    public function removeItem($id)
+    {
+        $this->items = collect($this->items)->reject(
+            fn($item) => data_get($item, 'id') === $id
+                || data_get($item, 'ulid') === $id
+        )->values()->toArray();
+    }
+
+    /**
+     * Sort items
+     */
+    public function sortItems($data)
+    {
+        $this->items = collect($data)
+            ->map(fn($id) => 
+                collect($this->items)->firstWhere('id', $id)
+                ?? collect($this->items)->firstWhere('ulid', $id)
+            )
+            ->values()
+            ->toArray();
+    }
+
+    /**
+     * Set item
+     */
+    public function setItem($input)
+    {
+        $this->items = collect($this->items)
+            ->map(fn($item) => 
+                data_get($input, 'id') && data_get($item, 'id') === data_get($input, 'id')
+                || data_get($input, 'ulid') && data_get($item, 'ulid') === data_get($input, 'ulid')
+                    ? $input
+                    : $item
+            )
+            ->values()
+            ->toArray();
     }
 
     /**
@@ -242,7 +310,7 @@ class Index extends Component
         $ids = collect($this->items)->pluck('id')->values()->all();
         if ($ids) $this->document->items()->whereNotIn('id', $ids)->delete();
 
-        foreach (($this->items ?? []) as $i => $input) {
+        foreach (($this->items ?? []) as $input) {
             $this->updateOrCreateDocumentItem($input);
         }
 
@@ -258,23 +326,18 @@ class Index extends Component
      */
     public function updateOrCreateDocumentItem($input)
     {
-        $data = array_merge(
-            Arr::only($input, [
-                'id',
-                'name', 
-                'description', 
-                'qty', 
-                'amount', 
-                'subtotal',
-                'product_id', 
-                'product_variant_id',
-            ]),
-            ['product_id' => data_get($this->createProductFromDocumentItem($input), 'product_id')],
-        );
+        $data = Arr::only($input, [
+            'id',
+            'name', 
+            'description', 
+            'qty', 
+            'amount', 
+            'subtotal',
+            'product_id', 
+            'product_variant_id',
+        ]);
 
-        $item = $this->document->items()->find(data_get($data, 'id'));
-
-        if ($item) $item->fill($data)->save();
+        if ($item = $this->document->items()->find(data_get($data, 'id'))) $item->fill($data)->save();
         else $item = $this->document->items()->create($data);
 
         $this->syncDocumentItemTaxes($item, $input);
@@ -290,31 +353,6 @@ class Index extends Component
         ])) {
             $item->taxes()->sync($taxes);
         }
-    }
-
-    /**
-     * Create product from document item
-     */
-    public function createProductFromDocumentItem($input)
-    {
-        if (data_get($input, 'product_id')) return $input;
-
-        $product = model('product')->create([
-            'name' => data_get($input, 'name'),
-            'type' => 'normal',
-            'description' => data_get($input, 'description'),
-            'is_active' => true,
-
-            'cost' => in_array($this->document->type, ['purchase-order', 'bill'])
-                ? data_get($input, 'amount')
-                : null,
-
-            'price' => in_array($this->document->type, ['purchase-order', 'bill'])
-                ? null
-                : data_get($input, 'amount'),
-        ]);
-
-        return array_merge($input, ['product_id' => $product->id]);
     }
 
     /**

@@ -56,7 +56,9 @@
                 @if ($type !== 'delivery-order')
                     <x-table.td>
                         <div class="flex flex-col items-end">
-                            @if ($document->splittedFrom || $document->splits()->count())
+                            @php $isSplitted = $document->splittedFrom || $document->splits()->count() @endphp
+
+                            @if ($isSplitted)
                                 <div class="flex items-center gap-2">
                                     <div class="text-sm text-gray-500">({{ __('splitted') }})</div>
                                     {{ currency($document->splitted_total, $document->currency) }}
@@ -65,10 +67,16 @@
                                 {{ currency($document->grand_total, $document->currency) }}
                             @endif
 
-                            @if ($converted = $document->getConvertedTotal('grand_total'))
-                                <div class="text-sm text-gray-500 font-medium">
-                                    {{ currency(data_get($converted, 'amount'), data_get($converted, 'currency')) }}
-                                </div>
+                            @if (
+                                $converted = $isSplitted
+                                    ? $document->getConvertedTotal('splitted_total')
+                                    : $document->getConvertedTotal('grand_total')
+                            )
+                                @if (data_get($converted, 'currency') !== $document->currency)
+                                    <div class="text-sm text-gray-500 font-medium">
+                                        {{ currency(data_get($converted, 'amount'), data_get($converted, 'currency')) }}
+                                    </div>
+                                @endif
                             @endif
                         </div>
                     </x-table.td>
@@ -88,7 +96,7 @@
                     :label="str()->headline('New '.$type)"
                     :href="route('app.document.create', [
                         'type' => $type,
-                        'contact' => optional($contact)->id,
+                        'contactId' => optional($contact)->id,
                     ])"
                 />
             </x-empty-state>

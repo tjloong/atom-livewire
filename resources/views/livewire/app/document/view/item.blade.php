@@ -64,7 +64,7 @@
                                 <div class="text-xs font-medium text-gray-400 md:hidden">
                                     {{ str()->upper($this->columns->get('total')) }}
                                 </div>
-                                {{ currency($item->subtotal, $document->currency, false) }}
+                                {{ currency($item->subtotal, null, false) }}
                             </div>
 
                             @if ($this->columns->has('tax'))
