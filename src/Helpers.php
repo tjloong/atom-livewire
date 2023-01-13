@@ -64,6 +64,7 @@ function get_status_color($status = null)
         'onboarded' => 'green',
         'offered' => 'green',
         'accepted' => 'green',
+        'available' => 'green',
 
         'black' => 'black',
         'blocked' => 'black',
