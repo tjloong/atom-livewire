@@ -29,9 +29,13 @@
         ->except(['checkbox', 'status', 'active', 'tags', 'date', 'datetime', 'from-now', 'avatar'])
     }}>
         @if ($status = $attributes->get('status'))
-            @foreach ((array)$status as $item)
-                <x-badge :label="$item"/>
-            @endforeach
+            @if (is_string($status))
+                <x-badge :label="$status"/>
+            @else
+                @foreach ($status as $key => $val)
+                    <x-badge :label="$val" :color="is_string($key) ? $key : null"/>
+                @endforeach
+            @endif
         @elseif (is_bool($attributes->get('active')))
             <x-badge :label="$attributes->get('active') ? 'active' : 'inactive'"/>
         @elseif ($tags = $attributes->get('tags'))
