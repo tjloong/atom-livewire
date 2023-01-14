@@ -3,6 +3,7 @@
     'title' => $attributes->get('title'),
 
     'icon' => [
+        'neutral' => 'circle-info',
         'info' => 'circle-info',
         'error' => 'circle-xmark',
         'success' => 'circle-check',
@@ -11,30 +12,35 @@
     
     'color' => [
         'bg' => [
+            'neutral' => 'bg-gray-100',
             'info' => 'bg-blue-100',
             'error' => 'bg-red-100',
             'success' => 'bg-green-100',
             'warning' => 'bg-yellow-100',
         ],
         'title' => [
+            'neutral' => 'text-gray-500',
             'info' => 'text-blue-800',
             'error' => 'text-red-800',
             'success' => 'text-green-800',
             'warning' => 'text-yellow-800',
         ],
         'icon' => [
+            'neutral' => 'text-gray-400',
             'info' => 'text-blue-400',
             'error' => 'text-red-400',
             'success' => 'text-green-400',
             'warning' => 'text-orange-500',            
         ],
         'text' => [
+            'neutral' => 'text-gray-400',
             'info' => 'text-blue-600',
             'error' => 'text-red-600',
             'success' => 'text-green-600',
             'warning' => 'text-orange-700',
         ],
         'border' => [
+            'neutral' => 'border border-gray-300',
             'info' => 'border border-blue-300',
             'error' => 'border border-red-300',
             'success' => 'border border-green-300',
