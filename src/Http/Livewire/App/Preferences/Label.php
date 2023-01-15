@@ -10,6 +10,7 @@ class Label extends Component
     use WithPopupNotify;
 
     public $type;
+    public $header;
     public $sublabel = false;
 
     protected $listeners = ['refresh' => '$refresh'];
@@ -19,6 +20,8 @@ class Label extends Component
      */
     public function getTitleProperty()
     {
+        if ($this->header) return $this->header;
+
         return $this->type
             ? str($this->type)->headline()->plural()->toString()
             : 'Labels';
@@ -33,8 +36,8 @@ class Label extends Component
             ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->when($this->type, fn($q) => $q->where('type', $this->type))
             ->whereNull('parent_id')
-            ->orderBy('seq')
-            ->orderBy('name->'.app()->currentLocale())
+            ->oldest('seq')
+            ->oldest('id')
             ->get();
     }
 

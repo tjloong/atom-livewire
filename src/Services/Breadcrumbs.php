@@ -157,4 +157,18 @@ class Breadcrumbs
             }
         }
     }
+
+    /**
+     * Back
+     */
+    public function back()
+    {
+        $trails = collect(session('breadcrumbs.trails'));
+        if ($trails->count() <= 1) return redirect()->back();
+
+        $index = $trails->count() - 2;
+        $dest = $trails->get($index);
+
+        return redirect(data_get($dest, 'url'));
+    }
 }
