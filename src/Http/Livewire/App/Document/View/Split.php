@@ -8,8 +8,6 @@ class Split extends Component
 {
     public $document;
 
-    protected $listeners = ['refresh' => '$refresh'];
-
     /**
      * Get splits property
      */
@@ -30,14 +28,6 @@ class Split extends Component
             ->get();
 
         return $splits->count() > 1 ? $splits : collect();
-    }
-
-    /**
-     * Open split form modal
-     */
-    public function openSplitFormModal()
-    {
-        $this->emitTo(lw('app.document.view.split-form-modal'), 'open');
     }
 
     /**

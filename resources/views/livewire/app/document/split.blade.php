@@ -1,6 +1,8 @@
-<x-modal uid="split-form-modal" header="Split Invoice" icon="scissors" class="max-w-screen-md">
-    @if ($splits)
-        <div class="-m-5 grid divide-y">
+<div class="max-w-screen-md mx-auto">
+    <x-page-header :title="'Split Invoice #'.$document->number" back/>
+
+    <x-box>
+        <div class="grid divide-y">
             @foreach ($splits as $i => $split)
                 <div class="p-4 grid gap-4">
                     <div class="flex items-center justify-between gap-3">
@@ -8,7 +10,7 @@
                             <div class="font-semibold">
                                 #{{ $number }}
                             </div>
-
+    
                             <x-badge :label="data_get($split, 'document_status', 'new')"/>
                         @else
                             <div class="font-medium flex items-center gap-2">
@@ -17,8 +19,8 @@
                             </div>
                         @endif
                     </div>
-
-
+    
+    
                     <div class="grid gap-6 md:grid-cols-3">
                         <x-form.number label="Percentage"
                             unit="%"
@@ -27,11 +29,11 @@
                             required
                             :readonly="data_get($split, 'disabled')"
                         />
-
+    
                         <x-form.date label="Issue Date"
                             wire:model="splits.{{ $i }}.issued_at"
                         />
-
+    
                         <div class="flex items-center gap-4">
                             <div class="grow">
                                 <x-form.field label="Amount">
@@ -40,7 +42,7 @@
                                     </div>
                                 </x-form.field>
                             </div>
-
+    
                             @if ($i > 0 && !data_get($split, 'disabled'))
                                 <div class="shrink-0">
                                     <a wire:click="remove(@js($i))" class="flex">
@@ -50,7 +52,7 @@
                             @endif
                         </div>
                     </div>
-
+    
                     @if (data_get($split, 'disabled'))
                         <div class="text-sm text-blue-500 font-medium flex items-center gap-2">
                             <x-icon name="circle-info" size="12"/>
@@ -59,13 +61,13 @@
                     @endif
                 </div>
             @endforeach
-
+    
             @if ($errors->any())
                 <div class="p-4">
                     <x-alert :errors="$errors->all()"/>
                 </div>
             @endif
-
+    
             @if ($splits->sum('percentage') >= 100)
                 <div class="py-2 px-4 flex items-center gap-2 justify-center text-green-500">
                     <x-icon name="check"/> {{ __('Invoice is fully splitted.') }}
@@ -85,5 +87,5 @@
                 wire:click="submit"
             />
         </x-slot:foot>
-    @endif
-</x-modal>
+    </x-box>
+</div>

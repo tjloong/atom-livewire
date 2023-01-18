@@ -165,8 +165,17 @@ if (!config('atom.static_site')) {
 
                 define_route('{type}/listing', 'App\Document\Listing')->name('listing')->whereIn('type', $types);
                 define_route('{type}/create', 'App\Document\Create')->name('create')->whereIn('type', $types);
-                define_route('{documentId}', 'App\Document\View')->name('view');
-                define_route('{documentId}/update', 'App\Document\Update')->name('update');
+
+                define_route()->prefix('{documentId}')->group(function() {
+                    define_route('/', 'App\Document\View')->name('view');
+                    define_route('update', 'App\Document\Update')->name('update');
+                    define_route('split', 'App\Document\Split')->name('split');
+
+                    define_route()->prefix('payment')->as('payment.')->group(function() {
+                        define_route('create', 'App\Document\Payment\Create')->name('create');
+                        define_route('{documentPaymentId}', 'App\Document\Payment\Update')->name('update');
+                    });
+                });
             });
         }
 

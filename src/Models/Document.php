@@ -4,6 +4,7 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Jiannius\Atom\Traits\Models\HasCurrency;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasShareable;
 use Jiannius\Atom\Traits\Models\HasTrace;
@@ -11,6 +12,7 @@ use Jiannius\Atom\Traits\Models\HasVisibility;
 
 class Document extends Model
 {
+    use HasCurrency;
     use HasFactory;
     use HasFilters;
     use HasShareable;
@@ -58,7 +60,7 @@ class Document extends Model
      */
     public function contact()
     {
-        return $this->belongsTo(get_class(model('contact')));
+        return $this->belongsTo(model('contact'));
     }
 
     /**
@@ -66,7 +68,7 @@ class Document extends Model
      */
     public function revisionFor()
     {
-        return $this->belongsTo(get_class(model('document')), 'revison_for_id');
+        return $this->belongsTo(model('document'), 'revison_for_id');
     }
 
     /**
@@ -74,7 +76,15 @@ class Document extends Model
      */
     public function convertedFrom()
     {
-        return $this->belongsTo(get_class(model('document')), 'converted_from_id');
+        return $this->belongsTo(model('document'), 'converted_from_id');
+    }
+
+    /**
+     * Get converted to for document
+     */
+    public function convertedTo()
+    {
+        return $this->hasMany(model('document'), 'converted_from_id');
     }
 
     /**
@@ -82,39 +92,7 @@ class Document extends Model
      */
     public function splittedFrom()
     {
-        return $this->belongsTo(get_class(model('document')), 'splitted_from_id');
-    }
-
-    /**
-     * Get items for document
-     */
-    public function items()
-    {
-        return $this->hasMany(get_class(model('document_item')));
-    }
-
-    /**
-     * Get files for document
-     */
-    public function files()
-    {
-        return $this->belongsToMany(get_class(model('file')), 'document_files');
-    }
-
-    /**
-     * Get emails for document
-     */
-    public function emails()
-    {
-        return $this->hasMany(get_class(model('document_email')));
-    }
-
-    /**
-     * Get payments for document
-     */
-    public function payments()
-    {
-        return $this->hasMany(get_class(model('document_payment')));
+        return $this->belongsTo(model('document'), 'splitted_from_id');
     }
 
     /**
@@ -122,7 +100,47 @@ class Document extends Model
      */
     public function splits()
     {
-        return $this->hasMany(get_class(model('document')), 'splitted_from_id');
+        return $this->hasMany(model('document'), 'splitted_from_id');
+    }
+
+    /**
+     * Get items for document
+     */
+    public function items()
+    {
+        return $this->hasMany(model('document_item'));
+    }
+
+    /**
+     * Get files for document
+     */
+    public function files()
+    {
+        return $this->belongsToMany(model('file'), 'document_files');
+    }
+
+    /**
+     * Get emails for document
+     */
+    public function emails()
+    {
+        return $this->hasMany(model('document_email'));
+    }
+
+    /**
+     * Get payments for document
+     */
+    public function payments()
+    {
+        return $this->hasMany(model('document_payment'));
+    }
+
+    /**
+     * Get labels for document
+     */
+    public function labels()
+    {
+        return $this->belongsToMany(model('label'), 'document_labels');
     }
 
     /**
@@ -134,6 +152,14 @@ class Document extends Model
             ->where('documents.number', $search)
             ->orWhere('documents.name', 'like', "%$search%")
         );
+    }
+
+    /**
+     * Get is splitted attribute
+     */
+    public function getIsSplittedAttribute()
+    {
+        return $this->splittedFrom || $this->splits()->count();
     }
 
     /**
@@ -180,33 +206,6 @@ class Document extends Model
         return $taxes->unique('id')->map(fn($tax) => array_merge($tax, [
             'amount' => $taxes->where('id', data_get($tax, 'id'))->sum('amount')
         ]));
-    }
-
-    /**
-     * Get converted total
-     */
-    public function getConvertedTotal($key = null)
-    {
-        if (!auth()->user()) return;
-
-        $totals = collect($this->only([
-            'subtotal', 
-            'discount_total', 
-            'tax_total', 
-            'paid_total', 
-            'grand_total',
-            'splitted_total',
-        ]))->map(fn($n) => $n * ($this->currency_rate ?? 1));
-
-        $currency = model('document')->enabledBelongsToAccountTrait
-            ? account_settings('default_currency')
-            : site_settings('default_currency');
-
-        if ($key) return ['currency' => $currency, 'amount' => $totals->get($key)];
-        else {
-            $totals->put('currency', $currency);
-            return $totals;
-        }
     }
 
     /**

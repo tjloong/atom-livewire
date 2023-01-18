@@ -61,6 +61,7 @@
                 x-on:focus="setFocus(true)"
                 x-on:blur="setFocus(false)"
                 x-on:input="value = $event.target.value"
+                step=".01"
                 class="w-full"
                 {{ $attributes
                     ->filter(fn($val, $key) => !str($key)->is('wire:*'))

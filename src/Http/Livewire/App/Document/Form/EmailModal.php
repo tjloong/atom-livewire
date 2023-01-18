@@ -1,11 +1,11 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Document\View;
+namespace Jiannius\Atom\Http\Livewire\App\Document\Form;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class EmailFormModal extends Component
+class EmailModal extends Component
 {
     use WithPopupNotify;
 
@@ -128,7 +128,7 @@ class EmailFormModal extends Component
 
         $this->document->fill(['last_sent_at' => now()])->saveQuietly();
 
-        $this->emitUp('refresh');
+        $this->emit('refresh');
         $this->popup('Email Sent.');
         $this->dispatchBrowserEvent('email-form-modal-close');
     }
@@ -138,6 +138,6 @@ class EmailFormModal extends Component
      */
     public function render()
     {
-        return atom_view('app.document.view.email-form-modal');
+        return atom_view('app.document.form.email-modal');
     }
 }

@@ -11,8 +11,6 @@ class Payment extends Component
 
     public $document;
 
-    protected $listeners = ['refresh' => '$refresh'];
-
     /**
      * Get payments property
      */
@@ -22,39 +20,6 @@ class Payment extends Component
             ->where('document_id', $this->document->id)
             ->latest('paid_at')
             ->get();
-    }
-
-    /**
-     * Open payment form modal
-     */
-    public function openPaymentFormModal($id = null)
-    {
-        $this->emitTo(
-            lw('app.document.view.payment-form-modal'), 
-            'open', 
-            $id ? ['id' => $id] : [
-                'currency' => $this->document->currency,
-                'currency_rate' => $this->document->currency_rate,
-                'amount' => (
-                    $this->document->splitted_total 
-                    ?? $this->document->grand_total
-                 ) - $this->document->paid_total,
-                'document_id' => $this->document->id,
-                'paid_at' => today(),
-            ],
-        );
-    }
-
-    /**
-     * Delete
-     */
-    public function delete($id)
-    {
-        optional($this->payments->firstWhere('id', $id))->delete();
-
-        $this->document->sumTotal();
-        $this->emit('refresh');
-        $this->popup('Payment Deleted.');
     }
 
     /**

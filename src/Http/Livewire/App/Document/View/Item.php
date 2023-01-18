@@ -10,6 +10,14 @@ class Item extends Component
     public $columns;
 
     /**
+     * Mount
+     */
+    public function mount()
+    {
+        $this->columns = $this->document->getColumns();
+    }
+
+    /**
      * Get items property
      */
     public function getItemsProperty()

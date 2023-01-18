@@ -1,19 +1,17 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Document\View;
+namespace Jiannius\Atom\Http\Livewire\App\Document;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class SplitFormModal extends Component
+class Split extends Component
 {
     use WithPopupNotify;
 
     public $splits;
     public $master;
     public $document;
-
-    protected $listeners = ['open'];
 
     /**
      * Validation rules
@@ -26,27 +24,15 @@ class SplitFormModal extends Component
     }
 
     /**
-     * Updated splits
+     * Mount
      */
-    public function updatedSplits()
+    public function mount($documentId)
     {
-        $this->updateAmount();
-    }
+        $this->document = model('document')->when(
+            model('document')->enabledBelongsToAccountTrait,
+            fn($q) => $q->belongsToAccount(),
+        )->findOrFail($documentId);
 
-    /**
-     * Open
-     */
-    public function open()
-    {
-        $this->initSplit();
-        $this->dispatchBrowserEvent('split-form-modal-open');
-    }
-
-    /**
-     * Init split
-     */
-    public function initSplit()
-    {
         $this->splits = collect();
         $this->master = $this->document->splittedFrom ?? $this->document;
 
@@ -59,6 +45,16 @@ class SplitFormModal extends Component
         else {
             $this->add($this->master, 50);
         }
+
+        breadcrumbs()->push('Split Invoice');
+    }
+
+    /**
+     * Updated splits
+     */
+    public function updatedSplits()
+    {
+        $this->updateAmount();
     }
 
     /**
@@ -144,8 +140,7 @@ class SplitFormModal extends Component
             }
         }
 
-        $this->emitUp('refresh');
-        $this->dispatchBrowserEvent('split-form-modal-close');
+        return breadcrumbs()->back();
     }
 
     /**
@@ -153,6 +148,6 @@ class SplitFormModal extends Component
      */
     public function render()
     {
-        return atom_view('app.document.view.split-form-modal');
+        return atom_view('app.document.split');
     }
 }

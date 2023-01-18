@@ -99,11 +99,11 @@
             </x-form.sortable>
         @else
             <x-empty-state
-                :title="'No '.str($type ?? 'Label')->headline()"
-                :subtitle="'You do not have any '.str($type ?? 'label')->headline()->lower()"
+                :title="'No '.str($this->title)->singular()->headline()"
+                :subtitle="'You do not have any '.str($this->title)->singular()->headline()->lower()"
             >
                 <x-button color="gray"
-                    :label="'New '.str($type ?? 'Label')->headline()"
+                    :label="'New '.str($this->title)->singular()->headline()"
                     wire:click="open"
                 />
             </x-empty-state>

@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Document\View;
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Livewire\Component;
 
-class File extends Component
+class Attachment extends Component
 {
     use WithFile;
 
@@ -43,6 +43,6 @@ class File extends Component
      */
     public function render()
     {
-        return atom_view('app.document.view.file');
+        return atom_view('app.document.view.attachment');
     }
 }

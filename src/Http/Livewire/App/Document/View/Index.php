@@ -11,8 +11,6 @@ class Index extends Component
 
     public $document;
 
-    protected $listeners = ['refresh' => '$refresh'];
-
     /**
      * Mount
      */
@@ -41,44 +39,6 @@ class Index extends Component
         else $prefix = str()->title($type);
 
         return $prefix.' #'.$this->document->number;
-    }
-
-    /**
-     * Get actions property
-     */
-    public function getActionsProperty()
-    {
-        return collect([
-            'pdf' => $this->document->type !== 'bill',
-            'edit' => auth()->user()->can($this->document->type.'.update'),
-            'send' => in_array($this->document->type, ['quotation', 'invoice']),
-            'split' => $this->document->type === 'invoice',
-            'share' => $this->document->type !== 'bill',
-            'delete' => auth()->user()->can($this->document->type.'.delete'),
-            'bill' => $this->document->type === 'purchase-order',
-            'invoice' => in_array($this->document->type, ['quotation', 'sales-order']),
-            'payment' => in_array($this->document->type, ['invoice', 'bill']),
-        ]);
-    }
-
-    /**
-     * Open email modal
-     */
-    public function openEmailModal()
-    {
-        $this->emitTo(lw('app.document.view.email-form-modal'), 'open');
-    }
-
-    /**
-     * Toggle sent
-     */
-    public function toggleSent()
-    {
-        $this->document->fill([
-            'last_sent_at' => $this->document->last_sent_at
-                ? null
-                : now(),
-        ])->saveQuietly();
     }
 
     /**

@@ -56,9 +56,7 @@
                 @if ($type !== 'delivery-order')
                     <x-table.td>
                         <div class="flex flex-col items-end">
-                            @php $isSplitted = $document->splittedFrom || $document->splits()->count() @endphp
-
-                            @if ($isSplitted)
+                            @if ($document->is_splitted)
                                 <div class="flex items-center gap-2">
                                     <div class="text-sm text-gray-500">({{ __('splitted') }})</div>
                                     {{ currency($document->splitted_total, $document->currency) }}
@@ -67,16 +65,15 @@
                                 {{ currency($document->grand_total, $document->currency) }}
                             @endif
 
-                            @if (
-                                $converted = $isSplitted
-                                    ? $document->getConvertedTotal('splitted_total')
-                                    : $document->getConvertedTotal('grand_total')
-                            )
-                                @if (data_get($converted, 'currency') !== $document->currency)
-                                    <div class="text-sm text-gray-500 font-medium">
-                                        {{ currency(data_get($converted, 'amount'), data_get($converted, 'currency')) }}
-                                    </div>
-                                @endif
+                            @if ($document->is_foreign_currency)
+                                <div class="text-sm text-gray-500 font-medium">
+                                    {{ 
+                                        currency($document->is_splitted
+                                            ? $document->calculateCurrencyConversion('splitted_total')
+                                            : $document->calculateCurrencyConversion('grand_total')
+                                        , $document->master_currency) 
+                                    }}
+                                </div>                        
                             @endif
                         </div>
                     </x-table.td>

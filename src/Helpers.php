@@ -149,12 +149,15 @@ function lw($name)
 {
     $name = str()->replace('/', '.', $name);
     $segments = explode('.', $name);
+    $last = last($segments);
     $slashed = collect($segments)->map(fn($str) => str()->studly($str))->filter()->join('\\');
     $class = collect([
         'App\Http\Livewire\\'.$slashed,
         'App\Http\Livewire\\'.$slashed.'\Index',
+        'App\Http\Livewire\\'.$slashed.'\\'.str()->studly($last),
         'Jiannius\Atom\Http\Livewire\\'.$slashed,
         'Jiannius\Atom\Http\Livewire\\'.$slashed.'\Index',
+        'Jiannius\Atom\Http\Livewire\\'.$slashed.'\\'.str()->studly($last),
     ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
 
     if ($class) {
@@ -227,7 +230,11 @@ function account_settings($name, $default = null)
                 
             return is_string($value) ? $value : data_get($value, 'currency');
         }
-        else return data_get($settings, $name, $default);
+        else {
+            return json_decode(json_encode(
+                data_get($settings, $name, $default)
+            ), true);
+        }
     }
     else $settings->fill($name)->save();
 }

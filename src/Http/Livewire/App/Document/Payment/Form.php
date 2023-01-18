@@ -1,17 +1,15 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Document\View;
+namespace Jiannius\Atom\Http\Livewire\App\Document\Payment;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class PaymentFormModal extends Component
+class Form extends Component
 {
     use WithPopupNotify;
 
     public $payment;
-
-    protected $listeners = ['open'];
 
     /**
      * Validation rules
@@ -41,20 +39,6 @@ class PaymentFormModal extends Component
     }
 
     /**
-     * Get title property
-     */
-    public function getTitleProperty()
-    {
-        if (!$this->payment) return;
-        if ($this->payment->id) return 'Update Payment';
-
-        return [
-            'invoice' => 'Receive Payment',
-            'bill' => 'Issue Payment',
-        ][$this->payment->document->type];
-    }
-
-    /**
      * Get paymodes property
      */
     public function getPaymodesProperty()
@@ -62,18 +46,6 @@ class PaymentFormModal extends Component
         return model('document')->enabledBelongsToAccountTrait
             ? account_settings('paymodes', ['Cash'])
             : site_settings('paymodes', ['Cash']);
-    }
-
-    /**
-     * Open
-     */
-    public function open($data)
-    {
-        $this->payment = data_get($data, 'id')
-            ? model('document_payment')->findOrFail(data_get($data, 'id'))
-            : model('document_payment')->fill($data);
-
-        $this->dispatchBrowserEvent('payment-form-modal-open');
     }
 
     /**
@@ -87,9 +59,7 @@ class PaymentFormModal extends Component
         $this->payment->save();
         $this->payment->document->sumTotal();
 
-        $this->emit('refresh');
-        $this->popup('Payment Updated.');
-        $this->dispatchBrowserEvent('payment-form-modal-close');
+        return breadcrumbs()->back();
     }
 
     /**
@@ -97,6 +67,6 @@ class PaymentFormModal extends Component
      */
     public function render()
     {
-        return atom_view('app.document.view.payment-form-modal');
+        return atom_view('app.document.payment.form');
     }
 }

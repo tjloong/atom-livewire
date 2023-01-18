@@ -13,8 +13,10 @@ class Index extends Component
     public $items;
     public $columns;
     public $document;
+    public $settings;
 
     protected $listeners = [
+        'setDocument',
         'setItem',
         'removeItem',
         'setCurrency', 
@@ -68,13 +70,11 @@ class Index extends Component
      */
     public function messages()
     {
-        $messages = [
+        return [
             'document.type.required' => __('Unknown document type.'),
             'document.postfix.required' => __('Document number is required.'),
             'document.contact_id.required' => __('Please select a contact.'),
         ];
-
-        return $messages;
     }
 
     /**
@@ -96,153 +96,17 @@ class Index extends Component
             ]))
             ->toArray();
 
-        if (!$this->document->exists) {
-            $this->setCurrency();
-            $this->setContactInfo();
-        }
-    }
-
-    /**
-     * Get settings property
-     */
-    public function getSettingsProperty()
-    {
-        return model('document')->enabledBelongsToAccountTrait
+        $this->settings = model('document')->enabledBelongsToAccountTrait
             ? account_settings($this->document->type)
             : site_settings('app.document.'.$this->document->type);
     }
 
     /**
-     * Get contact type property
+     * Set document
      */
-    public function getContactTypeProperty()
+    public function setDocument($data)
     {
-        return in_array($this->document->type, ['purchase-order', 'bill']) ? 'vendor' : 'client';
-    }
-
-    /**
-     * Get contact label property
-     */
-    public function getContactLabelProperty()
-    {
-        return [
-            'quotation' => 'Client',
-            'sales-order' => 'Client',
-            'invoice' => 'Bill To',
-            'delivery-order' => 'Deliver To',
-            'purchase-order' => 'Vendor',
-            'bill' => 'Billed By',
-        ][$this->document->type];
-    }
-
-    /**
-     * Get currencies property
-     */
-    public function getCurrenciesProperty()
-    {
-        $isBelongsToAccount = model('document')->enabledBelongsToAccountTrait;
-        $currencies = $isBelongsToAccount ? account_settings('currencies') : site_settings('currencies');
-        $defaultCurrency = $isBelongsToAccount ? account_settings('default_currency') : site_settings('default_currency');
-
-        if ($currencies) return $currencies;
-        else if ($defaultCurrency) return ['currency' => $defaultCurrency, 'rate' => 1];
-
-        return [];
-    }
-
-    /**
-     * Get totals property
-     */
-    public function getTotalsProperty()
-    {
-        if (!$this->items) return;
-
-        $taxes = collect($this->items)->pluck('taxes')->collapse()->unique('id')
-            ->map('collect')
-            ->map(fn($tax) => $tax->put(
-                'amount', 
-                collect($this->items)->pluck('taxes')->collapse()
-                    ->where('id', $tax->get('id'))
-                    ->sum('amount'),
-            ));
-
-        $subtotal = collect($this->items)->sum('subtotal');
-        $grandTotal = $subtotal + $taxes->sum('amount');
-
-        return collect([['label' => 'Subtotal', 'amount' => $subtotal]])
-            ->concat($taxes)
-            ->concat([['label' => 'Grand Total', 'amount' => $grandTotal]]);
-    }
-
-    /**
-     * Updated document contact id
-     */
-    public function updatedDocumentContactId()
-    {
-        $this->setContactInfo();
-    }
-
-    /**
-     * Open currency modal
-     */
-    public function openCurrencyModal()
-    {
-        $this->emitTo(lw('app.document.form.currency-modal'), 'open', $this->document, $this->currencies);
-    }
-
-    /**
-     * Set contact info
-     */
-    public function setContactInfo()
-    {
-        if ($contact = $this->document->contact) {
-            $this->document->fill([
-                'name' => $contact->name,
-
-                'address' => $contact->addresses
-                    ? format_address($contact->addresses->first())
-                    : format_address($contact),
-
-                'person' => $contact->persons->count()
-                    ? $contact->persons->first()->name
-                    : null,
-                    
-                'payterm' => $this->document->type === 'delivery-order' 
-                    ? null 
-                    : data_get($contact, 'payterm'),
-            ]);
-
-            if ($currency = $contact->currency) $this->setCurrency($currency);
-        }
-        else {
-            $this->document->fill([
-                'name' => null,
-                'address' => null,
-                'person' => null,
-                'payterm' => null,
-                'contact_id' => null,
-            ]);
-        }
-    }
-
-    /**
-     * Set currency
-     */
-    public function setCurrency($data = null)
-    {
-        if ($this->currencies) {
-            if (!$data) $currency = collect($this->currencies)->first();
-            else if (is_string($data)) $currency = collect($this->currencies)->firstWhere('currency', $data);
-
-            if (isset($currency)) {
-                $data = [
-                    'currency' => data_get($currency, 'currency'),
-                    'currency_rate' => data_get($currency, 'rate'),
-                ];
-            }
-        }
-
-        if ($data) $this->document->fill($data);
+        $this->document->fill($data);
     }
 
     /**
@@ -298,6 +162,8 @@ class Index extends Component
             )
             ->values()
             ->toArray();
+
+        $this->emitTo(lw('app.document.form.total'), 'setItems', $this->items);
     }
 
     /**
@@ -356,61 +222,6 @@ class Index extends Component
         ])) {
             $item->taxes()->sync($taxes);
         }
-    }
-
-    /**
-     * Get contacts
-     */
-    public function getContacts($search = null, $page = 1)
-    {
-        return model('contact')
-            ->when(
-                model('contact')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
-            )
-            ->where('type', $this->contactType)
-            ->when($search, fn($q) => $q->filter(['search' => $search]))
-            ->orderBy('name')
-            ->toPage($page)
-            ->through(fn($contact) => [
-                'avatar' => optional($contact->logo)->url,
-                'value' => $contact->id,
-                'label' => $contact->name,
-                'small' => $contact->email,
-            ])
-            ->toArray();
-    }
-
-    /**
-     * Get convert from documents
-     */
-    public function getConvertFromDocuments($search = null, $page = 1, $sel = [])
-    {
-        return model('document')
-            ->when(
-                model('document')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
-            )
-            ->where(fn($q) => $q
-                ->when($search, fn($q) => $q->filter(['search' => $search]))
-                ->orWhereIn('id', $sel)
-                ->orWhere('type', [
-                    'invoice' => 'quotation',
-                    'bill' => 'purchase-order',
-                    'delivery-order' => 'invoice',
-                ][$this->document->type])            
-            )
-            ->when($this->document->contact_id, fn($q, $id) => $q->where('contact_id', $id))
-            ->latest('issued_at')
-            ->latest('id')
-            ->toPage($page)
-            ->through(fn($document) => [
-                'value' => $document->id,
-                'label' => $document->number,
-                'small' => $document->name,
-                'remark' => currency($document->splitted_total ?? $document->grand_total, $document->currency),
-            ])
-            ->toArray();
     }
 
     /**
