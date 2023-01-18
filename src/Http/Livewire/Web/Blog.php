@@ -11,11 +11,12 @@ class Blog extends Component
 
     public $slug;
     public $search;
-    public $filters;
+    public $labels;
     public $preview;
 
     protected $queryString = [
         'search' => ['except' => ''],
+        'labels' => ['except' => ''],
     ];
 
     /**
@@ -24,7 +25,6 @@ class Blog extends Component
     public function mount()
     {
         $this->preview = auth()->user() && request()->query('preview');
-        $this->filters = array_filter([optional(model('label')->where('slug', $this->slug)->first())->slug]);
         $this->setSeo();
     }
 
@@ -55,32 +55,51 @@ class Blog extends Component
         return model('blog')
             ->status('published')
             ->when($this->search, fn($q) => $q->search($this->search))
-            ->when($this->filters, fn($q) => $q
-                ->whereHas('labels', fn($q) => $q->whereIn('labels.slug', $this->filters))
+            ->when($this->labels, fn($q) => $q
+                ->whereHas('labels', fn($q) => $q->whereIn('labels.slug', explode(',', $this->labels)))
             )
-            ->orderBy('published_at', 'desc')
-            ->orderBy('created_at', 'desc')
+            ->latest('published_at')
+            ->latest()
             ->paginate(50);
     }
 
     /**
      * Get recents property
      */
-    public function getRecentsProperty()
+    public function getRecentBlogsProperty()
     {
         return model('blog')
             ->status('published')
             ->when($this->slug, fn($q) => $q->where('slug', '<>', $this->slug))
-            ->orderBy('published_at', 'desc')
-            ->orderBy('created_at', 'desc')
+            ->latest('published_at')
+            ->latest()
             ->take(6)
             ->get();
     }
 
     /**
-     * Get labels property
+     * Get related property
      */
-    public function getLabelsProperty()
+    public function getRelatedBlogsProperty()
+    {
+        if (!$this->blog) return;
+
+        if ($id = $this->blog->labels->pluck('id')->unique()->values()->all()) {
+            return model('blog')
+                ->status('published')
+                ->whereHas('labels', fn($q) => $q->whereIn('labels.id', $id))
+                ->where('blogs.id', '<>', $this->blog->id)
+                ->latest('published_at')
+                ->latest()
+                ->take(6)
+                ->get();
+        }
+    }
+
+    /**
+     * Get topics property
+     */
+    public function getTopicsProperty()
     {
         return model('label')
             ->where('type', 'blog-category')
@@ -109,15 +128,6 @@ class Blog extends Component
             'atom.seo.description' => $this->blog->seo->description ?? html_excerpt($this->blog->excerpt ?? $this->blog->content),
             'atom.seo.image' => $this->blog->seo->image ?? $this->blog->cover->url ?? null,
         ]);
-    }
-
-    /**
-     * Toggle filter
-     */
-    public function toggleFilter($slug)
-    {
-        if (in_array($slug, $this->filters)) $this->filters = collect($this->filters)->reject(fn($val) => $val === $slug)->values()->all();
-        else array_push($this->filters, $slug);
     }
 
     /**

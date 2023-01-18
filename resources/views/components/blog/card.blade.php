@@ -40,7 +40,7 @@
                 {{ $title }}
             </div>
             <div class="text-sm text-gray-400 font-medium">
-                {!! str($excerpt)->limit(100) !!}
+                {!! $excerpt !!}
             </div>
         </a>
     </div>
