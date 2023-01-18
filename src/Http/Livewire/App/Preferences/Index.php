@@ -39,9 +39,13 @@ class Index extends Component
     {
         return [
             ['group' => 'General', 'tabs' => [
-                ['slug' => 'blog-categories', 'label' => 'Blog Categories', 'livewire' => [
+                ['slug' => 'blog-category', 'label' => 'Blog Categories', 'livewire' => [
                     'name' => 'app.preferences.label',
                     'data' => ['type' => 'blog-category'],
+                ]],
+                ['slug' => 'document-label', 'label' => 'Document Labels', 'disabled' => !enabled_module('documents'), 'livewire' => [
+                    'name' => 'app.preferences.label',
+                    'data' => ['type' => 'document', 'header' => 'Document Labels'],
                 ]],
                 ['slug' => 'tax', 'label' => 'Taxes', 'disabled' => !enabled_module('taxes')],
             ]],

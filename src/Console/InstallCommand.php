@@ -250,6 +250,17 @@ class InstallCommand extends Command
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             });
         }
+
+        if (Schema::hasTable('document_labels')) $this->warn('document_labels table exists, skipped.');
+        else {
+            Schema::create('document_labels', function ($table) {
+                $table->id();
+                $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
+                $table->foreignId('label_id')->constrained('labels')->onDelete('cascade');
+            });
+
+            $this->line('document_labels table created successfully.');
+        }
     }
 
     /**
