@@ -183,8 +183,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.settings.integration.payment.ipay' => 'App\Settings\Integration\Payment\Ipay',
             
             // preferences
-            'atom.app.preferences.label' => 'App\Preferences\Label',
-            'atom.app.preferences.label-form-modal' => 'App\Preferences\LabelFormModal',
+            'atom.app.preferences.label' => 'App\Preferences\Label\Index',
+            'atom.app.preferences.label.children' => 'App\Preferences\Label\Children',
+            'atom.app.preferences.label.form-modal' => 'App\Preferences\Label\FormModal',
             'atom.app.preferences.tax' => 'App\Preferences\Tax',
             'atom.app.preferences.tax-form-modal' => 'App\Preferences\TaxFormModal',
         ];

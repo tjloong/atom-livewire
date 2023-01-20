@@ -1,18 +1,23 @@
 <x-modal uid="label-form-modal" :header="data_get($label, 'id') ? 'Update Label' : 'Create Label'">
     @if ($label)
         <div class="grid gap-6">
+            @if (count($this->parentTrails))
+                <x-form.field label="Parent Label">
+                    <div class="flex flex-wrap items-center gap-2">
+                        @foreach ($this->parentTrails as $i => $trail)
+                            <div class="shrink-0">{{ $trail }}</div>
+                            @if ($i !== array_key_last($this->parentTrails)) <x-icon name="arrow-right"/> @endif
+                        @endforeach
+                    </div>
+                </x-form.field>
+            @endif
+
             @if ($type = data_get($label, 'type'))
                 <x-form.field label="Label Type">
                     {{ str()->headline($type) }}
                 </x-form.field>
             @endif
 
-            @if ($parent = $label->parent)
-                <x-form.field label="Parent Label">
-                    {{ $parent->locale('name') }}
-                </x-form.field>
-            @endif
-        
             @if (data_get($label, 'data.is_locked'))
                 @foreach ($this->locales->sort() as $locale)
                     <x-form.field

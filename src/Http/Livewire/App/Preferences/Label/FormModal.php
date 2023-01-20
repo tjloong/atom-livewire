@@ -1,11 +1,11 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Preferences;
+namespace Jiannius\Atom\Http\Livewire\App\Preferences\Label;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class LabelFormModal extends Component
+class FormModal extends Component
 {
     use WithPopupNotify;
 
@@ -55,6 +55,22 @@ class LabelFormModal extends Component
     }
 
     /**
+     * Get parent trails property
+     */
+    public function getParentTrailsProperty()
+    {
+        $trails = collect();
+        $parent = $this->label->parent;
+
+        while ($parent) {
+            $trails->push($parent->locale('name'));
+            $parent = $parent->parent;
+        }
+
+        return $trails->reverse()->values()->all();
+    }
+
+    /**
      * Open
      */
     public function open($data)
@@ -63,10 +79,7 @@ class LabelFormModal extends Component
             ? model('label')
                 ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
                 ->findOrFail(data_get($data, 'id'))
-            : model('label')->fill([
-                'type' => data_get($data, 'type'),
-                'parent_id' => data_get($data, 'parent_id'),
-            ]);
+            : model('label')->fill($data);
 
         $this->names = (array)$this->label->name;
 
@@ -85,7 +98,7 @@ class LabelFormModal extends Component
             'name' => $this->names,
         ])->save();
 
-        $this->emitUp('refresh');
+        $this->emit('refresh');
         $this->dispatchBrowserEvent('label-form-modal-close');
     }
 
@@ -94,6 +107,6 @@ class LabelFormModal extends Component
      */
     public function render()
     {
-        return atom_view('app.preferences.label-form-modal');
+        return atom_view('app.preferences.label.form-modal');
     }
 }

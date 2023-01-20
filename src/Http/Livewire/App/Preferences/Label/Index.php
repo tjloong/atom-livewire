@@ -1,19 +1,23 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Preferences;
+namespace Jiannius\Atom\Http\Livewire\App\Preferences\Label;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class Label extends Component
+class Index extends Component
 {
     use WithPopupNotify;
 
     public $type;
     public $header;
-    public $sublabel = false;
+    public $maxDepth = 1;
 
-    protected $listeners = ['refresh' => '$refresh'];
+    protected $listeners = [
+        'open',
+        'delete',
+        'refresh' => '$refresh',
+    ];
 
     /**
      * Get title property
@@ -33,6 +37,7 @@ class Label extends Component
     public function getLabelsProperty()
     {
         return model('label')
+            ->with('children')
             ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
             ->when($this->type, fn($q) => $q->where('type', $this->type))
             ->whereNull('parent_id')
@@ -44,13 +49,9 @@ class Label extends Component
     /**
      * Open
      */
-    public function open($id = null, $parentId = null)
+    public function open($data)
     {
-        $this->emitTo(lw('app.settings.system.label-form-modal'), 'open', [
-            'id' => $id,
-            'type' => $this->type,
-            'parent_id' => $parentId,
-        ]);
+        $this->emitTo(lw('app.preferences.label.form-modal'), 'open', $data);
     }
 
     /**
@@ -70,7 +71,7 @@ class Label extends Component
      */
     public function delete($id)
     {
-        optional($this->labels->firstWhere('id', $id))->delete();
+        optional(model('label')->find($id))->delete();
 
         $this->emit('refresh');
     }

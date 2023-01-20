@@ -17,7 +17,7 @@
     @isset($header) {{ $header }} @endif
 
     @if (
-        ($attributes->has('data') && !$attributes->get('data'))
+        ($attributes->has('data') && !count($attributes->get('data')))
         || (!$attributes->has('data') && $slot->isEmpty())
     )
         @isset($empty) {{ $empty }}
