@@ -1,5 +1,21 @@
 <div class="p-5 bg-slate-100">
-    @if ($meta = data_get($inputs, 'metadata'))
+    @if ($document->convertedFrom)
+        <div class="flex flex-col gap-4">
+            <x-form.field :label="$this->label">
+                {{ data_get($inputs, 'name') }}
+            </x-form.field>
+
+            <x-form.field label="Address">
+                {{ data_get($inputs, 'address') }}
+            </x-form.field>
+
+            @if ($person = data_get($inputs, 'person'))
+                <x-form.field label="Attention To">
+                    {{ $person }}
+                </x-form.field>
+            @endif
+        </div>
+    @elseif ($meta = data_get($inputs, 'metadata'))
         <div class="flex flex-col gap-4">
             <x-form.field :label="$this->label">
                 <div class="bg-white rounded-lg shadow border py-2 px-4 flex gap-2">

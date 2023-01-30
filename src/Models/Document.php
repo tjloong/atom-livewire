@@ -249,7 +249,11 @@ class Document extends Model
      */
     public function setPrefixAndPostfix()
     {
-        $prefix = str(account_settings($this->type.'.prefix'))
+        $prefix = str(
+            account_settings($this->type.'.prefix')
+            ?? data_get($this->numberPrefix, $this->type)
+            ?? null
+        )
             ->replace('%y', date('y'))
             ->replace('%m', date('m'))
             ->replace('%d', date('d'))

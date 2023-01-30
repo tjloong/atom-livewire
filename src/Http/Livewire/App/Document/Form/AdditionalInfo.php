@@ -10,6 +10,11 @@ class AdditionalInfo extends Component
     public $inputs;
     public $document;
 
+    protected $rules = [
+        'inputs.owned_by' => 'nullable',
+        'inputs.labels' => 'nullable',
+    ];
+
     /**
      * Mount
      */
