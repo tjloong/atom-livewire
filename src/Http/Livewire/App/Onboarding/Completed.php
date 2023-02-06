@@ -11,7 +11,7 @@ class Completed extends Component
      */
     public function mount()
     {
-        auth()->user()->account->onboard();
+        auth()->user()->fill(['onboarded_at' => now()])->saveQuietly();
     }
 
     /**

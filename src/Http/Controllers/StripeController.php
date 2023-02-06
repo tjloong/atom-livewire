@@ -12,7 +12,7 @@ class StripeController extends Controller
     public function checkout()
     {
         $params = session('pay_request');
-        $keys = $this->getStripeKeys(data_get($params, 'account_id'));
+        $keys = $this->getStripeKeys(data_get($params, 'tenant_id'));
         $stripe = $this->getStripeClient($keys);
         $session = $stripe->checkout->sessions->create($this->getStripeSessionObject($params));
 
@@ -59,7 +59,7 @@ class StripeController extends Controller
         $input = @file_get_contents('php://input');
         $payload = json_decode($input);
         $metadata = $this->getMetadata($payload);
-        $keys = $this->getStripeKeys(data_get($metadata, 'account_id'));
+        $keys = $this->getStripeKeys(data_get($metadata, 'tenant_id'));
 
         $event = $this->validateStripeInput($input, data_get($keys, 'whse'));
         if (!$event) return response()->json('Unable to validate signature with the webhook signing secret.', 400);
@@ -88,7 +88,7 @@ class StripeController extends Controller
         $params = request()->query();
         $redirect = data_get($params, 'redirect');
 
-        $keys = $this->getStripeKeys(data_get($params, 'account_id'));
+        $keys = $this->getStripeKeys(data_get($params, 'tenant_id'));
         $stripe = $this->getStripeClient($keys);
         $stripe->subscriptions->cancel(data_get($params, 'subscription_id'));
 
@@ -164,20 +164,20 @@ class StripeController extends Controller
     /**
      * Get stripe keys
      */
-    public function getStripeKeys($accountId = null)
+    public function getStripeKeys($tenantId = null)
     {
-        $account = $accountId ? model('account')->find($accountId) : null;
-        $settings = optional($account)->settings;
+        $tenant = $tenantId ? model('tenant')->find($tenantId) : null;
+        $settings = optional($tenant)->settings;
 
-        $pk = $account
+        $pk = $tenant
             ? data_get($settings, 'stripe_public_key') ?? data_get(optional($settings->stripe), 'public_key')
             : site_settings('stripe_public_key', env('STRIPE_PUBLIC_KEY'));
 
-        $sk = $account
+        $sk = $tenant
             ? data_get($settings, 'stripe_secret_key') ?? data_get(optional($settings->stripe), 'secret_key')
             : site_settings('stripe_secret_key', env('STRIPE_SECRET_KEY'));
 
-        $whse = $account
+        $whse = $tenant
             ? data_get($settings, 'stripe_webhook_signing_secret') ?? data_get(optional($settings->stripe), 'webhook_signing_secret')
             : site_settings('stripe_webhook_signing_secret', env('STRIPE_WEBHOOK_SIGNING_SECRET'));
 
@@ -195,7 +195,7 @@ class StripeController extends Controller
         $metadata = [
             'job' => data_get($params, 'job'), 
             'payment_id' => data_get($params, 'payment_id'),
-            'account_id' => data_get($params, 'account_id'),
+            'tenant_id' => data_get($params, 'tenant_id'),
         ];
 
         $lineItems = collect(data_get($params, 'items', []))->map(function($item) {

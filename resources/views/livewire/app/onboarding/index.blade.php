@@ -25,10 +25,7 @@
             $com = data_get($this->steps->firstWhere('value', $step), 'livewire')
                 ?? 'app.onboarding.'.$step
         )
-            @livewire(lw($com), [
-                'onboarding' => true,
-                'account' => auth()->user()->account,
-            ], key($step))
+            @livewire(lw($com), ['onboarding' => true], key($step))
         @endif
     </div>
 </div>

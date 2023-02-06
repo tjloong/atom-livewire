@@ -57,8 +57,8 @@ class Create extends Component
 
         if (
             $src = model('document')->when(
-                model('document')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('document')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )->find(request()->query('convertFrom'))
         ) {
             if ($this->document->type === 'invoice' && !in_array($src->type, ['quotation', 'sales-order'])) return;
@@ -77,8 +77,8 @@ class Create extends Component
         if (
             $contact = optional($this->document->convertedFrom)->contact
                 ?? model('contact')->when(
-                    model('contact')->enabledBelongsToAccountTrait,
-                    fn($q) => $q->belongsToAccount(),
+                    model('contact')->enabledHasTenantTrait,
+                    fn($q) => $q->belongsToTenant(),
                 )->find(request()->query('contactId'))
         ) {
             $this->document->fill(['contact_id' => $contact->id]);

@@ -57,7 +57,7 @@
             id="{{ str()->slug('th-'.$label) }}"
         >
             <span class="inline-flex items-center gap-2">
-                {{ __(str()->upper($label)) }}
+                {!! __(str()->upper($label)) !!}
                 @if ($sortBy) 
                     <x-icon x-show="isSorted && current.sortOrder === 'desc'" name="chevron-up" class="shrink-0" size="10"/> 
                     <x-icon x-show="isSorted && current.sortOrder === 'asc'" name="chevron-down" class="shrink-0" size="10"/>

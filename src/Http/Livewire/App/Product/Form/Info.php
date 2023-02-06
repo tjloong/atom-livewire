@@ -30,8 +30,8 @@ class Info extends Component
                     ->ignore($this->product)
                     ->where(fn($q) => $q
                         ->when(
-                            model('product')->enabledBelongsToAccountTrait,
-                            fn($q) => $q->where('account_id', auth()->user()->account_id)
+                            model('product')->enabledHasTenantTrait,
+                            fn($q) => $q->where('tenant_id', auth()->user()->tenant_id)
                         )
                     ),
             ],
@@ -80,8 +80,8 @@ class Info extends Component
 
             'taxes' => model('tax')
                 ->when(
-                    model('tax')->enabledBelongsToAccountTrait, 
-                    fn($q) => $q->belongsToAccount()
+                    model('tax')->enabledHasTenantTrait, 
+                    fn($q) => $q->belongsToTenant()
                 )
                 ->orderBy('name')
                 ->get()
@@ -89,8 +89,8 @@ class Info extends Component
 
             'categories' => model('label')
                 ->when(
-                    model('label')->enabledBelongsToAccountTrait, 
-                    fn($q) => $q->belongsToAccount()
+                    model('label')->enabledHasTenantTrait, 
+                    fn($q) => $q->belongsToTenant()
                 )
                 ->where('type', 'product-category')
                 ->select('id as value', 'name->'.app()->currentLocale().' as label')

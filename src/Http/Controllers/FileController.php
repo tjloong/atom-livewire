@@ -67,7 +67,7 @@ class FileController extends Controller
     {
         return auth()->user() && (
             auth()->user()->id === $file->created_by
-            || auth()->user()->account->type === 'root'
+            || auth()->user()->is_root
         );
     }
 }

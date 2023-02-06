@@ -45,7 +45,7 @@
                     class="flex items-center gap-3 rounded-l-md px-4 py-2.5 font-medium text-white"
                 >
                     @if ($logo)
-                        <x-logo :src="$logo" class="brightness-0 invert opacity-70" style="width: 20px; height: 20px;"/>
+                        <x-logo :src="$logo" size="16" class="brightness-0 invert opacity-70"/>
                     @elseif ($icon !== false)
                         <x-icon :name="$icon ?? $label" size="16" class="opacity-70"/>
                     @endif

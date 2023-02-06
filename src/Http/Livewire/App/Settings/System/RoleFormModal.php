@@ -24,8 +24,8 @@ class RoleFormModal extends Component
                 'required',
                 Rule::unique('roles', 'name')
                     ->when(
-                        model('role')->enabledBelongsToAccountTrait,
-                        fn($q) => $q->where('account_id', $this->role->account_id ?? auth()->user()->account_id)
+                        model('role')->enabledHasTenantTrait,
+                        fn($q) => $q->where('tenant_id', $this->role->tenant_id ?? auth()->user()->tenant_id)
                     )
                     ->ignore($this->role->id),
             ],
@@ -51,8 +51,8 @@ class RoleFormModal extends Component
         $this->role = $id
             ? model('role')
                 ->when(
-                    model('role')->enabledBelongstoAccountTrait,
-                    fn($q) => $q->belongsToAccount(),
+                    model('role')->enabledHasTenantTrait,
+                    fn($q) => $q->belongsToTenant(),
                 )
                 ->findOrFail($id)
             : model('role');

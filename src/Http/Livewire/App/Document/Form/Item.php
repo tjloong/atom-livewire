@@ -78,8 +78,8 @@ class Item extends Component
     {
         return model('tax')
             ->when(
-                model('tax')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('tax')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->status('active')
             ->get();

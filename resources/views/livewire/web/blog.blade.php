@@ -74,6 +74,46 @@
                         </form>
                     </div>
 
+                    <div class="grid gap-4">
+                        <div class="text-sm font-semibold text-gray-400 uppercase">
+                            Topics
+                        </div>
+
+                        <div 
+                            x-data="{
+                                toggle (slug) {
+                                    const index = this.labels.findIndex(label => label === slug)
+                                    if (index > -1) this.labels.splice(index, 1)
+                                    else this.labels.push(slug)
+
+                                    search()
+                                },
+                            }"
+                            class="flex items-center flex-wrap gap-2"
+                        >
+                            @foreach ($this->topics as $label)
+                                <div 
+                                    x-data="{ 
+                                        get isActive () { return labels.includes(@js($label->slug)) },
+                                    }"
+                                    x-on:click="toggle(@js($label->slug))"
+                                    x-bind:class="{
+                                        'border-theme bg-theme text-white': isActive,
+                                        'border-gray-400 bg-white text-gray-500': !isActive,
+                                    }"
+                                    class="inline-block py-1.5 px-3 rounded-lg font-medium border-2 cursor-pointer"
+                                >
+                                    <div class="flex items-center gap-2">
+                                        {{ $label->locale('name') }}
+                                        <div x-show="isActive" class="flex">
+                                            <x-icon name="xmark" class="m-auto"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     @if ($this->relatedBlogs && $this->relatedBlogs->count())
                         <div class="grid gap-4">
                             <div class="text-sm font-semibold text-gray-400 uppercase">
@@ -88,46 +128,6 @@
                                     :date="$relatedBlog->published_at"
                                 />
                             @endforeach
-                        </div>
-                    @elseif ($this->topics->count())
-                        <div class="grid gap-4">
-                            <div class="text-sm font-semibold text-gray-400 uppercase">
-                                Topics
-                            </div>
-
-                            <div 
-                                x-data="{
-                                    toggle (slug) {
-                                        const index = this.labels.findIndex(label => label === slug)
-                                        if (index > -1) this.labels.splice(index, 1)
-                                        else this.labels.push(slug)
-
-                                        search()
-                                    },
-                                }"
-                                class="flex items-center flex-wrap gap-2"
-                            >
-                                @foreach ($this->topics as $label)
-                                    <div 
-                                        x-data="{ 
-                                            get isActive () { return labels.includes(@js($label->slug)) },
-                                        }"
-                                        x-on:click="toggle(@js($label->slug))"
-                                        x-bind:class="{
-                                            'border-theme bg-theme text-white': isActive,
-                                            'border-gray-400 bg-white text-gray-500': !isActive,
-                                        }"
-                                        class="inline-block py-1.5 px-3 rounded-lg font-medium border-2 cursor-pointer"
-                                    >
-                                        <div class="flex items-center gap-2">
-                                            {{ $label->locale('name') }}
-                                            <div x-show="isActive" class="flex">
-                                                <x-icon name="xmark" class="m-auto"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
                         </div>
                     @endif
 

@@ -79,7 +79,7 @@ class Promotion extends Model
      */
     public function getRateDisplayAttribute()
     {
-        if ($this->type === 'fixed') return currency($this->rate, account_settings('currency'));
+        if ($this->type === 'fixed') return currency($this->rate, tenant_settings('currency'));
         if ($this->type === 'percentage') return $this->rate.'%';
     }
 }

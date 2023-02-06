@@ -18,8 +18,8 @@ class Index extends Component
     {
         $this->document = model('document')
             ->when(
-                model('document')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('document')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->findOrFail($documentId);
 

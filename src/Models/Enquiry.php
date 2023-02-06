@@ -31,10 +31,6 @@ class Enquiry extends Model
 
     /**
      * Scope for fussy search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
     public function scopeSearch($query, $search)
     {

@@ -15,8 +15,8 @@ class Split extends Component
     {
         $splits = model('document')
             ->when(
-                model('document')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('document')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->when(
                 $this->document->splitted_from_id, 

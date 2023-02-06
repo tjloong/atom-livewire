@@ -29,7 +29,7 @@ class SocialLogin extends Component
      */
     public function getProvidersProperty()
     {
-        return config('atom.accounts.login', []);
+        return config('atom.auth.login', []);
     }
 
     /**

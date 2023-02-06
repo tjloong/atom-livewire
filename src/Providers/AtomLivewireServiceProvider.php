@@ -41,10 +41,19 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // dashboard
             'atom.app.dashboard' => 'App\Dashboard',
 
-            // account
-            'atom.app.account.listing' => 'App\Account\Listing',
-            'atom.app.account.update' => 'App\Account\Update\Index',
-            'atom.app.account.update.register' => 'App\Account\Update\Register',
+            // user
+            'atom.app.user.listing' => 'App\User\Listing',
+            'atom.app.user.create' => 'App\User\Create',
+            'atom.app.user.update' => 'App\User\Update\Index',
+            'atom.app.user.update.block' => 'App\User\Update\Block',
+            'atom.app.user.update.delete' => 'App\User\Update\Delete',
+            'atom.app.user.update.drawer' => 'App\User\Update\Drawer',
+            'atom.app.user.form' => 'App\User\Form',
+
+            // signup
+            'atom.app.signup.listing' => 'App\Signup\Listing',
+            'atom.app.signup.view' => 'App\Signup\View\Index',
+            'atom.app.signup.view.info' => 'App\Signup\View\Info',
 
             // billing
             'atom.app.billing.view' => 'App\Billing\View',
@@ -156,11 +165,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // settings
             'atom.app.settings.index' => 'App\Settings\Index',
-            'atom.app.settings.account.login' => 'App\Settings\Account\Login',
-            'atom.app.settings.account.password' => 'App\Settings\Account\Password',
-            'atom.app.settings.system.user' => 'App\Settings\System\User',
-            'atom.app.settings.system.user-drawer' => 'App\Settings\System\UserDrawer',
-            'atom.app.settings.system.user-form-modal' => 'App\Settings\System\UserFormModal',
+            'atom.app.settings.login' => 'App\Settings\Login',
+            'atom.app.settings.password' => 'App\Settings\Password',
             'atom.app.settings.system.role' => 'App\Settings\System\Role',
             'atom.app.settings.system.role-form-modal' => 'App\Settings\System\RoleFormModal',
             'atom.app.settings.system.team' => 'App\Settings\System\Team',

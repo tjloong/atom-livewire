@@ -37,6 +37,7 @@
                                 <x-table.th
                                     :label="data_get($col, 'column_name')"
                                     :sort="data_get($col, 'column_sort')"
+                                    :checkbox="data_get($col, 'checkbox')"
                                     :class="data_get($col, 'column_class') ?? (
                                         $i === array_key_last($cols)
                                             ? 'text-right'

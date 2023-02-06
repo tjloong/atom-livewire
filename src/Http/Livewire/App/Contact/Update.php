@@ -15,8 +15,8 @@ class Update extends Component
     {
         $this->contact = model('contact')
             ->when(
-                model('contact')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('contact')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->findOrFail($contactId);
 

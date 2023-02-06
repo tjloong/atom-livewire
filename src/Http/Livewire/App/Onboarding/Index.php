@@ -18,7 +18,7 @@ class Index extends Component
      */
     public function mount()
     {
-        $this->steps = auth()->user()->isAccountType('signup')
+        $this->steps = user()->isTier('signup')
             ? collect($this->tabs)->map(fn($tab) => [
                 'value' => data_get($tab, 'slug', $tab),
                 'label' => data_get($tab, 'label') ?? str()->headline($tab),

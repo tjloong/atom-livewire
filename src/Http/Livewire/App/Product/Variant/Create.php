@@ -16,8 +16,8 @@ class Create extends Component
     {
         $this->product = model('product')
             ->when(
-                model('product')->enabledBelongsToAccountTrait, 
-                fn($q) => $q->belongsToAccount()
+                model('product')->enabledHasTenantTrait, 
+                fn($q) => $q->belongsToTenant()
             )
             ->findOrFail($productId);
 

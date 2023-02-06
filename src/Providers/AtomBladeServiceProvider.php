@@ -36,16 +36,8 @@ class AtomBladeServiceProvider extends ServiceProvider
             return enabled_module($value);
         });
 
-        Blade::if('root', function() {
-            return auth()->user()->isAccountType('root');
-        });
-
-        Blade::if('accounttype', function($value) {
-            return auth()->user()->isAccountType($value);
-        });
-
-        Blade::if('notaccounttype', function($value) {
-            return !auth()->user()->isAccountType($value);
+        Blade::if('tier', function($value) {
+            return auth()->user()->isTier($value);
         });
     }
 }

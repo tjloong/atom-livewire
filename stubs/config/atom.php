@@ -17,9 +17,9 @@ return [
     'allowed_hosts' => [],
 
     /**
-     * Account Portal
+     * Auth Portal
      */
-    'accounts' => [
+    'auth' => [
         'verify' => true,
         'register' => true,
         'login' => [
@@ -38,11 +38,9 @@ return [
         ],
         
         'permissions' => [
+            'setting' => ['manage'],
+            'preference' => ['manage'],
             'root' => [],
-            'signup' => [
-                'setting' => ['manage'],
-                'preference' => ['manage'],
-            ],
         ],
 
         'document' => [

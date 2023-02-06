@@ -24,8 +24,8 @@ class Role extends Component
     {
         return model('role')
             ->when(
-                model('role')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('role')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->withCount('users')
             ->filter($this->filters)

@@ -22,8 +22,8 @@ trait HasCurrency
     public function getMasterCurrencyAttribute()
     {
         return (
-            $this->enabledBelongsToAccountTrait
-                ? account_settings('default_currency')
+            $this->enabledHasTenantTrait
+                ? tenant_settings('default_currency')
                 : site_settings('default_currency')
         ) ?? config('atom.default_currency') ?? env('DEFAULT_CURRENCY');
     }
@@ -34,8 +34,8 @@ trait HasCurrency
     public function getCurrencyOptionsAttribute()
     {
         $options = (
-            $this->enabledBelongsToAccountTrait
-                ? account_settings('currencies')
+            $this->enabledHasTenantTrait
+                ? tenant_settings('currencies')
                 : site_settings('currencies')
         ) ?? config('atom.currencies') ?? env('CURRENCIES');
 

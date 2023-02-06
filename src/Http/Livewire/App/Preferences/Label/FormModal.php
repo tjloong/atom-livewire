@@ -77,7 +77,7 @@ class FormModal extends Component
     {
         $this->label = data_get($data, 'id')
             ? model('label')
-                ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+                ->when(model('label')->enabledHasTenantTrait, fn($q) => $q->belongsToTenant())
                 ->findOrFail(data_get($data, 'id'))
             : model('label')->fill($data);
 

@@ -44,7 +44,7 @@ trait HasSlug
                     if (
                         DB::table($model->getTable())
                             ->where($to, $slug)
-                            ->when($model->enabledBelongsToAccountTrait, fn($q) => $q->where('account_id', $model->account_id))
+                            ->when($model->enabledHasTenantTrait, fn($q) => $q->where('tenant_id', $model->tenant_id))
                             ->count() > 0
                     ) {
                         $slug = $slug.'-'.strtolower(str()->random(5));

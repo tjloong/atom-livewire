@@ -43,10 +43,10 @@ class TaxFormModal extends Component
     {
         $this->tax = $id
             ? model('tax')
-                ->when(model('tax')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+                ->when(model('tax')->enabledHasTenantTrait, fn($q) => $q->belongsToTenant())
                 ->findOrFail($id)
             : model('tax')->fill([
-                'country' => optional(auth()->user()->account)->country,
+                'country' => optional(auth()->user()->pref)->country,
                 'is_active' => true,
             ]);
         

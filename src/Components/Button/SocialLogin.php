@@ -15,7 +15,7 @@ class SocialLogin extends Component
     public function __construct($size = 'sm')
     {
         $this->size = $size;
-        $this->providers = collect(config('atom.accounts.login'))
+        $this->providers = collect(config('atom.auth.login'))
             ->filter(function($provider) {
                 $clientId = site_settings($provider.'_client_id') ?? env(strtoupper($provider).'_CLIENT_ID');
                 $clientSecret = site_settings($provider.'_client_secret') ?? env(strtoupper($provider).'_CLIENT_SECRET');

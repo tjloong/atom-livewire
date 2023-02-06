@@ -68,7 +68,7 @@ trait HasTrace
      */
     public function ownedBy()
     {
-        return $this->belongsTo(get_class(model('user')), 'owned_by');
+        return $this->belongsTo(model('user'), 'owned_by');
     }
 
     /**
@@ -76,7 +76,7 @@ trait HasTrace
      */
     public function createdBy()
     {
-        return $this->belongsTo(get_class(model('user')), 'created_by');
+        return $this->belongsTo(model('user'), 'created_by');
     }
 
     /**
@@ -84,7 +84,7 @@ trait HasTrace
      */
     public function updatedBy()
     {
-        return $this->belongsTo(get_class(model('user')), 'updated_by');
+        return $this->belongsTo(model('user'), 'updated_by');
     }
 
     /**
@@ -92,7 +92,7 @@ trait HasTrace
      */
     public function deletedBy()
     {
-        return $this->belongsTo(get_class(model('user')), 'deleted_by');
+        return $this->belongsTo(model('user'), 'deleted_by');
     }
 
     /**
@@ -100,7 +100,7 @@ trait HasTrace
      */
     public function blockedBy()
     {
-        return $this->belongsTo(get_class(model('user')), 'blocked_by');
+        return $this->belongsTo(model('user'), 'blocked_by');
     }
 
     /**
@@ -116,9 +116,10 @@ trait HasTrace
      */
     public function block()
     {
-        $this->blocked_at = now();
-        $this->blocked_by = auth()->id();
-        $this->saveQuietly();
+        $this->fill([
+            'blocked_at' => now(),
+            'blocked_by' => user('id'),
+        ])->save();
     }
 
     /**
@@ -126,8 +127,9 @@ trait HasTrace
      */
     public function unblock()
     {
-        $this->blocked_at = null;
-        $this->blocked_by = null;
-        $this->saveQuietly();
+        $this->fill([
+            'blocked_at' => null,
+            'blocked_by' => null,
+        ])->save();
     }
 }

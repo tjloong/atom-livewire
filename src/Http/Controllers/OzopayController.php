@@ -13,12 +13,12 @@ class OzopayController extends Controller
     public function checkout()
     {
         $params = session('pay_request');
-        $keys = $this->getOzopayKeys(data_get($params, 'account_id'));
+        $keys = $this->getOzopayKeys(data_get($params, 'tenant_id'));
 
         // $metadata = [
         //     'job' => data_get($params, 'job'),
         //     'payment_id' => data_get($params, 'payment_id'),
-        //     'account_id' => data_get($params, 'account_id'),
+        //     'tenant_id' => data_get($params, 'tenant_id'),
         // ];
 
         $data = [
@@ -137,26 +137,26 @@ class OzopayController extends Controller
     /**
      * Get ozopay keys
      */
-    public function getOzopayKeys($accountId = null)
+    public function getOzopayKeys($tenantId = null)
     {
-        $account = $accountId ? model('account')->find($accountId) : null;
-        $settings = optional($account)->settings;
+        $tenant = $tenantId ? model('tenant')->find($tenantId) : null;
+        $settings = optional($tenant)->settings;
 
-        $tid = $account
+        $tid = $tenant
             ? data_get($settings, 'ozopay_tid') ?? data_get(optional($settings->ozopay), 'tid')
             : site_settings('ozopay_tid', env('OZOPAY_TID'));
 
-        $secret = $account
+        $secret = $tenant
             ? data_get($settings, 'ozopay_secret') ?? data_get(optional($settings->ozopay), 'secret')
             : site_settings('ozopay_secret', env('OZOPAY_SECRET'));
 
         if (app()->environment('production')) {
-            $url = $account
+            $url = $tenant
                 ? data_get($settings, 'ozopay_url') ?? data_get(optional($settings->ozopay), 'url')
                 : site_settings('ozopay_url', env('OZOPAY_URL'));
         }
         else {
-            $url = $account
+            $url = $tenant
                 ? data_get($settings, 'ozopay_sandbox_url') ?? data_get(optional($settings->ozopay), 'sandbox_url')
                 : site_settings('ozopay_sandbox_url', env('OZOPAY_SANDBOX_URL'));
         }

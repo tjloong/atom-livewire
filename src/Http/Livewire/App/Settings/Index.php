@@ -26,9 +26,7 @@ class Index extends Component
 
         if (!in_array($this->tab, [
             'login', 
-            'account/login',
             'password',
-            'account/password',
         ])) {
             $this->authorize('setting.manage');
         }
@@ -53,12 +51,12 @@ class Index extends Component
         $authorize = auth()->user()->can('setting.manage');
 
         $account = ['group' => 'Account', 'tabs' => [
-            ['slug' => 'account/login', 'label' => 'Login Information', 'icon' => 'arrow-right-to-bracket'],
-            ['slug' => 'account/password', 'label' => 'Change Password', 'icon' => 'lock'],
+            ['slug' => 'login', 'label' => 'Login Information', 'icon' => 'arrow-right-to-bracket'],
+            ['slug' => 'password', 'label' => 'Change Password', 'icon' => 'lock'],
         ]];
 
         $system = $authorize ? ['group' => 'System', 'tabs' => [
-            ['slug' => 'system/user', 'label' => 'Users', 'icon' => 'users'],
+            ['slug' => 'system/user', 'label' => 'Users', 'icon' => 'users', 'livewire' => 'app.user.listing'],
 
             enabled_module('roles')
                 ? ['slug' => 'system/role', 'label' => 'Roles', 'icon' => 'user-tag']
@@ -95,7 +93,7 @@ class Index extends Component
                 ? ['slug' => 'integration/payment', 'label' => 'Payment', 'icon' => 'money-bill']
                 : null,
 
-            count(config('atom.accounts.login'))
+            count(config('atom.auth.login'))
                 ? ['slug' => 'integration/social-login', 'label' => 'Social Login', 'icon' => 'login']
                 : null,
         ]] : null;

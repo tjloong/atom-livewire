@@ -33,8 +33,8 @@ class ProductModal extends Component
     {
         return model('product')
             ->when(
-                model('product')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('product')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->filter($this->filters)
             ->status('active')

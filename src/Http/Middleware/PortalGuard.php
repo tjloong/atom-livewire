@@ -21,9 +21,7 @@ class PortalGuard
         }
 
         if ($user = $request->user()) {
-            $status = data_get($user->account, 'status');
-
-            if ($status === 'blocked') {
+            if ($user->status === 'blocked') {
                 dd('Your account is blocked');
             }
             else {

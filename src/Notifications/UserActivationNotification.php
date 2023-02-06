@@ -2,14 +2,13 @@
 
 namespace Jiannius\Atom\Notifications;
 
-use App\Models\SiteSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Auth\Passwords\PasswordBroker;
 
-class ActivateAccountNotification extends Notification implements ShouldQueue
+class UserActivationNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

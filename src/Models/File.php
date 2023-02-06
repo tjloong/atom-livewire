@@ -162,6 +162,7 @@ class File extends Model
      */
     public function getTypeAttribute()
     {
+        if (!$this->mime) return;
         if ($this->mime === 'youtube') return $this->mime;
 
         $type = (explode('/', $this->mime))[1];

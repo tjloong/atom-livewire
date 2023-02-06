@@ -124,8 +124,8 @@ class Contact extends Component
     {
         return model('contact')
             ->when(
-                model('contact')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('contact')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->filter([
                 'type' => $this->type,

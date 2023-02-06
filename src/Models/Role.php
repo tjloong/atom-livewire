@@ -22,7 +22,7 @@ class Role extends Model
     {
         if (!enabled_module('permissions')) return;
 
-        return $this->hasMany(get_class(model('role_permission')));
+        return $this->hasMany(model('role_permission'));
     }
 
     /**
@@ -30,7 +30,7 @@ class Role extends Model
      */
     public function users()
     {
-        return $this->hasMany(get_class(model('user')));
+        return $this->hasMany(model('user'));
     }
 
     /**
@@ -39,6 +39,14 @@ class Role extends Model
     public function scopeSearch($query, $search)
     {
         return $query->where('name', 'like', "%$search%");
+    }
+
+    /**
+     * Scope for assignable
+     */
+    public function assignable($query)
+    {
+        return $query;
     }
 
     /**

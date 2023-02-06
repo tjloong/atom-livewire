@@ -29,8 +29,8 @@ class Split extends Component
     public function mount($documentId)
     {
         $this->document = model('document')->when(
-            model('document')->enabledBelongsToAccountTrait,
-            fn($q) => $q->belongsToAccount(),
+            model('document')->enabledHasTenantTrait,
+            fn($q) => $q->belongsToTenant(),
         )->findOrFail($documentId);
 
         $this->splits = collect();

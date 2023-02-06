@@ -96,8 +96,8 @@ class Index extends Component
             ]))
             ->toArray();
 
-        $this->settings = model('document')->enabledBelongsToAccountTrait
-            ? account_settings($this->document->type)
+        $this->settings = model('document')->enabledHasTenantTrait
+            ? tenant_settings($this->document->type)
             : site_settings('app.document.'.$this->document->type);
     }
 

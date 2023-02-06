@@ -14,8 +14,8 @@
             @if (
                 $salutations = model('label')
                     ->when(
-                        model('label')->enabledBelongsToAccountTrait,
-                        fn($q) => $q->belongsToAccount(),
+                        model('label')->enabledHasTenantTrait,
+                        fn($q) => $q->belongsToTenant(),
                     )
                     ->where('type', 'salutation')
                     ->get()

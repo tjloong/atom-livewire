@@ -25,12 +25,16 @@ class Td extends Component
         $this->tooltip = $tooltip;
 
         if (!is_null($label)) $this->label = $label;
-        else if (is_numeric($amount)) $this->label = currency($amount, $currency);
-        else if (!empty($percentage)) $this->label = number_format($percentage, 2).'%';
-        else if (is_numeric($count)) {
-            $this->label = $count 
+        else if (is_numeric($amount) || is_string($amount)) {
+            $this->label = is_numeric($amount)? currency($amount, $currency) : $amount;
+        }
+        else if (is_numeric($percentage) || is_string($percentage)) {
+            $this->label = is_numeric($percentage) ? number_format($percentage, 2).'%' : $percentage;
+        }
+        else if (is_numeric($count) || is_string($count)) {
+            $this->label = is_numeric($count)
                 ? implode(' ', array_filter([$count, $uom ? str($uom)->plural() : null]))
-                : null;
+                : $count;
         }
 
         if ($limit) {

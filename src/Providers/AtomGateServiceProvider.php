@@ -33,11 +33,11 @@ class AtomGateServiceProvider extends ServiceProvider
             $splits = explode('.', $permission);
             $module = $splits[0];
             $action = $splits[1] ?? null;
-            $actions = config('atom.app.permissions.'.$user->account->type.'.'.$module, []);
+            $actions = config('atom.app.permissions.'.$module, []);
             $isActionDefined = in_array($action, $actions);
 
             if (!$isActionDefined) return true;
-            if ($user->isAccountType('root')) return true;
+            if ($user->is_root) return true;
 
             if (enabled_module('roles')) {
                 return $user->permissions()->granted($permission)->count() > 0 || (

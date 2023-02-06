@@ -18,9 +18,10 @@ class Form extends Component
             'promotion.name' => 'required',
             'promotion.code' => [
                 'nullable',
-                model('promotion')->enabledBelongsToAccountTrait
-                ? Rule::unique('promotions', 'code')->ignore($this->promotion)->where(fn($q) => $q->where('id', $this->promotion->account_id))
-                : Rule::unique('promotions', 'code')->ignore($this->promotion),
+                model('promotion')->enabledHasTenantTrait
+                    ? Rule::unique('promotions', 'code')->ignore($this->promotion)
+                        ->where(fn($q) => $q->where('tenant_id', $this->promotion->tenant_id))
+                    : Rule::unique('promotions', 'code')->ignore($this->promotion),
             ],
             'promotion.type' => 'required',
             'promotion.rate' => 'required',

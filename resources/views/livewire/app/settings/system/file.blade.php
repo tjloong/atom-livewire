@@ -65,11 +65,11 @@
                 </x-form.file>
             </div>
 
-            <div class="p-4 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+            <div class="p-4 flex items-center justify-center gap-6 flex-wrap">
                 @forelse ($this->files as $file)
-                    <div wire:click="edit({{ $file->id }})" class="grid gap-1 cursor-pointer">
+                    <div wire:click="edit({{ $file->id }})" class="flex flex-col gap-1 cursor-pointer">
                         <div class="relative rounded-md overflow-hidden shadow">
-                            <x-thumbnail :file="$file"/>
+                            <x-thumbnail :file="$file" size="125"/>
 
                             @if (in_array($file->id, $selected) || $selected === 'full')
                                 <div class="absolute inset-0 bg-black/50"></div>
@@ -89,10 +89,8 @@
                             </div>
                         </div>
         
-                        <div class="grid">
-                            <div class="font-medium text-gray-500 px-1 truncate text-sm">
-                                {{ $file->name }}
-                            </div>
+                        <div class="font-medium text-gray-500 px-1 text-sm">
+                            {{ str($file->name)->limit(12) }}
                         </div>
                     </div>
                 @empty

@@ -2,6 +2,8 @@
     'icon' => $attributes->get('icon'),
     'label' => $attributes->get('label'),
     'count' => $attributes->get('count'),
+    'status' => $attributes->get('status'),
+    'statusColor' => $attributes->get('status-color'),
 ])
 
 @if ($attributes->get('disabled'))
@@ -67,6 +69,12 @@
             @else {{ $slot }}
             @endif
         </div>
+
+        @if ($status)
+            <div class="shrink-0">
+                <x-badge :label="$status" :color="$statusColor"/>
+            </div>
+        @endif
 
         @if ($count)
             <div class="shrink-0">

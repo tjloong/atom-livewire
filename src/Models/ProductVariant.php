@@ -49,13 +49,13 @@ class ProductVariant extends Model
             $code = str()->upper(str()->random(6));
             $dup = model('product')
                 ->when(
-                    model('product')->enabledBelongsToAccountTrait,
-                    fn($q) => $q->belongsToAccount()
+                    model('product')->enabledHasTenantTrait,
+                    fn($q) => $q->belongsToTenant()
                 )->where('code', $code)->count() > 0
                 || model('product_variant')
                     ->whereHas('product', fn($q) => $q->when(
-                        model('product')->enabledBelongsToAccountTrait,
-                        fn($q) => $q->belongsToAccount()    
+                        model('product')->enabledHasTenantTrait,
+                        fn($q) => $q->belongsToTenant()    
                     ))
                     ->where('code', $code)->count() > 0;
         }

@@ -58,8 +58,8 @@ class Listing extends Component
     {
         return model('document')
             ->when(
-                model('document')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('document')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->when(
                 $this->contact,

@@ -4,11 +4,9 @@ namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
-    use WithPagination;
     use WithTable;
 
     public $sortBy = 'created_at';
@@ -45,7 +43,31 @@ class Listing extends Component
      */
     public function getEnquiriesProperty()
     {
-        return $this->query->paginate($this->maxRows);
+        return $this->query->paginate($this->maxRows)->through(fn($enquiry) => [
+            [
+                'column_name' => 'Date',
+                'column_sort' => 'created_at',
+                'date' => $enquiry->created_at,
+            ],
+            [
+                'column_name' => 'Name',
+                'column_sort' => 'name',
+                'label' => $enquiry->name,
+                'href' => route('app.enquiry.update', [$enquiry->id]),
+            ],
+            [
+                'column_name' => 'Phone',
+                'label' => $enquiry->phone,
+            ],
+            [
+                'column_name' => 'Email',
+                'label' => $enquiry->email,
+            ],
+            [
+                'column_name' => 'Status',
+                'status' => $enquiry->status,
+            ],
+        ]);
     }
 
     /**

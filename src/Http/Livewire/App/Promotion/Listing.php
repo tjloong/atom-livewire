@@ -42,7 +42,7 @@ class Listing extends Component
     public function getPromotionsProperty()
     {
         return model('promotion')
-            ->when(model('promotion')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+            ->when(model('promotion')->enabledHasTenantTrait, fn($q) => $q->belongsToTenant())
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate($this->maxRows);

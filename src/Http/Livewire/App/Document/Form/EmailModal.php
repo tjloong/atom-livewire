@@ -45,8 +45,8 @@ class EmailModal extends Component
      */
     public function setEmail()
     {
-        $settings = model('document')->enabledBelongsToAccountTrait
-            ? account_settings($this->document->type.'.email')
+        $settings = model('document')->enabledHasTenantTrait
+            ? tenant_settings($this->document->type.'.email')
             : site_settings('app.document.'.$this->document->type.'.email');
 
         $this->email = [
@@ -78,8 +78,8 @@ class EmailModal extends Component
             ->replace('{bill_number}', $this->document->number)
             ->replace('{client_name}', optional($this->document->contact)->name)
             ->replace('{client_email}', optional($this->document->contact)->email)
-            ->replace('{company_name}', auth()->user()->account->name)
-            ->replace('{company_email}', auth()->user()->account->email)
+            ->replace('{company_name}', auth()->user()->tenant->name)
+            ->replace('{company_email}', auth()->user()->tenant->email)
             ->toString();
     }
 

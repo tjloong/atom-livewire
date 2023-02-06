@@ -6,8 +6,8 @@
     :options="
         model('label')
             ->when(
-                model('label')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount()
+                model('label')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant()
             )
             ->when($type, fn($q) => $q->where('type', $type))
             ->oldest('seq')

@@ -15,8 +15,8 @@ class Update extends Component
     {
         $this->variant = model('product_variant')
             ->when(
-                model('product')->enabledBelongsToAccountTrait,
-                fn($q) => $q->whereHas('product', fn($q) => $q->belongsToAccount())
+                model('product')->enabledHasTenantTrait,
+                fn($q) => $q->whereHas('product', fn($q) => $q->belongsToTenant())
             )
             ->findOrFail($variantId);
 

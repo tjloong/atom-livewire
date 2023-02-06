@@ -44,7 +44,6 @@ class Login extends Component
             ->where('email', $this->email)
             ->whereNotNull('activated_at')
             ->whereNull('blocked_at')
-            ->whereHas('account', fn($q) => $q->whereNull('blocked_at'))
             ->first();
 
         if ($user) {
@@ -125,7 +124,7 @@ class Login extends Component
      */
     private function redirectTo($user)
     {
-        if ($user->isAccountType('signup') && $user->account->status === 'new') {
+        if ($user->status === 'new') {
             return route('app.onboarding.home');
         }
 

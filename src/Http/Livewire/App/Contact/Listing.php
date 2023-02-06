@@ -35,8 +35,8 @@ class Listing extends Component
     {
         return model('contact')
             ->when(
-                model('contact')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('contact')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->where('type', $this->type)
             ->filter($this->filters)

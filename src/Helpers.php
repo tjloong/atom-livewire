@@ -207,17 +207,17 @@ function breadcrumbs()
 }
 
 /**
- * Account settings
+ * Tenant settings
  */
-function account_settings($name, $default = null)
+function tenant_settings($name, $default = null)
 {
     if (
         config('atom.static_site')
         || !auth()->user()
-        || !auth()->user()->account
+        || !auth()->user()->tenant
     ) return $default;
 
-    $settings = auth()->user()->account->settings;
+    $settings = auth()->user()->tenant->settings;
 
     if (is_string($name)) {
         $col = head(explode('.', $name));
@@ -518,17 +518,26 @@ function uncurrency($string)
 }
 
 /**
- * Get timezone
+ * Get authenticated user
  */
-function timezone()
+function user($attr = null)
 {
-    if ($account = optional(auth()->user())->account) {
-        if ($tz = $account->settings->timezone ?? null) {
-            return $tz;
-        }
-    }
+    $user = auth()->user();
+    if (!$user) return;
+    if (!$attr) return $user;
 
-    return config('atom.timezone');
+    if (
+        str($attr)->is('signup') 
+        || str($attr)->is('signup.*')
+        || str($attr)->is('pref') 
+        || str($attr)->is('pref.*')
+    ) {
+        $value = data_get($user, 'data.'.$attr);
+
+        if ($attr === 'pref.timezone' && !$value) return config('atom.timezone');
+        else return $value ? json_decode(json_encode($value), true) : null;
+    }
+    else if ($attr) return data_get($user, $attr);
 }
 
 /**
@@ -573,11 +582,14 @@ function format_address($value)
  */
 function format_date($date, $format = 'date', $tz = null)
 {
-    $tz = $tz ?? timezone();
-
     if (!$date) return $date;
-    if (!$date instanceof Carbon) $date = Carbon::parse($date);
 
+    if (!$date instanceof Carbon) {
+        if (validator(['date_value' => $date], ['date_value' => 'date'])->fails()) return $date;
+        $date = Carbon::parse($date);
+    }
+
+    $tz = $tz ?? user('pref.timezone') ?? config('atom.timezone');
     $date = $date->timezone($tz);
 
     if ($format === 'carbon') return $date;

@@ -20,8 +20,8 @@ class Create extends Component
         $this->authorize('document-payment.create');
 
         $this->document = model('document')->when(
-            model('document')->enabledBelongsToAccountTrait,
-            fn($q) => $q->belongsToAccount(),
+            model('document')->enabledHasTenantTrait,
+            fn($q) => $q->belongsToTenant(),
         )->findOrFail($documentId);
 
         $this->payment = model('document-payment')->fill([

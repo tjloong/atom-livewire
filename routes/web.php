@@ -67,6 +67,32 @@ if (!config('atom.static_site')) {
         define_route('dashboard', 'App\Dashboard')->name('app.dashboard');
 
         /**
+         * Users
+         */
+        define_route()->prefix('user')->as('app.user.')->group(function() {
+            define_route('create', 'App\User\Create')->name('create');
+            define_route('{userId}', 'App\User\Update')->name('update');
+        });
+
+        if (config('atom.auth.register')) {
+            /**
+             * Sign-Ups
+             */
+            define_route()->prefix('signup')->as('app.signup.')->group(function() {
+                define_route('listing', 'App\Signup\Listing')->name('listing');
+                define_route('{userId}/{tab?}', 'App\Signup\View')->name('view');
+            });
+
+            /**
+             * Onboarding
+             */
+            define_route()->prefix('onboarding')->as('app.onboarding.')->group(function() {
+                define_route('/', 'App\Onboarding\Index')->name('home');
+                define_route('completed', 'App\Onboarding\Completed')->name('completed');
+            });
+        }
+
+        /**
          * Blogs
          */
         if (enabled_module('blogs')) {
@@ -94,26 +120,6 @@ if (!config('atom.static_site')) {
             define_route()->prefix('page')->as('app.page.')->group(function () {
                 define_route('listing',  'App\Page\Listing')->name('listing');
                 define_route('{page}', 'App\Page\Update')->name('update');
-            });
-        }
-
-        /**
-         * Accounts
-         */
-        if (config('atom.accounts.register')) {
-            define_route()->prefix('account')->as('app.account.')->group(function() {
-                define_route('listing', 'App\Account\Listing')->name('listing');
-                define_route('{accountId}', 'App\Account\Update')->name('update');
-            });
-        }
-
-        /**
-         * Onboarding
-         */
-        if (config('atom.accounts.register')) {
-            define_route()->prefix('onboarding')->as('app.onboarding.')->group(function() {
-                define_route('/', 'App\Onboarding\Index')->name('home');
-                define_route('completed', 'App\Onboarding\Completed')->name('completed');
             });
         }
 

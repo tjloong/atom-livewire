@@ -126,7 +126,7 @@
 
                 let opt = {
                     value: val.value || val.id || val.code,
-                    label: val.label || val.name || val.title,
+                    label: val.label || val.name || val.title || val.value || val.id || val.code,
                     small: val.small || val.description || val.caption,
                     isGroup: val.hasOwnProperty('subs') || val.hasOwnProperty('children'),
                 }

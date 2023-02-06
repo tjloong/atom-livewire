@@ -43,8 +43,8 @@ class Form extends Component
      */
     public function getPaymodesProperty()
     {
-        return model('document')->enabledBelongsToAccountTrait
-            ? account_settings('paymodes', ['Cash'])
+        return model('document')->enabledHasTenantTrait
+            ? tenant_settings('paymodes', ['Cash'])
             : site_settings('paymodes', ['Cash']);
     }
 

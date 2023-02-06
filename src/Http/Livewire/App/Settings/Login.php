@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\Account;
+namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
 use Livewire\Component;
 use Illuminate\Validation\Rule;
@@ -66,6 +66,6 @@ class Login extends Component
      */
     public function render()
     {
-        return atom_view('app.settings.account.login');
+        return atom_view('app.settings.login');
     }
 }

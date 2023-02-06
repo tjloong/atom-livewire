@@ -16,7 +16,7 @@ class Update extends Component
     public function mount($promotion)
     {
         $this->promotion = model('promotion')
-            ->when(model('promotion')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+            ->when(model('promotion')->enabledHasTenantTrait, fn($q) => $q->belongsToTenant())
             ->findOrFail($promotion);
 
         breadcrumbs()->push($this->promotion->name);

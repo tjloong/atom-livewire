@@ -116,34 +116,29 @@ class Register extends Component
      */
     public function createUser($inputs)
     {
-        $account = model('account')->create([
-            'type' => 'signup',
-            'name' => data_get($inputs, 'name'),
-            'email' => data_get($inputs, 'email'),
-            'agree_tnc' => data_get($inputs, 'agree_tnc'),
-            'agree_marketing' => data_get($inputs, 'agree_marketing'),
-            'data' => [
-                'register_geo' => geoip()->getLocation()->toArray(),
-                'register_channel' => $this->ref,
-            ],
-        ]);
-
-        $account->settings()->create([
-            'timezone' => config('atom.timezone'), 
-            'locale' => head(config('atom.locales', [])) ?? null,
-        ]);
-
-        $user = $account->users()->create([
+        $user = model('user')->create([
             'name' => data_get($inputs, 'name'),
             'email' => data_get($inputs, 'email'),
             'password' => bcrypt(data_get($inputs, 'password')),
-            'data' => data_get($inputs, 'data'),
+            'data' => array_merge(data_get($inputs, 'data'), [
+                'signup' => [
+                    'geo' => geoip()->getLocation()->toArray(),
+                    'channel' => $this->ref,
+                    'agree_tnc' => data_get($inputs, 'agree_tnc'),
+                    'agree_marketing' => data_get($inputs, 'agree_marketing'),
+                ],
+                'pref' => [
+                    'timezone' => config('atom.timezone'), 
+                    'locale' => head(config('atom.locales', [])) ?? null,
+                ],
+            ]),
             'email_verified_at' => data_get($inputs, 'email_verified_at'),
             'activated_at' => now(),
+            'signup_at' => now(),
             'login_at' => now(),
         ]);
 
-        if (config('atom.accounts.verify') && !data_get($inputs, 'email_verified_at')) {
+        if (config('atom.auth.verify') && !data_get($inputs, 'email_verified_at')) {
             $user->sendEmailVerificationNotification();
         }
 

@@ -17,8 +17,8 @@ trait HasVisibility
 
         if (!config('atom.app.user.data_visibility')) return $query;
         
-        if ($user->isAccountType('root') || $user->isRole('admin') || $user->visibility === 'global') {
-            if ($this->enabledBelongsToAccountTrait) return $query->where('account_id', $user->account_id);
+        if ($user->is_root || $user->isRole('admin') || $user->visibility === 'global') {
+            if ($this->enabledHasTenantTrait) return $query->where('tenant_id', $user->tenant_id);
             else return $query;
         }
 

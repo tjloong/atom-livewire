@@ -29,10 +29,7 @@
         </div>
 
         <div class="md:w-3/4">
-            @livewire($livewire, [
-                'tab' => $tab,
-                'account' => auth()->user()->account,
-            ], key($tab))
+            @livewire($livewire, key($tab))
         </div>
     </div>
 </div>

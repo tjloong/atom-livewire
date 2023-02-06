@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\Account;
+namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
 use Illuminate\Auth\Events\PasswordReset;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
@@ -66,6 +66,6 @@ class Password extends Component
      */
     public function render()
     {
-        return atom_view('app.settings.account.password');
+        return atom_view('app.settings.password');
     }
 }

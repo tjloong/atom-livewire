@@ -23,7 +23,7 @@ class Team extends Component
     public function getTeamsProperty()
     {
         return model('team')
-            ->belongsToAccount()
+            ->belongsToTenant()
             ->withCount('users')
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)

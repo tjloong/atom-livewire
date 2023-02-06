@@ -45,8 +45,8 @@ class Info extends Component
     {
         return model('document')
             ->when(
-                model('document')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('document')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->where(fn($q) => $q
                 ->when($search, fn($q) => $q->filter(['search' => $search]))

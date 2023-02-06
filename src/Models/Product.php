@@ -86,8 +86,8 @@ class Product extends Model
             $code = str()->upper(str()->random(6));
             $dup = model('product')
                 ->when(
-                    $this->enabledBelongsToAccountTrait, 
-                    fn($q) => $q->belongsToAccount()
+                    $this->enabledHasTenantTrait, 
+                    fn($q) => $q->belongsToTenant()
                 )
                 ->where('code', $code)
                 ->count() > 0;

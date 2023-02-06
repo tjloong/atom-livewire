@@ -18,7 +18,7 @@ class Team extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(get_class(model('user')), 'team_users');
+        return $this->belongsToMany(model('user'), 'team_users');
     }
 
     /**
@@ -30,5 +30,13 @@ class Team extends Model
             ->where('name', 'like', "%$search%")
             ->orWhereHas('users', fn($q) => $q->search($search))
         );
+    }
+
+    /**
+     * Scope for assignable
+     */
+    public function assignable($query)
+    {
+        return $query;
     }
 }

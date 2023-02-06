@@ -43,7 +43,7 @@ class Listing extends Component
         return model('ticket')
             ->selectRaw('tickets.*, if (tickets.status = "new", 0, 1) as seq')
             ->when(
-                !auth()->user()->isAccountType('root'), 
+                !auth()->user()->is_root, 
                 fn($q) => $q->where('created_by', auth()->user()->id)
             )
             ->filter($this->filters)
@@ -80,12 +80,10 @@ class Listing extends Component
                     'column_sort' => 'status',
                     'status' => $ticket->status,
                 ],
-                auth()->user()->isAccountType('root')
-                    ? [
-                        'column_name' => 'Created By',
-                        'label' => str(optional($ticket->createdBy)->name)->limit(15),
-                    ]
-                    : null,
+                auth()->user()->is_root ? [
+                    'column_name' => 'Created By',
+                    'label' => str(optional($ticket->createdBy)->name)->limit(15),
+                ] : null,
             ]));
     }
 

@@ -30,8 +30,8 @@ class File extends Component
     {
         return model('file')
             ->when(
-                model('file')->enabledBelongsToAccount,
-                fn($q) => $q->belongsToAccount(),
+                model('file')->enabledbelongsToTenant,
+                fn($q) => $q->belongsToTenant(),
             )
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)

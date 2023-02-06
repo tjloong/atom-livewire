@@ -250,7 +250,7 @@ class Document extends Model
     public function setPrefixAndPostfix()
     {
         $prefix = str(
-            account_settings($this->type.'.prefix')
+            tenant_settings($this->type.'.prefix')
             ?? data_get($this->numberPrefix, $this->type)
             ?? null
         )
@@ -261,8 +261,8 @@ class Document extends Model
 
         $query = model('document')
             ->when(
-                model('document')->enabledBelongsToAccountTrait,
-                fn($q) => $q->where('account_id', $this->account_id),
+                model('document')->enabledHasTenantTrait,
+                fn($q) => $q->where('tenant_id', $this->tenant_id),
             )
             ->where('type', $this->type)
             ->whereNull('rev');

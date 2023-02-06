@@ -2,8 +2,8 @@
 
 namespace Jiannius\Atom\Models;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -13,12 +13,10 @@ use Laravel\Sanctum\HasApiTokens;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasVisibility;
-use Jiannius\Atom\Notifications\ActivateAccountNotification;
-use Jiannius\Atom\Traits\Models\BelongsToAccount;
+use Jiannius\Atom\Notifications\UserActivationNotification;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use BelongsToAccount;
     use HasApiTokens;
     use HasFactory;
     use HasFilters;
@@ -33,6 +31,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $casts = [
         'data' => 'object',
+        'is_root' => 'boolean',
+        'signup_at' => 'datetime',
+        'onboarded_at' => 'datetime',
         'activated_at' => 'datetime',
         'login_at' => 'datetime',
         'last_active_at' => 'datetime',
@@ -48,25 +49,20 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         parent::boot();
 
+        static::saving(function($user) {
+            $user->status = $user->generateStatus();
+        });
+
         static::created(function($user) {
-            $user->sendAccountActivation();
+            $user->sendActivation();
         });
 
         static::updated(function($user) {
-            if ($user->isDirty('email') && config('atom.accounts.verify')) {
+            if ($user->isDirty('email') && config('atom.auth.verify')) {
                 $user->fill(['email_verified_at' => null])->saveQuietly();
                 $user->sendEmailVerificationNotification();
             }
         });
-    }
-
-    /**
-     * Get user home
-     */
-    public function home()
-    {
-        if ($this->isAccountType('signup')) return '/';
-        else return route('app.home');
     }
 
     /**
@@ -76,7 +72,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('roles')) return;
 
-        return $this->belongsTo(get_class(model('role')));
+        return $this->belongsTo(model('role'));
     }
 
     /**
@@ -86,7 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('permissions')) return;
 
-        return $this->hasMany(get_class(model('user_permission')));
+        return $this->hasMany(model('user_permission'));
     }
     
     /**
@@ -96,7 +92,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('teams')) return;
 
-        return $this->belongsToMany(get_class(model('team')), 'team_users');
+        return $this->belongsToMany(model('team'), 'team_users');
     }
 
     /**
@@ -107,7 +103,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
-            ->orWhereHas('account', fn($q) => $q->search($search))
+            ->orWhere('data->signup->channel', $search)
         );
     }
 
@@ -136,48 +132,46 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope for status
      */
-    public function scopeStatus($query, $statuses)
+    public function scopeStatus($query, $status)
     {
-        $statuses = (array)$statuses;
-
-        if (in_array('trashed', $statuses)) $query->onlyTrashed();
-
-        return $query->where(function ($q) use ($statuses) { 
-            foreach ($statuses as $status) {
-                if ($status === 'blocked') $q->orWhere(fn($q) => $q->whereNotNull('blocked_at')->whereRaw('blocked_at <= now()'));
-                else if ($status === 'inactive') $q->orWhere(fn($q) => $q->whereNull('activated_at')->orWhereRaw('activated_at > now()'));
-                else if ($status === 'active') {
-                    $q->orWhere(fn($q) => 
-                        $q
-                        ->where(fn($q) => $q->whereNull('deleted_at')->orWhereRaw('deleted_at > now()'))
-                        ->where(fn($q) => $q->whereNull('blocked_at')->orWhereRaw('blocked_at > now()'))
-                        ->whereRaw('activated_at <= now()')
-                    );
-                }
-            }
-        });
+        return $query->withTrashed()->whereIn('status', (array)$status);
     }
 
     /**
-     * Get status attribute
+     * Scope for tier
      */
-    public function getStatusAttribute()
+    public function scopeTier($query, $tier = null)
     {
-        if ($this->trashed()) return 'trashed';
-        if ($this->blocked()) return 'blocked';
+        $tier = $tier ?? user()->tier;
         
-        if ($this->activated_at) return 'active';
-        else return 'inactive';
+        if ($tier === 'root') return $query->where('is_root', true);
+        if ($tier === 'signup') return $query->whereNotNull('signup_at');
     }
 
     /**
-     * Check user is account type
+     * Get tier attribute
      */
-    public function isAccountType($type)
+    public function getTierAttribute()
     {
-        if (!$this->account) return false;
+        if ($this->is_root) return 'root';
+        if ($this->signup_at) return 'signup';
+    }
 
-        return in_array($this->account->type, (array)$type);
+    /**
+     * Get user home
+     */
+    public function home()
+    {
+        if ($this->isTier('signup')) return '/';
+        else return route('app.home');
+    }
+
+    /**
+     * Check user tier
+     */
+    public function isTier($tier)
+    {
+        return in_array($this->tier, (array)$tier);
     }
 
     /**
@@ -200,10 +194,10 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Invite user to activate account
      */
-    public function sendAccountActivation()
+    public function sendActivation()
     {
         if ($this->status === 'inactive') {
-            $this->notify(new ActivateAccountNotification());
+            $this->notify(new UserActivationNotification());
         }
     }
 
@@ -219,6 +213,23 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Generate status
+     */
+    public function generateStatus()
+    {
+        if ($this->trashed()) return 'trashed';
+        if ($this->blocked()) return 'blocked';
+
+        if ($this->isTier('signup')) {
+            if ($this->onboarded_at) return 'onboarded';
+            if ($this->signup_at) return 'new';
+        }
+        else if ($this->activated_at) return 'active';
+        
+        return 'inactive';
+    }
+
+    /**
      * Check user can access portal
      */
     public function canAccessPortal($portal)
@@ -229,39 +240,9 @@ class User extends Authenticatable implements MustVerifyEmail
                 'app.ticketing.*', 
                 'app.billing.*',
                 'app.onboarding.*',
-            ]) || in_array($this->account->type, ['root', 'system']);
+            ]) || $this->isTier('root');
         }
 
         return true;
-    }
-
-    /**
-     * Get user validation rules and messages
-     */
-    public function getValidation()
-    {
-        $validation = (object)[
-            'rules' => [
-                'user.name' => 'required',
-                'user.email' => [
-                    'required',
-                    'email',
-                    Rule::unique('users', 'email')->ignore($this),
-                ],
-                'user.visibility' => 'nullable',
-                'user.activated_at' => 'nullable',
-                'user.account_id' => 'nullable',    
-            ],
-            'messages' => [
-                'user.name.required' => __('Name is required.'),
-                'user.email.required' => __('Login email is required.'),
-                'user.email.email' => __('Invalid email address.'),
-                'user.email.unique' => __('Login email is already taken.'),    
-            ],
-        ];
-
-        if (enabled_module('roles')) $validation->rules['role_id'] = 'nullable';
-
-        return $validation;
     }
 }

@@ -25,8 +25,8 @@ class TeamFormModal extends Component
                 'required',
                 Rule::unique('teams', 'name')
                     ->when(
-                        Schema::hasColumn('teams', 'account_id'),
-                        fn($q) => $q->where('account_id', $this->team->account_id ?? auth()->user()->account_id)
+                        model('team')->enabledHasTenantTrait,
+                        fn($q) => $q->where('tenant_id', $this->team->tenant_id ?? auth()->user()->tenant_id)
                     )
                     ->ignore($this->team->id),
             ],

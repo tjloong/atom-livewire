@@ -1084,169 +1084,42 @@ class InstallCommand extends Command
 
         Schema::table('users', function ($table) {
             $table->string('password')->nullable()->change();
+            $table->timestamp('last_active_at')->nullable()->after('remember_token');
+            $table->timestamp('login_at')->nullable()->after('remember_token');
+            $table->timestamp('activated_at')->nullable()->after('remember_token');
+            $table->timestamp('onboarded_at')->nullable()->after('remember_token');
+            $table->timestamp('signup_at')->nullable()->after('remember_token');
+            $table->boolean('is_root')->nullable()->after('remember_token');
+            $table->string('status')->nullable()->after('remember_token');
+            $table->string('visibility')->nullable()->after('remember_token');
+            $table->json('data')->nullable()->after('remember_token');
+            $table->timestamp('blocked_at')->nullable();
+            $table->timestamp('deleted_at')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
         });
-        $this->line('Made password column in users table nullable.');
 
-        if (Schema::hasColumn('users', 'last_active_at')) $this->warn('users table already has last_active_at column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->timestamp('last_active_at')->nullable()->after('remember_token');
-            });
-            $this->line('Added last_active_at column to users table.');
-        }
+        $this->line('users table installed successfully.');
 
-        if (Schema::hasColumn('users', 'login_at')) $this->warn('users table already has login_at column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->timestamp('login_at')->nullable()->after('remember_token');
-            });
-            $this->line('Added login_at column to users table.');
-        }
-
-        if (Schema::hasColumn('users', 'activated_at')) $this->warn('users table already has activated_at column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->timestamp('activated_at')->nullable()->after('remember_token');
-            });
-            $this->line('Added activated_at column to users table.');
-        }
-
-        if (Schema::hasColumn('users', 'account_id')) $this->warn('users table already has account_id column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->foreignId('account_id')->nullable()->after('remember_token');
-                $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
-            });
-            $this->line('Added account_id column to users table.');
-        }
-
-        if (Schema::hasColumn('users', 'visibility')) $this->warn('users table already has visibility column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->string('visibility')->nullable()->after('remember_token');
-            });
-            $this->line('Added visibility column to users table.');
-        }
-
-        if (Schema::hasColumn('users', 'data')) $this->warn('users table already has data column, skipped.');
-        else {
-            Schema::table('users', function($table) {
-                $table->json('data')->nullable()->after('remember_token');
-            });
-            $this->line('Added data column to users table.');
-        }
-
-        if (Schema::hasColumn('users', 'blocked_at')) $this->warn('users table already has blocked_at column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->timestamp('blocked_at')->nullable();
-            });
-            $this->line('Added blocked_at column to users table.');
-        }
-
-        if (Schema::hasColumn('users', 'deleted_at')) $this->warn('users table already has deleted_at column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->timestamp('deleted_at')->nullable();
-            });
-            $this->line('Added deleted_at column to users table.');
-        }
-        
-        if (Schema::hasColumn('users', 'created_by')) $this->warn('users table already has created_by column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->foreignId('created_by')->nullable();
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
-            });
-            $this->line('Added created_by column to users table.');
-        }
-        
-        if (Schema::hasColumn('users', 'blocked_by')) $this->warn('users table already has blocked_by column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->foreignId('blocked_by')->nullable();
-                $table->foreign('blocked_by')->references('id')->on('users')->onDelete('set null');
-            });
-            $this->line('Added blocked_by column to users table.');
-        }
-        
-        if (Schema::hasColumn('users', 'deleted_by')) $this->warn('users table already has deleted_by column, skipped.');
-        else {
-            Schema::table('users', function ($table) {
-                $table->foreignId('deleted_by')->nullable();
-                $table->foreign('deleted_by')->references('id')->on('users')->onDelete('set null');
-            });
-            $this->line('Added deleted_by column to users table.');
-        }
-        
         // create root user
         $rootEmail = 'root@jiannius.com';
         if (DB::table('users')->where('email', $rootEmail)->count()) $this->warn('Root user exists, skipped.');
         else {
-            $accountId = DB::table('accounts')->insert([
-                'type' => 'root',
-                'name' => 'Root',
-                'email' => $rootEmail,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
             DB::table('users')->insert([
                 'name' => 'Root',
                 'email' => $rootEmail,
                 'password' => bcrypt('password'),
                 'visibility' => 'global',
-                'account_id' => $accountId,
+                'status' => 'active',
+                'is_root' => true,
                 'email_verified_at' => now(),
                 'activated_at' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
             $this->line('Added Root user.');
-        }
-    }
-
-    /**
-     * Install accounts
-     */
-    private function installAccounts()
-    {
-        $this->newLine();
-        $this->info('Installing accounts module...');
-
-        if (Schema::hasTable('accounts')) $this->warn('accounts table exists, skipped.');
-        else {
-            Schema::create('accounts', function($table) {
-                $table->id();
-                $table->string('type');
-                $table->string('name')->nullable();
-                $table->string('email')->nullable();
-                $table->string('phone')->nullable();
-                $table->json('data')->nullable();
-                $table->boolean('agree_tnc')->nullable();
-                $table->boolean('agree_marketing')->nullable();
-                $table->timestamp('onboarded_at')->nullable();
-                $table->timestamps();
-                $table->timestamp('deleted_at')->nullable();
-                $table->timestamp('blocked_at')->nullable();
-                $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
-                $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-
-            $this->line('accounts table created successfully.');
-        }
-
-        if (Schema::hasTable('account_settings')) $this->warn('account_settings table exists, skipped.');
-        else {
-            Schema::create('account_settings', function($table) {
-                $table->id();
-                $table->string('timezone')->nullable();
-                $table->string('locale')->nullable();
-                $table->foreignId('account_id')->constrained()->onDelete('cascade');
-                $table->timestamps();
-            });
-
-            $this->line('account_settings table created successfully.');
         }
     }
 
@@ -1266,7 +1139,6 @@ class InstallCommand extends Command
         ]);
 
         $this->removeLaravelInstalltionFiles();
-        $this->installAccounts();
         $this->installUsers();
         $this->installLabels();
         $this->installFiles();

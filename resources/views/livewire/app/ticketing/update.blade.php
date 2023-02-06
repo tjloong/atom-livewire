@@ -24,7 +24,7 @@
                         || (
                             !enabled_module('roles') 
                             && !enabled_module('permissions') 
-                            && auth()->user()->isAccountType(['root', 'system'])
+                            && auth()->user()->is_root
                         )
                     )
                         <x-dropdown>

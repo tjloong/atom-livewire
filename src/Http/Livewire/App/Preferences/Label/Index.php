@@ -38,7 +38,7 @@ class Index extends Component
     {
         return model('label')
             ->with('children')
-            ->when(model('label')->enabledBelongsToAccountTrait, fn($q) => $q->belongsToAccount())
+            ->when(model('label')->enabledHasTenantTrait, fn($q) => $q->belongsToTenant())
             ->when($this->type, fn($q) => $q->where('type', $this->type))
             ->whereNull('parent_id')
             ->oldest('seq')

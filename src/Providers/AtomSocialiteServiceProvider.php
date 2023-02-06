@@ -26,7 +26,7 @@ class AtomSocialiteServiceProvider extends ServiceProvider
         if (config('atom.static_site')) return;
         if ($this->app->runningInConsole()) return;
 
-        foreach (config('atom.accounts.login', []) as $provider) {
+        foreach (config('atom.auth.login', []) as $provider) {
             $clientId = site_settings($provider.'_client_id');
             $clientSecret = site_settings($provider.'_client_secret');
 

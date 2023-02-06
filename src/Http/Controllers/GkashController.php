@@ -13,12 +13,12 @@ class GkashController extends Controller
     public function checkout()
     {
         $params = session('pay_request');
-        $keys = $this->getGkashKeys(data_get($params, 'account_id'));
+        $keys = $this->getGkashKeys(data_get($params, 'tenant_id'));
         
         $metadata = [
             'job' => data_get($params, 'job'), 
             'payment_id' => data_get($params, 'payment_id'),
-            'account_id' => data_get($params, 'account_id'),
+            'tenant_id' => data_get($params, 'tenant_id'),
         ];
 
         $paymode = [
@@ -52,7 +52,7 @@ class GkashController extends Controller
     public function redirect()
     {
         $params = request()->query();
-        $keys = $this->getGkashKeys(data_get($params, 'account_id'));
+        $keys = $this->getGkashKeys(data_get($params, 'tenant_id'));
         $this->verifyGkashResponse(request()->all(), $keys);
 
         if ($jobhandler = $this->getJobHandler()) {
@@ -70,7 +70,7 @@ class GkashController extends Controller
     public function webhook()
     {
         $params = request()->query();
-        $keys = $this->getGkashKeys(data_get($params, 'account_id'));
+        $keys = $this->getGkashKeys(data_get($params, 'tenant_id'));
         $this->verifyGkashResponse(request()->all(), $keys);
 
         if ($jobhandler = $this->getJobHandler()) {
@@ -126,30 +126,30 @@ class GkashController extends Controller
     /**
      * Get gkash keys
      */
-    public function getGkashKeys($accountId = null)
+    public function getGkashKeys($tenantId = null)
     {
-        $account = $accountId ? model('account')->find($accountId) : null;
-        $settings = optional($account)->settings;
+        $tenant = $tenantId ? model('tenant')->find($tenantId) : null;
+        $settings = optional($tenant)->settings;
 
-        $mid = $account
+        $mid = $tenant
             ? data_get($settings, 'gkash_mid') ?? data_get(optional($settings->gkash), 'mid')
             : site_settings('gkash_mid', env('GKASH_MID'));
 
-        $sk = $account
+        $sk = $tenant
             ? data_get($settings, 'gkash_signature_key') ?? data_get(optional($settings->gkash), 'signature_key')
             : site_settings('gkash_signature_key', env('GKASH_SIGNATURE_KEY'));
 
-        $version = $account
+        $version = $tenant
             ? data_get($settings, 'gkash_api_version') ?? data_get(optional($settings->gkash), 'api_version')
             : site_settings('gkash_api_version', env('GKASH_API_VERSION'));
 
         if (app()->environment('production')) {
-            $url = $account
+            $url = $tenant
                 ? data_get($settings, 'gkash_url') ?? data_get(optional($settings->gkash), 'url')
                 : site_settings('gkash_url', env('GKASH_URL'));
         }
         else {
-            $url = $account
+            $url = $tenant
                 ? data_get($settings, 'gkash_sandbox_url') ?? data_get(optional($settings->gkash), 'sandbox_url')
                 : site_settings('gkash_sandbox_url', env('GKASH_SANDBOX_URL'));
         }

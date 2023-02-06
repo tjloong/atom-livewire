@@ -15,7 +15,7 @@ class PaymentGateway extends Component
     public function __construct(
         $value = [],
         $logos = [],
-        $account = null,
+        $tenant = null,
     ) {
         $this->value = $value;
 
@@ -29,7 +29,7 @@ class PaymentGateway extends Component
         $this->providers = collect(config('atom.payment_gateway'))
             ->map(fn($provider) => [
                 'name' => $provider,
-                'keys' => $this->{'get'.str()->headline($provider).'Keys'}($account),
+                'keys' => $this->{'get'.str()->headline($provider).'Keys'}($tenant),
                 'logos' => data_get($logos, $provider, []),
             ])
             ->filter(fn($provider) => !empty(data_get($provider, 'keys')));
@@ -39,10 +39,10 @@ class PaymentGateway extends Component
     /**
      * Get stripe keys
      */
-    public function getStripeKeys($account)
+    public function getStripeKeys($tenant)
     {
-        if ($account) {
-            $settings = $account->settings;
+        if ($tenant) {
+            $settings = $tenant->settings;
             $pk = data_get($settings, 'stripe_public_key') ?? data_get(optional($settings->stripe), 'public_key');
             $sk = data_get($settings, 'stripe_secret_key') ?? data_get(optional($settings->stripe), 'secret_key');
         }
@@ -57,10 +57,10 @@ class PaymentGateway extends Component
     /**
      * Get ozopay keys
      */
-    public function getOzopayKeys($account)
+    public function getOzopayKeys($tenant)
     {
-        if ($account) {
-            $settings = $account->settings;
+        if ($tenant) {
+            $settings = $tenant->settings;
             $tid = data_get($settings, 'ozopay_tid') ?? data_get(optional($settings->ozopay), 'tid');
             $sec = data_get($settings, 'ozopay_secret') ?? data_get(optional($settings->ozopay), 'secret');
         }
@@ -79,10 +79,10 @@ class PaymentGateway extends Component
     /**
      * Get gkash keys
      */
-    public function getGkashKeys($account)
+    public function getGkashKeys($tenant)
     {
-        if ($account) {
-            $settings = $account->settings;
+        if ($tenant) {
+            $settings = $tenant->settings;
             $mid = data_get($settings, 'gkash_mid') ?? data_get(optional($settings->gkash), 'mid');
             $sk = data_get($settings, 'gkash_signature_key') ?? data_get(optional($settings->gkash), 'signature_key');
         }
@@ -101,10 +101,10 @@ class PaymentGateway extends Component
     /**
      * Get ipay keys
      */
-    public function getIpayKeys($account)
+    public function getIpayKeys($tenant)
     {
-        if ($account) {
-            $settings = $account->settings;
+        if ($tenant) {
+            $settings = $tenant->settings;
             $mc = data_get($settings, 'ipay_merchant_code') ?? data_get(optional($settings->ipay), 'merchant_code');
             $mk = data_get($settings, 'ipay_merchant_key') ?? data_get(optional($settings->ipay), 'merchant_key');
         }

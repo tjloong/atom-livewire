@@ -45,8 +45,8 @@ class Listing extends Component
     {
         return model('product')
             ->when(
-                model('product')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('product')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
@@ -101,8 +101,8 @@ class Listing extends Component
 
             'product_categories' => model('label')
                 ->when(
-                    model('label')->enabledBelongsToAccountTrait,
-                    fn($q) => $q->belongsToAccount(),
+                    model('label')->enabledHasTenantTrait,
+                    fn($q) => $q->belongsToTenant(),
                 )
                 ->where('type', 'product-category')
                 ->orderBy('name')

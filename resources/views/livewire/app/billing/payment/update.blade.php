@@ -62,7 +62,7 @@
                         <x-box.row label="Auto Billing">{{ __('Yes') }}</x-box.row>
                     @endif
 
-                    @accounttype('root')
+                    @tier('root')
                         @if ($payment->provider === 'stripe')
                             @if ($customerId = data_get($payment->data, 'metadata.stripe_customer_id'))
                                 <x-box.row label="Stripe Customer ID">{{ $customerId }}</x-box.row>
@@ -71,12 +71,12 @@
                                 <x-box.row label="Stripe Customer ID">{{ $subscriptionId }}</x-box.row>
                             @endif
                         @endif
-                    @endaccounttype
+                    @endtier
                 </div>
             </x-box>
         @endif
 
-        @accounttype('root')
+        @tier('root')
             @if ($res = data_get($payment->data, 'pay_response'))
                 <x-box header="Payment Response">
                     <div class="p-4 bg-slate-100 overflow-auto">
@@ -84,6 +84,6 @@
                     </div>
                 </x-box>
             @endif
-        @endaccounttype
+        @endtier
     </div>
 </div>

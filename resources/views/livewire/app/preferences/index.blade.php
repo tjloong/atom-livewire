@@ -28,7 +28,7 @@
 
             @livewire(
                 is_string($com) ? lw($com) : lw(data_get($com, 'name')),
-                array_merge(['account' => auth()->user()->account], data_get($com, 'data', [])),
+                data_get($com, 'data', []),
                 key($tab)
             )
         </div>

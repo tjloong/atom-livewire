@@ -66,8 +66,8 @@ class Dashboard extends Component
     {
         return model('team')
             ->when(
-                model('team')->enabledBelongsToAccountTrait,
-                fn($q) => $q->belongsToAccount(),
+                model('team')->enabledHasTenantTrait,
+                fn($q) => $q->belongsToTenant(),
             )
             ->orderBy('name')
             ->get();
@@ -112,7 +112,7 @@ class Dashboard extends Component
      */
     public function getChartDateRangeBreakdown($eloq = null)
     {
-        $from = data_get($this->dateRange, 'from')->setTimezone(account_settings('timezone'));
+        $from = data_get($this->dateRange, 'from')->setTimezone(tenant_settings('timezone'));
         $breakdown = [];
 
         $interval = 'daily';
