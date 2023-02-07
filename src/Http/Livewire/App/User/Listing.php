@@ -39,7 +39,7 @@ class Listing extends Component
     public function getQueryProperty()
     {
         return model('user')
-            ->tier(data_get($this->params, 'tier'))
+            ->when(!user()->isTier('root'), fn($q) => $q->tier())
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder);
     }

@@ -33,7 +33,7 @@ class Td extends Component
         }
         else if (is_numeric($count) || is_string($count)) {
             $this->label = is_numeric($count)
-                ? implode(' ', array_filter([$count, $uom ? str($uom)->plural() : null]))
+                ? $count.($uom ? (' '.str($uom)->plural($count)) : '')
                 : $count;
         }
 

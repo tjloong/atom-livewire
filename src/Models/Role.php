@@ -44,7 +44,7 @@ class Role extends Model
     /**
      * Scope for assignable
      */
-    public function assignable($query)
+    public function scopeAssignable($query)
     {
         return $query;
     }

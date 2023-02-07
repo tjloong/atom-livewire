@@ -55,6 +55,12 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.signup.view' => 'App\Signup\View\Index',
             'atom.app.signup.view.info' => 'App\Signup\View\Info',
 
+            // role
+            'atom.app.role.listing' => 'App\Role\Listing',
+            'atom.app.role.create' => 'App\Role\Create',
+            'atom.app.role.update' => 'App\Role\Update',
+            'atom.app.role.form' => 'App\Role\Form',
+
             // billing
             'atom.app.billing.view' => 'App\Billing\View',
             'atom.app.billing.plan' => 'App\Billing\Plan',
@@ -167,8 +173,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.settings.index' => 'App\Settings\Index',
             'atom.app.settings.login' => 'App\Settings\Login',
             'atom.app.settings.password' => 'App\Settings\Password',
-            'atom.app.settings.system.role' => 'App\Settings\System\Role',
-            'atom.app.settings.system.role-form-modal' => 'App\Settings\System\RoleFormModal',
             'atom.app.settings.system.team' => 'App\Settings\System\Team',
             'atom.app.settings.system.team-form-modal' => 'App\Settings\System\TeamFormModal',
             'atom.app.settings.system.file' => 'App\Settings\System\File',

@@ -207,36 +207,36 @@ function breadcrumbs()
 }
 
 /**
- * Tenant settings
+ * Tenant
  */
-function tenant_settings($name, $default = null)
+function tenant($attr)
 {
-    if (
-        config('atom.static_site')
-        || !auth()->user()
-        || !auth()->user()->tenant
-    ) return $default;
+    // if (
+    //     config('atom.static_site')
+    //     || !auth()->user()
+    //     || !auth()->user()->tenant
+    // ) return $default;
 
-    $settings = auth()->user()->tenant->settings;
+    // $settings = auth()->user()->tenant->settings;
 
-    if (is_string($name)) {
-        $col = head(explode('.', $name));
-        $name = str($name)->replaceFirst($col, str()->replace('-', '_', $col))->toString();
+    // if (is_string($name)) {
+    //     $col = head(explode('.', $name));
+    //     $name = str($name)->replaceFirst($col, str()->replace('-', '_', $col))->toString();
 
-        if ($col === 'default_currency') {
-            $currencies = data_get($settings, 'currencies', []);
-            $value = collect($currencies)->where('default', true)->first() 
-                ?? collect($currencies)->first();
+    //     if ($col === 'default_currency') {
+    //         $currencies = data_get($settings, 'currencies', []);
+    //         $value = collect($currencies)->where('default', true)->first() 
+    //             ?? collect($currencies)->first();
                 
-            return is_string($value) ? $value : data_get($value, 'currency');
-        }
-        else {
-            return json_decode(json_encode(
-                data_get($settings, $name, $default)
-            ), true);
-        }
-    }
-    else $settings->fill($name)->save();
+    //         return is_string($value) ? $value : data_get($value, 'currency');
+    //     }
+    //     else {
+    //         return json_decode(json_encode(
+    //             data_get($settings, $name, $default)
+    //         ), true);
+    //     }
+    // }
+    // else $settings->fill($name)->save();
 }
 
 /**

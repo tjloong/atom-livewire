@@ -1,22 +1,24 @@
 <x-form>
     <div class="-m-6 flex flex-col divide-y">
+        <div class="p-6 grid gap-6 md:grid-cols-2">
+            <x-form.text label="Login Name"
+                wire:model.defer="user.name" 
+                :error="$errors->first('user.name')" 
+                required
+            />
+        
+            <x-form.email label="Login Email"
+                wire:model.defer="user.email"
+                :error="$errors->first('user.email')"
+                :caption="$user->exists && config('atom.auth.verify') 
+                    ? 'User will need to verify the email again if you change this.' 
+                    : null"
+                required
+            />
+        </div>
+
         <div class="p-6 flex flex-col gap-6">
             <div class="grid gap-6 md:grid-cols-2">
-                <x-form.text label="Login Name"
-                    wire:model.defer="user.name" 
-                    :error="$errors->first('user.name')" 
-                    required
-                />
-            
-                <x-form.email label="Login Email"
-                    wire:model.defer="user.email"
-                    :error="$errors->first('user.email')"
-                    :caption="$user->exists && config('atom.auth.verify') 
-                        ? 'User will need to verify the email again if you change this.' 
-                        : null"
-                    required
-                />
-
                 @if ($roles = data_get($this->options, 'roles'))
                     <x-form.select label="Role"
                         wire:model="user.role_id" 
@@ -33,15 +35,13 @@
                 @endif
             </div>
 
-            @if (!$user->is_root && config('atom.app.user.data_visibility'))
+            @tier('root')
+                <x-form.checkbox label="With root privilege" wire:model="user.is_root"/>
+            @elseif (config('atom.app.user.data_visibility'))
                 <x-form.checkbox-select label="Data Visibility"
                     wire:model="user.visibility"
                     :options="data_get($this->options, 'visibilities')"
                 />
-            @endif
-
-            @tier('root')
-                <x-form.checkbox label="With root privilege" wire:model="user.is_root"/>
             @endtier
         </div>
 

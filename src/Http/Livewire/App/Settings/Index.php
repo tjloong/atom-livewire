@@ -59,7 +59,7 @@ class Index extends Component
             ['slug' => 'system/user', 'label' => 'Users', 'icon' => 'users', 'livewire' => 'app.user.listing'],
 
             enabled_module('roles')
-                ? ['slug' => 'system/role', 'label' => 'Roles', 'icon' => 'user-tag']
+                ? ['slug' => 'system/role', 'label' => 'Roles', 'icon' => 'user-tag', 'livewire' => 'app.role.listing']
                 : null,
             
             enabled_module('teams')

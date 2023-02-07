@@ -11,30 +11,38 @@
             <x-table.searchbar :total="$this->users->total()"/>
 
             <x-table.toolbar>
-                <x-form.select 
-                    wire:model="filters.status"
-                    :options="collect(['active', 'inactive', 'blocked', 'trashed'])->map(fn($val) => [
-                        'value' => $val, 
-                        'label' => ucfirst($val),
-                    ])"
-                    placeholder="All Status"
-                />
-
-                @module('roles')
-                    <x-form.select
-                        wire:model="filters.role_id"
-                        :options="model('role')->assignable()->select('id as value, name as label')->get()"
-                        placeholder="All Roles"
+                <div class="flex items-center gap-2">
+                    <x-form.select 
+                        wire:model="filters.status"
+                        :options="collect(['active', 'inactive', 'blocked', 'trashed'])->map(fn($val) => [
+                            'value' => $val, 
+                            'label' => ucfirst($val),
+                        ])"
+                        placeholder="All Status"
                     />
-                @endmodule
-
-                @module('teams')
-                    <x-form.select
-                        wire:model="filters.team_id"
-                        :options="model('team')->assignable()->select('id as value, name as label')->get()"
-                        placeholder="All Teams"
-                    />
-                @endmodule
+    
+                    @module('roles')
+                        <x-form.select
+                            wire:model="filters.role_id"
+                            :options="model('role')->assignable()->get()->map(fn($role) => [
+                                'value' => (string)$role->id,
+                                'label' => $role->name,
+                            ])"
+                            placeholder="All Roles"
+                        />
+                    @endmodule
+    
+                    @module('teams')
+                        <x-form.select
+                            wire:model="filters.team_id"
+                            :options="model('team')->assignable()->get()->map(fn($team) => [
+                                'value' => (string)$team->id,
+                                'label' => $team->name,
+                            ])"
+                            placeholder="All Teams"
+                        />
+                    @endmodule
+                </div>
 
                 <x-table.trashed :count="$this->query->onlyTrashed()->count()"/>
             </x-table.toolbar>

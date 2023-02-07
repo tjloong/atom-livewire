@@ -144,8 +144,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $tier = $tier ?? user()->tier;
         
-        if ($tier === 'root') return $query->where('is_root', true);
-        if ($tier === 'signup') return $query->whereNotNull('signup_at');
+        $query->where('is_root', $tier === 'root');
+        
+        if ($tier === 'signup') $query->whereNotNull('signup_at');
+
+        return $query;
     }
 
     /**

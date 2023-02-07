@@ -37,20 +37,10 @@ return [
             'data_visibility' => true,
         ],
         
-        'permissions' => [
-            'setting' => ['manage'],
-            'preference' => ['manage'],
-            'root' => [],
-        ],
-
         'document' => [
             'types' => [
                 'quotation', 
-                'sales-order', 
-                'delivery-order', 
                 'invoice', 
-                'purchase-order', 
-                'bill',
             ],
         ],
     ],

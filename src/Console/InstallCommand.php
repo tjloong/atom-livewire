@@ -136,7 +136,6 @@ class InstallCommand extends Command
         $this->info('Installing documents table...');
 
         $this->installContacts();
-        $this->installProducts();
         $this->installTaxes();
 
         if (Schema::hasTable('documents')) $this->warn('documents table exists, skipped.');
@@ -193,8 +192,12 @@ class InstallCommand extends Command
                 $table->decimal('amount', 20, 2)->nullable();
                 $table->decimal('subtotal', 20, 2)->nullable();
                 $table->integer('seq')->nullable();
-                $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('set null');
-                $table->foreignId('product_variant_id')->nullable()->constrained('product_variants')->onDelete('set null');
+
+                if (Schema::hasTable('products')) {
+                    $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('set null');
+                    $table->foreignId('product_variant_id')->nullable()->constrained('product_variants')->onDelete('set null');                    
+                }
+                
                 $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
                 $table->timestamps();
             });

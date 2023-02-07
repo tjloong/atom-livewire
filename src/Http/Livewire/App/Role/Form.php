@@ -1,18 +1,16 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\System;
+namespace Jiannius\Atom\Http\Livewire\App\Role;
 
 use Illuminate\Validation\Rule;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class RoleFormModal extends Component
+class Form extends Component
 {
     use WithPopupNotify;
 
     public $role;
-
-    protected $listeners = ['open'];
 
     /**
      * Validation rules
@@ -25,7 +23,7 @@ class RoleFormModal extends Component
                 Rule::unique('roles', 'name')
                     ->when(
                         model('role')->enabledHasTenantTrait,
-                        fn($q) => $q->where('tenant_id', $this->role->tenant_id ?? auth()->user()->tenant_id)
+                        fn($q) => $q->where('tenant_id', $this->role->tenant_id ?? tenant('id'))
                     )
                     ->ignore($this->role->id),
             ],
@@ -38,26 +36,9 @@ class RoleFormModal extends Component
     protected function messages()
     {
         return [
-            'role.name.required' => __('Role name is required.'),
-            'role.name.unique' => __('There is another role with the same name.'),
+            'role.name.required' => 'Role name is required.',
+            'role.name.unique' => 'There is another role with the same name.',
         ];
-    }
-
-    /**
-     * Open
-     */
-    public function open($id = null)
-    {
-        $this->role = $id
-            ? model('role')
-                ->when(
-                    model('role')->enabledHasTenantTrait,
-                    fn($q) => $q->belongsToTenant(),
-                )
-                ->findOrFail($id)
-            : model('role');
-
-        $this->dispatchBrowserEvent('role-form-modal-open');
     }
 
     /**
@@ -74,8 +55,7 @@ class RoleFormModal extends Component
 
         if (!$this->role->wasRecentlyCreated) $this->popup('Role Updated.');
 
-        $this->emitUp('refresh');
-        $this->dispatchBrowserEvent('role-form-modal-close');
+        return breadcrumbs()->back();
     }
 
     /**
@@ -83,6 +63,6 @@ class RoleFormModal extends Component
      */
     public function render()
     {
-        return atom_view('app.settings.system.role-form-modal');
+        return atom_view('app.role.form');
     }
 }

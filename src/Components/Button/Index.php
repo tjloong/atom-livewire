@@ -31,7 +31,7 @@ class Index extends Component
         $hide = null,
         $can = null
     ) {
-        $this->renderable = !$hide && (!$can || ($can && auth()->user()->can($can)));
+        $this->renderable = !$hide && (!$can || ($can && user()->can($can)));
         $this->icon = $icon;
         $this->label = $label;
         $this->size = $size;
