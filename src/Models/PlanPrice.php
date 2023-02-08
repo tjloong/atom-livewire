@@ -20,19 +20,19 @@ class PlanPrice extends Model
     ];
 
     /**
-     * Get plan for plan price
+     * Get plan for price
      */
     public function plan()
     {
-        return $this->belongsTo(get_class(model('plan')));
+        return $this->belongsTo(model('plan'));
     }
     
     /**
-     * Get accounts for plan price
+     * Get users for price
      */
-    public function accounts()
+    public function users()
     {
-        return $this->belongsToMany(get_class(model('account')), 'account_subscriptions', 'plan_price_id', 'account_id');
+        return $this->belongsToMany(model('user'), 'plan_subscriptions', 'plan_price_id', 'user_id');
     }
 
     /**

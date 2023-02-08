@@ -18,22 +18,27 @@
         </div>
 
         <div class="p-6 flex flex-col gap-6">
-            <div class="grid gap-6 md:grid-cols-2">
-                @if ($roles = data_get($this->options, 'roles'))
-                    <x-form.select label="Role"
-                        wire:model="user.role_id" 
-                        :options="$roles"
-                    />
-                @endif
-            
-                @if ($teams = data_get($this->options, 'teams'))
-                    <x-form.select label="Teams"
-                        wire:model="teams"
-                        :options="$teams"
-                        multiple
-                    />
-                @endif
-            </div>
+            @if (
+                ($roles = data_get($this->options, 'roles')) 
+                || ($teams = data_get($this->options, 'teams'))
+            )
+                <div class="grid gap-6 md:grid-cols-2">
+                    @if ($roles)
+                        <x-form.select label="Role"
+                            wire:model="user.role_id" 
+                            :options="$roles"
+                        />
+                    @endif
+                
+                    @if ($teams)
+                        <x-form.select label="Teams"
+                            wire:model="teams"
+                            :options="$teams"
+                            multiple
+                        />
+                    @endif
+                </div>
+            @endif
 
             @tier('root')
                 <x-form.checkbox label="With root privilege" wire:model="user.is_root"/>

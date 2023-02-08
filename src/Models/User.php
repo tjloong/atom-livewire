@@ -96,6 +96,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get subscriptions for user
+     */
+    public function subscriptions()
+    {
+        if (!enabled_module('plans')) return;
+
+        return $this->hasMany(model('plan_subscription'));
+    }
+
+    /**
      * Scope for fussy search
      */
     public function scopeSearch($query, $search)

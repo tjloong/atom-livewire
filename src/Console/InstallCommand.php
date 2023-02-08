@@ -360,7 +360,9 @@ class InstallCommand extends Command
                 $table->datetime('end_at')->nullable();
                 $table->boolean('is_active')->nullable();
 
-                if (Schema::hasTable('products')) $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
+                if (Schema::hasTable('products')) {
+                    $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
+                }
 
                 $table->timestamps();
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
@@ -520,24 +522,24 @@ class InstallCommand extends Command
             });
         }
 
-        if (Schema::hasTable('account_orders')) $this->warn('account_orders table exists, skipped.');
+        if (Schema::hasTable('plan_orders')) $this->warn('plan_orders table exists, skipped.');
         else {
-            Schema::create('account_orders', function($table) {
+            Schema::create('plan_orders', function($table) {
                 $table->id();
                 $table->string('number')->nullable()->unique();
                 $table->string('currency')->nullable();
                 $table->decimal('amount', 20, 2)->nullable();
                 $table->json('data')->nullable();
-                $table->foreignId('account_id')->constrained()->onDelete('cascade');
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
                 $table->timestamps();
             });
 
-            $this->line('account_orders table created successfully.');
+            $this->line('plan_orders table created successfully.');
         }
 
-        if (Schema::hasTable('account_order_items')) $this->warn('account_order_items table exists, skipped.');
+        if (Schema::hasTable('plan_order_items')) $this->warn('plan_order_items table exists, skipped.');
         else {
-            Schema::create('account_order_items', function($table) {
+            Schema::create('plan_order_items', function($table) {
                 $table->id();
                 $table->string('name')->nullable();
                 $table->string('currency')->nullable();
@@ -545,17 +547,17 @@ class InstallCommand extends Command
                 $table->decimal('discounted_amount', 20, 2)->nullable();
                 $table->decimal('grand_total', 20, 2)->nullable();
                 $table->json('data')->nullable();
-                $table->foreignId('account_order_id')->constrained()->onDelete('cascade');
+                $table->foreignId('plan_order_id')->constrained()->onDelete('cascade');
                 $table->foreignId('plan_price_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamps();
             });
 
-            $this->line('account_order_items table created successfully.');
+            $this->line('plan_order_items table created successfully.');
         }
 
-        if (Schema::hasTable('account_payments')) $this->warn('account_payments table exists, skipped.');
+        if (Schema::hasTable('plan_payments')) $this->warn('plan_payments table exists, skipped.');
         else {
-            Schema::create('account_payments', function($table) {
+            Schema::create('plan_payments', function($table) {
                 $table->id();
                 $table->string('number')->nullable()->unique();
                 $table->string('currency')->nullable();
@@ -563,30 +565,30 @@ class InstallCommand extends Command
                 $table->string('status')->nullable();
                 $table->string('provider')->nullable();
                 $table->json('data')->nullable();
-                $table->foreignId('account_id')->constrained()->onDelete('cascade');
-                $table->foreignId('account_order_id')->nullable()->constrained()->onDelete('set null');
+                $table->foreignId('plan_order_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamp('provisioned_at')->nullable();
                 $table->timestamps();
+                $table->foreignId('created_by')->constrained()->onDelete('set null');
             });
 
-            $this->line('account_payments table created successfully.');
+            $this->line('plan_payments table created successfully.');
         }
 
-        if (Schema::hasTable('account_subscriptions')) $this->warn('account_subscriptions table exists, skipped.');
+        if (Schema::hasTable('plan_subscriptions')) $this->warn('plan_subscriptions table exists, skipped.');
         else {
-            Schema::create('account_subscriptions', function($table) {
+            Schema::create('plan_subscriptions', function($table) {
                 $table->id();
                 $table->boolean('is_trial')->nullable();
                 $table->timestamp('start_at')->nullable();
                 $table->timestamp('expired_at')->nullable();
                 $table->json('data')->nullable();
-                $table->foreignId('account_id')->constrained()->onDelete('cascade');
-                $table->foreignId('account_order_item_id')->nullable()->constrained()->onDelete('set null');
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
+                $table->foreignId('plan_order_item_id')->nullable()->constrained()->onDelete('set null');
                 $table->foreignId('plan_price_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamps();
             });
 
-            $this->line('account_subscriptions table created successfully.');
+            $this->line('plan_subscriptions table created successfully.');
         }
 
         if (DB::table('plans')->count()) $this->warn('There are data in plans table, skipped populating dummy data.');

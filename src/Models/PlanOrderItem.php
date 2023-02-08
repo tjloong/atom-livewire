@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AccountOrderItem extends Model
+class PlanOrderItem extends Model
 {
     protected $guarded = [];
 
@@ -13,31 +13,31 @@ class AccountOrderItem extends Model
         'discounted_amount' => 'float',
         'grand_total' => 'float',
         'data' => 'object',
-        'account_order_id' => 'integer',
+        'plan_order_id' => 'integer',
         'plan_price_id' => 'integer',
     ];
 
     /**
-     * Get order for account order item
+     * Get order for item
      */
     public function order()
     {
-        return $this->belongsTo(get_class(model('account_order')));
+        return $this->belongsTo(model('plan_order'), 'plan_order_id');
     }
 
     /**
-     * Get subscription for account order items
+     * Get subscription for items
      */
     public function subscription()
     {
-        return $this->hasOne(get_class(model('account_subscription')));
+        return $this->hasOne(model('plan_subscription'));
     }
 
     /**
-     * Get plan price for account order item
+     * Get price for item
      */
-    public function planPrice()
+    public function price()
     {
-        return $this->belongsTo(get_class(model('plan_price')));
+        return $this->belongsTo(model('plan_price'), 'plan_price_id');
     }
 }

@@ -5,11 +5,13 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Database\Eloquent\Model;
 use Barryvdh\DomPDF\Facade as PDF;
 use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasUniqueNumber;
 
-class AccountPayment extends Model
+class PlanPayment extends Model
 {
     use HasFilters;
+    use HasTrace;
     use HasUniqueNumber;
 
     protected $guarded = [];
@@ -17,28 +19,19 @@ class AccountPayment extends Model
     protected $casts = [
         'amount' => 'float',
         'data' => 'object',
-        'account_id' => 'integer',
-        'account_order_id' => 'integer',
+        'plan_order_id' => 'integer',
     ];
 
     /**
-     * Get account for account payment
-     */
-    public function account()
-    {
-        return $this->belongsTo(get_class(model('account')));
-    }
-
-    /**
-     * Get order for account payment
+     * Get order for payment
      */
     public function order()
     {
-        return $this->belongsTo(get_class(model('account_order')), 'account_order_id');
+        return $this->belongsTo(model('plan_order'), 'plan_order_id');
     }
 
     /**
-     * Get account payment description attribute
+     * Get description attribute
      */
     public function getDescriptionAttribute()
     {
@@ -67,24 +60,24 @@ class AccountPayment extends Model
         ]);
 
         foreach ($this->order->items as $item) {
-            if ($subscription = model('account_subscription')->firstWhere('account_order_item_id', $item->id)) {
+            if ($subscription = model('plan_subscription')->firstWhere('plan_order_item_id', $item->id)) {
                 $subscription->fill(['data' => array_merge((array)$subscription->data, $stripeData)])->save();
             }
             else {
-                $planPrice = $item->planPrice;
+                $price = $item->price;
     
                 // trial
-                if ($planPrice->plan->trial && !$this->account->hasPlanPrice($planPrice->id)) {
+                if ($price->plan->trial && !$this->order->user->hasPlanPrice($price->id)) {
                     $fields = [
                         'is_trial' => true,
                         'start_at' => $this->created_at,
-                        'expired_at' => $this->created_at->addDays($planPrice->plan->trial),
+                        'expired_at' => $this->created_at->addDays($price->plan->trial),
                     ];
                 }
                 // non-trial
                 else {
-                    $lastSubscription = $this->account->subscriptions()
-                        ->where('plan_price_id', $planPrice->id)
+                    $lastSubscription = $this->order->user->subscriptions()
+                        ->where('plan_price_id', $price->id)
                         ->latest()
                         ->first();
 
@@ -92,9 +85,9 @@ class AccountPayment extends Model
                         ? $lastSubscription->expired_at->addSecond() 
                         : $this->created_at;
 
-                    $end = $planPrice->is_lifetime
+                    $end = $price->is_lifetime
                         ? null
-                        : $start->copy()->addMonths($planPrice->expired_after);
+                        : $start->copy()->addMonths($price->expired_after);
     
                     $fields = [
                         'is_trial' => false,
@@ -103,12 +96,12 @@ class AccountPayment extends Model
                     ];
                 }
                     
-                $this->account->subscriptions()->create(array_merge(
+                $this->order->user->subscriptions()->create(array_merge(
                     $fields, 
                     ['data' => $stripeData],
                     [
-                        'account_order_item_id' => $item->id,
-                        'plan_price_id' => $planPrice->id,
+                        'plan_order_item_id' => $item->id,
+                        'plan_price_id' => $price->id,
                     ]
                 ));
             }

@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\Models\HasUniqueNumber;
 
-class AccountOrder extends Model
+class PlanOrder extends Model
 {
     use HasUniqueNumber;
 
@@ -14,39 +14,39 @@ class AccountOrder extends Model
     protected $casts = [
         'amount' => 'float',
         'data' => 'object',
-        'account_id' => 'integer',
+        'user_id' => 'integer',
     ];
 
     /**
-     * Get account for account order
+     * Get user for order
      */
-    public function account()
+    public function user()
     {
-        return $this->belongsTo(get_class(model('account')));
+        return $this->belongsTo(model('user'));
     }
 
     /**
-     * Get items for account order
+     * Get items for order
      */
     public function items()
     {
-        return $this->hasMany(get_class(model('account_order_item')));
+        return $this->hasMany(model('plan_order_item'));
     }
 
     /**
-     * Get subscriptions for account order
+     * Get subscriptions for order
      */
     public function subscriptions()
     {
-        return $this->hasMany(get_class(model('account_subscription')));
+        return $this->hasMany(model('plan_subscription'));
     }
 
     /**
-     * Get payments for account order
+     * Get payments for order
      */
     public function payments()
     {
-        return $this->hasMany(get_class(model('account_payment')));
+        return $this->hasMany(model('plan_payment'));
     }
 
     /**

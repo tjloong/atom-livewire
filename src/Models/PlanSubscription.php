@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Models;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 
-class AccountSubscription extends Model
+class PlanSubscription extends Model
 {
     use HasFilters;
     
@@ -16,33 +16,33 @@ class AccountSubscription extends Model
         'start_at' => 'datetime',
         'expired_at' => 'datetime',
         'data' => 'object',
-        'account_id' => 'integer',
-        'account_order_item_id' => 'integer',
+        'user_id' => 'integer',
+        'plan_order_item_id' => 'integer',
         'plan_price_id' => 'integer',
     ];
 
     /**
-     * Get account for account subscription
+     * Get user for subscription
      */
-    public function account()
+    public function user()
     {
-        return $this->belongsTo(get_class(model('account')));
+        return $this->belongsTo(model('user'));
     }
 
     /**
-     * Get order item for account subscription
+     * Get item for subscription
      */
-    public function orderItem()
+    public function item()
     {
-        return $this->belongsTo(get_class(model('account_order_item')));
+        return $this->belongsTo(model('plan_order_item'), 'plan_order_item_id');
     }
 
     /**
-     * Get plan price for account subscription
+     * Get price for subscription
      */
-    public function planPrice()
+    public function price()
     {
-        return $this->belongsTo(get_class(model('plan_price')));
+        return $this->belongsTo(model('plan_price'), 'plan_price_id');
     }
 
     /**
@@ -51,10 +51,10 @@ class AccountSubscription extends Model
     public function scopeSearch($query, $search)
     {
         return $query->where(fn($q) => $q
-            ->whereHas('planPrice', fn($q) => $q
+            ->whereHas('price', fn($q) => $q
                 ->whereHas('plan', fn($q) => $q->search($search))
             )
-            ->whereHas('account', fn($q) => $q->search($search))
+            ->whereHas('user', fn($q) => $q->search($search))
         );
     }
 
