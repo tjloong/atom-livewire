@@ -25,17 +25,17 @@
                         @foreach ($children as $child)
                             <x-sidenav.item
                                 :icon="data_get($child, 'icon')"
-                                :name="is_string($child) ? $child : data_get($child, 'slug')"
-                                :label="is_string($child) ? str()->headline($child) : data_get($child, 'label')"
-                                :href="is_string($child) ? null : data_get($child, 'href')"
+                                :name="data_get($child, 'slug')"
+                                :label="data_get($child, 'label')"
+                                :href="data_get($child, 'href') ?? route('app.signup.update', [$user->id, data_get($child, 'slug')])"
                             />
                         @endforeach
                     @else
                         <x-sidenav.item
                             :icon="data_get($item, 'icon')"
-                            :name="is_string($item) ? $item : data_get($item, 'slug')"
-                            :label="is_string($item) ? str()->headline($item) : data_get($item, 'label')"
-                            :href="is_string($item) ? null : data_get($item, 'href')"
+                            :name="data_get($item, 'slug')"
+                            :label="data_get($item, 'label')"
+                            :href="data_get($item, 'href') ?? route('app.signup.update', [$user->id, data_get($item, 'slug')])"
                         />
                     @endif
                 @endforeach
@@ -44,11 +44,9 @@
 
         <div class="md:w-3/4 flex flex-col gap-6">
             @if ($livewire = data_get($this->flatTabs->firstWhere('slug', $this->tab), 'livewire'))
-                @if (is_string($livewire)) @livewire($livewire, compact('user'), key($tab))
-                @else @livewire(data_get($livewire, 'name'), data_get($livewire, 'data'), key($tab))
+                @if (is_string($livewire)) @livewire(lw($livewire), compact('user'), key($tab))
+                @else @livewire(lw(data_get($livewire, 'name')), data_get($livewire, 'data'), key($tab))
                 @endif
-            @else
-                @livewire(lw('app.signup.view.'.$tab), compact('user'), key($tab))
             @endif
         </div>
     </div>

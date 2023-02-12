@@ -1,12 +1,12 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Signup\View;
+namespace Jiannius\Atom\Http\Livewire\App\Signup;
 
 use Livewire\Component;
 
-class Index extends Component
+class Update extends Component
 {
-    public $tab = 'info';
+    public $tab;
     public $user;
 
     /**
@@ -17,6 +17,8 @@ class Index extends Component
         $this->user = user()->isTier('root')
             ? model('user')->findOrFail($userId)
             : user();
+
+        $this->tab = $this->tab ?? data_get($this->flatTabs->first(), 'slug');
 
         breadcrumbs()->push($this->user->name);
     }
@@ -29,7 +31,7 @@ class Index extends Component
         return [
             ['group' => 'Account', 'tabs' => array_merge(
                 [
-                    ['slug' => 'info', 'label' => 'Sign-Up Information'],
+                    ['slug' => 'info', 'label' => 'Sign-Up Information', 'livewire' => 'app.signup.info'],
                 ],
 
                 enabled_module('plans')
@@ -93,6 +95,6 @@ class Index extends Component
      */
     public function render()
     {
-        return atom_view('app.signup.view');
+        return atom_view('app.signup.update');
     }
 }

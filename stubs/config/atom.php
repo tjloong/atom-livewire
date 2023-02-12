@@ -33,10 +33,6 @@ return [
      * App Portal
      */
     'app' => [
-        'user' => [
-            'data_visibility' => true,
-        ],
-        
         'document' => [
             'types' => [
                 'quotation', 

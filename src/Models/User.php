@@ -40,7 +40,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    const ROOT_EMAIL = 'root@jiannius.com';
+    public $enableDataVisibility = false;
+    public $enableRootEdit = false;
 
     /**
      * Model boot
@@ -152,13 +153,16 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function scopeTier($query, $tier = null)
     {
-        $tier = $tier ?? user()->tier;
-        
-        $query->where('is_root', $tier === 'root');
-        
-        if ($tier === 'signup') $query->whereNotNull('signup_at');
-
-        return $query;
+        return $query->where(function($q) use ($tier) {
+            foreach ((array)$tier as $val) {
+                if ($val === 'root') {
+                    $q->orWhere('is_root', true);
+                }
+                else if ($val === 'signup') {
+                    $q->orWhere('is_root', false);
+                }
+            }
+        });
     }
 
     /**
@@ -166,8 +170,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getTierAttribute()
     {
-        if ($this->is_root) return 'root';
-        if ($this->signup_at) return 'signup';
+        return $this->is_root ? 'root' : 'signup';
     }
 
     /**

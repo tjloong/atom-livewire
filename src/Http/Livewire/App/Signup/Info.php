@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Signup\View;
+namespace Jiannius\Atom\Http\Livewire\App\Signup;
 
 use Livewire\Component;
 
@@ -13,6 +13,6 @@ class Info extends Component
      */
     public function render()
     {
-        return atom_view('app.signup.view.info');
+        return atom_view('app.signup.info');
     }
 }

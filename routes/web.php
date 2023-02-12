@@ -80,7 +80,7 @@ if (!config('atom.static_site')) {
              */
             define_route()->prefix('signup')->as('app.signup.')->group(function() {
                 define_route('listing', 'App\Signup\Listing')->name('listing');
-                define_route('{userId}/{tab?}', 'App\Signup\View')->name('view');
+                define_route('{userId}/{tab?}', 'App\Signup\Update')->name('update');
             });
 
             /**

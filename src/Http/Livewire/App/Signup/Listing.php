@@ -50,7 +50,7 @@ class Listing extends Component
                     'column_name' => 'Name',
                     'column_sort' => 'name',
                     'label' => $user->name,
-                    'href' => route('app.signup.view', [$user->id]),
+                    'href' => route('app.signup.update', [$user->id]),
                 ],
     
                 [
