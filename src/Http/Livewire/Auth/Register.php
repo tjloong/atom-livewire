@@ -119,8 +119,7 @@ class Register extends Component
         $user = model('user')->create([
             'name' => data_get($inputs, 'name'),
             'email' => data_get($inputs, 'email'),
-            'password' => bcrypt(data_get($inputs, 'password')),
-            'data' => array_merge(data_get($inputs, 'data'), [
+            'data' => array_merge(data_get($inputs, 'data', []), [
                 'signup' => [
                     'geo' => geoip()->getLocation()->toArray(),
                     'channel' => $this->ref,
@@ -137,6 +136,9 @@ class Register extends Component
             'signup_at' => now(),
             'login_at' => now(),
         ]);
+
+        $user->password = bcrypt(data_get($inputs, 'password'));
+        $user->save();
 
         if (config('atom.auth.verify') && !data_get($inputs, 'email_verified_at')) {
             $user->sendEmailVerificationNotification();

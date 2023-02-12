@@ -51,7 +51,7 @@ class Update extends Component
     {
         $this->ticket->delete();
 
-        return redirect()->route('app.ticketing.listing');
+        return breadcrumbs()->back();
     }
 
     /**
