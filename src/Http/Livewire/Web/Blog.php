@@ -66,34 +66,41 @@ class Blog extends Component
     /**
      * Get recents property
      */
-    public function getRecentBlogsProperty()
+    public function getRecentsProperty()
     {
-        return model('blog')
+        $recents = model('blog')
             ->status('published')
             ->when($this->slug, fn($q) => $q->where('slug', '<>', $this->slug))
             ->latest('published_at')
             ->latest()
             ->take(6)
             ->get();
+
+        if (!$recents->count()) return;
+
+        return $recents;
     }
 
     /**
      * Get related property
      */
-    public function getRelatedBlogsProperty()
+    public function getRelatedProperty()
     {
         if (!$this->blog) return;
 
-        if ($id = $this->blog->labels->pluck('id')->unique()->values()->all()) {
-            return model('blog')
-                ->status('published')
-                ->whereHas('labels', fn($q) => $q->whereIn('labels.id', $id))
-                ->where('blogs.id', '<>', $this->blog->id)
-                ->latest('published_at')
-                ->latest()
-                ->take(6)
-                ->get();
-        }
+        $labels = $this->blog->labels->pluck('id')->unique()->values()->all();
+        $related = model('blog')
+            ->status('published')
+            ->whereHas('labels', fn($q) => $q->whereIn('labels.id', $labels))
+            ->where('blogs.id', '<>', $this->blog->id)
+            ->latest('published_at')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        if (!$related->count()) return;
+
+        return $related;
     }
 
     /**
@@ -101,19 +108,26 @@ class Blog extends Component
      */
     public function getTopicsProperty()
     {
-        return model('label')
-            ->where('type', 'blog-category')
-            ->orderBy('seq')
+        $topics = model('label')->where('type', 'blog-category')
+            ->oldest('seq')
             ->orderBy('name')
             ->get();
+        
+        if (!$topics->count()) return;
+
+        return $topics;
     }
 
     /**
-     * Get show sidebar property
+     * Get sidebar property
      */
-    public function getShowSidebarProperty()
+    public function getSidebarProperty()
     {
-        return $this->recents->count() || $this->labels->count();
+        return array_filter([
+            'topics' => $this->topics,
+            'recents' => $this->recents,
+            'related' => $this->related,
+        ]);
     }
 
     /**
