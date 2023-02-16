@@ -17,11 +17,6 @@
             'icon' => 'bg-green-100 text-green-500',
         ],
     ],
-
-    'buttons' => [
-        __('Confirm'),
-        __('Cancel'),
-    ],
 ])
 
 <div
@@ -32,7 +27,7 @@
             title: null,
             message: null,
             type: 'info',
-            buttons: @js($buttons),
+            buttons: [],
             colors: @js($colors),
         },
         open (config) {
@@ -86,14 +81,14 @@
                 <div class="bg-gray-100 py-4 px-6 flex items-center gap-2">
                     <a 
                         x-on:click.prevent="confirmed()"
-                        x-text="config.buttons[0]"
+                        x-text="config.buttons[0] || '{{ __('Confirm') }}'"
                         x-bind:class="config.colors[config.type].button"
                         class="py-1.5 px-3 font-medium rounded-md" 
                     ></a>
 
                     <a 
                         x-on:click.prevent="reject()"
-                        x-text="config.buttons[1]"
+                        x-text="config.buttons[1] || '{{ __('Cancel') }}'"
                         class="py-1.5 px-3 font-medium rounded-md text-gray-900 hover:bg-gray-100" 
                     ></a>
                 </div>

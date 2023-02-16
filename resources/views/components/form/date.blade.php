@@ -12,21 +12,10 @@
     <div
         x-data="{
             show: false,
-            wire: @js(!empty($attributes->wire('model')->value())),
-            value: @js($attributes->get('value')),
-            entangle: @entangle($attributes->wire('model')),
-            settings: @js($attributes->get('settings')),
+            value: null,
             calendar: null,
+            settings: @js($attributes->get('settings')),
             placeholder: @js($placeholder),
-            init () {
-                if (this.wire) {
-                    this.value = this.entangle
-                    this.$watch('entangle', (val) => {
-                        this.value = val
-                        if (this.calendar) this.calendar.setDate(val)
-                    })
-                }
-            },
             open () {
                 if (this.show) return this.close()
                 this.show = true
@@ -48,11 +37,9 @@
                 this.close()
             },
             input (val = null) {
-                if (this.wire) this.entangle = val
-                else {
-                    this.value = val
-                    this.$dispatch('input', val)
-                }
+                this.value = val
+                this.$refs.input.value = val
+                this.$refs.input.dispatchEvent(new Event('input', { bubble: true }))
             },
             setCalendar () {
                 if (!this.calendar) {
@@ -68,9 +55,16 @@
                 this.calendar.setDate(this.value)
             },
         }"
+        x-init="value = $refs.input.value.trim() || null"
         x-on:click.away="close()"
         class="relative"
     >
+        <input x-ref="input"
+            type="text" 
+            class="hidden"
+            {{ $attributes->except(['error', 'required', 'caption', 'label'])}}
+        >
+
         <div
             x-ref="anchor" 
             x-bind:class="{
