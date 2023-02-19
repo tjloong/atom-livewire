@@ -163,12 +163,16 @@ class Breadcrumbs
      */
     public function back()
     {
-        $trails = collect(session('breadcrumbs.trails'));
-        if ($trails->count() <= 1) return redirect()->back();
+        $sess = session('breadcrumbs');
+        $home = data_get($sess, 'home');
+        $trails = collect(data_get($sess, 'trails'));
 
-        $index = $trails->count() - 2;
-        $dest = $trails->get($index);
+        if (!$trails || $trails->count() <= 1) $dest = $home;
+        else {
+            $index = $trails->count() - 2;
+            $dest = $trails->get($index);
+        }
 
-        return redirect(data_get($dest, 'url'));
+        return $dest ? redirect(data_get($dest, 'url')) : redirect()->back();
     }
 }

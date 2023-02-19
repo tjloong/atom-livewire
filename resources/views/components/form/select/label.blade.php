@@ -14,7 +14,7 @@
             ->oldest('id')
             ->get()
             ->transform(fn($label) => [
-                'value' => $label->id,
+                'value' => $attributes->get('slug') ? $label->slug : $label->id,
                 'label' => $label->locale('name'),
             ])
     "

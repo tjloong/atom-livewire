@@ -105,6 +105,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             
             'form.index',
             'form.seo',
+            'form.tags',
             'form.date',
             'form.file.index',
             'form.file.url',

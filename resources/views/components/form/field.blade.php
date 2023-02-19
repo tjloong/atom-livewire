@@ -25,7 +25,7 @@
         </div>
     @endif
 
-    @if ($error = $attributes->get('error'))
+    @if (($error = $attributes->get('error')) && is_string($error))
         <div class="text-sm text-red-500 font-medium">
             {{ __($error) }}
         </div>
