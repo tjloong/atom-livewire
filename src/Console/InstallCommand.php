@@ -247,6 +247,7 @@ class InstallCommand extends Command
                 $table->string('currency')->nullable();
                 $table->decimal('currency_rate', 20, 2)->nullable();
                 $table->decimal('amount', 20, 2)->nullable();
+                $table->text('notes')->nullable();
                 $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
                 $table->date('paid_at')->nullable();
                 $table->timestamps();

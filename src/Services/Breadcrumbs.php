@@ -169,8 +169,12 @@ class Breadcrumbs
 
         if (!$trails || $trails->count() <= 1) $dest = $home;
         else {
-            $index = $trails->count() - 2;
-            $dest = $trails->get($index);
+            $args = func_get_args();
+            $dest = $args
+                ? collect($args)->map(fn($arg) => $trails->firstWhere('url', $arg))->filter()->first()
+                : null;
+
+            if (!$dest) $dest = $trails->get($trails->count() - 2);
         }
 
         return $dest ? redirect(data_get($dest, 'url')) : redirect()->back();

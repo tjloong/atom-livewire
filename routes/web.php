@@ -186,7 +186,8 @@ if (!config('atom.static_site')) {
 
                     define_route()->prefix('payment')->as('payment.')->group(function() {
                         define_route('create', 'App\Document\Payment\Create')->name('create');
-                        define_route('{documentPaymentId}', 'App\Document\Payment\Update')->name('update');
+                        define_route('{paymentId}', 'App\Document\Payment\View')->name('view');
+                        define_route('{paymentId}/update', 'App\Document\Payment\Update')->name('update');
                     });
                 });
             });
