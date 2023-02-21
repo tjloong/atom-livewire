@@ -10,17 +10,13 @@ class Listing extends Component
     use WithTable;
 
     public $tier;
-    public $sortBy = 'signup_at';
-    public $sortOrder = 'desc';
+    public $sort = 'signup_at,desc';
     public $filters = [
         'search' => null,
         'status' => null,
     ];
 
     protected $queryString = [
-        'sortBy' => ['except' => 'signup_at'],
-        'sortOrder' => ['except' => 'desc'],
-        'page' => ['except' => 1],
         'filters' => ['except' => [
             'search' => null,
             'status' => null,

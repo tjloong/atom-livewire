@@ -5,17 +5,13 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings\System;
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class File extends Component
 {
     use WithFile;
-    use WithPagination;
     use WithPopupNotify;
 
     public $selected = [];
-    public $sortBy = 'created_at';
-    public $sortOrder = 'desc';
     public $filters = [
         'type' => null,
         'search' => null,
@@ -34,7 +30,7 @@ class File extends Component
                 fn($q) => $q->belongsToTenant(),
             )
             ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
+            ->latest()
             ->paginate(120);
     }
 

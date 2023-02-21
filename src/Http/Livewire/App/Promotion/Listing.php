@@ -4,28 +4,22 @@ namespace Jiannius\Atom\Http\Livewire\App\Promotion;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
-    use WithPagination;
     use WithTable;
 
-    public $sortBy = 'updated_at';
-    public $sortOrder = 'desc';
+    public $sort = 'updated_at,desc';
     public $filters = [
         'status' => null,
         'search' => null,
     ];
 
     protected $queryString = [
-        'page' => ['except' => 1],
         'filters' => ['except' => [
             'status' => null,
             'search' => null,
         ]],
-        'sortBy' => ['except' => 'updated_at'],
-        'sortOrder' => ['except' => 'desc'],
     ];
 
     /**

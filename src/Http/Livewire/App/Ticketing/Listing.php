@@ -10,8 +10,7 @@ class Listing extends Component
     use WithTable;
 
     public $fullpage;
-    public $sortBy = 'created_at';
-    public $sortOrder = 'desc';
+    public $sort = 'created_at,desc';
     public $filters = [
         'search' => null,
         'status' => null,
@@ -22,7 +21,6 @@ class Listing extends Component
             'search' => null,
             'status' => null,
         ]],
-        'page' => ['except' => 1],
     ];
 
     /**

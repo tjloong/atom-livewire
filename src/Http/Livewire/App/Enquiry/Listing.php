@@ -9,15 +9,11 @@ class Listing extends Component
 {
     use WithTable;
 
-    public $sortBy = 'created_at';
-    public $sortOrder = 'desc';
+    public $sort = 'created_at,desc';
     public $filters = ['search' => null];
 
     protected $queryString = [
         'filters' => ['except' => ['search' => null]], 
-        'sortBy' => ['except' => 'created_at'],
-        'sortOrder' => ['except' => 'desc'],
-        'page' => ['except' => 1],
     ];
 
     /**

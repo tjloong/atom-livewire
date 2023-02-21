@@ -11,8 +11,7 @@ class Listing extends Component
     use WithPopupNotify;
     use WithTable;
 
-    public $sortBy = 'name';
-    public $sortOrder = 'asc';
+    public $sort = 'name,asc';
     public $filters = [
         'search' => null,
     ];

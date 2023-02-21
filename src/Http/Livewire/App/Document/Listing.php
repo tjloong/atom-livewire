@@ -5,19 +5,16 @@ namespace Jiannius\Atom\Http\Livewire\App\Document;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use AuthorizesRequests;
-    use WithPagination;
     use WithTable;
 
     public $type;
     public $contact;
     public $fullpage;
-    public $sortBy = 'issued_at';
-    public $sortOrder = 'desc';
+    public $sort = 'issued_at,desc';
     public $filters = [
         'search' => null,
     ];
@@ -26,9 +23,6 @@ class Listing extends Component
         'filters' => ['except' => [
             'search' => null,
         ]],
-        'page' => ['except' => 1],
-        'sortBy' => ['except' => 'issued_at'],
-        'sortOrder' => ['except' => 'desc'],
     ];
 
     /**

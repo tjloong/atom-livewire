@@ -4,15 +4,12 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings\System;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Team extends Component
 {
-    use WithPagination;
     use WithTable;
 
-    public $sortBy = 'name';
-    public $sortOrder = 'asc';
+    public $sort = 'name,asc';
     public $filters = ['search' => null];
 
     protected $listeners = ['refresh' => '$refresh'];

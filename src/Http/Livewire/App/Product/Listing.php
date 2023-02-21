@@ -9,8 +9,7 @@ class Listing extends Component
 {
     use WithTable;
 
-    public $sortBy = 'updated_at';
-    public $sortOrder = 'desc';
+    public $sort = 'updated_at,desc';
     public $filters = [
         'type' => null,
         'status' => null,
@@ -19,15 +18,12 @@ class Listing extends Component
     ];
 
     protected $queryString = [
-        'page' => ['except' => 1],
         'filters' => ['except' => [
             'type' => null,
             'status' => null,
             'product_category' => null,
             'search' => null,
         ]],
-        'sortBy' => ['except' => 'updated_at'],
-        'sortOrder' => ['except' => 'desc'],
     ];
 
     /**

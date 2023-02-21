@@ -12,8 +12,7 @@ class Listing extends Component
     use WithTable;
 
     public $params; // when using this as child component
-    public $sortBy = 'created_at';
-    public $sortOrder = 'desc';
+    public $sort = 'created_at,desc';
     public $filters = [
         'search' => null,
         'status' => null,
@@ -22,9 +21,6 @@ class Listing extends Component
     ];
 
     protected $queryString = [
-        'sortBy' => ['except' => 'name'],
-        'sortOrder' => ['except' => null],
-        'page' => ['except' => 1],
         'filters' => ['except' => [
             'search' => null,
             'status' => null,
