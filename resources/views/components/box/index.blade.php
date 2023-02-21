@@ -16,11 +16,9 @@
             <div class="pt-3 pb-4 px-3 flex flex-wrap items-center justify-between gap-2">
                 <div class="shrink-0 flex items-center gap-2">
                     @if($icon = $attributes->get('icon') ?? $attributes->get('header-icon'))
-                        <x-icon
-                            :name="is_string($icon) ? $icon : data_get($icon, 'name')"
-                            :size="is_string($icon) ? '16' : data_get($icon, 'size', '16')"
-                            :class="is_string($icon) ? null : data_get($icon, 'class')"
-                        />
+                        @if (str($icon)->is('*:*')) <x-icon :name="head(explode(':', $icon))" :class="last(explode(':', $icon))"/>
+                        @else <x-icon :name="$icon"/>
+                        @endif
                     @endif
 
                     <div class="font-bold md:text-lg">
