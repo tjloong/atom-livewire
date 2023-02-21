@@ -279,6 +279,7 @@ class InstallCommand extends Command
         else {
             Schema::create('contacts', function($table) {
                 $table->id();
+                $table->string('category')->nullable();
                 $table->string('type')->nullable();
                 $table->string('name')->nullable();
                 $table->string('email')->nullable();
@@ -294,7 +295,7 @@ class InstallCommand extends Command
                 $table->string('state')->nullable();
                 $table->string('country')->nullable();
                 $table->json('data')->nullable();
-                $table->foreignId('logo_id')->nullable()->constrained('files')->onDelete('set null');
+                $table->foreignId('avatar_id')->nullable()->constrained('files')->onDelete('set null');
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
                 $table->foreignId('owned_by')->nullable()->constrained('users')->onDelete('set null');
                 $table->timestamps();

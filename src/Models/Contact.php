@@ -17,13 +17,13 @@ class Contact extends Model
 
     protected $casts = [
         'data' => 'object',
-        'logo_id' => 'integer',
+        'avatar_id' => 'integer',
     ];
 
     /**
-     * Get logo for contact
+     * Get avatar for contact
      */
-    public function logo()
+    public function avatar()
     {
         return $this->belongsTo(get_class(model('file')));
     }

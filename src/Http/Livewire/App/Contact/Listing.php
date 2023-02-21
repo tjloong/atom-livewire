@@ -4,28 +4,37 @@ namespace Jiannius\Atom\Http\Livewire\App\Contact;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
-    use WithPagination;
     use WithTable;
 
-    public $type;
-    public $sortBy = 'updated_at';
-    public $sortOrder = 'desc';
+    public $category;
+    public $sort = 'created_at,desc';
     public $filters = [
         'search' => null,
+    ];
+
+    protected $queryString = [
+        'filters' => ['except' => [
+            'search' => null,
+        ]],
     ];
 
     /**
      * Mount
      */
-    public function mount($type)
+    public function mount()
     {
-        $this->type = $type;
+        breadcrumbs()->home($this->title);
+    }
 
-        breadcrumbs()->home(str()->title(str()->plural($type)));
+    /**
+     * Get title property
+     */
+    public function getTitleProperty()
+    {
+        return str($this->category)->plural()->title()->toString();
     }
 
     /**
@@ -38,7 +47,7 @@ class Listing extends Component
                 model('contact')->enabledHasTenantTrait,
                 fn($q) => $q->belongsToTenant(),
             )
-            ->where('type', $this->type)
+            ->where('category', $this->category)
             ->filter($this->filters)
             ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate($this->maxRows)
@@ -48,7 +57,7 @@ class Listing extends Component
                     'column_sort' => 'name',
                     'label' => $contact->name,
                     'href' => route('app.contact.view', [$contact->id]),
-                    'avatar' => optional($contact->logo)->url,
+                    'avatar' => optional($contact->avatar)->url,
                     'small' => empty($small) ? __('No contact number') : $small,
                 ],
                 [

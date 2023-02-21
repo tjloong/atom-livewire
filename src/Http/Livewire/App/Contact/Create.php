@@ -6,19 +6,29 @@ use Livewire\Component;
 
 class Create extends Component
 {
+    public $category;
     public $contact;
 
     /**
      * Mount
      */
-    public function mount($type = null)
+    public function mount()
     {
         $this->contact = model('contact')->fill([
-            'type' => $type,
+            'category' => $this->category,
+            'type' => 'person',
             'country' => 'MY',
         ]);
 
-        breadcrumbs()->push('Create '.str()->title($type));
+        breadcrumbs()->push($this->title);
+    }
+
+    /**
+     * Get title property
+     */
+    public function getTitleProperty()
+    {
+        return 'Create '.str($this->contact->category)->title()->toString();
     }
 
     /**

@@ -1,12 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Contact;
+namespace Jiannius\Atom\Http\Livewire\App\Contact\Person;
 
 use Livewire\Component;
 
-class Update extends Component
+class Create extends Component
 {
     public $contact;
+    public $person;
 
     /**
      * Mount
@@ -18,15 +19,11 @@ class Update extends Component
             fn($q) => $q->belongsToTenant(),
         )->findOrFail($contactId);
 
-        breadcrumbs()->push($this->title);
-    }
+        $this->person = model('contact_person')->fill([
+            'contact_id' => $this->contact->id,
+        ]);
 
-    /**
-     * Get title property
-     */
-    public function getTitleProperty()
-    {
-        return str()->headline('Update '.$this->contact->type);
+        breadcrumbs()->push('Create Contact Person');
     }
 
     /**
@@ -34,6 +31,6 @@ class Update extends Component
      */
     public function render()
     {
-        return atom_view('app.contact.update');
+        return atom_view('app.contact.person.create');
     }
 }

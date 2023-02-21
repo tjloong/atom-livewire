@@ -1,32 +1,37 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Contact;
+namespace Jiannius\Atom\Http\Livewire\App\Contact\Person;
 
 use Livewire\Component;
 
 class Update extends Component
 {
     public $contact;
+    public $person;
 
     /**
      * Mount
      */
-    public function mount($contactId)
+    public function mount($contactId, $personId)
     {
         $this->contact = model('contact')->when(
             model('contact')->enabledHasTenantTrait,
             fn($q) => $q->belongsToTenant(),
         )->findOrFail($contactId);
 
-        breadcrumbs()->push($this->title);
+        $this->person = $this->contact->persons()->findOrFail($personId);
+
+        breadcrumbs()->push('Update');
     }
 
     /**
-     * Get title property
+     * Delete
      */
-    public function getTitleProperty()
+    public function delete()
     {
-        return str()->headline('Update '.$this->contact->type);
+        $this->person->delete();
+
+        return breadcrumbs()->back();
     }
 
     /**
@@ -34,6 +39,6 @@ class Update extends Component
      */
     public function render()
     {
-        return atom_view('app.contact.update');
+        return atom_view('app.contact.person.update');
     }
 }

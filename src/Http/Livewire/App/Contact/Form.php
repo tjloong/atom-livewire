@@ -1,12 +1,12 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Contact\Form;
+namespace Jiannius\Atom\Http\Livewire\App\Contact;
 
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class Info extends Component
+class Form extends Component
 {
     use WithFile;
     use WithPopupNotify;
@@ -17,9 +17,10 @@ class Info extends Component
     /**
      * Validation rules
      */
-    public function rules()
+    protected function rules()
     {
         $rules = [
+            'contact.category' => 'required',
             'contact.type' => 'required',
             'contact.name' => 'required',
             'contact.email' => 'nullable',
@@ -34,7 +35,7 @@ class Info extends Component
             'contact.zip' => 'nullable',
             'contact.state' => 'nullable',
             'contact.country' => 'nullable',
-            'contact.logo_id' => 'nullable',
+            'contact.avatar_id' => 'nullable',
             'contact.owned_by' => 'nullable',
         ];
 
@@ -58,14 +59,15 @@ class Info extends Component
     /**
      * Validation messages
      */
-    public function messages()
+    protected function messages()
     {
         return [
-            'contact.type.required' => __('Contact type is required.'),
-            'contact.name.required' => __('Contact name is required.'),
-            'fields.*.value.required' => __('This field is required.'),
-            'fields.*.value.min' => __('This field must have at least 1 item.'),
-            'fields.*.value.max' => __('This field must not have more than 2 items.'),
+            'contact.category.required' => 'Contact category is required.',
+            'contact.type.required' => 'Contact type is required.',
+            'contact.name.required' => 'Contact name is required.',
+            'fields.*.value.required' => 'This field is required.',
+            'fields.*.value.min' => 'This field must have at least 1 item.',
+            'fields.*.value.max' => 'This field must not have more than 2 items.',
         ];
     }
 
@@ -127,16 +129,6 @@ class Info extends Component
     }
 
     /**
-     * Persist
-     */
-    public function persist()
-    {
-        $this->contact->fill([
-            'data' => ['fields' => $this->fields],
-        ])->save();
-    }
-
-    /**
      * Submit
      */
     public function submit()
@@ -150,10 +142,20 @@ class Info extends Component
     }
 
     /**
+     * Persist
+     */
+    public function persist()
+    {
+        $this->contact->fill([
+            'data' => ['fields' => $this->fields],
+        ])->save();
+    }
+
+    /**
      * Render
      */
     public function render()
     {
-        return atom_view('app.contact.form.info');
+        return atom_view('app.contact.form');
     }
 }

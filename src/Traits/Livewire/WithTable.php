@@ -12,6 +12,44 @@ trait WithTable
     public $checkboxes = [];
 
     /**
+     * Initialize the trait
+     * 
+     * @return void
+     */
+    protected function initializeWithTable()
+    {
+        $this->queryString = array_merge(
+            $this->queryString, 
+            ['page' => ['except' => 1]],
+            isset($this->sort) ? ['sort' => ['except' => $this->sort]] : [],
+        );
+    }
+
+    /**
+     * Get sort by property
+     */
+    public function getSortByProperty()
+    {
+        if (!$this->sort) return;
+
+        $split = explode(',', $this->sort);
+
+        return $split[0];
+    }
+
+    /**
+     * Get sort order property
+     */
+    public function getSortOrderProperty()
+    {
+        if (!$this->sort) return;
+
+        $split = explode(',', $this->sort);
+
+        return $split[1] ?? 'asc';
+    }
+
+    /**
      * Updated filters
      */
     public function updatedFilters()

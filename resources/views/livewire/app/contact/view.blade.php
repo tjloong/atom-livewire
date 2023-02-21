@@ -1,14 +1,12 @@
-<div class="max-w-screen-xl mx-auto">
+<div class="{{ count($this->tabs) ? 'max-w-screen-xl' : 'max-w-screen-md' }} mx-auto">
     <x-page-header back>
         <x-slot:title>
             <div class="flex items-center gap-3">
-                <x-thumbnail 
-                    :url="optional($contact->logo)->url" 
+                <x-thumbnail size="60" circle color="random"
+                    :url="optional($contact->avatar)->url" 
                     :placeholder="$contact->name"
-                    size="60"
-                    circle
-                    color="random"
                 />
+
                 <div>
                     <div class="text-2xl font-bold">{{ $contact->name }}</div>
                     <div class="text-gray-500">{{ $contact->email }}</div>
@@ -17,19 +15,6 @@
         </x-slot:title>
 
         <div class="flex items-center gap-2">
-            <x-dropdown>
-                <x-slot:anchor>
-                    <x-button color="gray" 
-                        label="Create..." 
-                        :icon="['name' => 'chevron-down', 'position' => 'right']"
-                    />
-                </x-slot:anchor>
-
-                <x-dropdown.item label="Contact Person" 
-                    wire:click="$emitTo('{{ lw('app.contact.form.person-modal') }}', 'open')"
-                />
-            </x-dropdown>
-    
             @can('contact.update')
                 <x-button color="gray"
                     label="Edit"
@@ -47,10 +32,11 @@
     </x-page-header>
     
     <div class="flex flex-col gap-6 md:flex-row">
-        <div class="md:w-1/3">
-            <x-box class="rounded-lg">
+        <div class="{{ count($this->tabs) ? 'md:w-1/3' : 'w-full' }}">
+            <x-box>
                 <div class="grid divide-y">
                     @foreach (collect([
+                        'Type' => str($contact->type)->title(),
                         'Email' => $contact->email,
                         'Phone' => $contact->phone,
                         'Fax' => $contact->fax,
@@ -80,9 +66,9 @@
             </x-box>
         </div>
 
-        <div class="md:w-2/3">
-            <div class="flex flex-col gap-6">
-                @if ($this->tabs)
+        @if (count($this->tabs))
+            <div class="md:w-2/3">
+                <div class="flex flex-col gap-6">
                     <x-tab wire:model="tab">
                         @foreach ($this->tabs as $item)
                             <x-tab.item 
@@ -93,12 +79,16 @@
                             />
                         @endforeach
                     </x-tab>
-                @endif
 
-                @if ($tab)
-                    @livewire(lw('app.contact.view.'.$tab), compact('contact'), key($tab))
-                @endif
+                    @if ($com = collect($this->tabs)->firstWhere('slug', $tab))
+                        @livewire(
+                            lw(data_get($com, 'livewire')), 
+                            compact('contact'), 
+                            key($tab)
+                        )
+                    @endif
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>

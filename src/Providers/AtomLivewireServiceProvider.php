@@ -92,10 +92,12 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.contact.listing' => 'App\Contact\Listing',
             'atom.app.contact.create' => 'App\Contact\Create',
             'atom.app.contact.update' => 'App\Contact\Update',
-            'atom.app.contact.view' => 'App\Contact\View\Index',
-            'atom.app.contact.view.person' => 'App\Contact\View\Person',
-            'atom.app.contact.form.info' => 'App\Contact\Form\Info',
-            'atom.app.contact.form.person-modal' => 'App\Contact\Form\PersonModal',
+            'atom.app.contact.form' => 'App\Contact\Form',
+            'atom.app.contact.view' => 'App\Contact\View',
+            'atom.app.contact.person.listing' => 'App\Contact\Person\Listing',
+            'atom.app.contact.person.create' => 'App\Contact\Person\Create',
+            'atom.app.contact.person.update' => 'App\Contact\Person\Update',
+            'atom.app.contact.person.form' => 'App\Contact\Person\Form',
 
             // product
             'atom.app.product.listing' => 'App\Product\Listing',
