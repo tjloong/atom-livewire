@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Preferences;
+namespace Jiannius\Atom\Http\Livewire\App\Tax;
 
 use Livewire\Component;
 
-class Tax extends Component
+class Listing extends Component
 {
     public $onboarding;
 
@@ -27,29 +27,10 @@ class Tax extends Component
     }
 
     /**
-     * Open
-     */
-    public function open($id = null)
-    {
-        $this->emitTo(lw('app.settings.system.tax-form-modal'), 'open', $id);
-    }
-
-    /**
-     * Delete
-     */
-    public function delete($id)
-    {
-        optional($this->taxes->firstWhere('id', $id))->delete();
-
-        $this->emit('refresh');
-        $this->dispatchBrowserEvent('tax-form-modal-close');
-    }
-
-    /**
      * Render
      */
     public function render()
     {
-        return atom_view('app.preferences.tax');
+        return atom_view('app.tax.listing');
     }
 }

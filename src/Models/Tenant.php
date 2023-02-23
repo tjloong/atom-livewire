@@ -10,7 +10,30 @@ class Tenant extends Model
     use HasFilters;
     
     protected $guarded = [];
-    protected $casts = [];
+
+    protected $casts = [
+        'avatar_id' => 'integer',
+    ];
+
+    /**
+     * Model booted
+     */
+    protected static function booted()
+    {
+        static::saved(function($tenant) {
+            if (($sess = session('tenant')) && $sess->id === $tenant->id) {
+                session()->forget('tenant');
+            }
+        });
+    }
+
+    /**
+     * Get avatar for tenant
+     */
+    public function avatar()
+    {
+        return $this->belongsTo(model('file'), 'avatar_id');
+    }
 
     /**
      * Get users for tenant
@@ -20,29 +43,13 @@ class Tenant extends Model
         return $this->belongsToMany(model('user'), 'tenant_users');
     }
 
-    // /**
-    //  * Get subscriptions for account
-    //  */
-    // public function subscriptions()
-    // {
-    //     return $this->hasMany(model('account_subscription'));
-    // }
-
-    // /**
-    //  * Get orders for account
-    //  */
-    // public function orders()
-    // {
-    //     return $this->hasMany(get_class(model('account_order')));
-    // }
-
-    // /**
-    //  * Get payments for account
-    //  */
-    // public function payments()
-    // {
-    //     return $this->hasMany(get_class(model('account_payment')));
-    // }
+    /**
+     * Get settings for tenant
+     */
+    public function settings()
+    {
+        return $this->hasMany(model('tenant_setting'));
+    }
 
     /**
      * Scope for fussy search
@@ -55,31 +62,11 @@ class Tenant extends Model
         );
     }
 
-    // /**
-    //  * Check account has plan
-    //  */
-    // public function hasPlan($id)
-    // {
-    //     if (!enabled_module('plans')) return false;
-
-    //     return $this->subscriptions()
-    //         ->status('active')
-    //         ->when(is_numeric($id), 
-    //             fn($q) => $q->whereHas('planPrice', fn($q) => $q->where('plan_prices.plan_id', $id)),
-    //             fn($q) => $q->whereHas('planPrice', fn($q) => $q->whereHas('plan', fn($q) => 
-    //                 $q->where('plans.slug', $id)
-    //             ))
-    //         )
-    //         ->count() > 0;
-    // }
-
-    // /**
-    //  * Check account has plan price
-    //  */
-    // public function hasPlanPrice($id)
-    // {
-    //     if (!enabled_module('plans')) return false;
-
-    //     return $this->subscriptions()->status('active')->where('plan_price_id', $id)->count() > 0;
-    // }
+    /**
+     * Get owner attribute
+     */
+    public function getOwnerAttribute()
+    {
+        return $this->users()->wherePivot('is_owner', true)->first();
+    }
 }

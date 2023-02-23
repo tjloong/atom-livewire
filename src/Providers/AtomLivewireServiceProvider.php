@@ -61,6 +61,12 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.role.update' => 'App\Role\Update',
             'atom.app.role.form' => 'App\Role\Form',
 
+            // tax
+            'atom.app.tax.listing' => 'App\Tax\Listing',
+            'atom.app.tax.create' => 'App\Tax\Create',
+            'atom.app.tax.update' => 'App\Tax\Update',
+            'atom.app.tax.form' => 'App\Tax\Form',
+
             // billing
             'atom.app.billing.view' => 'App\Billing\View',
             'atom.app.billing.plan' => 'App\Billing\Plan',
@@ -198,8 +204,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.preferences.label' => 'App\Preferences\Label\Index',
             'atom.app.preferences.label.children' => 'App\Preferences\Label\Children',
             'atom.app.preferences.label.form-modal' => 'App\Preferences\Label\FormModal',
-            'atom.app.preferences.tax' => 'App\Preferences\Tax',
-            'atom.app.preferences.tax-form-modal' => 'App\Preferences\TaxFormModal',
         ];
 
         foreach ($components as $name => $class) {

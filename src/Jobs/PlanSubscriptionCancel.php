@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class CancelAccountSubscription implements ShouldQueue
+class PlanSubscriptionCancel implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -33,7 +33,7 @@ class CancelAccountSubscription implements ShouldQueue
     public function handle()
     {
         $stripeSubscriptionId = data_get($this->params, 'subscription_id');
-        $subscriptions = model('account_subscription')
+        $subscriptions = model('plan_subscription')
             ->where('data->stripe_subscription_id', $stripeSubscriptionId)
             ->get();
 

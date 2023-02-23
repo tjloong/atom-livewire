@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Components\Form;
+namespace Jiannius\Atom\Components\Form\Select;
 
 use Illuminate\View\Component;
 
@@ -11,6 +11,6 @@ class Currency extends Component
      */
     public function render()
     {
-        return view('atom::components.form.currency');
+        return view('atom::components.form.select.currency');
     }
 }

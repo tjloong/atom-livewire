@@ -209,34 +209,55 @@ function breadcrumbs()
 /**
  * Tenant
  */
-function tenant($attr)
+function tenant($attr = null, $default = null, $tenant = null)
 {
-    // if (
-    //     config('atom.static_site')
-    //     || !auth()->user()
-    //     || !auth()->user()->tenant
-    // ) return $default;
+    if (!enabled_module('tenants')) return;
 
-    // $settings = auth()->user()->tenant->settings;
+    if (!$tenant) {
+        if (!session('tenant')) {
+            session([
+                'tenant' => model('tenant')
+                    ->whereHas('users', fn($q) => $q->where('users.id', user('id')))
+                    ->when(user('pref.tenant'), fn($q, $id) => $q->where('id', $id))
+                    ->oldest()
+                    ->first(),
+            ]);
+        }
+    
+        $tenant = session('tenant');
+    }
 
-    // if (is_string($name)) {
-    //     $col = head(explode('.', $name));
-    //     $name = str($name)->replaceFirst($col, str()->replace('-', '_', $col))->toString();
+    if ($attr === 'settings') {
+        return $tenant->settings->mapWithKeys(fn($setting) => [
+            $setting->key => $setting->value,
+        ]);
+    }
+    else if (is_string($attr)) {
+        if (str($attr)->is('settings.*')) {
+            $key = str($attr)->replaceFirst('settings.', '')->toString();
+            $settings = $tenant->settings()->where('key', $key)->first();
+    
+            return json_decode(json_encode(optional($settings)->value ?? $default), true);
+        }
+        else {
+            return data_get($tenant, $attr, $default);
+        }
+    }
+    else if (is_array($attr)) {
+        foreach ($attr as $key => $val) {
+            if (str($key)->is('settings.*')) {
+                $key = str($key)->replaceFirst('settings.', '')->toString();
 
-    //     if ($col === 'default_currency') {
-    //         $currencies = data_get($settings, 'currencies', []);
-    //         $value = collect($currencies)->where('default', true)->first() 
-    //             ?? collect($currencies)->first();
-                
-    //         return is_string($value) ? $value : data_get($value, 'currency');
-    //     }
-    //     else {
-    //         return json_decode(json_encode(
-    //             data_get($settings, $name, $default)
-    //         ), true);
-    //     }
-    // }
-    // else $settings->fill($name)->save();
+                $tenant->settings()->where('key', $key)->get()->each(fn($setting) => 
+                    $setting->fill(['value' => $val])->save()
+                );
+            }
+            else $tenant->fill([$key => $val])->save();
+        }
+    }
+    else {
+        return $tenant;
+    }
 }
 
 /**
@@ -515,6 +536,14 @@ function uncurrency($string)
     $removedThousandSeparator = preg_replace('/(\.|,)(?=[0-9]{3,}$)/', '',  $stringWithCommaOrDot);
 
     return (float) str_replace(',', '.', $removedThousandSeparator);
+}
+
+/**
+ * Check authenticated user tier
+ */
+function tier($name)
+{
+    return user()->isTier($name);
 }
 
 /**

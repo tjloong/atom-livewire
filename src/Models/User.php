@@ -208,6 +208,40 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Check user has plan
+     */
+    public function hasPlan($plan)
+    {
+        if (!enabled_module('plans')) return false;
+
+        $plan = is_numeric($plan) 
+            ? model('plan')->find($plan) 
+            : (is_string($plan) ? model('plan')->where('slug', $plan)->first() : $plan);
+
+        return model('plan_subscription')
+            ->status('active')
+            ->whereHas('price', fn($q) => $q->whereHas('plan', fn($q) => 
+                $q->where('plans.id', $plan->id)->orWhere('plans.slug', $plan->slug)
+            ))
+            ->count() > 0;
+    }
+
+    /**
+     * Check user has plan price
+     */
+    public function hasPlanPrice($price)
+    {
+        if (!enabled_module('plans')) return false;
+
+        $price = is_numeric($price) ? model('plan_price')->find($price) : $price;
+
+        return model('plan_subscription')
+            ->status('active')
+            ->where('plan_price_id', $price->id)
+            ->count() > 0;
+    }
+
+    /**
      * Invite user to activate account
      */
     public function sendActivation()

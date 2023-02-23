@@ -5,6 +5,7 @@ namespace Jiannius\Atom\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class InstallCommand extends Command
 {
@@ -47,6 +48,7 @@ class InstallCommand extends Command
         'shareables',
         'contacts',
         'documents',
+        'tenants',
     ];
 
     /**
@@ -125,6 +127,59 @@ class InstallCommand extends Command
         $value = $enabled->unique()->values()->all();
 
         $query->update(['value' => json_encode($value)]);
+    }
+
+    /**
+     * Install tenants
+     */
+    private function installTenants()
+    {
+        $this->newLine();
+        $this->info('Installing tenants table...');
+
+        if (Schema::hasTable('tenants')) $this->warn('tenants table exists, skipped.');
+        else {
+            Schema::create('tenants', function(Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('email')->nullable();
+                $table->string('phone')->nullable();
+                $table->string('fax')->nullable();
+                $table->string('website')->nullable();
+                $table->string('brn')->nullable();
+                $table->text('address_1')->nullable();
+                $table->text('address_2')->nullable();
+                $table->string('city')->nullable();
+                $table->string('zip')->nullable();
+                $table->string('state')->nullable();
+                $table->string('country')->nullable();
+                $table->foreignId('avatar_id')->nullable()->constrained('files')->onDelete('set null');
+                $table->timestamps();
+            });
+
+            Schema::create('tenant_settings', function (Blueprint $table) {
+                $table->id();
+                $table->string('key')->indexed();
+                $table->json('value')->nullable();
+                $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            });
+
+            Schema::create('tenant_users', function (Blueprint $table) {
+                $table->id();
+                $table->boolean('is_owner')->nullable();
+                $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade');
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+                $table->timestamp('invited_at')->nullable();
+                $table->timestamp('accepted_at')->nullable();
+                $table->timestamps();
+                $table->timestamp('blocked_at')->nullable();
+                $table->timestamp('deleted_at')->nullable();
+                $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            });    
+        }
     }
 
     /**
@@ -532,7 +587,7 @@ class InstallCommand extends Command
                 $table->string('currency')->nullable();
                 $table->decimal('amount', 20, 2)->nullable();
                 $table->json('data')->nullable();
-                $table->foreignId('user_id')->constrained()->onDelete('cascade');
+                $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
                 $table->timestamps();
             });
 
@@ -570,7 +625,7 @@ class InstallCommand extends Command
                 $table->foreignId('plan_order_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamp('provisioned_at')->nullable();
                 $table->timestamps();
-                $table->foreignId('created_by')->constrained()->onDelete('set null');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             });
 
             $this->line('plan_payments table created successfully.');

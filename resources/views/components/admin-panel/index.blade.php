@@ -110,16 +110,18 @@
         </div>
     
         @if ($unverified)
-            <div x-data class="shrink-0 py-3 px-4 bg-yellow-100 shadow">
-                <div class="md:flex md:items-center md:space-x-2">
-                    <x-icon name="error" class="flex-shrink-0 text-yellow-400"/>
-                    <div class="flex-grow font-medium text-yellow-600">
-                        We have sent a verification link to <span class="font-semibold">{{ request()->user()->email }}</span>, please click on the link to verify it.
+            <div x-data class="shrink-0 py-3 px-4 bg-yellow-100">
+                <div class="flex flex-wrap items-center gap-2">
+                    <x-icon name="triangle-exclamation" class="shrink-0 text-yellow-400"/>
+                    <div class="font-medium text-yellow-600">
+                        {{ __('We have sent a verification link to :email, please click on the link to verify it.', [
+                            'email' => user('email'),
+                        ]) }}
                     </div>
+                    <a href="{{ route('verification.send') }}" class="text-sm">
+                        {{ __('Resend verification link') }}
+                    </a>
                 </div>
-                <a href="{{ route('verification.send') }}" class="text-sm md:ml-8">
-                    Resend verification link
-                </a>
             </div> 
         @endif
 

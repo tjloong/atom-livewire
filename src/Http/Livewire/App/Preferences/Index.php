@@ -43,11 +43,6 @@ class Index extends Component
                     'name' => 'app.preferences.label',
                     'data' => ['type' => 'blog-category'],
                 ]],
-                ['slug' => 'document-label', 'label' => 'Document Labels', 'disabled' => !enabled_module('documents'), 'livewire' => [
-                    'name' => 'app.preferences.label',
-                    'data' => ['type' => 'document', 'header' => 'Document Labels'],
-                ]],
-                ['slug' => 'tax', 'label' => 'Taxes', 'disabled' => !enabled_module('taxes')],
             ]],
         ];
     }

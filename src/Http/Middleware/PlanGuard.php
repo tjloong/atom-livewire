@@ -26,7 +26,7 @@ class PlanGuard
                     ->filter(fn($key) => collect($routeGuard[$key])->search($route) !== false)
                     ->values();
 
-                $subscribedPlans = $mustHavePlans->filter(fn($val) => $request->user()->hasPlan($val)); 
+                $subscribedPlans = $mustHavePlans->filter(fn($val) => $request->user()->hasPlan($val));
 
                 if (!$subscribedPlans->count() && !$request->user()->is_root) {
                     if (Route::has('app.billing.plan')) return redirect()->route('app.billing.plan');

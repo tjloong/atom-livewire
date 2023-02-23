@@ -112,7 +112,7 @@ class Dashboard extends Component
      */
     public function getChartDateRangeBreakdown($eloq = null)
     {
-        $from = data_get($this->dateRange, 'from')->setTimezone(tenant_settings('timezone'));
+        $from = data_get($this->dateRange, 'from')->setTimezone(user('pref.timezone'));
         $breakdown = [];
 
         $interval = 'daily';

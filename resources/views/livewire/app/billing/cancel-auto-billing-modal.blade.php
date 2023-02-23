@@ -39,7 +39,7 @@
                     label="Cancel Auto Billing"
                     :href="route('__stripe.cancel-subscription', [
                         'subscription_id' => $this->stripeSubscriptionId,
-                        'job' => 'CancelAccountSubscription',
+                        'job' => 'PlanSubscriptionCancel',
                     ])"
                 />
     
