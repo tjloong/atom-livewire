@@ -31,12 +31,4 @@ class Team extends Model
             ->orWhereHas('users', fn($q) => $q->search($search))
         );
     }
-
-    /**
-     * Scope for assignable
-     */
-    public function assignable($query)
-    {
-        return $query;
-    }
 }

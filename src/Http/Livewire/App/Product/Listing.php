@@ -35,51 +35,53 @@ class Listing extends Component
     }
 
     /**
-     * Get products property
+     * Get query property
      */
-    public function getProductsProperty()
+    public function getQueryProperty()
     {
         return model('product')
-            ->when(
-                model('product')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
-            ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows)
-            ->through(fn($product) => [
-                [
-                    'column_name' => 'Code',
-                    'column_sort' => 'code',
-                    'label' => $product->code ?? '--',
-                    'href' => $product->code ? route('app.product.update', [$product->id]) : null,
-                ],
-                [
-                    'column_name' => 'Product',
-                    'column_sort' => 'name',
-                    'label' => $product->name,
-                    'href' => route('app.product.update', [$product->id]),
-                    'small' => $product->type === 'variant'
-                        ? __(':count '.str('variant')->plural($product->variants->count()), [
-                            'count' => $product->variants->count()
-                        ])
-                        : null
-                ],
-                [
-                    'active' => $product->is_active,
-                ],
-                [
-                    'column_name' => 'Category',
-                    'tags' => $product->categories->pluck('name.'.app()->currentLocale()),
-                ],
-                [
-                    'column_name' => 'Price',
-                    'column_sort' => 'price',
-                    'column_class' => 'text-right',
-                    'amount' => $product->price,
-                    'class' => 'text-right',
-                ],
-            ]);
+            ->readable()
+            ->filter($this->filters);
+    }
+
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query)
+    {
+        return [
+            [
+                'column_name' => 'Code',
+                'column_sort' => 'code',
+                'label' => $query->code ?? '--',
+                'href' => $query->code ? route('app.product.update', [$query->id]) : null,
+            ],
+            [
+                'column_name' => 'Product',
+                'column_sort' => 'name',
+                'label' => $query->name,
+                'href' => route('app.product.update', [$query->id]),
+                'small' => $query->type === 'variant'
+                    ? __(':count '.str('variant')->plural($query->variants->count()), [
+                        'count' => $query->variants->count()
+                    ])
+                    : null
+            ],
+            [
+                'active' => $query->is_active,
+            ],
+            [
+                'column_name' => 'Category',
+                'tags' => $query->categories->pluck('name.'.app()->currentLocale()),
+            ],
+            [
+                'column_name' => 'Price',
+                'column_sort' => 'price',
+                'column_class' => 'text-right',
+                'amount' => $query->price,
+                'class' => 'text-right',
+            ],
+        ];
     }
 
     /**

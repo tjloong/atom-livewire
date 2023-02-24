@@ -1,11 +1,11 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\System;
+namespace Jiannius\Atom\Http\Livewire\App\File;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class FileFormModal extends Component
+class FormModal extends Component
 {
     use WithPopupNotify;
 
@@ -31,7 +31,7 @@ class FileFormModal extends Component
     protected function messages()
     {
         return [
-            'file.name.required' => __('File name is required.'),
+            'file.name.required' => 'File name is required.',
         ];
     }
 
@@ -73,6 +73,6 @@ class FileFormModal extends Component
      */
     public function render()
     {
-        return atom_view('app.settings.system.file-form-modal');
+        return atom_view('app.file.form-modal');
     }
 }

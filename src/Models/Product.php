@@ -24,7 +24,7 @@ class Product extends Model
      */
     public function taxes()
     {
-        return $this->belongsToMany(get_class(model('tax')), 'product_taxes');
+        return $this->belongsToMany(model('tax'), 'product_taxes');
     }
 
     /**
@@ -32,7 +32,7 @@ class Product extends Model
 	 */
 	public function images()
 	{
-		return $this->belongsToMany(get_class(model('file')), 'product_images')->withPivot('seq');
+		return $this->belongsToMany(model('file'), 'product_images')->withPivot('seq');
 	}
 
     /**
@@ -40,7 +40,7 @@ class Product extends Model
      */
     public function categories()
     {
-        return $this->belongsToMany(get_class(model('label')), 'product_categories');
+        return $this->belongsToMany(model('label'), 'product_categories');
     }
 
     /**
@@ -48,7 +48,7 @@ class Product extends Model
      */
     public function variants()
     {
-        return $this->hasMany(get_class(model('product_variant')));
+        return $this->hasMany(model('product_variant'));
     }
 
     /**
@@ -85,10 +85,7 @@ class Product extends Model
         while ($dup) {
             $code = str()->upper(str()->random(6));
             $dup = model('product')
-                ->when(
-                    $this->enabledHasTenantTrait, 
-                    fn($q) => $q->belongsToTenant()
-                )
+                ->readable()
                 ->where('code', $code)
                 ->count() > 0;
         }

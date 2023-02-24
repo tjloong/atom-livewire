@@ -6,5 +6,8 @@
         />
     </x-page-header>
 
-    @livewire(lw('app.role.form'), compact('role'))
+    <div class="flex flex-col gap-6">
+        @livewire(lw('app.role.form'), compact('role'))
+        @livewire(lw('app.permission.form'), compact('role'))
+    </div>
 </div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Role;
+namespace Jiannius\Atom\Http\Livewire\App\Team;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
@@ -9,7 +9,7 @@ class Form extends Component
 {
     use WithPopupNotify;
 
-    public $role;
+    public $team;
 
     /**
      * Validation rules
@@ -17,14 +17,15 @@ class Form extends Component
     protected function rules()
     {
         return [
-            'role.name' => [
+            'team.name' => [
                 'required',
-                function ($attr, $value, $fail) {
-                    if (model('role')->readable()->where('name', $value)->count()) {
-                        $fail('There is another role with the same name.');
+                function($attr, $value, $fail) {
+                    if (model('team')->readable()->where('name', $value)->count()) {
+                        $fail('There is another team with the same name.');
                     }
                 },
             ],
+            'team.description' => 'nullable',
         ];
     }
 
@@ -34,7 +35,7 @@ class Form extends Component
     protected function messages()
     {
         return [
-            'role.name.required' => 'Role name is required.',
+            'team.name.required' => 'Team name is required.',
         ];
     }
 
@@ -46,9 +47,7 @@ class Form extends Component
         $this->resetValidation();
         $this->validate();
 
-        if ($this->role->isDirty('name')) $this->role->fill(['slug' => null]);
-
-        $this->role->save();
+        $this->team->save();
 
         return breadcrumbs()->back();
     }
@@ -58,6 +57,6 @@ class Form extends Component
      */
     public function render()
     {
-        return atom_view('app.role.form');
+        return atom_view('app.team.form');
     }
 }

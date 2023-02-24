@@ -3,9 +3,9 @@
         <x-button label="New Product" :href="route('app.product.create')"/>
     </x-page-header>
 
-    <x-table :data="$this->products->items()">
+    <x-table :data="$this->paginator->items()">
         <x-slot:header>
-            <x-table.searchbar :total="$this->products->total()"/>
+            <x-table.searchbar :total="$this->paginator->total()"/>
 
             <x-table.toolbar>
                 <div class="flex items-center gap-2">
@@ -31,5 +31,5 @@
         </x-slot:header>
     </x-table>
 
-    {!! $this->products->links() !!}
+    {!! $this->paginator->links() !!}
 </div>

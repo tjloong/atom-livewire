@@ -13,12 +13,9 @@ class Update extends Component
      */
     public function mount($taxId)
     {
-        $this->tax = model('tax')->when(
-            model('tax')->enabledHasTenantTrait,
-            fn($q) => $q->belongsToTenant(),
-        )->findOrFail($taxId);
+        $this->tax = model('tax')->readable()->findOrFail($taxId);
 
-        breadcrumbs()->push($this->tax->name);
+        breadcrumbs()->push($this->tax->label);
     }
 
     /**

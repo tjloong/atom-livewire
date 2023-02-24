@@ -8,7 +8,6 @@ use Jiannius\Atom\Traits\Models\HasCurrency;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasShareable;
 use Jiannius\Atom\Traits\Models\HasTrace;
-use Jiannius\Atom\Traits\Models\HasVisibility;
 
 class Document extends Model
 {
@@ -17,7 +16,6 @@ class Document extends Model
     use HasFilters;
     use HasShareable;
     use HasTrace;
-    use HasVisibility;
 
     protected $guarded = [];
 

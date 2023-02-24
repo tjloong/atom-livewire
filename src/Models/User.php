@@ -12,7 +12,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
-use Jiannius\Atom\Traits\Models\HasVisibility;
 use Jiannius\Atom\Notifications\UserActivationNotification;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -21,7 +20,6 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasFactory;
     use HasFilters;
     use HasTrace;
-    use HasVisibility;
     use Notifiable;
     use SoftDeletes;
 
@@ -39,9 +37,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_active_at' => 'datetime',
         'email_verified_at' => 'datetime',
     ];
-
-    public $enableDataVisibility = false;
-    public $enableRootEdit = false;
 
     /**
      * Model boot
@@ -83,7 +78,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('permissions')) return;
 
-        return $this->hasMany(model('user_permission'));
+        return $this->hasMany(model('permission'));
     }
     
     /**
@@ -201,7 +196,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return collect((array)$names)->filter(function($name) {
             $substr = str()->slug(str_replace('*', '', $name));
 
-            if (str()->startsWith($name, '*')) return str()->endsWith($this->role->slug, $substr);
+            if ($name === 'admin') return in_array($this->role->slug, ['admin', 'administrator']);
+            else if (str()->startsWith($name, '*')) return str()->endsWith($this->role->slug, $substr);
             else if (str()->endsWith($name, '*')) return str()->startsWith($this->role->slug, $substr);
             else return $this->role->slug === $name;
         })->count() > 0;

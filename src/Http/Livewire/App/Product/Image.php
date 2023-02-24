@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Product\Form;
+namespace Jiannius\Atom\Http\Livewire\App\Product;
 
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Livewire\Component;
@@ -67,6 +67,6 @@ class Image extends Component
      */
     public function render()
     {
-        return atom_view('app.product.form.image');
+        return atom_view('app.product.image');
     }
 }

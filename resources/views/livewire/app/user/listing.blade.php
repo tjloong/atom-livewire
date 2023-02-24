@@ -1,5 +1,5 @@
 <div class="max-w-screen-xl mx-auto">
-    <x-table :data="$this->users->items()">
+    <x-table :data="$this->paginator->items()">
         <x-slot:header>
             <x-table.header :label="data_get($params, 'title') ?? data_get($params, 'header') ?? 'Users'">
                 <x-button size="sm" color="gray"
@@ -8,7 +8,7 @@
                 />
             </x-table.header>
 
-            <x-table.searchbar :total="$this->users->total()"/>
+            <x-table.searchbar :total="$this->paginator->total()"/>
 
             <x-table.toolbar>
                 <div class="flex items-center gap-2">
@@ -23,9 +23,9 @@
     
                     @module('roles')
                         <x-form.select
-                            wire:model="filters.role_id"
-                            :options="model('role')->assignable()->get()->map(fn($role) => [
-                                'value' => (string)$role->id,
+                            wire:model="filters.is_role"
+                            :options="model('role')->readable()->get()->map(fn($role) => [
+                                'value' => $role->slug,
                                 'label' => $role->name,
                             ])"
                             placeholder="All Roles"
@@ -34,8 +34,8 @@
     
                     @module('teams')
                         <x-form.select
-                            wire:model="filters.team_id"
-                            :options="model('team')->assignable()->get()->map(fn($team) => [
+                            wire:model="filters.in_team"
+                            :options="model('team')->readable()->get()->map(fn($team) => [
                                 'value' => (string)$team->id,
                                 'label' => $team->name,
                             ])"
@@ -53,5 +53,5 @@
         </x-slot:empty>
     </x-table>
 
-    {!! $this->users->links() !!}
+    {!! $this->paginator->links() !!}
 </div>

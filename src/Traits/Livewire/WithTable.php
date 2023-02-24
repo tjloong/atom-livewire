@@ -50,12 +50,34 @@ trait WithTable
     }
 
     /**
+     * Get paginator property
+     */
+    public function getPaginatorProperty()
+    {
+        if (!$this->query) return;
+
+        if ($this->sort) $this->query->orderBy($this->sortBy, $this->sortOrder);
+
+        return $this->query
+            ->paginate($this->maxRows)
+            ->through(fn($query) => $this->getTableColumns($query));
+    }
+
+    /**
      * Updated filters
      */
     public function updatedFilters()
     {
         $this->resetPage();
         $this->resetCheckboxes();
+    }
+
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query)
+    {
+        return $query;
     }
     
     /**

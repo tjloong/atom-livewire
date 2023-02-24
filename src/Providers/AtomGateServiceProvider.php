@@ -26,28 +26,28 @@ class AtomGateServiceProvider extends ServiceProvider
     {
         if (config('atom.static_site')) return;
         
-        Gate::before(function ($user, $permission) {
+        Gate::before(function ($user, $name) {
             if (!enabled_module('permissions')) return true;
 
-            $permission = str($permission)->replace('-', '_')->toString();
-            $splits = explode('.', $permission);
+            $name = str($name)->replace('-', '_')->toString();
+            $splits = explode('.', $name);
             $module = $splits[0];
             $action = $splits[1] ?? null;
-            $actions = config('atom.app.permissions.'.$module, []);
+            $actions = data_get(model('permission')->getActions(), $module, []);
             $isActionDefined = in_array($action, $actions);
 
             if (!$isActionDefined) return true;
-            if ($user->is_root) return true;
+            if ($user->isTier('root')) return true;
 
             if (enabled_module('roles')) {
-                return $user->permissions()->granted($permission)->count() > 0 || (
-                    !$user->permissions()->forbidden($permission)->count()
+                return $user->permissions()->granted($name)->count() > 0 || (
+                    !$user->permissions()->forbidden($name)->count()
                     && $user->role
-                    && $user->role->can($permission)
+                    && $user->role->can($name)
                 );
             }
             else {
-                return $user->permissions()->granted($permission)->count() > 0;
+                return $user->permissions()->granted($name)->count() > 0;
             }
         });
     }

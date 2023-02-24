@@ -92,10 +92,23 @@ if (!config('atom.static_site')) {
             });
         }
 
+        /**
+         * Role
+         */
         if (enabled_module('roles')) {
             define_route()->prefix('role')->as('app.role.')->group(function() {
                 define_route('create', 'App\Role\Create')->name('create');
                 define_route('{roleId}', 'App\Role\Update')->name('update');
+            });
+        }
+
+        /**
+         * Team
+         */
+        if (enabled_module('teams')) {
+            define_route()->prefix('team')->as('app.team.')->group(function() {
+                define_route('create', 'App\Team\Create')->name('create');
+                define_route('{teamId}', 'App\Team\Update')->name('update');
             });
         }
 

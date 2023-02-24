@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Preferences\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Label;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
@@ -58,6 +58,6 @@ class Children extends Component
      */
     public function render()
     {
-        return atom_view('app.preferences.label.children');
+        return atom_view('app.label.children');
     }
 }

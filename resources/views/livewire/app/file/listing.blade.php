@@ -104,5 +104,5 @@
 
     {!! $this->files->links() !!}
 
-    @livewire(lw('app.settings.system.file-form-modal'), key('file-form'))
+    @livewire(lw('app.file.form-modal'), key('file-form'))
 </div>

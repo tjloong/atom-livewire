@@ -63,10 +63,82 @@ class Tenant extends Model
     }
 
     /**
+     * Get address attribute
+     */
+    public function getAddressAttribute()
+    {
+        return format_address($this);
+    }
+
+    /**
      * Get owner attribute
      */
     public function getOwnerAttribute()
     {
         return $this->users()->wherePivot('is_owner', true)->first();
+    }
+
+    /**
+     * Tenant session
+     */
+    public function session($attr = null, $default = null, $tenant = null)
+    {
+        if (!$tenant) {
+            if (!session('tenant')) {
+                session([
+                    'tenant' => model('tenant')
+                        ->whereHas('users', fn($q) => $q->where('users.id', user('id')))
+                        ->when(user('pref.tenant'), fn($q, $id) => $q->where('id', $id))
+                        ->oldest()
+                        ->first(),
+                ]);
+            }
+        
+            $tenant = session('tenant');
+        }
+    
+        if ($attr === 'settings') {
+            return $tenant->settings->mapWithKeys(fn($setting) => [
+                $setting->key => $setting->value,
+            ]);
+        }
+        else if (is_string($attr)) {
+            if (str($attr)->is('settings.*')) {
+                $attr = str($attr)->replaceFirst('settings.', '')->toString();
+                $split = explode('.', $attr);
+                $key = $split[0];
+                $subkeys = collect($split)->reject($key)->join('.');
+                $settings = $tenant->settings()->where('key', $key)->first();
+                $value = json_decode(json_encode(optional($settings)->value ?? $default), true);
+    
+                if ($subkeys) return data_get($value, $subkeys);
+                else return $value;
+            }
+            else {
+                return data_get($tenant, $attr, $default);
+            }
+        }
+        else if (is_array($attr)) {
+            foreach ($attr as $key => $val) {
+                if (str($key)->is('settings.*')) {
+                    $key = str($key)->replaceFirst('settings.', '')->toString();
+                    $settings = $tenant->settings()->where('key', $key)->get();
+
+                    if ($settings->count()) {
+                        $settings->each(fn($setting) => $setting->fill(['value' => $val])->save());
+                    }
+                    else {
+                        $tenant->settings()->create([
+                            'key' => $key,
+                            'value' => $val,
+                        ]);
+                    }
+                }
+                else $tenant->fill([$key => $val])->save();
+            }
+        }
+        else {
+            return $tenant;
+        }    
     }
 }

@@ -10,7 +10,7 @@
         <div class="grid divide-y">
             @forelse ($this->taxes as $tax)
                 <div class="py-2 px-4 flex items-center gap-3 flex-wrap">
-                    <a class="grow" wire:click="open(@js($tax->id))">
+                    <a href="{{ route('app.tax.update', [$tax->id]) }}" class="grow">
                         {{ $tax->label }}
 
                         @if (!$tax->is_active) <x-badge label="inactive"/> @endif

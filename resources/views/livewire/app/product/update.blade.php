@@ -6,7 +6,7 @@
             : null" 
         back
     >
-        <x-button.delete inverted
+        <x-button.delete inverted can="product.delete"
             title="Delete Product"
             message="Are you sure to delete this product?"
         />
@@ -30,7 +30,7 @@
             @if ($component = data_get(collect($this->tabs)->firstWhere('slug', $tab), 'livewire'))
                 @livewire(lw($component), compact('product'), key($tab))
             @else
-                @livewire(lw('app.product.form.'.$tab), compact('product'), key($tab))
+                @livewire(lw('app.product.'.$tab), compact('product'), key($tab))
             @endif
         </div>
     </div>

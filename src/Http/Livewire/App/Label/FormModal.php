@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Preferences\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Label;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
@@ -96,6 +96,7 @@ class FormModal extends Component
 
         $this->label->fill([
             'name' => $this->names,
+            'slug' => null,
         ])->save();
 
         $this->emit('refresh');
@@ -107,6 +108,6 @@ class FormModal extends Component
      */
     public function render()
     {
-        return atom_view('app.preferences.label.form-modal');
+        return atom_view('app.label.form-modal');
     }
 }

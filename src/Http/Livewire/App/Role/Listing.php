@@ -16,46 +16,57 @@ class Listing extends Component
         'search' => null,
     ];
 
+    protected $queryString = [
+        'filters' => ['except' => [
+            'search' => null,
+        ]],
+    ];
+
     /**
-     * Get roles property
+     * Get query property
      */
-    public function getRolesProperty()
+    public function getQueryProperty()
     {
         return model('role')
-            ->when(
-                model('role')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->when(enabled_module('permissions'), fn($q) => $q->withCount('permissions'))
             ->withCount('users')
-            ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows)
-            ->through(fn($role) => array_filter([
-                [
-                    'column_name' => 'Role',
-                    'column_sort' => 'name',
-                    'label' => $role->name,
-                    'href' => route('app.role.update', [$role->id]),
-                ],
+            ->filter($this->filters);
+    }
 
-                enabled_module('permissions') ? [
-                    'column_name' => 'Permissions',
-                    'count' => $role->permissions_count,
-                    'uom' => 'permission',
-                    'href' => route('app.permission.role', [$role->id]),
-                ] : null,
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query)
+    {
+        return array_filter([
+            [
+                'column_name' => 'Role',
+                'column_sort' => 'name',
+                'label' => $query->name,
+                'href' => route('app.role.update', [$query->id]),
+            ],
 
-                [
-                    'column_name' => 'Users',
-                    'count' => $role->users_count,
-                    'uom' => 'user',
-                    'href' => route('app.settings', [
-                        'tab' => 'system/user',
-                        'filters' => ['role_id' => $role->id],
-                    ]),
-                ],
-            ]));
+            enabled_module('permissions') ? [
+                'column_name' => 'Permissions',
+                'column_class' => 'text-right',
+                'class' => 'text-right',
+                'count' => in_array($query->slug, ['admin', 'administrator'])
+                    ? '∞'
+                    : $query->permissions_count,
+                'uom' => 'permission',
+            ] : null,
+
+            [
+                'column_name' => 'Users',
+                'count' => $query->users_count,
+                'uom' => 'user',
+                'href' => route('app.settings', [
+                    'tab' => 'user',
+                    'filters' => ['is_role' => $query->slug],
+                ]),
+            ],
+        ]);
     }
 
     /**

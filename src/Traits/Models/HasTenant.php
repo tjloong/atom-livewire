@@ -16,7 +16,7 @@ trait HasTenant
     protected static function bootHasTenant()
     {
         static::saving(function ($model) {
-            $model->tenant_id = $model->tenant_id ?? auth()->user()->tenant_id;
+            $model->tenant_id = $model->tenant_id ?? tenant('id');
         });
     }
 
@@ -41,17 +41,17 @@ trait HasTenant
     /**
      * Scope for belongsToTenant
      */
-    public function scopeBelongsToTenant($query, $tenantId = null)
+    public function scopeBelongsToTenant($query, $tenant = null)
     {
         $table = $this->getTable();
+        $id = tier('root')
+            ? (is_numeric($tenant) ? $tenant : optional($tenant)->id)
+            : tenant('id');
 
         if (!Schema::hasColumn($table, 'tenant_id')) return $query;
 
-        if (auth()->user()->is_root) {
-            if ($tenantId) return $query->where($table.'.tenant_id', $tenantId);
-            else return $query;
-        }
-        elseif ($tenantId = auth()->user()->tenant_id) return $query->where($table.'.tenant_id', $tenantId);
+        if ($id) return $query->where($table.'.tenant_id', $id);
+        else if (tier('root')) return $query;
         else return $query->whereNull($table.'.id');
     }
 }

@@ -56,14 +56,14 @@ class Index extends Component
         ]];
 
         $system = $authorize ? ['group' => 'System', 'tabs' => [
-            ['slug' => 'system/user', 'label' => 'Users', 'icon' => 'users', 'livewire' => 'app.user.listing'],
+            ['slug' => 'user', 'label' => 'Users', 'icon' => 'users', 'livewire' => 'app.user.listing'],
 
             enabled_module('roles')
-                ? ['slug' => 'system/role', 'label' => 'Roles', 'icon' => 'user-tag', 'livewire' => 'app.role.listing']
+                ? ['slug' => 'role', 'label' => 'Roles', 'icon' => 'user-tag', 'livewire' => 'app.role.listing']
                 : null,
             
             enabled_module('teams')
-                ? ['slug' => 'system/team', 'label' => 'Teams', 'icon' => 'people-group']
+                ? ['slug' => 'team', 'label' => 'Teams', 'icon' => 'people-group', 'livewire' => 'app.team.listing']
                 : null,
 
             enabled_module('plans') 
@@ -74,7 +74,7 @@ class Index extends Component
                 ? ['slug' => 'pages', 'label' => 'Pages', 'icon' => 'file']
                 : null,
                 
-            ['slug' => 'system/file', 'label' => 'Files and Media', 'icon' => 'folder'],
+            ['slug' => 'file', 'label' => 'Files and Media', 'icon' => 'folder', 'livewire' => 'app.file.listing'],
         ]] : null;
 
         $website = $authorize ? ['group' => 'Website', 'tabs' => [

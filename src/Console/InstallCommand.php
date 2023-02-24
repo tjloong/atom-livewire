@@ -171,7 +171,6 @@ class InstallCommand extends Command
                 $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
                 $table->timestamp('invited_at')->nullable();
                 $table->timestamp('accepted_at')->nullable();
-                $table->timestamps();
                 $table->timestamp('blocked_at')->nullable();
                 $table->timestamp('deleted_at')->nullable();
                 $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
@@ -957,30 +956,15 @@ class InstallCommand extends Command
         $this->newLine();
         $this->info('Installing permissions...');
 
-        if (Schema::hasTable('user_permissions')) $this->warn('user_permissions table exists, skipped.');
+        if (Schema::hasTable('permissions')) $this->warn('permissions table exists, skipped.');
         else {
-            Schema::create('user_permissions', function($table) {
+            Schema::create('permissions', function (Blueprint $table) {
                 $table->id();
                 $table->string('permission');
                 $table->boolean('is_granted')->nullable();
+                $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade');
                 $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             });
-
-            $this->line('user_permissions table created successfully.');
-        }
-
-        if (Schema::hasTable('roles')) {
-            if (Schema::hasTable('role_permissions')) $this->warn('role_permissions table exists, skipped.');
-            else {
-                Schema::create('role_permissions', function ($table) {
-                    $table->id();
-                    $table->string('permission');
-                    $table->boolean('is_granted')->nullable();
-                    $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade');
-                });
-    
-                $this->line('role_permissions table created successfully.');
-            }
         }
     }
 

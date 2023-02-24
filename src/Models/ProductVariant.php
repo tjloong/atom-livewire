@@ -26,7 +26,7 @@ class ProductVariant extends Model
      */
     public function product()
     {
-        return $this->belongsTo(get_class(model('product')));
+        return $this->belongsTo(model('product'));
     }
 
     /**
@@ -34,7 +34,7 @@ class ProductVariant extends Model
      */
     public function image()
     {
-        return $this->belongsTo(get_class(model('file')), 'image_id');
+        return $this->belongsTo(model('file'), 'image_id');
     }
 
     /**
@@ -47,16 +47,9 @@ class ProductVariant extends Model
 
         while ($dup) {
             $code = str()->upper(str()->random(6));
-            $dup = model('product')
-                ->when(
-                    model('product')->enabledHasTenantTrait,
-                    fn($q) => $q->belongsToTenant()
-                )->where('code', $code)->count() > 0
+            $dup = model('product')->readable()->where('code', $code)->count() > 0
                 || model('product_variant')
-                    ->whereHas('product', fn($q) => $q->when(
-                        model('product')->enabledHasTenantTrait,
-                        fn($q) => $q->belongsToTenant()    
-                    ))
+                    ->whereHas('product', fn($q) => $q->readable())
                     ->where('code', $code)->count() > 0;
         }
 

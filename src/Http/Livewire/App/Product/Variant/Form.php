@@ -22,17 +22,11 @@ class Form extends Component
             'variant.code' => [
                 function ($attr, $value, $fail) {
                     if ($value) {
-                        $count = model('product')->when(
-                            model('product')->enabledHasTenantTrait,
-                            fn($q) => $q->belongsToTenant()
-                        )->where('code', $value)->count();
+                        $count = model('product')->readable()->where('code', $value)->count();
 
                         if (!$count) {
                             $count = model('product_variant')
-                                ->whereHas('product', fn($q) => $q->when(
-                                    model('product')->enabledHasTenantTrait,
-                                    fn($q) => $q->belongsToTenant()        
-                                ))
+                                ->whereHas('product', fn($q) => $q->readable())
                                 ->when(
                                     data_get($this->variant, 'id'),
                                     fn($q, $id) => $q->where('id', '<>', $id)
@@ -40,7 +34,7 @@ class Form extends Component
                                 ->where('code', $value)->count();
                         }
 
-                        if ($count) $fail(__('Variant code is taken.'));
+                        if ($count) $fail('Variant code is taken.');
                     }
                 },
             ],
@@ -60,10 +54,10 @@ class Form extends Component
     protected function messages()
     {
         return [
-            'variant.name.required' => __('Variant name is required.'),
-            'variant.price.numeric' => __('Invalid price.'),
-            'variant.stock.numeric' => __('Invalid stock.'),
-            'variant.product_id.required' => __('Unknown product.'),
+            'variant.name.required' => 'Variant name is required.',
+            'variant.price.numeric' => 'Invalid price.',
+            'variant.stock.numeric' => 'Invalid stock.',
+            'variant.product_id.required' => 'Unknown product.',
         ];
     }
 

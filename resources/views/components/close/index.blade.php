@@ -14,5 +14,5 @@
     $colors,
     $attributes->get('class'),
 ]) }}>
-    <x-icon name="xmark"/>
+    <x-icon :name="$attributes->get('icon', 'xmark')"/>
 </div>

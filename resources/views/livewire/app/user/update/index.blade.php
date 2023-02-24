@@ -56,5 +56,7 @@
                 @endif
             </div>
         </x-box>
+
+        @livewire(lw('app.permission.form'), compact('user'), key('permission'))
     </div>
 </div>

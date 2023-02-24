@@ -1,8 +1,8 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header :title="$this->title"/>
 
-    <div class="grid gap-6 md:grid-cols-12">
-        <div class="md:col-span-3">
+    <div class="flex flex-col gap-6 md:flex-row">
+        <div class="md:w-1/4">
             <x-sidenav wire:model="tab">
                 @foreach ($this->tabs as $item)
                     @php $children = collect(data_get($item, 'tabs'))->filter(fn($val) => !data_get($val, 'disabled', false)) @endphp
@@ -20,7 +20,7 @@
             </x-sidenav>
         </div>
 
-        <div class="md:col-span-9">
+        <div class="md:w-3/4">
             @php 
                 $com = $this->flatTabs->firstWhere('slug', $tab)->get('livewire') 
                     ?? 'app.preferences.'.$tab

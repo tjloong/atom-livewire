@@ -34,11 +34,11 @@ class Update extends Component
     public function getTabsProperty()
     {
         return [
-            ['slug' => 'info', 'label' => 'Product Information', 'icon' => 'circle-info', 'livewire' => 'app.product.form.info'],
+            ['slug' => 'info', 'label' => 'Product Information', 'icon' => 'circle-info', 'livewire' => 'app.product.form'],
             $this->product->type === 'variant'
                 ? ['slug' => 'variant', 'label' => 'Product Variants', 'icon' => 'cubes', 'count' => $this->product->variants()->count(), 'livewire' => 'app.product.variant.listing']
                 : null,
-            ['slug' => 'image', 'label' => 'Product Images', 'icon' => 'image', 'count' => $this->product->images()->count()],
+            ['slug' => 'image', 'label' => 'Product Images', 'icon' => 'image', 'livewire' => 'app.product.image', 'count' => $this->product->images()->count()],
         ];
     }
 

@@ -62,7 +62,7 @@
 
                         @if ($maxDepth > 1 && $label->children->count())
                             <div x-show="show" class="bg-gray-100 m-2 rounded-lg">
-                                @livewire(lw('app.preferences.label.children'), [
+                                @livewire(lw('app.label.children'), [
                                     'parent' => $label,
                                     'maxDepth' => $maxDepth,
                                 ], key($label->id.'-'.$label->children->count()))
@@ -75,14 +75,9 @@
             <x-empty-state
                 :title="'No '.str($this->title)->singular()->headline()"
                 :subtitle="'You do not have any '.str($this->title)->singular()->headline()->lower()"
-            >
-                <x-button color="gray"
-                    :label="'New '.str($this->title)->singular()->headline()"
-                    wire:click="open"
-                />
-            </x-empty-state>
+            />
         @endif
     </x-box>
 
-    @livewire(lw('app.preferences.label.form-modal'), key('label-form-modal'))
+    @livewire(lw('app.label.form-modal'), key('label-form-modal'))
 </div>

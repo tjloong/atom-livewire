@@ -1,11 +1,11 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Preferences\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Label;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class Index extends Component
+class Listing extends Component
 {
     use WithPopupNotify;
 
@@ -38,7 +38,7 @@ class Index extends Component
     {
         return model('label')
             ->with('children')
-            ->when(model('label')->enabledHasTenantTrait, fn($q) => $q->belongsToTenant())
+            ->readable()
             ->when($this->type, fn($q) => $q->where('type', $this->type))
             ->whereNull('parent_id')
             ->oldest('seq')
@@ -51,7 +51,7 @@ class Index extends Component
      */
     public function open($data)
     {
-        $this->emitTo(lw('app.preferences.label.form-modal'), 'open', $data);
+        $this->emitTo(lw('app.label.form-modal'), 'open', $data);
     }
 
     /**
@@ -81,6 +81,6 @@ class Index extends Component
      */
     public function render()
     {
-        return atom_view('app.preferences.label');
+        return atom_view('app.label.listing');
     }
 }

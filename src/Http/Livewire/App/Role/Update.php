@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Role;
 
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithPopupNotify;
+    
     public $role;
 
     /**
@@ -13,10 +16,7 @@ class Update extends Component
      */
     public function mount($roleId)
     {
-        $this->role = model('role')->when(
-            model('role')->enabledHasTenantTrait,
-            fn($q) => $q->belongsToTenant(),
-        )->findOrFail($roleId);
+        $this->role = model('role')->readable()->findOrFail($roleId);
 
         breadcrumbs()->push($this->role->name);
     }
@@ -26,16 +26,16 @@ class Update extends Component
      */
     public function delete()
     {
-        if ($this->role->users()->count() > 0) {
-            $this->popup([
-                'title' => 'Unable to Delete', 
-                'message' => 'This role has users assigned to it.', 
-            ], 'alert', 'error');
+        if ($this->role->users()->count() > 0) $err = 'This role has users assigned to it.';
+        if ($this->role->is_admin && model('role')->readable()->isAdmin()->count() <= 1) $err = 'You must have at least 1 admin role.';
+
+        if (isset($err)) {
+            return $this->popup(['title' => 'Unable to Delete', 'message' => $err], 'alert', 'error');
         }
-        else {
-            $this->role->delete();
-            return breadcrumbs()->back();
-        }
+
+        $this->role->delete();
+        
+        return breadcrumbs()->back();
     }
 
     /**

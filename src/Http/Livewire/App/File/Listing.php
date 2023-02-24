@@ -1,17 +1,18 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\System;
+namespace Jiannius\Atom\Http\Livewire\App\File;
 
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class File extends Component
+class Listing extends Component
 {
     use WithFile;
     use WithPopupNotify;
 
     public $selected = [];
+
     public $filters = [
         'type' => null,
         'search' => null,
@@ -25,10 +26,7 @@ class File extends Component
     public function getFilesProperty()
     {
         return model('file')
-            ->when(
-                model('file')->enabledbelongsToTenant,
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->filter($this->filters)
             ->latest()
             ->paginate(120);
@@ -65,7 +63,7 @@ class File extends Component
      */
     public function edit($id)
     {
-        $this->emitTo(lw('app.settings.system.file-form-modal'), 'open', $id);
+        $this->emitTo(lw('app.file.form-modal'), 'open', $id);
     }
 
     /**
@@ -86,6 +84,6 @@ class File extends Component
      */
     public function render()
     {
-        return atom_view('app.settings.system.file');
+        return atom_view('app.file.listing');
     }
 }

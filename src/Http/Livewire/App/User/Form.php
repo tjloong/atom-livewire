@@ -41,11 +41,11 @@ class Form extends Component
     protected function messages()
     {
         return [
-            'user.name.required' => __('Name is required.'),
-            'user.name.max' => __('Name is too long (Max 255 characters).'),
-            'user.email.required' => __('Login email is required.'),
-            'user.email.email' => __('Invalid email address.'),
-            'user.email.unique' => __('Login email is already taken.'),
+            'user.name.required' => 'Name is required.',
+            'user.name.max' => 'Name is too long (Max 255 characters).',
+            'user.email.required' => 'Login email is required.',
+            'user.email.email' => 'Invalid email address.',
+            'user.email.unique' => 'Login email is already taken.',
         ];
     }
 
@@ -54,7 +54,7 @@ class Form extends Component
      */
     public function mount()
     {
-        if (enabled_module('teams')) $this->teams = $this->user->teams->pluck('id')->toArray();
+        $this->teams = enabled_module('teams') ? $this->user->teams->pluck('id')->toArray() : null;
     }
 
     /**
@@ -63,8 +63,8 @@ class Form extends Component
     public function getOptionsProperty()
     {
         return array_filter([
-            'roles' => enabled_module('roles') ? model('role')->assignable()->get() : null,
-            'teams' => enabled_module('teams') ? model('team')->assignable()->get() : null,
+            'roles' => model('role')->readable()->get(),
+            'teams' => model('team')->readable()->get(),
             'visibilities' => array_filter([
                 ['value' => 'restrict', 'label' => 'Restrict', 'description' => 'Can view data created by ownself.'],
                 enabled_module('teams') 
@@ -76,11 +76,34 @@ class Form extends Component
     }
 
     /**
+     * Get can property
+     */
+    public function getCanProperty()
+    {
+        return [
+            'name' => !$this->user->exists || tier('root'),
+            'email' => !$this->user->exists || tier('root'),
+            'role' => enabled_module('roles') && (!$this->user->exists || tier('root')),
+            'team' => enabled_module('teams') && (!$this->user->exists || tier('root')),
+            'root' => false,
+            'visibility' => !$this->user->exists && tier('signup') && !role('admin'),
+        ];
+    }
+
+    /**
      * Update user is root
      */
     public function updatedUserIsRoot($val)
     {
         if ($val) $this->user->fill(['visibility' => 'global']);
+    }
+
+    /**
+     * Updated user role id
+     */
+    public function updatedUserRoleId($id)
+    {
+        if ($this->user->isRole('admin')) $this->user->fill(['visibility' => 'global']);
     }
 
     /**
@@ -116,6 +139,12 @@ class Form extends Component
 
         if (enabled_module('teams')) {
             $this->user->teams()->sync($this->teams);
+        }
+
+        if (enabled_module('tenants') && tenant()) {
+            tenant()->users()->attach([
+                $this->user->id => ['invited_at' => now()],
+            ]);
         }
     }
 

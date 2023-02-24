@@ -22,7 +22,7 @@ class Role extends Model
     {
         if (!enabled_module('permissions')) return;
 
-        return $this->hasMany(model('role_permission'));
+        return $this->hasMany(model('permission'));
     }
 
     /**
@@ -42,11 +42,19 @@ class Role extends Model
     }
 
     /**
-     * Scope for assignable
+     * Scope for is admin
      */
-    public function scopeAssignable($query)
+    public function scopeIsAdmin($query)
     {
-        return $query;
+        return $query->whereIn('slug', ['admin', 'administrator']);
+    }
+
+    /**
+     * Get is admin attribute
+     */
+    public function getIsAdminAttribute()
+    {
+        return in_array($this->slug, ['admin', 'administrator']);
     }
 
     /**
@@ -56,7 +64,6 @@ class Role extends Model
     {
         if (!enabled_module('permissions')) return true;
 
-        return in_array($this->slug, ['admin', 'administrator'])
-            || $this->permissions()->granted($permission)->count() > 0;
+        return $this->is_admin || $this->permissions()->granted($permission)->count() > 0;
     }
 }

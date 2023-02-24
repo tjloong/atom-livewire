@@ -16,10 +16,7 @@ class Listing extends Component
     public function getTaxesProperty()
     {
         return model('tax')
-            ->when(
-                model('tax')->enabledHasTenantTrait, 
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->orderBy('country')
             ->orderBy('region')
             ->orderBy('name')

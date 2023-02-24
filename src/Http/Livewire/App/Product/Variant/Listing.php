@@ -4,18 +4,15 @@ namespace Jiannius\Atom\Http\Livewire\App\Product\Variant;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
-    use WithPagination;
     use WithPopupNotify;
 
     public $product;
     public $filters = ['search' => null];
 
     protected $queryString = [
-        'page' => ['except' => 1],
         'filters' => ['except' => ['search' => null]],
     ];
 

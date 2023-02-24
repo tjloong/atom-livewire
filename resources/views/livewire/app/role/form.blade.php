@@ -1,8 +1,6 @@
 <x-form>
-    @if ($role->exists && in_array($role->slug, ['admin', 'administrator']))
-        <x-form.field label="Role Name">
-            {{ $role->name }}
-        </x-form.field>
+    @if ($role->exists && $role->is_admin)
+        <x-form.field label="Role Name">{{ $role->name }}</x-form.field>
     @else
         <x-form.text
             label="Role Name"

@@ -1,12 +1,11 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Product\Form;
+namespace Jiannius\Atom\Http\Livewire\App\Product;
 
 use Livewire\Component;
-use Illuminate\Validation\Rule;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
-class Info extends Component
+class Form extends Component
 {
     use WithPopupNotify;
 
@@ -26,14 +25,11 @@ class Info extends Component
             'product.name' => 'required',
             'product.code' => [
                 'nullable',
-                Rule::unique('products', 'code')
-                    ->ignore($this->product)
-                    ->where(fn($q) => $q
-                        ->when(
-                            model('product')->enabledHasTenantTrait,
-                            fn($q) => $q->where('tenant_id', auth()->user()->tenant_id)
-                        )
-                    ),
+                function ($attr, $value, $fail) {
+                    if (model('product')->readable()->where('code', $value)->where('id', $this->product->id)->count()) {
+                        $fail('Product code is taken.');
+                    }
+                },
             ],
             'product.type' => 'required',
             'product.description' => 'nullable',
@@ -49,9 +45,9 @@ class Info extends Component
     protected function messages()
     {
         return [
-            'product.name.required' => __('Product name is required.'),
-            'product.code.unique' => __('This product code is taken.'),
-            'product.type.required' => __('Product type is required.'),
+            'product.name.required' => 'Product name is required.',
+            'product.code.unique' => 'This product code is taken.',
+            'product.type.required' => 'Product type is required.',
         ];
     }
 
@@ -79,19 +75,13 @@ class Info extends Component
                 ),
 
             'taxes' => model('tax')
-                ->when(
-                    model('tax')->enabledHasTenantTrait, 
-                    fn($q) => $q->belongsToTenant()
-                )
+                ->readable()
                 ->orderBy('name')
                 ->get()
                 ->map(fn($tax) => ['value' => $tax->id, 'label' => $tax->label]),
 
             'categories' => model('label')
-                ->when(
-                    model('label')->enabledHasTenantTrait, 
-                    fn($q) => $q->belongsToTenant()
-                )
+                ->readable()
                 ->where('type', 'product-category')
                 ->select('id as value', 'name->'.app()->currentLocale().' as label')
                 ->orderBy('name')
@@ -141,6 +131,6 @@ class Info extends Component
      */
     public function render()
     {
-        return atom_view('app.product.form.info');
+        return atom_view('app.product.form');
     }
 }

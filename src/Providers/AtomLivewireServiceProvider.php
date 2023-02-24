@@ -61,11 +61,29 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.role.update' => 'App\Role\Update',
             'atom.app.role.form' => 'App\Role\Form',
 
+            // permission
+            'atom.app.permission.form' => 'App\Permission\Form',
+
+            // team
+            'atom.app.team.listing' => 'App\Team\Listing',
+            'atom.app.team.create' => 'App\Team\Create',
+            'atom.app.team.update' => 'App\Team\Update',
+            'atom.app.team.form' => 'App\Team\Form',
+
+            // file
+            'atom.app.file.listing' => 'App\File\Listing',
+            'atom.app.file.form-modal' => 'App\File\FormModal',
+
             // tax
             'atom.app.tax.listing' => 'App\Tax\Listing',
             'atom.app.tax.create' => 'App\Tax\Create',
             'atom.app.tax.update' => 'App\Tax\Update',
             'atom.app.tax.form' => 'App\Tax\Form',
+
+            // label
+            'atom.app.label.listing' => 'App\Label\Listing',
+            'atom.app.label.children' => 'App\Label\Children',
+            'atom.app.label.form-modal' => 'App\Label\FormModal',
 
             // billing
             'atom.app.billing.view' => 'App\Billing\View',
@@ -109,8 +127,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.product.listing' => 'App\Product\Listing',
             'atom.app.product.create' => 'App\Product\Create',
             'atom.app.product.update' => 'App\Product\Update',
-            'atom.app.product.form.info' => 'App\Product\Form\Info',
-            'atom.app.product.form.image' => 'App\Product\Form\Image',
+            'atom.app.product.form' => 'App\Product\Form',
+            'atom.app.product.image' => 'App\Product\Image',
 
             // product variant
             'atom.app.product.variant.listing' => 'App\Product\Variant\Listing',
@@ -181,11 +199,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.settings.index' => 'App\Settings\Index',
             'atom.app.settings.login' => 'App\Settings\Login',
             'atom.app.settings.password' => 'App\Settings\Password',
-            'atom.app.settings.system.team' => 'App\Settings\System\Team',
-            'atom.app.settings.system.team-form-modal' => 'App\Settings\System\TeamFormModal',
-            'atom.app.settings.system.file' => 'App\Settings\System\File',
-            'atom.app.settings.system.file-form-modal' => 'App\Settings\System\FileFormModal',
-            'atom.app.settings.system.permission-form-modal' => 'App\Settings\System\PermissionFormModal',
             'atom.app.settings.website.profile' => 'App\Settings\Website\Profile',
             'atom.app.settings.website.seo' => 'App\Settings\Website\Seo',
             'atom.app.settings.website.analytics' => 'App\Settings\Website\Analytics',
@@ -199,11 +212,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.settings.integration.payment.gkash' => 'App\Settings\Integration\Payment\Gkash',
             'atom.app.settings.integration.payment.ozopay' => 'App\Settings\Integration\Payment\Ozopay',
             'atom.app.settings.integration.payment.ipay' => 'App\Settings\Integration\Payment\Ipay',
-            
-            // preferences
-            'atom.app.preferences.label' => 'App\Preferences\Label\Index',
-            'atom.app.preferences.label.children' => 'App\Preferences\Label\Children',
-            'atom.app.preferences.label.form-modal' => 'App\Preferences\Label\FormModal',
         ];
 
         foreach ($components as $name => $class) {

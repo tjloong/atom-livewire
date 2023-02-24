@@ -1,25 +1,21 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\System;
+namespace Jiannius\Atom\Http\Livewire\App\Permission;
 
 use Livewire\Component;
 
-class PermissionFormModal extends Component
+class Form extends Component
 {
     public $user;
     public $role;
 
-    protected $listeners = ['open'];
-
     /**
-     * Open
+     * Get title property
      */
-    public function open($data)
+    public function getTitleProperty()
     {
-        if ($userId = data_get($data, 'user_id')) $this->user = model('user')->findOrFail($userId);
-        if ($roleId = data_get($data, 'role_id')) $this->role = model('role')->findOrFail($roleId);
-
-        $this->dispatchBrowserEvent('permission-form-modal-open');
+        if ($this->user) return 'User Permissions';
+        if ($this->role) return 'Role Permissions';
     }
 
     /**
@@ -29,7 +25,7 @@ class PermissionFormModal extends Component
     {
         $permissions = [];
 
-        foreach (config('atom.app.permissions') ?? [] as $module => $actions) {
+        foreach (model('permission')->getActions() as $module => $actions) {
             $permissions[$module] = collect($actions)->map(function($action) use ($module) {
                 $ability = $module.'.'.$action;
                 $permission = ['name' => $action];
@@ -57,7 +53,7 @@ class PermissionFormModal extends Component
      */
     public function getIsAdminProperty()
     {
-        return ($this->role->slug ?? $this->user->role->slug ?? null) === 'admin';
+        return ($this->role ?? $this->user->role)->is_admin;
     }
 
     /**
@@ -101,8 +97,6 @@ class PermissionFormModal extends Component
             $permission->is_granted = !$permission->is_granted;
             $permission->save();
         }
-
-        $this->emitUp('refresh');
     }
 
     /**
@@ -110,6 +104,6 @@ class PermissionFormModal extends Component
      */
     public function render()
     {
-        return atom_view('app.settings.system.permission-form-modal');
+        return atom_view('app.permission.form');
     }
 }

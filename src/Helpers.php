@@ -213,51 +213,7 @@ function tenant($attr = null, $default = null, $tenant = null)
 {
     if (!enabled_module('tenants')) return;
 
-    if (!$tenant) {
-        if (!session('tenant')) {
-            session([
-                'tenant' => model('tenant')
-                    ->whereHas('users', fn($q) => $q->where('users.id', user('id')))
-                    ->when(user('pref.tenant'), fn($q, $id) => $q->where('id', $id))
-                    ->oldest()
-                    ->first(),
-            ]);
-        }
-    
-        $tenant = session('tenant');
-    }
-
-    if ($attr === 'settings') {
-        return $tenant->settings->mapWithKeys(fn($setting) => [
-            $setting->key => $setting->value,
-        ]);
-    }
-    else if (is_string($attr)) {
-        if (str($attr)->is('settings.*')) {
-            $key = str($attr)->replaceFirst('settings.', '')->toString();
-            $settings = $tenant->settings()->where('key', $key)->first();
-    
-            return json_decode(json_encode(optional($settings)->value ?? $default), true);
-        }
-        else {
-            return data_get($tenant, $attr, $default);
-        }
-    }
-    else if (is_array($attr)) {
-        foreach ($attr as $key => $val) {
-            if (str($key)->is('settings.*')) {
-                $key = str($key)->replaceFirst('settings.', '')->toString();
-
-                $tenant->settings()->where('key', $key)->get()->each(fn($setting) => 
-                    $setting->fill(['value' => $val])->save()
-                );
-            }
-            else $tenant->fill([$key => $val])->save();
-        }
-    }
-    else {
-        return $tenant;
-    }
+    return model('tenant')->session($attr, $default, $tenant);
 }
 
 /**
@@ -567,6 +523,16 @@ function user($attr = null)
         else return $value ? json_decode(json_encode($value), true) : null;
     }
     else if ($attr) return data_get($user, $attr);
+}
+
+/**
+ * Get current user
+ */
+function role($name)
+{
+    if (!user()) return;
+
+    return user()->isRole($name);
 }
 
 /**
