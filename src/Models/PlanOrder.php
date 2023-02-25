@@ -50,6 +50,17 @@ class PlanOrder extends Model
     }
 
     /**
+     * Scope for search
+     */
+    public function scopeSearch($query, $search)
+    {
+        return $query->where(fn($q) => $q
+            ->where('number', 'like', "%$search%")
+            ->orWhereHas('user', fn($q) => $q->search($search))
+        );
+    }
+
+    /**
      * Get description attribute
      */
     public function getDescriptionAttribute()

@@ -60,7 +60,7 @@
             @else
                 <div class="text-gray-500 font-medium">{{ data_get($plan, 'excerpt') }}</div>
         
-                @if ($feats = data_get($plan, 'features'))
+                @if ($feats = data_get($plan, 'features_list') ?? data_get($plan, 'features'))
                     <div class="flex-grow">
                         <div class="grid gap-2">
                             @foreach ($feats as $feat)

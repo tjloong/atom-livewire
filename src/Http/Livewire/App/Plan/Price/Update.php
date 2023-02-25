@@ -28,17 +28,16 @@ class Update extends Component
      */
     public function delete()
     {
-        if ($this->price->accounts->count()) {
-            $this->popup('There are subscribers under this plan price.', 'alert', 'error');
+        if ($this->price->users->count()) {
+            return $this->popup([
+                'title' => 'Unable to Delete Price',
+                'message' => 'There are subscribers under this plan price.',
+            ], 'alert', 'error');
         }
-        else {
-            $this->price->delete();
 
-            return redirect()->route('app.plan.price.listing', [
-                'planId' => $this->plan->id,
-                'priceId' => $this->price->id,
-            ])->with('info', 'Plan Price Deleted.');
-        }
+        $this->price->delete();
+
+        return breadcrumbs()->back();
     }
 
     /**

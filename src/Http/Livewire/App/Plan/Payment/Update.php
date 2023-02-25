@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Billing\Payment;
+namespace Jiannius\Atom\Http\Livewire\App\Plan\Payment;
 
 use Livewire\Component;
 
@@ -13,12 +13,10 @@ class Update extends Component
      */
     public function mount($paymentId)
     {
-        $this->payment = model('account_payment')
-            ->when(
-                !auth()->user()->isAccountType('root'), 
-                fn($q) => $q->where('account_id', auth()->user()->account_id)
-            )
-            ->findOrFail($paymentId);
+        $this->payment = model('plan_payment')->when(
+            !tier('root'),
+            fn($q) => $q->whereHas('order', fn($q) => $q->where('user_id', user('id'))),
+        )->findOrFail($paymentId);
 
         breadcrumbs()->push('Payment #'.$this->payment->number);
     }
@@ -28,11 +26,11 @@ class Update extends Component
      */
     public function download($doc)
     {
-        $filename = 'billing-payment-'.$this->payment->number.'.pdf';
+        $filename = 'plan-payment-'.$this->payment->number.'.pdf';
         $path = storage_path($filename);
-        $view = view()->exists('pdf.account-payment') 
-            ? 'pdf.account-payment' 
-            : 'atom::pdf.account-payment';
+        $view = view()->exists('pdf.plan-payment') 
+            ? 'pdf.plan-payment' 
+            : 'atom::pdf.plan-payment';
 
 
         pdf($view, [
@@ -49,6 +47,6 @@ class Update extends Component
      */
     public function render()
     {
-        return atom_view('app.billing.payment.update');
+        return atom_view('app.plan.payment.update');
     }
 }

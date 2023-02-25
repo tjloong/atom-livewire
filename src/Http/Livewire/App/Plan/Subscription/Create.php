@@ -1,13 +1,16 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Billing;
+namespace Jiannius\Atom\Http\Livewire\App\Plan\Subscription;
 
+use Jiannius\Atom\Jobs\PlanPaymentProvision;
 use Livewire\Component;
 
-class Checkout extends Component
+class Create extends Component
 {
+    public $plan;
+    public $price;
+    public $items;
     public $order;
-    public $orderItems;
 
     /**
      * Validation rules
@@ -26,7 +29,7 @@ class Checkout extends Component
     protected function messages()
     {
         return [
-            'order.data.agree_tnc.accepted' => __('Please accept terms & conditions and privacy policy.'),
+            'order.data.agree_tnc.accepted' => 'Please accept terms & conditions and privacy policy.',
         ];
     }
 
@@ -35,17 +38,17 @@ class Checkout extends Component
      */
     public function mount()
     {
-        if (request()->query('plan') && request()->query('price')) {
-            $this->order = ['data' => [
-                'agree_tnc' => false, 
-                'enable_auto_billing' => false,
-            ]];
+        $this->plan = model('plan')->where('slug', request()->query('plan'))->status('active')->firstOrFail();
+        $this->price = $this->plan->prices()->findOrFail(request()->query('price'));
 
-            $this->addOrderItem(request()->query('plan'), request()->query('price'));
+        $this->order = ['data' => [
+            'agree_tnc' => false, 
+            'enable_auto_billing' => false,
+        ]];
 
-            breadcrumbs()->push('Order Summary');
-        }
-        else return redirect()->route('app.billing.view');
+        $this->addItem();
+
+        breadcrumbs()->push('Order Summary');
     }
 
     /**
@@ -53,8 +56,8 @@ class Checkout extends Component
      */
     public function getTotalProperty()
     {
-        $currency = data_get($this->orderItems->first(), 'currency');
-        $amount = $this->orderItems->sum('grand_total');
+        $currency = data_get($this->items->first(), 'currency');
+        $amount = $this->items->sum('grand_total');
 
         return compact('currency', 'amount');
     }
@@ -62,30 +65,28 @@ class Checkout extends Component
     /**
      * Add order item
      */
-    public function addOrderItem($planId, $priceId)
+    public function addItem()
     {
-        if (!$this->orderItems) $this->orderItems = collect();
+        if (!$this->items) $this->items = collect();
 
-        $plan = model('plan')->where('slug', $planId)->status('active')->firstOrFail();
-        $price = $plan->prices()->findOrFail($priceId);
-        $trial = $plan->trial && !auth()->user()->account->hasPlanPrice($price->id) ? $plan->trial : false;
-        $discount = $trial ? $price->amount : $price->discount;
+        $trial = $this->plan->trial && !user()->hasPlanPrice($this->price->id) ? $this->plan->trial : false;
+        $discount = $trial ? $this->price->amount : $this->price->discount;
         $item = [
-            'currency' => $price->currency,
-            'amount' => $price->amount,
+            'currency' => $this->price->currency,
+            'amount' => $this->price->amount,
             'discounted_amount' => $discount,
-            'grand_total' => $price->amount - ($discount ?? 0),
-            'plan_price_id' => $price->id,
+            'grand_total' => $this->price->amount - ($discount ?? 0),
+            'plan_price_id' => $this->price->id,
             'data' => [
                 'trial' => $trial,
-                'recurring' => $price->is_recurring
-                    ? ['interval' => 'month', 'count' => $price->expired_after]
+                'recurring' => $this->price->is_recurring
+                    ? ['interval' => 'month', 'count' => $this->price->expired_after]
                     : false,
             ],
         ];
 
         // item name
-        $str = [$plan->payment_description ?? $plan->name];
+        $str = [$this->plan->payment_description ?? $this->plan->name];
 
         if ($trial) {
             $str[] = '('.__(':total days trial', ['total' => $trial]).')';
@@ -98,7 +99,7 @@ class Checkout extends Component
 
         $item['name'] = implode(' ', $str);
 
-        $this->orderItems->push($item);
+        $this->items->push($item);
     }
 
     /**
@@ -109,14 +110,14 @@ class Checkout extends Component
         $this->resetValidation();
         $this->validate();
 
-        $order = model('account_order')->create(array_merge($this->order, [
+        $order = model('plan_order')->create(array_merge($this->order, [
             'currency' => data_get($this->total, 'currency'),
             'amount' => data_get($this->total, 'amount'),
-            'account_id' => auth()->user()->account_id,
+            'user_id' => user('id'),
         ]));
 
-        foreach ($this->orderItems as $orderItem) {
-            $order->items()->create($orderItem);
+        foreach ($this->items as $item) {
+            $order->items()->create($item);
         }
 
         $payment = $order->payments()->create([
@@ -124,21 +125,20 @@ class Checkout extends Component
             'currency' => $order->currency,
             'amount' => $order->amount,
             'status' => $order->amount > 0 ? 'draft' : 'success',
-            'account_id' => auth()->user()->account_id,
         ]);
 
         // payment gateway
         if ($payment->amount > 0 && $provider) {
             $data = ['pay_request' => [
-                'job' => 'AccountPaymentProvision',
+                'job' => 'PlanPaymentProvision',
                 'customer' => array_merge(
-                    ['email' => data_get(auth()->user()->account, 'email')],
+                    ['email' => user('email')],
                     $provider === 'stripe'
                         ? ['stripe_customer_id' => $this->getStripeCustomerId()]
                         : []
                 ),
                 'payment_id' => $payment->id,
-                'payment_description' => 'Account Order #'.$order->number,
+                'payment_description' => 'Plan Order #'.$order->number,
                 'currency' => $payment->currency,
                 'amount' => currency($payment->amount),
                 'items' => $order->items->map(fn($item) => [
@@ -157,11 +157,17 @@ class Checkout extends Component
             return redirect()->route('__'.$provider.'.checkout')->with($data);
         }
         // no payment amount, provision straight away
-        else $payment->provision();
+        else {
+            PlanPaymentProvision::dispatchSync([
+                'webhook' => true,
+                'metadata' => [
+                    'payment_id' => $payment->id,
+                    'status' => 'success',
+                ],
+            ]);
+        }
 
-        return auth()->user()->account->status === 'new'
-            ? redirect()->route('app.onboarding.home')
-            : redirect(auth()->user()->home());
+        return redirect(user()->home());
     }
 
     /**
@@ -169,14 +175,14 @@ class Checkout extends Component
      */
     public function getStripeCustomerId()
     {
-        $previousPayment = model('account_payment')
-            ->where('account_id', auth()->user()->account_id)
+        $history = model('plan_payment')
+            ->whereHas('order', fn($q) => $q->where('user_id', user('id')))
             ->where('provider', 'stripe')
             ->whereNotNull('data->metadata->stripe_customer_id')
             ->latest()
             ->first();
 
-        return data_get($previousPayment, 'data.metadata.stripe_customer_id');
+        return data_get($history, 'data.metadata.stripe_customer_id');
     }
 
     /**
@@ -184,6 +190,6 @@ class Checkout extends Component
      */
     public function render()
     {
-        return atom_view('app.billing.checkout');
+        return atom_view('app.plan.subscription.create');
     }
 }

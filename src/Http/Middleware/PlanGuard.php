@@ -20,16 +20,21 @@ class PlanGuard
         if (enabled_module('plans')) {
             $routeGuard = model('plan')->routeGuard();
             $guardedRoutes = collect($routeGuard)->values()->flatten()->unique();
+            $violatedRoute = $guardedRoutes->first(fn($val) => 
+                current_route($val) && !current_route('app.plan.*')
+            );
 
-            if ($route = $guardedRoutes->first(fn($val) => current_route($val) && !current_route('*billing*'))) {
+            if ($violatedRoute) {
                 $mustHavePlans = collect(array_keys($routeGuard))
-                    ->filter(fn($key) => collect($routeGuard[$key])->search($route) !== false)
+                    ->filter(fn($key) => collect($routeGuard[$key])->search($violatedRoute) !== false)
                     ->values();
 
                 $subscribedPlans = $mustHavePlans->filter(fn($val) => $request->user()->hasPlan($val));
 
-                if (!$subscribedPlans->count() && !$request->user()->is_root) {
-                    if (Route::has('app.billing.plan')) return redirect()->route('app.billing.plan');
+                if (!$subscribedPlans->count() && !$request->user()->isTier('root')) {
+                    if (Route::has('app.plan.listing')) {
+                        return redirect()->route('app.plan.listing');
+                    }
                     else abort(403);
                 }
             }

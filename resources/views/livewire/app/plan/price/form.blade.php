@@ -1,61 +1,47 @@
-<x-form class="grid gap-4">
-    <x-form.field label="Plan">
-        <div class="font-semibold">{{ $plan->name }}</div>
-        <div class="font-medium text-gray-500">{{ $plan->excerpt }}</div>
-    </x-form.field>
+<x-form>
+    <div class="-m-6 flex flex-col divide-y">
+        <x-box.row label="Plan">{{ $plan->name }}</x-box.row>
 
-    <x-form.select 
-        label="Available for Country"
-        wire:model="price.country"
-        :options="metadata()->countries()"
-    />
+        @if ($this->readonly)
+            <x-box.row label="Price">{{ currency($price->amount, $price->currency) }}</x-box.row>
+            <x-box.row label="Expired After">{{ $price->is_lifetime ? 'Valid for lifetime' : $price->expired_after.' Months' }}</x-box.row>
+        @endif
 
-    @if ($this->readonly)
-        <x-form.field label="Currency">
-            {{ $price->currency }}
-        </x-form.field>
+        <div class="p-6 grid gap-6 md:grid-cols-2">
+            <x-form.select.country label="Available for Country"
+                wire:model="price.country"
+            />
+    
+            @if (!$this->readonly)
+                <x-form.select.currency label="Currency"
+                    wire:model="price.currency" 
+                    :error="$errors->first('price.currency')"
+                    required 
+                />
+    
+                <x-form.number label="Price"
+                    wire:model.defer="price.amount" 
+                    :error="$errors->first('price.amount')"
+                    required 
+                />
+    
+                <x-form.number label="Expired After"
+                    wire:model.defer="price.expired_after"
+                    unit="Months"
+                />
+            @endif
+    
+            <x-form.number label="Discounted Amount"
+                wire:model.defer="price.discount" 
+                :error="$errors->first('price.discount')"
+            />
+    
+            <x-form.text label="Shout Out Text"
+                wire:model.defer="price.shoutout"
+            />
+        </div>
 
-        <x-form.field label="Price">
-            {{ currency($price->amount) }}
-        </x-form.field>
-
-        <x-form.field label="Expired After">
-            {{ $price->is_lifetime ? 'Valid for lifetime' : $price->expired_after.' Months' }}
-        </x-form.field>
-    @else
-        <x-form.currency 
-            label="Currency"
-            wire:model="price.currency" 
-            :error="$errors->first('price.currency')"
-            required 
-        />
-
-        <x-form.number 
-            label="Price"
-            wire:model.defer="price.amount" 
-            :error="$errors->first('price.amount')"
-            required 
-        />
-
-        <x-form.number label="Expired After"
-            wire:model.defer="price.expired_after"
-            unit="Months"
-        />
-    @endif
-
-    <x-form.number 
-        label="Discounted Amount"
-        wire:model.defer="price.discount" 
-        :error="$errors->first('price.discount')"
-    />
-
-    <x-form.text 
-        label="Shout Out Text"
-        wire:model.defer="price.shoutout"
-    />
-
-    <div class="grid gap-4">
-        <div class="grid gap-2">
+        <div class="p-6 grid gap-6 md:grid-cols-2">
             <x-form.checkbox 
                 label="Use this price as default"
                 caption="If there are multiple prices."
@@ -72,11 +58,13 @@
         </div>
 
         @if ($price->exists)
-            <x-alert>
-                <a class="flex items-center gap-1">
-                    {{ __('This plan has :count subscribers', ['count' => $price->accounts->count()]) }}
-                </a>
-            </x-alert>
+            <div class="p-4">
+                <x-alert>
+                    <a class="flex items-center gap-1">
+                        {{ __('This plan has :count subscribers', ['count' => $price->users->count()]) }}
+                    </a>
+                </x-alert>
+            </div>
         @endif
     </div>
 

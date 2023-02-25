@@ -1,8 +1,4 @@
-<x-modal 
-    header="Cancel Auto Billing" 
-    uid="cancel-auto-billing-modal"
-    class="max-w-screen-sm"
->
+<x-modal uid="cancel-auto-billing-modal" header="Cancel Auto Billing" class="max-w-screen-sm">
     @if ($count = count($subscriptions ?? []))
         <div class="grid gap-4">
             <x-alert>
@@ -13,7 +9,7 @@
                 @foreach ($subscriptions as $subs)
                     <div class="p-4 bg-gray-100 rounded-lg flex items-center justify-between gap-2">
                         <div class="font-medium">
-                            {{ $subs->planPrice->plan->name }}
+                            {{ $subs->price->plan->name }}
                             <x-badge :label="$subs->status"/>
                         </div>
 

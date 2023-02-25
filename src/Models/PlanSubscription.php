@@ -54,7 +54,7 @@ class PlanSubscription extends Model
             ->whereHas('price', fn($q) => $q
                 ->whereHas('plan', fn($q) => $q->search($search))
             )
-            ->whereHas('user', fn($q) => $q->search($search))
+            ->orWhereHas('user', fn($q) => $q->search($search))
         );
     }
 
@@ -81,6 +81,20 @@ class PlanSubscription extends Model
                 }
             }
         });
+    }
+
+    /**
+     * Scope for plan
+     */
+    public function scopePlan($query, $plan)
+    {
+        $id = is_numeric($plan) ? $plan : (
+            is_string($plan) 
+                ? optional(model('plan')->where('slug', $plan)->first())->id 
+                : optional($plan)->id
+        );
+
+        return $query->whereHas('price', fn($q) => $q->where('plan_id', $id));
     }
 
     /**

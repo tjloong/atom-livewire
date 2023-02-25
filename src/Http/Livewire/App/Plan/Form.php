@@ -11,7 +11,6 @@ class Form extends Component
     use WithPopupNotify;
     
     public $plan;
-    public $features;
     public $upgradables;
     public $downgradables;
 
@@ -28,6 +27,7 @@ class Form extends Component
             'plan.slug' => 'nullable',
             'plan.trial' => 'nullable',
             'plan.excerpt' => 'nullable',
+            'plan.features' => 'nullable',
             'plan.payment_description' => 'nullable',
             'plan.cta' => 'nullable',
             'plan.is_active' => 'nullable',
@@ -40,8 +40,8 @@ class Form extends Component
     protected function messages()
     {
         return [
-            'plan.name.required' => __('Plan name is required.'),
-            'plan.name.unique' => __('There is another plan with the same name.'), 
+            'plan.name.required' => 'Plan name is required.',
+            'plan.name.unique' => 'There is another plan with the same name.',
         ];
     }
 
@@ -50,32 +50,19 @@ class Form extends Component
      */
     public function mount()
     {
-        $this->setFeatures();
         $this->upgradables = $this->plan->upgradables->pluck('id')->toArray();
         $this->downgradables = $this->plan->downgradables->pluck('id')->toArray();
     }
 
     /**
-     * Get options property
+     * Get other plans property
      */
-    public function getOptionsProperty()
+    public function getOtherPlansProperty()
     {
-        $otherplans = model('plan')
+        return model('plan')
             ->when($this->plan->exists, fn($q) => $q->where('id', '<>', $this->plan->id))
-            ->selectRaw('id as value, name as label');
-
-        return [
-            'upgradables' => $otherplans->whereNotIn('id', $this->upgradables)->get(),
-            'downgradables' => $otherplans->whereNotIn('id', $this->downgradables)->get(),
-        ];
-    }
-
-    /**
-     * Set features
-     */
-    public function setFeatures()
-    {
-        $this->features = collect($this->plan->features ?? [])->filter()->join("\n");
+            ->selectRaw('id as value, name as label')
+            ->get();
     }
 
     /**
@@ -88,17 +75,14 @@ class Form extends Component
 
         $this->plan->fill([
             'trial' => $this->plan->trial ?? null,
-            'features' => $this->features 
-                ? collect(explode("\n", $this->features))->filter()->map(fn($val) => trim($val))->values()->all()
-                : null,
         ])->save();
 
         $this->plan->upgradables()->sync($this->upgradables);
         $this->plan->downgradables()->sync($this->downgradables);
 
-        $this->setFeatures();
+        if ($this->plan->wasRecentlyCreated) return redirect()->route('app.plan.update', [$this->plan->id]);
 
-        return redirect()->route('app.plan.listing');
+        $this->popup('Plan Updated.');
     }
 
     /**

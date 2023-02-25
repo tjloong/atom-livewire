@@ -9,8 +9,6 @@ class Update extends Component
     public $tab;
     public $plan;
 
-    protected $queryString = ['tab'];
-
     /**
      * Mount
      */
@@ -40,7 +38,7 @@ class Update extends Component
     {
         $this->plan->delete();
 
-        return redirect()->route('app.plan.listing')->with('info', 'Plan Deleted');
+        return breadcrumbs()->back();
     }
 
     /**

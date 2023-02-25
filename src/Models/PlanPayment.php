@@ -31,6 +31,27 @@ class PlanPayment extends Model
     }
 
     /**
+     * Scope for search
+     */
+    public function scopeSearch($query, $search)
+    {
+        return $query->where(fn($q) => $q
+            ->where('number', 'like', "%$search%")
+            ->orWhereHas('order', fn($q) => $q->search($search))
+        );
+    }
+
+    /**
+     * Scope for readable
+     */
+    public function scopeReadable($query, $data = null)
+    {
+        if (tier('root')) return $query;
+
+        return $query->whereHas('order', fn($q) => $q->where('user_id', user('id')));
+    }
+
+    /**
      * Get description attribute
      */
     public function getDescriptionAttribute()

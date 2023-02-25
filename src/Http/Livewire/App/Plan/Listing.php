@@ -9,6 +9,7 @@ class Listing extends Component
 {
     use WithTable;
 
+    public $renew;
     public $sort = 'name,asc';
     public $filters = ['search' => null];
 
@@ -21,32 +22,56 @@ class Listing extends Component
      */
     public function mount()
     {
+        $this->renew = !tier('root') && request()->query('renew')
+            ? model('plan_subscription')->readable()->find(request()->query('renew'))
+            : null;
+
         breadcrumbs()->home('Plans');
     }
 
     /**
-     * Get plans property
+     * Get query property
      */
-    public function getPlansProperty()
+    public function getQueryProperty()
     {
         return model('plan')
-            ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows)
-            ->through(fn($plan) => [
-                [
-                    'column_name' => 'Plan',
-                    'column_sort' => 'name',
-                    'label' => $plan->name,
-                    'href' => route('app.plan.update', [$plan->id]),
-                ],
+            ->readable()
+            ->when($this->renew, fn($q) => $q
+                ->whereIn('id', 
+                    collect([$this->renew->price->plan_id])
+                        ->concat($this->renew->price->plan->upgradables->pluck('id')->toArray())
+                        ->concat($this->renew->price->plan->downgradables->pluck('id')->toArray())
+                        ->unique()
+                        ->toArray()
+                )
+            )
+            ->with(['prices' => fn($q) => $q->where('country', 
+                $this->renew->price->country
+                ?? geoip()->getLocation()->iso_code 
+                ?? null
+            )])
+            ->filter($this->filters);
+    }
 
-                [
-                    'column_name' => 'Trial',
-                    'count' => $plan->trial,
-                    'uom' => 'day',
-                ],
-            ]);
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query)
+    {
+        return [
+            [
+                'column_name' => 'Plan',
+                'column_sort' => 'name',
+                'label' => $query->name,
+                'href' => route('app.plan.update', [$query->id]),
+            ],
+
+            [
+                'column_name' => 'Trial',
+                'count' => $query->trial,
+                'uom' => 'day',
+            ],
+        ];
     }
 
     /**

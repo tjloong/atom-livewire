@@ -56,7 +56,7 @@ trait WithTable
     {
         if (!$this->query) return;
 
-        if ($this->sort) $this->query->orderBy($this->sortBy, $this->sortOrder);
+        if (!empty($this->sort)) $this->query->orderBy($this->sortBy, $this->sortOrder);
 
         return $this->query
             ->paginate($this->maxRows)

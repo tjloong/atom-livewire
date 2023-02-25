@@ -14,7 +14,7 @@ class Update extends Component
      */
     public function mount($userId = null)
     {
-        $this->user = user()->isTier('root')
+        $this->user = tier('root')
             ? model('user')->findOrFail($userId)
             : user();
 
@@ -29,18 +29,9 @@ class Update extends Component
     public function getTabsProperty()
     {
         return [
-            ['group' => 'Account', 'tabs' => array_merge(
-                [
-                    ['slug' => 'info', 'label' => 'Sign-Up Information', 'livewire' => 'app.signup.info'],
-                ],
-
-                enabled_module('plans')
-                    ? [
-                        ['slug' => 'subscription', 'label' => 'Subscriptions', 'livewire' => 'app.billing.current-subscriptions'],
-                        ['slug' => 'payment', 'label' => 'Payment History', 'livewire' => 'app.billing.payment.listing'],
-                    ]
-                    : [],
-            )],
+            ['group' => 'Account', 'tabs' => [
+                ['slug' => 'info', 'label' => 'Sign-Up Information', 'livewire' => 'app.signup.info'],
+            ]],
         ];
     }
 
@@ -59,7 +50,7 @@ class Update extends Component
     {
         $this->user->block();
 
-        return redirect($this->redirectTo());
+        return breadcrumbs()->back();
     }
 
     /**
@@ -69,7 +60,7 @@ class Update extends Component
     {
         $this->user->unblock();
 
-        return redirect($this->redirectTo());
+        return breadcrumbs()->back()
     }
 
     /**
@@ -79,15 +70,7 @@ class Update extends Component
     {
         $this->user->delete();
         
-        return redirect($this->redirectTo())->with('flash', 'Sign-Up Deleted');
-    }
-
-    /**
-     * Redirect to
-     */
-    public function redirectTo()
-    {
-        return route('app.signup.listing');
+        return breadcrumbs()->back();
     }
 
     /**

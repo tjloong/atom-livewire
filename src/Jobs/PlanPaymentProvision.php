@@ -48,7 +48,7 @@ class PlanPaymentProvision implements ShouldQueue
             $this->provision();
         }
 
-        return redirect()->route('app.billing.view', ['status' => $this->status]);
+        return redirect()->route('app.plan.subscription.listing');
     }
 
     /**

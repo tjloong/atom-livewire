@@ -85,17 +85,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.label.children' => 'App\Label\Children',
             'atom.app.label.form-modal' => 'App\Label\FormModal',
 
-            // billing
-            'atom.app.billing.view' => 'App\Billing\View',
-            'atom.app.billing.plan' => 'App\Billing\Plan',
-            'atom.app.billing.checkout' => 'App\Billing\Checkout',
-            'atom.app.billing.current-subscriptions' => 'App\Billing\CurrentSubscriptions',
-            'atom.app.billing.cancel-auto-billing-modal' => 'App\Billing\CancelAutoBillingModal',
-
-            // account payment
-            'atom.app.billing.payment.listing' => 'App\Billing\Payment\Listing',
-            'atom.app.billing.payment.update' => 'App\Billing\Payment\Update',
-
             // onboarding
             'atom.app.onboarding.home' => 'App\Onboarding\Index',
             'atom.app.onboarding.profile' => 'App\Onboarding\Profile',
@@ -188,6 +177,16 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.plan.price.create' => 'App\Plan\Price\Create',
             'atom.app.plan.price.update' => 'App\Plan\Price\Update',
             'atom.app.plan.price.form' => 'App\Plan\Price\Form',
+
+            // plan subscription
+            'atom.app.plan.subscription.listing' => 'App\Plan\Subscription\Listing',
+            'atom.app.plan.subscription.create' => 'App\Plan\Subscription\Create',
+            'atom.app.plan.subscription.update' => 'App\Plan\Subscription\Update',
+            'atom.app.plan.subscription.cancel-auto-billing-modal' => 'App\Plan\Subscription\CancelAutoBillingModal',
+
+            // plan payment
+            'atom.app.plan.payment.listing' => 'App\Plan\Payment\Listing',
+            'atom.app.plan.payment.update' => 'App\Plan\Payment\Update',
 
             // ticket
             'atom.app.ticketing.listing' => 'App\Ticketing\Listing',

@@ -210,15 +210,15 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('plans')) return false;
 
-        $plan = is_numeric($plan) 
-            ? model('plan')->find($plan) 
-            : (is_string($plan) ? model('plan')->where('slug', $plan)->first() : $plan);
+        $id = is_numeric($plan) ? $plan : (
+            is_string($plan) 
+                ? optional(model('plan')->where('slug', $plan)->first())->id
+                : optional($plan)->id
+        );
 
-        return model('plan_subscription')
+        return $this->subscriptions()
             ->status('active')
-            ->whereHas('price', fn($q) => $q->whereHas('plan', fn($q) => 
-                $q->where('plans.id', $plan->id)->orWhere('plans.slug', $plan->slug)
-            ))
+            ->whereHas('price', fn($q) => $q->where('plan_id', $id))
             ->count() > 0;
     }
 
@@ -229,11 +229,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!enabled_module('plans')) return false;
 
-        $price = is_numeric($price) ? model('plan_price')->find($price) : $price;
+        $id = is_numeric($price) ? $price : optional($price)->id;
 
-        return model('plan_subscription')
+        return $this->subscriptions()
             ->status('active')
-            ->where('plan_price_id', $price->id)
+            ->where('plan_price_id', $id)
             ->count() > 0;
     }
 
@@ -284,7 +284,7 @@ class User extends Authenticatable implements MustVerifyEmail
             return current_route([
                 'app.settings', 
                 'app.ticketing.*', 
-                'app.billing.*',
+                'app.plan.*',
                 'app.onboarding.*',
             ]) || $this->isTier('root');
         }

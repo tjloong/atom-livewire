@@ -49,7 +49,7 @@ class Form extends Component
      */
     public function getReadonlyProperty()
     {
-        return $this->price->accounts()->count() > 0;
+        return $this->price->users()->count() > 0;
     }
 
     /**
@@ -69,7 +69,9 @@ class Form extends Component
         $this->validate();
 
         $this->price->fill([
-            'expired_after' => $this->price->expired_after ?? null,
+            'amount' => is_numeric($this->price->amount) ? $this->price->amount : null,
+            'discount' => is_numeric($this->price->discount) ? $this->price->discount : null,
+            'expired_after' => is_numeric($this->price->expired_after) ? $this->price->expired_after : null,
         ])->save();
         
         if ($this->price->is_default) {
@@ -80,10 +82,7 @@ class Form extends Component
                 ->update(['is_default' => false]);
         }
 
-        return redirect()->route('app.plan.update', [
-            'planId' => $this->plan->id,
-            'tab' => 'price',
-        ]);
+        return breadcrumbs()->back();
     }
 
     /**

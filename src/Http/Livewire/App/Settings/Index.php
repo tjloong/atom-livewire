@@ -48,7 +48,7 @@ class Index extends Component
      */
     public function getTabsProperty()
     {
-        $authorize = auth()->user()->can('setting.manage');
+        $authorize = user()->can('setting.manage');
 
         $account = ['group' => 'Account', 'tabs' => [
             ['slug' => 'login', 'label' => 'Login Information', 'icon' => 'arrow-right-to-bracket'],

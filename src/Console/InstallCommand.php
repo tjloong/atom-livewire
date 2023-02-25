@@ -529,7 +529,7 @@ class InstallCommand extends Command
                 $table->unsignedInteger('trial')->nullable();
                 $table->string('payment_description')->nullable();
                 $table->text('excerpt')->nullable();
-                $table->json('features')->nullable();
+                $table->text('features')->nullable();
                 $table->string('cta')->nullable();
                 $table->boolean('is_active')->nullable();
                 $table->timestamps();

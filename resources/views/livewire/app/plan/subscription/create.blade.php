@@ -4,24 +4,24 @@
     <div class="flex flex-col gap-6">
         <x-box>
             <div class="grid divide-y">
-                @foreach ($orderItems as $i => $orderItem)
+                @foreach ($items as $i => $item)
                     <div class="p-4 flex flex-wrap justify-between gap-4">
                         <div class="font-semibold text-gray-500">
-                            {{ data_get($orderItem, 'name') }}
+                            {{ data_get($item, 'name') }}
                         </div>
 
                         <div class="shrink-0 text-right">
-                            @if ($trial = data_get($orderItem, 'data.trial'))
-                                {{ currency(0, data_get($orderItem, 'currency')) }}
-                            @elseif ($discount = data_get($orderItem, 'discounted_amount'))
+                            @if ($trial = data_get($item, 'data.trial'))
+                                {{ currency(0, data_get($item, 'currency')) }}
+                            @elseif ($discount = data_get($item, 'discounted_amount'))
                                 <div class="text-gray-500 line-through font-medium">
-                                    {{ currency(data_get($orderItem, 'amount'), data_get($orderItem, 'currency')) }}
+                                    {{ currency(data_get($item, 'amount'), data_get($item, 'currency')) }}
                                 </div>
                                 <div class="text-sm text-red-500 font-medium">
                                     {{ __('Discounted') }} {{ currency($discount) }}
                                 </div>
                             @else
-                                {{ currency(data_get($orderItem, 'grand_total'), data_get($orderItem, 'currency')) }}
+                                {{ currency(data_get($item, 'grand_total'), data_get($item, 'currency')) }}
                             @endif
                         </div>
                     </div>
@@ -40,10 +40,7 @@
                     @if (data_get($this->total, 'amount') <= 0)
                         <div class="grid gap-4">
                             <x-form.agree tnc wire:model="order.data.agree_tnc"/>
-
-                            @if ($errors->any())
-                                <x-alert :errors="$errors->all()"/>
-                            @endif
+                            @if ($errors->any()) <x-alert :errors="$errors->all()"/> @endif
                         </div>
                     @endif
                 </div>

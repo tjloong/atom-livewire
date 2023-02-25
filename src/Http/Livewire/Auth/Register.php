@@ -166,7 +166,7 @@ class Register extends Component
     public function redirectTo($user)
     {
         if (enabled_module('plans') && $this->plan && $this->price) {
-            return route('app.billing.checkout', [
+            return route('app.plan.subscription.create', [
                 'plan' => $this->plan, 
                 'price' => $this->price,
             ]);

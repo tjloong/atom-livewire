@@ -2,55 +2,63 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Plan\Price;
 
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
 class Listing extends Component
 {
+    use WithTable;
+
     public $plan;
 
     /**
-     * Get prices property
+     * Get query property
      */
-    public function getPricesProperty()
+    public function getQueryProperty()
     {
         return $this->plan->prices()
+            ->withCount('users')
             ->orderBy('currency')
             ->orderBy('expired_after')
-            ->orderBy('amount')
-            ->get()
-            ->transform(fn($price) => [
-                [
-                    'column_name' => 'Price',
-                    'label' => implode(' / ', [
-                        currency($price->amount, $price->currency),
-                        $price->recurring,
-                    ]),
-                    'href' => route('app.plan.price.update', [
-                        'planId' => $this->plan->id,
-                        'priceId' => $price->id,
-                    ]),
-                ],
+            ->orderBy('amount');
+    }
 
-                [
-                    'status' => collect([
-                        'recurring' => $price->is_recurring,
-                        'default' => $price->is_default,
-                    ])->filter()->keys()->values()->all(),
-                ],
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query)
+    {
+        return [
+            [
+                'column_name' => 'Price',
+                'label' => implode(' / ', [
+                    currency($query->amount, $query->currency),
+                    $query->recurring,
+                ]),
+                'href' => route('app.plan.price.update', [
+                    'planId' => $this->plan->id,
+                    'priceId' => $query->id,
+                ]),
+            ],
 
-                [
-                    'column_name' => 'Available In',
-                    'label' => $price->country
-                        ? data_get(metadata()->countries($price->country), 'name')
-                        : 'All countries',
-                ],
+            [
+                'status' => collect([
+                    'recurring' => $query->is_recurring,
+                    'default' => $query->is_default,
+                ])->filter()->keys()->values()->all(),
+            ],
 
-                [
-                    'column_name' => 'Subscribers',
-                    'count' => $price->accounts->count(),
-                    'uom' => 'subscriber',
-                ],
-            ]);
+            [
+                'column_name' => 'Available In',
+                'label' => $query->country ?? 'All Countries',
+            ],
+
+            [
+                'column_name' => 'Subscribers',
+                'count' => $query->users_count,
+                'uom' => 'subscriber',
+            ],
+        ];
     }
 
     /**
