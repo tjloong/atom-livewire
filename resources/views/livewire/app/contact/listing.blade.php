@@ -10,11 +10,11 @@
         @endcan
     </x-page-header>
 
-    <x-table :data="$this->contacts->items()">
+    <x-table :data="$this->paginator->items()">
         <x-slot:header>
-            <x-table.searchbar :total="$this->contacts->total()"/>
+            <x-table.searchbar :total="$this->paginator->total()"/>
         </x-slot:header>
     </x-table>
 
-    {!! $this->contacts->links() !!}
+    {!! $this->paginator->links() !!}
 </div>

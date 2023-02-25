@@ -48,4 +48,12 @@ class Contact extends Model
             ->orWhereHas('persons', fn($q) => $q->search($search))
         );
     }
+
+    /**
+     * Get contact attribute
+     */
+    public function getEmailPhoneAttribute()
+    {
+        return collect([$this->email, $this->phone])->filter()->join(' | ');
+    }
 }

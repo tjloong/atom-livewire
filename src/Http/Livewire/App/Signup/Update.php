@@ -60,7 +60,7 @@ class Update extends Component
     {
         $this->user->unblock();
 
-        return breadcrumbs()->back()
+        return breadcrumbs()->back();
     }
 
     /**

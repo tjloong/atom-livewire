@@ -38,35 +38,37 @@ class Listing extends Component
     }
 
     /**
-     * Get contacts property
+     * Get query property
      */
-    public function getContactsProperty()
+    public function getQueryProperty()
     {
         return model('contact')
-            ->when(
-                model('contact')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->where('category', $this->category)
-            ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows)
-            ->through(fn($contact) => [
-                [
-                    'column_name' => 'Contact',
-                    'column_sort' => 'name',
-                    'label' => $contact->name,
-                    'href' => route('app.contact.view', [$contact->id]),
-                    'avatar' => optional($contact->avatar)->url,
-                    'small' => empty($small) ? __('No contact number') : $small,
-                ],
-                [
-                    'column_name' => 'Created Date',
-                    'column_sort' => 'created_at',
-                    'column_class' => 'text-right',
-                    'date' => $contact->created_at,
-                ],
-            ]);
+            ->filter($this->filters);
+    }
+
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query)
+    {
+        return [
+            [
+                'column_name' => 'Contact',
+                'column_sort' => 'name',
+                'label' => $query->name,
+                'href' => route('app.contact.view', [$query->id]),
+                'avatar' => optional($query->avatar)->url,
+                'small' => empty($query->email_phone) ? __('No contact number') : $query->email_phone,
+            ],
+            [
+                'column_name' => 'Created Date',
+                'column_sort' => 'created_at',
+                'column_class' => 'text-right',
+                'date' => $query->created_at,
+            ],
+        ];
     }
 
     /**

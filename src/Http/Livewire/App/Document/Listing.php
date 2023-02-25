@@ -46,15 +46,12 @@ class Listing extends Component
     }
 
     /**
-     * Get documents property
+     * Get query property
      */
-    public function getDocumentsProperty()
+    public function getQueryProperty()
     {
         return model('document')
-            ->when(
-                model('document')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->when(
                 $this->contact,
                 fn($q) => $q->where('contact_id', $this->contact->id),
@@ -63,10 +60,67 @@ class Listing extends Component
             ->filter($this->filters)
             ->join('contacts', 'contacts.id', '=', 'documents.contact_id')
             ->join('users', 'users.id', '=', 'documents.owned_by')
-            ->select('documents.*')
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->latest('id')
-            ->paginate($this->maxRows);
+            ->select('documents.*');
+    }
+
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query)
+    {
+        return array_filter([
+            [
+                'column_name' => 'Date',
+                'column_sort' => 'issued_at',
+                'date' => $query->issued_at,
+            ],
+
+            [
+                'column_name' => 'Number',
+                'column_sort' => 'number',
+                'label' => $query->number,
+                'href' => route('app.document.view', [$query->id]),
+            ],
+
+            $this->contact ? null : [
+                'column_name' => in_array($this->type, ['purchase-order', 'bill']) ? 'Vendor' : 'Client',
+                'column_sort' => 'contacts.name',
+                'label' => $query->contact->name,
+                'href' => route('app.document.view', [$query->id]),
+                'small' => str()->limit($query->summary, 100),
+            ],
+
+            $this->type === 'delivery-order' ? null : [
+                'column_name' => 'Amount',
+                'column_sort' => 'grand_total',
+                'column_class' => 'text-right',
+                'class' => 'text-right',
+                'label' => $query->is_splitted
+                    ? currency($query->splitted_total, $query->currency)
+                    : currency($query->grand_total, $query->currency),
+                'small' => $query->is_foreign_currency
+                    ? currency(
+                        $query->is_splitted
+                            ? $query->calculateCurrencyConversion('splitted_total')
+                            : $query->calculateCurrencyConversion('grand_total'),
+                        $query->master_currency
+                    )
+                    : null,
+            ],
+
+            [
+                'column_name' => 'Status',
+                'column_class' => 'text-right',
+                'class' => 'text-right',
+            ],
+
+            [
+                'column_name' => 'Owner',
+                'column_sort' => 'users.name',
+                'column_class' => 'text-right',
+                'class' => 'text-right',
+            ],
+        ]);
     }
 
     /**
