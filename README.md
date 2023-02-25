@@ -78,13 +78,7 @@ DB_PASSWORD=password
 php artisan migrate
 ```
 
-5. Composer install Amazon S3 driver for file upload feature
-
-```
-composer require -W league/flysystem-aws-s3-v3 "^3.0"
-```
-
-6. Composer install Atom
+5. Composer install Atom
 
 ```
 composer require jiannius/atom-livewire
@@ -92,13 +86,13 @@ php artisan atom:install --force
 npm install
 ```
 
-7. Run atom:install again to install Atom's modules
+6. Run atom:install again to install Atom's modules
 
 ```
 php artisan atom:install
 ```
 
-8. Add middleware to app\Http\Kernel.php
+7. Add middleware to app\Http\Kernel.php
 
 ```
 protected $middleware = [
@@ -119,7 +113,7 @@ protected $middlewareGroups = [
 ];
 ```
 
-9. Start development
+8. Start development
 
 ```
 npm run dev
