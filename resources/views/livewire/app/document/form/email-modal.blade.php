@@ -1,6 +1,6 @@
 <x-modal uid="email-form-modal" header="Send Email" icon="paper-plane" class="max-w-screen-md">
     @if ($email)
-        <div class="grid gap-6">
+        <div class="p-6 grid gap-6">
             <div class="grid gap-6 md:grid-cols-2">
                 <x-form.email label="Sender Email"
                     wire:model.defer="email.from.email"

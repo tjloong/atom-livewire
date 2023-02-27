@@ -57,6 +57,8 @@
             </div>
         </x-box>
 
-        @livewire(lw('app.permission.form'), compact('user'), key('permission'))
+        @module('permissions')
+            @livewire(lw('app.permission.form'), compact('user'), key('permission'))
+        @endmodule
     </div>
 </div>

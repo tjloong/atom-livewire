@@ -46,7 +46,7 @@
         x-on:{{ $uid }}-open.window="open"
         wire:ignore
     >
-        <div class="grid gap-4">
+        <div class="p-6 grid gap-4">
             <template x-if="loading">
                 <div class="flex items-center justify-center py-6 text-theme">
                     <svg class="animate-spin"

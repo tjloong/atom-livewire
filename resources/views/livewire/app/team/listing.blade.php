@@ -1,5 +1,5 @@
 <div class="max-w-screen-lg mx-auto w-full">
-    <x-table :data="$this->paginator->items()">
+    <x-table :data="$this->tableData">
         <x-slot:header>
             <x-table.header label="Teams">
                 <x-button size="sm" color="gray"

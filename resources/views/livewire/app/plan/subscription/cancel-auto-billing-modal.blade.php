@@ -1,6 +1,6 @@
 <x-modal uid="cancel-auto-billing-modal" header="Cancel Auto Billing" class="max-w-screen-sm">
     @if ($count = count($subscriptions ?? []))
-        <div class="grid gap-4">
+        <div class="p-6 grid gap-4">
             <x-alert>
                 {{ __('The following subscriptions are within the same auto billing cycle. All of them will be canceled. This operation is irreversible.') }}
             </x-alert>

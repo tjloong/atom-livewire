@@ -11,7 +11,7 @@
         <div class="g-recaptcha" 
             data-sitekey="{{ $attributes->get('sitekey') 
                 ?? env('RECAPTCHA_SITEKEY') 
-                ?? site_settings('recaptcha_sitekey') 
+                ?? settings('recaptcha_sitekey') 
             }}"
             data-callback="recaptchaCallback"
         ></div>

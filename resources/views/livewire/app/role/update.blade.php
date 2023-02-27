@@ -8,6 +8,9 @@
 
     <div class="flex flex-col gap-6">
         @livewire(lw('app.role.form'), compact('role'))
-        @livewire(lw('app.permission.form'), compact('role'))
+
+        @module('permissions')
+            @livewire(lw('app.permission.form'), compact('role'))
+        @endmodule
     </div>
 </div>

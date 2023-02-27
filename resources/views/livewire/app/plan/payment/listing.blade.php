@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto w-full">
     @if ($fullpage) <x-page-header :title="$this->title"/> @endif
 
-    <x-table :data="$this->paginator->items()">
+    <x-table :data="$this->tableData">
         <x-slot:header>
             @if (!$fullpage) <x-table.header :label="$this->title"/> @endif
             <x-table.searchbar :total="$this->paginator->total()"/>

@@ -32,48 +32,53 @@ class Listing extends Component
     }
 
     /**
-     * Get users property
+     * Get query property
      */
-    public function getUsersProperty()
+    public function getQueryProperty()
     {
         return model('user')
             ->tier('signup')
-            ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows)
-            ->through(fn($user) => [
-                [
-                    'column_name' => 'Name',
-                    'column_sort' => 'name',
-                    'label' => $user->name,
-                    'href' => route('app.signup.update', [$user->id]),
-                ],
-    
-                [
-                    'column_name' => 'Email',
-                    'label' => $user->email,
-                ],
-    
-                enabled_module('plans')
-                    ? [
-                        'column_name' => 'Plan',
-                        'tags' => $user->subscriptions
-                            ->map(fn($sub) => $sub->planPrice->plan->name)
-                            ->unique()
-                            ->toArray(),
-                    ] : null,
-    
-                [
-                    'column_name' => 'Status',
-                    'status' => $user->status,
-                ],
-    
-                [
-                    'column_name' => 'Sign-Up Date',
-                    'column_sort' => 'signup_at',
-                    'date' => $user->signup_at,
-                ],
-            ]);
+            ->filter($this->filters);
+    }
+
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query)
+    {
+        return [
+            [
+                'column_name' => 'Name',
+                'column_sort' => 'name',
+                'label' => $query->name,
+                'href' => route('app.signup.update', [$query->id]),
+            ],
+
+            [
+                'column_name' => 'Email',
+                'label' => $query->email,
+            ],
+
+            enabled_module('plans')
+                ? [
+                    'column_name' => 'Plan',
+                    'tags' => $query->subscriptions
+                        ->map(fn($sub) => $sub->planPrice->plan->name)
+                        ->unique()
+                        ->toArray(),
+                ] : null,
+
+            [
+                'column_name' => 'Status',
+                'status' => $query->status,
+            ],
+
+            [
+                'column_name' => 'Sign-Up Date',
+                'column_sort' => 'signup_at',
+                'date' => $query->signup_at,
+            ],
+        ];
     }
 
     /**

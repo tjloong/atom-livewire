@@ -1,9 +1,9 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Sign-Ups"/>
     
-    <x-table :data="$this->users->items()">
+    <x-table :data="$this->tableData">
         <x-slot:header>
-            <x-table.searchbar :total="$this->users->total()"/>
+            <x-table.searchbar :total="$this->paginator->total()"/>
             <x-table.toolbar>
                 <x-form.select
                     wire:model="filters.status"
@@ -17,5 +17,5 @@
         </x-slot:header>
     </x-table>
 
-    {!! $this->users->links() !!}
+    {!! $this->paginator->links() !!}
 </div>

@@ -60,7 +60,7 @@
         }"
         x-on:{{ $uid }}-open.window="open"
     >
-        <div class="flex flex-col gap-4">
+        <div class="p-6 flex flex-col gap-4">
             <div x-show="files.length" class="grid grid-cols-3 gap-4 md:grid-cols-6">
                 <template x-for="file in files">
                     <div 

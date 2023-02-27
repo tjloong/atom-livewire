@@ -58,9 +58,17 @@ trait WithTable
 
         if (!empty($this->sort)) $this->query->orderBy($this->sortBy, $this->sortOrder);
 
-        return $this->query
-            ->paginate($this->maxRows)
-            ->through(fn($query) => $this->getTableColumns($query));
+        return $this->query->paginate($this->maxRows);
+    }
+
+    /**
+     * Get table data property
+     */
+    public function getTableDataProperty()
+    {
+        return $this->paginator
+            ->through(fn($query) => $this->getTableColumns($query))
+            ->items();
     }
 
     /**

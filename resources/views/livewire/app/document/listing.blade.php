@@ -15,7 +15,7 @@
         </x-page-header>
     @endif
 
-    <x-table :data="$this->paginator->items()">
+    <x-table :data="$this->tableData">
         <x-slot:header>
             <x-table.searchbar :total="$this->paginator->total()"/>
         </x-slot:header>

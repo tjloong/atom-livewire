@@ -49,7 +49,7 @@
         :header="data_get($input, 'uid') ? 'Update Announcement' : 'Create Announcement'"
     >
         @if ($input)
-            <div class="grid gap-6">
+            <div class="p-6 grid gap-6">
                 <x-form.select
                     label="Announcement Type"
                     wire:model="input.type"

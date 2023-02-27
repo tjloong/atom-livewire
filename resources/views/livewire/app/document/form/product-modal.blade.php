@@ -1,6 +1,6 @@
 <x-modal uid="product-modal" header="Select Product" class="max-w-screen-md">
     @if ($product)
-        <div class="-m-6 flex flex-col divide-y">
+        <div class="flex flex-col divide-y">
             <a wire:click="$set('product', null)" class="p-4 flex items-center gap-3 text-gray-800">
                 <x-icon name="arrow-left"/> {{ data_get($product, 'name') }}
             </a>
@@ -35,7 +35,7 @@
             @endforelse
         </div>
     @else
-        <div class="-m-6 flex flex-col divide-y">
+        <div class="flex flex-col divide-y">
             <div class="p-4">
                 <x-form.text
                     wire:model.debounce.400ms="filters.search"

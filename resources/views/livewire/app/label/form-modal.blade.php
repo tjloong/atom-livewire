@@ -1,6 +1,6 @@
 <x-modal uid="label-form-modal" :header="data_get($label, 'id') ? 'Update Label' : 'Create Label'">
     @if ($label)
-        <div class="grid gap-6">
+        <div class="p-6 grid gap-6">
             @if (count($this->parentTrails))
                 <x-form.field label="Parent Label">
                     <div class="flex flex-wrap items-center gap-2">
