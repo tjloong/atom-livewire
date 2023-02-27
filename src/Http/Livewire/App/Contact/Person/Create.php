@@ -14,10 +14,7 @@ class Create extends Component
      */
     public function mount($contactId)
     {
-        $this->contact = model('contact')->when(
-            model('contact')->enabledHasTenantTrait,
-            fn($q) => $q->belongsToTenant(),
-        )->findOrFail($contactId);
+        $this->contact = model('contact')->readable()->findOrFail($contactId);
 
         $this->person = model('contact_person')->fill([
             'contact_id' => $this->contact->id,

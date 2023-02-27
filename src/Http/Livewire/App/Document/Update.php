@@ -13,12 +13,7 @@ class Update extends Component
      */
     public function mount($documentId)
     {
-        $this->document = model('document')
-            ->when(
-                model('document')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
-            ->findOrFail($documentId);
+        $this->document = model('document')->readable()->findOrFail($documentId);
 
         if ($master = $this->document->splittedFrom) {
             $this->document = $master;

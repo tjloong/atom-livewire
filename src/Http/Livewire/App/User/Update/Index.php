@@ -13,10 +13,7 @@ class Index extends Component
      */
     public function mount($userId)
     {
-        $this->user = model('user')->when(
-            model('user')->enabledHasTenantTrait,
-            fn($q) => $q->belongsToTenant(),
-        )->withTrashed()->findOrFail($userId);
+        $this->user = model('user')->readable()->withTrashed()->findOrFail($userId);
 
         breadcrumbs()->push($this->user->name);
     }

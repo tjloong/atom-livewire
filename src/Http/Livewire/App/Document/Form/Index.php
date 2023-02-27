@@ -98,7 +98,7 @@ class Index extends Component
 
         $this->settings = model('document')->enabledHasTenantTrait
             ? tenant_settings($this->document->type)
-            : site_settings('app.document.'.$this->document->type);
+            : settings('app.document.'.$this->document->type);
     }
 
     /**

@@ -16,13 +16,7 @@ class Update extends Component
      */
     public function mount($productId)
     {
-        $this->product = model('product')
-            ->when(
-                model('product')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant()
-            )
-            ->findOrFail($productId);
-
+        $this->product = model('product')->readable()->findOrFail($productId);
         $this->tab = $this->tab ?? data_get($this->tabs[0], 'slug');
 
         breadcrumbs()->push($this->product->name);

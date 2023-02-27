@@ -47,7 +47,7 @@ class EmailModal extends Component
     {
         $settings = model('document')->enabledHasTenantTrait
             ? tenant_settings($this->document->type.'.email')
-            : site_settings('app.document.'.$this->document->type.'.email');
+            : settings('app.document.'.$this->document->type.'.email');
 
         $this->email = [
             'from' => [

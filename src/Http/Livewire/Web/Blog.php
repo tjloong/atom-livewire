@@ -108,7 +108,9 @@ class Blog extends Component
      */
     public function getTopicsProperty()
     {
-        $topics = model('label')->where('type', 'blog-category')
+        $topics = model('label')
+            ->readable()
+            ->where('type', 'blog-category')
             ->oldest('seq')
             ->orderBy('name')
             ->get();

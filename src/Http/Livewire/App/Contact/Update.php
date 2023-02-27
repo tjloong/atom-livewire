@@ -13,20 +13,9 @@ class Update extends Component
      */
     public function mount($contactId)
     {
-        $this->contact = model('contact')->when(
-            model('contact')->enabledHasTenantTrait,
-            fn($q) => $q->belongsToTenant(),
-        )->findOrFail($contactId);
+        $this->contact = model('contact')->readable()->findOrFail($contactId);
 
-        breadcrumbs()->push($this->title);
-    }
-
-    /**
-     * Get title property
-     */
-    public function getTitleProperty()
-    {
-        return str()->headline('Update '.$this->contact->type);
+        breadcrumbs()->push('Update');
     }
 
     /**

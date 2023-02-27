@@ -21,14 +21,8 @@ class View extends Component
     {
         $this->authorize('contact.view');
 
-        $this->contact = model('contact')
-            ->when(
-                model('contact')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
-            ->findOrFail($contactId);
-
-        $this->tab = $this->tab ?? data_get(collect($this->tabs)->first(), 'slug');
+        $this->contact = model('contact')->readable()->findOrFail($contactId);
+        $this->tab = $this->tab ?? data_get(tabs($this->tabs)->first(), 'slug');
 
         breadcrumbs()->push($this->contact->name);
     }
@@ -41,8 +35,36 @@ class View extends Component
         return array_filter([
             $this->contact->type === 'company' 
                 ? ['slug' => 'person', 'label' => 'Contact Persons', 'livewire' => 'app.contact.person.listing'] 
-                : [],
+                : null,
         ]);
+    }
+
+    /**
+     * Get fields property
+     */
+    public function getFieldsProperty()
+    {
+        return [
+            ['label' => 'Type', 'value' => str($this->contact->type)->title()],
+            ['label' => 'Email', 'value' => $this->contact->email ?? '--'],
+            ['label' => 'Phone', 'value' => $this->contact->phone ?? '--'],
+            ['label' => 'Fax', 'value' => $this->contact->fax ?? '--'],
+            ['label' => 'BRN', 'value' => $this->contact->brn ?? '--'],
+            ['label' => 'Tax Number', 'value' => $this->contact->tax_number ?? '--'],
+            ['label' => 'Website', 'value' => $this->contact->website ?? '--'],
+            ['label' => 'Address', 'value' => format_address($this->contact) ?? '--'],
+        ];
+    }
+
+    /**
+     * Get livewire property
+     */
+    public function getLivewireProperty()
+    {
+        $tab = tabs($this->tabs)->firstWhere('slug', $this->tab);
+        $livewire = data_get($tab, 'livewire');
+
+        return $livewire;
     }
 
     /**

@@ -14,11 +14,7 @@ class Update extends Component
      */
     public function mount($contactId, $personId)
     {
-        $this->contact = model('contact')->when(
-            model('contact')->enabledHasTenantTrait,
-            fn($q) => $q->belongsToTenant(),
-        )->findOrFail($contactId);
-
+        $this->contact = model('contact')->readable()->findOrFail($contactId);
         $this->person = $this->contact->persons()->findOrFail($personId);
 
         breadcrumbs()->push('Update');

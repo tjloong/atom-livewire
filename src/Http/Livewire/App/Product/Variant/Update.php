@@ -13,12 +13,7 @@ class Update extends Component
      */
     public function mount ($variantId)
     {
-        $this->variant = model('product_variant')
-            ->when(
-                model('product')->enabledHasTenantTrait,
-                fn($q) => $q->whereHas('product', fn($q) => $q->belongsToTenant())
-            )
-            ->findOrFail($variantId);
+        $this->variant = model('product_variant')->readable()->findOrFail($variantId);
 
         breadcrumbs()->push($this->variant->name);
     }

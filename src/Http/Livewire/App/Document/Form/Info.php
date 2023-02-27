@@ -44,10 +44,7 @@ class Info extends Component
     public function getConvertFromDocuments($search = null, $page = 1, $sel = [])
     {
         return model('document')
-            ->when(
-                model('document')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->where(fn($q) => $q
                 ->when($search, fn($q) => $q->filter(['search' => $search]))
                 ->orWhereIn('id', $sel)

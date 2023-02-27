@@ -57,7 +57,7 @@ class Form extends Component
      */
     public function getEnabledStripeProperty()
     {
-        return site_settings('stripe_public_key') && site_settings('stripe_secret_key');
+        return settings('stripe_public_key') && settings('stripe_secret_key');
     }
 
     /**

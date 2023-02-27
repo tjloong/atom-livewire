@@ -258,10 +258,7 @@ class Document extends Model
             ->toString();
 
         $query = model('document')
-            ->when(
-                model('document')->enabledHasTenantTrait,
-                fn($q) => $q->where('tenant_id', $this->tenant_id),
-            )
+            ->readable()
             ->where('type', $this->type)
             ->whereNull('rev');
 

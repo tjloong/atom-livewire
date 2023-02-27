@@ -76,9 +76,7 @@ class FormModal extends Component
     public function open($data)
     {
         $this->label = data_get($data, 'id')
-            ? model('label')
-                ->when(model('label')->enabledHasTenantTrait, fn($q) => $q->belongsToTenant())
-                ->findOrFail(data_get($data, 'id'))
+            ? model('label')->readable()->findOrFail(data_get($data, 'id'))
             : model('label')->fill($data);
 
         $this->names = (array)$this->label->name;

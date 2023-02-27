@@ -76,13 +76,7 @@ class Item extends Component
      */
     public function getTaxesProperty()
     {
-        return model('tax')
-            ->when(
-                model('tax')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
-            ->status('active')
-            ->get();
+        return model('tax')->readable()->status('active')->get();
     }
 
     /**

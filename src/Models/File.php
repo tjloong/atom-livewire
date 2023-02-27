@@ -204,7 +204,7 @@ class File extends Model
         
         if (!$meta) return;
         if (data_get($meta, 'size')) {
-            $fs = site_settings('filesystem', 'local');
+            $fs = settings('filesystem', 'local');
     
             if ($fs === 'local') $stored = $this->storeToLocal($content, $location, $visibility);
             else if ($fs === 'do') $stored = $this->storeToDO($content, $location, $visibility);
@@ -257,7 +257,7 @@ class File extends Model
     {
     
         $disk = $this->getDisk('do');
-        $folder = site_settings('do_spaces_folder').'/'.$location;
+        $folder = settings('do_spaces_folder').'/'.$location;
         $path = $disk->putFile($folder, $content->path(), $visibility);
         $url = $disk->url($path);
 
@@ -344,12 +344,12 @@ class File extends Model
         config([
             'filesystems.disks.do' => [
                 'driver' => 's3',
-                'key' => site_settings('do_spaces_key'),
-                'secret' => site_settings('do_spaces_secret'),
-                'region' => site_settings('do_spaces_region'),
-                'bucket' => site_settings('do_spaces_bucket'),
-                'folder' => site_settings('do_spaces_folder'),
-                'endpoint' => site_settings('do_spaces_endpoint'),
+                'key' => settings('do_spaces_key'),
+                'secret' => settings('do_spaces_secret'),
+                'region' => settings('do_spaces_region'),
+                'bucket' => settings('do_spaces_bucket'),
+                'folder' => settings('do_spaces_folder'),
+                'endpoint' => settings('do_spaces_endpoint'),
                 'use_path_style_endpoint' => false,
             ],
         ]);

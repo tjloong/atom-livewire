@@ -98,10 +98,7 @@ class Listing extends Component
             'types' => model('product')->getTypes(),
 
             'product_categories' => model('label')
-                ->when(
-                    model('label')->enabledHasTenantTrait,
-                    fn($q) => $q->belongsToTenant(),
-                )
+                ->readable()
                 ->where('type', 'product-category')
                 ->orderBy('name')
                 ->get(),

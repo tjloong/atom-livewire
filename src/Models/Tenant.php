@@ -63,6 +63,17 @@ class Tenant extends Model
     }
 
     /**
+     * Scope for current tenant
+     */
+    public function scopeCurrent($query)
+    {
+        return $query
+            ->whereHas('users', fn($q) => $q->where('users.id', user('id')))
+            ->when(user('pref.tenant'), fn($q, $id) => $q->where('id', $id))
+            ->oldest();
+    }
+
+    /**
      * Get address attribute
      */
     public function getAddressAttribute()
@@ -79,23 +90,11 @@ class Tenant extends Model
     }
 
     /**
-     * Tenant session
+     * Retrieve tenant
      */
-    public function session($attr = null, $default = null, $tenant = null)
+    public function retrieve($attr = null, $default = null, $tenant = null)
     {
-        if (!$tenant) {
-            if (!session('tenant')) {
-                session([
-                    'tenant' => model('tenant')
-                        ->whereHas('users', fn($q) => $q->where('users.id', user('id')))
-                        ->when(user('pref.tenant'), fn($q, $id) => $q->where('id', $id))
-                        ->oldest()
-                        ->first(),
-                ]);
-            }
-        
-            $tenant = session('tenant');
-        }
+        if (!$tenant) $tenant = session('tenant') ?? model('tenant')->current()->first();
     
         if ($attr === 'settings') {
             return $tenant->settings->mapWithKeys(fn($setting) => [

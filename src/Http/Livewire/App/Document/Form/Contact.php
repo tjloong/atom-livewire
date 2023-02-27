@@ -123,10 +123,7 @@ class Contact extends Component
     public function getContacts($search = null, $page = 1)
     {
         return model('contact')
-            ->when(
-                model('contact')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->filter([
                 'type' => $this->type,
                 'search' => $search,

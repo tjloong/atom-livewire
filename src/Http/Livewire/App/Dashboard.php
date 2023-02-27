@@ -65,10 +65,7 @@ class Dashboard extends Component
     public function getTeamsProperty()
     {
         return model('team')
-            ->when(
-                model('team')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->orderBy('name')
             ->get();
     }

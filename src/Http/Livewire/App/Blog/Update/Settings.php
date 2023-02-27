@@ -39,6 +39,7 @@ class Settings extends Component
     public function getLabelsProperty()
     {
         return model('label')
+            ->readable()
             ->where('type', 'blog-category')
             ->orderBy('name')
             ->get();

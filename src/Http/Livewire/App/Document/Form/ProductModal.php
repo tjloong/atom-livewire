@@ -32,10 +32,7 @@ class ProductModal extends Component
     public function getProductsProperty()
     {
         return model('product')
-            ->when(
-                model('product')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->filter($this->filters)
             ->status('active')
             ->toPage($this->page)

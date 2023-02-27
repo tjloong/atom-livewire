@@ -15,9 +15,7 @@ class Update extends Component
      */
     public function mount($promotion)
     {
-        $this->promotion = model('promotion')
-            ->when(model('promotion')->enabledHasTenantTrait, fn($q) => $q->belongsToTenant())
-            ->findOrFail($promotion);
+        $this->promotion = model('promotion')->readable()->findOrFail($promotion);
 
         breadcrumbs()->push($this->promotion->name);
     }

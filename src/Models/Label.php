@@ -28,7 +28,7 @@ class Label extends Model
      */
     public function children()
     {
-        return $this->hasMany(get_class(model('label')), 'parent_id');
+        return $this->hasMany(model('label'), 'parent_id');
     }
 
     /**
@@ -36,7 +36,7 @@ class Label extends Model
      */
     public function parent()
     {
-        return $this->belongsTo(get_class(model('label')), 'parent_id');
+        return $this->belongsTo(model('label'), 'parent_id');
     }
 
     /**

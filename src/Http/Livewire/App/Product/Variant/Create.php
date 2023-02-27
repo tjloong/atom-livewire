@@ -14,12 +14,7 @@ class Create extends Component
      */
     public function mount($productId)
     {
-        $this->product = model('product')
-            ->when(
-                model('product')->enabledHasTenantTrait, 
-                fn($q) => $q->belongsToTenant()
-            )
-            ->findOrFail($productId);
+        $this->product = model('product')->readable()->findOrFail($productId);
 
         $this->variant = model('product_variant')->fill([
             'is_default' => false,

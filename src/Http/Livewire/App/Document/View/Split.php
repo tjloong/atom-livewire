@@ -14,10 +14,7 @@ class Split extends Component
     public function getSplitsProperty()
     {
         $splits = model('document')
-            ->when(
-                model('document')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )
+            ->readable()
             ->when(
                 $this->document->splitted_from_id, 
                 fn($q, $id) => $q->where('splitted_from_id', $id)->orWhere('id', $id),

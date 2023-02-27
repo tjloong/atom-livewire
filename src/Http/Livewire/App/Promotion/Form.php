@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\App\Promotion;
 
 use Livewire\Component;
-use Illuminate\Validation\Rule;
 
 class Form extends Component
 {
@@ -18,10 +17,11 @@ class Form extends Component
             'promotion.name' => 'required',
             'promotion.code' => [
                 'nullable',
-                model('promotion')->enabledHasTenantTrait
-                    ? Rule::unique('promotions', 'code')->ignore($this->promotion)
-                        ->where(fn($q) => $q->where('tenant_id', $this->promotion->tenant_id))
-                    : Rule::unique('promotions', 'code')->ignore($this->promotion),
+                function ($attr, $value, $fail) {
+                    if (model('promotion')->readable()->where('code', $value)->where('id', '<>', $this->promotion->id)->count()) {
+                        $fail('This promotion code is taken.');
+                    }
+                },
             ],
             'promotion.type' => 'required',
             'promotion.rate' => 'required',
@@ -38,10 +38,10 @@ class Form extends Component
     public function messages()
     {
         return [
-            'promotion.name.required' => __('Promotion name is required.'),
-            'promotion.code.unique' => __('This promotion code is taken.'),
-            'promotion.type.required' => __('Discount type is required.'),
-            'promotion.rate.required' => __('Discount rate is required.'),
+            'promotion.name.required' => 'Promotion name is required.',
+            'promotion.code.unique' => 'This promotion code is taken.',
+            'promotion.type.required' => 'Discount type is required.',
+            'promotion.rate.required' => 'Discount rate is required.',
         ];
     }
 

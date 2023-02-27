@@ -55,12 +55,7 @@ class Create extends Component
     {
         if (!request()->query('convertFrom')) return;
 
-        if (
-            $src = model('document')->when(
-                model('document')->enabledHasTenantTrait,
-                fn($q) => $q->belongsToTenant(),
-            )->find(request()->query('convertFrom'))
-        ) {
+        if ($src = model('document')->readable()->find(request()->query('convertFrom'))) {
             if ($this->document->type === 'invoice' && !in_array($src->type, ['quotation', 'sales-order'])) return;
             if ($this->document->type === 'bill' && $src->type !== 'purchase-order') return;
             if ($this->document->type === 'delivery-order' && $src->type !== 'invoice') return;
@@ -76,10 +71,7 @@ class Create extends Component
     {
         if (
             $contact = optional($this->document->convertedFrom)->contact
-                ?? model('contact')->when(
-                    model('contact')->enabledHasTenantTrait,
-                    fn($q) => $q->belongsToTenant(),
-                )->find(request()->query('contactId'))
+                ?? model('contact')->readable()->find(request()->query('contactId'))
         ) {
             $this->document->fill(['contact_id' => $contact->id]);
         }

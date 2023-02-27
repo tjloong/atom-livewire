@@ -19,11 +19,7 @@ class Update extends Component
     {
         $this->authorize('document-payment.update');
 
-        $this->document = model('document')->when(
-            model('document')->enabledHasTenantTrait,
-            fn($q) => $q->belongsToTenant(),
-        )->findOrFail($documentId);
-
+        $this->document = model('document')->readable()->findOrFail($documentId);
         $this->payment = $this->document->payments()->findOrFail($documentPaymentId);
 
         breadcrumbs()->push($this->payment->number);

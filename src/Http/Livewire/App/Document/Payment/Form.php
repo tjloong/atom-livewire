@@ -45,7 +45,7 @@ class Form extends Component
     {
         return model('document')->enabledHasTenantTrait
             ? tenant_settings('paymodes', ['Cash'])
-            : site_settings('paymodes', ['Cash']);
+            : settings('paymodes', ['Cash']);
     }
 
     /**
