@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4">
-    <x-form wire:submit.prevent="login">
+    <x-form submit="login">
         <div class="text-2xl font-bold">
             {{ __('Sign in to your account') }}
         </div>

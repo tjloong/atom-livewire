@@ -30,10 +30,7 @@
 
                         @foreach ($socials as $key => $value)
                             <a href="{{ $value }}" class="flex items-center justify-center {{ $color->text }}" target="_blank">
-                                <x-icon
-                                    name="{{ $key === 'facebook' ? 'facebook-circle' : $key }}"
-                                    type="logo"
-                                />
+                                <x-icon :name="$key" type="logo"/>
                             </a>
                         @endforeach
                     </div>

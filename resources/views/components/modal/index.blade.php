@@ -56,7 +56,7 @@
                 <x-close x-on:click="$dispatch('{{ $uid }}-close')"/>
             </div>
 
-            <div class="p-6">
+            <div>
                 {{ $slot }}
             </div>
 

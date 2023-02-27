@@ -35,33 +35,29 @@
         <div class="{{ count($this->tabs) ? 'md:w-1/3' : 'w-full' }}">
             <x-box>
                 <div class="grid divide-y">
-                    @foreach (collect([
-                        'Type' => str($contact->type)->title(),
-                        'Email' => $contact->email,
-                        'Phone' => $contact->phone,
-                        'Fax' => $contact->fax,
-                        'BRN' => $contact->brn,
-                        'Tax Number' => $contact->tax_number,
-                        'Website' => $contact->website,
-                    ])->filter(fn($val, $key) => !empty($val)) as $label => $value)
-                        <x-box.row :label="$label">{{ $value }}</x-box.row>
-                    @endforeach
-
-                    <x-box.row label="Address">
-                        {{ format_address($contact) }}
-                    </x-box.row>
-
-                    @if($fields = data_get($contact->data, 'fields'))
-                        @foreach ($fields as $field)
+                    @foreach (collect($this->fields)->filter() as $field)
+                        @if (data_get($field, 'type') === 'items')
+                            <div class="py-2 px-4">
+                                <x-form.items :label="data_get($field, 'label')">
+                                    <div class="grid divide-y">
+                                        @foreach (data_get($field, 'value') as $item)
+                                            <div class="text-sm py-2 px-4 flex gap-2">
+                                                @if (is_string($item)) {!! $item !!}
+                                                @else
+                                                    @if ($icon = data_get($item, 'icon')) <x-icon :name="$icon" size="12" class="shrink-0 text-gray-400 mt-1"/> @endif
+                                                    {!! data_get($item, 'value') !!}
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </x-form.items>
+                            </div>
+                        @else
                             <x-box.row :label="data_get($field, 'label')">
-                                {{ data_get($field, 'value') }}
+                                {!! data_get($field, 'value') !!}
                             </x-box.row>
-                        @endforeach
-                    @endif
-
-                    @if ($owner = $contact->ownedBy)
-                        <x-box.row label="Owner">{{ $owner->name }}</x-box.row>
-                    @endif
+                        @endif
+                    @endforeach
                 </div>
             </x-box>
         </div>
@@ -71,19 +67,30 @@
                 <div class="flex flex-col gap-6">
                     <x-tab wire:model="tab">
                         @foreach ($this->tabs as $item)
-                            <x-tab.item 
-                                :name="data_get($item, 'slug')" 
-                                :label="data_get($item, 'label')"
-                                :icon="data_get($item, 'icon')"
-                                :count="data_get($item, 'count')"
-                            />
+                            @if ($dd = data_get($item, 'dropdown'))
+                                <x-tab.dropdown :label="data_get($item, 'label')">
+                                    @foreach ($dd as $dditem)
+                                        <x-tab.dropdown.item 
+                                            :name="data_get($dditem, 'slug')" 
+                                            :label="data_get($dditem, 'label')"
+                                        />
+                                    @endforeach
+                                </x-tab.dropdown>
+                            @else
+                                <x-tab.item 
+                                    :name="data_get($item, 'slug')" 
+                                    :label="data_get($item, 'label')"
+                                    :icon="data_get($item, 'icon')"
+                                    :count="data_get($item, 'count')"
+                                />
+                            @endif
                         @endforeach
                     </x-tab>
 
-                    @if ($com = collect($this->tabs)->firstWhere('slug', $tab))
+                    @if ($lw = $this->livewire)
                         @livewire(
-                            lw(data_get($com, 'livewire')), 
-                            compact('contact'), 
+                            lw(data_get($lw, 'name') ?? $lw),
+                            array_merge(compact('contact'), data_get($lw, 'data', [])),
                             key($tab)
                         )
                     @endif

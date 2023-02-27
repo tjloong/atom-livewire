@@ -15,7 +15,7 @@
 
 <body>
     <div class="min-h-screen bg-gray-100 pt-28 pb-20 px-6">
-        <div class="max-w-lg mx-auto flex flex-col space-y-4">
+        <div class="max-w-screen-lg mx-auto flex flex-col items-center justify-center gap-4">
             <a href="/">
                 <x-logo class="w-20"/>
             </a>
@@ -28,7 +28,7 @@
                     OOPS!
                 </div>
 
-                <div>
+                <div class="text-center">
                     <div class="text-lg">
                         Error {{ $code }}
                     </div>

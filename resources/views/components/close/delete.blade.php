@@ -1,4 +1,4 @@
-<x-close color="red"
+<x-close color="red" :icon="$attributes->get('icon')"
     x-on:click.stop="$dispatch('confirm', {
         title: '{{ __($attributes->get('title')) }}',
         message: '{{ __($attributes->get('message')) }}',
