@@ -171,15 +171,15 @@ class StripeController extends Controller
 
         $pk = $tenant
             ? data_get($settings, 'stripe_public_key') ?? data_get(optional($settings->stripe), 'public_key')
-            : site_settings('stripe_public_key', env('STRIPE_PUBLIC_KEY'));
+            : settings('stripe_public_key', env('STRIPE_PUBLIC_KEY'));
 
         $sk = $tenant
             ? data_get($settings, 'stripe_secret_key') ?? data_get(optional($settings->stripe), 'secret_key')
-            : site_settings('stripe_secret_key', env('STRIPE_SECRET_KEY'));
+            : settings('stripe_secret_key', env('STRIPE_SECRET_KEY'));
 
         $whse = $tenant
             ? data_get($settings, 'stripe_webhook_signing_secret') ?? data_get(optional($settings->stripe), 'webhook_signing_secret')
-            : site_settings('stripe_webhook_signing_secret', env('STRIPE_WEBHOOK_SIGNING_SECRET'));
+            : settings('stripe_webhook_signing_secret', env('STRIPE_WEBHOOK_SIGNING_SECRET'));
 
         return compact('pk', 'sk', 'whse');
     }

@@ -47,8 +47,8 @@ class PaymentGateway extends Component
             $sk = data_get($settings, 'stripe_secret_key') ?? data_get(optional($settings->stripe), 'secret_key');
         }
         else {
-            $pk = site_settings('stripe_public_key', env('STRIPE_PUBLIC_KEY'));
-            $sk = site_settings('stripe_secret_key', env('STRIPE_SECRET_KEY'));
+            $pk = settings('stripe_public_key', env('STRIPE_PUBLIC_KEY'));
+            $sk = settings('stripe_secret_key', env('STRIPE_SECRET_KEY'));
         }
 
         return $pk && $sk ? compact('pk', 'sk') : null;
@@ -65,13 +65,13 @@ class PaymentGateway extends Component
             $sec = data_get($settings, 'ozopay_secret') ?? data_get(optional($settings->ozopay), 'secret');
         }
         else {
-            $tid = site_settings('ozopay_tid', env('OZOPAY_TID'));
-            $sec = site_settings('ozopay_secret', env('OZOPAY_SECRET'));
+            $tid = settings('ozopay_tid', env('OZOPAY_TID'));
+            $sec = settings('ozopay_secret', env('OZOPAY_SECRET'));
         }
 
         $url = app()->environment('production')
-            ? site_settings('ozopay_url', env('OZOPAY_URL'))
-            : site_settings('ozopay_sandbox_url', env('OZOPAY_SANDBOX_URL'));
+            ? settings('ozopay_url', env('OZOPAY_URL'))
+            : settings('ozopay_sandbox_url', env('OZOPAY_SANDBOX_URL'));
 
         return $tid && $sec && $url ? compact('tid', 'sec', 'url') : null;
     }
@@ -87,13 +87,13 @@ class PaymentGateway extends Component
             $sk = data_get($settings, 'gkash_signature_key') ?? data_get(optional($settings->gkash), 'signature_key');
         }
         else {
-            $mid = site_settings('gkash_mid', env('GKASH_MID'));
-            $sk = site_settings('gkash_signature_key', env('GKASH_SIGNATURE_KEY'));
+            $mid = settings('gkash_mid', env('GKASH_MID'));
+            $sk = settings('gkash_signature_key', env('GKASH_SIGNATURE_KEY'));
         }
 
         $url = app()->environment('production')
-            ? site_settings('gkash_url', env('GKASH_URL'))
-            : site_settings('gkash_sandbox_url', env('GKASH_SANDBOX_URL'));
+            ? settings('gkash_url', env('GKASH_URL'))
+            : settings('gkash_sandbox_url', env('GKASH_SANDBOX_URL'));
 
         return $mid && $sk && $url ? compact('mid', 'sk', 'url') : null;
     }
@@ -109,12 +109,12 @@ class PaymentGateway extends Component
             $mk = data_get($settings, 'ipay_merchant_key') ?? data_get(optional($settings->ipay), 'merchant_key');
         }
         else {
-            $mc = site_settings('ipay_merchant_code', env('IPAY_MERCHANT_CODE'));
-            $mk = site_settings('ipay_merchant_key', env('IPAY_MERCHANT_KEY'));
+            $mc = settings('ipay_merchant_code', env('IPAY_MERCHANT_CODE'));
+            $mk = settings('ipay_merchant_key', env('IPAY_MERCHANT_KEY'));
         }
 
-        $url = site_settings('ipay_url', env('IPAY_URL'));
-        $qurl = site_settings('ipay_query_url', env('IPAY_QUERY_URL'));
+        $url = settings('ipay_url', env('IPAY_URL'));
+        $qurl = settings('ipay_query_url', env('IPAY_QUERY_URL'));
         $title = 'iPay88';
 
         return $mc && $mc && $url && $qurl 

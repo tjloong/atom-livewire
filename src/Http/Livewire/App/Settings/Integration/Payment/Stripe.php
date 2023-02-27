@@ -52,7 +52,7 @@ class Stripe extends Component
         $this->resetValidation();
         $this->validate();
 
-        site_settings($this->settings);
+        settings($this->settings);
 
         $this->popup('Stripe Information Updated.');
     }

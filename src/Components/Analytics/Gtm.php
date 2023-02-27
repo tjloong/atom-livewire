@@ -15,7 +15,7 @@ class Gtm extends Component
     public function __construct($noscript = false)
     {
         $this->noscript = $noscript;
-        $this->id = config('atom.gtm_id') ?? site_settings('gtm_id');
+        $this->id = config('atom.gtm_id') ?? settings('gtm_id');
     }
 
     /**

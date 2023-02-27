@@ -37,7 +37,7 @@ class SocialMedia extends Component
      */
     public function submit()
     {
-        site_settings($this->settings);
+        settings($this->settings);
         $this->popup('Website Social Media Updated.');
     }
 

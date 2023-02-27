@@ -21,28 +21,10 @@ trait HasCurrency
      */
     public function getMasterCurrencyAttribute()
     {
-        return (
-            $this->enabledHasTenantTrait
-                ? tenant_settings('default_currency')
-                : site_settings('default_currency')
-        ) ?? config('atom.default_currency') ?? env('DEFAULT_CURRENCY');
-    }
-
-    /**
-     * Get currency options attribute
-     */
-    public function getCurrencyOptionsAttribute()
-    {
-        $options = (
-            $this->enabledHasTenantTrait
-                ? tenant_settings('currencies')
-                : site_settings('currencies')
-        ) ?? config('atom.currencies') ?? env('CURRENCIES');
-
-        return $options ?? [
-            'currency' => $this->master_currency,
-            'rate' => 1,
-        ];
+        return tenant('settings.default_currency')
+            ?? settings('default_currency')
+            ?? config('atom.default_currency')
+            ?? env('DEFAULT_CURRENCY');
     }
 
     /**

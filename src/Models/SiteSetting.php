@@ -89,6 +89,16 @@ class SiteSetting extends Model
     ];
 
     /**
+     * Model booted
+     */
+    protected static function booted()
+    {
+        static::saving(function($setting) {
+            session()->forget('settings');
+        });
+    }
+
+    /**
      * Scope for group
      */
     public function scopeGroup($query, $group)
@@ -97,31 +107,11 @@ class SiteSetting extends Model
     }
 
     /**
-     * Get settings
-     * 
-     * @param string $name
-     * @param Collection $collection
-     * @return mixed
+     * Generate settings array
      */
-    public static function getSetting($name, $collection = null)
+    public function generate()
     {
-        $setting = $collection
-            ? $collection->where('name', $name)->first()
-            : self::where('name', $name)->first();
-
-        return optional($setting)->value;
-    }
-
-    /**
-     * Set settings
-     * 
-     * @param string $key
-     * @param mixed $value
-     * @return void
-     */
-    public static function setSetting($key, $value)
-    {
-        self::where('name', $key)->update(['value' => $value]);
+        return $this->get()->mapWithKeys(fn($val) => [$val->name => $val->value])->toArray();
     }
 
     /**
@@ -129,18 +119,18 @@ class SiteSetting extends Model
      */
     public function getContactInfo()
     {
-        $waNum = str()->replace('+', '', site_settings('whatsapp'));
-        $waText = site_settings('whatsapp_text');
+        $waNum = str()->replace('+', '', settings('whatsapp'));
+        $waText = settings('whatsapp_text');
         
         $waUrl = 'https://wa.me/'.$waNum;
         if (!empty($waText)) $waUrl .= '?text='.urlencode($waText);
 
         return (object)[
-            'company' => site_settings('company'),
-            'phone' => site_settings('phone'),
-            'email' => site_settings('email'),
-            'address' => site_settings('address'),
-            'briefs' => site_settings('briefs'),
+            'company' => settings('company'),
+            'phone' => settings('phone'),
+            'email' => settings('email'),
+            'address' => settings('address'),
+            'briefs' => settings('briefs'),
 
             'socials' => model('site_setting')->group('social')->get()
                     ->mapWithKeys(fn($val) => [$val->name => $val->value])
@@ -149,7 +139,7 @@ class SiteSetting extends Model
             
             'whatsapp' => [
                 'number' => $waNum,
-                'bubble' => (bool)site_settings('whatsapp_bubble'),
+                'bubble' => (bool)settings('whatsapp_bubble'),
                 'text' => $waText,
                 'url' => $waUrl,
             ],

@@ -26,7 +26,7 @@ class Seo extends Component
      */
     public function submit()
     {
-        site_settings($this->settings);
+        settings($this->settings);
         $this->popup('Website SEO Updated.');
     }
 

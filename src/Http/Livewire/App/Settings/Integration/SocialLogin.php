@@ -18,8 +18,8 @@ class SocialLogin extends Component
     {
         $this->settings = collect($this->providers)
             ->mapWithKeys(fn($val) => [
-                $val.'_client_id' => site_settings($val.'_client_id'),
-                $val.'_client_secret' => site_settings($val.'_client_secret'),
+                $val.'_client_id' => settings($val.'_client_id'),
+                $val.'_client_secret' => settings($val.'_client_secret'),
             ])
             ->toArray();
     }
@@ -89,7 +89,7 @@ class SocialLogin extends Component
             'settings.'.$provider.'_client_secret.required' => __(data_get($this->clientSecretLabels, $provider, 'Client Secret').' is required.'),
         ]);
 
-        site_settings([
+        settings([
             $provider.'_client_id' => data_get($this->settings, $provider.'_client_id'),
             $provider.'_client_secret' => data_get($this->settings, $provider.'_client_secret'),
         ]);

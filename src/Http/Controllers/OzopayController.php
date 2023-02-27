@@ -144,21 +144,21 @@ class OzopayController extends Controller
 
         $tid = $tenant
             ? data_get($settings, 'ozopay_tid') ?? data_get(optional($settings->ozopay), 'tid')
-            : site_settings('ozopay_tid', env('OZOPAY_TID'));
+            : settings('ozopay_tid', env('OZOPAY_TID'));
 
         $secret = $tenant
             ? data_get($settings, 'ozopay_secret') ?? data_get(optional($settings->ozopay), 'secret')
-            : site_settings('ozopay_secret', env('OZOPAY_SECRET'));
+            : settings('ozopay_secret', env('OZOPAY_SECRET'));
 
         if (app()->environment('production')) {
             $url = $tenant
                 ? data_get($settings, 'ozopay_url') ?? data_get(optional($settings->ozopay), 'url')
-                : site_settings('ozopay_url', env('OZOPAY_URL'));
+                : settings('ozopay_url', env('OZOPAY_URL'));
         }
         else {
             $url = $tenant
                 ? data_get($settings, 'ozopay_sandbox_url') ?? data_get(optional($settings->ozopay), 'sandbox_url')
-                : site_settings('ozopay_sandbox_url', env('OZOPAY_SANDBOX_URL'));
+                : settings('ozopay_sandbox_url', env('OZOPAY_SANDBOX_URL'));
         }
 
         return compact('tid', 'secret', 'url');

@@ -130,19 +130,19 @@ class IpayController extends Controller
 
         $mc = $tenant
             ? data_get($settings, 'ipay_merchant_code') ?? data_get(optional($settings->ipay), 'merchant_code')
-            : site_settings('ipay_merchant_code', env('IPAY_MERCHANT_CODE'));
+            : settings('ipay_merchant_code', env('IPAY_MERCHANT_CODE'));
 
         $mk = $tenant
             ? data_get($settings, 'ipay_merchant_key') ?? data_get(optional($settings->ipay), 'merchant_key')
-            : site_settings('ipay_merchant_key', env('IPAY_MERCHANT_KEY'));
+            : settings('ipay_merchant_key', env('IPAY_MERCHANT_KEY'));
 
         $url = $tenant
             ? data_get($settings, 'ipay_url') ?? data_get(optional($settings->ipay), 'url')
-            : site_settings('ipay_url', env('IPAY_URL'));
+            : settings('ipay_url', env('IPAY_URL'));
 
         $qurl = $tenant
             ? data_get($settings, 'ipay_query_url') ?? data_get(optional($settings->ipay), 'query_url')
-            : site_settings('ipay_query_url', env('IPAY_QUERY_URL'));
+            : settings('ipay_query_url', env('IPAY_QUERY_URL'));
 
         return compact('mc', 'mk', 'url', 'qurl');
     }

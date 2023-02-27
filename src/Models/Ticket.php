@@ -45,7 +45,7 @@ class Ticket extends Model
      */
     public function notify()
     {
-        if ($notifyTo = $this->notifyTo ?? site_settings('notify_to')) {
+        if ($notifyTo = $this->notifyTo ?? settings('notify_to')) {
             Notification::route('mail', $notifyTo)->notify(new TicketCreateNotification($this));
         }
     }

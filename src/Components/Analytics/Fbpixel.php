@@ -15,7 +15,7 @@ class Fbpixel extends Component
     public function __construct($noscript = false)
     {
         $this->noscript = $noscript;
-        $this->id = config('atom.fbpixel_id') ?? site_settings('fbpixel_id');
+        $this->id = config('atom.fbpixel_id') ?? settings('fbpixel_id');
     }
 
     /**

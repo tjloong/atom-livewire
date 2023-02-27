@@ -51,7 +51,7 @@ class Ozopay extends Component
      */
     public function submit()
     {
-        site_settings($this->settings);
+        settings($this->settings);
         $this->popup('Ozopay Information Updated.');
     }
 

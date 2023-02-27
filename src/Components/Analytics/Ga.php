@@ -15,7 +15,7 @@ class Ga extends Component
     public function __construct($noscript = false)
     {
         $this->noscript = $noscript;
-        $this->id = config('atom.ga_id') ?? site_settings('ga_id');
+        $this->id = config('atom.ga_id') ?? settings('ga_id');
     }
 
     /**

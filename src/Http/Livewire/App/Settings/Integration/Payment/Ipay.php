@@ -52,7 +52,7 @@ class Ipay extends Component
      */
     public function submit()
     {
-        site_settings($this->settings);
+        settings($this->settings);
         $this->popup('Ipay Information Updated.');
     }
 

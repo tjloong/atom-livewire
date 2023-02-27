@@ -58,7 +58,7 @@ class Announcement extends Component
      */
     public function getAnnouncements()
     {
-        $this->announcements = collect(json_decode(site_settings('announcements')));
+        $this->announcements = collect(json_decode(settings('announcements')));
     }
 
     /**
@@ -127,7 +127,7 @@ class Announcement extends Component
      */
     public function persist()
     {
-        site_settings(['announcements' => $this->announcements]);
+        settings(['announcements' => $this->announcements]);
         $this->getAnnouncements();
     }
 

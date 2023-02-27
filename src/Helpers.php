@@ -121,7 +121,7 @@ function get_status_color($status = null)
  */
 function verify_recaptcha($token, $secret = null)
 {
-    $secret = $secret ?? env('RECAPTCHA_SECRET') ?? site_settings('recaptcha_secret');
+    $secret = $secret ?? settings('recaptcha_secret') ?? env('RECAPTCHA_SECRET');
 
 	$data = http_build_query([
 		'secret' => $secret,
@@ -190,6 +190,25 @@ function metadata($method = null, $args = null)
 }
 
 /**
+ * Flatten tabs array
+ */
+function tabs($tabs)
+{
+    $col = collect();
+
+    foreach ($tabs as $tab) {
+        if ($children = data_get($tab, 'dropdown') ?? data_get($tab, 'tabs') ?? data_get($tab, 'children')) {
+            foreach ($children as $child) {
+                $col->push($child);
+            }
+        }
+        else $col->push($tab);
+    }
+
+    return $col;
+}
+
+/**
  * Breadcrumbs
  */
 function breadcrumbs()
@@ -213,20 +232,27 @@ function tenant($attr = null, $default = null, $tenant = null)
 {
     if (!enabled_module('tenants')) return;
 
-    return model('tenant')->session($attr, $default, $tenant);
+    return model('tenant')->retrieve($attr, $default, $tenant);
 }
 
 /**
- * Site settings
+ * Settings
  */
-function site_settings($name, $default = null)
+function settings($name = null, $default = null)
 {
     if (config('atom.static_site')) return $default;
 
-    if (is_string($name)) return model('site_setting')->getSetting($name) ?? $default;
-    else {
-        foreach($name as $key => $val) {
-            model('site_setting')->setSetting($key, $val);
+    $settings = session('settings') ?? model('site_setting')->generate();
+
+    if (!$name) {
+        return $settings;
+    }
+    else if (is_string($name)) {
+        return data_get($settings, $name, $default);
+    }
+    else if (is_array($name)) {
+        foreach ($name as $key => $val) {
+            model('site_setting')->where('name', $key)->update(['value' => $val]);
         }
     }
 }
@@ -362,11 +388,10 @@ function enabled_module($module)
     if (app()->runningInConsole()) return true;
 
     return rescue(function() use ($module) {
-        $enabled = collect(json_decode(
-            data_get(DB::table('site_settings')->where('name', 'modules')->first(), 'value')
-        ));
+        $settings = session('settings') ?? model('site_setting')->generate();
+        $modules = json_decode(data_get($settings, 'modules'));
 
-        return $enabled->contains($module);
+        return collect($modules)->contains($module);
     }, false);
 }
 
@@ -567,7 +592,9 @@ function format_address($value)
         data_get(metadata()->countries(data_get($value, 'country')), 'name'),
     ])->filter()->join(' ');
 
-    return collect([$l1, $l2, $l3, $l4])->filter()->join(', ');
+    $address = collect([$l1, $l2, $l3, $l4])->filter()->join(', ');
+
+    return empty($address) ? null : $address;
 }
 
 /**

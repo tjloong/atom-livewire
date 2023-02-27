@@ -45,7 +45,7 @@ class Storage extends Component
      */
     public function mount()
     {
-        $this->settings['filesystem'] = site_settings('filesystem');
+        $this->settings['filesystem'] = settings('filesystem');
 
         model('site_setting')->group('do')
             ->get()
@@ -60,7 +60,7 @@ class Storage extends Component
         $this->resetValidation();
         $this->validate();
 
-        site_settings($this->settings);
+        settings($this->settings);
 
         $this->popup('Storage Integration Updated.');
     }

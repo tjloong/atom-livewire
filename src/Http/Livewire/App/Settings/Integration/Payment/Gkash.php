@@ -51,7 +51,7 @@ class Gkash extends Component
      */
     public function submit()
     {
-        site_settings($this->settings);
+        settings($this->settings);
         $this->popup('Gkash Information Updated.');
     }
 

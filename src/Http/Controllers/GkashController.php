@@ -133,25 +133,25 @@ class GkashController extends Controller
 
         $mid = $tenant
             ? data_get($settings, 'gkash_mid') ?? data_get(optional($settings->gkash), 'mid')
-            : site_settings('gkash_mid', env('GKASH_MID'));
+            : settings('gkash_mid', env('GKASH_MID'));
 
         $sk = $tenant
             ? data_get($settings, 'gkash_signature_key') ?? data_get(optional($settings->gkash), 'signature_key')
-            : site_settings('gkash_signature_key', env('GKASH_SIGNATURE_KEY'));
+            : settings('gkash_signature_key', env('GKASH_SIGNATURE_KEY'));
 
         $version = $tenant
             ? data_get($settings, 'gkash_api_version') ?? data_get(optional($settings->gkash), 'api_version')
-            : site_settings('gkash_api_version', env('GKASH_API_VERSION'));
+            : settings('gkash_api_version', env('GKASH_API_VERSION'));
 
         if (app()->environment('production')) {
             $url = $tenant
                 ? data_get($settings, 'gkash_url') ?? data_get(optional($settings->gkash), 'url')
-                : site_settings('gkash_url', env('GKASH_URL'));
+                : settings('gkash_url', env('GKASH_URL'));
         }
         else {
             $url = $tenant
                 ? data_get($settings, 'gkash_sandbox_url') ?? data_get(optional($settings->gkash), 'sandbox_url')
-                : site_settings('gkash_sandbox_url', env('GKASH_SANDBOX_URL'));
+                : settings('gkash_sandbox_url', env('GKASH_SANDBOX_URL'));
         }
 
         return compact('mid', 'sk', 'version', 'url');

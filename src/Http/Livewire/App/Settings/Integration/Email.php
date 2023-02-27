@@ -66,7 +66,7 @@ class Email extends Component
         $this->resetValidation();
         $this->validate();
 
-        site_settings($this->settings);
+        settings($this->settings);
         
         $this->popup('Email Integration Updated.');
     }

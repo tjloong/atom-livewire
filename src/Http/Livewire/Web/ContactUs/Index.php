@@ -59,10 +59,10 @@ class Index extends Component
         $contact = config('atom.static_site')
             ? config('atom.contact')
             : [
-                'phone' => site_settings('phone'),
-                'email' => site_settings('email'),
-                'address' => site_settings('address'),
-                'gmap_url' => site_settings('gmap_url'),
+                'phone' => settings('phone'),
+                'email' => settings('email'),
+                'address' => settings('address'),
+                'gmap_url' => settings('gmap_url'),
             ];
 
         return array_filter($contact);
@@ -82,7 +82,7 @@ class Index extends Component
             if (is_array($this->enquiry)) $this->enquiry = model('enquiry')->create($this->enquiry);
             else $this->enquiry->save();
 
-            $mail['to'] = site_settings('notify_to');
+            $mail['to'] = settings('notify_to');
             $mail['params'] = $this->enquiry;
         }
         else {
