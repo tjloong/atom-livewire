@@ -1,4 +1,8 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+@props([
+    'uid' => component_id($attributes, 'richtext'),
+])
+
+<x-form.field {{ $attributes }}>
     <div 
         wire:ignore 
         x-data="{

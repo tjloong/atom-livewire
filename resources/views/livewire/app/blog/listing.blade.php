@@ -8,7 +8,7 @@
             <x-table.searchbar :total="$this->blogs->total()"/>
 
             <x-table.toolbar>
-                <x-form.select
+                <x-form.select :label="false"
                     wire:model="filters.status"
                     :options="collect(['published', 'draft'])
                         ->map(fn($val) => ['value' => $val, 'label' => str()->title($val)])"

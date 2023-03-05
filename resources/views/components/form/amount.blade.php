@@ -8,7 +8,7 @@
     ]),
 ])
 
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+<x-form.field {{ $attributes }}>
     <div
         x-data="{
             focus: false,

@@ -2,54 +2,34 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Ticketing;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Comments extends Component
 {
+    use WithForm;
     use WithPagination;
     use WithPopupNotify;
 
     public $ticket;
     public $content;
 
-    protected $queryString = [
-        'page' => ['except' => 1]
-    ];
-
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'content' => 'required',
+            'content' => ['required' => 'Comment is required.'],
         ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'content.required' => __('Comment is required.'),
-        ];
-    }
-
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        //
     }
 
     /**
      * Get comments property
      */
-    public function getCommentsProperty()
+    public function getCommentsProperty(): mixed
     {
         return $this->ticket->comments()
             ->orderBy('created_at', 'desc')
@@ -59,10 +39,9 @@ class Comments extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $comment = $this->ticket->comments()->create(['body' => $this->content]);
         $comment->notify();
@@ -74,9 +53,9 @@ class Comments extends Component
     /**
      * Delete
      */
-    public function delete($id)
+    public function delete($id): void
     {
-        if ($comment = $this->ticket->comments()->where('created_by', auth()->user()->id)->find($id)) {
+        if ($comment = $this->ticket->comments()->where('created_by', user()->id)->find($id)) {
             $comment->delete();
             $this->popup('Comment Deleted.');
         }
@@ -85,7 +64,7 @@ class Comments extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.ticketing.comments');
     }

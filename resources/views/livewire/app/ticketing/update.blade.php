@@ -9,41 +9,33 @@
     <div class="flex flex-col gap-6">
         <x-box header="Ticket Information">
             <div class="flex flex-col divide-y">
-                <x-box.row label="Ticket Number">
-                    {{ $ticket->number }}
-                </x-box.row>
+                <x-field label="Ticket Number" :value="$ticket->number"/>
     
-                <x-box.row label="Issue Description">
-                    {!! nl2br($ticket->description) !!}
-                </x-box.row>
-    
-                <x-box.row label="Status">
-                    @if (
-                        (enabled_module('permissions') && auth()->user()->can('ticketing.status'))
-                        || (enabled_module('roles') && auth()->user()->isRole('admin'))
-                        || (
-                            !enabled_module('roles') 
-                            && !enabled_module('permissions') 
-                            && auth()->user()->is_root
-                        )
+                @if (
+                    (enabled_module('permissions') && user()->can('ticketing.status'))
+                    || (enabled_module('roles') && role('admin'))
+                    || (
+                        !enabled_module('roles') 
+                        && !enabled_module('permissions') 
+                        && tier('root')
                     )
-                        <x-dropdown>
-                            <x-slot:anchor>
-                                <x-badge :label="$ticket->status"/>
-                                <x-icon name="chevron-down" size="12"/>
-                            </x-slot:anchor>
+                )
+                    <x-field label="Status">
+                        <div class="w-40 ml-auto">
+                            <x-form.select :label="false" wire:model="ticket.status"
+                                :options="collect(['pending', 'closed'])->map(fn($val) => ['value' => $val, 'label' => str()->headline($val)])"
+                            />
+                        </div>
+                    </x-field>
+                @else
+                    <x-field label="Status" :badge="$ticket->status"/>
+                @endif
 
-                            @foreach (['pending', 'closed'] as $item)
-                                <x-dropdown.item 
-                                    :label="ucfirst($item)"
-                                    wire:click="$set('ticket.status', '{{ $item }}')"
-                                />
-                            @endforeach
-                        </x-dropdown>
-                    @else
-                        <x-badge :label="$ticket->status"/>
-                    @endif
-                </x-box.row>
+                <div class="p-4">
+                    <x-form.field label="Issue Description">
+                        {!! nl2br($ticket->description) !!}
+                    </x-form.field>
+                </div>
             </div>
         </x-box>
 

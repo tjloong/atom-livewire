@@ -6,7 +6,7 @@
     <div {{ 
         $attributes
             ->merge(['class' => 'p-5 border-t first:border-t-0'])
-            ->only('class') 
+            ->except(['cols', 'label']) 
     }}>
         <div class="flex flex-col gap-4">
             @isset($label) {{ $label }}

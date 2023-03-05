@@ -1,19 +1,17 @@
 <div class="flex flex-col gap-4">
     <x-form>
-        <div class="text-2xl font-bold">
-            {{ __('Reset Password Request') }}
-        </div>
-
-        @if ($errors->any())
-            <x-alert :errors="$errors->all()"/>
-        @endif
-
-        <x-form.email 
-            label="Your registered email"
-            wire:model.defer="email"
-            required
-            autofocus
-        />
+        <x-form.group>
+            <div class="text-2xl font-bold">
+                {{ __('Reset Password Request') }}
+            </div>
+    
+            <x-form.email 
+                label="Your registered email"
+                wire:model.defer="email"
+                required
+                autofocus
+            />
+        </x-form.group>
 
         <x-slot:foot>
             <x-button.submit size="md" block

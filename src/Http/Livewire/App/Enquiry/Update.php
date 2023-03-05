@@ -2,69 +2,62 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithForm;
+    use WithPopupNotify;
+
     public $enquiry;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'enquiry.remark' => 'nullable',
-            'enquiry.status' => 'required',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'enquiry.status.required' => __('Enquiry status is required.'),
+            'enquiry.remark' => ['nullable'],
+            'enquiry.status' => ['required' => 'Status is required.'],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount($enquiry)
+    public function mount($enquiryId): void
     {
-        $this->enquiry = model('enquiry')->findOrFail($enquiry);
+        $this->enquiry = model('enquiry')->readable()->findOrFail($enquiryId);
+
         breadcrumbs()->push($this->enquiry->name);
-    }
-
-    /**
-     * Submit
-     */
-    public function submit()
-    {
-        $this->resetValidation();
-        $this->validate();
-
-        $this->enquiry->save();
-        
-        $this->dispatchBrowserEvent('toast', ['message' => 'Enquiry Updated', 'type' => 'success']);
     }
 
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->enquiry->delete();
-        session()->flash('flash', 'Enquiry Deleted');
-        return redirect()->route('app.enquiry.listing');
+
+        return breadcrumbs()->back();
+    }
+
+    /**
+     * Submit
+     */
+    public function submit(): void
+    {
+        $this->validateForm();
+        $this->enquiry->save();
+        $this->popup('Enquiry Updated.');
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.enquiry.update');
     }

@@ -1,5 +1,5 @@
-<x-box header="Comments">
-    <div class="grid divide-y">
+<x-form header="Comments">
+    <div class="flex flex-col divide-y">
         @if ($this->comments->total())
             @foreach ($this->comments as $comment)
                 <div class="p-4 grid gap-2">
@@ -8,8 +8,8 @@
                             {{ $comment->createdBy->name }} - <span class="text-gray-400">{{ format_date($comment->created_at, 'datetime') }}</span>
                         </div>
 
-                        @if ($comment->created_by === auth()->user()->id)
-                            <x-button.delete inverted size="sm"
+                        @if ($comment->created_by === user()->id)
+                            <x-close.delete
                                 title="Delete Comment"
                                 message="Are you sure to delete this comment?"
                                 :params="$comment->id"
@@ -28,19 +28,14 @@
             @endif
         @endif
 
-        <div class="p-5">
-            <x-form.textarea 
-                wire:model.defer="content" 
-                placeholder="Comments" 
-                :error="$errors->first('content')"
-            />
+        <div class="p-4">
+            <x-form.textarea wire:model.defer="content" placeholder="Comments" :label="false"/>
         </div>
     </div>
 
+    <x-slot:error-alert></x-slot:error-alert>
+
     <x-slot:foot>
-        <x-button.submit type="button" icon="send"
-            label="Post Comment"
-            wire:click="submit" 
-        />
+        <x-button.submit icon="send" label="Post Comment"/>
     </x-slot:foot>
-</x-box>
+</x-form>

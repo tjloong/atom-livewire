@@ -2,29 +2,31 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Ticketing;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithForm;
     use WithPopupNotify;
 
     public $ticket;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'ticket.status' => 'required',
+            'ticket.status' => ['nullable'],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount($ticketId)
+    public function mount($ticketId): void
     {
         $this->ticket = model('ticket')->findOrFail($ticketId);
 
@@ -38,7 +40,7 @@ class Update extends Component
     /**
      * Updated ticket status
      */
-    public function updatedTicketStatus()
+    public function updatedTicketStatus(): void
     {
         $this->ticket->save();
         $this->popup('Ticket Updated.');
@@ -47,7 +49,7 @@ class Update extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->ticket->delete();
 
@@ -57,7 +59,7 @@ class Update extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.ticketing.update');
     }

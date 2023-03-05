@@ -3,50 +3,37 @@
 namespace Jiannius\Atom\Http\Livewire\App\Blog\Update;
 
 use Jiannius\Atom\Traits\Livewire\WithFile;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Content extends Component
 {
+    use WithForm;
     use WithFile;
 
     public $blog;
     public $autosavedAt;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'blog.title' => 'required|string|max:255',
-            'blog.excerpt' => 'nullable',
-            'blog.content' => 'nullable',
+            'blog.title' => [
+                'required' => 'Blog title is required.',
+                'string' => 'Blog title must be string.',
+                'max:255' => 'Blog title too long (Max 255 characters).',
+            ],
+            'blog.excerpt' => ['nullable'],
+            'blog.content' => ['nullable'],
         ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'blog.title.required' => 'Blog title is required.',
-            'blog.title.max' => 'Blog title has a maximum of 255 characters.',
-        ];
-    }
-
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        //
     }
 
     /**
      * Updated blog content
      */
-    public function updatedBlogContent($val)
+    public function updatedBlogContent($val): void
     {
         $this->autosavedAt = null;
         if ($val && ($this->blog->exists || $this->blog->title)) $this->autosave();
@@ -55,7 +42,7 @@ class Content extends Component
     /**
      * Autosave
      */
-    public function autosave()
+    public function autosave(): void
     {
         $this->blog->save();
         $this->autosavedAt = now();
@@ -64,20 +51,17 @@ class Content extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
-        $this->resetValidation();
-        $this->validate();
-
+        $this->validateForm();
         $this->blog->save();
-        
         $this->emitUp('saved', $this->blog->id);
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.blog.update.content');
     }

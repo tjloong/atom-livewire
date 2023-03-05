@@ -3,10 +3,12 @@
 namespace Jiannius\Atom\Http\Livewire\App\Blog\Update;
 
 use Jiannius\Atom\Traits\Livewire\WithFile;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Settings extends Component
 {
+    use WithForm;
     use WithFile;
     
     public $blog;
@@ -14,41 +16,29 @@ class Settings extends Component
     public $selectedLabels;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'blog.cover_id' => 'nullable',
-            'blog.published_at' => 'nullable',
+            'blog.cover_id' => ['nullable'],
+            'blog.published_at' => ['nullable'],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->status = $this->blog->status ?? 'draft';
         $this->selectedLabels = $this->blog->labels->pluck('id')->toArray();
     }
 
     /**
-     * Get labels property
-     */
-    public function getLabelsProperty()
-    {
-        return model('label')
-            ->readable()
-            ->where('type', 'blog-category')
-            ->orderBy('name')
-            ->get();
-    }
-
-    /**
      * Updated status
      */
-    public function updatedStatus()
+    public function updatedStatus(): void
     {
         if ($this->status === 'published' && !$this->blog->published_at) $this->blog->published_at = today();
         if ($this->status === 'draft') $this->blog->published_at = null;
@@ -57,10 +47,9 @@ class Settings extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $this->blog->cover_id = $this->blog->cover_id ?: null;
         $this->blog->save();
@@ -72,7 +61,7 @@ class Settings extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.blog.update.settings');
     }

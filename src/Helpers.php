@@ -15,7 +15,7 @@ function component_id($attributes, $default = null)
     if ($attributes->get('uuid') === true) return str()->uuid();
     if ($attributes->get('ulid') === true) return str()->ulid();
 
-    if ($name = $attributes->wire('model')->value() ?? $attributes->get('name') ?? $attributes->get('label') ?? null) {
+    if ($name = $attributes->wire('model')->value() ?? $attributes->get('name') ?? component_label($attributes) ?? null) {
         return str($name)->replace('.', '-')->slug()->toString();
     }
 
@@ -25,16 +25,21 @@ function component_id($attributes, $default = null)
 /**
  * Component label
  */
-function component_label($attributes, $default = null)
+function component_label($attributes, $default = null, $trans = true)
 {
-    if ($label = $attributes->get('label')) return $label;
+    if ($attributes->get('label') === false) return null;
+    
+    $label = $attributes->get('label');
 
-    if ($name = $attributes->get('name') ?? $attributes->wire('model')->value() ?? null) {
-        $last = last(explode('.', $name));
-        return str($last)->headline()->toString();
+    if (!$label) {
+        if ($name = $attributes->get('name') ?? $attributes->wire('model')->value() ?? null) {
+            $last = last(explode('.', $name));
+            $label = str($last)->headline()->toString();
+        }
+        else $label = $default;
     }
 
-    return $default;
+    return $trans ? __($label) : $label;
 }
 
 function component_error($errors, $attributes)

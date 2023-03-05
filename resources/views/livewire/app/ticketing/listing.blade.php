@@ -19,7 +19,7 @@
             <x-table.searchbar :total="$this->tickets->total()"/>
 
             <x-table.toolbar>
-                <x-form.select
+                <x-form.select :label="false"
                     wire:model="filters.status"
                     :options="collect(['pending', 'closed'])->map(fn($val) => [
                         'value' => $val, 'label' => ucfirst($val),

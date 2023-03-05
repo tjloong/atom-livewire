@@ -1,4 +1,4 @@
-<div class="max-w-screen-lg mx-auto">
+<div class="max-w-screen-xl mx-auto">
     <x-page-header back>
         <x-slot:title>
             <div class="flex items-center gap-2">

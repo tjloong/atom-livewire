@@ -2,30 +2,31 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Blog\Update;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Seo extends Component
 {
+    use WithForm;
+
     public $blog;
 
-    protected $rules = [
-        'blog.slug' => 'nullable',
-        'blog.redirect_slug' => 'nullable',
-        'blog.seo' => 'nullable',
-    ];
-
     /**
-     * Mount
+     * Validation
      */
-    public function mount()
+    protected function validation(): array
     {
-        //
+        return [
+            'blog.slug' => 'nullable',
+            'blog.redirect_slug' => 'nullable',
+            'blog.seo' => 'nullable',
+        ];
     }
 
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
         $this->blog->save();
 
@@ -35,7 +36,7 @@ class Seo extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.blog.update.seo');
     }

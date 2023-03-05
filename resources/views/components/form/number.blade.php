@@ -6,6 +6,13 @@
             component_error(optional($errors), $attributes) ? 'error' : ''
         }}"
     >
+        @isset($prefix) {{ $prefix }}
+        @elseif ($prefix = $attributes->get('prefix'))
+            @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>
+            @else <div class="shrink-0 text-gray-500 font-medium">{{ __($prefix) }}</div>
+            @endif
+        @endif
+
         <input type="number"
             x-on:focus="focus = true"
             x-on:blur="focus = false"
@@ -14,8 +21,11 @@
             ])->except(['error', 'caption']) }}
         >
 
-        @if ($unit = $attributes->get('unit') ?? $attributes->get('postfix'))
-            <div class="font-medium text-gray-500">{{ __($unit) }}</div>
+        @isset($postfix) {{ $postfix }}
+        @elseif ($postfix = $attributes->get('postfix') ?? $attributes->get('unit'))
+            @if (str($postfix)->is('icon:*')) <x-icon :name="str($postfix)->replace('icon:', '')->toString()" class="text-gray-400"/>
+            @else <div class="shrink-0 text-gray-500 font-medium">{{ __($postfix) }}</div>
+            @endif
         @endif
     </div>
 </x-form.field>

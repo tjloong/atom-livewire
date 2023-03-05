@@ -129,7 +129,7 @@ if (!config('atom.static_site')) {
         if (enabled_module('enquiries')) {
             define_route()->prefix('enquiry')->as('app.enquiry.')->middleware('can:enquiry.manage')->group(function () {
                 define_route('listing',  'App\Enquiry\Listing')->name('listing');
-                define_route('{enquiry}', 'App\Enquiry\Update')->name('update');
+                define_route('{enquiryId}', 'App\Enquiry\Update')->name('update');
             });
         }
 

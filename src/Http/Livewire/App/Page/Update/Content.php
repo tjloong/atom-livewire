@@ -2,37 +2,39 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Page\Update;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Content extends Component
 {
+    use WithForm;
+    use WithPopupNotify;
+
     public $page;
     public $autosavedAt;
     
-    protected $rules = [
-        'page.title' => 'required|string|max:255',
-        'page.slug' => 'required',
-        'page.locale' => 'nullable',
-        'page.content' => 'nullable',
-    ];
-
-    protected $messages = [
-        'page.title.required' => 'Page title is required.',
-        'page.title.max' => 'Page title has a maximum of 255 characters.',
-    ];
-
     /**
-     * Mount
+     * Validation
      */
-    public function mount()
+    protected function validation(): array
     {
-        //
+        return [
+            'page.title' => [
+                'required' => 'Page title is required.',
+                'string' => 'Page title must be string.',
+                'max:255' => 'Page title is too long (Max 255 characters).',
+            ],
+            'page.slug' => ['required' => 'Slug is required.'],
+            'page.locale' => ['nullable'],
+            'page.content' => ['nullable'],
+        ];
     }
 
     /**
      * Update page content
      */
-    public function updatedPageContent()
+    public function updatedPageContent(): void
     {
         $this->page->save();
         $this->autosavedAt = now();
@@ -41,20 +43,17 @@ class Content extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
-        $this->resetValidation();
-        $this->validate();
-
+        $this->validateForm();
         $this->page->save();
-        
-        $this->dispatchBrowserEvent('toast', ['message' => 'Page Updated', 'type' => 'success']);
+        $this->popup('Page Updated.');
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.page.update.content');
     }

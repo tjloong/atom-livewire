@@ -57,7 +57,9 @@
             </div>
         
             @isset($errorAlert)
-                <div class="p-4">{{ $errorAlert }}</div>
+                @if ($errorAlert->isNotEmpty())
+                    <div class="p-4">{{ $errorAlert }}</div>
+                @endif
             @elseif ($errors && $errors->any())
                 <div class="p-4"><x-alert :errors="$errors"/></div>
             @endisset

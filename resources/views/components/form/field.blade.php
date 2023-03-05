@@ -4,13 +4,11 @@
 ])
 
 <div {{ $attributes->class(['flex flex-col gap-1'])->only('class') }}>
-    @if (isset($label) || $attributes->get('label') || $name || $model)
+    @if (isset($label) || component_label($attributes))
         <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
             <span>
                 @if (isset($label)) {{ $label }}
-                @elseif ($attributes->has('label')) 
-                    @if ($label = $attributes->get('label')) {{ __(str($label)->upper()->toString()) }} @endif
-                @elseif ($label = $name ?? $model ?? null)  {{ __(str(last(explode('.', $label)))->headline()->upper()->toString()) }}
+                @else {{ str(component_label($attributes))->upper() }}
                 @endif
             </span>
 

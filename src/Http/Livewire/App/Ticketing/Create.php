@@ -2,51 +2,43 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Ticketing;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Create extends Component
 {
+    use WithForm;
+
     public $ticket;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'ticket.subject' => 'required',
-            'ticket.description' => 'required',
-            'ticket.status' => 'required',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'ticket.subject.required' => 'Ticket subject is required.',
-            'ticket.description.required' => 'Ticket description is required.',
+            'ticket.subject' => ['required' => 'Ticket subject is required.'],
+            'ticket.description' => ['required' => 'Ticket description is required.'],
+            'ticket.status' => ['required' => 'Ticket status is required.'],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->ticket = model('ticket')->fill(['status' => 'pending']);
+
         breadcrumbs()->push('Create Ticket');
     }
 
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $this->ticket->save();
         $this->ticket->notify();
@@ -57,7 +49,7 @@ class Create extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.ticketing.create');
     }
