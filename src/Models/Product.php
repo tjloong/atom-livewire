@@ -24,6 +24,8 @@ class Product extends Model
      */
     public function taxes()
     {
+        if (!enabled_module('taxes')) return;
+        
         return $this->belongsToMany(model('tax'), 'product_taxes');
     }
 

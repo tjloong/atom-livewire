@@ -1,8 +1,8 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+<x-form.field {{ $attributes }}>
     <textarea {{ 
         $attributes->class([
             'form-input w-full',
-            'error' => !empty($attributes->get('error')),
+            'error' => component_error(optional($errors), $attributes),
         ])->merge(['rows' => 5])
     }}></textarea>
 </x-form.field>

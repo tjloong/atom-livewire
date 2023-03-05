@@ -44,12 +44,12 @@
         @endif
     </x-box>
 
-    <x-modal form
+    <x-form modal
         uid="announcement-form-modal" 
         :header="data_get($input, 'uid') ? 'Update Announcement' : 'Create Announcement'"
     >
         @if ($input)
-            <div class="p-6 grid gap-6">
+            <x-form.group>
                 <x-form.select
                     label="Announcement Type"
                     wire:model="input.type"
@@ -74,11 +74,7 @@
                     label="Announcement is active"
                     wire:model="input.is_active"
                 />
-            </div>
-
-            <x-slot:foot>
-                <x-button.submit/>
-            </x-slot:foot>
+            </x-form.group>
         @endif
-    </x-modal>
+    </x-form>
 </div>

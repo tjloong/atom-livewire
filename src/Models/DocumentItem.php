@@ -66,6 +66,8 @@ class DocumentItem extends Model
      */
     public function taxes()
     {
+        if (!enabled_module('taxes')) return;
+        
         return $this->belongsToMany(get_class(model('tax')), 'document_item_taxes')->withPivot('amount');
     }
 }

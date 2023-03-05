@@ -8,14 +8,43 @@ use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
 
 /**
- * Make component uid
+ * Component ID
  */
-function make_component_uid($names)
+function component_id($attributes, $default = null)
 {
-    return collect($names)
-        ->filter()
-        ->map(fn($name) => str($name)->replace('.', '-')->slug()->toString())
-        ->join('-');
+    if ($attributes->get('uuid') === true) return str()->uuid();
+    if ($attributes->get('ulid') === true) return str()->ulid();
+
+    if ($name = $attributes->wire('model')->value() ?? $attributes->get('name') ?? $attributes->get('label') ?? null) {
+        return str($name)->replace('.', '-')->slug()->toString();
+    }
+
+    return $default;
+}
+
+/**
+ * Component label
+ */
+function component_label($attributes, $default = null)
+{
+    if ($label = $attributes->get('label')) return $label;
+
+    if ($name = $attributes->get('name') ?? $attributes->wire('model')->value() ?? null) {
+        $last = last(explode('.', $name));
+        return str($last)->headline()->toString();
+    }
+
+    return $default;
+}
+
+function component_error($errors, $attributes)
+{
+    if (!$errors) return false;
+
+    $name = $attributes->get('name');
+    $model = $attributes->wire('model')->value();
+
+    return $errors->first($name ?? $model);
 }
 
 /**
@@ -493,6 +522,8 @@ function short_number($n, $locale = null)
  */
 function currency($num, $symbol = null, $rounded = true, $bracket = true)
 {
+    if (!is_numeric($num)) return $num;
+
     $num = (float)$num ?: 0;
     $round = $rounded ? (round($num * 2, 1)/2) : $num;
     $currency = number_format($round, 2);

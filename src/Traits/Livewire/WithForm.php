@@ -4,50 +4,60 @@ namespace Jiannius\Atom\Traits\Livewire;
 
 trait WithForm
 {
+    public $form = [
+        'required' => [],
+    ];
+
     /**
      * Validation rules
      */
-    public function rules()
+    protected function rules()
     {
-        return collect($this->form())->collapse()
-            ->filter(fn($prop, $field) => !str($field)->is('__*') && $field !== 'slot')
-            ->mapWithKeys(function ($prop, $field) {
-                $rules = collect(data_get($prop, 'rules'))->map(fn($val, $key) => 
-                    is_string($key) ? $key : $val,
-                )->values()->all();
-
-                return [$field => $rules ?: ['nullable']];
-            })
-            ->all();
+        return collect($this->validation())->mapWithKeys(fn($props, $field) => [
+            $field => collect($props)
+                ->map(fn($val, $key) => is_string($key) ? $key : $val)
+                ->values()
+                ->all() ?: ['nullable'],
+        ])->toArray();
     }
 
     /**
      * Validation messages
      */
-    public function messages()
+    protected function messages()
     {
         $messages = [];
 
-        collect($this->form())->collapse()
-            ->filter(fn($prop, $field) => !str($field)->is('__*') && $field !== 'slot')
-            ->each(function($prop, $field) use (&$messages) {
-                if ($rules = data_get($prop, 'rules')) {
-                    foreach ($rules as $rule => $message) {
-                        if (is_string($rule) && $rule !== 'nullable') {
-                            $messages[$field.'.'.$rule] = $message;
-                        }
-                    }
+        collect($this->validation())->each(function($rules, $field) use (&$messages) {
+            foreach ((array)$rules as $rule => $message) {
+                if (is_string($rule) && $rule !== 'nullable') {
+                    $messages[$field.'.'.$rule] = $message;
                 }
-            });
+            }
+        });
 
         return $messages;
     }
 
     /**
-     * Get form property
+     * Mount
      */
-    public function getFormProperty()
+    public function mountWithForm()
     {
-        return $this->form();
+        $this->fill([
+            'form.required' => collect($this->rules())
+                ->mapWithKeys(fn($rules, $key) => [$key => in_array('required', $rules)])
+                ->filter(fn($val) => $val === true)
+                ->all(),
+        ]);
+    }
+
+    /**
+     * Validate form
+     */
+    public function validateForm()
+    {
+        $this->resetValidation();
+        $this->validate();
     }
 }

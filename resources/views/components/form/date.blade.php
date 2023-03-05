@@ -1,14 +1,11 @@
 @props([
-    'uid' => make_component_uid([
-        $attributes->wire('model')->value(),
-        $attributes->get('label'),
-        'date-input',
-    ]),
-    'placeholder' => __($attributes->get('placeholder')
-        ?? 'Select '.$attributes->get('label', 'Date')),
+    'placeholder' => __(
+        $attributes->get('placeholder') 
+        ?? 'Select '.component_label($attributes, 'Date')
+    ),
 ])
 
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+<x-form.field {{ $attributes }}>
     <div
         x-data="{
             show: false,
@@ -73,7 +70,7 @@
             }"
             {{ $attributes->class([
                 'flex items-center gap-2 form-input w-full',
-                'error' => !empty($attributes->get('error')),
+                'error' => component_error(optional($errors), $attributes),
             ]) }}
         >
             <x-icon name="calendar" class="text-gray-400"/>

@@ -1,13 +1,6 @@
-@props([
-    'uid' => $attributes->get('uid') ?? make_component_uid(
-        $attributes->wire('model')->value(),
-        'tab',
-    ),
-])
-
 <div
     x-data="{
-        uid: @js($uid),
+        uid: @js(component_id($attributes, 'tab')),
         value: @entangle($attributes->wire('model')),
         goTab (e) {
             if (e.uid !== this.uid) return

@@ -1,4 +1,4 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+<x-form.field {{ $attributes }}>
     <div 
         x-data="{
             text: null,
@@ -20,7 +20,7 @@
             },
         }"
         x-bind:class="focus && 'active'"
-        class="form-input"
+        class="form-input {{ component_error(optional($errors), $attributes) ? 'error' : '' }}"
     >
         <div class="flex flex-wrap items-center gap-2">
             <template x-for="(val, i) in value.filter(Boolean)">

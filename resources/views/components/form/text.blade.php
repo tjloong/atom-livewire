@@ -4,11 +4,13 @@
     'clear' => $attributes->get('clear', false),
 ])
 
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label', 'label-tag']) }}>
+<x-form.field {{ $attributes }}>
     <div 
         x-data="{ focus: false }"
         x-bind:class="focus && 'active'"
-        class="form-input w-full flex items-center gap-2 {{ !empty($attributes->get('error')) ? 'error' : '' }}"
+        class="form-input w-full flex items-center gap-2 {{ 
+            component_error(optional($errors), $attributes) ? 'error' : ''
+        }}"
     >
         @if (is_string($prefix))
             @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>

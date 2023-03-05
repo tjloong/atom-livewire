@@ -20,7 +20,12 @@ class Form extends Component
             'role.name' => [
                 'required',
                 function ($attr, $value, $fail) {
-                    if (model('role')->readable()->where('name', $value)->count()) {
+                    if (model('role')
+                        ->readable()
+                        ->where('name', $value)
+                        ->where('id', '<>', $this->role->id)
+                        ->count()
+                    ) {
                         $fail('There is another role with the same name.');
                     }
                 },

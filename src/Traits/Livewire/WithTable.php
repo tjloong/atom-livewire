@@ -62,9 +62,9 @@ trait WithTable
     }
 
     /**
-     * Get table data property
+     * Get table property
      */
-    public function getTableDataProperty()
+    public function getTableProperty()
     {
         return $this->paginator
             ->through(fn($query) => $this->getTableColumns($query))

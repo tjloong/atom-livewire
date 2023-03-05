@@ -1,29 +1,26 @@
 @props([
-    'uid' => $attributes->get('uid') ?? make_component_uid([
-        $attributes->wire('model')->value() ?? $attributes->get('label'),
-        'select-input',
-    ]),
     'config' => [
         'options' => $attributes->get('options', []),
         'callback' => $attributes->get('callback'),
         'multiple' => $attributes->get('multiple'),
-        'placeholder' => __($attributes->get(
-            'placeholder', 
-            'Select '.($attributes->get('label', 'an option'))
-        )),
+        'placeholder' => __(
+            $attributes->get('placeholder')
+            ?? 'Select '.component_label($attributes, 'an option')
+        ),
     ],
+    'model' => $attributes->wire('model')->value(),
 ])
 
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+<x-form.field {{ $attributes }}>
     <data
         x-cloak
         x-data="{
             show: false,
             text: null,
             config: @js($config),
-            wire: @js(!empty($attributes->wire('model')->value())),
+            wire: @js(!empty($model)),
             value: @js($attributes->get('value')),
-            entangle: @entangle($attributes->wire('model')),
+            entangle: @entangle($model),
             options: [],
             loading: false,
             paginator: {},
@@ -149,7 +146,9 @@
         }"
         x-on:click.away="close()"
         class="relative"
-        {{ $attributes->merge(['id' => $uid])->whereStartsWith(['x-', 'id']) }}
+        {{ $attributes
+            ->merge(['id' => component_id($attributes, 'select-input')])
+            ->whereStartsWith(['x-', 'id']) }}
     >
         <div
             x-ref="anchor" 
@@ -157,7 +156,7 @@
             x-bind:class="{ 'active': show, 'select': empty(value) }"
             {{ $attributes->class([
                 'form-input w-full',
-                'error' => !empty($attributes->get('error')),
+                'error' => component_error(optional($errors), $attributes),
             ])->only('class') }}
         >
             <template x-if="!empty(value)">
@@ -222,10 +221,8 @@
                 </div>
 
                 <div 
-            <div 
-                <div 
                     x-show="paginator?.last_page > 1" 
-                x-show="paginator?.last_page > 1" 
+                    x-show="paginator?.last_page > 1" 
                     x-show="paginator?.last_page > 1" 
                     class="relative px-4 py-2 flex items-center justify-evenly gap-4 text-sm border-b"
                 >
@@ -233,11 +230,9 @@
 
                     <div class="shrink-0">
                         <a 
-                    <a 
-                        <a 
                             x-show="paginator?.current_page > 1"
                             x-on:click="retrieve(paginator?.current_page - 1)" 
-                        x-on:click="retrieve(paginator?.current_page - 1)" 
+                            x-on:click="retrieve(paginator?.current_page - 1)" 
                             x-on:click="retrieve(paginator?.current_page - 1)" 
                             class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
                         >
@@ -249,11 +244,9 @@
 
                     <div class="shrink-0">
                         <a 
-                    <a 
-                        <a 
                             x-show="paginator?.current_page < paginator?.last_page"
                             x-on:click="retrieve(paginator?.current_page + 1)" 
-                        x-on:click="retrieve(paginator?.current_page + 1)" 
+                            x-on:click="retrieve(paginator?.current_page + 1)" 
                             x-on:click="retrieve(paginator?.current_page + 1)" 
                             class="flex items-center gap-2 text-gray-600 bg-gray-100 rounded-md py-1 px-2 shadow"
                         >

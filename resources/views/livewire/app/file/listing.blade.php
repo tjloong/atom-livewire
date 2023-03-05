@@ -16,7 +16,7 @@
             <div class="p-4 flex items-center justify-between gap-3">
                 <div class="shrink-0">
                     <div class="flex items-center gap-2">
-                        <x-form.select
+                        <x-form.select :label="false"
                             wire:model="filters.type"
                             :options="collect(['image', 'video', 'audio', 'file', 'youtube'])
                                 ->map(fn($val) => ['value' => $val, 'label' => ucfirst($val)])"
@@ -50,7 +50,7 @@
                     </div>
                 @else
                     <div class="shrink-0">
-                        <x-form.text placeholder="Search Files"
+                        <x-form.text placeholder="Search Files" :label="false"
                             prefix="icon:search"
                             wire:model.debounce.300ms="filters.search"
                             :clear="!empty(data_get($filters, 'search'))"

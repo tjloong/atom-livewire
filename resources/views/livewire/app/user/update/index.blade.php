@@ -16,32 +16,17 @@
 
         <x-box header="Additional Information">
             <div class="flex flex-col divide-y">
-                <x-box.row label="Status">
-                    <x-badge>{{ $user->status }}</x-badge>
-                </x-box.row>
-    
-                <x-box.row label="Created Date">
-                    {{ format_date($user->created_at) }}
-                </x-box.row>
+                <x-field label="Status" :badge="$user->status"/>
+                <x-field label="Created Date" :value="format_date($user->created_at)"/>
     
                 @if ($user->blocked_at)
-                    <x-box.row label="Blocked Date">
-                        {{ format_date($user->blocked_at) }}
-                    </x-box.row>
-    
-                    <x-box.row label="Blocked By">
-                        {{ $user->blockedBy->name }}
-                    </x-box.row>
+                    <x-field label="Blocked Date" :value="format_date($user->blocked_at)"/>
+                    <x-field label="Blocked By" :value="$user->blockedBy->name"/>
                 @endif
     
                 @if ($user->trashed())
-                    <x-box.row label="Trashed Date">
-                        {{ format_date($user->deleted_at) }}
-                    </x-box.row>
-    
-                    <x-box.row label="Trashed By">
-                        {{ $user->deletedBy->name }}
-                    </x-box.row>
+                    <x-field label="Trashed Date" :value="format_date($user->deleted_at)"/>
+                    <x-field label="Trashed By" :value="$user->deletedBy->name"/>
                 @endif
 
                 @if ($user->status === 'inactive')

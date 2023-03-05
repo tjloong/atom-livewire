@@ -37,11 +37,19 @@ class AtomBladeServiceProvider extends ServiceProvider
         });
 
         Blade::if('tier', function($value) {
-            return auth()->user()->isTier($value);
+            return user()->isTier($value);
         });
 
         Blade::if('nottier', function($value) {
-            return !auth()->user()->isTier($value);
+            return !user()->isTier($value);
+        });
+
+        Blade::if('role', function($value) {
+            return tier('root') || user()->isRole($value);
+        });
+
+        Blade::if('notrole', function($value) {
+            return !user()->isRole($value);
         });
     }
 }

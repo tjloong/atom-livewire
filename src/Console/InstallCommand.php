@@ -189,9 +189,6 @@ class InstallCommand extends Command
         $this->newLine();
         $this->info('Installing documents table...');
 
-        $this->installContacts();
-        $this->installTaxes();
-
         if (Schema::hasTable('documents')) $this->warn('documents table exists, skipped.');
         else {
             Schema::create('documents', function($table) {
@@ -219,8 +216,10 @@ class InstallCommand extends Command
                 $table->text('footer')->nullable();
                 $table->text('note')->nullable();
                 $table->json('data')->nullable();
-                $table->foreignId('contact_id')->constrained('contacts')->onDelete('cascade');
-                $table->foreignId('shareable_id')->nullable()->constrained('shareables')->onDelete('set null');
+
+                if (Schema::hasTable('contacts')) $table->foreignId('contact_id')->constrained('contacts')->onDelete('cascade');
+                if (Schema::hasTable('shareables')) $table->foreignId('shareable_id')->nullable()->constrained('shareables')->onDelete('set null');
+                
                 $table->foreignId('revision_for_id')->nullable()->constrained('documents')->onDelete('cascade');
                 $table->foreignId('converted_from_id')->nullable()->constrained('documents')->onDelete('set null');
                 $table->foreignId('splitted_from_id')->nullable()->constrained('documents')->onDelete('cascade');
@@ -257,14 +256,16 @@ class InstallCommand extends Command
             });
         }
 
-        if (Schema::hasTable('document_item_taxes')) $this->warn('document_item_taxes table exists, skipped.');
-        else {
-            Schema::create('document_item_taxes', function($table) {
-                $table->id();
-                $table->decimal('amount', 20, 2)->nullable();
-                $table->foreignId('tax_id')->nullable()->constrained('taxes')->onDelete('set null');
-                $table->foreignId('document_item_id')->constrained('document_items')->onDelete('cascade');
-            });
+        if (Schema::hasTable('taxes')) {
+            if (Schema::hasTable('document_item_taxes')) $this->warn('document_item_taxes table exists, skipped.');
+            else {
+                Schema::create('document_item_taxes', function($table) {
+                    $table->id();
+                    $table->decimal('amount', 20, 2)->nullable();
+                    $table->foreignId('tax_id')->nullable()->constrained('taxes')->onDelete('set null');
+                    $table->foreignId('document_item_id')->constrained('document_items')->onDelete('cascade');
+                });
+            }
         }
 
         if (Schema::hasTable('document_files')) $this->warn('document_files table exists, skipped.');
@@ -437,8 +438,6 @@ class InstallCommand extends Command
         $this->newLine();
         $this->info('Installing products module...');
 
-        $this->installTaxes();
-
         if (Schema::hasTable('products')) $this->warn('products table exists, skipped.');
         else {
             Schema::create('products', function($table) {
@@ -498,15 +497,17 @@ class InstallCommand extends Command
             $this->line('product_variants table created successfully.');
         }
 
-        if (Schema::hasTable('product_taxes')) $this->warn('product_taxes table exists, skipped.');
-        else {
-            Schema::create('product_taxes', function($table) {
-                $table->id();
-                $table->foreignId('tax_id')->constrained('taxes')->onDelete('cascade');
-                $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            });
-
-            $this->line('product_taxes table created successfully.');
+        if (Schema::hasTable('taxes')) {
+            if (Schema::hasTable('product_taxes')) $this->warn('product_taxes table exists, skipped.');
+            else {
+                Schema::create('product_taxes', function($table) {
+                    $table->id();
+                    $table->foreignId('tax_id')->constrained('taxes')->onDelete('cascade');
+                    $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+                });
+    
+                $this->line('product_taxes table created successfully.');
+            }
         }
     }
 
@@ -517,8 +518,6 @@ class InstallCommand extends Command
     {
         $this->newLine();
         $this->info('Installing plans module...');
-
-        $this->installTaxes();
 
         if (Schema::hasTable('plans')) $this->warn('plans table exists, skipped.');
         else {
@@ -551,7 +550,9 @@ class InstallCommand extends Command
                 $table->integer('expired_after')->nullable();
                 $table->boolean('is_recurring')->nullable();
                 $table->boolean('is_default')->nullable();
-                $table->foreignId('tax_id')->nullable()->constrained()->onDelete('set null');
+                
+                if (Schema::hasTable('taxes')) $table->foreignId('tax_id')->nullable()->constrained()->onDelete('set null');
+                
                 $table->foreignId('plan_id')->constrained()->onDelete('cascade');
                 $table->timestamps();
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');

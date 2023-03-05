@@ -1,10 +1,10 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+<x-form.field {{ $attributes }}>
     <div class="relative w-full" x-data="{ show: false }">
         <input
             x-bind:type="show ? 'text' : 'password'"
             {{ $attributes->class([
                 'form-input w-full pr-12',
-                'error' => !empty($attributes->get('error')),
+                'error' => component_error(optional($errors), $attributes),
             ]) }}
         >
         <a

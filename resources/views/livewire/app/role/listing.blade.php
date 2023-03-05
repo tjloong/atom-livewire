@@ -1,5 +1,5 @@
 <div class="max-w-screen-lg mx-auto">
-    <x-table :data="$this->tableData">
+    <x-table :data="$this->table">
         <x-slot:header>
             <x-table.header label="Roles">
                 <x-button size="sm" color="gray"

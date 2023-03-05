@@ -1,5 +1,5 @@
 <div class="max-w-screen-xl mx-auto">
-    <x-table :data="$this->tableData">
+    <x-table :data="$this->table">
         <x-slot:header>
             <x-table.header :label="data_get($params, 'title') ?? data_get($params, 'header') ?? 'Users'">
                 <x-button size="sm" color="gray"
@@ -12,7 +12,7 @@
 
             <x-table.toolbar>
                 <div class="flex items-center gap-2">
-                    <x-form.select 
+                    <x-form.select  :label="false"
                         wire:model="filters.status"
                         :options="collect(['active', 'inactive', 'blocked', 'trashed'])->map(fn($val) => [
                             'value' => $val, 
@@ -22,7 +22,7 @@
                     />
     
                     @module('roles')
-                        <x-form.select
+                        <x-form.select :label="false"
                             wire:model="filters.is_role"
                             :options="model('role')->readable()->get()->map(fn($role) => [
                                 'value' => $role->slug,
@@ -33,7 +33,7 @@
                     @endmodule
     
                     @module('teams')
-                        <x-form.select
+                        <x-form.select :label="false"
                             wire:model="filters.in_team"
                             :options="model('team')->readable()->get()->map(fn($team) => [
                                 'value' => (string)$team->id,

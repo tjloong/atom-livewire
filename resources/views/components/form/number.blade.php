@@ -1,8 +1,10 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+<x-form.field {{ $attributes }}>
     <div 
         x-data="{ focus: false }"
         x-bind:class="focus && 'active'"
-        class="form-input w-full flex items-center gap-2 {{ $attributes->get('error') ? 'error' : '' }}"
+        class="form-input w-full flex items-center gap-2 {{ 
+            component_error(optional($errors), $attributes) ? 'error' : ''
+        }}"
     >
         <input type="number"
             x-on:focus="focus = true"

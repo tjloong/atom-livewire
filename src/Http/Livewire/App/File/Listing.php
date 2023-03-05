@@ -5,10 +5,12 @@ namespace Jiannius\Atom\Http\Livewire\App\File;
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithFile;
+    use WithPagination;
     use WithPopupNotify;
 
     public $selected = [];

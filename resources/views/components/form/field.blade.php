@@ -1,22 +1,52 @@
-<div {{ $attributes->class(['flex flex-col gap-1']) }}>
-    @if ($label = $label ?? $attributes->get('label'))
-        <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
-            {{ is_string($label) ? __(strtoupper($label)) : $label }}
+@props([
+    'model' => $attributes->wire('model')->value(),
+    'name' => $attributes->get('name'),
+])
 
-            @if ($tag = $attributes->get('label-tag'))
+<div {{ $attributes->class(['flex flex-col gap-1'])->only('class') }}>
+    @if (isset($label) || $attributes->get('label') || $name || $model)
+        <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
+            <span>
+                @if (isset($label)) {{ $label }}
+                @elseif ($attributes->has('label')) 
+                    @if ($label = $attributes->get('label')) {{ __(str($label)->upper()->toString()) }} @endif
+                @elseif ($label = $name ?? $model ?? null)  {{ __(str(last(explode('.', $label)))->headline()->upper()->toString()) }}
+                @endif
+            </span>
+
+            @if ($tag = $attributes->get('tag'))
                 <span class="bg-blue-100 text-blue-500 font-medium text-xs px-2 py-0.5 rounded-md">
                     {{ __($tag) }}
                 </span>
             @endif
 
-            @if ($attributes->get('required'))
-                <x-icon name="asterisk" size="10" class="text-red-400"/>
+            @if ($attributes->has('required'))
+                @if ($attributes->get('required')) <x-icon name="asterisk" size="10" class="text-red-400"/> @endif
+            @elseif ($field = $name ?? $model ?? null)
+                <div 
+                    x-data="{ required: false }" 
+                    x-init="required = ($wire.get('form.required') || [])[@js($name ?? $model)]" 
+                    x-show="required" 
+                    class="flex"
+                >
+                    <x-icon name="asterisk" size="10" class="text-red-400 m-auto"/>
+                </div>
             @endif
         </label>
     @endif
 
     <div>
-        {{ $slot }}
+        @if ($slot->isNotEmpty())
+            {{ $slot }}
+        @elseif ($value = $attributes->get('value'))
+            @if ($href = $attributes->get('href'))
+                <a href="{!! $href !!}" target="{{ $attributes->get('target', '_self') }}">
+                    {!! $value !!}
+                </a>
+            @else
+                {!! $value !!}
+            @endif
+        @endif
     </div>
 
     @if ($caption = $attributes->get('caption'))
@@ -25,7 +55,7 @@
         </div>
     @endif
 
-    @if (($error = $attributes->get('error')) && is_string($error))
+    @if ($error = $errors->first($name ?? $model))
         <div class="text-sm text-red-500 font-medium">
             {{ __($error) }}
         </div>

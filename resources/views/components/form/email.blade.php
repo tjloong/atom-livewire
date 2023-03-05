@@ -2,7 +2,7 @@
     'placeholder' => __($attributes->get('placeholder')),
 ])
 
-<x-form.field {{ $attributes->only(['label', 'error', 'required', 'caption']) }}>
+<x-form.field {{ $attributes }}>
     @if ($attributes->get('multiple') || $attributes->has('options'))
         <div
             x-data="{
@@ -73,7 +73,7 @@
                         x-bind:class="focus && 'active'"
                         {{ $attributes->class([
                             'form-input w-full flex flex-wrap items-center gap-2',
-                            'error' => !empty($attributes->get('error')),
+                            'error' => component_error(optional($errors), $attributes),
                         ])->except(['multiple', 'options', 'placeholder']) }}
                     >
                         <template x-for="(val, i) in (value || [])" x-bind:key="`${val}-${i}`">
@@ -100,7 +100,7 @@
                         placeholder="{{ $placeholder }}" 
                         {{ $attributes->class([
                             'form-input w-full',
-                            'error' => !empty($attributes->get('error')),
+                            'error' => component_error(optional($errors), $attributes),
                         ])->except(['multiple', 'options']) }}
                     >
                 @endif
@@ -140,7 +140,7 @@
     @else
         <input type="email" placeholder="{{ $placeholder }}" {{ $attributes->class([
             'form-input w-full',
-            'error' => !empty($attributes->get('error')),
+            'error' => component_error(optional($errors), $attributes),
         ])->except('placeholder') }}>
     @endif
 </x-form.field>

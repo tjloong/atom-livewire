@@ -16,117 +16,48 @@ class Form extends Component
     public $contact;
 
     /**
+     * Validation
+     */
+    protected function validation(): array
+    {
+        return [
+            'contact.category' => ['required' => 'Contact category is required.'],
+            'contact.type' => ['required' => 'Contact type is required.'],
+            'contact.name' => ['required' => 'Name is required.'],
+            'contact.owned_by' => ['nullable'],
+            'contact.avatar_id' => ['nullable'],
+            'contact.email' => ['nullable'],
+            'contact.phone' => ['nullable'],
+            'contact.fax' => ['nullable'],
+            'contact.brn' => ['nullable'],
+            'contact.tax_number' => ['nullable'],
+            'contact.website' => ['nullable'],
+            'contact.address_1' => ['nullable'],
+            'contact.address_2' => ['nullable'],
+            'contact.city' => ['nullable'],
+            'contact.zip' => ['nullable'],
+            'contact.country' => ['nullable'],
+            'contact.state' => ['nullable'],
+        ];
+    }
+
+    /**
      * Get title property
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
         return $this->contact->exists ? str($this->contact->category)->title()->toString().' Information' : null;
     }
 
     /**
-     * Form
+     * Get options property
      */
-    public function form()
+    public function getOptionsProperty()
     {
         return [
-            [
-                'contact.category' => [
-                    'rules' => ['required' => 'Contact category is required.'],
-                ],
-                
-                'contact.type' => [
-                    'label' => 'Contact Type',
-                    'readonly' => $this->contact->exists ? str($this->contact->type)->title()->toString() : false,
-                    'input' => [
-                        ['value' => 'person', 'label' => 'Individual'],
-                        ['value' => 'company', 'label' => 'Company'],
-                    ],
-                    'rules' => $this->contact->exists ? [] : ['required' => 'Contact type is required.'],
-                ],
-                
-                'contact.name' => [
-                    'label' => str($this->contact->category)->title()->toString().' Name',
-                    'input' => 'text',
-                    'rules' => ['required' => 'Name is required.'],
-                ],
-                
-                'contact.owned_by' => $this->contact->exists ? [
-                    'label' => 'Owner',
-                    'input' => 'select.owner',
-                ]: null,
-
-                'contact.avatar_id' => [
-                    'label' => $this->contact->type === 'company' ? 'Logo' : 'Avatar',
-                    'input' => 'file',
-                    'thumbnail' => $this->contact->avatar_id,
-                    'attributes' => ['accept' => 'image/*'],
-                ],
-            ],
-
-            array_merge(
-                [
-                    'contact.email' => [
-                        'label' => 'Email',
-                        'input' => 'text',
-                    ],
-                    'contact.phone' => [
-                        'label' => 'Phone',
-                        'input' => 'text',
-                    ],
-                ],
-
-                $this->contact->type === 'company' ? [
-                    'contact.fax' => [
-                        'label' => 'Fax',
-                        'input' => 'text',
-                    ],
-
-                    'contact.brn' => [
-                        'label' => 'Business Registration Number',
-                        'input' => 'text',
-                    ],
-        
-                    'contact.tax_number' => [
-                        'label' => 'Tax Number',
-                        'input' => 'text',
-                    ],
-
-                    'contact.website' => [
-                        'label' => 'Website',
-                        'input' => 'text',
-                    ],
-                ] : [],
-            ),
-
-            [
-                'contact.address_1' => [
-                    'label' => 'Address Line 1',
-                    'input' => 'text',
-                ],
-
-                'contact.address_2' => [
-                    'label' => 'Address Line 2',
-                    'input' => 'text',
-                ],
-
-                'contact.city' => [
-                    'label' => 'City',
-                    'input' => 'text',
-                ],
-
-                'contact.zip' => [
-                    'label' => 'Postcode',
-                    'input' => 'text',
-                ],
-
-                'contact.country' => [
-                    'input' => 'select.country',
-                ],
-
-                'contact.state' => [
-                    'input' => 'select.state',
-                    'attributes' => ['country' => $this->contact->country, 'uid' => uniqid()],
-                ],
+            'types' => [
+                ['value' => 'person', 'label' => 'Individual'],
+                ['value' => 'company', 'label' => 'Company'],
             ],
         ];
     }
@@ -134,22 +65,22 @@ class Form extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
-
+        $this->validateForm();
         $this->contact->save();
-        $this->submitted();
+
+        return $this->submitted();
     }
 
     /**
      * Submitted
      */
-    public function submitted()
+    public function submitted(): mixed
     {
-        if ($this->contact->wasRecentlyCreated) return redirect()->route('app.contact.view', [$this->contact->id]);
-        $this->popup('Contact Updated.');
+        return $this->contact->wasRecentlyCreated
+            ? redirect()->route('app.contact.view', [$this->contact->id])
+            : $this->popup('Contact Updated.');
     }
 
     /**
