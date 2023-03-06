@@ -30,11 +30,11 @@
                 sortBy: @js($sortBy),
                 get current () {
                     const sort = this.$wire.get('sort')
-                    const split = sort.split(',')
+                    const split = sort?.split(',')
 
                     return {
-                        sortBy: split[0],
-                        sortOrder: split[1] || 'asc',
+                        sortBy: split ? split[0] : null,
+                        sortOrder: split ? split[1] : null,
                     }
                 },
                 get isSorted () {
@@ -43,10 +43,11 @@
                 sort () {
                     if (!this.sortBy) return
 
-                    let sortOrder = 'asc'
-                    if (this.isSorted) sortOrder = this.current.sortOrder === 'asc' ? 'desc' : 'asc'
-
-                    this.$wire.set('sort', this.sortBy+','+sortOrder)
+                    if (this.isSorted) {
+                        if (this.current.sortOrder === 'asc') this.$wire.set('sort', this.sortBy+',desc')
+                        else if (this.current.sortOrder === 'desc') this.$wire.call('resetSort')
+                    }
+                    else this.$wire.set('sort', this.sortBy+',asc')
                 },
             }"
             x-on:click="sort"

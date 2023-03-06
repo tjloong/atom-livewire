@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Traits\Livewire;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\WithPagination;
 
 trait WithTable
@@ -13,10 +14,8 @@ trait WithTable
 
     /**
      * Initialize the trait
-     * 
-     * @return void
      */
-    protected function initializeWithTable()
+    protected function initializeWithTable(): void
     {
         $this->queryString = array_merge(
             $this->queryString, 
@@ -28,9 +27,9 @@ trait WithTable
     /**
      * Get sort by property
      */
-    public function getSortByProperty()
+    public function getSortByProperty(): string
     {
-        if (!$this->sort) return;
+        if (!$this->sort) return null;
 
         $split = explode(',', $this->sort);
 
@@ -40,9 +39,9 @@ trait WithTable
     /**
      * Get sort order property
      */
-    public function getSortOrderProperty()
+    public function getSortOrderProperty(): string
     {
-        if (!$this->sort) return;
+        if (!$this->sort) return null;
 
         $split = explode(',', $this->sort);
 
@@ -52,9 +51,9 @@ trait WithTable
     /**
      * Get paginator property
      */
-    public function getPaginatorProperty()
+    public function getPaginatorProperty(): LengthAwarePaginator
     {
-        if (!$this->query) return;
+        if (!$this->query) return null;
 
         if (!empty($this->sort)) $this->query->orderBy($this->sortBy, $this->sortOrder);
 
@@ -64,17 +63,17 @@ trait WithTable
     /**
      * Get table property
      */
-    public function getTableProperty()
+    public function getTableProperty(): array
     {
         return $this->paginator
-            ->through(fn($query) => $this->getTableColumns($query))
+            ->through(fn($query) => $this->getTableColumns($query) ?: $query)
             ->items();
     }
 
     /**
      * Updated filters
      */
-    public function updatedFilters()
+    public function updatedFilters(): void
     {
         $this->resetPage();
         $this->resetCheckboxes();
@@ -83,15 +82,15 @@ trait WithTable
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
-        return $query;
+        return [];
     }
     
     /**
      * Toggle checkbox
      */
-    public function toggleCheckbox($value)
+    public function toggleCheckbox($value): void
     {
         $values = collect($this->checkboxes);
 
@@ -112,8 +111,16 @@ trait WithTable
     /**
      * Reset table checkboxes
      */
-    public function resetCheckboxes()
+    public function resetCheckboxes(): void
     {
         $this->checkboxes = [];
+    }
+
+    /**
+     * Reset sort
+     */
+    public function resetSort(): void
+    {
+        $this->reset('sort');
     }
 }
