@@ -107,16 +107,6 @@ class Form extends Component
     }
 
     /**
-     * Resend activation email
-     */
-    public function resendActivationEmail(): void
-    {
-        $this->user->sendActivation();
-
-        $this->popup('Activation email sent.', 'alert');
-    }
-
-    /**
      * Submit
      */
     public function submit(): mixed
