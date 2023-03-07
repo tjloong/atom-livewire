@@ -1,6 +1,9 @@
-<x-modal uid="label-form-modal" :header="data_get($label, 'id') ? 'Update Label' : 'Create Label'">
+<x-form modal
+    uid="label-form-modal" 
+    :header="data_get($label, 'id') ? 'Update Label' : 'Create Label'"
+>
     @if ($label)
-        <div class="p-6 grid gap-6">
+        <x-form.group>
             @if (count($this->parentTrails))
                 <x-form.field label="Parent Label">
                     <div class="flex flex-wrap items-center gap-2">
@@ -13,44 +16,31 @@
             @endif
 
             @if ($type = data_get($label, 'type'))
-                <x-form.field label="Label Type">
-                    {{ str()->headline($type) }}
-                </x-form.field>
+                <x-form.field label="Label Type" :value="str()->headline($type)"/>
             @endif
 
             @if (data_get($label, 'data.is_locked'))
-                @foreach ($this->locales->sort() as $locale)
-                    <x-form.field
-                        label="Label Name"
-                        :label-tag="$this->locales->count() > 1 ? data_get(metadata()->locales($locale), 'name') : null"
-                    >
-                        {{ data_get($label, 'name.'.$locale) }}
-                    </x-form.field>
-                @endforeach
+                <x-form.field label="Label Name">
+                    <div class="flex flex-col gap-2">
+                        @foreach ($this->locales->sort() as $locale)
+                            <div class="flex items-center gap-2">
+                                @if ($this->locales->count() > 1) <x-badge :label="$locale"/> @endif
+                                {{ data_get($label, 'name.'.$locale) }}
+                            </div>
+                        @endforeach
+                    </div>
+                </x-form.field>
             @else
-                @foreach ($this->locales->sort() as $locale)
-                    <x-form.text
-                        label="Label Name"
-                        :label-tag="$this->locales->count() > 1 ? data_get(metadata()->locales($locale), 'name') : null"
-                        wire:model.defer="names.{{ $locale }}"
-                        :error="$errors->first('names.'.$locale)"
-                        required
-                    />
-                @endforeach
+                <x-form.field label="Label Name" required>
+                    <div class="flex flex-col gap-2">
+                        @foreach ($this->locales->sort() as $locale)
+                            <x-form.text wire:model.defer="names.{{ $locale }}" :prefix="$this->locales->count() > 1 ? $locale : null" :label="false"/>
+                        @endforeach
+                    </div>
+                </x-form.field>
         
-                <x-form.slug 
-                    label="Label Slug"
-                    wire:model.defer="label.slug" 
-                    prefix="/"
-                    caption="Leave empty to auto generate"
-                />
+                <x-form.slug wire:model.defer="label.slug" prefix="/" caption="Leave empty to auto generate"/>
             @endif
-        </div>
-    
-        <x-slot:foot>
-            <x-button.submit type="button"
-                wire:click="submit"
-            />
-        </x-slot:foot>
+        </x-form.group>
     @endif
-</x-modal>
+</x-form>

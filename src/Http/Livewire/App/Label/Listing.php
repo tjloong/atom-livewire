@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Label;
 
+use Illuminate\Database\Eloquent\Collection;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
@@ -11,7 +12,7 @@ class Listing extends Component
 
     public $type;
     public $header;
-    public $maxDepth = 1;
+    public $maxDepth = 0;
 
     protected $listeners = [
         'open',
@@ -22,7 +23,7 @@ class Listing extends Component
     /**
      * Get title property
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
         if ($this->header) return $this->header;
 
@@ -34,7 +35,7 @@ class Listing extends Component
     /**
      * Get labels property
      */
-    public function getLabelsProperty()
+    public function getLabelsProperty(): Collection
     {
         return model('label')
             ->with('children')
@@ -49,7 +50,7 @@ class Listing extends Component
     /**
      * Open
      */
-    public function open($data)
+    public function open($data): void
     {
         $this->emitTo(lw('app.label.form-modal'), 'open', $data);
     }
@@ -57,7 +58,7 @@ class Listing extends Component
     /**
      * Sort
      */
-    public function sort($data)
+    public function sort($data): void
     {
         foreach ($data as $index => $id) {
             model('label')->where('id', $id)->update(['seq' => $index + 1]);
@@ -69,7 +70,7 @@ class Listing extends Component
     /**
      * Delete
      */
-    public function delete($id)
+    public function delete($id): void
     {
         optional(model('label')->find($id))->delete();
 
@@ -79,7 +80,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.label.listing');
     }

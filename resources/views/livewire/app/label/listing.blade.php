@@ -30,7 +30,7 @@
                                     </div>
                                 </a>
 
-                                @if ($maxDepth > 1)
+                                @if ($maxDepth > 0)
                                     <a x-on:click="show = !show" class="shrink-0 text-gray-800 px-2 flex items-center gap-2">
                                         @if ($count = $label->children->count()) 
                                             <x-badge :label="$count" size="xs" color="blue"/> 
@@ -42,7 +42,7 @@
                             </div>
 
                             <div class="shrink-0 flex items-center gap-2">
-                                @if ($maxDepth > 1)
+                                @if ($maxDepth > 0)
                                     <x-button size="xs" color="gray"
                                         :label="$this->addSublabelButtonName ?? 'Add Sub-label'"
                                         wire:click="open({ parent_id: {{ $label->id }} })"
@@ -60,7 +60,7 @@
                             </div>
                         </div>
 
-                        @if ($maxDepth > 1 && $label->children->count())
+                        @if ($maxDepth > 0 && $label->children->count())
                             <div x-show="show" class="bg-gray-100 m-2 rounded-lg">
                                 @livewire(lw('app.label.children'), [
                                     'parent' => $label,

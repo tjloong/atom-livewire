@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Label;
 
+use Illuminate\Database\Eloquent\Collection;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
@@ -18,7 +19,7 @@ class Children extends Component
     /**
      * Get children property
      */
-    public function getChildrenProperty()
+    public function getChildrenProperty(): Collection
     {
         return $this->parent->children()
             ->with('children')
@@ -30,7 +31,7 @@ class Children extends Component
     /**
      * Get padding property
      */
-    public function getPaddingProperty()
+    public function getPaddingProperty(): float
     {
         return $this->depth * 1.5;
     }
@@ -38,7 +39,7 @@ class Children extends Component
     /**
      * Sort
      */
-    public function sort($data)
+    public function sort($data): void
     {
         foreach ($data as $seq => $id) {
             model('label')->find($id)->fill(['seq' => $seq])->saveQuietly();
@@ -48,7 +49,7 @@ class Children extends Component
     /**
      * Delete
      */
-    public function delete($id)
+    public function delete($id): void
     {
         $this->emitUp('delete', $id);
     }
@@ -56,7 +57,7 @@ class Children extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.label.children');
     }

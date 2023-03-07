@@ -2,11 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Label;
 
+use Illuminate\Support\Collection;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class FormModal extends Component
 {
+    use WithForm;
     use WithPopupNotify;
 
     public $label;
@@ -15,41 +18,27 @@ class FormModal extends Component
     protected $listeners = ['open'];
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         $rules = [
-            'label.type' => 'nullable',
-            'label.slug' => 'nullable',
-            'label.parent_id' => 'nullable',
+            'label.type' => ['nullable'],
+            'label.slug' => ['nullable'],
+            'label.parent_id' => ['nullable'],
         ];
 
         foreach ($this->locales as $locale) {
-            $rules['names.'.$locale] = 'required';
+            $rules['names.'.$locale] = ['required' => 'Label name ('.$locale.') is required.'];
         }
 
         return $rules;
     }
 
     /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        $messages = [];
-
-        foreach ($this->locales as $locale) {
-            $messages['names.'.$locale.'.required'] = __('Label name ('.$locale.') is required.');
-        }
-
-        return $messages;
-    }
-
-    /**
      * Get locales property
      */
-    public function getLocalesProperty()
+    public function getLocalesProperty(): Collection
     {
         return collect(config('atom.locales'));
     }
@@ -57,7 +46,7 @@ class FormModal extends Component
     /**
      * Get parent trails property
      */
-    public function getParentTrailsProperty()
+    public function getParentTrailsProperty(): array
     {
         $trails = collect();
         $parent = $this->label->parent;
@@ -73,7 +62,7 @@ class FormModal extends Component
     /**
      * Open
      */
-    public function open($data)
+    public function open($data): void
     {
         $this->label = data_get($data, 'id')
             ? model('label')->readable()->findOrFail(data_get($data, 'id'))
@@ -87,10 +76,9 @@ class FormModal extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $this->label->fill([
             'name' => $this->names,
@@ -104,7 +92,7 @@ class FormModal extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.label.form-modal');
     }
