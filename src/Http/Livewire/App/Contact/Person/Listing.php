@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Contact\Person;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
@@ -20,41 +21,47 @@ class Listing extends Component
     protected $listeners = ['refresh' => '$refresh'];
 
     /**
-     * Get persons property
+     * Get query property
      */
-    public function getPersonsProperty()
+    public function getQueryProperty(): Builder
     {
-        return $this->contact->persons()
-            ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows)
-            ->through(fn($person) => [
-                [
-                    'column_name' => 'Name',
-                    'column_sort' => 'name',
-                    'label' => collect([$person->salutation, $person->name])->filter()->join(' '),
-                    'small' => $person->designation,
-                    'href' => route('app.contact.person.view', [$this->contact->id, $person->id]),
-                ],
+        return model('contact_person')
+            ->when($this->contact, fn($q) => $q->where('contact_id', $this->contact->id))
+            ->filter($this->filters);
+    }
 
-                [
-                    'column_name' => 'Contact',
-                    'label' => $person->email,
-                    'small' => $person->phone,
-                ],
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query): array
+    {
+        return [
+            [
+                'name' => 'Name',
+                'sort' => 'name',
+                'label' => collect([$query->salutation, $query->name])->filter()->join(' '),
+                'small' => $query->designation,
+                'href' => route('app.contact.person.view', [$query->id]),
+            ],
 
-                [
-                    'column_name' => 'Created Date',
-                    'column_sort' => 'created_at',
-                    'date' => $person->created_at,
-                ],
-            ]);
+            [
+                'name' => 'Contact',
+                'label' => $query->email,
+                'small' => $query->phone,
+            ],
+
+            [
+                'name' => 'Created Date',
+                'sort' => 'created_at',
+                'date' => $query->created_at,
+            ],
+        ];
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.contact.person.listing');
     }

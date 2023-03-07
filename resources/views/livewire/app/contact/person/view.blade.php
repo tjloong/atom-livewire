@@ -3,7 +3,7 @@
         @can('contact.update')
             <x-button color="gray"
                 label="Edit"
-                :href="route('app.contact.person.update', [$contact->id, $person->id])"
+                :href="route('app.contact.person.update', [$person->id])"
             />
         @endcan
 
@@ -17,14 +17,8 @@
 
     <x-box>
         <div class="flex flex-col divide-y">
-            @foreach ([
-                'Company' => $contact->name,
-                'Name' => collect([$person->salutation, $person->name])->filter()->join(' '),
-                'Email' => $person->email,
-                'Phone' => $person->phone,
-                'Designation' => $person->designation,
-            ] as $key => $val)
-                <x-box.row :label="$key">{{ $val }}</x-box.row>
+            @foreach ($this->fields as $key => $val)
+                <x-field :label="$key" :value="$val"/>
             @endforeach
         </div>
     </x-box>

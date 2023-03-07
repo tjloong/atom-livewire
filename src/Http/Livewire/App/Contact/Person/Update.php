@@ -6,34 +6,24 @@ use Livewire\Component;
 
 class Update extends Component
 {
-    public $contact;
     public $person;
 
     /**
      * Mount
      */
-    public function mount($contactId, $personId)
+    public function mount($personId): void
     {
-        $this->contact = model('contact')->readable()->findOrFail($contactId);
-        $this->person = $this->contact->persons()->findOrFail($personId);
+        $this->person = model('contact_person')
+            ->whereHas('contact', fn($q) => $q->readable())
+            ->findOrFail($personId);
 
         breadcrumbs()->push('Update');
     }
 
     /**
-     * Delete
-     */
-    public function delete()
-    {
-        $this->person->delete();
-
-        return breadcrumbs()->back();
-    }
-
-    /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.contact.person.update');
     }

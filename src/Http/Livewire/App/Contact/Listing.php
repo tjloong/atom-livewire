@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Contact;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -24,7 +25,7 @@ class Listing extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         breadcrumbs()->home($this->title);
     }
@@ -32,15 +33,15 @@ class Listing extends Component
     /**
      * Get title property
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
-        return str($this->category)->plural()->title()->toString();
+        return str($this->category)->headline()->plural()->toString();
     }
 
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return model('contact')
             ->readable()
@@ -51,21 +52,20 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return [
             [
-                'column_name' => 'Contact',
-                'column_sort' => 'name',
+                'name' => 'Contact',
+                'sort' => 'name',
                 'label' => $query->name,
                 'href' => route('app.contact.view', [$query->id]),
                 'avatar' => optional($query->avatar)->url,
                 'small' => empty($query->email_phone) ? __('No contact number') : $query->email_phone,
             ],
             [
-                'column_name' => 'Created Date',
-                'column_sort' => 'created_at',
-                'column_class' => 'text-right',
+                'name' => 'Created Date',
+                'sort' => 'created_at',
                 'date' => $query->created_at,
             ],
         ];
@@ -74,15 +74,15 @@ class Listing extends Component
     /**
      * Get preferences route property
      */
-    public function getPreferencesRouteProperty()
+    public function getPreferencesRouteProperty(): mixed
     {
-        //
+        return null;
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.contact.listing');
     }

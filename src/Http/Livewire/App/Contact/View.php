@@ -17,7 +17,7 @@ class View extends Component
     /**
      * Mount
      */
-    public function mount($contactId)
+    public function mount($contactId): void
     {
         $this->authorize('contact.view');
 
@@ -30,7 +30,7 @@ class View extends Component
     /**
      * Get tabs property
      */
-    public function getTabsProperty()
+    public function getTabsProperty(): array
     {
         return array_filter([
             $this->contact->type === 'company' 
@@ -42,7 +42,7 @@ class View extends Component
     /**
      * Get fields property
      */
-    public function getFieldsProperty()
+    public function getFieldsProperty(): array
     {
         return [
             ['label' => 'Type', 'value' => str($this->contact->type)->title()],
@@ -59,7 +59,7 @@ class View extends Component
     /**
      * Get livewire property
      */
-    public function getLivewireProperty()
+    public function getLivewireProperty(): mixed
     {
         $tab = tabs($this->tabs)->firstWhere('slug', $this->tab);
         $livewire = data_get($tab, 'livewire');
@@ -70,7 +70,7 @@ class View extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->contact->delete();
 
@@ -80,7 +80,7 @@ class View extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.contact.view');
     }

@@ -12,18 +12,33 @@ class View extends Component
     /**
      * Mount
      */
-    public function mount($contactId, $personId)
+    public function mount($personId): void
     {
-        $this->contact = model('contact')->readable()->findOrFail($contactId);
-        $this->person = $this->contact->persons()->findOrFail($personId);
+        $this->person = model('contact_person')
+            ->whereHas('contact', fn($q) => $q->readable())
+            ->findOrFail($personId);
 
         breadcrumbs()->push($this->person->name);
     }
 
     /**
+     * Get fields property
+     */
+    public function getFieldsProperty(): array
+    {
+        return [
+            'Company' => $this->person->contact->name,
+            'Name' => collect([$this->person->salutation, $this->person->name])->filter()->join(' '),
+            'Email' => $this->person->email ?? '--',
+            'Phone' => $this->person->phone ?? '--',
+            'Designation' => $this->person->designation ?? '--',
+        ];
+    }
+
+    /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->person->delete();
 
@@ -33,7 +48,7 @@ class View extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.contact.person.view');
     }
