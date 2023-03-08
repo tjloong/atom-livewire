@@ -163,8 +163,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // page
             'atom.app.page.listing' => 'App\Page\Listing',
-            'atom.app.page.update' => 'App\Page\Update\Index',
-            'atom.app.page.update.content' => 'App\Page\Update\Content',
+            'atom.app.page.update' => 'App\Page\Update',
+            'atom.app.page.content' => 'App\Page\Content',
 
             // plan
             'atom.app.plan.listing' => 'App\Plan\Listing',

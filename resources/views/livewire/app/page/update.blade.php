@@ -13,7 +13,7 @@
         </x-slot:title>
     </x-page-header>
 
-    @if ($com = lw('app.page.update.'.$this->slug) ?? lw('app.page.update.content'))
+    @if ($com = lw('app.page.'.$this->slug) ?? lw('app.page.content'))
         @livewire($com, compact('page'))
     @endif
 </div>

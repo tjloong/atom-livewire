@@ -1,7 +1,8 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Page\Update;
+namespace Jiannius\Atom\Http\Livewire\App\Page;
 
+use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
@@ -9,6 +10,7 @@ use Livewire\Component;
 class Content extends Component
 {
     use WithForm;
+    use WithFile;
     use WithPopupNotify;
 
     public $page;
@@ -55,6 +57,6 @@ class Content extends Component
      */
     public function render(): mixed
     {
-        return atom_view('app.page.update.content');
+        return atom_view('app.page.content');
     }
 }
