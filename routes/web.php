@@ -139,7 +139,7 @@ if (!config('atom.static_site')) {
         if (enabled_module('pages')) {
             define_route()->prefix('page')->as('app.page.')->group(function () {
                 define_route('listing',  'App\Page\Listing')->name('listing');
-                define_route('{page}', 'App\Page\Update')->name('update');
+                define_route('{pageId}', 'App\Page\Update')->name('update');
             });
         }
 

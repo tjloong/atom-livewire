@@ -5,9 +5,7 @@
         'accept' => $attributes->get('accept'),
         'visibility' => $attributes->get('visibility', 'public'),
         'location' => $attributes->get('location', 'uploads'),
-        'wire' => $attributes->wire('model')->value(),
     ],
-    'uid' => $attributes->get('uid', 'file-dropzone'),
 ])
 
 <div
@@ -103,14 +101,11 @@
             const bucket = this.bucket.map(val => (val.file))
             const value = this.config.multiple ? bucket : bucket[0]
 
-            if (this.config.wire) this.$wire.set(this.config.wire, value.map(val => (val.id)))
-
-            this.$dispatch(@js($uid.'-uploaded'), value)
+            this.$dispatch('uploaded', value)
             this.bucket = []
         },
     }"
     x-on:upload-completed.window="uploadCompleted($event.detail)"
-    {{ $attributes->merge(['id' => $uid])->whereStartsWith(['id', 'x-', 'wire:']) }}
 >
     <div 
         x-on:dragover.prevent="scan"

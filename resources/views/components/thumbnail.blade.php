@@ -78,9 +78,9 @@
         @endisset
     </div>
 
-    @if ($attributes->has('wire:remove'))
+    @if ($attributes->has('wire:remove') || $attributes->has('x-on:remove'))
         <div class="absolute -top-2 -right-4 bg-white rounded-full shadow">
-            <x-close wire:click="{{ $attributes->get('wire:remove') }}" color="red"/>
+            <x-close x-on:click="$dispatch('remove')" color="red"/>
         </div>
     @endif
 </figure>

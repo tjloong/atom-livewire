@@ -31,5 +31,11 @@
                 {!! $value !!}
             @endif
         </div>
+    @elseif ($href = $attributes->get('href'))
+        <div class="md:w-3/5 md:text-right">
+            <a href="{!! $href !!}" target="{{ $attributes->get('target', '_self') }}">
+                {{ $href }}
+            </a>
+        </div>
     @endif        
 </div>

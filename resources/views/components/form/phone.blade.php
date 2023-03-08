@@ -1,4 +1,4 @@
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+<x-form.field {{ $attributes }}>
     <div
         x-data="{
             show: false,
@@ -51,7 +51,9 @@
         <div 
             x-ref="anchor"
             x-bind:class="{ 'active': focus || show }" 
-            class="form-input flex items-center gap-6"
+            class="form-input flex items-center gap-6 {{
+                component_error(optional($errors), $attributes) ? 'error' : ''
+            }}"
         >
             <a x-on:click="open()" class="flex items-center gap-2">
                 <img x-show="flag" x-bind:src="flag" class="w-4">

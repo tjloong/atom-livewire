@@ -1,20 +1,25 @@
+@props([
+    'id' => component_id($attributes, 'modal'),
+])
+
 <div
     x-cloak
     x-data="{
-        show: false,
+        show: @js($attributes->get('opened', false)),
         open () { this.show = true },
         close (e, force = false) {
-            if (force || !e.target.closest('#modal-container')) {
-                this.show = false
-            }
+            if (force || !e.target.closest('#modal-container')) this.show = false
         },
     }"
     x-show="show"
     x-transition.opacity
-    x-on:{{ $uid }}-open.window="open()"
-    x-on:{{ $uid }}-close.window="close(null, true)"
+    x-on:open="open"
+    x-on:close="close(null, true)"
+    x-on:{{ $id }}-open.window="open()"
+    x-on:{{ $id }}-close.window="close(null, true)"
     x-bind:class="show && 'inset-0 z-50'"
     class="fixed"
+    id="{{ $id }}"
 >
     <div class="fixed inset-0 bg-black/80"></div>
 

@@ -44,6 +44,10 @@
             @else
                 {!! $value !!}
             @endif
+        @elseif ($href = $attributes->get('href'))
+            <a href="{!! $href !!}" target="{{ $attributes->get('target', '_self') }}">
+                {{ $href }}
+            </a>
         @endif
     </div>
 

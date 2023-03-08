@@ -31,7 +31,7 @@
                     
                     // insert media
                     editor.ui.view.toolbar.on('insert-media:click', () => {
-                        this.$dispatch(@js($uid.'-library-open'))
+                        this.$el.querySelector('#file-library')?.dispatchEvent(new Event('open'))
 
                         const insert = (event) => {
                             const files = [event.detail].flat()
@@ -62,10 +62,10 @@
                                 }
                             })
 
-                            window.removeEventListener(@js($uid.'-library-selected'), insert)
+                            window.removeEventListener('library', insert)
                         }
 
-                        window.addEventListener(@js($uid.'-library-selected'), insert)
+                        window.addEventListener('library', insert)
                     })
                 })
             },
@@ -73,6 +73,6 @@
         class="{{ $attributes->get('class') }}"
     >
         <div x-ref="ckeditor" x-show="!loading"></div>
-        <x-form.file.library :uid="$uid.'-library'"/>
+        <x-form.file.library :filters="['type' => 'image']"/>
     </div>
 </x-form.field>

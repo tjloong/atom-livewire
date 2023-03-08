@@ -1,11 +1,4 @@
-@props([
-    'uid' => $attributes->get('uid') ?? make_component_uid(
-        $attributes->wire('model')->value() ?? $attributes->get('label'),
-        'myic-input',
-    ),
-])
-
-<x-form.field {{ $attributes->only(['error', 'required', 'caption', 'label']) }}>
+<x-form.field {{ $attributes }}>
     <div
         x-data="{
             wire: @js(!empty($attributes->wire('model')->value())),
@@ -82,7 +75,7 @@
         }"
         x-bind:class="focusElem.length && 'active'"
         class="form-input w-52"
-        {{ $attributes->merge(['id' => $uid])->whereStartsWith(['id', 'x-']) }}
+        {{ $attributes->merge(['id' => component_id($attributes)])->whereStartsWith(['id', 'x-']) }}
     >
         <div x-on:input.stop class="flex items-center gap-2">
             <input 

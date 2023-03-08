@@ -1,11 +1,11 @@
 @props([
     'fields' => $attributes->get('fields'),
-    'uid' => $attributes->get('uid', 'form'),
     'modal' => $attributes->get('modal'),
+    'id' => component_id($attributes, 'form'),
 ])
 
 <form 
-    id="{{ $uid }}"
+    id="{{ $id }}"
     wire:submit.prevent="{{ $attributes->get('submit', 'submit') }}"
     @if ($modal)
         x-data="{
@@ -19,8 +19,8 @@
         }"
         x-show="show"
         x-transition.opacity
-        x-on:{{ $uid }}-open.window="open()"
-        x-on:{{ $uid }}-close.window="close(null, true)"
+        x-on:{{ $id }}-open.window="open()"
+        x-on:{{ $id }}-close.window="close(null, true)"
         x-bind:class="show && 'inset-0 z-50'"
         x-cloak
         class="fixed inset-0 z-50"

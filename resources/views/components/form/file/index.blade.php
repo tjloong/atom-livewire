@@ -1,162 +1,117 @@
 @props([
+    'id' => component_id($attributes, 'file-input'),
     'multiple' => $attributes->get('multiple', false),
-    'accept' => $attributes->get('accept'),
-    'visibility' => $attributes->get('visibility', 'public'),
-    'library' => $attributes->get('library', true),
-    'url' => $attributes->get('web-image', true) || $attributes->get('youtube', false),
-    'uid' => $attributes->get('uid', 'file-input'),
+    'value' => data_get($this, $attributes->wire('model')->value()),
+    'tabs' => array_filter([
+        $attributes->get('upload', true) ? 'upload' : null,
+
+        $attributes->get('web-image', true) 
+        || $attributes->get('youtube', false)
+        || str($attributes->get('accept'))->is('*image*')
+            ? 'url' : null,
+        
+        $attributes->get('library', true) ? 'library' : null,
+    ]),
 ])
 
-<div
-    x-data="{
-        value: @entangle($attributes->wire('model')),
-        files: [],
-        multiple: @js($multiple),
-        init () {
-            this.getFiles()
-            this.$watch('value', () => this.getFiles())
-        },
-        getFiles () {
-            if (empty(this.value)) return
-            this.$wire.getFiles(this.value).then(res => this.files = res)
-        },
-        preview (file) {
-            if (file.is_image) this.$dispatch(@js($uid.'-preview-open'), file.url)
-            else window.open(file.url, '_blank')
-        },
-        remove (fileId) {
-            const index = this.files.findIndex(val => (val.id === fileId))
-            this.files.splice(index, 1)
-
-            if (this.multiple) this.value = this.files.map(val => (val.id))
-            else this.value = null
-
-            this.$dispatch('remove', fileId)
-        },
-        input (files) {
-            if (empty(files)) return
-
-            files = [files].flat().map(file => (file.id))
-            
-            this.value = this.multiple ? files : files[0]
-            this.$dispatch('file', this.value)
-        },
-    }"
-    x-on:{{ $uid }}-dropzone-uploaded="input($event.detail)"
-    x-on:{{ $uid }}-library-selected="input($event.detail)"
-    x-on:{{ $uid }}-url-added="input($event.detail)"
-    {{ $attributes
-        ->merge(['id' => $uid])
-        ->whereStartsWith(['id', 'x-', 'wire:'])
-        ->except('wire:model') }}
->
-    {{-- <div x-bind:class="showDropzone && 'pb-4'">
-        @isset($list)
-            {{ $list }}
-        @else
-            <div x-show="files.length" class="flex flex-wrap gap-3">
-                <template x-for="file in files">
-                    <div 
-                        x-on:click="preview(file)"
-                        class="border shadow rounded-lg overflow-hidden max-w-sm cursor-pointer"
-                    >
-                        <div class="py-2 px-4 flex items-center gap-3">
-                            <figure x-show="file.is_image" class="shrink-0 w-8 h-8">
-                                <img x-bind:src="file.url" class="w-full h-full object-cover">
-                            </figure>
-                            
-                            <x-icon x-show="!file.is_image" name="file" class="shrink-0" size="20"></x-icon>
-    
-                            <div class="text-sm font-medium grow grid">
-                                <div x-text="file.name" class="truncate"></div>
-                            </div>
-    
-                            <div class="shrink-0">
-                                <x-close color="red" x-on:click.stop="remove(file.id)"/>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-    
-                <x-form.file.preview :uid="$uid.'-preview'"/>
-            </div>
-        @endisset
-    </div> --}}
-
-    <div 
-        x-data="{
-            tab: 'upload',
-            select (tab) {
-                if (tab === 'library') return this.$dispatch(@js($uid.'-library-open'))
-                this.tab = tab
-            }
-        }"
-        class="flex flex-col gap-2"
-    >
-        @php
-            $tabs = array_filter([
-                'upload',
-                $url ? 'url' : null,
-                $library ? 'library' : null,
-            ])
-        @endphp
-
-        @if (count($tabs) > 1)
-            <div class="flex items-center gap-2">
-                @foreach ($tabs as $item)
-                    <div 
-                        x-on:click="select(@js($item))"
-                        x-bind:class="{
-                            'bg-gray-100 font-semibold shadow border-gray-300 text-gray-600': tab === @js($item),
-                            'bg-white font-medium text-gray-400 cursor-pointer': tab !== @js($item),
-                        }"
-                        class="text-xs py-1 px-2 border rounded-lg flex items-center gap-1"
-                    >
-                        <x-icon :name="[
-                            'upload' => 'upload',
-                            'url' => 'at',
-                            'library' => 'grip',
-                        ][$item]" size="12"/>
-
-                        {{ __(strtoupper($item)) }}
-                    </div>
+<x-form.field {{ $attributes }}>
+    <div class="flex flex-col gap-4">
+        @if ($slot->isNotEmpty()) {{ $slot }}
+        @elseif ($value)
+            <div class="flex items-center gap-3 flex-wrap">
+                @foreach ((array)$value as $val)
+                    <x-thumbnail :file="$val" wire:remove="$set('{{ $attributes->wire('model')->value() }}', {{ json_encode(
+                        $multiple
+                            ? collect($value)->reject($val)->values()->all()
+                            : collect($value)->reject($val)->first()
+                    ) }})"/>
                 @endforeach
             </div>
         @endif
 
-        <div x-show="tab === 'upload'">
-            <x-form.file.dropzone
-                :uid="$uid.'-dropzone'"
-                :multiple="$multiple"
-                :accept="$accept"
-                :visibility="$visibility"
-            />
-        </div>
+        <div
+            x-data="{ 
+                tab: @js(head($tabs)),
+                modal: false,
+                disabled: @js(!$multiple && $value),
+                switchtab (name) {
+                    if (name === 'library') {
+                        $el.querySelector('#file-library').dispatchEvent(new Event('open'))
+                    }
+                    else this.tab = name
+                },
+                input (e) {
+                    if (empty(e.detail)) return
+                    
+                    const model = @js($attributes->wire('model')->value());
+                    const files = [e.detail].flat().map(file => (file.id))
+                    const value = this.multiple ? files : files[0]
 
-        @if ($url)
-            <div x-show="tab === 'url'">
-                <x-form.file.url
-                    :uid="$uid.'-url'"
+                    if (model) this.$wire.set(model, value)
+                    else this.$dispatch('file', value)
+                },
+            }"
+            x-show="!disabled"
+            x-on:uploaded="input"
+            x-on:url="input"
+            x-on:library="input"
+            class="flex flex-col gap-2"
+        >
+            @if (count($tabs) > 1)
+                <div class="flex items-center gap-2">
+                    @foreach ($tabs as $tab)
+                        <div 
+                            x-on:click="switchtab(@js($tab))"
+                            x-bind:class="tab === @js($tab)
+                                ? 'bg-gray-100 font-semibold shadow border-gray-300 text-gray-600'
+                                : 'bg-white font-medium text-gray-400 cursor-pointer'"
+                            class="text-xs py-1 px-2 border rounded-lg flex items-center gap-1"
+                        >
+                            <x-icon :name="[
+                                'upload' => 'upload',
+                                'url' => 'at',
+                                'library' => 'grip',
+                            ][$tab]" size="12"/> 
+                            {{ __(str($tab)->upper()->toString()) }}
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            @if (in_array('upload', $tabs))
+                <div x-show="tab === 'upload'">
+                    <x-form.file.dropzone 
+                        :accept="$attributes->get('accept')"
+                        :visibility="$attributes->get('visibility')"
+                        :multiple="$multiple"
+                    />
+                </div>
+            @endif
+
+            @if (in_array('url', $tabs))
+                <div x-show="tab === 'url'">
+                    <x-form.file.url 
+                        :multiple="$multiple"
+                        :youtube="$attributes->get('youtube')"
+                        :web-image="$attributes->get('web-image', true) ?? str($attributes->get('accept'))->is('*image*')"
+                    />
+                </div>
+            @endif
+
+            @if (in_array('library', $tabs))
+                <x-form.file.library 
+                    :header="$attributes->get('header')"
                     :multiple="$multiple"
-                    :youtube="$attributes->get('youtube')"
-                    :web-image="$attributes->get('web-image')"
+                    :filters="[
+                        'type' => [
+                            'image/*' => 'image',
+                            'video/*' => 'video',
+                            'audio/*' => 'audio',
+                            'youtube' => 'youtube',
+                        ][$attributes->get('accept')] ?? null,
+                    ]"
                 />
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
-
-    @if (in_array('library', $tabs))
-        <x-form.file.library
-            :uid="$uid.'-library'"
-            :multiple="$multiple"
-            :filters="[
-                'type' => [
-                    'image/*' => 'image',
-                    'video/*' => 'video',
-                    'audio/*' => 'audio',
-                    'youtube' => 'youtube',
-                ][$accept] ?? null,
-            ]"
-        />
-    @endif
-</div>
+</x-form.field>
