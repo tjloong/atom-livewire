@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -10,16 +11,21 @@ class Listing extends Component
     use WithTable;
 
     public $sort = 'created_at,desc';
-    public $filters = ['search' => null];
+
+    public $filters = [
+        'search' => null,
+    ];
 
     protected $queryString = [
-        'filters' => ['except' => ['search' => null]], 
+        'filters' => ['except' => [
+            'search' => null,
+        ]], 
     ];
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         breadcrumbs()->home('Enquiries');
     }
@@ -27,49 +33,47 @@ class Listing extends Component
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
-        return model('enquiry')
-            ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder);
+        return model('enquiry')->filter($this->filters);
     }
 
     /**
-     * Get enquiries property
+     * Get table columns
      */
-    public function getEnquiriesProperty()
+    public function getTableColumns($query): array
     {
-        return $this->query->paginate($this->maxRows)->through(fn($enquiry) => [
+        return [
             [
-                'column_name' => 'Date',
-                'column_sort' => 'created_at',
-                'date' => $enquiry->created_at,
+                'name' => 'Date',
+                'sort' => 'created_at',
+                'date' => $query->created_at,
             ],
             [
-                'column_name' => 'Name',
-                'column_sort' => 'name',
-                'label' => $enquiry->name,
-                'href' => route('app.enquiry.update', [$enquiry->id]),
+                'name' => 'Name',
+                'sort' => 'name',
+                'label' => $query->name,
+                'href' => route('app.enquiry.update', [$query->id]),
             ],
             [
-                'column_name' => 'Phone',
-                'label' => $enquiry->phone,
+                'name' => 'Phone',
+                'label' => $query->phone,
             ],
             [
-                'column_name' => 'Email',
-                'label' => $enquiry->email,
+                'name' => 'Email',
+                'label' => $query->email,
             ],
             [
-                'column_name' => 'Status',
-                'status' => $enquiry->status,
+                'name' => 'Status',
+                'status' => $query->status,
             ],
-        ]);
+        ];
     }
 
     /**
      * Export
      */
-    public function export()
+    public function export(): mixed
     {
         return excel(
             $this->query->get(), 
@@ -88,7 +92,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.enquiry.listing');
     }
