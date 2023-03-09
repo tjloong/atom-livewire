@@ -5,15 +5,29 @@ namespace Jiannius\Atom\Http\Livewire\Auth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Laravel\Socialite\Facades\Socialite;
 use Livewire\Component;
 
 class Login extends Component
 {
+    use WithForm;
+
     public $email;
     public $password;
     public $remember;
     public $socialUser;
+
+    /**
+     * Validation
+     */
+    protected function validation(): array
+    {
+        return [
+            'email' => ['required' => 'Email is required.'],
+            'password' => ['required' => 'Password is required.'],
+        ];
+    }
 
     /**
      * Mount
@@ -21,7 +35,7 @@ class Login extends Component
     public function mount()
     {
         if (request()->query('logout')) return $this->logout();
-        else if ($user = auth()->user()) return redirect($this->redirectTo($user));
+        else if (user()) return redirect($this->redirectTo(user()));
         else {
             rescue(function() {
                 $token = request()->query('token');
@@ -36,9 +50,18 @@ class Login extends Component
     }
 
     /**
+     * Submit
+     */
+    public function submit(): void
+    {
+        $this->validateForm();
+        $this->login();
+    }
+
+    /**
      * Attempt login
      */
-    public function login()
+    public function login(): mixed
     {
         $user = model('user')
             ->where('email', $this->email)
@@ -73,7 +96,7 @@ class Login extends Component
     /**
      * Logout
      */
-    public function logout()
+    public function logout(): mixed
     {
         auth()->logout();
         request()->session()->invalidate();
@@ -84,12 +107,8 @@ class Login extends Component
 
     /**
      * Ensure the login request is not rate limited.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Validation\ValidationException
      */
-    private function ensureIsNotRateLimited()
+    private function ensureIsNotRateLimited(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
@@ -109,20 +128,16 @@ class Login extends Component
 
     /**
      * Get the rate limiting throttle key for the request.
-     *
-     * @return string
      */
-    private function throttleKey()
+    private function throttleKey(): string
     {
         return str()->lower(request()->input('email')).'|'.request()->ip();
     }
 
     /**
      * Redirection
-     * 
-     * @return void
      */
-    private function redirectTo($user)
+    private function redirectTo($user): string
     {
         if ($user->status === 'new') {
             return route('app.onboarding.home');
@@ -134,7 +149,7 @@ class Login extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('auth.login');
     }

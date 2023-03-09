@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4">
-    <x-form submit="login">
+    <x-form>
         <x-form.group>
             <div class="text-2xl font-bold">
                 {{ __('Sign in to your account') }}

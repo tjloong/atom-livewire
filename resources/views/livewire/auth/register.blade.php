@@ -9,37 +9,21 @@
         <x-form>
             <x-form.group>
                 <div class="text-2xl font-bold text-gray-600">
-                    Create your account
+                    {{ __('Create your account') }}
                 </div>
             
-                <x-form.text label="Your Name"
-                    wire:model.defer="form.name" 
-                    :error="$errors->first('form.name')" 
-                    required
-                />
-        
-                <x-form.email label="Login Email"
-                    wire:model.defer="form.email" 
-                    :error="$errors->first('form.email')" 
-                    required
-                />
-        
-                <x-form.password label="Login Password"
-                    wire:model.defer="form.password" 
-                    :error="$errors->first('form.password')" 
-                    required
-                />
+                <x-form.text wire:model.defer="inputs.name" label="Your Name" autofocus/>
+                <x-form.email wire:model.defer="inputs.email" label="Login Email"/>
+                <x-form.password wire:model.defer="inputs.password" label="Login Password"/>
             
                 <div class="grid gap-2">
-                    <x-form.agree tnc wire:model="form.agree_tnc"/>
-                    <x-form.agree marketing wire:model="form.agree_marketing"/>
+                    <x-form.agree tnc wire:model="inputs.agree_tnc"/>
+                    <x-form.agree marketing wire:model="inputs.agree_marketing"/>
                 </div>
             </x-form.group>
     
             <x-slot:foot>
-                <x-button.submit size="md" block
-                    label="Create Account"
-                />
+                <x-button.submit size="md" label="Create Account" block/>
             </x-slot:foot>
         </x-form>
         

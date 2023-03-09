@@ -38,6 +38,7 @@ function component_label($attributes, $default = null, $trans = true)
     if (!$label) {
         if ($name = $attributes->get('name') ?? $attributes->wire('model')->value() ?? null) {
             $last = last(explode('.', $name));
+            $last = str($last)->is('*_id') ? str($last)->replaceLast('_id', '')->toString() : $last;
             $label = str($last)->headline()->toString();
         }
         else $label = $default;
@@ -626,7 +627,7 @@ function format_address($value)
 {
     $l1 = preg_replace('/,$/im', '', data_get($value, 'address_1'));
     $l2 = preg_replace('/,$/im', '', data_get($value, 'address_2'));
-    $l3 = collect([data_get($value, 'zip'), data_get($value, 'city')])->filter()->join(' ');
+    $l3 = collect([data_get($value, 'zip'), data_get($value, 'postcode'), data_get($value, 'city')])->filter()->join(' ');
     $l4 = collect([
         data_get($value, 'state'), 
         data_get(metadata()->countries(data_get($value, 'country')), 'name'),

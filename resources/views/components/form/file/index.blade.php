@@ -15,7 +15,7 @@
 ])
 
 <x-form.field {{ $attributes }}>
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4" {{ $attributes->whereStartsWith('wire:file') }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @elseif ($value)
             <div class="flex items-center gap-3 flex-wrap">

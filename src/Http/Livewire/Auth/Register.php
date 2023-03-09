@@ -3,18 +3,21 @@
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
 use Illuminate\Support\Facades\Cookie;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Laravel\Socialite\Facades\Socialite;
 use Livewire\Component;
 
 class Register extends Component
 {
+    use WithForm;
+
     public $ref;
     public $plan;
     public $price;
     public $token;
     public $provider;
 
-    public $form = [
+    public $inputs = [
         'agree_tnc' => false,
         'agree_marketing' => true,
     ];
@@ -22,34 +25,27 @@ class Register extends Component
     protected $queryString = ['ref', 'token', 'provider', 'plan', 'price'];
     
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules() 
+    protected function validation(): array
     {
         return [
-            'form.name' => 'required|string|max:255',
-            'form.email' => 'required|email|unique:users,email',
-            'form.password' => 'required|min:8',
-            'form.agree_tnc' => 'accepted',
-            'form.agree_marketing' => 'nullable',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'form.name.required' => __('Name is required.'),
-            'form.name.string' => __('Invalid name.'),
-            'form.name.max' => __('Name has exceeded maximum characters allowed.'),
-            'form.email.required' => __('Login email is required.'),
-            'form.email.email' => __('Invalid email.'),
-            'form.email.unique' => __('This login email has been taken.'),
-            'form.password.required' => __('Login password is required.'),
-            'form.password.min' => __('Login password must be at least 8 characters.'),
-            'form.agree_tnc.accepted' => __('Please accept the terms and conditions to proceed.'),
+            'inputs.name' => [
+                'required' => 'Name is required.',
+                'string' => 'Name must be a string.',
+                'max:255' => 'Name is too long (Max 255 characters).',
+            ],
+            'inputs.email' => [
+                'required' => 'Login email is required.',
+                'email' => 'Invalid email.',
+                'unique:users,email' => 'Email is taken.',
+            ],
+            'inputs.password' => [
+                'required' => 'Login password is required.',
+                'min:8' => 'Login password must be at least 8 characters.',
+            ],
+            'inputs.agree_tnc' => ['accepted' => 'Please accept the terms and conditions to proceed.'],
+            'inputs.agree_marketing' => ['nullable'],
         ];
     }
 
@@ -65,13 +61,13 @@ class Register extends Component
     /**
      * Social login
      */
-    public function socialLogin()
+    public function socialLogin(): mixed
     {
         rescue(function() use (&$user) {
             $user = Socialite::driver($this->provider)->userFromToken($this->token);
         });
 
-        if (!$user) return;
+        if (!$user) return null;
 
         if (model('user')->firstWhere('email', $user->getEmail())) {
             return redirect()->route('login', array_merge([
@@ -103,22 +99,22 @@ class Register extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
-        return $this->createUser($this->form);
+        return $this->createUser($this->inputs);
     }
 
     /**
      * Create user
      */
-    public function createUser($inputs)
+    public function createUser($inputs): mixed
     {
-        $user = model('user')->create([
+        $user = model('user')->forceFill([
             'name' => data_get($inputs, 'name'),
             'email' => data_get($inputs, 'email'),
+            'password' => bcrypt(data_get($inputs, 'password')),
             'data' => array_merge(data_get($inputs, 'data', []), [
                 'signup' => [
                     'geo' => geoip()->getLocation()->toArray(),
@@ -137,7 +133,6 @@ class Register extends Component
             'login_at' => now(),
         ]);
 
-        $user->password = bcrypt(data_get($inputs, 'password'));
         $user->save();
 
         if (config('atom.auth.verify') && !data_get($inputs, 'email_verified_at')) {
@@ -154,7 +149,7 @@ class Register extends Component
     /**
      * Post registration
      */
-    public function registered($user)
+    public function registered($user): void
     {
         // clear refcode
         Cookie::expire('_ref');
@@ -163,7 +158,7 @@ class Register extends Component
     /**
      * Redirect after registration
      */
-    public function redirectTo($user)
+    public function redirectTo($user): string
     {
         if (enabled_module('plans') && $this->plan && $this->price) {
             return route('app.plan.subscription.create', [
@@ -177,7 +172,7 @@ class Register extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('auth.register');
     }

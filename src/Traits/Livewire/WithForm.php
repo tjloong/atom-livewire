@@ -31,6 +31,7 @@ trait WithForm
         collect($this->validation())->each(function($rules, $field) use (&$messages) {
             foreach ((array)$rules as $rule => $message) {
                 if (is_string($rule) && $rule !== 'nullable') {
+                    if (str($rule)->is('*:*')) $rule = head(explode(':', $rule));
                     $messages[$field.'.'.$rule] = $message;
                 }
             }
