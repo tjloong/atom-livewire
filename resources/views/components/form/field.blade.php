@@ -1,6 +1,5 @@
 @props([
-    'model' => $attributes->wire('model')->value(),
-    'name' => $attributes->get('name'),
+    'field' => $attributes->get('name') ?? $attributes->wire('model')->value() ?? null,
 ])
 
 <div {{ $attributes->class(['flex flex-col gap-1'])->only('class') }}>
@@ -20,10 +19,10 @@
 
             @if ($attributes->has('required'))
                 @if ($attributes->get('required')) <x-icon name="asterisk" size="10" class="text-red-400"/> @endif
-            @elseif ($field = $name ?? $model ?? null)
+            @elseif ($field)
                 <div 
                     x-data="{ required: false }" 
-                    x-init="required = ($wire.get('form.required') || [])[@js($name ?? $model)]" 
+                    x-init="required = ($wire.get('form.required') || [])[@js($field)]"
                     x-show="required" 
                     class="flex"
                 >
@@ -57,7 +56,7 @@
         </div>
     @endif
 
-    @if ($error = $errors->first($name ?? $model))
+    @if ($error = $errors->first($field))
         <div class="text-sm text-red-500 font-medium">
             {{ __($error) }}
         </div>
