@@ -67,7 +67,7 @@ class OzopayController extends Controller
         $status = $this->getStatus($response);
 
         if ($jobhandler = $this->getJobHandler()) {
-            return ($jobhandler)::dispatchNow([
+            return ($jobhandler)::dispatchSync([
                 'provider' => 'ozopay',
                 'status' => $status, 
                 'response' => $response,
