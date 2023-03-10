@@ -41,6 +41,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // dashboard
             'atom.app.dashboard' => 'App\Dashboard',
 
+            // onboarding
+            'atom.app.onboarding' => 'App\Onboarding',
+
             // user
             'atom.app.user.listing' => 'App\User\Listing',
             'atom.app.user.create' => 'App\User\Create',
@@ -84,10 +87,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.label.listing' => 'App\Label\Listing',
             'atom.app.label.children' => 'App\Label\Children',
             'atom.app.label.form-modal' => 'App\Label\FormModal',
-
-            // onboarding
-            'atom.app.onboarding.home' => 'App\Onboarding\Index',
-            'atom.app.onboarding.profile' => 'App\Onboarding\Profile',
 
             // blog
             'atom.app.blog.create' => 'App\Blog\Create',

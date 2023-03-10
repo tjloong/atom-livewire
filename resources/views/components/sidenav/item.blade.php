@@ -47,7 +47,11 @@
         class="py-2 px-4 flex items-center gap-2 cursor-pointer"
         {{ $attributes->except(['name', 'active']) }}
     >
-        @if ($icon !== false)
+        @isset($icon)
+            <div class="shrink-0">
+                {{ $icon }}
+            </div>
+        @elseif ($icon !== false)
             <div
                 x-bind:class="active ? 'md:text-theme' : 'md:text-gray-400'"
                 class="shrink-0 flex items-center justify-center"
@@ -62,7 +66,7 @@
                 "
                 class="shrink-0 rounded-full"
             ></div>
-        @endif
+        @endisset
 
         <div class="grow">
             @if ($label) {{ __($label) }}

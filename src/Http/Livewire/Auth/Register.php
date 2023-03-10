@@ -141,24 +141,16 @@ class Register extends Component
 
         auth()->login($user);
 
-        $this->registered($user->fresh());
+        // clear refcode
+        Cookie::expire('_ref');
 
-        return redirect($this->redirectTo($user->fresh()));
+        return $this->registered($user->fresh());
     }
 
     /**
      * Post registration
      */
-    public function registered($user): void
-    {
-        // clear refcode
-        Cookie::expire('_ref');
-    }
-
-    /**
-     * Redirect after registration
-     */
-    public function redirectTo($user): string
+    public function registered($user): mixed
     {
         if (enabled_module('plans') && $this->plan && $this->price) {
             return route('app.plan.subscription.create', [
@@ -166,7 +158,8 @@ class Register extends Component
                 'price' => $this->price,
             ]);
         }
-        else return route('app.onboarding.home');
+        
+        return route('app.onboarding');
     }
 
     /**

@@ -32,30 +32,9 @@
         </div>
 
     {{-- Onboarding layout --}}
-    @elseroute('app.onboarding.*')
+    @elseroute(['app.onboarding', 'app.onboarding.*'])
         <div class="min-h-screen bg-gray-100 p-6">
             <main class="max-w-screen-xl mx-auto grid gap-10">
-                <nav class="flex flex-wrap items-center justify-between gap-2">
-                    <x-logo class="w-14"/>
-
-                    @notroute('app.onboarding.completed')
-                        <a href="{{ auth()->user()->home() }}" class="flex items-center gap-1">
-                            <x-icon name="arrow-left"/> {{ __('I\'ll do this later') }}
-                        </a>
-                    @endnotroute
-                </nav>
-
-                @notroute('app.onboarding.completed')
-                    <div>
-                        <h1 class="text-xl font-bold">
-                            {{ __('Please spend a minute to complete the following') }}
-                        </h1>
-                        <div class="text-gray-500 font-medium">
-                            {{ __('This will help us quickly setup your account') }}
-                        </div>
-                    </div>
-                @endnotroute
-
                 {{ $slot }}
             </main>
         </div>

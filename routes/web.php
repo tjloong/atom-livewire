@@ -86,10 +86,7 @@ if (!config('atom.static_site')) {
             /**
              * Onboarding
              */
-            define_route()->prefix('onboarding')->as('app.onboarding.')->group(function() {
-                define_route('/', 'App\Onboarding\Index')->name('home');
-                define_route('completed', 'App\Onboarding\Completed')->name('completed');
-            });
+            define_route('onboarding/{tab?}', 'App\Onboarding')->name('app.onboarding');
         }
 
         /**

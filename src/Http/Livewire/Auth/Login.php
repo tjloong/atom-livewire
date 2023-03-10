@@ -139,11 +139,9 @@ class Login extends Component
      */
     private function redirectTo($user): string
     {
-        if ($user->status === 'new') {
-            return route('app.onboarding.home');
-        }
-
-        return $user->home();
+        return $user->status === 'new'
+            ? route('app.onboarding')
+            : $user->home();
     }
 
     /**
