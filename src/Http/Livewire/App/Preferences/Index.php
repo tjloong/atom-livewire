@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Preferences;
 
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class Index extends Component
@@ -27,7 +28,7 @@ class Index extends Component
     /**
      * Get title propert
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
         return 'Preferences';
     }
@@ -35,7 +36,7 @@ class Index extends Component
     /**
      * Get tabs property
      */
-    public function getTabsProperty()
+    public function getTabsProperty(): array
     {
         return [
             ['group' => 'General', 'tabs' => [
@@ -50,7 +51,7 @@ class Index extends Component
     /**
      * Get flat tabs property
      */
-    public function getFlatTabsProperty()
+    public function getFlatTabsProperty(): Collection
     {
         return collect($this->tabs)->pluck('tabs')->collapse()->filter()->map('collect');
     }
@@ -58,7 +59,7 @@ class Index extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.preferences');
     }
