@@ -1,5 +1,4 @@
 @props([
-    'icon' => $attributes->get('icon'),
     'label' => $attributes->get('label'),
     'count' => $attributes->get('count'),
     'status' => $attributes->get('status'),
@@ -8,10 +7,9 @@
 
 @if ($attributes->get('disabled'))
     <div class="py-2 px-3 flex items-center gap-2 text-gray-400">
-        @if ($icon !== false)
-            <x-icon :name="$icon ?? $label" size="16"/>
-        @elseif ($attributes->has('bullet'))
-            <div class="shrink-0 rounded-full w-3 h-3 border-2 border-gray-400"></div>
+        @isset ($icon) {{ $icon }}
+        @elseif ($icon = $attributes->get('icon')) <x-icon :name="$icon ?? $label" size="16"/>
+        @elseif ($attributes->has('bullet')) <div class="shrink-0 rounded-full w-3 h-3 border-2 border-gray-400"></div>
         @endif
 
         @if ($label) {{ __($label) }}
@@ -51,7 +49,7 @@
             <div class="shrink-0">
                 {{ $icon }}
             </div>
-        @elseif ($icon !== false)
+        @elseif ($icon = $attributes->get('icon'))
             <div
                 x-bind:class="active ? 'md:text-theme' : 'md:text-gray-400'"
                 class="shrink-0 flex items-center justify-center"

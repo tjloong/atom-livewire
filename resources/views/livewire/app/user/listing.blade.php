@@ -1,10 +1,10 @@
 <div class="max-w-screen-xl mx-auto">
     <x-table :data="$this->table">
         <x-slot:header>
-            <x-table.header :label="data_get($params, 'title') ?? data_get($params, 'header') ?? 'Users'">
+            <x-table.header label="Users">
                 <x-button size="sm" color="gray"
                     label="New User" 
-                    :href="route('app.user.create', data_get($params, 'create'))"
+                    :href="route('app.user.create')"
                 />
             </x-table.header>
 

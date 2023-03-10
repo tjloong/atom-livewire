@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
@@ -11,8 +12,8 @@ class Listing extends Component
     use WithPopupNotify;
     use WithTable;
 
-    public $params; // when using this as child component
     public $sort = 'created_at,desc';
+
     public $filters = [
         'search' => null,
         'status' => null,
@@ -32,7 +33,7 @@ class Listing extends Component
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return model('user')
             ->readable()
@@ -42,12 +43,12 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return [
             [
-                'column_name' => 'Name',
-                'column_sort' => 'name',
+                'name' => 'Name',
+                'sort' => 'name',
                 'label' => $query->name.($query->id === user()->id ? ' ('.__('You').')' : ''),
                 'href' => $query->id === user()->id 
                     ? route('app.settings', ['login'])
@@ -56,13 +57,12 @@ class Listing extends Component
             ],
 
             enabled_module('roles') ? [
-                'column_name' => 'Role',
+                'name' => 'Role',
                 'label' => $query->role->name ?? '--',
             ] : null,
 
             [
-                'column_name' => 'Status',
-                'column_class' => 'text-right',
+                'name' => 'Status',
                 'status' => array_filter([
                     $query->is_root ? 'root' : null, 
                     $query->status,
@@ -71,17 +71,15 @@ class Listing extends Component
             ],
 
             [
-                'column_name' => 'Created Date',
-                'column_sort' => 'created_at',
-                'column_class' => 'text-right',
+                'name' => 'Created Date',
+                'sort' => 'created_at',
                 'date' => $query->created_at,
                 'class' => 'text-right',
             ],
 
             [
-                'column_name' => 'Last Active',
-                'column_sort' => 'last_active_at',
-                'column_class' => 'text-right',
+                'name' => 'Last Active',
+                'sort' => 'last_active_at',
                 'datetime' => $query->last_active_at,
                 'class' => 'text-right',
             ],
@@ -91,7 +89,7 @@ class Listing extends Component
     /**
      * Empty trashed
      */
-    public function emptyTrashed()
+    public function emptyTrashed(): void
     {
         (clone $this->query)->onlyTrashed()->forceDelete();
 
@@ -103,7 +101,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.user.listing');
     }
