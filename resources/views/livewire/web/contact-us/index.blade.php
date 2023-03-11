@@ -5,7 +5,7 @@
                 @if ($this->contact)
                     <div class="md:col-span-4">
                         <div class="grid gap-4">
-                            <div class="text-xl font-bold">Contact Information</div>
+                            <div class="text-xl font-bold">{{ __('Contact Information') }}</div>
         
                             @if ($address = $this->contact['address'] ?? null)
                                 <div>{{ $address }}</div>
@@ -28,39 +28,15 @@
     
                 <div class="{{ $this->contact ? 'md:col-span-8' : '' }}">
                     <div class="text-3xl font-bold mb-6">
-                        Send us a message
+                        {{ __('Send us a message') }}
                     </div>
     
-                    <form class="grid gap-6" wire:submit.prevent="submit">
-                        <x-form.text 
-                            label="Your Name"
-                            wire:model.defer="enquiry.name" 
-                            :error="$errors->first('enquiry.name')"
-                            required
-                        />
-                
-                        <x-form.phone 
-                            label="Contact Number"
-                            wire:model.defer="enquiry.phone" 
-                            :error="$errors->first('enquiry.phone')" 
-                            required
-                        />
-                
-                        <x-form.email
-                            label="Contact Email"
-                            wire:model.defer="enquiry.email" 
-                            :error="$errors->first('enquiry.email')"
-                            required
-                        />
-                
-                        <x-form.textarea
-                            label="Message"
-                            wire:model.defer="enquiry.message" 
-                            :error="$errors->first('enquiry.message')"
-                            required
-                        />
-
-                        <x-button type="submit" size="md" icon="paper-plane" block label="Send Enquiry"/>
+                    <form class="flex flex-col gap-6" wire:submit.prevent="submit">
+                        <x-form.text wire:model.defer="enquiry.name" label="Your Name"/>
+                        <x-form.phone wire:model.defer="enquiry.phone" label="Contact Number"/>
+                        <x-form.email wire:model.defer="enquiry.email" label="Contact Email"/>
+                        <x-form.textarea wire:model.defer="enquiry.message" label="Message"/>
+                        <x-button.submit size="md" color="theme" label="Send Enquiry" block/>
                     </form>
                 </div>
             </div>

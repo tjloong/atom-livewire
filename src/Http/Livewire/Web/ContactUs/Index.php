@@ -5,41 +5,31 @@ namespace Jiannius\Atom\Http\Livewire\Web\ContactUs;
 use Livewire\Component;
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Notifications\EnquiryNotification;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 
 class Index extends Component
 {
+    use WithForm;
+
     public $enquiry;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'enquiry.name' => 'required',
-            'enquiry.phone' => 'required',
-            'enquiry.email' => 'required',
-            'enquiry.message' => 'required',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'enquiry.name.required' => __('Your name is required.'),
-            'enquiry.phone.required' => __('Phone number is required.'),
-            'enquiry.email.required' => __('Email is required.'),
-            'enquiry.message.required' => __('Message is required.'),
+            'enquiry.name' => ['required' => 'Your name is required.'],
+            'enquiry.phone' => ['required' => 'Phone number is required.'],
+            'enquiry.email' => ['required' => 'Email is required.'],
+            'enquiry.message' => ['required' => 'Message is required.'],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->enquiry = enabled_module('enquiries')
             ? model('enquiry')
@@ -54,7 +44,7 @@ class Index extends Component
     /**
      * Get contact property
      */
-    public function getContactProperty()
+    public function getContactProperty(): array
     {
         $contact = config('atom.static_site')
             ? config('atom.contact')
@@ -71,10 +61,9 @@ class Index extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $mail = ['to' => null, 'params' => null];
 
@@ -100,7 +89,7 @@ class Index extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('web.contact-us');
     }
