@@ -153,13 +153,13 @@ class Register extends Component
     public function registered($user): mixed
     {
         if (enabled_module('plans') && $this->plan && $this->price) {
-            return route('app.plan.subscription.create', [
+            return redirect()->route('app.plan.subscription.create', [
                 'plan' => $this->plan, 
                 'price' => $this->price,
             ]);
         }
-        
-        return route('app.onboarding');
+
+        return redirect()->route('app.onboarding');
     }
 
     /**
