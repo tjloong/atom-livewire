@@ -1,8 +1,9 @@
 @props([
-    'placeholder' => __(
-        $attributes->get('placeholder') 
-        ?? 'Select '.component_label($attributes, 'Date')
-    ),
+    'config' => [
+        'placeholder' => $attributes->get('placeholder')
+            ? __($attributes->get('placeholder'))
+            : __('Select').' '.component_label($attributes, 'Date'),
+    ],
 ])
 
 <x-form.field {{ $attributes }}>
@@ -12,7 +13,7 @@
             value: null,
             calendar: null,
             settings: @js($attributes->get('settings')),
-            placeholder: @js($placeholder),
+            placeholder: @js(data_get($config, 'placeholder')),
             open () {
                 if (this.show) return this.close()
                 this.show = true

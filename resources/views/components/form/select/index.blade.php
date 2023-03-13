@@ -3,10 +3,11 @@
         'options' => $attributes->get('options', []),
         'callback' => $attributes->get('callback'),
         'multiple' => $attributes->get('multiple'),
-        'placeholder' => __(
-            $attributes->get('placeholder')
-            ?? 'Select '.component_label($attributes, 'an option')
-        ),
+        'placeholder' => $attributes->get('placeholder')
+            ? __($attributes->get('placeholder'))
+            : (
+                ($val = component_label($attributes)) ? __('Select').' '.__($val) : __('Please Select')
+            ),
     ],
     'model' => $attributes->wire('model')->value(),
 ])

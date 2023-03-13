@@ -13,7 +13,7 @@
         <div class="flex flex-col gap-2">
             @foreach ($providers as $key => $value)
                 <x-button 
-                    :label="'Continue with '.data_get($value, 'label')"
+                    :label="__('Continue with :social', ['social' => data_get($value, 'label')])"
                     :icon="$key"
                     :class="data_get($value, 'class')"
                     :size="$size"

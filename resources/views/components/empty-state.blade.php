@@ -19,11 +19,11 @@
     <div class="grid gap-4">
         <div class="text-center">
             <div class="font-semibold text-gray-700 {{ $size === 'sm' ? 'text-base' : 'text-lg' }}">
-                {{ $title }}
+                {{ __($title) }}
             </div>
         
             <div class="text-gray-400 font-medium text-center {{ $size === 'sm' ? 'text-sm' : 'text-base' }}">
-                {{ $subtitle }}
+                {{ __($subtitle) }}
             </div>
         </div>
 
