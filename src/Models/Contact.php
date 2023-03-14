@@ -2,8 +2,11 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasTrace;
 
@@ -21,9 +24,19 @@ class Contact extends Model
     ];
 
     /**
+     * Attribute for email phone
+     */
+    public function emailPhone(): Attribute
+    {
+        return new Attribute(
+            get: fn () => collect([$this->email, $this->phone])->filter()->join(' | '),
+        );
+    }
+
+    /**
      * Get avatar for contact
      */
-    public function avatar()
+    public function avatar(): BelongsTo
     {
         return $this->belongsTo(get_class(model('file')));
     }
@@ -31,7 +44,7 @@ class Contact extends Model
     /**
      * Get persons for contact
      */
-    public function persons()
+    public function persons(): HasMany
     {
         return $this->hasMany(get_class(model('contact_person')));
     }
@@ -39,21 +52,13 @@ class Contact extends Model
     /**
      * Scope for search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
             ->orWhere('phone', 'like', "%$search%")
             ->orWhereHas('persons', fn($q) => $q->search($search))
         );
-    }
-
-    /**
-     * Get contact attribute
-     */
-    public function getEmailPhoneAttribute()
-    {
-        return collect([$this->email, $this->phone])->filter()->join(' | ');
     }
 }
