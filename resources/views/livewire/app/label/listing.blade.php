@@ -45,15 +45,15 @@
                                 @if ($maxDepth > 0)
                                     <x-button size="xs" color="gray"
                                         :label="$this->addSublabelButtonName ?? 'Add Sub-label'"
-                                        wire:click="open({ parent_id: {{ $label->id }} })"
+                                        wire:click="open({ parent_id: {{ $label->id }}, type: '{{ $type }}' })"
                                     />
                                 @endif
 
                                 <x-close.delete
                                     title="Delete Label"
                                     :message="collect([
-                                        'Are you sure to delete this label?',
-                                        $label->children->count() ? 'All sub-labels will be deleted as well!' : null,
+                                        'Are you sure to DELETE this label?',
+                                        $label->children->count() ? 'All sub-labels will be DELETED as well!' : null,
                                     ])->filter()->join(' ')"
                                     :params="$label->id"
                                 />

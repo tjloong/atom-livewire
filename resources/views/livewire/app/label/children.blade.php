@@ -33,7 +33,7 @@
                     @if ($maxDepth > $depth)
                         <x-button size="xs" color="gray"
                             :label="$this->addSublabelButtonName ?? 'Add Sub-label'"
-                            wire:click="$emitUp('open', { parent_id: {{ $child->id }} })"
+                            wire:click="$emitUp('open', { parent_id: {{ $child->id }}, type: '{{ $child->type }}' })"
                         />
                     @endif
 
