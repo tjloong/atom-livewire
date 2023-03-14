@@ -47,6 +47,13 @@
             <a href="{!! $href !!}" target="{{ $attributes->get('target', '_self') }}">
                 {{ $href }}
             </a>
+        @elseif ($badge = $attributes->get('badge'))
+            @if (is_string($badge)) <x-badge :label="$badge"/>
+            @else
+                @foreach ($badge as $key => $val)
+                    <x-badge :label="$val" :color="$key"/>
+                @endforeach
+            @endif
         @endif
     </div>
 
