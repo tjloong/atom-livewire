@@ -1,13 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Web\ContactUs;
+namespace Jiannius\Atom\Http\Livewire\Web;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Notifications\EnquiryNotification;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
-class Index extends Component
+class ContactUs extends Component
 {
     use WithForm;
 
@@ -83,7 +83,7 @@ class Index extends Component
             Notification::route('mail', $mail['to'])->notify(new EnquiryNotification($mail['params']));
         }
         
-        return redirect('/contact-us/thank-you');
+        return redirect()->route('web.thank', ['contact-us']);
     }
 
     /**

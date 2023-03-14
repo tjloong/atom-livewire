@@ -294,6 +294,11 @@ if (enabled_module('blogs')) {
     define_route('blog/{slug?}', 'Web\Blog')->name('web.blog');
 }
 
+/**
+ * Thank you
+ */
+define_route('thank/{slug?}', 'Web\Thank')->name('web.thank');
+
 // A catch all route after the app is booted
 // so this route will be register after the consuming app's routes
 app()->booted(function() {
