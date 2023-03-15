@@ -370,9 +370,11 @@ function excel($collection, $config = [], $iterator = null)
         '.xlsx'
     );
 
-    (new FastExcel($collection))->export($dir.'/'.$filename, $iterator);
+    $path = $dir.'/'.$filename;
 
-    return redirect()->route('__export', [$filename]);
+    (new FastExcel($collection))->export($path, $iterator);
+
+    return $path;
 }
 
 /**
