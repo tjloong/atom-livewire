@@ -14,7 +14,7 @@ class Index extends Component
     /**
      * Mount
      */
-    public function mount($documentId)
+    public function mount($documentId): void
     {
         $this->document = model('document')->readable()->findOrFail($documentId);
 
@@ -24,22 +24,21 @@ class Index extends Component
     /**
      * Get title property
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
-        $type = $this->document->type;
-        
-        if ($type === 'delivery-order') $prefix = 'DO';
-        else if ($type === 'purchase-order') $prefix = 'PO';
-        else if ($type === 'sales-order') $prefix = 'SO';
-        else $prefix = str()->title($type);
+        $prefix = [
+            'delivery-order' => 'DO',
+            'purchase-order' => 'PO',
+            'sales-order' => 'SO',
+        ][$this->document->type] ?? null;
 
-        return $prefix.' #'.$this->document->number;
+        return collect([$prefix, '#'.$this->document->number])->filter()->join(' ');
     }
 
     /**
      * Created shareable
      */
-    public function createdShareable($shareable)
+    public function createdShareable($shareable): void
     {
         $this->document->fill([
             'shareable_id' => $shareable->id,
@@ -49,17 +48,17 @@ class Index extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->document->delete();
 
-        return redirect()->route('app.document.listing', [$this->document->type]);
+        return breadcrumbs()->back();
     }
 
     /**
      * PDF
      */
-    public function pdf()
+    public function pdf(): mixed
     {
         return $this->document->pdf();
     }
@@ -67,7 +66,7 @@ class Index extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.view');
     }

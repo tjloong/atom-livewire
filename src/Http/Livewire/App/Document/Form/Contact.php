@@ -10,31 +10,15 @@ class Contact extends Component
     public $inputs;
     public $document;
 
-    /**
-     * Validation rules
-     */
-    public function rules()
-    {
-        return [
-            'inputs.contact_id' => 'required',
-            'document.type' => 'required',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    public function messages()
-    {
-        return [
-            'inputs.contact_id.required' => __('Please select a contact.'),
-        ];
-    }
+    protected $rules = [
+        'inputs.contact_id' => 'required',
+        'document.type' => 'required',
+    ];
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->setInputs($this->document->contact);
     }
@@ -42,7 +26,7 @@ class Contact extends Component
     /**
      * Get label property
      */
-    public function getLabelProperty()
+    public function getLabelProperty(): string
     {
         return [
             'quotation' => 'Client',
@@ -57,7 +41,7 @@ class Contact extends Component
     /**
      * Get type property
      */
-    public function getTypeProperty()
+    public function getTypeProperty(): string
     {
         return in_array($this->document->type, ['purchase-order', 'bill']) ? 'vendor' : 'client';
     }
@@ -65,10 +49,8 @@ class Contact extends Component
     /**
      * Updated inputs
      */
-    public function updatedInputs($val, $attr)
+    public function updatedInputs($val, $attr): void
     {
-        $this->resetValidation();
-
         if ($attr === 'contact_id') {
             $this->setInputs(model('contact')->find($val));
             $this->validate();
@@ -80,7 +62,7 @@ class Contact extends Component
     /**
      * Emit event
      */
-    public function emitEvent()
+    public function emitEvent(): void
     {
         $this->emitUp('setDocument', Arr::only($this->inputs, [
             'name', 
@@ -94,7 +76,7 @@ class Contact extends Component
     /**
      * Set inputs
      */
-    public function setInputs($contact = null)
+    public function setInputs($contact = null): void
     {
         $this->inputs = array_merge([
             'name' => null,
@@ -120,7 +102,7 @@ class Contact extends Component
     /**
      * Get contacts
      */
-    public function getContacts($search = null, $page = 1)
+    public function getContacts($search = null, $page = 1): array
     {
         return model('contact')
             ->readable()
@@ -142,7 +124,7 @@ class Contact extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.form.contact');
     }

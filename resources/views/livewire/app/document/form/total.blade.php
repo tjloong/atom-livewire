@@ -10,23 +10,23 @@
                     {{ __(data_get($total, 'label')) }}
                 </div>
                 <div class="md:w-1/3 text-lg text-right">                    
-                    @if ($isGrandTotal && count($document->currency_options) > 1)
+                    @if ($isGrandTotal && count($this->currencies) > 1)
                         <div class="inline-flex items-center gap-3">
                             <x-dropdown :label="data_get($inputs, 'currency')">
                                 <div class="flex flex-col divide-y">
-                                    @foreach ($document->currency_options as $opt)
+                                    @foreach ($this->currencies as $opt)
                                         <div 
-                                            wire:click="$set('inputs.currency', @js(data_get($opt, 'currency')))"
+                                            wire:click="$set('inputs.currency', @js(data_get($opt, 'name')))"
                                             class="py-2 px-4 flex items-center gap-3 cursor-pointer hover:bg-slate-100"
                                         >
                                             <x-icon 
                                                 name="circle-check" 
-                                                :class="data_get($opt, 'currency') === data_get($inputs, 'currency') 
+                                                :class="data_get($opt, 'name') === data_get($inputs, 'currency') 
                                                     ? 'text-green-500' 
                                                     : 'text-gray-300'"
                                             />
 
-                                            {{ data_get($opt, 'currency') }}
+                                            {{ data_get($opt, 'name') }}
                                         </div>
                                     @endforeach
 

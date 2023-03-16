@@ -13,7 +13,7 @@ class Footer extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->inputs = [
             'note' => $this->document->note,
@@ -24,7 +24,7 @@ class Footer extends Component
     /**
      * Updated inputs
      */
-    public function updatedInputs()
+    public function updatedInputs(): void
     {
         $this->emitUp('setDocument', $this->inputs);
     }
@@ -32,7 +32,7 @@ class Footer extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.form.footer');
     }

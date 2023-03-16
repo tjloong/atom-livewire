@@ -15,7 +15,7 @@ class Info extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->inputs = [
             'prefix' => $this->document->prefix,
@@ -31,17 +31,29 @@ class Info extends Component
     }
 
     /**
+     * Get source label property
+     */
+    public function getSourceLabelProperty(): string
+    {
+        return [
+            'invoice' => 'Quotation',
+            'bill' => 'Purchase Order',
+            'delivery-order' => 'Invoice',
+        ][$this->document->type];
+    }
+
+    /**
      * Updated inputs
      */
-    public function updatedInputs()
+    public function updatedInputs(): void
     {
         $this->emitUp('setDocument', $this->inputs);
     }
 
     /**
-     * Get convert from documents
+     * Get sources
      */
-    public function getConvertFromDocuments($search = null, $page = 1, $sel = [])
+    public function getSources($search = null, $page = 1, $sel = []): array
     {
         return model('document')
             ->readable()
@@ -70,7 +82,7 @@ class Info extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.form.info');
     }

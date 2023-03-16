@@ -1,9 +1,9 @@
 <div class="flex flex-col gap-4 md:flex-row">
     <div class="grow flex flex-col gap-4">
-        @if ($productId = data_get($item, 'product_id'))
+        @if (enabled_module('products') && ($productId = data_get($item, 'product_id')))
             <div class="flex items-center justify-between gap-3">
                 <a 
-                    href="{{ route('app.product.update', [$productId]) }}" 
+                    href="{{ route('app.product.update', [$productId]) }}"
                     target="_blank" 
                     class="flex items-center gap-2"
                 >
@@ -13,20 +13,22 @@
                 <x-close wire:click="clearProduct"/>
             </div>
         @else
-            <x-form.text :placeholder="$columns->get('item_name')"
-                wire:model.debounce.300ms="item.name"
+            <x-form.text wire:model.debounce.300ms="item.name" :label="false"
+                :placeholder="$columns->get('item_name')"
             >
-                <x-slot:button 
-                    icon="cube" 
-                    label="Product"
-                    wire:click="open"
-                ></x-slot:button>
+                @module('products')
+                    <x-slot:button 
+                        icon="cube" 
+                        label="Product"
+                        wire:click="open"
+                    ></x-slot:button>
+                @endmodule
             </x-form.text>
         @endif
 
         @if ($columns->get('item_description'))
-            <x-form.textarea :placeholder="$columns->get('item_description')"
-                wire:model.debounce.300ms="item.description"
+            <x-form.textarea wire:model.debounce.300ms="item.description" :label="false"
+                :placeholder="$columns->get('item_description')"
             />
         @endif
     </div>
@@ -35,8 +37,8 @@
         <div class="flex flex-col md:flex-row gap-4">
             @if ($columns->get('qty'))
                 <div class="md:w-40">
-                    <x-form.number :placeholder="$columns->get('qty')"
-                        wire:model.debounce.300ms="item.qty"
+                    <x-form.number wire:model.debounce.300ms="item.qty" :label="false"
+                        :placeholder="$columns->get('qty')"
                         class="text-right"
                     />
                 </div>
@@ -44,8 +46,8 @@
 
             @if ($columns->get('price'))
                 <div class="md:w-40">
-                    <x-form.number :placeholder="$columns->get('price')"
-                        wire:model.debounce.300ms="item.amount"
+                    <x-form.number wire:model.debounce.300ms="item.amount" :label="false"
+                        :placeholder="$columns->get('price')"
                         class="text-right"
                     />
                 </div>
@@ -76,7 +78,7 @@
             @endif
         @endif
 
-        @if ($columns->has('tax'))
+        @if (enabled_module('taxes') && $columns->has('tax'))
             <div class="bg-slate-100 rounded-lg flex flex-col divide-y">
                 @if (count($this->taxes) || count(data_get($item, 'taxes', [])))
                     <div class="p-3">
@@ -93,7 +95,7 @@
                                 @endforeach
 
                                 @if (count($this->taxes))
-                                    <x-form.select 
+                                    <x-form.select
                                         :placeholder="'Select '.$columns->get('tax')"
                                         :options="$this->taxes"
                                         x-on:input="$wire.call('addTax', $event.detail).then(() => value = null)"
@@ -108,13 +110,10 @@
     </div>
 
     <div class="shrink-0 md:w-10 md:flex md:justify-center">
-        <a
-            wire:click="$emitUp(
-                'removeItem', 
-                @js(data_get($item, 'ulid') ?? data_get($item, 'id'))
-            )"
-            class="text-red-500 mt-2 flex items-center gap-2 md:block"
-        >
+        <a wire:click="$emitUp(
+            'removeItem', 
+            @js(data_get($item, 'ulid') ?? data_get($item, 'id'))
+        )" class="text-red-500 mt-2 flex items-center gap-2 md:block">
             <x-icon name="remove"/>
             <div class="md:hidden">{{ __('Remove') }}</div>
         </a>

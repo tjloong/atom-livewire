@@ -45,7 +45,7 @@
                                 <div class="text-xs font-medium text-gray-400 md:hidden">
                                     {{ str()->upper($this->columns->get('price')) }}
                                 </div>
-                                {{ number_format($item->amount, 2) }}
+                                {{ currency($item->amount) }}
                             </div>
                         @endif
                     </div>
@@ -67,7 +67,7 @@
                                 {{ currency($item->subtotal, null, false) }}
                             </div>
 
-                            @if ($this->columns->has('tax'))
+                            @if (enabled_module('taxes') && $this->columns->has('tax'))
                                 @if ($taxes = $item->taxes)
                                     <div class="flex flex-col">
                                         @foreach ($taxes as $tax)

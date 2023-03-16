@@ -24,7 +24,7 @@ class Item extends Component
     /**
      * Get listeners
      */
-    protected function getListeners()
+    protected function getListeners(): array
     {
         $id = data_get($this->item, 'id') ?? data_get($this->item, 'ulid');
 
@@ -36,9 +36,10 @@ class Item extends Component
     /**
      * Get product property
      */
-    public function getProductProperty()
+    public function getProductProperty(): mixed
     {
-        if (!data_get($this->item, 'product_id')) return;
+        if (!enabled_module('products')) return null;
+        if (!data_get($this->item, 'product_id')) return null;
 
         return model('product')->find(data_get($this->item, 'product_id'));
     }
@@ -46,9 +47,9 @@ class Item extends Component
     /**
      * Get variant property
      */
-    public function getVariantProperty()
+    public function getVariantProperty(): mixed
     {
-        if (!$this->product) return;
+        if (!$this->product) return null;
 
         return $this->product->variants()->find(data_get($this->item, 'product_variant_id'));
     }
@@ -56,7 +57,7 @@ class Item extends Component
     /**
      * Get recommended price property
      */
-    public function getRecommendedPriceProperty()
+    public function getRecommendedPriceProperty(): mixed
     {
         return in_array($this->document->type, ['purchase-order', 'bill'])
             ? optional($this->variant ?? $this->product)->cost
@@ -66,7 +67,7 @@ class Item extends Component
     /**
      * Get subtotal property
      */
-    public function getSubtotalProperty()
+    public function getSubtotalProperty(): float
     {
         return data_get($this->item, 'qty') * data_get($this->item, 'amount');
     }
@@ -74,15 +75,17 @@ class Item extends Component
     /**
      * Get taxes property
      */
-    public function getTaxesProperty()
+    public function getTaxesProperty(): mixed
     {
+        if (!enabled_module('taxes')) return null;
+
         return model('tax')->readable()->status('active')->get();
     }
 
     /**
      * Updated item
      */
-    public function updatedItem()
+    public function updatedItem(): void
     {
         $this->setTaxes();
         $this->emitEvent();
@@ -99,7 +102,7 @@ class Item extends Component
     /**
      * Clear product
      */
-    public function clearProduct()
+    public function clearProduct(): void
     {
         $this->fill([
             'item.name' => null,
@@ -113,7 +116,7 @@ class Item extends Component
     /**
      * Set product
      */
-    public function setProduct($data)
+    public function setProduct($data): void
     {
         $this->fill(['item' => $data]);
         $this->emitEvent();
@@ -122,7 +125,7 @@ class Item extends Component
     /**
      * Set taxes
      */
-    public function setTaxes()
+    public function setTaxes(): void
     {
         $taxes = collect(data_get($this->item, 'taxes'))->map(fn($tax) => array_merge($tax, [
             'amount' => optional($this->taxes->firstWhere('id', data_get($tax, 'id')))
@@ -135,7 +138,7 @@ class Item extends Component
     /**
      * Add tax
      */
-    public function addTax($taxId)
+    public function addTax($taxId): void
     {
         $addedTaxes = collect(data_get($this->item, 'taxes'));
 
@@ -157,7 +160,7 @@ class Item extends Component
     /**
      * Remove tax
      */
-    public function removeTax($taxId)
+    public function removeTax($taxId): void
     {
         $addedTaxes = collect(data_get($this->item, 'taxes'))->reject(
             fn($tax) => data_get($tax, 'id') === $taxId
@@ -170,7 +173,7 @@ class Item extends Component
     /**
      * Emit event
      */
-    public function emitEvent()
+    public function emitEvent(): void
     {
         $this->fill(['item.subtotal' => $this->subtotal]);
         $this->emitUp('setItem', $this->item);
@@ -179,7 +182,7 @@ class Item extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.form.item');
     }

@@ -2,8 +2,8 @@
     @if ($fullpage)
         <x-page-header 
             :title="$this->title"
-            :tinylink="$this->preferencesRoute && auth()->user()->can('preference.manage')
-                ? ['label' => 'Preferences', 'href' => route('app.preferences', [str()->plural($type)])]
+            :tinylink="$this->preferencesRoute && user()->can('preference.manage')
+                ? ['label' => 'Preferences', 'href' => $this->preferencesRoute]
                 : null"
         >
             @can($type.'.create')
@@ -15,7 +15,7 @@
         </x-page-header>
     @endif
 
-    <x-table :data="$this->tableData">
+    <x-table :data="$this->table">
         <x-slot:header>
             <x-table.searchbar :total="$this->paginator->total()"/>
         </x-slot:header>

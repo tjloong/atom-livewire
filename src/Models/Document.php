@@ -2,8 +2,13 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Jiannius\Atom\Traits\Models\HasCurrency;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasShareable;
@@ -41,7 +46,7 @@ class Document extends Model
     /**
      * The "booted" method for model
      */
-    protected static function booted()
+    protected static function booted(): void
     {
         static::saving(function($document) {
             $document->number = $document->prefix.$document->postfix.($document->rev ? '.'.$document->rev : '');
@@ -56,7 +61,7 @@ class Document extends Model
     /**
      * Get contact for document
      */
-    public function contact()
+    public function contact(): BelongsTo
     {
         return $this->belongsTo(model('contact'));
     }
@@ -64,7 +69,7 @@ class Document extends Model
     /**
      * Get revision for document
      */
-    public function revisionFor()
+    public function revisionFor(): BelongsTo
     {
         return $this->belongsTo(model('document'), 'revison_for_id');
     }
@@ -72,7 +77,7 @@ class Document extends Model
     /**
      * Get converted from for document
      */
-    public function convertedFrom()
+    public function convertedFrom(): BelongsTo
     {
         return $this->belongsTo(model('document'), 'converted_from_id');
     }
@@ -80,7 +85,7 @@ class Document extends Model
     /**
      * Get converted to for document
      */
-    public function convertedTo()
+    public function convertedTo(): HasMany
     {
         return $this->hasMany(model('document'), 'converted_from_id');
     }
@@ -88,7 +93,7 @@ class Document extends Model
     /**
      * Get splitted from for document
      */
-    public function splittedFrom()
+    public function splittedFrom(): BelongsTo
     {
         return $this->belongsTo(model('document'), 'splitted_from_id');
     }
@@ -96,7 +101,7 @@ class Document extends Model
     /**
      * Get splits for document
      */
-    public function splits()
+    public function splits(): HasMany
     {
         return $this->hasMany(model('document'), 'splitted_from_id');
     }
@@ -104,7 +109,7 @@ class Document extends Model
     /**
      * Get items for document
      */
-    public function items()
+    public function items(): HasMany
     {
         return $this->hasMany(model('document_item'));
     }
@@ -112,7 +117,7 @@ class Document extends Model
     /**
      * Get files for document
      */
-    public function files()
+    public function files(): BelongsToMany
     {
         return $this->belongsToMany(model('file'), 'document_files');
     }
@@ -120,7 +125,7 @@ class Document extends Model
     /**
      * Get emails for document
      */
-    public function emails()
+    public function emails(): HasMany
     {
         return $this->hasMany(model('document_email'));
     }
@@ -128,7 +133,7 @@ class Document extends Model
     /**
      * Get payments for document
      */
-    public function payments()
+    public function payments(): HasMany
     {
         return $this->hasMany(model('document_payment'));
     }
@@ -136,61 +141,68 @@ class Document extends Model
     /**
      * Get labels for document
      */
-    public function labels()
+    public function labels(): BelongsToMany
     {
         return $this->belongsToMany(model('label'), 'document_labels');
+    }
+    /**
+     * Attribute for is splitted
+     */
+    public function isSplitted(): Attribute
+    {
+        return new Attribute(
+            get: fn () => $this->splittedFrom || $this->splits()->count(),
+        );
+    }
+
+    /**
+     * Attribute for status
+     */
+    public function status(): Attribute
+    {
+        return new Attribute(
+            get: function() {
+                if ($this->delivered_at) return 'delivered';
+                if ($this->due_at && ($this->due_at->isPast() || $this->due_at->isToday())) return 'due';
+                if ($this->issued_at && $this->issued_at->isFuture() && $this->type === 'invoice') return 'pending';
+            
+                if ($validfor = data_get($this->data, 'valid_for')) {
+                    if ($this->issued_at->addDays($validfor)->isPast()) return 'expired';
+                }
+            
+                if ($this->last_sent_at) return 'sent';
+            
+                if ($this->paid_total > 0 && $this->paid_total >= $this->splitted_total) return 'paid';
+                elseif ($this->paid_total > 0 && $this->paid_total >= $this->grand_total) return 'paid';
+                elseif ($this->paid_total > 0) return 'partial';
+            
+                return [
+                    'invoice' => 'unpaid',
+                    'bill' => 'unpaid',
+                    'delivery-order' => 'pending',
+                ][$this->type] ?? 'draft';
+            },
+        );
     }
 
     /**
      * Scope for search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('documents.number', $search)
             ->orWhere('documents.name', 'like', "%$search%")
         );
     }
 
     /**
-     * Get is splitted attribute
-     */
-    public function getIsSplittedAttribute()
-    {
-        return $this->splittedFrom || $this->splits()->count();
-    }
-
-    /**
-     * Get status attribute
-     */
-    public function getStatusAttribute()
-    {
-        if ($this->delivered_at) return 'delivered';
-        if ($this->due_at && ($this->due_at->isPast() || $this->due_at->isToday())) return 'due';
-        if ($this->issued_at && $this->issued_at->isFuture() && $this->type === 'invoice') return 'pending';
-
-        if ($validfor = data_get($this->data, 'valid_for')) {
-            if ($this->issued_at->addDays($validfor)->isPast()) return 'expired';
-        }
-
-        if ($this->last_sent_at) return 'sent';
-
-        if ($this->paid_total > 0 && $this->paid_total >= $this->splitted_total) return 'paid';
-        elseif ($this->paid_total > 0 && $this->paid_total >= $this->grand_total) return 'paid';
-        elseif ($this->paid_total > 0) return 'partial';
-
-        return [
-            'invoice' => 'unpaid',
-            'bill' => 'unpaid',
-            'delivery-order' => 'pending',
-        ][$this->type] ?? 'draft';
-    }
-
-    /**
      * Get taxes
      */
-    public function getTaxes()
+    public function getTaxes(): mixed
     {
+        if (!enabled_module('taxes')) return null;
+
         $items = $this->splittedFrom
             ? $this->splittedFrom->items
             : $this->items;
@@ -209,7 +221,7 @@ class Document extends Model
     /**
      * Get columns
      */
-    public function getColumns()
+    public function getColumns(): mixed
     {
         $cols = array_merge(
             [
@@ -235,7 +247,7 @@ class Document extends Model
     /**
      * Set summary
      */
-    public function setSummary()
+    public function setSummary(): void
     {
         $this->fill([
             'summary' => str()->limit($this->items->pluck('name')->join(', '), 200)
@@ -245,13 +257,13 @@ class Document extends Model
     /**
      * Set prefix and postfix
      */
-    public function setPrefixAndPostfix()
+    public function setPrefixAndPostfix(): void
     {
-        $prefix = str(
-            tenant_settings($this->type.'.prefix')
-            ?? data_get($this->numberPrefix, $this->type)
-            ?? null
-        )
+        $pattern = enabled_module('tenants') 
+            ? tenant('settings.'.$this->type.'.prefix')
+            : data_get($this->numberPrefix, $this->type);
+
+        $prefix = str($pattern)
             ->replace('%y', date('y'))
             ->replace('%m', date('m'))
             ->replace('%d', date('d'))
@@ -283,10 +295,10 @@ class Document extends Model
     /**
      * Sum total
      */
-    public function sumTotal()
+    public function sumTotal(): void
     {
         $subtotal = $this->items()->sum('subtotal');
-        $taxTotal = $this->getTaxes()->sum('amount');
+        $taxTotal = enabled_module('taxes') ? $this->getTaxes()->sum('amount') : 0;
         $paidTotal = $this->payments()->sum('amount');
 
         $this->fill([
@@ -300,7 +312,7 @@ class Document extends Model
     /**
      * Sync splits
      */
-    public function syncSplits()
+    public function syncSplits(): void
     {
         if (!$this->splits->count()) return;
 

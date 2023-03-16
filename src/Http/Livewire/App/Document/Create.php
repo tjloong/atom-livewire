@@ -15,7 +15,7 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->authorize($this->type.'.create');
 
@@ -30,7 +30,7 @@ class Create extends Component
     /**
      * Get title property
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
         return str()->headline('Create '.$this->type);
     }
@@ -38,11 +38,11 @@ class Create extends Component
     /**
      * Set document
      */
-    public function setDocument()
+    public function setDocument(): void
     {
         $this->document = model('document')->fill([
             'type' => $this->type,
-            'owned_by' => auth()->user()->id,
+            'owned_by' => user('id'),
         ]);
 
         $this->document->setPrefixAndPostfix();
@@ -53,34 +53,44 @@ class Create extends Component
      */
     public function setConvertFrom()
     {
-        if (!request()->query('convertFrom')) return;
+        if ($srcId = request()->query('convert_from') ?? request()->query('convertFrom')) {
+            if ($src = model('document')->readable()->find($srcId)) {
+                if ($this->document->type === 'invoice' && !in_array($src->type, ['quotation', 'sales-order'])) return;
+                if ($this->document->type === 'bill' && $src->type !== 'purchase-order') return;
+                if ($this->document->type === 'delivery-order' && $src->type !== 'invoice') return;
 
-        if ($src = model('document')->readable()->find(request()->query('convertFrom'))) {
-            if ($this->document->type === 'invoice' && !in_array($src->type, ['quotation', 'sales-order'])) return;
-            if ($this->document->type === 'bill' && $src->type !== 'purchase-order') return;
-            if ($this->document->type === 'delivery-order' && $src->type !== 'invoice') return;
-    
-            $this->document->fill(['converted_from_id' => $src->id]);
+                $this->document->fill(['converted_from_id' => $src->id]);
+            }
         }
     }
 
     /**
      * Set contact
      */
-    public function setContact()
+    public function setContact(): void
     {
         if (
-            $contact = optional($this->document->convertedFrom)->contact
-                ?? model('contact')->readable()->find(request()->query('contactId'))
+            $contact = optional($this->document->convertFrom)->contact
+                ?? model('contact')->readable()->find(
+                    request()->query('contact_id') ?? request()->query('contactId')
+                )
         ) {
-            $this->document->fill(['contact_id' => $contact->id]);
+            $this->document->fill([
+                'name' => $contact->name,
+                'address' => $contact->addresses
+                    ? format_address(optional($contact->addresses->first()))
+                    : format_address($contact),
+                'person' => optional($contact->persons->first())->name,
+                'payterm' => data_get($contact->data, 'payterm'),
+                'contact_id' => $contact->id,
+            ]);
         }
     }
 
     /**
      * Set extra data
      */
-    public function setExtraData()
+    public function setExtraData(): void
     {
         if ($this->type === 'quotation') $this->document->fill(['data' => ['valid_for' => 14]]);
         elseif ($this->type === 'delivery-order') $this->document->fill(['data' => ['delivery_channel' => null]]);
@@ -90,7 +100,7 @@ class Create extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.create');
     }

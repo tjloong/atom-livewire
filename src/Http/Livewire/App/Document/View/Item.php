@@ -12,7 +12,7 @@ class Item extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->columns = $this->document->getColumns();
     }
@@ -20,7 +20,7 @@ class Item extends Component
     /**
      * Get items property
      */
-    public function getItemsProperty()
+    public function getItemsProperty(): mixed
     {
         if ($master = $this->document->splittedFrom) return $master->items;
         
@@ -30,7 +30,7 @@ class Item extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.view.item');
     }

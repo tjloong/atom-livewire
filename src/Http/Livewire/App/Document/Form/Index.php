@@ -3,11 +3,13 @@
 namespace Jiannius\Atom\Http\Livewire\App\Document\Form;
 
 use Illuminate\Support\Arr;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Index extends Component
 {
+    use WithForm;
     use WithPopupNotify;
 
     public $items;
@@ -23,88 +25,80 @@ class Index extends Component
     ];
 
     /**
-     * Validation rules
+     * Validation
      */
-    public function rules()
+    protected function validation(): array
     {
         return array_merge(
             [
-                'document.type' => 'required',
-                'document.prefix' => 'nullable',
-                'document.postfix' => 'required',
-                'document.name' => 'nullable',
-                'document.address' => 'nullable',
-                'document.person' => 'nullable',
-                'document.reference' => 'nullable',
-                'document.payterm' => 'nullable',
-                'document.currency' => 'nullable',
-                'document.currency_rate' => 'nullable',
-                'document.description' => 'nullable',
-                'document.summary' => 'nullable',
-                'document.footer' => 'nullable',
-                'document.note' => 'nullable',
-                'document.contact_id' => 'required', 
-                'document.converted_from_id' => 'nullable',
-                'document.issued_at' => 'nullable',
-                'document.delivered_at' => 'nullable',
-                'document.owned_by' => 'nullable',
-                'document.data' => 'nullable',
+                'document.type' => ['required' => 'Unknown document type.'],
+                'document.prefix' => ['nullable'],
+                'document.postfix' => ['required' => 'Document number is required.'],
+                'document.name' => ['nullable'],
+                'document.address' => ['nullable'],
+                'document.person' => ['nullable'],
+                'document.reference' => ['nullable'],
+                'document.payterm' => ['nullable'],
+                'document.currency' => ['nullable'],
+                'document.currency_rate' => ['nullable'],
+                'document.description' => ['nullable'],
+                'document.summary' => ['nullable'],
+                'document.footer' => ['nullable'],
+                'document.note' => ['nullable'],
+                'document.contact_id' => ['required' => 'Please select a contact.'], 
+                'document.converted_from_id' => ['nullable'],
+                'document.issued_at' => ['nullable'],
+                'document.delivered_at' => ['nullable'],
+                'document.owned_by' => ['nullable'],
+                'document.data' => ['nullable'],
             ],
 
-            $this->document->type === 'quotation'
-                ? ['document.data.valid_for' => 'nullable']
-                : [],
+            $this->document->type === 'quotation' ? [
+                'document.data.valid_for' => ['nullable']
+            ] : [],
 
-            $this->document->type === 'delivery-order'
-                ? ['document.data.delivery_channel' => 'nullable']
-                : [],
+            $this->document->type === 'delivery-order' ? [
+                'document.data.delivery_channel' => ['nullable']
+            ] : [],
 
-            $this->document->type === 'purchase-order'
-                ? ['document.data.deliver_to' => 'nullable']
-                : [],
+            $this->document->type === 'purchase-order' ? [
+                'document.data.deliver_to' => ['nullable']
+            ] : [],
         );
-    }
-
-    /**
-     * Validation messages
-     */
-    public function messages()
-    {
-        return [
-            'document.type.required' => __('Unknown document type.'),
-            'document.postfix.required' => __('Document number is required.'),
-            'document.contact_id.required' => __('Please select a contact.'),
-        ];
     }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->columns = $this->document->getColumns();
 
         $this->items = $this->document->items()
-            ->with('taxes')
             ->get()
-            ->transform(fn($item) => array_merge($item->toArray(), [
-                'taxes' => $item->taxes->map(fn($tax) => [
-                    'id' => $tax->id,
-                    'label' => $tax->label,
-                    'amount' => $tax->pivot->amount,
-                ])->toArray(),
-            ]))
+            ->transform(function($item) {
+                return enabled_module('taxes') 
+                    ? array_merge(
+                        $item->toArray(), 
+                        ['taxes' => $item->taxes->map(fn($tax) => [
+                            'id' => $tax->id,
+                            'label' => $tax->label,
+                            'amount' => $tax->pivot->amount,
+                        ])->toArray()]
+                    )
+                    : $item;
+            })
             ->toArray();
 
         $this->settings = model('document')->enabledHasTenantTrait
-            ? tenant_settings($this->document->type)
-            : settings('app.document.'.$this->document->type);
+            ? tenant('settings.'.$this->document->type)
+            : settings('document.'.$this->document->type);
     }
 
     /**
      * Set document
      */
-    public function setDocument($data)
+    public function setDocument($data): void
     {
         $this->document->fill($data);
     }
@@ -112,7 +106,7 @@ class Index extends Component
     /**
      * Add item
      */
-    public function addItem()
+    public function addItem(): void
     {
         $this->items = collect($this->items)->push([
             'ulid' => (string) str()->ulid(),
@@ -126,7 +120,7 @@ class Index extends Component
     /**
      * Remove item
      */
-    public function removeItem($id)
+    public function removeItem($id): void
     {
         $this->items = collect($this->items)->reject(
             fn($item) => data_get($item, 'id') === $id
@@ -137,7 +131,7 @@ class Index extends Component
     /**
      * Sort items
      */
-    public function sortItems($data)
+    public function sortItems($data): void
     {
         $this->items = collect($data)
             ->map(fn($id) => 
@@ -151,7 +145,7 @@ class Index extends Component
     /**
      * Set item
      */
-    public function setItem($input)
+    public function setItem($input): void
     {
         $this->items = collect($this->items)
             ->map(fn($item) => 
@@ -169,10 +163,9 @@ class Index extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $this->document->save();
 
@@ -193,7 +186,7 @@ class Index extends Component
     /**
      * Update or create document item
      */
-    public function updateOrCreateDocumentItem($input)
+    public function updateOrCreateDocumentItem($input): void
     {
         $data = Arr::only($input, [
             'id',
@@ -215,8 +208,10 @@ class Index extends Component
     /**
      * Sync document item taxes
      */
-    public function syncDocumentItemTaxes($item, $input)
+    public function syncDocumentItemTaxes($item, $input): mixed
     {
+        if (!enabled_module('taxes')) return null;
+
         if ($taxes = collect(data_get($input, 'taxes'))->mapWithKeys(fn($val) => [
             data_get($val, 'id') => ['amount' => data_get($val, 'amount')],
         ])) {
@@ -227,7 +222,7 @@ class Index extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.form');
     }

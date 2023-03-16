@@ -1,63 +1,43 @@
-<div class="p-4">
-    <div class="grid gap-4 md:grid-cols-2">
-        <x-form.field :label="str()->headline($document->type.' #')">
-            {{ $document->number }}
-        </x-form.field>
+<div class="flex flex-col divide-y">
+    @foreach (array_merge(
+        [
+            'Number' => $document->number,
+            'Issued Date' => format_date($document->issued_at),
+            'Status' => ['badge' => $document->status],
+        ],
 
-        <x-form.field label="Issued Date">
-            {{ format_date($document->issued_at) }}
-        </x-form.field>
+        ($validfor = data_get($document->data, 'valid_for')) ? [
+            'Valid For' => __(':valid '.str('day')->plural($validfor), ['valid' => $validfor]),
+        ] : [],
 
-        <x-form.field label="Status">
-            <x-badge :label="$document->status" size="md"/>
-        </x-form.field>
+        ($ref = $document->reference) ? [
+            'Reference' => $ref,
+        ] : [],
 
-        @if ($validfor = data_get($document->data, 'valid_for'))
-            <x-form.field label="Valid For">
-                {{ $validfor }} {{ __('day(s)') }}
-            </x-form.field>
-        @endif
+        ($src = $document->convertedFrom) ? [
+            'Convert From' => [
+                'value' => $src->type.' #'.$src->number,
+                'href' => route('app.document.view', [$src->id]),
+            ],
+        ] : [],
 
-        @if ($ref = $document->reference)
-            <x-form.field label="Reference">
-                {{ $ref }}
-            </x-form.field>
-        @endif
+        $document->type === 'delivery-order' ? [
+            'Delivery Channel' => data_get($document->data, 'delivery_channel'),
+            'Delivered Date' => format_date($document->delivered_at) ?? '--',
+        ] : [],
 
-        @if ($convertedFrom = $document->convertedFrom)
-            <x-form.field :label="str($convertedFrom->type)->headline()">
-                <a href="{{ route('app.document.view', [$convertedFrom->id]) }}">
-                    {{ $convertedFrom->number }}
-                </a>
-            </x-form.field>
-        @endif
+        ($payterm = $document->formatted_payterm) ? [
+            'Payment Term' => $payterm,
+        ] : [],
 
-        @if ($document->type === 'delivery-order')
-            <x-form.field label="Delivery Channel">
-                {{ data_get($document->data, 'delivery_channel') }}
-            </x-form.field>
-
-            @if ($d = $document->delivered_at)
-                <x-form.field label="Delivered Date">
-                    {{ format_date($d) }}
-                </x-form.field>
-            @endif
-        @elseif ($to = data_get($document->data, 'deliver_to'))
-            <x-form.field label="Deliver To" class="text-sm">
-                {!! nl2br($to) !!}
-            </x-form.field>
-        @else
-            @if ($payterm = $document->formatted_payterm)
-                <x-form.field label="Payment Terms">
-                    {{ $payterm }}
-                </x-form.field>
-            @endif
-
-            @if ($desc = $document->description)
-                <x-form.field label="Description">
-                    {{ $desc }}
-                </x-form.field>
-            @endif
-        @endif
-    </div>
+        ($desc = $document->description) ? [
+            'Description' => $desc,
+        ] : [],
+    ) as $key => $val)
+        <x-field :label="$key"
+            :value="is_string($val) ? $val : data_get($val, 'value')"
+            :href="data_get($val, 'href')"
+            :badge="data_get($val, 'badge')"
+        />
+    @endforeach    
 </div>

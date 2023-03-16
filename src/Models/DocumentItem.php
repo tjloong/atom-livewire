@@ -4,6 +4,7 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DocumentItem extends Model
 {
@@ -24,7 +25,7 @@ class DocumentItem extends Model
     /**
      * Model boot
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -40,25 +41,29 @@ class DocumentItem extends Model
     /**
      * Get product for document item
      */
-    public function product()
+    public function product(): BelongsTo
     {
-        return $this->belongsTo(get_class(model('product')));
+        if (!enabled_module('products')) return null;
+
+        return $this->belongsTo(model('product'));
     }
 
     /**
      * Get product variant for document item
      */
-    public function productVariant()
+    public function productVariant(): BelongsTo
     {
-        return $this->belongsTo(get_class(model('product_variant')));
+        if (!enabled_module('products')) return null;
+
+        return $this->belongsTo(model('product_variant'));
     }
 
     /**
      * Get document for document item
      */
-    public function document()
+    public function document(): BelongsTo
     {
-        return $this->belongsTo(get_class(model('document')));
+        return $this->belongsTo(model('document'));
     }
 
     /**
@@ -66,8 +71,8 @@ class DocumentItem extends Model
      */
     public function taxes()
     {
-        if (!enabled_module('taxes')) return;
+        if (!enabled_module('taxes')) return null;
         
-        return $this->belongsToMany(get_class(model('tax')), 'document_item_taxes')->withPivot('amount');
+        return $this->belongsToMany(model('tax'), 'document_item_taxes')->withPivot('amount');
     }
 }

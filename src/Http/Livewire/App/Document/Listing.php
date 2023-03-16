@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Document;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
@@ -15,20 +16,19 @@ class Listing extends Component
     public $contact;
     public $fullpage;
     public $sort = 'issued_at,desc';
+
     public $filters = [
         'search' => null,
     ];
 
     protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-        ]],
+        'filters',
     ];
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->authorize($this->type.'.view');
 
@@ -40,7 +40,7 @@ class Listing extends Component
     /**
      * Get title property
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
         return str($this->type)->headline()->plural()->toString();
     }
@@ -48,7 +48,7 @@ class Listing extends Component
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return model('document')
             ->readable()
@@ -66,34 +66,33 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return array_filter([
             [
-                'column_name' => 'Date',
-                'column_sort' => 'issued_at',
+                'name' => 'Date',
+                'sort' => 'issued_at',
                 'date' => $query->issued_at,
             ],
 
             [
-                'column_name' => 'Number',
-                'column_sort' => 'number',
+                'name' => 'Number',
+                'sort' => 'number',
                 'label' => $query->number,
                 'href' => route('app.document.view', [$query->id]),
             ],
 
             $this->contact ? null : [
-                'column_name' => in_array($this->type, ['purchase-order', 'bill']) ? 'Vendor' : 'Client',
-                'column_sort' => 'contacts.name',
+                'name' => in_array($this->type, ['purchase-order', 'bill']) ? 'Vendor' : 'Client',
+                'sort' => 'contacts.name',
                 'label' => $query->contact->name,
                 'href' => route('app.document.view', [$query->id]),
                 'small' => str()->limit($query->summary, 100),
             ],
 
             $this->type === 'delivery-order' ? null : [
-                'column_name' => 'Amount',
-                'column_sort' => 'grand_total',
-                'column_class' => 'text-right',
+                'name' => 'Amount',
+                'sort' => 'grand_total',
                 'class' => 'text-right',
                 'label' => $query->is_splitted
                     ? currency($query->splitted_total, $query->currency)
@@ -109,16 +108,13 @@ class Listing extends Component
             ],
 
             [
-                'column_name' => 'Status',
-                'column_class' => 'text-right',
+                'name' => 'Status',
                 'class' => 'text-right',
             ],
 
             [
-                'column_name' => 'Owner',
-                'column_sort' => 'users.name',
-                'column_class' => 'text-right',
-                'class' => 'text-right',
+                'name' => 'Owner',
+                'sort' => 'users.name',
             ],
         ]);
     }
@@ -126,15 +122,15 @@ class Listing extends Component
     /**
      * Get preferences route property
      */
-    public function getPreferencesRouteProperty()
+    public function getPreferencesRouteProperty(): mixed
     {
-        //
+        return null;
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.listing');
     }

@@ -18,7 +18,7 @@ class AdditionalInfo extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->inputs = [
             'owned_by' => $this->document->owned_by,
@@ -29,7 +29,7 @@ class AdditionalInfo extends Component
     /**
      * Updated inputs
      */
-    public function updatedInputs()
+    public function updatedInputs(): void
     {
         $this->document->labels()->sync(data_get($this->inputs, 'labels'));
         $this->emitUp('setDocument', Arr::only($this->inputs, ['owned_by']));
@@ -38,7 +38,7 @@ class AdditionalInfo extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.form.additional-info');
     }

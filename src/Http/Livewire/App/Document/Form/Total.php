@@ -11,12 +11,15 @@ class Total extends Component
     public $document;
 
     protected $listeners = ['setItems'];
-    protected $rules = ['document.currency_rate' => 'nullable'];
+
+    protected $rules = [
+        'document.currency_rate' => 'nullable'
+    ];
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->inputs = [
             'currency' => $this->document->currency,
@@ -27,17 +30,25 @@ class Total extends Component
     /**
      * Get is foreign currency property
      */
-    public function getIsForeignCurrencyProperty()
+    public function getIsForeignCurrencyProperty(): bool
     {
         return data_get($this->inputs, 'currency') !== $this->document->master_currency;
     }
 
     /**
+     * Get currencies
+     */
+    public function getCurrenciesProperty()
+    {
+        return [];
+    }
+
+    /**
      * Get totals property
      */
-    public function getTotalsProperty()
+    public function getTotalsProperty(): mixed
     {
-        if (!$this->items) return;
+        if (!$this->items) return null;
 
         $taxes = collect($this->items)->pluck('taxes')->collapse()->unique('id')
             ->map('collect')
@@ -59,7 +70,7 @@ class Total extends Component
     /**
      * Updated inputs
      */
-    public function updatedInputs($val, $attr)
+    public function updatedInputs($val, $attr): void
     {
         if ($attr === 'currency') {
             $selected = collect($this->document->currency_options)->firstWhere('currency', $val);
@@ -74,7 +85,7 @@ class Total extends Component
     /**
      * Set items
      */
-    public function setItems($items)
+    public function setItems($items): void
     {
         $this->fill(['items' => $items]);
     }
@@ -82,7 +93,7 @@ class Total extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.form.total');
     }
