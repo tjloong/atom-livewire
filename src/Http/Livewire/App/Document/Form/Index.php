@@ -74,21 +74,18 @@ class Index extends Component
     {
         $this->columns = $this->document->getColumns();
 
-        $this->items = $this->document->items()
-            ->get()
-            ->transform(function($item) {
-                return enabled_module('taxes') 
-                    ? array_merge(
-                        $item->toArray(), 
-                        ['taxes' => $item->taxes->map(fn($tax) => [
-                            'id' => $tax->id,
-                            'label' => $tax->label,
-                            'amount' => $tax->pivot->amount,
-                        ])->toArray()]
-                    )
-                    : $item;
-            })
-            ->toArray();
+        $this->items = $this->document->items->map(function($item) {
+            return enabled_module('taxes') 
+                ? array_merge(
+                    $item->toArray(), 
+                    ['taxes' => $item->taxes->map(fn($tax) => [
+                        'id' => $tax->id,
+                        'label' => $tax->label,
+                        'amount' => $tax->pivot->amount,
+                    ])->toArray()]
+                )
+                : $item;
+        })->toArray();
 
         $this->settings = model('document')->enabledHasTenantTrait
             ? tenant('settings.'.$this->document->type)
