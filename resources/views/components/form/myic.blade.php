@@ -74,7 +74,7 @@
             },
         }"
         x-bind:class="focusElem.length && 'active'"
-        class="form-input w-52"
+        class="form-input {{ component_error($errors, $attributes) ? 'error' : '' }}"
         {{ $attributes->merge(['id' => component_id($attributes)])->whereStartsWith(['id', 'x-']) }}
     >
         <div x-on:input.stop class="flex items-center gap-2">
@@ -85,7 +85,7 @@
                 x-on:input="jump('head')"
                 x-model="segments.head"
                 type="text" 
-                class="appearance-none p-0 border-0 w-16" 
+                class="grow appearance-none p-0 border-0 w-16" 
                 maxlength="6"
             >
             <span>-</span>
@@ -96,7 +96,7 @@
                 x-on:input="jump('body')"
                 x-model="segments.body"
                 type="text" 
-                class="appearance-none p-0 border-0 w-6" 
+                class="grow appearance-none p-0 border-0 w-6" 
                 maxlength="2"
             >
             <span>-</span>
@@ -107,7 +107,7 @@
                 x-on:input="jump('tail')"
                 x-model="segments.tail"
                 type="text" 
-                class="appearance-none p-0 border-0 w-14" 
+                class="grow appearance-none p-0 border-0 w-14" 
                 maxlength="4"
             >
         </div>

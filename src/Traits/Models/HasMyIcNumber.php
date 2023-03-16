@@ -28,6 +28,8 @@ trait HasMyIcNumber
      */
     public function formatIc($value, $dashed = true)
     {
+        if (!$value) return $value;
+        
         if ($dashed) {
             if (str($value)->is('*-*-*')) return $value;
             else {
