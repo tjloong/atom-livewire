@@ -4,16 +4,16 @@
 >
     @if ($inputs)
         <x-form.group cols="2">
-            <x-form.email wire:model.defer="email.from.email" label="Sender Email"/>
-            <x-form.text wire:model.defer="email.from.name" label="Sender Name"/>
+            <x-form.email wire:model.defer="inputs.from.email" label="Sender Email"/>
+            <x-form.text wire:model.defer="inputs.from.name" label="Sender Name"/>
         </x-form.group>
 
         <x-form.group>
-            <x-form.email wire:model.defer="email.to" :options="$this->emails->toArray()" multiple/>
-            <x-form.email wire:model.defer="email.cc" :options="$this->emails->toArray()" multiple/>
-            <x-form.text wire:model.defer="email.subject"/>
-            <x-form.textarea wire:model.defer="email.body" rows="10"/>
-            <x-form.email wire:model.defer="email.bcc" label="Send a copy to" multiple/>
+            <x-form.email wire:model="inputs.to" :options="data_get($this->options, 'emails')" multiple/>
+            <x-form.email wire:model="inputs.cc" :options="data_get($this->options, 'emails')" multiple/>
+            <x-form.text wire:model.defer="inputs.subject"/>
+            <x-form.textarea wire:model.defer="inputs.body" rows="10"/>
+            <x-form.email wire:model="inputs.bcc" label="Send a copy to" multiple/>
         </x-form.group>
 
         <x-slot:foot>

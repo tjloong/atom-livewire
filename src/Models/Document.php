@@ -350,19 +350,20 @@ class Document extends Model
     /**
      * Pdf
      */
-    public function pdf()
+    public function pdf($raw = false)
     {
         $filename = $this->type.'-'.$this->number.'.pdf';
         $path = storage_path($filename);
-        $view = view()->exists('pdf.document')
-            ? 'pdf.document'
-            : 'atom::pdf.document';
-
-        pdf($view, [
+        $view = view()->exists('pdf.document') ? 'pdf.document' : 'atom::pdf.document';
+        $pdf = pdf($view, [
             'document' => $this,
             'filename' => $filename,
-        ])->save($path);
-
-        return response()->download($path)->deleteFileAfterSend(true);
+        ]);
+        
+        if ($raw) return $pdf;
+        else {
+            $pdf->save($path);
+            return response()->download($path)->deleteFileAfterSend(true);
+        }
     }
 }

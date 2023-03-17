@@ -42,17 +42,22 @@ class DocumentEmailNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $view = $this->getView();
-        $attachment = $this->getAttachment();
-
-        return (new MailMessage)
+        $mail = (new MailMessage)
             ->from(data_get($this->email, 'from.email'), data_get($this->email, 'from.name'))
             ->replyTo(data_get($this->email, 'from.email'), data_get($this->email, 'from.name'))
             ->cc($this->email->cc)
             ->bcc($this->email->bcc)
-            ->subject($this->email->subject)
-            ->attachData(data_get($attachment, 'data'), data_get($attachment, 'name'))
-            ->markdown($view, ['body' => $this->email->body]);
+            ->subject($this->email->subject);
+
+        if ($att = $this->getAttachment()) {
+            $mail->attachData(data_get($att, 'data'), data_get($att, 'name'));
+        }
+
+        if ($view = collect(['email.document', 'atom::email.document'])->first(fn($val) => view()->exists($val))) {
+            $mail->markdown($view, ['body' => $this->email->body]);
+        }
+
+        return $mail;
     }
 
     /**
@@ -69,21 +74,12 @@ class DocumentEmailNotification extends Notification implements ShouldQueue
     }
 
     /**
-     * Get view
-     */
-    public function getView()
-    {
-        if (file_exists(base_path('resources/views/emails.document'))) return 'emails.document';
-        else return 'atom::emails.document';
-    }
-
-    /**
      * Get attachment
      */
     public function getAttachment()
     {
         $document = $this->email->document;
-        $pdf = $document->pdf();
+        $pdf = $document->pdf(true);
         $filename = str()->title($document->type).'-'.$document->number.'.pdf';
 
         return [

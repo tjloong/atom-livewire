@@ -22,25 +22,25 @@ class EmailModal extends Component
     protected function validation(): array
     {
         return [
-            'email.from.name' => ['required' => 'Sender name is required.'],
-            'email.from.email' => [
+            'inputs.from.name' => ['required' => 'Sender name is required.'],
+            'inputs.from.email' => [
                 'required' => 'Sender email is required.',
                 'email' => 'Invalid sender email.',
             ],
-            'email.to' => [
+            'inputs.to' => [
                 'required' => 'To email is required.',
                 'array' => 'Invalid to email.',
                 'min:1' => 'To email is required.',
             ],
-            'email.to.*' => [
+            'inputs.to.*' => [
                 'email' => 'Invalid to email.'
             ],
-            'email.cc' => ['array' => 'Invalid cc email.'],
-            'email.cc.*' => ['email' => 'Invalid cc email.'],
-            'email.bcc' => ['array' => 'Invalid bcc email.'],
-            'email.bcc.*' => ['email' => 'Invalid bcc email.'],
-            'email.subject' => ['required' => 'Subject is required.'],
-            'email.body' => ['required' => 'Body is required.'],
+            'inputs.cc' => ['array' => 'Invalid cc email.'],
+            'inputs.cc.*' => ['email' => 'Invalid cc email.'],
+            'inputs.bcc' => ['array' => 'Invalid bcc email.'],
+            'inputs.bcc.*' => ['email' => 'Invalid bcc email.'],
+            'inputs.subject' => ['required' => 'Subject is required.'],
+            'inputs.body' => ['required' => 'Body is required.'],
         ];
     }
 
@@ -58,7 +58,7 @@ class EmailModal extends Component
                 'name' => data_get($settings, 'sender_name'),
                 'email' => data_get($settings, 'sender_email'),
             ],
-            'to' => head(data_get($this->options, 'emails')),
+            'to' => [head(data_get($this->options, 'emails'))],
             'cc' => [],
             'bcc' => (array)data_get($settings, 'notify_to'),
             'subject' => $this->setEmailPlaceholder(data_get($settings, 'subject')),
@@ -86,7 +86,7 @@ class EmailModal extends Component
     /**
      * Set email placeholder
      */
-    public function setEmailPlaceholder($str = null): string
+    public function setEmailPlaceholder($str = null): mixed
     {
         if (!$str) return $str;
 

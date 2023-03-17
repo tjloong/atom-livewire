@@ -32,7 +32,7 @@
         @can($document->type.'.update')
             <x-dropdown.item icon="paper-plane"
                 label="Send Email" 
-                wire:click="$emitTo('{{ lw('app.document.form.email-modal') }}', 'open')"
+                wire:click="$emitTo('{{ lw('app.document.view.email-modal') }}', 'open')"
             />
             
             <x-dropdown.item icon="share-from-square"
