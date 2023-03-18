@@ -59,7 +59,10 @@ if (in_array('gkash', config('atom.payment_gateway'))) {
  */
 if (!config('atom.static_site')) {
     define_route()->prefix('app')->middleware('auth')->group(function() {
-        define_route('/', fn() => redirect()->route('app.dashboard'))->name('app.home');
+        define_route('/', fn() => user() 
+            ? redirect(user()->home())
+            : redirect()->route('app.dashboard')
+        )->name('app.home');
 
         /**
          * Dashboard

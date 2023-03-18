@@ -16,25 +16,21 @@ class Enquiry extends Model
     ];
 
     /**
-     * Model boot method
-     * 
-     * @return void
+     * Model booted method
      */
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-
         static::saving(function ($enquiry) {
             $enquiry->status = $enquiry->status ?? 'pending';
         });
     }
 
     /**
-     * Scope for fussy search
+     * Scope for search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('phone', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
