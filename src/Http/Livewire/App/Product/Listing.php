@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Product;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -10,6 +11,7 @@ class Listing extends Component
     use WithTable;
 
     public $sort = 'updated_at,desc';
+
     public $filters = [
         'type' => null,
         'status' => null,
@@ -18,18 +20,13 @@ class Listing extends Component
     ];
 
     protected $queryString = [
-        'filters' => ['except' => [
-            'type' => null,
-            'status' => null,
-            'product_category' => null,
-            'search' => null,
-        ]],
+        'filters',
     ];
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         breadcrumbs()->home('Products');
     }
@@ -37,7 +34,7 @@ class Listing extends Component
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return model('product')
             ->readable()
@@ -47,18 +44,18 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return [
             [
-                'column_name' => 'Code',
-                'column_sort' => 'code',
+                'name' => 'Code',
+                'sort' => 'code',
                 'label' => $query->code ?? '--',
                 'href' => $query->code ? route('app.product.update', [$query->id]) : null,
             ],
             [
-                'column_name' => 'Product',
-                'column_sort' => 'name',
+                'name' => 'Product',
+                'sort' => 'name',
                 'label' => $query->name,
                 'href' => route('app.product.update', [$query->id]),
                 'small' => $query->type === 'variant'
@@ -71,15 +68,14 @@ class Listing extends Component
                 'active' => $query->is_active,
             ],
             [
-                'column_name' => 'Category',
+                'name' => 'Category',
                 'tags' => $query->categories->pluck('name.'.app()->currentLocale()),
             ],
             [
-                'column_name' => 'Price',
-                'column_sort' => 'price',
-                'column_class' => 'text-right',
-                'amount' => $query->price,
+                'name' => 'Price',
+                'sort' => 'price',
                 'class' => 'text-right',
+                'amount' => $query->price,
             ],
         ];
     }
@@ -87,7 +83,7 @@ class Listing extends Component
     /**
      * Get options property
      */
-    public function getOptionsProperty()
+    public function getOptionsProperty(): array
     {
         return [
             'statuses' => collect(['active', 'inactive'])->map(fn($val) => [
@@ -108,7 +104,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.product.listing');
     }

@@ -47,7 +47,7 @@
             submit () {
                 const selected = this.selected.map(sel => (this.files.find(file => (file.id === sel))))
                 const value = this.multiple ? selected : selected[0]
-        
+
                 this.files = this.files.map(file => ({ ...file, is_checked: false }))
         
                 this.$dispatch('library', value)

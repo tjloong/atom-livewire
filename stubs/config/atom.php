@@ -28,16 +28,4 @@ return [
             'linkedin',    
         ],
     ],
-
-    /**
-     * App Portal
-     */
-    'app' => [
-        'document' => [
-            'types' => [
-                'quotation', 
-                'invoice', 
-            ],
-        ],
-    ],
 ];

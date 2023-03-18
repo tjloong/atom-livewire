@@ -33,6 +33,7 @@
             x-data="{ 
                 tab: @js(head($tabs)),
                 modal: false,
+                multiple: @js($multiple),
                 disabled: @js(!$multiple && $value),
                 switchtab (name) {
                     if (name === 'library') {

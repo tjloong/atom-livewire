@@ -1,15 +1,11 @@
 <div class="max-w-screen-lg mx-auto">
-    <x-page-header 
-        :title="$product->name" 
-        :subtitle="$product->code
-            ? '#'.$product->code
-            : null" 
-        back
-    >
-        <x-button.delete inverted can="product.delete"
-            title="Delete Product"
-            message="Are you sure to delete this product?"
-        />
+    <x-page-header :title="$product->name" :subtitle="$product->code" back>
+        @can('product.delete')
+            <x-button.delete inverted
+                title="Delete Product"
+                message="Are you sure to DELETE this product?"
+            />
+        @endcan
     </x-page-header>
 
     <div class="flex flex-col gap-6 md:flex-row">

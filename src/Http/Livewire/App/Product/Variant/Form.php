@@ -3,21 +3,23 @@
 namespace Jiannius\Atom\Http\Livewire\App\Product\Variant;
 
 use Jiannius\Atom\Traits\Livewire\WithFile;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Form extends Component
 {
     use WithFile;
+    use WithForm;
 
     public $variant;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'variant.name' => 'required',
+            'variant.name' => ['required' => 'Variant name is required.'],
 
             'variant.code' => [
                 function ($attr, $value, $fail) {
@@ -39,32 +41,19 @@ class Form extends Component
                 },
             ],
 
-            'variant.price' => 'nullable|numeric',
-            'variant.stock' => 'nullable|numeric',
-            'variant.is_default' => 'nullable',
-            'variant.is_active' => 'nullable',
-            'variant.image_id' => 'nullable',
-            'variant.product_id' => 'required',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'variant.name.required' => 'Variant name is required.',
-            'variant.price.numeric' => 'Invalid price.',
-            'variant.stock.numeric' => 'Invalid stock.',
-            'variant.product_id.required' => 'Unknown product.',
+            'variant.price' => ['nullable'],
+            'variant.stock' => ['nullable'],
+            'variant.is_default' => ['nullable'],
+            'variant.is_active' => ['nullable'],
+            'variant.image_id' => ['nullable'],
+            'variant.product_id' => ['required' => 'Unknown product.'],
         ];
     }
 
     /**
      * Generate code
      */
-    public function generateCode()
+    public function generateCode(): void
     {
         $this->variant->fill([
             'code' => model('product_variant')->generateCode(),
@@ -74,19 +63,18 @@ class Form extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
         $this->persist();
 
-        return $this->submitted();
+        return breadcrumbs()->back();
     }
 
     /**
      * Persist
      */
-    public function persist()
+    public function persist(): void
     {
         if ($this->variant->is_default) {
             $this->variant->product->variants()->update(['is_default' => false]);
@@ -96,20 +84,9 @@ class Form extends Component
     }
 
     /**
-     * Submitted
-     */
-    public function submitted()
-    {
-        return redirect()->route('app.product.update', [
-            'productId' => $this->variant->product_id, 
-            'tab' => 'variant',
-        ]);
-    }
-
-    /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.product.variant.form');
     }

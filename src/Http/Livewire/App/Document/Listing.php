@@ -30,6 +30,8 @@ class Listing extends Component
      */
     public function mount(): void
     {
+        if (!in_array($this->type, model('document')->types)) abort(404);
+        
         $this->authorize($this->type.'.view');
 
         if ($this->fullpage = current_route('app.document.listing')) {

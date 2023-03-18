@@ -152,7 +152,7 @@
                     {{ $attributes
                         ->class(['form-input transparent w-full'])
                         ->merge(['placeholder' => $placeholder])
-                        ->except(['error', 'required', 'caption', 'label', 'tag', 'prefix', 'postfix'])
+                        ->except(['error', 'caption', 'label', 'tag', 'prefix', 'postfix'])
                     }}
                 >
             </div>

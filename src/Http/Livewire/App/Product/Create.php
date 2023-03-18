@@ -11,7 +11,7 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->product = model('product')->fill([
             'type' => 'normal',
@@ -24,7 +24,7 @@ class Create extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.product.create');
     }

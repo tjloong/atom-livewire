@@ -12,7 +12,7 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount($productId)
+    public function mount($productId): void
     {
         $this->product = model('product')->readable()->findOrFail($productId);
 
@@ -28,7 +28,7 @@ class Create extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.product.variant.create');
     }

@@ -2,16 +2,12 @@
     <x-slot:buttons>
         <x-button size="sm" color="gray"
             label="New Variant"
-            :href="route('app.product.variant.create', ['productId' => $product->id])"
+            :href="route('app.product.variant.create', [$product->id])"
         />
     </x-slot:buttons>
 
     @if (count($this->variants))
-        <x-form.sortable 
-            wire:sorted="sort" 
-            :config="['handle' => '.sort-handle']"
-            class="grid divide-y"
-        >
+        <x-form.sortable wire:sorted="sort" :config="['handle' => '.sort-handle']" class="grid divide-y">
             @foreach ($this->variants as $variant)
                 <div 
                     class="flex items-center gap-4 py-2 px-4 hover:bg-gray-100"
@@ -32,10 +28,7 @@
                     <div class="grow">
                         <div class="flex items-center justify-between gap-2">
                             <div class="grid">
-                                <a href="{{ route('app.product.variant.update', [
-                                    'productId' => $product->id,
-                                    'variantId' => $variant->id,
-                                ]) }}" class="grow">
+                                <a href="{{ route('app.product.variant.update', [$variant->id]) }}" class="grow">
                                     {{ $variant->name }}
                                 </a>
 

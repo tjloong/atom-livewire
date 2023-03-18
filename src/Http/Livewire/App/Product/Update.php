@@ -9,15 +9,13 @@ class Update extends Component
     public $tab;
     public $product;
 
-    protected $queryString = ['tab'];
-
     /**
      * Mount
      */
-    public function mount($productId)
+    public function mount($productId): void
     {
         $this->product = model('product')->readable()->findOrFail($productId);
-        $this->tab = $this->tab ?? data_get($this->tabs[0], 'slug');
+        $this->tab = $this->tab ?? data_get(collect($this->tabs)->first(), 'slug');
 
         breadcrumbs()->push($this->product->name);
     }
@@ -25,7 +23,7 @@ class Update extends Component
     /**
      * Get tabs property
      */
-    public function getTabsProperty()
+    public function getTabsProperty(): array
     {
         return [
             ['slug' => 'info', 'label' => 'Product Information', 'icon' => 'circle-info', 'livewire' => 'app.product.form'],
@@ -39,17 +37,17 @@ class Update extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->product->delete();
 
-        return redirect()->route('app.product.listing')->with('info', 'Product Deleted');
+        return breadcrumbs()->back();
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.product.update');
     }

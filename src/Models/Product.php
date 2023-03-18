@@ -5,6 +5,8 @@ namespace Jiannius\Atom\Models;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -22,17 +24,17 @@ class Product extends Model
     /**
      * Get taxes for product
      */
-    public function taxes()
+    public function taxes(): BelongsToMany
     {
-        if (!enabled_module('taxes')) return;
-        
-        return $this->belongsToMany(model('tax'), 'product_taxes');
+        if (enabled_module('taxes')) {
+            return $this->belongsToMany(model('tax'), 'product_taxes');
+        }
     }
 
     /**
 	 * Get images for product
 	 */
-	public function images()
+	public function images(): BelongsToMany
 	{
 		return $this->belongsToMany(model('file'), 'product_images')->withPivot('seq');
 	}
@@ -40,7 +42,7 @@ class Product extends Model
     /**
      * Get product categories for product
      */
-    public function categories()
+    public function categories(): BelongsToMany
     {
         return $this->belongsToMany(model('label'), 'product_categories');
     }
@@ -48,7 +50,7 @@ class Product extends Model
     /**
      * Get product variants for product
      */
-    public function variants()
+    public function variants(): HasMany
     {
         return $this->hasMany(model('product_variant'));
     }
@@ -56,9 +58,9 @@ class Product extends Model
     /**
      * Scope for search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('code', $search)
             ->orWhere('name', 'like', "%$search%")
             ->orWhere('description', 'like', "%$search%")
@@ -68,7 +70,7 @@ class Product extends Model
     /**
      * Get types
      */
-    public function getTypes()
+    public function getTypes(): array
     {
         return [
             ['value' => 'normal', 'label' => 'Normal', 'description' => 'Single item product, eg. can drink, book, phone.'],
@@ -79,7 +81,7 @@ class Product extends Model
     /**
      * Generate code
      */
-    public function generateCode()
+    public function generateCode(): string
     {
         $code = null;
         $dup = true;

@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Product\Variant;
 
+use Illuminate\Database\Eloquent\Collection;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
@@ -12,14 +13,10 @@ class Listing extends Component
     public $product;
     public $filters = ['search' => null];
 
-    protected $queryString = [
-        'filters' => ['except' => ['search' => null]],
-    ];
-
     /**
      * Get variants property
      */
-    public function getVariantsProperty()
+    public function getVariantsProperty(): Collection
     {
         return $this->product->variants()
             ->filter($this->filters)
@@ -30,7 +27,7 @@ class Listing extends Component
     /**
      * Sort
      */
-    public function sort($sorted)
+    public function sort($sorted): void
     {
         foreach ($sorted as $seq => $id) {
             model('product_variant')->find($id)->update(['seq' => $seq]);
@@ -42,7 +39,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.product.variant.listing');
     }

@@ -11,7 +11,7 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount ($variantId)
+    public function mount ($variantId): void
     {
         $this->variant = model('product_variant')->readable()->findOrFail($variantId);
 
@@ -21,27 +21,17 @@ class Update extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->variant->delete();
-        $this->deleted();
-    }
 
-    /**
-     * Deleted
-     */
-    public function deleted()
-    {
-        return redirect()->route('app.product.update', [
-            'product' => $this->variant->product_id,
-            'tab' => 'variants',
-        ]);
+        return breadcrumbs()->back();
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.product.variant.update');
     }

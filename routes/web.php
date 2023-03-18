@@ -173,13 +173,14 @@ if (!config('atom.static_site')) {
          * Products
          */
         if (enabled_module('products')) {
-            define_route()->prefix('product')->as('app.product.')->middleware('can:product.manage')->group(function() {
+            define_route()->prefix('product')->as('app.product.')->group(function() {
                 define_route('listing', 'App\Product\Listing')->name('listing');
                 define_route('create', 'App\Product\Create')->name('create');
-                define_route('{productId}', 'App\Product\Update')->name('update');
-
-                define_route()->prefix('{productId}/variant')->as('variant.')->group(function() {
-                    define_route('create', 'App\Product\Variant\Create')->name('create');
+                define_route('{productId}/{tab?}', 'App\Product\Update')->name('update')->whereNumber('productId');
+                
+                // product variant
+                define_route()->prefix('variant')->as('variant.')->group(function() {
+                    define_route('create/{productId}', 'App\Product\Variant\Create')->name('create');
                     define_route('{variantId}', 'App\Product\Variant\Update')->name('update');
                 });
             });
@@ -201,10 +202,8 @@ if (!config('atom.static_site')) {
          */
         if (enabled_module('documents')) {
             define_route()->prefix('document')->as('app.document.')->group(function() {
-                $types = config('atom.app.document.types', []);
-
-                define_route('{type}/listing', 'App\Document\Listing')->name('listing')->whereIn('type', $types);
-                define_route('{type}/create', 'App\Document\Create')->name('create')->whereIn('type', $types);
+                define_route('{type}/listing', 'App\Document\Listing')->name('listing');
+                define_route('{type}/create', 'App\Document\Create')->name('create');
 
                 define_route()->prefix('{documentId}')->group(function() {
                     define_route('/', 'App\Document\View')->name('view');

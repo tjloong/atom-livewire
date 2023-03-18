@@ -17,6 +17,8 @@ class Create extends Component
      */
     public function mount(): void
     {
+        if (!in_array($this->type, model('document')->types)) abort(404);
+
         $this->authorize($this->type.'.create');
 
         $this->setDocument();

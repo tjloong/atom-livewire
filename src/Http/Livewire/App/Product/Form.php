@@ -2,97 +2,98 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Product;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Form extends Component
 {
+    use WithForm;
     use WithPopupNotify;
 
     public $header;
     public $product;
-    public $selected = [
-        'taxes' => [],
-        'categories' => [],
-    ];
+    public $inputs;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'product.name' => 'required',
+            'product.name' => ['required' => 'Product name is required.'],
             'product.code' => [
-                'nullable',
                 function ($attr, $value, $fail) {
-                    if (model('product')->readable()->where('code', $value)->where('id', $this->product->id)->count()) {
+                    if (
+                        $value
+                        && model('product')->readable()->where('code', $value)->where('id', '<>', $this->product->id)->count()
+                    ) {
                         $fail('Product code is taken.');
                     }
                 },
             ],
-            'product.type' => 'required',
-            'product.description' => 'nullable',
-            'product.price' => 'nullable|numeric',
-            'product.stock' => 'nullable|numeric',
-            'product.is_active' => 'nullable|boolean',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'product.name.required' => 'Product name is required.',
-            'product.code.unique' => 'This product code is taken.',
-            'product.type.required' => 'Product type is required.',
+            'product.type' => ['required' => 'Product type is required.'],
+            'product.description' => ['nullable'],
+            'product.price' => ['nullable'],
+            'product.stock' => ['nullable'],
+            'product.is_active' => ['nullable'],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->fill([
-            'selected.taxes' => $this->product->taxes->pluck('id')->toArray(),
-            'selected.categories' => $this->product->categories->pluck('id')->toArray(),
+            'inputs.taxes' => $this->product->taxes->pluck('id')->toArray(),
+            'inputs.categories' => $this->product->categories->pluck('id')->toArray(),
         ]);
     }
 
     /**
      * Get options property
      */
-    public function getOptionsProperty()
+    public function getOptionsProperty(): array
     {
-        return [
-            'types' => collect(model('product')->getTypes())
-                ->when(
-                    $this->product->exists,
-                    fn($types) => $types->filter(fn($val) => data_get($val, 'value') === $this->product->type)
-                ),
+        return array_merge(
+            [
+                'types' => collect(model('product')->getTypes())
+                    ->when(
+                        $this->product->exists,
+                        fn($types) => $types->filter(fn($val) => data_get($val, 'value') === $this->product->type)
+                    )
+                    ->map(fn($val) => [
+                        'value' => data_get($val, 'value'),
+                        'label' => data_get($val, 'label'),
+                        'small' => data_get($val, 'description'),
+                    ])
+                    ->toArray(),
+                
+                'categories' => model('label')->readable()
+                    ->where('type', 'product-category')
+                    ->orderBy('name')
+                    ->get()
+                    ->transform(fn($label) => [
+                        'value' => $label->id,
+                        'label' => $label->locale('name'),
+                    ])
+                    ->toArray(),
+            ],
 
-            'taxes' => model('tax')
-                ->readable()
-                ->orderBy('name')
-                ->get()
-                ->map(fn($tax) => ['value' => $tax->id, 'label' => $tax->label]),
-
-            'categories' => model('label')
-                ->readable()
-                ->where('type', 'product-category')
-                ->select('id as value', 'name->'.app()->currentLocale().' as label')
-                ->orderBy('name')
-                ->get(),
-        ];
+            enabled_module('taxes') ? [
+                'taxes' => model('tax')->readable()->orderBy('name')->get()->map(fn($tax) => [
+                    'value' => $tax->id, 
+                    'label' => $tax->label,
+                ])->toArray(),
+            ] : [],
+        );
     }
 
     /**
      * Generate code
      */
-    public function generateCode()
+    public function generateCode(): void
     {
         $this->product->fill([
             'code' => model('product')->generateCode(),
@@ -102,34 +103,33 @@ class Form extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
         $this->persist();
 
-        return redirect()->route('app.product.update', [
-            'productId' => $this->product->id,
-            'tab' => $this->product->type === 'variant' && $this->product->wasRecentlyCreated
-                ? 'variant'
-                : null,
-        ]);
+        return $this->product->wasRecentlyCreated
+            ? redirect()->route('app.product.update', [$this->product->id])
+            : $this->popup('Product Updated.');
     }
 
     /**
      * Persist
      */
-    public function persist()
+    public function persist(): void
     {
         $this->product->save();
-        $this->product->taxes()->sync(data_get($this->selected, 'taxes'));
-        $this->product->categories()->sync(data_get($this->selected, 'categories'));
+        $this->product->categories()->sync(data_get($this->inputs, 'categories'));
+
+        if (enabled_module('taxes')) {
+            $this->product->taxes()->sync(data_get($this->inputs, 'taxes'));
+        }
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.product.form');
     }

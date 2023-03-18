@@ -3,69 +3,77 @@
 namespace Jiannius\Atom\Http\Livewire\App\Product;
 
 use Jiannius\Atom\Traits\Livewire\WithFile;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Image extends Component
 {
     use WithFile;
+    use WithPopupNotify;
 
     public $files;
     public $product;
-    public $selected = [];
+    public $checkboxes = [];
 
     protected $listeners = ['refresh' => '$refresh'];
 
     /**
      * Updated files
      */
-    public function updatedFiles()
+    public function updatedFiles(): void
     {
         foreach ($this->files as $id) {
-            if ($this->product->images()->where('product_images.id', $id)->count()) continue;
-            $this->product->images()->attach($id);
+            if (!$this->product->images()->find($id)) {
+                $this->product->images()->attach($id);
+            }
         }
 
-        $this->emitSelf('refresh');
+        $this->files = [];
+        $this->emit('refresh');
     }
 
     /**
-     * Select image
+     * Checkbox
      */
-    public function select($id)
+    public function checkbox($id): void
     {
-        $selected = collect($this->selected);
+        $checkboxes = collect($this->checkboxes);
 
-        if (is_numeric($selected->search($id))) $selected = $selected->reject($id);
-        else $selected->push($id);
+        if ($checkboxes->contains($id)) $checkboxes = $checkboxes->reject($id);
+        else $checkboxes->push($id);
 
-        $this->selected = $selected->values()->all();
+        $this->checkboxes = $checkboxes->values()->all();
     }
 
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): void
     {
-        $this->product->images()->detach($this->selected);
-        $this->reset('selected');
-        $this->emitSelf('refresh');
+        $this->product->images()->detach($this->checkboxes);
+        $this->reset('checkboxes');
+        $this->emit('refresh');
     }
 
     /**
      * Sort images
      */
-    public function sort($data)
+    public function sort($data): void
     {
-        $this->product->images()->get()->each(function($image) use ($data) {
-            $image->pivot->seq = collect($data)->search($image->id);
-            $image->pivot->save();
-        });
+        foreach ($data as $seq => $id) {
+            if ($image = $this->product->images()->find($id)) {
+                $image->pivot->seq = $seq;
+                $image->pivot->save();
+            }
+        }
+
+        $this->popup('Product Images Sorted.');
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.product.image');
     }
