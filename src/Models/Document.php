@@ -43,7 +43,7 @@ class Document extends Model
         'deleted_at' => 'datetime',
     ];
 
-    protected $types = [
+    public $types = [
         'quotation',
         'invoice',
         'sales-order',
