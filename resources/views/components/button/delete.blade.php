@@ -5,10 +5,11 @@
         title: '{{ __($attributes->get('title', 'Delete')) }}',
         message: '{{ __($attributes->get('message', 'Are you sure?')) }}',
         type: 'error',
-        onConfirmed: () => $wire.delete({{ json_encode($attributes->get('params') ?? null) }})
-            .then(() => {
-                {{ json_encode($attributes->get('reload') ?? false) }} && location.reload()
-            }),
+        onConfirmed: () => {
+            $wire
+                .call('{{ $attributes->get('callback', 'delete') }}', {{ json_encode($attributes->get('params')) }})
+                .then(() => {{ json_encode($attributes->get('reload', false)) }} && location.reload())
+        },
     })"
     :label="$attributes->get('label', 'Delete')"
     {{ $attributes->only(['inverted', 'size']) }}

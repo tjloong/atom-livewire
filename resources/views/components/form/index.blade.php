@@ -37,8 +37,16 @@
             ->merge(['class' => $modal ? 'relative max-w-screen-sm mx-auto' : ''])
         }}>
             @if ($header = $attributes->get('header'))
-                <div class="m-1 py-3 px-4 text-lg font-bold border-b">
-                    {{ __($header) }}
+                <div class="m-1 py-3 px-4 border-b flex flex-wrap items-center gap-3">
+                    <div class="grow text-lg font-bold">
+                        {{ __($header) }}
+                    </div>
+
+                    @isset($buttons)
+                        <div class="shrink-0 flex items-center gap-3">
+                            {{ $buttons }}
+                        </div>
+                    @endisset
                 </div>
             @elseif (isset($header))
                 <div {{ $header->attributes->class(['m-1']) }}>

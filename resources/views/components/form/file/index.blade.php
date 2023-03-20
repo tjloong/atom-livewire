@@ -18,7 +18,7 @@
     <div class="flex flex-col gap-4" {{ $attributes->whereStartsWith('wire:file') }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @elseif ($value)
-            <div class="flex items-center gap-3 flex-wrap">
+            <div id="file-preview" class="flex items-center gap-3 flex-wrap">
                 @foreach ((array)$value as $val)
                     <x-thumbnail :file="$val" wire:remove="$set('{{ $attributes->wire('model')->value() }}', {{ json_encode(
                         $multiple
@@ -46,10 +46,17 @@
                     
                     const model = @js($attributes->wire('model')->value());
                     const files = [e.detail].flat().map(file => (file.id))
-                    const value = this.multiple ? files : files[0]
 
-                    if (model) this.$wire.set(model, value)
-                    else this.$dispatch('file', value)
+                    if (model) {
+                        if (this.multiple) {
+                            const value = (this.$wire.get(model) || []).concat(files)
+                            const unique = [...new Set(value)]
+                            this.$wire.set(model, unique)
+                        }
+                        else this.$wire.set(model, files[0])
+                    }
+                    else if (this.multiple) this.$dispatch('file', files)
+                    else this.$dispatch('file', files[0])
                 },
             }"
             x-show="!disabled"

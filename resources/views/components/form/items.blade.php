@@ -1,8 +1,6 @@
 <x-form.field {{ $attributes }}>
     <div class="bg-slate-100 rounded-lg flex flex-col divide-y">
-        @if ($slot->isNotEmpty())
-            {{ $slot }}
-        @elseif (($data = $attributes->get('data')) && count($data))
+        @if (($data = $attributes->get('data')) && count($data))
             <table>
                 <thead>
                     @foreach (collect($data)->first() as $th)
@@ -66,6 +64,10 @@
                     @endforeach
                 </tbody>
             </table>
+
+            {{ $slot }}
+        @else
+            {{ $slot }}
         @endif
 
         @isset($button)

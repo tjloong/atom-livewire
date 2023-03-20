@@ -117,6 +117,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.tags',
             'form.slug',
             'form.text',
+            'form.time',
             'form.agree',
             'form.color',
             'form.email',
