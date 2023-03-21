@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class Index extends Component
@@ -14,15 +15,9 @@ class Index extends Component
     /**
      * Mount
      */
-    public function mount($tab = null)
+    public function mount()
     {
-        if (!$tab || !$this->getFlatTabs()->firstWhere('slug', $tab)) {
-            return redirect()->route('app.settings', [
-                data_get($this->getFlatTabs()->first(), 'slug')
-            ]);
-        }
-
-        $this->tab = $tab;
+        $this->tab = $this->tab ?? data_get(tabs($this->tabs)->first(), 'slug');
 
         if (!in_array($this->tab, [
             'login', 
@@ -32,13 +27,13 @@ class Index extends Component
         }
 
         breadcrumbs()->home($this->title);
-        breadcrumbs()->push(data_get($this->getFlatTabs()->firstWhere('slug', $tab), 'label'));
+        breadcrumbs()->push(data_get(tabs($this->tabs, $this->tab), 'label'));
     }
 
     /**
      * Get title propert
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
         return 'Settings';
     }
@@ -46,7 +41,7 @@ class Index extends Component
     /**
      * Get tabs property
      */
-    public function getTabsProperty()
+    public function getTabsProperty(): array
     {
         $authorize = user()->can('setting.manage');
 
@@ -102,21 +97,13 @@ class Index extends Component
     }
 
     /**
-     * Get flat tabs
-     */
-    public function getFlatTabs()
-    {
-        return collect($this->tabs)->pluck('tabs')->collapse()->filter();
-    }
-
-    /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.settings', [
             'livewire' => lw(
-                data_get($this->getFlatTabs()->firstWhere('slug', $this->tab), 'livewire')
+                data_get(tabs($this->tabs, $this->tab), 'livewire')
                 ?? [
                     'labels' => 'app.label.listing',
                     'pages' => 'app.page.listing',

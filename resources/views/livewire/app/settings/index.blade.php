@@ -12,15 +12,17 @@
 
                         @foreach (array_filter($children) as $child)
                             <x-sidenav.item
+                                :name="data_get($child, 'slug')"
                                 :icon="data_get($child, 'icon')"
-                                :href="data_get($child, 'href') ?? route('app.settings', [data_get($child, 'slug')])"
+                                :href="data_get($child, 'href')"
                                 :label="data_get($child, 'label')"
                             />
                         @endforeach
                     @else
                         <x-sidenav.item
+                            :name="data_get($child, 'slug')"
                             :icon="data_get($item, 'icon')"
-                            :href="data_get($item, 'href') ?? route('app.settings', [data_get($item, 'slug')])"
+                            :href="data_get($item, 'href')"
                             :label="data_get($item, 'label')"
                         />
                     @endif
