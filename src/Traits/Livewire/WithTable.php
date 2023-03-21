@@ -21,6 +21,7 @@ trait WithTable
             $this->queryString, 
             ['page' => ['except' => 1]],
             isset($this->sort) ? ['sort' => ['except' => $this->sort]] : [],
+            isset($this->filters) ? ['filters' => ['except' => $this->filters]] : [],
         );
     }
 

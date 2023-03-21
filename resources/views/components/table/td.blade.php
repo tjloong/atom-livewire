@@ -40,7 +40,7 @@
             <x-badge :label="$attributes->get('active') ? 'active' : 'inactive'"/>
         @elseif ($tags = $attributes->get('tags'))
             @if (count($tags))
-                <div class="flex items-center gap-2">
+                <div class="inline-flex items-center gap-2">
                     @foreach (collect($tags)->take(2) as $tag)
                         <div 
                             @if (strlen($tag) > 20) x-tooltip="{{ $tag }}" @endif

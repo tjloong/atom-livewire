@@ -54,7 +54,7 @@
                     </div>
 
                     <div x-show="show" x-transition>
-                        <x-form.text 
+                        <x-form.text :label="false"
                             prefix="icon:search"
                             :placeholder="$placeholder"
                             wire:model.debounce.300ms="{{ $wire }}"
