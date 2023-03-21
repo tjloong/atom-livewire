@@ -52,7 +52,7 @@ class Form extends Component
     /**
      * Get options property
      */
-    public function getOptionsProperty()
+    public function getOptionsProperty(): array
     {
         return [
             'types' => [
@@ -86,7 +86,7 @@ class Form extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.contact.form');
     }

@@ -11,7 +11,7 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($contactId)
+    public function mount($contactId): void
     {
         $this->contact = model('contact')->readable()->findOrFail($contactId);
 
@@ -21,7 +21,7 @@ class Update extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.contact.update');
     }
