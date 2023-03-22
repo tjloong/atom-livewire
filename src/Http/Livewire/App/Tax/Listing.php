@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Tax;
 
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
 class Listing extends Component
@@ -13,7 +14,7 @@ class Listing extends Component
     /**
      * Get taxes property
      */
-    public function getTaxesProperty()
+    public function getTaxesProperty(): Collection
     {
         return model('tax')
             ->readable()
@@ -26,7 +27,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.tax.listing');
     }

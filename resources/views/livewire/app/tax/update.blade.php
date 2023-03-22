@@ -1,4 +1,4 @@
-<div class="max-w-screen-sm mx-auto">
+<div class="max-w-screen-md mx-auto">
     <x-page-header :title="$tax->label" back>
         <x-button.delete inverted can="tax.manage"
             title="Delete Tax"

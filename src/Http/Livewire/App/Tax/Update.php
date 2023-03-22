@@ -11,7 +11,7 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($taxId)
+    public function mount($taxId): void
     {
         $this->tax = model('tax')->readable()->findOrFail($taxId);
 
@@ -21,7 +21,7 @@ class Update extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->tax->delete();
 
@@ -31,7 +31,7 @@ class Update extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.tax.update');
     }

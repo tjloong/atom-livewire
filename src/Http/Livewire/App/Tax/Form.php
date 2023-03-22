@@ -2,45 +2,35 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Tax;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Form extends Component
 {
+    use WithForm;
+
     public $tax;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'tax.name' => 'required',
-            'tax.country' => 'required',
-            'tax.region' => 'nullable',
-            'tax.rate' => 'required|numeric',
-            'tax.is_active' => 'nullable',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages() {
-        return [
-            'tax.name.required' => 'Tax name is required.',
-            'tax.country.required' => 'Country is required.',
-            'tax.rate.required' => 'Tax rate is required.',
-            'tax.rate.number' => 'Invalid tax rate.',
+            'tax.name' => ['required' => 'Tax name is required.'],
+            'tax.country' => ['required' => 'Country is required.'],
+            'tax.rate' => ['required' => 'Tax rate is required.'],
+            'tax.region' => ['nullable'],
+            'tax.is_active' => ['nullable'],
         ];
     }
 
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $this->tax->save();
 
@@ -50,7 +40,7 @@ class Form extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.tax.form');
     }

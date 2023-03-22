@@ -7,7 +7,7 @@
             />
         </x-slot:buttons>
     
-        <div class="grid divide-y">
+        <div class="flex flex-col divide-y">
             @forelse ($this->taxes as $tax)
                 <div class="py-2 px-4 flex items-center gap-3 flex-wrap">
                     <a href="{{ route('app.tax.update', [$tax->id]) }}" class="grow">

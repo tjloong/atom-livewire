@@ -11,7 +11,7 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->tax = model('tax')->fill([
             'is_active' => true,
@@ -23,7 +23,7 @@ class Create extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.tax.create');
     }

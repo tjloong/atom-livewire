@@ -25,7 +25,7 @@
                                         @php $wireClick = data_get($close, 'wire:click') @endphp
                                         @php $onClick = data_get($close, 'x-on:click') @endphp
 
-                                        <td>
+                                        <td class="text-right px-4" width="50">
                                             @if ($wireClick) 
                                                 <x-close :color="$color" x-on:click="$wire.call('{{ $wireClick[0] }}', {{ json_encode($wireClick[1] ?? null) }})"/>
                                             @elseif ($onClick)
