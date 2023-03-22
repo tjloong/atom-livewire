@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Plan\Subscription;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -17,18 +18,10 @@ class Listing extends Component
         'plan' => null,
     ];
 
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-            'status' => null,
-            'plan' => null,
-        ]],
-    ];
-
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         breadcrumbs()->home($this->title);
     }
@@ -36,7 +29,7 @@ class Listing extends Component
     /**
      * Get title property
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
         return tier('root') ? 'Plan Subscriptions' : 'Billing Management';
     }
@@ -44,7 +37,7 @@ class Listing extends Component
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return model('plan_subscription')
             ->readable()
@@ -54,18 +47,18 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return [
             [
-                'column_name' => 'Sign-Up',
+                'name' => 'Sign-Up',
                 'label' => $query->user->name,
                 'small' => $query->user->email,
                 'href' => route('app.plan.subscription.update', [$query->id]),
             ],
 
             [
-                'column_name' => 'Plan',
+                'name' => 'Plan',
                 'label' => $query->price->plan->name,
                 'small' => $query->price->name,
                 'href' => route('app.plan.subscription.update', [$query->id]),
@@ -80,16 +73,15 @@ class Listing extends Component
             ],
 
             [
-                'column_name' => 'Start Date',
-                'column_sort' => 'start_at',
-                'column_class' => 'text-right',
+                'name' => 'Start Date',
+                'sort' => 'start_at',
                 'class' => 'text-right',
                 'date' => $query->start_at,
             ],
 
             [
-                'column_name' => 'Expire Date',
-                'column_sort' => 'expired_at',
+                'name' => 'Expire Date',
+                'sort' => 'expired_at',
                 'date' => $query->expired_at,
             ],
         ];
@@ -98,7 +90,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.subscription.listing');
     }

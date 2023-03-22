@@ -2,12 +2,12 @@
     <x-page-header :title="$plan->name" back>
         <x-button.delete inverted
             title="Delete Plan"
-            message="Are you sure to delete this plan?"
+            message="Are you sure to DELETE this plan?"
         />
     </x-page-header>
 
-    <div class="grid gap-6 md:grid-cols-12">
-        <div class="md:col-span-3">
+    <div class="flex flex-col gap-6 md:flex-row">
+        <div class="md:w-1/4">
             <x-sidenav wire:model="tab">
                 @foreach ($this->tabs as $item)
                     <x-sidenav.item 
@@ -20,7 +20,7 @@
             </x-sidenav>
         </div>
 
-        <div class="md:col-span-9">
+        <div class="md:w-3/4">
             @if ($com = data_get(collect($this->tabs)->firstWhere('slug', $tab), 'livewire'))
                 @livewire(lw($com), compact('plan'), key($tab))
             @else

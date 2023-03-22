@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Jiannius\Atom\Traits\Models\HasTrace;
@@ -41,10 +43,8 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Model boot
      */
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-
         static::saving(function($user) {
             $user->status = $user->generateStatus();
         });
@@ -102,11 +102,21 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Attribute for tier
+     */
+    public function tier(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->is_root ? 'root' : 'signup',
+        );
+    }
+
+    /**
      * Scope for fussy search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
             ->orWhere('data->signup->channel', $search)
@@ -116,9 +126,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope for is role
      */
-    public function scopeIsRole($query, $name)
+    public function scopeIsRole($query, $name): void
     {
-        return $query->when(
+        $query->when(
             enabled_module('roles'), 
             fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', $name)) 
         );
@@ -127,9 +137,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope for in team
      */
-    public function scopeInTeam($query, $id)
+    public function scopeInTeam($query, $id): void
     {
-        return $query->when(
+        $query->when(
             enabled_module('teams'),
             fn($q) => $q->whereHas('teams', fn($q) => $q->whereIn('teams.id', (array)$id))
         );
@@ -138,17 +148,17 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope for status
      */
-    public function scopeStatus($query, $status)
+    public function scopeStatus($query, $status): void
     {
-        return $query->withTrashed()->whereIn('status', (array)$status);
+        $query->withTrashed()->whereIn('status', (array)$status);
     }
 
     /**
      * Scope for tier
      */
-    public function scopeTier($query, $tier = null)
+    public function scopeTier($query, $tier = null): void
     {
-        return $query->where(function($q) use ($tier) {
+        $query->where(function($q) use ($tier) {
             foreach ((array)$tier as $val) {
                 if ($val === 'root') {
                     $q->orWhere('is_root', true);
@@ -161,17 +171,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Get tier attribute
-     */
-    public function getTierAttribute()
-    {
-        return $this->is_root ? 'root' : 'signup';
-    }
-
-    /**
      * Get user home
      */
-    public function home()
+    public function home(): string
     {
         if ($this->isTier('signup')) return '/';
         else return route('app.home');
@@ -180,7 +182,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Check user tier
      */
-    public function isTier($tier)
+    public function isTier($tier): bool
     {
         return in_array($this->tier, (array)$tier);
     }
@@ -188,7 +190,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Check user is role
      */
-    public function isRole($names)
+    public function isRole($names): bool
     {
         if (!enabled_module('roles')) return true;
         if (!$this->role) return false;
@@ -206,7 +208,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Check user has plan
      */
-    public function hasPlan($plan)
+    public function hasPlan($plan): bool
     {
         if (!enabled_module('plans')) return false;
 
@@ -225,7 +227,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Check user has plan price
      */
-    public function hasPlanPrice($price)
+    public function hasPlanPrice($price): bool
     {
         if (!enabled_module('plans')) return false;
 
@@ -240,7 +242,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Invite user to activate account
      */
-    public function sendActivation()
+    public function sendActivation(): void
     {
         if ($this->status === 'inactive') {
             $this->notify(new UserActivationNotification());
@@ -250,7 +252,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Send password reset link
      */
-    public function sendPasswordResetLink()
+    public function sendPasswordResetLink(): mixed
     {
         $status = Password::sendResetLink(['email' => $this->email]);
 
@@ -261,7 +263,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Generate status
      */
-    public function generateStatus()
+    public function generateStatus(): string
     {
         if ($this->trashed()) return 'trashed';
         if ($this->blocked()) return 'blocked';
@@ -278,7 +280,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Check user can access portal
      */
-    public function canAccessPortal($portal)
+    public function canAccessPortal($portal): bool
     {
         if ($portal === 'app') {
             return current_route([

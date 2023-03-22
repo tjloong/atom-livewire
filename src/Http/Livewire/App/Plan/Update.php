@@ -12,7 +12,7 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($planId)
+    public function mount($planId): void
     {
         $this->plan = model('plan')->findOrFail($planId);
         $this->tab = $this->tab ?? data_get($this->tabs, '0.slug');
@@ -23,7 +23,7 @@ class Update extends Component
     /**
      * Get tabs property
      */
-    public function getTabsProperty()
+    public function getTabsProperty(): array
     {
         return [
             ['slug' => 'info', 'label' => 'Plan Information', 'livewire' => 'app.plan.form'],
@@ -34,7 +34,7 @@ class Update extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->plan->delete();
 
@@ -44,7 +44,7 @@ class Update extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.update');
     }

@@ -14,7 +14,7 @@ class CancelAutoBillingModal extends Component
     /**
      * Open modal
      */
-    public function open($id)
+    public function open($id): void
     {
         $this->stripeSubscriptionId = data_get(
             model('plan_subscription')
@@ -33,7 +33,7 @@ class CancelAutoBillingModal extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.subscription.cancel-auto-billing-modal');
     }

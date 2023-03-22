@@ -2,30 +2,34 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Plan\Subscription;
 
-use Livewire\Component;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
+use Livewire\Component;
 
 class Update extends Component
 {
     use AuthorizesRequests;
+    use WithForm;
     use WithPopupNotify;
 
     public $subscription;
 
-    protected $rules = [
-        'subscription.start_at' => 'required',
-        'subscription.expired_at' => 'nullable',
-    ];
-
-    protected $messages = [
-        'subscription.start_at.required' => 'Start date is required.',
-    ];
+    /**
+     * Validation
+     */
+    protected function validation(): array
+    {
+        return [
+            'subscription.start_at' => ['required' => 'Start date is required.'],
+            'subscription.expired_at' => ['nullable'],
+        ];
+    }
 
     /**
      * Mount
      */
-    public function mount($subscriptionId)
+    public function mount($subscriptionId): void
     {
         $this->authorize('tier:root');
 
@@ -37,7 +41,7 @@ class Update extends Component
     /**
      * Get payment property
      */
-    public function getPaymentProperty()
+    public function getPaymentProperty(): mixed
     {
         return $this->subscription->item->order->payments()->status('success')->latest()->first();
     }
@@ -45,10 +49,9 @@ class Update extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $this->subscription->save();
 
@@ -58,7 +61,7 @@ class Update extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.subscription.update');
     }

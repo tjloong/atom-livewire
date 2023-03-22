@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Plan\Payment;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -13,16 +14,10 @@ class Listing extends Component
     public $sort = 'created_at,desc';
     public $filters = ['search' => null];
 
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-        ]],
-    ];
-
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         if ($this->fullpage = current_route('app.plan.payment.listing')) {
             breadcrumbs()->home($this->title);
@@ -32,7 +27,7 @@ class Listing extends Component
     /**
      * Get title propert
      */
-    public function getTitleProperty()
+    public function getTitleProperty(): string
     {
         return $this->fullpage ? 'Plan Payments' : 'Payment History';
     }
@@ -40,7 +35,7 @@ class Listing extends Component
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return model('plan_payment')
             ->readable()
@@ -50,29 +45,29 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return [
             [
-                'column_name' => 'Date',
-                'column_sort' => 'created_at',
+                'name' => 'Date',
+                'sort' => 'created_at',
                 'datetime' => $query->created_at,
             ],
             
             [
-                'column_name' => 'Receipt',
+                'name' => 'Receipt',
                 'label' => $query->number,
                 'href' => route('app.plan.payment.update', [$query->id]),
             ],
 
             [
-                'column_name' => 'Description',
+                'name' => 'Description',
                 'label' => str($query->description)->limit(50),
                 'small' => tier('root') ? $query->order->user->name : null,
             ],
 
             [
-                'column_name' => 'Status',
+                'name' => 'Status',
                 'status' => array_filter([
                     $query->status,
                     $query->is_auto_billing ? 'auto' : null,
@@ -80,8 +75,8 @@ class Listing extends Component
             ],
             
             [
-                'column_name' => 'Amount',
-                'column_sort' => 'amount',
+                'name' => 'Amount',
+                'sort' => 'amount',
                 'amount' => $query->amount,
                 'currency' => $query->currency,
             ],
@@ -91,7 +86,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.payment.listing');
     }

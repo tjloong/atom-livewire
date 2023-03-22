@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Plan;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -13,14 +14,10 @@ class Listing extends Component
     public $sort = 'name,asc';
     public $filters = ['search' => null];
 
-    protected $queryString = [
-        'filters' => ['except' => ['search' => null]], 
-    ];
-
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->renew = !tier('root') && request()->query('renew')
             ? model('plan_subscription')->readable()->find(request()->query('renew'))
@@ -32,7 +29,7 @@ class Listing extends Component
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return model('plan')
             ->readable()
@@ -56,18 +53,18 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return [
             [
-                'column_name' => 'Plan',
-                'column_sort' => 'name',
+                'name' => 'Plan',
+                'sort' => 'name',
                 'label' => $query->name,
                 'href' => route('app.plan.update', [$query->id]),
             ],
 
             [
-                'column_name' => 'Trial',
+                'name' => 'Trial',
                 'count' => $query->trial,
                 'uom' => 'day',
             ],
@@ -77,7 +74,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.listing');
     }

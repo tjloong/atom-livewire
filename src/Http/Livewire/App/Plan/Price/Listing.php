@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Plan\Price;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -14,7 +15,7 @@ class Listing extends Component
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return $this->plan->prices()
             ->withCount('users')
@@ -26,11 +27,11 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return [
             [
-                'column_name' => 'Price',
+                'name' => 'Price',
                 'label' => implode(' / ', [
                     currency($query->amount, $query->currency),
                     $query->recurring,
@@ -49,12 +50,12 @@ class Listing extends Component
             ],
 
             [
-                'column_name' => 'Available In',
+                'name' => 'Available In',
                 'label' => $query->country ?? 'All Countries',
             ],
 
             [
-                'column_name' => 'Subscribers',
+                'name' => 'Subscribers',
                 'count' => $query->users_count,
                 'uom' => 'subscriber',
             ],
@@ -64,7 +65,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.price.listing');
     }

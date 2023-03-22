@@ -12,7 +12,7 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount($planId)
+    public function mount($planId): void
     {
         $this->plan = model('plan')->findOrFail($planId);
         $this->price = model('plan-price')->fill([
@@ -25,7 +25,7 @@ class Create extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.price.create');
     }

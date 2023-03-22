@@ -39,7 +39,7 @@
 
                     @if (data_get($this->total, 'amount') <= 0)
                         <div class="grid gap-4">
-                            <x-form.agree tnc wire:model="order.data.agree_tnc"/>
+                            <x-form.agree wire:model="order.data.agree_tnc" tnc/>
                             @if ($errors->any()) <x-alert :errors="$errors->all()"/> @endif
                         </div>
                     @endif
@@ -61,7 +61,7 @@
                 </x-slot:stripe>
 
                 <div class="grid gap-4">
-                    <x-form.agree tnc wire:model="order.data.agree_tnc"/>
+                    <x-form.agree wire:model="order.data.agree_tnc" tnc/>
                     @if ($errors->any()) <x-alert :errors="$errors->all()"/> @endif
                 </div>
             </x-payment-gateway>

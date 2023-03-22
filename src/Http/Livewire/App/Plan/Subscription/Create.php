@@ -3,40 +3,33 @@
 namespace Jiannius\Atom\Http\Livewire\App\Plan\Subscription;
 
 use Jiannius\Atom\Jobs\PlanPaymentProvision;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Create extends Component
 {
+    use WithForm;
+
     public $plan;
     public $price;
     public $items;
     public $order;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'order.data.agree_tnc' => 'accepted',
-            'order.data.enable_auto_billing' => 'nullable',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'order.data.agree_tnc.accepted' => 'Please accept terms & conditions and privacy policy.',
+            'order.data.agree_tnc' => ['accepted' => 'Please accept terms & conditions and privacy policy.'],
+            'order.data.enable_auto_billing' => ['nullable'],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->plan = model('plan')->where('slug', request()->query('plan'))->status('active')->firstOrFail();
         $this->price = $this->plan->prices()->findOrFail(request()->query('price'));
@@ -54,7 +47,7 @@ class Create extends Component
     /**
      * Get total property
      */
-    public function getTotalProperty()
+    public function getTotalProperty(): array
     {
         $currency = data_get($this->items->first(), 'currency');
         $amount = $this->items->sum('grand_total');
@@ -65,7 +58,7 @@ class Create extends Component
     /**
      * Add order item
      */
-    public function addItem()
+    public function addItem(): void
     {
         if (!$this->items) $this->items = collect();
 
@@ -105,10 +98,9 @@ class Create extends Component
     /**
      * Submit
      */
-    public function submit($provider = null)
+    public function submit($provider = null): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $order = model('plan_order')->create(array_merge($this->order, [
             'currency' => data_get($this->total, 'currency'),
@@ -173,7 +165,7 @@ class Create extends Component
     /**
      * Get stripe customer id
      */
-    public function getStripeCustomerId()
+    public function getStripeCustomerId(): string
     {
         $history = model('plan_payment')
             ->whereHas('order', fn($q) => $q->where('user_id', user('id')))
@@ -188,7 +180,7 @@ class Create extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.subscription.create');
     }

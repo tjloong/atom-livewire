@@ -6,6 +6,8 @@ use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Plan extends Model
 {
@@ -23,7 +25,7 @@ class Plan extends Model
     /**
      * Get prices for plan
      */
-    public function prices()
+    public function prices(): HasMany
     {
         return $this->hasMany(model('plan_price'));
     }
@@ -31,7 +33,7 @@ class Plan extends Model
     /**
      * Get upgradables for plan
      */
-    public function upgradables()
+    public function upgradables(): BelongsToMany
     {
         return $this->belongsToMany(model('plan'), 'plan_upgradables', 'plan_id', 'upgradable_id');
     }
@@ -39,7 +41,7 @@ class Plan extends Model
     /**
      * Get downgradables for plan
      */
-    public function downgradables()
+    public function downgradables(): BelongsToMany
     {
         return $this->belongsToMany(model('plan'), 'plan_downgradables', 'plan_id', 'downgradable_id');
     }
@@ -47,15 +49,15 @@ class Plan extends Model
     /**
      * Scope for fussy search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where('name', 'like', "%$search%");
+        $query->where('name', 'like', "%$search%");
     }
 
     /**
      * Get features list attributes
      */
-    public function getFeaturesListAttribute()
+    public function getFeaturesListAttribute(): array
     {
         return collect(explode("\n", $this->features))->filter()->map(fn($val) => trim($val))->values()->all();
     }
@@ -63,7 +65,7 @@ class Plan extends Model
     /**
      * Route guard
      */
-    public function routeGuard()
+    public function routeGuard(): array
     {
         return [];
     }

@@ -8,7 +8,7 @@
                 
                 <x-table.toolbar>
                     <div class="flex items-center gap-2">
-                        <x-form.select wire:model="filters.status"
+                        <x-form.select wire:model="filters.status" :label="false"
                             :options="collect(['active', 'pending', 'expired'])->map(fn($val) => [
                                 'value' => $val,
                                 'label' => ucfirst($val),
@@ -16,7 +16,7 @@
                             placeholder="All Status"
                         />
 
-                        <x-form.select wire:model="filters.plan"
+                        <x-form.select wire:model="filters.plan" :label="false"
                             :options="model('plan')->readable()->orderBy('name')->get()->map(fn($plan) => [
                                 'value' => $plan->slug,
                                 'label' => $plan->name,

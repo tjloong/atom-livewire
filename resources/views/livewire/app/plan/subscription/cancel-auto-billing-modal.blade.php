@@ -41,7 +41,7 @@
     
                 <x-button color="gray" inverted
                     label="Do Not Cancel"
-                    x-on:click="$dispatch('cancel-auto-billing-modal-close')"
+                    x-on:click="$dispatch('close')"
                 />
             </div>
         </x-slot:foot>

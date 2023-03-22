@@ -1,5 +1,5 @@
 <div class="max-w-screen-xl mx-auto w-full">
-    <x-table :data="$this->tableData">
+    <x-table :data="$this->table">
         <x-slot:header>
             <x-table.header label="Plan Prices">
                 <x-button size="sm" color="gray"

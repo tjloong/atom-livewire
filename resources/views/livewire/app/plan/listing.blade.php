@@ -6,7 +6,7 @@
     </x-page-header>
 
     @tier('root')
-        <x-table :data="$this->tableData">
+        <x-table :data="$this->table">
             <x-slot:header>
                 <x-table.searchbar :total="$this->paginator->total()"/>
             </x-slot:header>

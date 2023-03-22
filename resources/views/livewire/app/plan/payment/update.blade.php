@@ -17,17 +17,9 @@
     <div class="flex flex-col gap-6">
         <x-box header="Payment Information">
             <div class="flex flex-col divide-y">
-                <x-box.row label="Receipt Number">
-                    {{ $payment->number }}
-                </x-box.row>
-    
-                <x-box.row label="Amount">
-                    {{ currency($payment->amount, $payment->currency) }}
-                </x-box.row>
-    
-                <x-box.row label="Status">
-                    <x-badge :label="$payment->status"/>
-                </x-box.row>
+                <x-field label="Receipt Number" :value="$payment->number"/>
+                <x-field label="Amount" :value="currency($payment->amount, $payment->currency)"/>
+                <x-field label="Status" :badge="$payment->status"/>
             </div>
         </x-box>
 
@@ -35,7 +27,7 @@
             <x-box header="Order Summary">
                 <div class="flex flex-col divide-y">
                     @foreach ($items as $item)
-                        <x-box.row :label="$item->name">
+                        <x-field :label="$item->name">
                             <div class="text-right">
                                 <div>{{ currency($item->grand_total, $item->currency) }}</div>
 
@@ -45,7 +37,7 @@
                                     </div>
                                 @endif
                             </div>
-                        </x-box.row>
+                        </x-field>
                     @endforeach
                 </div>
             </x-box>
@@ -54,21 +46,19 @@
         @if ($payment->amount > 0)
             <x-box header="Payment Details">
                 <div class="flex flex-col divide-y">
-                    <x-box.row label="Provider">
-                        {{ str()->headline($payment->provider) }}
-                    </x-box.row>
+                    <x-field label="Provider" :value="str()->headline($payment->provider)"/>
 
                     @if ($payment->is_auto_billing)
-                        <x-box.row label="Auto Billing">{{ __('Yes') }}</x-box.row>
+                        <x-field label="Auto Billing" value="Yes"/>
                     @endif
 
                     @tier('root')
                         @if ($payment->provider === 'stripe')
                             @if ($customerId = data_get($payment->data, 'metadata.stripe_customer_id'))
-                                <x-box.row label="Stripe Customer ID">{{ $customerId }}</x-box.row>
+                                <x-field label="Stripe Customer ID" :value="$customerId"/>
                             @endif
                             @if ($subscriptionId = data_get($payment->data, 'metadata.stripe_subscription_id'))
-                                <x-box.row label="Stripe Customer ID">{{ $subscriptionId }}</x-box.row>
+                                <x-field label="Stripe Customer ID" :value="$subscriptionId"/>
                             @endif
                         @endif
                     @endtier

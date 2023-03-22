@@ -11,7 +11,7 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($paymentId)
+    public function mount($paymentId): void
     {
         $this->payment = model('plan_payment')->when(
             !tier('root'),
@@ -24,7 +24,7 @@ class Update extends Component
     /**
      * Download
      */
-    public function download($doc)
+    public function download($doc): mixed
     {
         $filename = 'plan-payment-'.$this->payment->number.'.pdf';
         $path = storage_path($filename);
@@ -45,7 +45,7 @@ class Update extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.payment.update');
     }

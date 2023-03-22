@@ -15,7 +15,7 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($planId, $priceId)
+    public function mount($planId, $priceId): void
     {
         $this->plan = model('plan')->findOrFail($planId);
         $this->price = $this->plan->prices()->findOrFail($priceId);
@@ -26,7 +26,7 @@ class Update extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         if ($this->price->users->count()) {
             return $this->popup([
@@ -43,7 +43,7 @@ class Update extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.price.update');
     }

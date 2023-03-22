@@ -11,19 +11,19 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
-        breadcrumbs()->push('Create Plan');
-
         $this->plan = model('plan')->fill([
             'is_active' => true,
         ]);
+
+        breadcrumbs()->push('Create Plan');
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.plan.create');
     }
