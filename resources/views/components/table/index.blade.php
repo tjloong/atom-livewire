@@ -34,17 +34,21 @@
                         <tr>
                             @php $cols = collect($data)->first() @endphp
                             @foreach ($cols as $i => $col)
-                                <x-table.th
-                                    :label="data_get($col, 'name') ?? data_get($col, 'column_name')"
-                                    :sort="data_get($col, 'sort') ?? data_get($col, 'column_sort')"
-                                    :checkbox="!empty(data_get($col, 'checkbox'))"
-                                    :class="
-                                        data_get($col, 'thclass') 
-                                            ?? data_get($col, 'column_class') 
-                                            ?? data_get($col, 'class') 
-                                            ?? ($i === array_key_last($cols) ? 'text-right' : null)
-                                    "
-                                />
+                                @if (data_get($col, 'actions'))
+                                    <x-table.th actions/>
+                                @else
+                                    <x-table.th
+                                        :label="data_get($col, 'name') ?? data_get($col, 'column_name')"
+                                        :sort="data_get($col, 'sort') ?? data_get($col, 'column_sort')"
+                                        :checkbox="!empty(data_get($col, 'checkbox'))"
+                                        :class="
+                                            data_get($col, 'thclass') 
+                                                ?? data_get($col, 'column_class') 
+                                                ?? data_get($col, 'class') 
+                                                ?? ($i === array_key_last($cols) ? 'text-right' : null)
+                                        "
+                                    />
+                                @endif
                             @endforeach
                         </tr>
                     </thead>
@@ -71,6 +75,7 @@
                                         :avatar="data_get($col, 'avatar')"
                                         :avatar-placeholder="data_get($col, 'avatar-placeholder')"
                                         :active="data_get($col, 'active')"
+                                        :actions="data_get($col, 'actions')"
                                         :class="
                                             data_get($col, 'tdclass') 
                                             ?? data_get($col, 'class') 

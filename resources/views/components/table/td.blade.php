@@ -20,6 +20,28 @@
             <div x-bind:class="checked ? 'block' : 'hidden'" class="w-full h-full bg-theme"></div>
         </div>
     </td>
+@elseif ($actions = $attributes->get('actions'))
+    @if ($actionbuttons = collect([
+        'edit' => data_get($actions, 'edit'),
+        'delete' => data_get($actions, 'delete'),
+    ])->filter()->toArray())
+        <td class="py-3 px-4">
+            <div class="flex items-center justify-end">
+                @foreach ($actionbuttons as $key => $val)
+                    @if ($key === 'delete')
+                        <div class="flex" x-tooltip="{{ data_get($val, 'tooltip') }}">
+                            <x-close.delete icon="circle-minus" class="m-auto"
+                                :title="data_get($val, 'title', 'Delete')"
+                                :message="data_get($val, 'message', 'Are you sure?')"
+                                :callback="data_get($val, 'callback', 'delete')"
+                                :params="data_get($val, 'params')"
+                            />
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        </td>
+    @endif
 @else
     <td {{ $attributes
         ->class([

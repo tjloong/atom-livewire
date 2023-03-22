@@ -4,7 +4,9 @@
     'sortBy' => $attributes->get('sort'),
 ])
 
-@if ($checkbox)
+@if ($attributes->get('actions'))
+    <th class="bg-slate-100 border-b border-gray-200"></th>
+@elseif ($checkbox)
     <th class="py-1 px-2 bg-slate-100 border-b border-gray-200 w-10">
         <div
             x-data="{

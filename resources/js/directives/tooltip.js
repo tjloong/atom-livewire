@@ -1,4 +1,6 @@
 export default ('tooltip', (el, { value, expression }) => {
+    if (!expression) return
+
     // create the tooltip
     const tooltipEl = document.createElement('div')
     tooltipEl.setAttribute('class', 'absolute bg-black opacity-80 text-white text-xs rounded p-1.5 hidden')
