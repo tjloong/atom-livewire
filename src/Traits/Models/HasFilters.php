@@ -10,31 +10,26 @@ trait HasFilters
     /**
      * Scope for readable
      */
-    public function scopeReadable($query, $data = null)
+    public function scopeReadable($query, $data = null): void
     {
-        return $query;
+        //
     }
 
     /**
      * Scope for status
      */
-    public function scopeStatus($query, $status)
+    public function scopeStatus($query, $status): void
     {
-        if ($status === 'trashed') return $query->onlyTrashed();
-        if ($status === 'active' && $this->hasColumn('is_active')) return $query->where('is_active', true);
-        if ($status === 'inactive' && $this->hasColumn('is_active')) return $query->where('is_active', false);
-
-        return $query->whereIn('status', (array)$status);
+        if ($status === 'trashed') $query->onlyTrashed();
+        else if ($status === 'active' && $this->hasColumn('is_active')) $query->where('is_active', true);
+        else if ($status === 'inactive' && $this->hasColumn('is_active')) $query->where('is_active', false);
+        else $query->whereIn('status', (array)$status);
     }
 
     /**
      * Apply scope from filters
-     *
-     * @param Builder $query
-     * @param array $filters
-     * @return Builder
      */
-    public function scopeFilter($query, $filters)
+    public function scopeFilter($query, $filters): void
     {
         foreach ($this->parseFilters($filters) as $filter) {
             $column = $filter['column'];
@@ -47,16 +42,14 @@ trait HasFilters
             else if (is_array($value)) $query->whereIn($column, $value);
             else $query->where($column, $value);
         }
-
-        return $query;
     }
 
     /**
      * Scope for paginateToPage
      */
-    public function scopeToPage($query, $page = 1, $rows = 50)
+    public function scopeToPage($query, $page = 1, $rows = 50): void
     {
-        return $query->paginate($rows, ['*'], 'page', $page);
+        $query->paginate($rows, ['*'], 'page', $page);
     }
 
     /**
@@ -151,15 +144,19 @@ trait HasFilters
             else {
                 if ($this->isDateColumn($column) || $this->isDatetimeColumn($column)) {
                     if (str($key)->is('from_*')) {
-                        if (Carbon::hasFormat($value, 'Y-m-d')) $value = Carbon::createFromFormat('Y-m-d', $value)->startOfDay();
-                        if (Carbon::hasFormat($value, 'Y-m-d H:i:s')) $value = Carbon::createFromFormat('Y-m-d H:i:s', $value);
+                        $value = format_date($value, 'carbon')->startOfDay()->utc();
+
+                        // if (Carbon::hasFormat($value, 'Y-m-d')) $value = Carbon::createFromFormat('Y-m-d', $value)->startOfDay();
+                        // if (Carbon::hasFormat($value, 'Y-m-d H:i:s')) $value = Carbon::createFromFormat('Y-m-d H:i:s', $value);
 
                         array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '>=']);
                     }
 
                     if (str($key)->is('to_*')) {
-                        if (Carbon::hasFormat($value, 'Y-m-d')) $value = Carbon::createFromFormat('Y-m-d', $value)->endOfDay();
-                        if (Carbon::hasFormat($value, 'Y-m-d H:i:s')) $value = Carbon::createFromFormat('Y-m-d H:i:s', $value);
+                        $value = format_date($value, 'carbon')->endOfDay()->utc();
+
+                        // if (Carbon::hasFormat($value, 'Y-m-d')) $value = Carbon::createFromFormat('Y-m-d', $value)->endOfDay();
+                        // if (Carbon::hasFormat($value, 'Y-m-d H:i:s')) $value = Carbon::createFromFormat('Y-m-d H:i:s', $value);
 
                         array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '<=']);
                     }
