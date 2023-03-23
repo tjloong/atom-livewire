@@ -175,9 +175,7 @@
                                     <div class="grid">
                                         <div x-text="val.label" class="truncate text-xs"></div>
                                     </div>
-                                    <a x-on:click="remove(val.value)" class="flex text-gray-500">
-                                        <x-icon name="xmark" size="12"/>
-                                    </a>
+                                    <x-close x-on:click.stop="remove(val.value)"/>
                                 </div>
                             </template>
                         </template>
@@ -189,7 +187,7 @@
                         </template>
                     </div>
                     <div class="shrink-0 flex items-center justify-center">
-                        <x-close x-on:click="select()"/>
+                        <x-close x-on:click.stop="select()"/>
                     </div>
                 </div>
             </template>
@@ -216,7 +214,7 @@
                         prefix="icon:search"
                     >
                         <x-slot:postfix>
-                            <x-close x-show="text" x-on:click="text = null"/>
+                            <x-close x-show="text" x-on:click.stop="text = null"/>
                         </x-slot:postfix>
                     </x-form.text>
                 </div>

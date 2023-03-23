@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Blog extends Model
 {
@@ -26,7 +29,7 @@ class Blog extends Model
     /**
      * Get cover for blog
      */
-    public function cover()
+    public function cover(): BelongsTo
     {
         return $this->belongsTo(model('file'), 'cover_id');
     }
@@ -34,21 +37,17 @@ class Blog extends Model
     /**
      * Get labels for blog
      */
-    public function labels()
+    public function labels(): BelongsToMany
     {
         return $this->belongsToMany(model('label'), 'blog_labels');
     }
 
     /**
      * Scope for fussy search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('title', 'like', "%$search%")
             ->orWhere('excerpt', 'like', "%$search%")
             ->orWhere('content', 'like', "%$search%")
@@ -58,14 +57,10 @@ class Blog extends Model
 
     /**
      * Scope for status
-     * 
-     * @param Builder $query
-     * @param string $status
-     * @return Builder
      */
-    public function scopeStatus($query, $status)
+    public function scopeStatus($query, $status): void
     {
-        return $query
+        $query
             ->when($status === 'draft', fn($q) => $q->whereNull('published_at'))
             ->when($status === 'published', fn($q) => $q->whereNotNull('published_at'));
     }

@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Traits\Models;
 
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Schema;
 
 trait HasFilters
@@ -47,9 +48,9 @@ trait HasFilters
     /**
      * Scope for paginateToPage
      */
-    public function scopeToPage($query, $page = 1, $rows = 50): void
+    public function scopeToPage($query, $page = 1, $rows = 50): LengthAwarePaginator
     {
-        $query->paginate($rows, ['*'], 'page', $page);
+        return $query->paginate($rows, ['*'], 'page', $page);
     }
 
     /**
