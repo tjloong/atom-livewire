@@ -104,11 +104,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Attribute for tier
      */
-    public function tier(): Attribute
+    public function getTierAttribute()
     {
-        return new Attribute(
-            get: fn() => $this->is_root ? 'root' : 'signup',
-        );
+        return $this->is_root ? 'root' : 'signup';
     }
 
     /**
