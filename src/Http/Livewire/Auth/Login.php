@@ -41,7 +41,7 @@ class Login extends Component
                 $token = request()->query('token');
                 $provider = request()->query('provider');
 
-                if ($this->socialUser = Socialite::driver($provider)->userFromToken($token)) {
+                if ($token && $provider && ($this->socialUser = Socialite::driver($provider)->userFromToken($token))) {
                     $this->email = $this->socialUser->getEmail();
                     $this->login();
                 }

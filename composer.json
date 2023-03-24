@@ -3,6 +3,7 @@
     "description": "Boilerplate for Larave-Livewire",
     "type": "library",
     "require": {
+        "barryvdh/laravel-debugbar": "^3",
         "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^3.6",
         "intervention/image": "^2.7",
