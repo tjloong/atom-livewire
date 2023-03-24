@@ -6,12 +6,7 @@
         <x-slot:foot></x-slot:foot>
     @else
         <x-form.group>
-            <x-form.text
-                label="Role Name"
-                wire:model.defer="role.name"
-                :error="$errors->first('role.name')"
-                required
-            />
+            <x-form.text wire:model.defer="role.name" label="Role Name"/>
         </x-form.group>
     @endif
 </x-form>

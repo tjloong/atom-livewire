@@ -1,9 +1,13 @@
 <div class="max-w-screen-sm mx-auto">
     <x-page-header :title="$this->role->name" back>
-        <x-button.delete inverted can="role.manage"
-            title="Delete Role"
-            message="This will DELETE the role. Are you sure?"
-        />
+        @can('role.manage')
+            <x-button color="gray" label="Duplicate" wire:click="duplicate"/>
+
+            <x-button.delete inverted
+                title="Delete Role"
+                message="This will DELETE the role. Are you sure?"
+            />
+        @endcan
     </x-page-header>
 
     <div class="flex flex-col gap-6">

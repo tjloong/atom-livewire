@@ -11,35 +11,17 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
-        $this->role = $this->duplicate() ?? model('role');
+        $this->role = model('role');
 
         breadcrumbs()->push('Create Role');
     }
 
     /**
-     * Duplidate
-     */
-    public function duplicate()
-    {
-        if (!request()->query('duplicate_from_id')) return;
-
-        $role = model('role')->findOrFail(request()->query('duplicate_from_id'));
-        $newrole = model('role')->fill(['name' => $role->name.' Copy'])->save();
-
-        if (enabled_module('permissions')) {
-            $role->permissions->each(fn($permission) => $newrole->permissions()->create([
-                'permission' => $permission->permission,
-                'is_granted' => $permission->is_granted,
-            ]));
-        }
-    }
-
-    /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.role.create');
     }

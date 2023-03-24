@@ -2,7 +2,11 @@
 
 namespace Jiannius\Atom\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Jiannius\Atom\Traits\Models\HasFilters;
 
 class Tenant extends Model
@@ -18,7 +22,7 @@ class Tenant extends Model
     /**
      * Model booted
      */
-    protected static function booted()
+    protected static function booted(): void
     {
         static::saved(function($tenant) {
             if (($sess = session('tenant')) && $sess->id === $tenant->id) {
@@ -30,7 +34,7 @@ class Tenant extends Model
     /**
      * Get avatar for tenant
      */
-    public function avatar()
+    public function avatar(): BelongsTo
     {
         return $this->belongsTo(model('file'), 'avatar_id');
     }
@@ -38,7 +42,7 @@ class Tenant extends Model
     /**
      * Get users for tenant
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(model('user'), 'tenant_users');
     }
@@ -46,7 +50,7 @@ class Tenant extends Model
     /**
      * Get settings for tenant
      */
-    public function settings()
+    public function settings(): HasMany
     {
         return $this->hasMany(model('tenant_setting'));
     }
@@ -54,9 +58,9 @@ class Tenant extends Model
     /**
      * Scope for fussy search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->whereHas('users', fn($q) => $q->search($search))
         );
@@ -65,9 +69,9 @@ class Tenant extends Model
     /**
      * Scope for current tenant
      */
-    public function scopeCurrent($query)
+    public function scopeCurrent($query): void
     {
-        return $query
+        $query
             ->whereHas('users', fn($q) => $q->where('users.id', user('id')))
             ->when(user('pref.tenant'), fn($q, $id) => $q->where('id', $id))
             ->oldest();
@@ -76,7 +80,7 @@ class Tenant extends Model
     /**
      * Get address attribute
      */
-    public function getAddressAttribute()
+    public function getAddressAttribute(): string
     {
         return format_address($this);
     }
@@ -84,7 +88,7 @@ class Tenant extends Model
     /**
      * Get owner attribute
      */
-    public function getOwnerAttribute()
+    public function getOwnerAttribute(): User
     {
         return $this->users()->wherePivot('is_owner', true)->first();
     }
@@ -92,7 +96,7 @@ class Tenant extends Model
     /**
      * Retrieve tenant
      */
-    public function retrieve($attr = null, $default = null, $tenant = null)
+    public function retrieve($attr = null, $default = null, $tenant = null): mixed
     {
         if (!$tenant) $tenant = session('tenant') ?? model('tenant')->current()->first();
     
@@ -103,7 +107,7 @@ class Tenant extends Model
         }
         else if (is_string($attr)) {
             if (str($attr)->is('settings.*')) {
-                $attr = str($attr)->replaceFirst('settings.', '')->toString();
+                $attr = str($attr)->replaceFirst('settings.', '')->replace('-', '_')->toString();
                 $split = explode('.', $attr);
                 $key = $split[0];
                 $subkeys = collect($split)->reject($key)->join('.');
@@ -120,20 +124,20 @@ class Tenant extends Model
         else if (is_array($attr)) {
             foreach ($attr as $key => $val) {
                 if (str($key)->is('settings.*')) {
-                    $key = str($key)->replaceFirst('settings.', '')->toString();
+                    $key = str($key)->replaceFirst('settings.', '')->replace('-', '_')->toString();
                     $settings = $tenant->settings()->where('key', $key)->get();
 
                     if ($settings->count()) {
-                        $settings->each(fn($setting) => $setting->fill(['value' => $val])->save());
+                        return $settings->each(fn($setting) => $setting->fill(['value' => $val])->save());
                     }
                     else {
-                        $tenant->settings()->create([
+                        return $tenant->settings()->create([
                             'key' => $key,
                             'value' => $val,
                         ]);
                     }
                 }
-                else $tenant->fill([$key => $val])->save();
+                else return $tenant->fill([$key => $val])->save();
             }
         }
         else {

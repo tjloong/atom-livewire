@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Role;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
@@ -12,20 +13,15 @@ class Listing extends Component
     use WithTable;
 
     public $sort = 'name,asc';
+
     public $filters = [
         'search' => null,
-    ];
-
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-        ]],
     ];
 
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return model('role')
             ->readable()
@@ -37,19 +33,18 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return array_filter([
             [
-                'column_name' => 'Role',
-                'column_sort' => 'name',
+                'name' => 'Role',
+                'sort' => 'name',
                 'label' => $query->name,
                 'href' => route('app.role.update', [$query->id]),
             ],
 
             enabled_module('permissions') ? [
-                'column_name' => 'Permissions',
-                'column_class' => 'text-right',
+                'name' => 'Permissions',
                 'class' => 'text-right',
                 'count' => in_array($query->slug, ['admin', 'administrator'])
                     ? '∞'
@@ -58,7 +53,7 @@ class Listing extends Component
             ] : null,
 
             [
-                'column_name' => 'Users',
+                'name' => 'Users',
                 'count' => $query->users_count,
                 'uom' => 'user',
                 'href' => route('app.settings', [
@@ -72,7 +67,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.role.listing');
     }
