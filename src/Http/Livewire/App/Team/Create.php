@@ -11,7 +11,7 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->team = model('team');
 
@@ -21,7 +21,7 @@ class Create extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.team.create');
     }

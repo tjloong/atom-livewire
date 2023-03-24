@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Team;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -12,16 +13,10 @@ class Listing extends Component
     public $sort = 'name,asc';
     public $filters = ['search' => null];
 
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-        ]],
-    ];
-
     /**
      * Get query property
      */
-    public function getQueryProperty()
+    public function getQueryProperty(): Builder
     {
         return model('team')
             ->readable()
@@ -32,18 +27,18 @@ class Listing extends Component
     /**
      * Get table columns
      */
-    public function getTableColumns($query)
+    public function getTableColumns($query): array
     {
         return [
             [
-                'column_name' => 'Team',
-                'column_sort' => 'name',
+                'name' => 'Team',
+                'sort' => 'name',
                 'label' => $query->name,
                 'href' => route('app.team.update', [$query->id]),
             ],
 
             [
-                'column_name' => 'Members',
+                'name' => 'Members',
                 'count' => $query->users_count,
                 'uom' => 'member',
                 'href' => route('app.settings', [
@@ -57,7 +52,7 @@ class Listing extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.team.listing');
     }

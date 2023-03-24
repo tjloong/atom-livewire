@@ -2,50 +2,41 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Team;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Form extends Component
 {
+    use WithForm;
     use WithPopupNotify;
 
     public $team;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
             'team.name' => [
-                'required',
+                'required' => 'Team name is required.',
                 function($attr, $value, $fail) {
-                    if (model('team')->readable()->where('name', $value)->count()) {
+                    if (model('team')->readable()->where('name', $value)->where('id', '<>', $this->team->id)->count()) {
                         $fail('There is another team with the same name.');
                     }
                 },
             ],
-            'team.description' => 'nullable',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'team.name.required' => 'Team name is required.',
+            'team.description' => ['nullable'],
         ];
     }
 
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $this->team->save();
 
@@ -55,7 +46,7 @@ class Form extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.team.form');
     }

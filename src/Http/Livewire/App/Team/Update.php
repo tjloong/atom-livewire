@@ -11,7 +11,7 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($teamId)
+    public function mount($teamId): void
     {
         $this->team = model('team')->readable()->findOrFail($teamId);
 
@@ -21,7 +21,7 @@ class Update extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         $this->team->delete();
 
@@ -31,7 +31,7 @@ class Update extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.team.update');
     }
