@@ -91,23 +91,23 @@ trait WithTable
     /**
      * Toggle checkbox
      */
-    public function toggleCheckbox($value): void
-    {
-        $values = collect($this->checkboxes);
+    // public function toggleCheckbox($value): void
+    // {
+    //     $values = collect($this->checkboxes);
 
-        if (in_array($value, ['*', '**'])) {
-            if (in_array($values->first(), ['*', '**'])) $values = collect();
-            else $values = collect([$value]);
-        }
-        else {
-            $values = $values->reject('*')->reject('**');
-            $values = $values->contains($value)
-                ? $values->reject($value)
-                : $values->concat([$value]);
-        }
+    //     if (in_array($value, ['*', '**'])) {
+    //         if (in_array($values->first(), ['*', '**'])) $values = collect();
+    //         else $values = collect([$value]);
+    //     }
+    //     else {
+    //         $values = $values->reject('*')->reject('**');
+    //         $values = $values->contains($value)
+    //             ? $values->reject($value)
+    //             : $values->concat([$value]);
+    //     }
 
-        $this->fill(['checkboxes' => $values->values()->all()]);
-    }
+    //     $this->fill(['checkboxes' => $values->values()->all()]);
+    // }
 
     /**
      * Reset table checkboxes

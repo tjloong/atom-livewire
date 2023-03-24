@@ -10,14 +10,12 @@
     <th class="py-1 px-2 bg-slate-100 border-b border-gray-200 w-10">
         <div
             x-data="{
-                get checkboxes () {
-                    return this.$wire.get('checkboxes')
-                },
                 get checked () {
-                    return this.checkboxes.includes('*')
+                    return checkboxes.length 
+                        && checkboxes.length >= this.$el.closest('table').querySelectorAll('[data-table-checkbox]').length
                 },
             }"
-            x-on:click="$wire.toggleCheckbox('*')"
+            x-on:click="toggleCheckbox('*')"
             x-bind:class="checked ? 'border-theme border-2' : 'bg-white border-gray-300'"
             class="mx-4 w-6 h-6 p-0.5 rounded shadow border cursor-pointer"
             id="table-checkbox-all"

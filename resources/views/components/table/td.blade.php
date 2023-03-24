@@ -2,22 +2,17 @@
     <td class="align-top py-3 px-2 w-10">
         <div
             x-data="{
-                value: @js($value),
-                get checkboxes () {
-                    return this.$wire.get('checkboxes')
-                },
-                get checked () {
-                    return this.checkboxes.includes('*')
-                        || this.checkboxes.includes('**')
-                        || this.checkboxes.includes(this.value)
+                get value () {
+                    return this.$el.getAttribute('data-table-checkbox')
                 },
             }"
-            x-on:click="$wire.toggleCheckbox(value)"
-            x-bind:class="checked ? 'border-theme border-2' : 'bg-white border-gray-300'"
+            x-on:click="toggleCheckbox(value)"
+            x-bind:class="checkboxes.includes(value) ? 'border-theme border-2' : 'bg-white border-gray-300'"
             class="mx-4 w-6 h-6 p-0.5 rounded shadow border cursor-pointer"
+            data-table-checkbox="@js($value)"
             id="{{ str()->slug('table-checkbox-'.$value) }}"
         >
-            <div x-bind:class="checked ? 'block' : 'hidden'" class="w-full h-full bg-theme"></div>
+            <div x-bind:class="checkboxes.includes(value) ? 'block' : 'hidden'" class="w-full h-full bg-theme"></div>
         </div>
     </td>
 @elseif ($actions = $attributes->get('actions'))
