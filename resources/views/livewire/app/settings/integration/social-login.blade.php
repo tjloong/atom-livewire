@@ -1,42 +1,26 @@
-<x-box header="Social Login">
-    <div 
-        x-data="{
-            activeProvider: null,
-        }"
-        class="flex flex-col divide-y"
-    >
-        @foreach ($this->providers as $provider)
-            <div>
+<x-form header="Social Login">
+    <div class="flex flex-col divide-y">
+        @foreach ($this->platforms as $item)
+            <div class="flex flex-col">
                 <a 
-                    x-on:click="activeProvider = @js($provider)"
-                    x-bind:class="activeProvider === @js($provider) && 'bg-slate-100'"
-                    class="p-4 flex items-center justify-between gap-3 hover:bg-slate-100"
+                    wire:click="$set('platform', @js($item))"
+                    class="p-4 flex items-center gap-3 hover:bg-slate-100 {{ $this->platform === $item ? 'bg-slate-100' : '' }}"
                 >
-                    {{ data_get($this->providerLabels, $provider) }}
-    
-                    <x-icon name="chevron-down"/>
+                    <span class="grow">{{ data_get($this->platformLabels, $item) }}</span> 
+                    <x-icon name="{{ $this->platform === $item ? 'chevron-up' : 'chevron-down' }}"/>
                 </a>
 
-                <div x-show="activeProvider === @js($provider)" class="p-4 flex flex-col gap-4">
-                    <x-form.text 
-                        :label="data_get($this->clientIdLabels, $provider)"
-                        wire:model.defer="settings.{{ $provider }}_client_id"
-                        :error="$errors->first('settings.'.$provider.'_client_id')"
-                    />
-
-                    <x-form.text 
-                        :label="data_get($this->clientSecretLabels, $provider)"
-                        wire:model.defer="settings.{{ $provider }}_client_secret"
-                        :error="$errors->first('settings.'.$provider.'_client_secret')"
-                    />
-
-                    <div>
-                        <x-button.submit type="button"
-                            wire:click="submit('{{ $provider }}')"
-                        />
-                    </div>
-                </div>
+                @if ($this->platform === $item)
+                    <x-form.group cols="2">
+                        <x-form.text wire:model.defer="settings.{{ $item }}_client_id" :label="data_get($this->clientIdLabels, $item)"/>
+                        <x-form.text wire:model.defer="settings.{{ $item }}_client_secret" :label="data_get($this->clientSecretLabels, $item)"/>
+                    </x-form.group>
+                @endif
             </div>
         @endforeach
     </div>
-</x-box>
+
+    @if (!$this->platform)
+        <x-slot:foot></x-slot:foot>
+    @endif
+</x-form>

@@ -2,40 +2,57 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class SocialLogin extends Component
 {
+    use WithForm;
     use WithPopupNotify;
     
+    public $platform;
     public $settings;
+
+    /**
+     * Validation
+     */
+    public function validation(): array
+    {
+        return [
+            'settings.'.$this->platform.'_client_id' => ['required' => data_get($this->clientIdLabels, $this->platform, 'Client ID'.' is required.')],
+            'settings.'.$this->platform.'_client_secret' => ['required' => data_get($this->clientSecretLabels, $this->platform, 'Client Secret'.' is required.')],
+
+        ];
+    }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
-        $this->settings = collect($this->providers)
+        $this->settings = collect($this->platforms)
             ->mapWithKeys(fn($val) => [
                 $val.'_client_id' => settings($val.'_client_id'),
                 $val.'_client_secret' => settings($val.'_client_secret'),
             ])
             ->toArray();
+
+        $this->platform = head($this->platforms);
     }
 
     /**
-     * Get providers property
+     * Get platforms property
      */
-    public function getProvidersProperty()
+    public function getPlatformsProperty(): array
     {
         return config('atom.auth.login', []);
     }
 
     /**
-     * Get provider labels property
+     * Get platform labels property
      */
-    public function getProviderLabelsProperty()
+    public function getPlatformLabelsProperty(): array
     {
         return [
             'google' => 'Google',
@@ -49,7 +66,7 @@ class SocialLogin extends Component
     /**
      * Get client id label property
      */
-    public function getClientIdLabelsProperty()
+    public function getClientIdLabelsProperty(): array
     {
         return [
             'google' => 'Client ID',
@@ -63,7 +80,7 @@ class SocialLogin extends Component
     /**
      * Get client secret label property
      */
-    public function getClientSecretLabelsProperty()
+    public function getClientSecretLabelsProperty(): array
     {
         return [
             'google' => 'Client Secret',
@@ -77,30 +94,22 @@ class SocialLogin extends Component
     /**
      * Submit
      */
-    public function submit($provider)
+    public function submit(): void
     {
-        $this->resetValidation();
-
-        $this->validate([
-            'settings.'.$provider.'_client_id' => 'required',
-            'settings.'.$provider.'_client_secret' => 'required',
-        ], [
-            'settings.'.$provider.'_client_id.required' => __(data_get($this->clientIdLabels, $provider, 'Client ID').' is required.'),
-            'settings.'.$provider.'_client_secret.required' => __(data_get($this->clientSecretLabels, $provider, 'Client Secret').' is required.'),
-        ]);
+        $this->validateForm();
 
         settings([
-            $provider.'_client_id' => data_get($this->settings, $provider.'_client_id'),
-            $provider.'_client_secret' => data_get($this->settings, $provider.'_client_secret'),
+            $this->platform.'_client_id' => data_get($this->settings, $this->platform.'_client_id'),
+            $this->platform.'_client_secret' => data_get($this->settings, $this->platform.'_client_secret'),
         ]);
 
-        $this->popup(data_get($this->providerLabels, $provider, str()->headline($provider)).' Credential Updated.');
+        $this->popup(data_get($this->platformLabels, $this->platform, str()->headline($this->platform)).' Credential Updated.');
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.settings.integration.social-login');
     }

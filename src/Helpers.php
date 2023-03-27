@@ -283,7 +283,11 @@ function settings($name = null, $default = null)
 {
     if (config('atom.static_site')) return $default;
 
-    $settings = session('settings') ?? model('site_setting')->generate();
+    if (request()->is(['app/settings', 'app/settings/*'])) {
+        session()->forget('settings');
+        $settings = model('site_setting')->generate();
+    }
+    else $settings = session('settings') ?? model('site_setting')->generate();
 
     if (!$name) {
         return $settings;

@@ -2,69 +2,61 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Email extends Component
 {
+    use WithForm;
     use WithPopupNotify;
     
     public $settings;
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'settings.notify_from' => 'required|email',
-            'settings.notify_to' => 'required|email',
-            'settings.mailer' => 'required',
-            'settings.smtp_host' => 'required_if:settings.mailer,smtp',
-            'settings.smtp_port' => 'required_if:settings.mailer,smtp',
-            'settings.smtp_username' => 'required_if:settings.mailer,smtp',
-            'settings.smtp_password' => 'required_if:settings.mailer,smtp',
-            'settings.smtp_encryption' => 'nullable',
-            'settings.mailgun_domain' => 'required_if:settings.mailer,mailgun',
-            'settings.mailgun_secret' => 'required_if:settings.mailer,mailgun',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'settings.notify_to.required' => __('Notification to email address is required.'),
-            'settings.notify_to.email' => __('Invalid notification to email address.'),
-            'settings.mailer.required' => __('Email provider is required.'),
-            'settings.smtp_host.required_if' => __('SMTP host is required.'),
-            'settings.smtp_port.required_if' => __('SMTP port number is required.'),
-            'settings.smtp_username.required_if' => __('SMTP username is required.'),
-            'settings.smtp_password.required_if' => __('SMTP password is required.'),
-            'settings.mailgun_domain.required_if' => __('Mailgun domain is required.'),
-            'settings.mailgun_secret.required_if' => __('Mailgun secret is required.'),
+            'settings.notify_from' => ['required' => 'Notification from email address is required.'],
+            'settings.notify_to' => ['required' => 'Notification to email address is required.'],
+            'settings.mailer' => ['required' => 'Email provider is required.'],
+            'settings.smtp_host' => ['required_if:settings.mailer,smtp' => 'SMTP host is required.'],
+            'settings.smtp_port' => ['required_if:settings.mailer,smtp' => 'SMTP port number is required.'],
+            'settings.smtp_username' => ['required_if:settings.mailer,smtp' => 'SMTP username is required.'],
+            'settings.smtp_password' => ['required_if:settings.mailer,smtp' => 'SMTP password is required.'],
+            'settings.mailgun_domain' => ['required_if:settings.mailer,mailgun' => 'Mailgun domain is required.'],
+            'settings.mailgun_secret' => ['required_if:settings.mailer,mailgun' => 'Mailgun secret is required.'],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
-        model('site_setting')->group('email')->get()->each(function($setting) {
-            $this->settings[$setting->name] = $setting->value;
-        });
+        foreach ([
+            'notify_from',
+            'notify_to',
+            'mailer',
+            'smtp_host',
+            'smtp_port',
+            'smtp_username',
+            'smtp_password',
+            'mailgun_domain',
+            'mailgun_secret',
+        ] as $key) {
+            $this->fill(['settings.'.$key => settings($key)]);
+        }
     }
 
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         settings($this->settings);
         
@@ -74,7 +66,7 @@ class Email extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.settings.integration.email');
     }
