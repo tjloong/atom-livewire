@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Traits\Livewire;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\WithPagination;
 
@@ -56,9 +57,11 @@ trait WithTable
     {
         if (!$this->query) return null;
 
-        if (!empty($this->sort)) $this->query->orderBy($this->sortBy, $this->sortOrder);
-
-        return $this->query->paginate($this->maxRows);
+        if (!empty($this->sort) && ($this->query instanceof Builder)) {
+            $this->query->orderBy($this->sortBy, $this->sortOrder);
+            return $this->query->paginate($this->maxRows);
+        }
+        else return $this->query;
     }
 
     /**
