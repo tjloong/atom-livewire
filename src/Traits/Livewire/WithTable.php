@@ -53,15 +53,15 @@ trait WithTable
     /**
      * Get paginator property
      */
-    public function getPaginatorProperty(): LengthAwarePaginator
+    public function getPaginatorProperty(): mixed
     {
         if (!$this->query) return null;
 
-        if (!empty($this->sort) && ($this->query instanceof Builder)) {
-            $this->query->orderBy($this->sortBy, $this->sortOrder);
-            return $this->query->paginate($this->maxRows);
-        }
-        else return $this->query;
+        if ($this->query instanceof LengthAwarePaginator) return $this->query;
+
+        if (!empty($this->sort)) $this->query->orderBy($this->sortBy, $this->sortOrder);
+
+        return $this->query->paginate($this->maxRows);
     }
 
     /**
