@@ -1,7 +1,7 @@
 <div {{ $attributes->merge([
-    'class' => 'py-2 px-4 flex flex-col gap-2 md:flex-row md:items-center hover:bg-slate-100',
+    'class' => 'py-2 px-4 flex flex-col gap-2 md:flex-row md:items-center print:flex-row print:items-center hover:bg-slate-100',
 ])->only('class') }}>
-    <div class="md:w-2/5">
+    <div class="md:w-2/5 print:w-2/5">
         @isset($label) {{ $label }}
         @elseif ($label = $attributes->get('label'))
             <div class="font-medium text-gray-400 text-sm flex items-center gap-2">
@@ -16,23 +16,19 @@
             {{ $slot }}
         </div>
     @else
-        <div class="md:w-3/5 md:text-right">
+        <div class="md:w-3/5 md:text-right print:w-3/5 print:text-right">
             @if ($badge = $attributes->get('badge'))
                 @if (is_string($badge)) <x-badge :label="$badge"/>
                 @elseif (is_array($badge)) <x-badge :label="data_get($badge, 'label')" :color="data_get($badge, 'color')"/>
                 @endif
             @elseif ($value = $attributes->get('value'))
                 @if ($href = $attributes->get('href'))
-                    <a href="{!! $href !!}" target="{{ $attributes->get('target', '_self') }}">
-                        {!! $value !!}
-                    </a>
+                    <x-link :label="$value" :href="$href" :target="$attributes->get('target', '_self')"/>
                 @else
                     {!! $value !!}
                 @endif
             @elseif ($href = $attributes->get('href'))
-                <a href="{!! $href !!}" target="{{ $attributes->get('target', '_self') }}">
-                    {{ $href }}
-                </a>
+                <x-link :href="$href" :target="$attributes->get('target', '_self')"/>
             @endif
 
             @if ($small = $attributes->get('small'))

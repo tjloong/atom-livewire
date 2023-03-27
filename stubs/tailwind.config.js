@@ -22,6 +22,8 @@ module.exports = {
             'xl': '1280px',
             '2xl': '1536px',
             '3xl': '2000px',
+            'print': { 'raw': 'print' },
+            'page': { 'raw': 'page' },
         },
         fontSize: {
             'xs': '.75rem',

@@ -118,9 +118,9 @@ class Index extends Component
                 'color' => $color[$this->color][$this->mode],
             ],
             'icon' => [
-                'name' => is_string($this->icon) 
-                    ? $this->icon 
-                    : data_get($this->icon, 'name') ?? $this->label,
+                'name' => str($this->icon)->is('*:*')
+                    ? last(explode(':', $this->icon))
+                    : ($this->icon ?? $this->label),
                 'size' => [
                     'xs' => '10',
                     'sm' => '12',
@@ -128,7 +128,7 @@ class Index extends Component
                     'md' => '18',
                     'lg' => '20',
                 ][$this->size],
-                'position' => is_string($this->icon) ? 'left' : data_get($this->icon, 'position', 'left'),
+                'position' => str($this->icon)->is('postfix:*') ? 'right' : 'left',
             ],
         ]));
     }

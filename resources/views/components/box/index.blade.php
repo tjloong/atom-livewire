@@ -1,6 +1,6 @@
 <div {{
     $attributes->class([
-        'box bg-white border shadow',
+        'box bg-white border shadow print:shadow-transparent',
         $attributes->get('class', 'rounded-xl'),
     ])->except('header')
 }}>

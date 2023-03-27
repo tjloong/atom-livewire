@@ -27,6 +27,7 @@ class AtomComponentServiceProvider extends ServiceProvider
         $components = [
             'seo',
             'icon',
+            'link',
             'logo',
             'alert',
             'badge',

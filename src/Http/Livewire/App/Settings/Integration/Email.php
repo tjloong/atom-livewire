@@ -44,6 +44,7 @@ class Email extends Component
             'smtp_port',
             'smtp_username',
             'smtp_password',
+            'smtp_encryption',
             'mailgun_domain',
             'mailgun_secret',
         ] as $key) {

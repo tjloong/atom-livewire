@@ -1,13 +1,16 @@
 @props(['size' => $attributes->get('size')])
 
-<div class="w-full flex flex-wrap justify-between md:flex-nowrap {{ $size === 'sm' ? 'mb-4' : 'mb-6' }}">
+<div {{ $attributes->class([
+    'w-full flex flex-wrap justify-between md:flex-nowrap',
+    $size === 'sm' ? 'mb-4' : 'mb-6',
+])->only('class') }}>
     <div class="grow flex gap-4 my-1">
         @if (request()->query('back'))
-            <div class="shrink-0 py-2">
+            <div class="shrink-0 py-2 print:hidden">
                 <x-page-header.back :size="$size" :href="request()->query('back')"/>
             </div>
         @elseif ($back)
-            <div class="shrink-0 py-2">
+            <div class="shrink-0 py-2 print:hidden">
                 <x-page-header.back :size="$size" :href="is_string($back) ? str($back)->toHtmlString() : null"/>
             </div>
         @endif

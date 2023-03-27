@@ -23,7 +23,7 @@
 
     <aside 
         x-ref="aside"
-        class="fixed left-0 top-0 bottom-0 z-20 overflow-hidden bg-gray-800"
+        class="fixed left-0 top-0 bottom-0 z-20 overflow-hidden bg-gray-800 print:hidden"
         :class="{
             'transition-0 duration-100 ease-in-out': animate,
             'w-56 lg:w-0': toggled,
@@ -76,7 +76,7 @@
     >
         <x-navbar 
             :config="['sticky' => true]"
-            class="shrink-0 bg-white py-3 px-4 border-b"
+            class="shrink-0 bg-white py-3 px-4 border-b print:hidden"
         >
             <x-slot:logo>
                 @isset($logo)
@@ -105,12 +105,12 @@
             </x-slot:auth>
         </x-navbar>
 
-        <div class="shrink-0 bg-white px-4 border-b">
+        <div class="shrink-0 bg-white px-4 border-b print:hidden">
             <x-breadcrumbs class="max-w-screen-xl mx-auto"/>
         </div>
     
         @if ($unverified)
-            <div x-data class="shrink-0 py-3 px-4 bg-yellow-100">
+            <div x-data class="shrink-0 py-3 px-4 bg-yellow-100 print:hidden">
                 <div class="flex flex-wrap items-center gap-2">
                     <x-icon name="triangle-exclamation" class="shrink-0 text-yellow-400"/>
                     <div class="font-medium text-yellow-600">
@@ -125,8 +125,8 @@
             </div> 
         @endif
 
-        <div class="grow bg-gray-50">
-            <div class="px-5 pt-5 pb-20 md:px-8 md:pt-8 overflow-y-auto h-full">
+        <div class="grow bg-gray-50 print:bg-transparent">
+            <div class="px-5 pt-5 pb-20 md:px-8 md:pt-8 print:px-0 print:pt-0 print:pb-0 overflow-y-auto h-full">
                 {{ $slot }}
             </div>
         </div>

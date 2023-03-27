@@ -37,16 +37,12 @@
             {{ $slot }}
         @elseif ($value = $attributes->get('value'))
             @if ($href = $attributes->get('href'))
-                <a href="{!! $href !!}" target="{{ $attributes->get('target', '_self') }}">
-                    {!! $value !!}
-                </a>
+                <x-link :label="$value" :href="$href" :target="$attributes->get('target', '_self')"/>
             @else
                 {!! $value !!}
             @endif
         @elseif ($href = $attributes->get('href'))
-            <a href="{!! $href !!}" target="{{ $attributes->get('target', '_self') }}">
-                {{ $href }}
-            </a>
+            <x-link :href="$href" :target="$attributes->get('target', '_self')"/>
         @elseif ($badge = $attributes->get('badge'))
             @if (is_string($badge)) <x-badge :label="$badge"/>
             @else

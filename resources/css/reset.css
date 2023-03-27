@@ -24,3 +24,12 @@ a {
 .sortable-ghost {
     @apply ring ring-offset-2 ring-theme ring-offset-theme-light;
 }
+
+@media print {
+    @page {
+        margin: 0;
+    }
+    body {
+        margin: 0.6cm;
+    }
+}
