@@ -45,9 +45,9 @@
                 @isset($logo)
                     {{ $logo }}
                 @else
-                    <a href="/" class="max-w-[100px] max-h-[50px] md:max-w-[150px] md:max-h-[75px]">
+                    <a href="/" class="w-[100px] h-[50px] md:w-[150px] md:h-[75px]">
                         @if ($attributes->get('logo'))
-                            <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain">
+                            <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain object-left">
                         @else
                             <x-logo class="w-full h-full"/>
                         @endif
@@ -83,7 +83,16 @@
                         @endisset
                     </div>
 
-                    <div class="shrink-0 w-full md:w-auto">
+                    <div class="shrink-0 w-full flex flex-col items-center gap-3 md:w-auto md:flex-row">
+                        @isset($end)
+                            <div {{ $end->attributes->merge([
+                                'class' => 'flex flex-col items-center gap-3 md:flex-row',
+                                'id' => 'navbar-end',
+                            ]) }}>
+                                {{ $end }}
+                            </div>
+                        @endisset
+
                         @isset($auth) {{ $auth }}
                         @else
                             @auth <x-navbar.auth/>

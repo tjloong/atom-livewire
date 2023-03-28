@@ -9,6 +9,7 @@
 
     <link rel="shortcut icon" href="{{ 
         $favicon 
+        ?? (file_exists(storage_path('app/public/img/favicon.ico')) ? asset('storage/img/favicon.ico') : null)
         ?? (file_exists(storage_path('app/public/img/favicon.png')) ? asset('storage/img/favicon.png') : null)
         ?? (file_exists(storage_path('app/public/img/favicon.svg')) ? asset('storage/img/favicon.svg') : null)
         ?? (file_exists(storage_path('app/public/img/favicon.jpg')) ? asset('storage/img/favicon.jpg') : null)
@@ -48,7 +49,7 @@
     @stack('styles')
 </head>
 
-<body class="font-{{ $fontTheme ?? 'sans' }} antialiased">
+<body class="font-{{ $fontTheme ?? 'sans' }} antialiased {{ $class ?? '' }}">
     @if ($enabled = $analytics ?? false)
         <x-analytics.gtm noscript/>
         <x-analytics.fbpixel noscript/>

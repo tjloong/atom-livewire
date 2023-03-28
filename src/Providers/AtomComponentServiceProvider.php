@@ -174,8 +174,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'navbar.mobile.locale',
 
             'slider.index',
-            'slider.slide',
             'slider.nav',
+            'slider.slide',
+            'slider.thumbs',
 
             'faq.index',
             'faq.item',
