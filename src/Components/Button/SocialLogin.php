@@ -19,7 +19,7 @@ class SocialLogin extends Component
             ->filter(function($provider) {
                 $clientId = settings($provider.'_client_id') ?? env(strtoupper($provider).'_CLIENT_ID');
                 $clientSecret = settings($provider.'_client_secret') ?? env(strtoupper($provider).'_CLIENT_SECRET');
-                return $clientId && $clientSecret;
+                return !empty($clientId) && !empty($clientSecret);
             })
             ->mapWithKeys(function($provider) {
                 return [$provider => [

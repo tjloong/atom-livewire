@@ -94,7 +94,7 @@ class SiteSetting extends Model
     protected static function booted()
     {
         static::saving(function($setting) {
-            session()->forget('settings');
+            cache()->forget('settings');
         });
     }
 
@@ -111,7 +111,9 @@ class SiteSetting extends Model
      */
     public function generate()
     {
-        return $this->get()->mapWithKeys(fn($val) => [$val->name => $val->value])->toArray();
+        return cache()->remember('settings', now()->addDays(7), function() {
+            return $this->get()->mapWithKeys(fn($val) => [$val->name => $val->value])->toArray();
+        });
     }
 
     /**

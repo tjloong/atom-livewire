@@ -20,8 +20,8 @@ class SocialLogin extends Component
     public function validation(): array
     {
         return [
-            'settings.'.$this->platform.'_client_id' => ['required' => data_get($this->clientIdLabels, $this->platform, 'Client ID'.' is required.')],
-            'settings.'.$this->platform.'_client_secret' => ['required' => data_get($this->clientSecretLabels, $this->platform, 'Client Secret'.' is required.')],
+            'settings.'.$this->platform.'_client_id' => ['nullable'],
+            'settings.'.$this->platform.'_client_secret' => ['nullable'],
 
         ];
     }

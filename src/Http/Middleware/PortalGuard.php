@@ -37,10 +37,6 @@ class PortalGuard
             }
         }
 
-        if (!session('settings')) {
-            session(['settings' => model('site_setting')->generate()]);
-        }
-
         if (enabled_module('tenants') && !session('tenant') && ($tenant = model('tenant')->current()->first())) {
             session(['tenant' => $tenant]);
         }

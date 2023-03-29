@@ -283,11 +283,7 @@ function settings($name = null, $default = null)
 {
     if (config('atom.static_site')) return $default;
 
-    if (request()->is(['app/settings', 'app/settings/*'])) {
-        session()->forget('settings');
-        $settings = model('site_setting')->generate();
-    }
-    else $settings = session('settings') ?? model('site_setting')->generate();
+    $settings = model('site_setting')->generate();
 
     if (!$name) {
         return $settings;
@@ -297,7 +293,8 @@ function settings($name = null, $default = null)
     }
     else if (is_array($name)) {
         foreach ($name as $key => $val) {
-            model('site_setting')->where('name', $key)->update(['value' => $val]);
+            $setting = model('site_setting')->where('name', $key)->first();
+            $setting->fill(['value' => $val])->save();
         }
     }
 }
