@@ -19,7 +19,12 @@
         <div class="md:w-3/5 md:text-right print:w-3/5 print:text-right">
             @if ($badge = $attributes->get('badge'))
                 @if (is_string($badge)) <x-badge :label="$badge"/>
-                @elseif (is_array($badge)) <x-badge :label="data_get($badge, 'label')" :color="data_get($badge, 'color')"/>
+                @elseif (is_array($badge))
+                    <div class="inline-flex items-center gap-2">
+                        @foreach ($badge as $key => $val)
+                            <x-badge :label="$val" :color="$key"/>
+                        @endforeach
+                    </div>
                 @endif
             @elseif ($value = $attributes->get('value'))
                 @if ($href = $attributes->get('href'))
