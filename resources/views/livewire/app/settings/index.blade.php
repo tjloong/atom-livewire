@@ -31,7 +31,12 @@
         </div>
 
         <div class="md:w-3/4">
-            @livewire($livewire, key($tab))
+            @if ($com = lw(
+                data_get(tabs($this->tabs, $tab), 'livewire')
+                ?? 'app.settings.'.$tab
+            ))
+                @livewire($com, key($tab))
+            @endif
         </div>
     </div>
 </div>

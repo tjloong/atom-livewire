@@ -231,7 +231,7 @@ function metadata($method = null, $args = null)
 /**
  * Flatten tabs array
  */
-function tabs($tabs, $slug = null)
+function tabs($tabs, $slug = false)
 {
     $col = collect();
 
@@ -244,7 +244,7 @@ function tabs($tabs, $slug = null)
         else $col->push($tab);
     }
 
-    return $slug
+    return $slug !== false
         ? $col->firstWhere('slug', $slug)
         : $col->filter()->values();
 }

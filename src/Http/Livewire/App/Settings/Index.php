@@ -17,7 +17,9 @@ class Index extends Component
      */
     public function mount()
     {
-        $this->tab = $this->tab ?? data_get(tabs($this->tabs)->first(), 'slug');
+        $this->tab = data_get(
+            tabs($this->tabs, $this->tab) ?? tabs($this->tabs)->first()
+        , 'slug');
 
         if (!in_array($this->tab, [
             'login', 
@@ -66,7 +68,7 @@ class Index extends Component
                 : null,
 
             enabled_module('pages')
-                ? ['slug' => 'pages', 'label' => 'Pages', 'icon' => 'file']
+                ? ['slug' => 'pages', 'label' => 'Pages', 'icon' => 'file', 'livewire' => 'app.page.listing']
                 : null,
                 
             ['slug' => 'file', 'label' => 'Files and Media', 'icon' => 'folder', 'livewire' => 'app.file.listing'],
@@ -101,16 +103,6 @@ class Index extends Component
      */
     public function render(): mixed
     {
-        return atom_view('app.settings', [
-            'livewire' => lw(
-                data_get(tabs($this->tabs, $this->tab), 'livewire')
-                ?? [
-                    'labels' => 'app.label.listing',
-                    'pages' => 'app.page.listing',
-                    'plans' => 'app.plan.listing',
-                ][$this->tab] 
-                ?? 'app.settings.'.$this->tab
-            ),
-        ]);
+        return atom_view('app.settings');
     }
 }

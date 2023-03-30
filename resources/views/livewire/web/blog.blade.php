@@ -62,7 +62,10 @@
 
                             <div class="flex items-center flex-wrap gap-2">
                                 @foreach ($this->topics as $label)
-                                    <div class="inline-block py-1.5 px-3 rounded-lg font-medium border-2 cursor-pointer">
+                                    @php $active = in_array($label->slug, data_get($filters, 'labels', [])) @endphp
+                                    <div class="inline-block py-1.5 px-3 rounded-lg font-medium border-2 cursor-pointer {{ 
+                                        $active ? 'border-theme bg-theme text-white' : 'border-gray-400 bg-white text-gray-500'
+                                    }}">
                                         <div class="flex items-center gap-2">
                                             <div wire:click="$set('filters.labels', @js(
                                                 collect(data_get($filters, 'labels'))->concat([$label->slug])->unique()->toArray()
@@ -70,10 +73,10 @@
                                                 {{ $label->locale('name') }}
                                             </div>
 
-                                            @if (in_array($label->slug, data_get($filters, 'labels', [])))
+                                            @if ($active)
                                                 <x-close wire:click="$set('filters.labels', {{
                                                     collect(data_get($filters, 'labels'))->reject($label->slug)->unique()->toJson()
-                                                }})"/>
+                                                }})" class="text-white hover:text-gray-500"/>
                                             @endif
                                         </div>
                                     </div>
