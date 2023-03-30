@@ -570,7 +570,7 @@ function uncurrency($string)
  */
 function tier($name)
 {
-    return user()->isTier($name);
+    return user() && user()->isTier($name);
 }
 
 /**

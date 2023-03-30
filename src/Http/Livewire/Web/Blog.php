@@ -10,30 +10,46 @@ class Blog extends Component
     use WithPagination;
 
     public $slug;
-    public $search;
-    public $labels;
     public $preview;
+    public $filters;
 
     protected $queryString = [
-        'search' => ['except' => ''],
-        'labels' => ['except' => ''],
+        'filters',
     ];
+
+    protected $listeners = ['refresh' => '$refresh'];
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->preview = auth()->user() && request()->query('preview');
-        $this->setSeo();
+
+        if ($this->blog) {
+            config([
+                'atom.seo.title' => $this->blog->seo->title ?? $this->blog->title,
+                'atom.seo.description' => $this->blog->seo->description ?? html_excerpt($this->blog->excerpt ?? $this->blog->content),
+                'atom.seo.image' => $this->blog->seo->image ?? $this->blog->cover->url ?? null,
+            ]);
+        }
+
+        if (!$this->filters) {
+            $this->fill([
+                'filters.search' => null,
+                'filters.labels' => [],
+            ]);
+        }
     }
 
     /**
      * Get blog property
      */
-    public function getBlogProperty()
+    public function getBlogProperty(): mixed
     {
-        if (!$this->slug) return;
+        if (!$this->slug) return null;
+        if (data_get($this->filters, 'search')) return null;
+        if (data_get($this->filters, 'labels')) return null;
 
         $blogs = model('blog')
             ->when(!$this->preview, fn($q) => $q->status('published'))
@@ -48,15 +64,15 @@ class Blog extends Component
     /**
      * Get blogs property
      */
-    public function getBlogsProperty()
+    public function getBlogsProperty(): mixed
     {
-        if ($this->blog) return;
+        if ($this->blog) return null;
 
         return model('blog')
             ->status('published')
-            ->when($this->search, fn($q) => $q->search($this->search))
-            ->when($this->labels, fn($q) => $q
-                ->whereHas('labels', fn($q) => $q->whereIn('labels.slug', explode(',', $this->labels)))
+            ->when(data_get($this->filters, 'search'), fn($q, $search) => $q->search($search))
+            ->when(data_get($this->filters, 'labels'), fn($q, $labels) => $q
+                ->whereHas('labels', fn($q) => $q->whereIn('labels.slug', $labels))
             )
             ->latest('published_at')
             ->latest()
@@ -66,7 +82,7 @@ class Blog extends Component
     /**
      * Get recents property
      */
-    public function getRecentsProperty()
+    public function getRecentsProperty(): mixed
     {
         $recents = model('blog')
             ->status('published')
@@ -76,7 +92,7 @@ class Blog extends Component
             ->take(6)
             ->get();
 
-        if (!$recents->count()) return;
+        if (!$recents->count()) return null;
 
         return $recents;
     }
@@ -84,9 +100,9 @@ class Blog extends Component
     /**
      * Get related property
      */
-    public function getRelatedProperty()
+    public function getRelatedProperty(): mixed
     {
-        if (!$this->blog) return;
+        if (!$this->blog) return null;
 
         $labels = $this->blog->labels->pluck('id')->unique()->values()->all();
         $related = model('blog')
@@ -98,7 +114,7 @@ class Blog extends Component
             ->take(6)
             ->get();
 
-        if (!$related->count()) return;
+        if (!$related->count()) return null;
 
         return $related;
     }
@@ -106,7 +122,7 @@ class Blog extends Component
     /**
      * Get topics property
      */
-    public function getTopicsProperty()
+    public function getTopicsProperty(): mixed
     {
         $topics = model('label')
             ->readable()
@@ -115,7 +131,7 @@ class Blog extends Component
             ->orderBy('name')
             ->get();
         
-        if (!$topics->count()) return;
+        if (!$topics->count()) return null;
 
         return $topics;
     }
@@ -123,7 +139,7 @@ class Blog extends Component
     /**
      * Get sidebar property
      */
-    public function getSidebarProperty()
+    public function getSidebarProperty(): array
     {
         return array_filter([
             'topics' => $this->topics,
@@ -133,23 +149,9 @@ class Blog extends Component
     }
 
     /**
-     * Set Seo
-     */
-    public function setSeo()
-    {
-        if (!$this->blog) return;
-
-        config([
-            'atom.seo.title' => $this->blog->seo->title ?? $this->blog->title,
-            'atom.seo.description' => $this->blog->seo->description ?? html_excerpt($this->blog->excerpt ?? $this->blog->content),
-            'atom.seo.image' => $this->blog->seo->image ?? $this->blog->cover->url ?? null,
-        ]);
-    }
-
-    /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('web.blog');
     }

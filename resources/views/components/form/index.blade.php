@@ -6,7 +6,18 @@
 
 <form 
     id="{{ $id }}"
-    wire:submit.prevent="{{ $attributes->get('submit', 'submit') }}"
+    
+    @if ($confirm = $attributes->get('confirm'))
+        x-data
+        x-on:submit.prevent="$dispatch('confirm', {
+            title: @js(__(data_get($confirm, 'title', 'Submit Form'))),
+            message: @js(__(data_get($confirm, 'message', 'Are you sure to submit this form?'))),
+            onConfirmed: () => $wire.call(@js($attributes->get('submit', 'submit'))),
+        })"
+    @else
+        wire:submit.prevent="{{ $attributes->get('submit', 'submit') }}"
+    @endif
+
     @if ($modal)
         x-data="{
             show: false,
@@ -35,6 +46,7 @@
         <div id="form-modal-container" {{ $attributes
             ->merge(['class' => 'bg-white shadow border rounded-xl'])
             ->merge(['class' => $modal ? 'relative max-w-screen-sm mx-auto' : ''])
+            ->only('class')
         }}>
             @if ($header = $attributes->get('header'))
                 <div class="m-1 py-3 px-4 border-b flex flex-wrap items-center gap-3">

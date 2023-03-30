@@ -293,7 +293,7 @@ if (enabled_module('shareables')) {
  * Web
  */
 if (enabled_module('blogs')) {
-    define_route('blog/{slug?}', 'Web\Blog')->name('web.blog');
+    define_route(config('atom.blog.route', 'blog/{slug?}'), 'Web\Blog')->name('web.blog');
 }
 
 /**

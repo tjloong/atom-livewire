@@ -1,24 +1,8 @@
 <main class="min-h-screen">    
-    <div 
-        x-data="{
-            text: @js($search),
-            labels: @js(explode(',', $labels)),
-            search () {
-                const params = new URLSearchParams({
-                    search: this.text || '',
-                    labels: this.labels,
-                })
-
-                window.location = '/blog?'+params.toString()
-            },
-        }"
-        class="max-w-screen-xl mx-auto grid gap-12 px-4 py-14"
-    >
+    <div class="max-w-screen-xl mx-auto grid gap-12 px-4 py-14">
         <div class="flex flex-wrap items-center gap-4 justify-between">
             @if ($this->blog)
-                <a href="{{ route('web.blog') }}" class="flex items-center gap-3 text-gray-500">
-                    <x-icon name="arrow-left"/> {{ __('Back') }}
-                </a>
+                <x-link :href="route('web.blog')" label="Back" icon="arrow-left" class="flex items-center gap-3 text-gray-500"/>
             @else
                 <h1 class="text-5xl font-extrabold flex-shrink-0">
                     {{ $this->title ?? $title ?? 'Blogs' }}
@@ -26,14 +10,10 @@
             @endif
 
             <div class="max-w-md">
-                <form x-on:submit.prevent="search">
-                    <x-form.text 
-                        x-model="text"
-                        placeholder="Search Articles"
-                        prefix="icon:search"
-                    >
-                        @if ($search)
-                            <x-slot:button icon="close" x-on:click="text = ''; search()"></x-slot:button>
+                <form wire:submit.prevent="$emit('refresh')">
+                    <x-form.text wire:model.defer="filters.search" placeholder="Search Articles" prefix="icon:search" :label="false">
+                        @if (!empty(data_get($filters, 'search')))
+                            <x-slot:button icon="close" wire:click="$set('filters.search', null)"></x-slot:button>
                         @endif
                     </x-form.text>
                 </form>
@@ -55,7 +35,7 @@
                         <div class="grid gap-6 md:grid-cols-3">
                             @forelse ($this->blogs as $blog)
                                 <x-blog.card
-                                    :href="'/blog/'.$blog->slug"
+                                    :href="route('web.blog', [$blog->slug])"
                                     :cover="optional($blog->cover)->url"
                                     :title="$blog->title"
                                     :excerpt="html_excerpt($blog->excerpt ?? $blog->content)"
@@ -80,35 +60,21 @@
                                 Topics
                             </div>
 
-                            <div 
-                                x-data="{
-                                    toggle (slug) {
-                                        const index = this.labels.findIndex(label => label === slug)
-                                        if (index > -1) this.labels.splice(index, 1)
-                                        else this.labels.push(slug)
-
-                                        search()
-                                    },
-                                }"
-                                class="flex items-center flex-wrap gap-2"
-                            >
+                            <div class="flex items-center flex-wrap gap-2">
                                 @foreach ($this->topics as $label)
-                                    <div 
-                                        x-data="{ 
-                                            get isActive () { return labels.includes(@js($label->slug)) },
-                                        }"
-                                        x-on:click="toggle(@js($label->slug))"
-                                        x-bind:class="{
-                                            'border-theme bg-theme text-white': isActive,
-                                            'border-gray-400 bg-white text-gray-500': !isActive,
-                                        }"
-                                        class="inline-block py-1.5 px-3 rounded-lg font-medium border-2 cursor-pointer"
-                                    >
+                                    <div class="inline-block py-1.5 px-3 rounded-lg font-medium border-2 cursor-pointer">
                                         <div class="flex items-center gap-2">
-                                            {{ $label->locale('name') }}
-                                            <div x-show="isActive" class="flex">
-                                                <x-icon name="xmark" class="m-auto"/>
+                                            <div wire:click="$set('filters.labels', @js(
+                                                collect(data_get($filters, 'labels'))->concat([$label->slug])->unique()->toArray()
+                                            ))">
+                                                {{ $label->locale('name') }}
                                             </div>
+
+                                            @if (in_array($label->slug, data_get($filters, 'labels', [])))
+                                                <x-close wire:click="$set('filters.labels', {{
+                                                    collect(data_get($filters, 'labels'))->reject($label->slug)->unique()->toJson()
+                                                }})"/>
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach
@@ -124,7 +90,7 @@
 
                             @foreach ($related as $val)
                                 <x-blog.card size="sm"
-                                    :href="'/blog/'.$val->slug"
+                                    :href="route('web.blog', [$val->slug])"
                                     :title="$val->title"
                                     :excerpt="html_excerpt($val->excerpt ?? $val->content)"
                                     :date="$val->published_at"
@@ -141,7 +107,7 @@
 
                             @foreach ($recents as $val)
                                 <x-blog.card size="sm"
-                                    :href="'/blog/'.$val->slug"
+                                    :href="route('web.blog', [$val->slug])"
                                     :title="$val->title"
                                     :excerpt="html_excerpt($val->excerpt ?? $val->content)"
                                     :date="$val->published_at"
