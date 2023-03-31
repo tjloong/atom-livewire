@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TenantSetting extends Model
 {
@@ -15,21 +16,36 @@ class TenantSetting extends Model
         'tenant_id' => 'integer',
     ];
 
+    protected $touches = ['tenant'];
+
     /**
      * Model booted
      */
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::saved(function($setting) {
-            $setting->tenant->touch();
+        static::saving(function() {
+            session()->forget('tenant.settings');
         });
     }
 
     /**
      * Get tenant for setting
      */
-    public function tenant()
+    public function tenant(): BelongsTo
     {
         return $this->belongsTo(model('tenant'));
+    }
+
+    /**
+     * Retrieve settings for tenant
+     */
+    public function retrieve($tenant)
+    {
+        $settings = session('tenant.settings') 
+            ?? $tenant->settings->mapWithKeys(fn($setting) => [$setting->key => $setting->value])->toArray();
+
+        if (!session('tenant.settings')) session(['tenant.settings' => $settings]);
+
+        return $settings;
     }
 }

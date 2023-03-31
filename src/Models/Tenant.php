@@ -25,8 +25,8 @@ class Tenant extends Model
     protected static function booted(): void
     {
         static::saved(function($tenant) {
-            if (($sess = session('tenant')) && $sess->id === $tenant->id) {
-                session()->forget('tenant');
+            if (($sess = session('tenant.current')) && $sess->id === $tenant->id) {
+                session()->forget('tenant.current');
             }
         });
     }
@@ -67,17 +67,6 @@ class Tenant extends Model
     }
 
     /**
-     * Scope for current tenant
-     */
-    public function scopeCurrent($query): void
-    {
-        $query
-            ->whereHas('users', fn($q) => $q->where('users.id', user('id')))
-            ->when(user('pref.tenant'), fn($q, $id) => $q->where('id', $id))
-            ->oldest();
-    }
-
-    /**
      * Get address attribute
      */
     public function getAddressAttribute(): string
@@ -94,25 +83,36 @@ class Tenant extends Model
     }
 
     /**
+     * Current tenant
+     */
+    public function current(): mixed
+    {
+        return model('tenant')
+            ->whereHas('users', fn($q) => $q->where('users.id', user('id')))
+            ->when(user('pref.tenant'), fn($q, $id) => $q->where('id', $id))
+            ->oldest()
+            ->first();
+    }
+
+    /**
      * Retrieve tenant
      */
     public function retrieve($attr = null, $default = null, $tenant = null): mixed
     {
-        if (!$tenant) $tenant = session('tenant') ?? model('tenant')->current()->first();
-    
-        if ($attr === 'settings') {
-            return $tenant->settings->mapWithKeys(fn($setting) => [
-                $setting->key => $setting->value,
-            ]);
-        }
+        $tenant = $tenant ?? session('tenant.current') ?? model('tenant')->current();
+        $settings = model('tenant_setting')->retrieve($tenant);
+
+        if (!session('tenant.current')) session(['tenant.current' => $tenant]);
+
+        if ($attr === 'settings') return $settings;
         else if (is_string($attr)) {
             if (str($attr)->is('settings.*')) {
                 $attr = str($attr)->replaceFirst('settings.', '')->replace('-', '_')->toString();
                 $split = explode('.', $attr);
                 $key = $split[0];
                 $subkeys = collect($split)->reject($key)->join('.');
-                $settings = $tenant->settings()->where('key', $key)->first();
-                $value = json_decode(json_encode(optional($settings)->value ?? $default), true);
+                $settings = data_get($settings, $key);
+                $value = json_decode(json_encode($settings ?? $default), true);
     
                 if ($subkeys) return data_get($value, $subkeys);
                 else return $value;
