@@ -2,11 +2,26 @@
 {{-- Header --}}
 @slot('header')
 @component('mail::header', ['url' => config('app.url')])
+<table style="width: 100%">
+<tr>
+<td style="vertical-align: middle;">
+@foreach ((array)($logo ?? asset('storage/img/logo.png')) as $val)
+<div style="
+    margin: 1.5rem 0.5rem;
+    width: {{ data_get($val, 'width', '200px') }};
+    height: {{ data_get($val, 'height', '100px') }};
+    display: inline-block;
+">
 <img 
-    src="{{ $logo ?? asset('storage/img/logo.png') }}"
-    alt="{{ $logo_alt ?? config('app.name') }}"
-    style="margin: 1.5rem 0; {{ isset($logo) ? 'width: 200px;' : 'width: 150px;' }}"
+    src="{{ is_string($val) ? $val : data_get($val, 'url') }}"
+    alt="{{ data_get($val, 'alt') ?? config('app.name') }}"
+    style="width: 100%; height: 100%; object-fit: contain;"
 >
+</div>
+@endforeach
+</td>
+</tr>
+</table>
 @endcomponent
 @endslot
 
