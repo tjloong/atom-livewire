@@ -11,15 +11,11 @@ class Listing extends Component
     use WithTable;
 
     public $category;
+    public $fullpage;
     public $sort = 'created_at,desc';
+
     public $filters = [
         'search' => null,
-    ];
-
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-        ]],
     ];
 
     /**
@@ -27,7 +23,9 @@ class Listing extends Component
      */
     public function mount(): void
     {
-        breadcrumbs()->home($this->title);
+        if ($this->fullpage = current_route('app.contact.listing')) {
+            breadcrumbs()->home($this->title);
+        }
     }
 
     /**
