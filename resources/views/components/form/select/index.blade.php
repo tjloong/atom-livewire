@@ -171,11 +171,11 @@
                                 x-for="(val, i) in options.filter(opt => (value.includes(opt.value)))"
                                 x-bind:key="`${val.value}-${i}`"
                             >
-                                <div class="bg-slate-200 rounded-md py-1 px-2 text-sm font-medium border border-gray-200 flex items-center gap-2 max-w-[200px]">
+                                <div class="bg-slate-200 rounded-md px-2 text-sm font-medium border border-gray-200 flex items-center gap-2 max-w-[200px]">
                                     <div class="grid">
                                         <div x-text="val.label" class="truncate text-xs"></div>
                                     </div>
-                                    <x-close x-on:click.stop="remove(val.value)"/>
+                                    <x-close x-on:click.stop="remove(val.value)" size="12"/>
                                 </div>
                             </template>
                         </template>

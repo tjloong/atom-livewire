@@ -3,10 +3,15 @@
     'target' => $attributes->get('target', '_self'),
     'label' => $attributes->get('label') ?? $attributes->get('href'),
     'icon' => $attributes->get('icon'),
+    'small' => $attributes->get('small'),
 ])
 
-<a href="{!! $href !!}"
-    target="{{ $target }}"
+<a 
+    @if (!empty($href))
+        href="{!! $href !!}"
+        target="{{ $target }}"
+    @endif
+    
     {{ $attributes->class(['font-medium text-blue-700 print:text-gray-800', $attributes->get('class')])->only('class') }}
     {{ $attributes->except('class') }}
 >
@@ -18,6 +23,9 @@
         @else
             {{ __($label) }}
         @endif
-    @else {{ $slot }}
+
+        @if ($small) <br><span class="text-gray-500 text-sm font-medium">{{ __($small) }}</span> @endif
+    @else 
+        {{ $slot }}
     @endif
 </a>

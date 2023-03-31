@@ -29,7 +29,7 @@ class PlanGuard
                     ->filter(fn($key) => collect($routeGuard[$key])->search($violatedRoute) !== false)
                     ->values();
 
-                $subscribedPlans = $mustHavePlans->filter(fn($val) => $request->user()->hasPlan($val));
+                $subscribedPlans = $mustHavePlans->filter(fn($val) => $request->user()->isSubscribedToPlan($val));
 
                 if (!$subscribedPlans->count() && !$request->user()->isTier('root')) {
                     if (Route::has('app.plan.listing')) {

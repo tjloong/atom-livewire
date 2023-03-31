@@ -3,24 +3,23 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Jiannius\Atom\Notifications\UserActivationNotification;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
-use Jiannius\Atom\Notifications\UserActivationNotification;
+use Jiannius\Atom\Traits\Models\HasPlan;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
     use HasFilters;
+    use HasPlan;
     use HasTrace;
     use Notifiable;
     use SoftDeletes;
@@ -203,39 +202,6 @@ class User extends Authenticatable implements MustVerifyEmail
         })->count() > 0;
     }
 
-    /**
-     * Check user has plan
-     */
-    public function hasPlan($plan): bool
-    {
-        if (!enabled_module('plans')) return false;
-
-        $id = is_numeric($plan) ? $plan : (
-            is_string($plan) 
-                ? optional(model('plan')->where('slug', $plan)->first())->id
-                : optional($plan)->id
-        );
-
-        return $this->subscriptions()
-            ->status('active')
-            ->whereHas('price', fn($q) => $q->where('plan_id', $id))
-            ->count() > 0;
-    }
-
-    /**
-     * Check user has plan price
-     */
-    public function hasPlanPrice($price): bool
-    {
-        if (!enabled_module('plans')) return false;
-
-        $id = is_numeric($price) ? $price : optional($price)->id;
-
-        return $this->subscriptions()
-            ->status('active')
-            ->where('plan_price_id', $id)
-            ->count() > 0;
-    }
 
     /**
      * Invite user to activate account

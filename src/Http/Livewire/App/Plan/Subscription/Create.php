@@ -62,7 +62,7 @@ class Create extends Component
     {
         if (!$this->items) $this->items = collect();
 
-        $trial = $this->plan->trial && !user()->hasPlanPrice($this->price->id) ? $this->plan->trial : false;
+        $trial = $this->plan->trial && !user()->hasTriedPlan($this->plan) ? $this->plan->trial : false;
         $discount = $trial ? $this->price->amount : $this->price->discount;
         $item = [
             'currency' => $this->price->currency,

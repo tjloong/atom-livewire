@@ -96,7 +96,7 @@ class PlanPaymentProvision implements ShouldQueue
                 $price = $item->price;
     
                 // trial
-                if ($price->plan->trial && !$this->payment->order->user->hasPlanPrice($price->id)) {
+                if ($price->plan->trial && !$this->payment->order->user->isSubscribedToPlan($price)) {
                     $fields = [
                         'is_trial' => true,
                         'start_at' => $this->payment->created_at,
