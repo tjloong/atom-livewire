@@ -20,11 +20,13 @@
         @elseif ($value)
             <div id="file-preview" class="flex items-center gap-3 flex-wrap">
                 @foreach ((array)$value as $val)
-                    <x-thumbnail :file="$val" wire:remove="$set('{{ $attributes->wire('model')->value() }}', {{ json_encode(
-                        $multiple
-                            ? collect($value)->reject($val)->values()->all()
-                            : collect($value)->reject($val)->first()
-                    ) }})"/>
+                    <x-thumbnail :file="$val" downloadable
+                        wire:remove="$set('{{ $attributes->wire('model')->value() }}', {{ json_encode(
+                            $multiple
+                                ? collect($value)->reject($val)->values()->all()
+                                : collect($value)->reject($val)->first()
+                        ) }})"
+                    />
                 @endforeach
             </div>
         @endif
@@ -32,9 +34,11 @@
         <div
             x-data="{ 
                 tab: @js(head($tabs)),
-                modal: false,
                 multiple: @js($multiple),
-                disabled: @js(!$multiple && $value),
+                get disabled () {
+                    const value = this.$wire.get(@js($attributes->wire('model')->value()));
+                    return !this.multiple && !empty(value)
+                },
                 switchtab (name) {
                     if (name === 'library') {
                         $el.querySelector('#file-library').dispatchEvent(new Event('open'))

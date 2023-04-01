@@ -1,11 +1,11 @@
 @props([
     'file' => $attributes->get('file'),
-    'url' => $attributes->get('url'),
     'icon' => $attributes->get('icon'),
     'size' => $attributes->get('size', '100'),
     'circle' => $attributes->get('circle', false),
     'color' => $attributes->get('color', 'bg-gray-200'),
     'placeholder' => $attributes->get('placeholder'),
+    'downloadable' => $attributes->get('downloadable'),
     'colors' => [
         '#feca57',
         '#ee5253',
@@ -19,11 +19,16 @@
 ])
 
 @php $file = is_numeric($file) ? model('file')->find($file) : $file @endphp
+@php $url = $file ? $file->url : $attributes->get('url') @endphp
 
 <figure 
-    class="relative"
+    class="relative {{ $downloadable ? 'cursor-pointer' : '' }}"
     style="width: {{ str($size)->finish('px') }}; height: {{ str($size)->finish('px') }};"
     {{ $attributes->except(['file', 'url', 'icon', 'size', 'circle', 'color', 'class']) }}
+    @if ($downloadable && $url)
+        x-data
+        x-on:click="window.open(@js($url), '_blank')"
+    @endif
 >
     <div 
         {{ $attributes->class([
@@ -40,7 +45,7 @@
             @endif
 
             @if (!$file->is_image)
-                <div class="absolute inset-0 flex items-center justify-center">
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
                     <x-icon 
                         :name="$file->icon" 
                         :size="$size * 0.3"
@@ -50,6 +55,9 @@
                             )
                         }}"
                     />
+                    <div class="grid">
+                        <span class="truncate">{{ $file->name }}</span>
+                    </div>
                 </div>
             @endif
         @elseif ($url)
@@ -80,7 +88,7 @@
 
     @if ($attributes->has('wire:remove') || $attributes->has('x-on:remove'))
         <div class="absolute -top-2 -right-4 bg-white rounded-full shadow">
-            <x-close x-on:click="$dispatch('remove')" color="red"/>
+            <x-close x-on:click.stop="$dispatch('remove')" color="red"/>
         </div>
     @endif
 </figure>

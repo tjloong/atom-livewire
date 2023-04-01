@@ -1,12 +1,7 @@
-@props([
-    'uid' => $attributes->get('uid', 'table'),
-])
-
 <div 
-    id="{{ $uid }}"
+    id="{{ $attributes->get('id', 'table') }}"
     x-cloak
     x-data="{
-        uid: @js($uid),
         checkboxes: [],
         get isEmpty () {
             const rows = Array.from($el.querySelectorAll('table > tbody > tr')).length
