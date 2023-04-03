@@ -26,6 +26,15 @@
                         @endforeach
                     </div>
                 @endif
+            @elseif ($tags = $attributes->get('tags') ?? $attributes->get('tag'))
+                @if (is_string($tags)) <span class="text-sm bg-gray-100 border rounded px-2 flex items-center gap-2">{{ $tags }}</span>
+                @elseif (is_array($tags))
+                    <div class="inline-flex items-center gap-2">
+                        @foreach ($tags as $tag)
+                            <span class="text-sm bg-gray-100 border rounded px-2 flex items-center gap-2">{{ $tag }}</span>
+                        @endforeach
+                    </div>
+                @endif
             @elseif ($value = $attributes->get('value'))
                 @if ($href = $attributes->get('href'))
                     <x-link :label="$value" :href="$href" :target="$attributes->get('target', '_self')"/>

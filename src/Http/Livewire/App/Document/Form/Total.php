@@ -13,6 +13,7 @@ class Total extends Component
     protected $listeners = ['setItems'];
 
     protected $rules = [
+        'document.currency' => 'nullable',
         'document.currency_rate' => 'nullable'
     ];
 

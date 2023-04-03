@@ -17,6 +17,15 @@ class Index extends Component
     public $document;
     public $settings;
 
+    public $inputs = [
+        'labels' => [],
+    ];
+
+    public $filters = [
+        'contact' => null,
+        'source' => null,
+    ];
+
     protected $listeners = [
         'setDocument',
         'setItem',
@@ -64,6 +73,10 @@ class Index extends Component
             $this->document->type === 'purchase-order' ? [
                 'document.data.deliver_to' => ['nullable']
             ] : [],
+
+            [
+                'inputs.labels' => ['nullable'],
+            ],
         );
     }
 
@@ -87,9 +100,122 @@ class Index extends Component
                 : $item;
         })->toArray();
 
-        $this->settings = model('document')->enabledHasTenantTrait
+        $this->settings = tenant()
             ? tenant('settings.'.$this->document->type)
             : settings('document.'.$this->document->type);
+
+        $this->fill([
+            'inputs.labels' => $this->document->labels->pluck('id')->toArray(),
+        ]);
+    }
+
+    /**
+     * Get contact label property
+     */
+    public function getContactLabelProperty(): string
+    {
+        return [
+            'quotation' => 'Client',
+            'sales-order' => 'Client',
+            'invoice' => 'Client',
+            'delivery-order' => 'Deliver To',
+            'purchase-order' => 'Vendor',
+            'bill' => 'Vendor',
+        ][$this->document->type];
+    }
+
+    /**
+     * Get source label property
+     */
+    public function getSourceLabelProperty(): string
+    {
+        return [
+            'invoice' => 'Quotation',
+            'bill' => 'Purchase Order',
+            'delivery-order' => 'Invoice',
+        ][$this->document->type];
+    }
+
+    /**
+     * Get options property
+     */
+    public function getOptionsProperty(): array
+    {
+        return [
+            'contacts' => model('contact')->readable()
+                ->where(fn($q) => $q
+                    ->when($this->document->contact_id, fn($q, $id) => $q->whereIn('id', [$id]))
+                    ->orWhere(fn($q) => $q->filter([
+                        'category' => in_array($this->document->type, ['purchase-order', 'bill']) ? 'vendor' : 'client',
+                        'search' => data_get($this->filters, 'contact'),
+                    ]))
+                )
+                ->orderBy('name')
+                ->take(100)
+                ->get()
+                ->transform(fn($contact) => [
+                    'avatar' => optional($contact->logo)->url,
+                    'avatar_placeholder' => $contact->name,
+                    'value' => $contact->id,
+                    'label' => $contact->name,
+                    'small' => $contact->email,
+                ])
+                ->toArray(),
+            'addresses' => $this->document->contact
+                ? collect($this->document->contact->addresses)
+                    ->map(fn($val) => format_address($val))
+                    ->toArray()
+                : [],
+            'delivery_channels' => $this->document->type === 'delivery-order'
+                ? data_get($this->settings, 'delivery_order.channels', [])
+                : [],
+            'sources' => model('document')->readable()
+                ->where(fn($q) => $q
+                    ->when($this->document->converted_from_id, fn($q, $id) => $q->whereIn('id', [$id]))
+                    ->orWhere('type', [
+                        'invoice' => 'quotation',
+                        'bill' => 'purchase-order',
+                        'delivery-order' => 'invoice',
+                    ][$this->document->type])
+                    ->orWhere(fn($q) => $q->filter([
+                        'search' => data_get($this->filters, 'source'),
+                        'contact_id' => $this->document->contact_id,
+                    ]))
+                )
+                ->latest('issued_at')
+                ->latest('id')
+                ->take(100)
+                ->get()
+                ->transform(fn($document) => [
+                    'value' => $document->id,
+                    'label' => $document->number,
+                    'small' => $document->name,
+                    'remark' => currency($document->splitted_total ?? $document->grand_total, $document->currency),
+                ])
+                ->toArray(),
+        ];
+    }
+
+    /**
+     * Updated document contact id
+     */
+    public function updatedDocumentContactId()
+    {
+        $this->document->fill(array_merge(
+            [
+                'name' => null,
+                'address' => null,
+                'person' => null,
+                'payterm' => null,
+            ],
+
+            ($contact = $this->document->contact) ? [
+                'name' => $contact->name,
+                'address' => format_address($contact->addresses ? $contact->addresses->first() : $contact),
+                'person' => $contact->persons->count() ? $contact->persons->first()->name : null,
+                'payterm' => $this->document->type === 'delivery-order' ? null : $contact->payterm,
+            ] : [],
+        ));
     }
 
     /**
@@ -165,7 +291,9 @@ class Index extends Component
         $this->validateForm();
 
         $this->document->save();
+        $this->document->labels()->sync(data_get($this->inputs, 'labels'));
 
+        // items
         $ids = collect($this->items)->pluck('id')->values()->all();
         if ($ids) $this->document->items()->whereNotIn('id', $ids)->delete();
 
@@ -205,13 +333,13 @@ class Index extends Component
     /**
      * Sync document item taxes
      */
-    public function syncDocumentItemTaxes($item, $input): mixed
+    public function syncDocumentItemTaxes($item, $input): void
     {
-        if (!enabled_module('taxes')) return null;
-
-        if ($taxes = collect(data_get($input, 'taxes'))->mapWithKeys(fn($val) => [
-            data_get($val, 'id') => ['amount' => data_get($val, 'amount')],
-        ])) {
+        if (enabled_module('taxes') && (
+            $taxes = collect(data_get($input, 'taxes'))->mapWithKeys(fn($val) => [
+                data_get($val, 'id') => ['amount' => data_get($val, 'amount')],
+            ])
+        )) {
             $item->taxes()->sync($taxes);
         }
     }

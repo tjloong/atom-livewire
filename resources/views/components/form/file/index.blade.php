@@ -1,6 +1,7 @@
 @props([
     'id' => component_id($attributes, 'file-input'),
     'multiple' => $attributes->get('multiple', false),
+    'model' => $attributes->wire('model')->value(),
     'value' => data_get($this, $attributes->wire('model')->value()),
     'tabs' => array_filter([
         $attributes->get('upload', true) ? 'upload' : null,
@@ -15,13 +16,13 @@
 ])
 
 <x-form.field {{ $attributes }}>
-    <div class="flex flex-col gap-4" {{ $attributes->whereStartsWith('wire:file') }}>
+    <div class="flex flex-col gap-4" {{ $attributes->wire('file') }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @elseif ($value)
             <div id="file-preview" class="flex items-center gap-3 flex-wrap">
                 @foreach ((array)$value as $val)
                     <x-thumbnail :file="$val" downloadable
-                        wire:remove="$set('{{ $attributes->wire('model')->value() }}', {{ json_encode(
+                        wire:remove="$set('{{ $model }}', {{ json_encode(
                             $multiple
                                 ? collect($value)->reject($val)->values()->all()
                                 : collect($value)->reject($val)->first()
@@ -34,10 +35,11 @@
         <div
             x-data="{ 
                 tab: @js(head($tabs)),
+                model: @js($model),
                 multiple: @js($multiple),
                 get disabled () {
-                    const value = this.$wire.get(@js($attributes->wire('model')->value()));
-                    return !this.multiple && !empty(value)
+                    if (this.model) return !this.multiple && !empty(this.$wire.get(this.model))
+                    else return !this.multiple
                 },
                 switchtab (name) {
                     if (name === 'library') {

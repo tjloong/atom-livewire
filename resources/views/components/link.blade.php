@@ -25,6 +25,8 @@
         @endif
 
         @if ($small) <br><span class="text-gray-500 text-sm font-medium">{{ __($small) }}</span> @endif
+    @elseif ($icon)
+        <x-icon :name="$icon" :size="$attributes->get('size', '14')"/>
     @else 
         {{ $slot }}
     @endif

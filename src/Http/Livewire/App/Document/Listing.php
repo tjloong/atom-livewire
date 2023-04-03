@@ -21,10 +21,6 @@ class Listing extends Component
         'search' => null,
     ];
 
-    protected $queryString = [
-        'filters',
-    ];
-
     /**
      * Mount
      */
@@ -111,12 +107,14 @@ class Listing extends Component
 
             [
                 'name' => 'Status',
+                'status' => $query->status,
                 'class' => 'text-right',
             ],
 
             [
                 'name' => 'Owner',
                 'sort' => 'users.name',
+                'label' => $query->ownedBy->name,
             ],
         ]);
     }

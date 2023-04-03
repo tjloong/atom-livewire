@@ -1,18 +1,13 @@
 <x-modal uid="product-modal" header="Select Product" class="max-w-screen-md">
     @if ($product)
         <div class="flex flex-col divide-y">
-            <a wire:click="$set('product', null)" class="p-4 flex items-center gap-3 text-gray-800">
-                <x-icon name="arrow-left"/> {{ data_get($product, 'name') }}
-            </a>
+            <x-link wire:click="$set('product', null)" :label="data_get($product, 'name')" icon="arrow-left" class="p-4"/>
 
             @forelse (data_get($product, 'variants') as $variant)
-                <a 
-                    wire:click="select(@js([
-                        'product_id' => data_get($product, 'id'),
-                        'product_variant_id' => data_get($variant, 'id'),
-                    ]))"
-                    class="py-3 px-6 flex gap-3 text-gray-800 hover:bg-slate-100"
-                >
+                <a wire:click="select(@js([
+                    'product_id' => data_get($product, 'id'),
+                    'product_variant_id' => data_get($variant, 'id'),
+                ]))" class="py-3 px-6 flex gap-3 text-gray-800 hover:bg-slate-100">
                     <div class="grow grid">
                         <div class="font-medium truncate">
                             {{ data_get($variant, 'name') }}
@@ -37,7 +32,7 @@
     @else
         <div class="flex flex-col divide-y">
             <div class="p-4">
-                <x-form.text
+                <x-form.text :label="false"
                     wire:model.debounce.400ms="filters.search"
                     prefix="icon:search"
                     placeholder="Search Products"
@@ -47,10 +42,7 @@
 
             <div class="overflow-auto max-h-[450px] flex flex-col divide-y">
                 @forelse ($this->products as $product)
-                    <a 
-                        wire:click="select(@js(['product_id' => data_get($product, 'id')]))"
-                        class="py-3 px-6 flex gap-3 text-gray-800 hover:bg-slate-100"
-                    >
+                    <a wire:click="select(@js(['product_id' => data_get($product, 'id')]))" class="py-3 px-6 flex gap-3 text-gray-800 hover:bg-slate-100">
                         <div class="grow grid">
                             <div class="font-medium truncate">
                                 {{ data_get($product, 'name') }}

@@ -2,34 +2,19 @@
     <div class="grow flex flex-col gap-4">
         @if (enabled_module('products') && ($productId = data_get($item, 'product_id')))
             <div class="flex items-center justify-between gap-3">
-                <a 
-                    href="{{ route('app.product.update', [$productId]) }}"
-                    target="_blank" 
-                    class="flex items-center gap-2"
-                >
-                    {{ data_get($item, 'name') }} <x-icon name="open" size="10" class="text-gray-500"/>
-                </a>
-
+                <x-link :href="route('app.product.update', [$productId])" :label="data_get($item, 'name')" target="_blank" icon="open" class="grow"/>
                 <x-close wire:click="clearProduct"/>
             </div>
         @else
-            <x-form.text wire:model.debounce.300ms="item.name" :label="false"
-                :placeholder="$columns->get('item_name')"
-            >
+            <x-form.text wire:model.debounce.300ms="item.name" :placeholder="$columns->get('item_name')" :label="false">
                 @module('products')
-                    <x-slot:button 
-                        icon="cube" 
-                        label="Product"
-                        wire:click="open"
-                    ></x-slot:button>
+                    <x-slot:button wire:click="open" label="Product" icon="cube"></x-slot:button>
                 @endmodule
             </x-form.text>
         @endif
 
         @if ($columns->get('item_description'))
-            <x-form.textarea wire:model.debounce.300ms="item.description" :label="false"
-                :placeholder="$columns->get('item_description')"
-            />
+            <x-form.textarea wire:model.debounce.300ms="item.description" :placeholder="$columns->get('item_description')" :label="false"/>
         @endif
     </div>
 
@@ -37,19 +22,13 @@
         <div class="flex flex-col md:flex-row gap-4">
             @if ($columns->get('qty'))
                 <div class="md:w-40">
-                    <x-form.number wire:model.debounce.300ms="item.qty" :label="false"
-                        :placeholder="$columns->get('qty')"
-                        class="text-right"
-                    />
+                    <x-form.number wire:model.debounce.300ms="item.qty" :placeholder="$columns->get('qty')" class="text-right" :label="false" step=".01"/>
                 </div>
             @endif
 
             @if ($columns->get('price'))
                 <div class="md:w-40">
-                    <x-form.number wire:model.debounce.300ms="item.amount" :label="false"
-                        :placeholder="$columns->get('price')"
-                        class="text-right"
-                    />
+                    <x-form.number wire:model.debounce.300ms="item.amount" :placeholder="$columns->get('price')" class="text-right" :label="false" step=".01"/>
                 </div>
             @endif
 
@@ -80,29 +59,28 @@
 
         @if (enabled_module('taxes') && $columns->has('tax'))
             <div class="bg-slate-100 rounded-lg flex flex-col divide-y">
-                @if (count($this->taxes) || count(data_get($item, 'taxes', [])))
-                    <div class="p-3">
-                        <x-form.field :label="$columns->get('tax')">
-                            <div class="flex flex-col gap-2">
-                                @foreach (data_get($item, 'taxes', []) as $tax)
-                                    <div class="p-1 flex items-center gap-2">
-                                        <a wire:click="removeTax(@js(data_get($tax, 'id')))" class="text-red-500 flex">
-                                            <x-icon name="remove" class="m-auto"/>
+                @if (count($this->taxes) || data_get($item, 'taxes'))
+                    <div class="p-4">
+                        <div class="flex flex-col gap-2">
+                            @foreach ($this->taxes as $val)
+                                <div class="flex items-center gap-3">
+                                    @if ($addedTax = collect(data_get($item, 'taxes'))->firstWhere('id', $val->id))
+                                        <a wire:click="removeTax({{ $val->id }})" class="grow flex items-center gap-3">
+                                            <x-icon name="circle-check" class="text-green-500 shrink-0"/>
+                                            <div class="grow text-sm">{{ $val->label }}</div>
                                         </a>
-                                        <div class="grow">{{ data_get($tax, 'label') }}</div>
-                                        <div class="shrink-0">{{ currency(data_get($tax, 'amount')) }}</div>
-                                    </div>                                                
-                                @endforeach
-
-                                @if (count($this->taxes))
-                                    <x-form.select
-                                        :placeholder="'Select '.$columns->get('tax')"
-                                        :options="$this->taxes"
-                                        x-on:input="$wire.call('addTax', $event.detail).then(() => value = null)"
-                                    />
-                                @endif
-                            </div>
-                        </x-form.field>
+                                        <div class="shrink-0 text-sm">
+                                            {{ currency(data_get($addedTax, 'amount')) }}
+                                        </div>
+                                    @else
+                                        <a wire:click="addTax({{ $val->id }})" class="grow flex items-center gap-3">
+                                            <x-icon name="circle-xmark" class="text-gray-400 shrink-0"/>
+                                            <div class="grow text-sm">{{ $val->label }}</div>
+                                        </a>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             </div>

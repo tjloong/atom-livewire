@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Document\View;
 
+use Illuminate\Database\Eloquent\Collection;
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Livewire\Component;
 
@@ -14,7 +15,7 @@ class Attachment extends Component
     /**
      * Get files property
      */
-    public function getFilesProperty()
+    public function getFilesProperty(): Collection
     {
         return $this->document->files()->orderBy('created_at')->get();
     }
@@ -22,7 +23,7 @@ class Attachment extends Component
     /**
      * Attach
      */
-    public function attach($ids)
+    public function attach($ids): void
     {
         foreach ($ids as $id) {
             if ($this->document->files()->find($id)) continue;
@@ -33,7 +34,7 @@ class Attachment extends Component
     /**
      * Detach
      */
-    public function detach($id)
+    public function detach($id): void
     {
         optional($this->document->files()->find($id))->delete();
     }
@@ -41,7 +42,7 @@ class Attachment extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.view.attachment');
     }
