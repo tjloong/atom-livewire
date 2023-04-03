@@ -99,7 +99,7 @@
             x-transition.opacity
             class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px] flex flex-col divide-y"
         >
-            @if (!$isAutocomplete)
+            @if (!$isAutocomplete && (count($options) > 15 || $attributes->wire('search')->value()))
                 <div class="p-3">
                     <input type="text" 
                         x-ref="search" 
@@ -130,7 +130,7 @@
                                 @endif
                                 x-on:click.debounce.100ms="focus = false"
                                 class="py-2 px-4 flex items-center gap-3 cursor-pointer hover:bg-slate-100"
-                                id="{{ str('select-option-'.data_get($opt, 'value'))->slug() }}"
+                                id="{{ uniqid() }}"
                             >
                                 @if (($avatar = data_get($opt, 'avatar')) || ($avatarPlaceholder = data_get($opt, 'avatar_placeholder')))
                                     <div class="shrink-0">
@@ -157,8 +157,8 @@
 
                                 @if (($remark = data_get($opt, 'remark')) || ($status = data_get($opt, 'status')))
                                     <div class="shrink-0 text-right">
-                                        @if ($remark) <div class="text-sm font-medium text-gray-500">{{ $remark }}</div> @endif
-                                        @if ($status)
+                                        @if (!empty($remark)) <div class="text-sm font-medium text-gray-500">{{ $remark }}</div> @endif
+                                        @if (!empty($status))
                                             @if (is_array($status))
                                                 @foreach ($status as $key => $val)
                                                     <x-badge :label="$val" :color="$key"/>

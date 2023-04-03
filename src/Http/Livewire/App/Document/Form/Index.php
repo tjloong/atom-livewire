@@ -161,38 +161,43 @@ class Index extends Component
                     'small' => $contact->email,
                 ])
                 ->toArray(),
+
             'addresses' => $this->document->contact
                 ? collect($this->document->contact->addresses)
                     ->map(fn($val) => format_address($val))
                     ->toArray()
                 : [],
+
             'delivery_channels' => $this->document->type === 'delivery-order'
                 ? data_get($this->settings, 'delivery_order.channels', [])
                 : [],
-            'sources' => model('document')->readable()
-                ->where(fn($q) => $q
-                    ->when($this->document->converted_from_id, fn($q, $id) => $q->whereIn('id', [$id]))
-                    ->orWhere('type', [
-                        'invoice' => 'quotation',
-                        'bill' => 'purchase-order',
-                        'delivery-order' => 'invoice',
-                    ][$this->document->type])
-                    ->orWhere(fn($q) => $q->filter([
-                        'search' => data_get($this->filters, 'source'),
-                        'contact_id' => $this->document->contact_id,
-                    ]))
-                )
-                ->latest('issued_at')
-                ->latest('id')
-                ->take(100)
-                ->get()
-                ->transform(fn($document) => [
-                    'value' => $document->id,
-                    'label' => $document->number,
-                    'small' => $document->name,
-                    'remark' => currency($document->splitted_total ?? $document->grand_total, $document->currency),
-                ])
-                ->toArray(),
+            
+            'sources' => in_array($this->document->type, ['invoice', 'bill', 'delivery-order'])
+                ? model('document')->readable()
+                    ->where(fn($q) => $q
+                        ->when($this->document->converted_from_id, fn($q, $id) => $q->whereIn('id', [$id]))
+                        ->orWhere('type', [
+                            'invoice' => 'quotation',
+                            'bill' => 'purchase-order',
+                            'delivery-order' => 'invoice',
+                        ][$this->document->type])
+                        ->orWhere(fn($q) => $q->filter([
+                            'search' => data_get($this->filters, 'source'),
+                            'contact_id' => $this->document->contact_id,
+                        ]))
+                    )
+                    ->latest('issued_at')
+                    ->latest('id')
+                    ->take(100)
+                    ->get()
+                    ->transform(fn($document) => [
+                        'value' => $document->id,
+                        'label' => $document->number,
+                        'small' => $document->name,
+                        'remark' => currency($document->splitted_total ?? $document->grand_total, $document->currency),
+                    ])
+                    ->toArray()
+                : [],
         ];
     }
 

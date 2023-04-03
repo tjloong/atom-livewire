@@ -39,7 +39,7 @@
                 multiple: @js($multiple),
                 get disabled () {
                     if (this.model) return !this.multiple && !empty(this.$wire.get(this.model))
-                    else return !this.multiple
+                    return false
                 },
                 switchtab (name) {
                     if (name === 'library') {

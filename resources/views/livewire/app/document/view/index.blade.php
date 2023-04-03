@@ -62,7 +62,7 @@
                                         :badge="data_get($val, 'badge')"
                                         :tags="data_get($val, 'tags')"
                                     />
-                                @endforeach    
+                                @endforeach
                             </div>
                         </div>
                     </div>
