@@ -46,52 +46,76 @@
     >
         <div x-ref="anchor"
             x-on:click="open"
-            x-bind:class="{ 'active': focus, 'select': @js(empty($value)) }"
+            x-bind:class="{ 
+                'active': focus, 
+                {{-- 'select': @js(empty($value))  --}}
+            }"
             {{ $attributes->class([
                 'form-input w-full flex items-center gap-2',
                 'error' => component_error(optional($errors), $attributes),
             ])->only('class') }}
         >
-            @if ($icon) <x-icon :name="$icon" class="text-gray-400"/> @endif
-
-            @if ($isAutocomplete)
-                <div class="grow" {{ $attributes->wire('model') }}>
-                    <input type="text"
-                        value="{{ $value }}"
-                        x-on:input.debounce.400ms="search($event.target.value)"
-                        class="form-input transparent w-full" 
-                        placeholder="{{ $placeholder }}" 
-                    />
-                </div>
-            @elseif ($value)
-                @isset($selected) {{ $selected }}
-                @else
-                    <div class="grow">
-                        @if ($multiple)
-                            <div class="flex flex-wrap gap-2">
-                                @foreach ($value as $val)
-                                    <div class="bg-slate-200 rounded-md px-2 text-sm font-medium border border-gray-200 flex items-center gap-2 max-w-[200px]">
-                                        <div class="grid">
-                                            <div class="truncate text-xs">
-                                                {{ data_get(collect($options)->firstWhere('value', $val), 'label') }}                    
+            <div class="flex items-center gap-2 w-full {{ empty($value) ? 'form-input-caret' : '' }}">
+                @if ($icon) <x-icon :name="$icon" class="text-gray-400"/> @endif
+    
+                @if ($isAutocomplete)
+                    <div class="grow" {{ $attributes->wire('model') }}>
+                        <input type="text"
+                            value="{{ $value }}"
+                            x-on:input.debounce.400ms="search($event.target.value)"
+                            class="form-input transparent w-full" 
+                            placeholder="{{ $placeholder }}" 
+                        />
+                    </div>
+                @elseif ($value)
+                    @isset($selected) {{ $selected }}
+                    @else
+                        <div class="grow">
+                            @if ($multiple)
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach ($value as $val)
+                                        <div class="bg-slate-200 rounded-md px-2 text-sm font-medium border border-gray-200 flex items-center gap-2 max-w-[200px]">
+                                            <div class="grid">
+                                                <div class="truncate text-xs">
+                                                    {{ data_get(collect($options)->firstWhere('value', $val), 'label') }}                    
+                                                </div>
+                                            </div>
+                                            <div class="flex" wire:click.stop="$set(@js($model), @js(collect($value)->reject($val)->toArray()))">
+                                                <x-close size="12"/>
                                             </div>
                                         </div>
-                                        <div class="flex" wire:click.stop="$set(@js($model), @js(collect($value)->reject($val)->toArray()))">
-                                            <x-close size="12"/>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            {{ data_get(collect($options)->firstWhere('value', $value), 'label') }}
-                        @endif
-                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                {{ data_get(collect($options)->firstWhere('value', $value), 'label') }}
+                            @endif
+                        </div>
+                    @endif
+                @else
+                    <input type="text" class="form-input transparent grow" placeholder="{{ $placeholder }}" readonly>
                 @endif
-            @else
-                <input type="text" class="form-input transparent grow" placeholder="{{ $placeholder }}" readonly>
-            @endif
+    
+                @if (!empty($value)) <x-close wire:click.stop="$set('{{ $model }}', null)"/> @endif
+            </div>
 
-            @if (!empty($value)) <x-close wire:click.stop="$set('{{ $model }}', null)"/> @endif
+            @isset($button) 
+                <div class="shrink-0">
+                    @if ($button->isNotEmpty()) {{ $button }}
+                    @else
+                        @php $buttonlabel = $button->attributes->get('label') @endphp
+                        @php $buttonicon = $button->attributes->get('icon') @endphp
+                        <a {{ $button->attributes->class([
+                            'flex items-center justify-center gap-1 rounded-full -mr-1 text-sm',
+                            $buttonlabel ? 'px-2 py-0.5' : null,
+                            !$buttonlabel && $buttonicon ? 'p-1' : null,
+                            $button->attributes->get('class', 'text-gray-800 bg-gray-200'),
+                        ]) }}>
+                            @if ($buttonicon) <x-icon :name="$buttonicon" size="12"/> @endif
+                            {{ __($buttonlabel) }}
+                        </a>
+                    @endif
+                </div>
+            @endisset
         </div>
 
         <div x-ref="dd"

@@ -16,8 +16,8 @@
         type: '{{ $type }}',
         buttons: {{ json_encode($buttons) }},
         onConfirmed: () => {
-            @if ($href) window.location = '{{ $href }}';
-            @elseif ($callback) $wire.call('{{ $callback }}', {{ json_encode($params) }});
+            if ({{ json_encode($href ?? false) }}) window.location = '{{ $href }}';
+            else if ({{ json_encode($callback ?? false) }}) $wire.call('{{ $callback }}', {{ json_encode($params) }});
         },
     })"
 />

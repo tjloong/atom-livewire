@@ -2,6 +2,7 @@
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -528,6 +529,34 @@ function short_number($n, $locale = null)
     if ($n > 999) return round(($n/1000), 2).'K';
 
     return $n;
+}
+
+/**
+ * Get countries
+ */
+function countries($key = false)
+{
+    $path = __DIR__.'/../resources/json/countries.json';
+    $json = json_decode(file_get_contents($path), true);
+    $values = collect($json)->map(fn($val) => array_merge(
+        ['code' => data_get($val, 'iso_code')],
+        Arr::except($val, 'iso_code'),
+    ));
+
+    if ($key !== false) {
+        $split = explode('.', $key);
+        $name = $split[0];
+        $field = $split[1] ?? null;
+        $value = $values->first(fn($val) => 
+            strtolower(data_get($val, 'code')) === strtolower($name)
+            || strtolower(data_get($val, 'name')) === strtolower($name)
+        );
+
+        if ($value && $field) return data_get($value, $field);
+        elseif ($value) return $value;
+    }
+
+    return $values;
 }
 
 /**

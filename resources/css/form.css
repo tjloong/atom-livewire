@@ -29,6 +29,13 @@ select.form-input,
     padding-right: 3rem;
 }
 
+.form-input-caret {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNTEyIj48IS0tISBGb250IEF3ZXNvbWUgUHJvIDYuMS4xIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIENvcHlyaWdodCAyMDIyIEZvbnRpY29ucywgSW5jLiAtLT48cGF0aCBkPSJNMjI0IDQxNmMtOC4xODggMC0xNi4zOC0zLjEyNS0yMi42Mi05LjM3NWwtMTkyLTE5MmMtMTIuNS0xMi41LTEyLjUtMzIuNzUgMC00NS4yNXMzMi43NS0xMi41IDQ1LjI1IDBMMjI0IDMzOC44bDE2OS40LTE2OS40YzEyLjUtMTIuNSAzMi43NS0xMi41IDQ1LjI1IDBzMTIuNSAzMi43NSAwIDQ1LjI1bC0xOTIgMTkyQzI0MC40IDQxMi45IDIzMi4yIDQxNiAyMjQgNDE2eiIvPjwvc3ZnPgo=);
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: 1em 1em;
+}
+
 .form-input:hover {
     @apply ring-2 ring-gray-200;
 }

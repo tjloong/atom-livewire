@@ -8,6 +8,7 @@
         ->transform(fn($label) => [
             'value' => $attributes->get('slug') ? $label->slug : $label->id,
             'label' => $label->locale('name'),
-        ])"
+        ])
+        ->toArray()"
     {{ $attributes->except(['type', 'options']) }}
 />
