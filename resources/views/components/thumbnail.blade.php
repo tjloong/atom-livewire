@@ -1,7 +1,11 @@
 @props([
     'file' => $attributes->get('file'),
     'icon' => $attributes->get('icon'),
-    'size' => $attributes->get('size', '100'),
+    'size' => $attributes->get('size') ?? (
+        $attributes->get('class') && str($attributes->get('class'))->is('*w-full*')
+            ? null
+            : '100'
+    ),
     'circle' => $attributes->get('circle', false),
     'color' => $attributes->get('color', 'bg-gray-200'),
     'placeholder' => $attributes->get('placeholder'),
@@ -22,8 +26,10 @@
 @php $url = $file ? $file->url : $attributes->get('url') @endphp
 
 <figure 
-    class="relative {{ $downloadable ? 'cursor-pointer' : '' }}"
-    style="width: {{ str($size)->finish('px') }}; height: {{ str($size)->finish('px') }};"
+    {{ $attributes
+        ->class(['relative', 'cursor-pointer' => $downloadable])
+        ->merge(['style' => $size ? 'width: '.str($size)->finish('px').'; height: '.str($size)->finish('px').';' : null])
+        ->only(['class', 'style']) }}
     {{ $attributes->except(['file', 'url', 'icon', 'size', 'circle', 'color', 'class']) }}
     @if ($downloadable && $url)
         x-data
