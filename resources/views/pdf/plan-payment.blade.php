@@ -42,14 +42,14 @@
                             From
                         </div>
                         Jiannius Technologies Sdn Bhd<br>
-                        29-07, Jalan Riong, Bangsar, 59100 Kuala Lumpur, Malaysia
+                        LG1-2, Seri Gembira Avenue, 6, Jalan Senang Ria Happy Garden, Kuchai Lama, 58200 Kuala Lumpur, Malaysia.
                     </div>
 
                     <div style="font-weight: 700; margin-bottom: 0.1cm;">
                         Bill To
                     </div>
-                    {{ $payment->account->name }}<br>
-                    {{ $payment->account->address ?? '' }}
+                    {{ $payment->order->user->name }}<br>
+                    {{ $payment->order->user->address ?? '' }}
                 </td>
                 <td style="padding-left: 0.3cm; vertical-align: top;">
                     <div style="font-weight: 700; margin-bottom: 0.1cm;">

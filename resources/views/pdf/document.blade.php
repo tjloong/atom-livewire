@@ -1,6 +1,13 @@
-@extends('atom::pdf.document-layout')
+@extends('atom::pdf.layout', ['filename' => $document->number.'.pdf'])
 
 @section('content')
+    @if ($letterhead = collect(['pdf.letterhead', 'atom::pdf.letterhead'])
+        ->filter(fn($val) => view()->exists($val))
+        ->first()
+    )
+        @include($letterhead, ['document' => $document])
+    @endif
+
     <table style="margin-bottom: 0.5cm;">
         <tr>
             <td style="width: 60%">

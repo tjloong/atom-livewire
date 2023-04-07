@@ -361,7 +361,7 @@ class Document extends Model
      */
     public function pdf($raw = false)
     {
-        $filename = $this->type.'-'.$this->number.'.pdf';
+        $filename = $this->number.'.pdf';
         $path = storage_path($filename);
         $view = view()->exists('pdf.document') ? 'pdf.document' : 'atom::pdf.document';
         $pdf = pdf($view, [

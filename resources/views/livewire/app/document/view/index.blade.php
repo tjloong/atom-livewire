@@ -67,7 +67,7 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col divide-y">
+                    <div class="flex flex-col divide-y border-y">
                         <div class="hidden py-3 px-4 md:flex md:gap-4">
                             @foreach ([
                                 'item_name' => 'grow',
