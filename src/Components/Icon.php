@@ -233,6 +233,7 @@ class Icon extends Component
         'tenant' => 'house-user',
         'transaction' => 'arrow-right-arrow-left',
         'unblock' => 'play',
+        'undo' => 'arrow-rotate-left',
         'update' => 'pen-to-square',
         'upload' => 'cloud-arrow-up',
         'vendor' => 'people-carry-box',
