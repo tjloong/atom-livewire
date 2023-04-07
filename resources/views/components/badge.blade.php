@@ -33,7 +33,7 @@
         /> 
     @endif
 
-    @if ($label) {{ __($label) }}
+    @if ($label) {!! __($label) !!}
     @else {{ $slot }}
     @endif
 </span>
