@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -10,16 +10,11 @@ class Listing extends Component
 {
     use WithTable;
 
+    public $fullpage;
     public $sort = 'created_at,desc';
 
     public $filters = [
         'search' => null,
-    ];
-
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-        ]], 
     ];
 
     /**
@@ -27,7 +22,17 @@ class Listing extends Component
      */
     public function mount(): void
     {
-        breadcrumbs()->home('Enquiries');
+        if ($this->fullpage = current_route('app.enquiry.listing')) {
+            breadcrumbs()->home($this->title);
+        }
+    }
+
+    /**
+     * Get title property
+     */
+    public function getTitleProperty(): string
+    {
+        return 'Enquiries';
     }
 
     /**
