@@ -49,8 +49,8 @@
                         <tr>
                             @php $cols = collect($data)->first() @endphp
                             @foreach ($cols as $i => $col)
-                                @if (data_get($col, 'actions'))
-                                    <x-table.th actions/>
+                                @if (data_get($col, 'menu'))
+                                    <x-table.th menu/>
                                 @else
                                     <x-table.th
                                         :label="data_get($col, 'name') ?? data_get($col, 'column_name')"
@@ -90,7 +90,7 @@
                                         :avatar="data_get($col, 'avatar')"
                                         :avatar-placeholder="data_get($col, 'avatar-placeholder')"
                                         :active="data_get($col, 'active')"
-                                        :actions="data_get($col, 'actions')"
+                                        :menu="data_get($col, 'menu')"
                                         :class="
                                             data_get($col, 'tdclass') 
                                             ?? data_get($col, 'class') 

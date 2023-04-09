@@ -15,8 +15,27 @@
             <div x-bind:class="checkboxes.includes(value) ? 'block' : 'hidden'" class="w-full h-full bg-theme"></div>
         </div>
     </td>
-@elseif ($actions = $attributes->get('actions'))
-    @if ($actionbuttons = collect([
+@elseif ($menu = $attributes->get('menu'))
+    <td class="py-3 align-top">
+        <x-dropdown>
+            <x-slot:anchor>
+                <div class="w-8 h-8 rounded-full hover:bg-white hover:shadow flex">
+                    <x-icon name="ellipsis-vertical" class="m-auto"/>
+                </div>
+            </x-slot:anchor>
+
+            @foreach ($menu as $menuitem)
+                <x-dropdown.item 
+                    :icon="data_get($menuitem, 'icon')" 
+                    :label="data_get($menuitem, 'label')"
+                    wire:click="{{ data_get($menuitem, 'wire:click') }}"
+                />
+            @endforeach
+        </x-dropdown>
+
+    </td>
+
+    {{-- @if ($actionbuttons = collect([
         'edit' => data_get($actions, 'edit'),
         'delete' => data_get($actions, 'delete'),
     ])->filter()->toArray())
@@ -36,7 +55,7 @@
                 @endforeach
             </div>
         </td>
-    @endif
+    @endif --}}
 @else
     <td {{ $attributes
         ->class([
