@@ -43,9 +43,10 @@ class AtomServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             // commands
             $this->commands([
+                \Jiannius\Atom\Console\ViewCommand::class,
                 \Jiannius\Atom\Console\InstallCommand::class,
                 \Jiannius\Atom\Console\PublishCommand::class,
-                \Jiannius\Atom\Console\ViewCommand::class,
+                \Jiannius\Atom\Console\RefreshCommand::class,
             ]);
 
             // publishing
