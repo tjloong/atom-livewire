@@ -71,7 +71,7 @@
             @endforeach
         </div>
     @else
-        <div class="flex gap-3 flex-wrap md:flex-nowrap {{ $slot->isEmpty() || !$title ? 'items-center' : '' }}">
+        <div class="flex gap-3 flex-wrap md:flex-nowrap">
             <x-icon 
                 :name="data_get($icon, $type)" 
                 class="{{ data_get($color, 'icon.'.$type) }} shrink-0" 
