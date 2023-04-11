@@ -6,7 +6,7 @@
         @elseif ($label = $attributes->get('label'))
             <div class="font-medium text-gray-400 text-sm flex items-center gap-2">
                 @if ($icon = $attributes->get('icon')) <x-icon :name="$icon"/> @endif
-                {{ str(__($label))->upper() }}
+                {!! str(__($label))->upper() !!}
             </div>
         @endif
     </div>
