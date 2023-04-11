@@ -2,11 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Preferences;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class Index extends Component
 {
+    use AuthorizesRequests;
+
     public $tab;
 
     /**
