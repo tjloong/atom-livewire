@@ -80,7 +80,7 @@ class Index extends Component
             ['slug' => 'website/analytics', 'label' => 'Analytics', 'icon' => 'chart-simple'],
             ['slug' => 'website/social-media', 'label' => 'Social Media', 'icon' => 'share-nodes'],
             ['slug' => 'website/announcement', 'label' => 'Announcement', 'icon' => 'bullhorn'],
-            ['slug' => 'website/pop-up', 'label' => 'Pop-Up', 'icon' => 'window-restore'],
+            ['slug' => 'website/popup', 'label' => 'Pop-Up', 'icon' => 'window-restore'],
         ]] : null;
 
         $integration = $authorize ? ['group' => 'Integration', 'tabs' => [
