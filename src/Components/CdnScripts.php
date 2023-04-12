@@ -34,8 +34,8 @@ class CdnScripts extends Component
                 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js',
             ],
             'swiper' => [
-                'https://cdn.jsdelivr.net/npm/swiper@8.3.1/swiper-bundle.min.js',
-                'https://cdn.jsdelivr.net/npm/swiper@8.3.1/swiper-bundle.min.css',
+                'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js',
+                'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css',
             ],
             'chartjs' => [
                 'https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js',

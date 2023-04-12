@@ -1,39 +1,40 @@
-<div>
-    <x-box header="Website Announcement">
+<div class="w-full">
+    <x-box header="Website Announcements">
         <x-slot:buttons>
-            <x-button size="sm" color="gray"
+            <x-button color="gray" size="sm" 
                 label="New Announcement"
-                wire:click="open"
+                wire:click="$emitTo('{{ lw('app.settings.website.announcement-modal') }}', 'open')"
             />
         </x-slot:buttons>
-
-        @if ($announcements->count())
-            <x-form.sortable 
-                wire:sorted="sort" 
-                :config="['handle' => '.sort-handle']" 
-                class="grid divide-y"
-            >
+    
+        @if (count($announcements))
+            <x-form.sortable wire:sorted="sort" :config="['handle' => '.cursor-move']" class="flex flex-col divide-y">
                 @foreach ($announcements as $announcement)
-                    <div 
-                        class="p-4 flex items-center gap-2 hover:bg-slate-100" 
-                        data-sortable-id="{{ data_get($announcement, 'uuid') }}"
-                    >
-                        <div class="shrink-0 cursor-move sort-handle flex text-gray-400">
+                    <div class="p-4 flex items-center gap-2 hover:bg-slate-100" data-sortable-id="{{ data_get($announcement, 'uuid') }}">
+                        <div class="shrink-0 cursor-move flex text-gray-400">
                             <x-icon name="sort" class="m-auto"/>
                         </div>
-
-                        <div class="grid grow">
-                            <a class="truncate" wire:click="open(@js(data_get($announcement, 'uuid')))">
-                                {{ data_get($announcement, 'content') }}
-                            </a>
+    
+                        <div class="grow flex items-center justify-between gap-2">
+                            <div class="grid">
+                                <a class="truncate" wire:click="$emitTo('{{ lw('app.settings.website.announcement-modal') }}', 'open', @js($announcement))">
+                                    {{ data_get($announcement, 'title') }}
+                                </a>
+                                <div class="text-sm text-gray-500 font-medium truncate">
+                                    {{ data_get($announcement, 'type') }}
+                                </div>
+                            </div>
+    
+                            <div class="shrink-0">
+                                <x-badge :label="data_get($announcement, 'is_active') ? 'active' : 'inactive'"/>
+                            </div>
                         </div>
-
-                        <div class="shrink-0 flex items-center gap-2">
-                            <x-badge :label="data_get($announcement, 'is_active') ? 'active' : 'inactive'"/>
-                            <x-button.delete size="xs" inverted 
+    
+                        <div class="shrink-0">
+                            <x-close.delete 
+                                :params="data_get($announcement, 'uuid')"
                                 title="Delete Announcement"
                                 message="Are you sure to delete this announcement?"
-                                :params="data_get($announcement, 'uuid')"
                             />
                         </div>
                     </div>
@@ -44,37 +45,5 @@
         @endif
     </x-box>
 
-    <x-form modal
-        uid="announcement-form-modal" 
-        :header="data_get($input, 'uid') ? 'Update Announcement' : 'Create Announcement'"
-    >
-        @if ($input)
-            <x-form.group>
-                <x-form.select
-                    label="Announcement Type"
-                    wire:model="input.type"
-                    :options="$this->types"
-                    :error="$errors->first('input.type')"
-                    required
-                />
-
-                <x-form.textarea 
-                    label="Announcement Content"
-                    wire:model.defer="input.content" 
-                    :error="$errors->first('input.content')" 
-                    required
-                />
-
-                <x-form.text 
-                    label="Announcement Link"
-                    wire:model.defer="input.url"
-                />
-
-                <x-form.checkbox 
-                    label="Announcement is active"
-                    wire:model="input.is_active"
-                />
-            </x-form.group>
-        @endif
-    </x-form>
+    @livewire(lw('app.settings.website.announcement-modal'))
 </div>

@@ -9,132 +9,73 @@ class Announcement extends Component
 {
     use WithPopupNotify;
 
-    public $input;
     public $announcements;
 
-    /**
-     * Validation rules
-     */
-    protected function rules()
-    {
-        return [
-            'input.type' => 'required',
-            'input.content' => 'required',
-            'input.is_active' => 'nullable',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'input.type.required' => __('Announcement type is required.'),
-            'input.content.required' => __('Announcement content is required.'),
-        ];
-    }
+    protected $listeners = [
+        'setAnnouncement',
+        'refresh' => '$refresh',
+    ];
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
-        $this->getAnnouncements();
+        $this->announcements = settings('announcements');
     }
 
     /**
-     * Get types property
+     * Set announcement
      */
-    public function getTypesProperty()
+    public function setAnnouncement($data): void
     {
-        return [
-            ['value' => 'general', 'label' => 'General'],
-        ];
-    }
+        $announcements = collect($this->announcements);
+        $index = $announcements->where('uuid', data_get($data, 'uuid'))->keys()->first();
 
-    /**
-     * Get announcements
-     */
-    public function getAnnouncements()
-    {
-        $this->announcements = collect(json_decode(settings('announcements')));
-    }
+        if (is_numeric($index)) $announcements->put($index, $data);
+        else $announcements->push($data);
 
-    /**
-     * Open
-     */
-    public function open($uuid = null)
-    {
-        $this->input = $uuid
-            ? $this->announcements->firstWhere('uuid', $uuid)
-            : [
-                'uuid' => null,
-                'url' => null,
-                'type' => data_get(head($this->types), 'value'),
-                'content' => null,
-                'is_active' => false,    
-            ];
+        $this->announcements = $announcements->values()->all();
 
-        $this->dispatchBrowserEvent('announcement-form-modal-open');
+        settings(['announcements' => $this->announcements]);
+
+        $this->emit('refresh');
     }
 
     /**
      * Sort
      */
-    public function sort($data)
+    public function sort($data): void
     {
-        $this->announcements = collect($data)->map(fn($uuid) => $this->announcements->firstWhere('uuid', $uuid));
+        $this->announcements = collect($data)
+            ->map(fn($uuid) => collect($this->announcements)->firstWhere('uuid', $uuid))
+            ->values()
+            ->all();
 
-        $this->persist();
+        settings(['announcements' => $this->announcements]);
+
         $this->popup('Announcements Sorted.');
-    }
-
-    /**
-     * Submit
-     */
-    public function submit()
-    {
-        $this->resetValidation();
-        $this->validate();
-
-        $uuid = data_get($this->input, 'uuid');
-        $index = $uuid ? $this->announcements->search(fn($val) => data_get($val, 'uuid') === $uuid) : null;
-
-        if (is_numeric($index)) $this->announcements->put($index, $this->input);
-        else $this->announcements->push(array_merge($this->input, ['uuid' => str()->uuid()]));
-
-        $this->persist();
-        $this->popup('Announcement Updated');
-        $this->dispatchBrowserEvent('announcement-form-modal-close');
     }
 
     /**
      * Delete
      */
-    public function delete($uuid)
+    public function delete($uuid): void
     {
-        $this->announcements = $this->announcements
+        $this->announcements = collect($this->announcements)
             ->reject(fn($val) => data_get($val, 'uuid') === $uuid)
-            ->values();
+            ->values()
+            ->all();
 
-        $this->persist();
-        $this->popup('Announcement Deleted.');
-    }
-
-    /**
-     * Persist
-     */
-    public function persist()
-    {
         settings(['announcements' => $this->announcements]);
-        $this->getAnnouncements();
+
+        $this->popup('Announcement Deleted.');
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.settings.website.announcement');
     }

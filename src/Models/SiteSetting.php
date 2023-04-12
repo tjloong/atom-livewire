@@ -112,7 +112,13 @@ class SiteSetting extends Model
     public function generate()
     {
         return cache()->remember('settings', now()->addDays(7), function() {
-            return $this->get()->mapWithKeys(fn($val) => [$val->name => $val->value])->toArray();
+            return $this->get()
+                ->mapWithKeys(fn($val) => [
+                    $val->name => in_array($val->name, ['announcements', 'popup'])
+                        ? json_decode($val->value, true)
+                        : $val->value,
+                ])
+                ->toArray();
         });
     }
 

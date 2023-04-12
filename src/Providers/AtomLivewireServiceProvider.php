@@ -205,6 +205,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.settings.website.analytics' => 'App\Settings\Website\Analytics',
             'atom.app.settings.website.social-media' => 'App\Settings\Website\SocialMedia',
             'atom.app.settings.website.announcement' => 'App\Settings\Website\Announcement',
+            'atom.app.settings.website.announcement-modal' => 'App\Settings\Website\AnnouncementModal',
+            'atom.app.settings.website.pop-up' => 'App\Settings\Website\PopUp',
             'atom.app.settings.integration.email' => 'App\Settings\Integration\Email',
             'atom.app.settings.integration.storage' => 'App\Settings\Integration\Storage',
             'atom.app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',
