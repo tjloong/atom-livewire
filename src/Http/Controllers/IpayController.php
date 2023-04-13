@@ -46,7 +46,7 @@ class IpayController extends Controller
     public function redirect()
     {
         if ($jobhandler = $this->getJobHandler()) {
-            return ($jobhandler)::dispatchNow([
+            return ($jobhandler)::dispatchSync([
                 'provider' => 'ipay',
                 'status' => $this->getStatus(), 
                 'response' => request()->all(),
