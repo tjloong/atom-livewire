@@ -1,6 +1,6 @@
 @props([
     'delay' => 2500,
-    'announcements' => settings('announcements'),
+    'announcements' => collect(settings('announcements'))->where('is_active', true)->toArray(),
 ])
 
 @if ($count = count($announcements))
