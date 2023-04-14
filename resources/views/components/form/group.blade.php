@@ -25,7 +25,7 @@
 
             @endisset
 
-            <div class="grid gap-6 {{
+            <div class="grid gap-6 grid-cols-1 {{
                 [
                     2 => 'md:grid-cols-2',
                     3 => 'md:grid-cols-3',
