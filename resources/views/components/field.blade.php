@@ -16,7 +16,7 @@
             {{ $slot }}
         </div>
     @else
-        <div class="md:w-3/5 md:text-right print:w-3/5 print:text-right">
+        <div class="md:w-3/5 md:text-right">
             @if ($badge = $attributes->get('badge'))
                 @if (is_string($badge)) <x-badge :label="$badge"/>
                 @elseif (is_array($badge))
@@ -29,9 +29,9 @@
             @elseif ($tags = $attributes->get('tags') ?? $attributes->get('tag'))
                 @if (is_string($tags)) <span class="text-sm bg-gray-100 border rounded px-2 flex items-center gap-2">{{ $tags }}</span>
                 @elseif (is_array($tags))
-                    <div class="inline-flex items-center gap-2">
+                    <div class="inline-flex flex-wrap items-center justify-end gap-2">
                         @foreach ($tags as $tag)
-                            <span class="text-sm bg-gray-100 border rounded px-2 flex items-center gap-2">{{ $tag }}</span>
+                            <span class="shrink-0 text-sm bg-gray-100 border rounded px-2 flex items-center gap-2">{{ $tag }}</span>
                         @endforeach
                     </div>
                 @endif

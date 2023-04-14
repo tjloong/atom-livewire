@@ -16,6 +16,7 @@ trait WithPopupNotify
                 : __(data_get($body, 'message')),
 
             'type' => $alert,
+            'reload' => is_string($body) ? false : data_get($body, 'reload'),
         ];
 
         $this->dispatchBrowserEvent($type, $body);

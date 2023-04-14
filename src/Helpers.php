@@ -364,21 +364,9 @@ function word($pages, $config = [])
 /**
  * Export collection to excel
  */
-function excel($collection, $config = [], $iterator = null)
+function excel($collection)
 {
-    $dir = storage_path('export');
-    if (!File::exists($dir)) File::makeDirectory($dir);
-
-    $filename = str()->finish(
-        data_get($config, 'filename', 'excel-export-'.time()),
-        '.xlsx'
-    );
-
-    $path = $dir.'/'.$filename;
-
-    (new FastExcel($collection))->export($path, $iterator);
-
-    return $path;
+    return (new FastExcel($collection));
 }
 
 /**

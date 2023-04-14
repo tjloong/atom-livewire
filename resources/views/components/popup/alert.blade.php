@@ -23,7 +23,8 @@
         },
         close () {
             if (this.config.onClose) this.config.onClose()
-            this.show = false
+            else if (this.config.reload) window.location.reload()
+            else this.show = false
         },
     }"
     x-on:alert.window="open($event.detail)"

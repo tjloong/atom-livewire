@@ -11,6 +11,7 @@ class ContactUs extends Component
 {
     use WithForm;
 
+    public $ref;
     public $enquiry;
 
     /**
@@ -31,6 +32,7 @@ class ContactUs extends Component
      */
     public function mount(): void
     {
+        $this->ref = request()->query('ref');
         $this->enquiry = enabled_module('enquiries')
             ? model('enquiry')
             : [
@@ -70,6 +72,8 @@ class ContactUs extends Component
         if (enabled_module('enquiries')) {
             if (is_array($this->enquiry)) $this->enquiry = model('enquiry')->create($this->enquiry);
             else $this->enquiry->save();
+
+            if ($this->ref) $this->enquiry->fill(['data' => ['ref' => $this->ref]])->save();
 
             $mail['to'] = settings('notify_to');
             $mail['params'] = $this->enquiry;
