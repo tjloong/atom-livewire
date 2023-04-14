@@ -690,8 +690,8 @@ function format_date($date, $format = 'date', $tz = null)
     $date = $date->timezone($tz);
 
     if ($format === 'carbon') return $date;
-    else if ($format === 'date') return $date->format('d M, Y');
-    else if ($format === 'datetime') return $date->format('d M, Y g:iA');
+    else if ($format === 'date') return $date->format('d M Y');
+    else if ($format === 'datetime') return $date->format('d M Y g:iA');
     else if ($format === 'time') return $date->format('g:i A');
     else if ($format === 'time-full') return $date->format('g:i:s A');
     else if ($format === 'human') return $date->diffForHumans();

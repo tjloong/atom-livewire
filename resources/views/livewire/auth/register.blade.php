@@ -6,7 +6,7 @@
     />
 
     <div class="flex flex-col gap-4">
-        <x-form>
+        <x-form :alert="false">
             <x-form.group>
                 <div class="text-2xl font-bold text-gray-600">
                     {{ __('Create your account') }}
@@ -17,14 +17,16 @@
                 <x-form.password wire:model.defer="inputs.password" label="Login Password"/>
             
                 <div class="grid gap-2">
-                    <x-form.agree tnc wire:model="inputs.agree_tnc"/>
-                    <x-form.agree marketing wire:model="inputs.agree_marketing"/>
+                    <x-form.checkbox.privacy wire:model="inputs.agree_tnc"/>
+                    <x-form.checkbox.marketing wire:model="inputs.agree_marketing"/>
                 </div>
             </x-form.group>
     
             <x-slot:foot>
                 <x-button.submit size="md" label="Create Account" block/>
             </x-slot:foot>
+
+            <x-slot:error-alert></x-slot:error-alert>
         </x-form>
         
         <div class="text-center">

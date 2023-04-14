@@ -47,7 +47,9 @@ trait WithForm
     {
         $this->fill([
             'form.required' => collect($this->rules())
-                ->mapWithKeys(fn($rules, $key) => [$key => in_array('required', $rules)])
+                ->mapWithKeys(fn($rules, $key) => [
+                    $key => collect($rules)->filter(fn($val) => str($val)->startsWith('required'))->count() > 0,
+                ])
                 ->filter(fn($val) => $val === true)
                 ->all(),
         ]);

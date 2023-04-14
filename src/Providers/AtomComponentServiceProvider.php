@@ -158,6 +158,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.checkbox.index',
             'form.checkbox.privacy',
             'form.checkbox.multiple',            
+            'form.checkbox.marketing',
 
             'page-header.index',
             'page-header.back',

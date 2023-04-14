@@ -1,7 +1,7 @@
 <x-form.field :label="false" {{ $attributes }}>
     <div class="{{ component_error(optional($errors), $attributes) ? 'p-2 rounded form-input-error' : null }}">
         <x-form.checkbox {{ $attributes->except('label') }}>
-            <div class="flex flex-col py-0.5 gap-1">
+            <div class="flex flex-col py-0.5 gap-1 text-gray-500">
                 {{ __($attributes->get('label', 'I have read and agreed to the website\'s Terms of Use and Privacy Policy.')) }}
         
                 @module('pages')

@@ -40,12 +40,12 @@
             @if ($slot->isNotEmpty())
                 <div {{ $attributes->class(['font-normal'])->only('class') }}>{{ $slot }}</div>
             @elseif ($label && $small)
-                <div class="grid py-0.5">
+                <div class="grid py-0.5 {{ $attributes->get('class') }}">
                     <div class="font-normal">{!! __($label) !!}</div>
                     <div class="span text-sm text-gray-500 font-medium">{!! __($small) !!}</div>
                 </div>
             @elseif ($label)
-                <div class="py-0.5 font-normal">{!! __($label) !!}</div>
+                <div class="py-0.5 font-normal {{ $attributes->get('class') }}">{!! __($label) !!}</div>
             @endif
         </label>
     </div>
