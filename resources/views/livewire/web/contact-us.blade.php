@@ -6,11 +6,11 @@
                     {{ __('Contact Information') }}
                 </div>
 
-                @foreach ([
+                @foreach (collect([
                     ['icon' => 'location', 'value' => settings('address')],
                     ['icon' => 'phone', 'value' => settings('phone')],
                     ['icon' => 'envelope', 'value' => settings('email')],
-                ] as $item)
+                ])->filter(fn($val) => !empty(data_get($val, 'value'))) as $item)
                     <div class="flex gap-2">
                         <div class="shrink-0 text-gray-400 py-0.5">
                             <x-icon :name="data_get($item, 'icon')"/>

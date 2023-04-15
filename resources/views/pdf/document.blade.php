@@ -8,93 +8,71 @@
         @include($letterhead, ['document' => $document])
     @endif
 
-    <table style="margin-bottom: 0.5cm;">
+    <table class="mb-4">
         <tr>
-            <td style="width: 60%">
-                <div style="
-                    font-size: 26pt;
-                    line-height: 26pt;
-                    font-weight: bold;
-                    letter-spacing: 1.5pt;
-                    margin-bottom: 0.25cm;
-                ">
+            <td style="width: 55%">
+                <div class="text-4xl font-bold mb-2">
                     {{ str($document->type)->upper() }}
                 </div>
 
-                <div style="margin-bottom: 0.15cm;">
-                    <label>{{ 
-                        in_array($document->type, ['purchase-order', 'bill'])
-                            ? __('Vendor') 
-                            : __('Client')
-                    }}</label>
-                    <div style="font-weight: 700; font-size: 10pt;">
-                        {{ $document->name }}
-                    </div>
+                <div class="label mb-1">
+                    {{ in_array($document->type, ['purchase-order', 'bill']) ? __('Vendor') : __('Client') }}
+                </div>
+
+                <div class="font-bold">
+                    {{ $document->name }}
+                </div>
+
+                <div class="text-sm">
                     {!! nl2br($document->address) !!}
                 </div>
             </td>
 
-            <td>
+            <td class="pl-4">
                 <table>
-                    <tr>
-                        <td><label>{{ __('Number') }}</label></td>
-                        <td>{{ $document->number }}</td>
-                    </tr>
-                    <tr>
-                        <td><label>{{ __('Date') }}</label></td>
-                        <td>{{ format_date($document->issued_at) }}</td>
-                    </tr>
-
-                    @if ($document->payterm)
+                    @foreach (collect([
+                        'Number' => $document->number,
+                        'Date' => format_date($document->issued_at),       
+                        'Payment Terms' => $document->payterm ? $document->formatted_payterm : false,
+                        'Valid Period' => ($valid = data_get($document->data, 'valid_for'))
+                            ? __(':valid day(s)', ['valid' => $valid])
+                            : false,
+                        'Reference' => $document->reference ?: false,
+                        'Attention To' => $document->person ?: false,
+                    ])->filter(fn($val) => $val !== false)->toArray() as $key => $val)
                         <tr>
-                            <td><label>{{ __('Payment Terms') }}</label></td>
-                            <td>{{ $document->formatted_payterm }}</td>
+                            <td class="label pb-1">{{ __($key) }}</td>
+                            <td class="pb-1">{{ $val }}</td>
                         </tr>
-                    @endif
-
-                    @if ($valid = data_get($document->data, 'valid_for'))
-                        <tr>
-                            <td><label>{{ __('Valid Period') }}</label></td>
-                            <td>{{ __(':valid day(s)', ['valid' => $valid]) }}</td>
-                        </tr>
-                    @endif
-
-                    @if ($ref = $document->reference)
-                        <tr>
-                            <td><label>{{ __('Reference') }}</label></td>
-                            <td>{{ $ref }}</td>
-                        </tr>
-                    @endif
-
-                    @if ($person = $document->person)
-                        <tr>
-                            <td><label>{{ __('Attention To') }}</label></td>
-                            <td>{{ $person }}</td>
-                        </tr>
-                    @endif
+                    @endforeach
                 </table>
             </td>
         </tr>
-
-        @if ($desc = $document->description)
-            <tr>
-                <td colspan="2">
-                    <label>{{ __('Description') }}</label>
-                    {{ $desc }}
-                </td>
-            </tr>
-        @endif
     </table>
 
-    <div style="margin-bottom: 0.1cm;">
-        <table>
-            @php $columns = $document->getColumns() @endphp
-
+    @if ($desc = $document->description)
+        <table class="mb-8">
             <tr>
-                <th style="text-align: left;">{{ $columns->get('item_name') }}</th>
-                <th width="15%" style="text-align: right;">{{ $columns->get('qty') }}</th>
-                @if ($col = $columns->get('price')) <th width="15%" style="text-align: right;">{{ $col }}</th> @endif
-                @if ($col = $columns->get('total')) <th width="15%" style="text-align: right;">{{ $col }}</th> @endif
+                <td colspan="2">
+                    <div class="label mb-1">{{ __('Description') }}</div>
+                    <div class="text-sm">{{ $desc }}</div>
+                </td>
+            </tr>
+        </table>
+    @endif
+
+    <div class="mb-2">
+        @php $columns = $document->getColumns() @endphp
+
+        <table>
+            <tr>
+                @foreach (['item_name','qty','price','total'] as $i => $item)
+                    @if ($col = $columns->get($item))
+                        @if ($i === 0) <td class="text-xs font-bold">{{ strtoupper($col) }}</td>
+                        @else <td class="text-xs font-bold text-right" width="15%">{{ strtoupper($col) }}</td>
+                        @endif
+                    @endif
+                @endforeach
             </tr>
         </table>
     </div>
@@ -104,98 +82,73 @@
             ? $document->splittedFrom->items
             : $document->items
     ) as $item)
-        <div style="
-            background-color: #f5f7f9;
-            margin-bottom: 0.1cm;
-            padding: 0.1cm;
-        ">
+        <div class="mb-1 bg-gray-100">
             <table>
                 <tr>
-                    <td style="font-weight: 700;">{{ $item->name }}</td>
-                    <td width="15%" style="text-align: right;">{{ $item->qty }}</td>
-                    @if ($columns->get('price'))
-                        <td width="15%" style="text-align: right;">{{ currency($item->amount) }}</td>
-                    @endif
-                    @if ($columns->get('total'))
-                        <td width="15%" style="text-align: right;">{{ currency($item->subtotal) }}</td>
-                    @endif
+                    @foreach (array_filter([
+                        $item->name,
+                        $item->qty,
+                        $columns->get('price') ? currency($item->amount) : null,
+                        $columns->get('total') ? currency($item->subtotal) : null,
+                    ]) as $i => $val)
+                        @if ($i === 0) <td class="text-sm font-bold">{{ $val }}</td>
+                        @else <td class="text-sm text-right" width="15%">{{ $val }}</td>
+                        @endif
+                    @endforeach
                 </tr>
             </table>
         </div>
 
         @if ($columns->get('item_description') && $item->description)
-            <div style="
-                padding: 0 0.4cm 0.25cm;
-                margin-bottom: 0.1cm;
-                color: #222;
-            ">
+            <div class="text-sm px-4 pt-2 pb-4" style="color: #555;">
                 {!! nl2br($item->description) !!}
             </div>
         @endif
     @endforeach
 
-    @if ($document->type !== 'delivery-order')
-        <div style="margin-bottom: 0.5cm; margin-left: 50%; background-color: #f5f7f9; padding: 0.1cm;">
-            <table style="width: 100%;">
+    @if (in_array($document->type, ['quotation', 'invoice', 'sales-order', 'purchase-order', 'bill']))
+        <div class="ml-auto p-2 bg-gray-100 mb-4" style="width: 50%">
+            <table class="px-2 mb-2">
                 <tr>
-                    <td class="total" style="color: gray;">{{ __('Subtotal') }}</td>
-                    <td class="total" style="text-align: right;">{{ currency($document->subtotal, $document->currency) }}</td>
+                    <td class="text-lg font-semibold">{{ __('Subtotal') }}</td>
+                    <td class="text-lg font-medium text-right">{{ currency($document->subtotal, $document->currency) }}</td>
                 </tr>
 
                 @if ($taxes = $document->getTaxes())
-                    <tr><td colspan="2" style="padding: 0 0 0.2cm;">
-                        @foreach ($document->getTaxes() as $tax)
-                            <table style="width: 100%">
-                                <td class="total tax" style="color: gray;">{{ data_get($tax, 'label') }}</td>
-                                <td class="total tax" style="text-align: right;">{{ currency(data_get($tax, 'amount')) }}</td>
-                            </table>
-                        @endforeach
-                    </td></tr>
+                    @foreach ($taxes as $tax)
+                        <tr>
+                            <td class="font-medium">{{ data_get($tax, 'label') }}</td>
+                            <td class="text-right">{{ currency(data_get($tax, 'amount')) }}</td>
+                        </tr>
+                    @endforeach
                 @endif
+            </table>
 
+            <table class="bg-gray-200 px-2">
                 <tr>
-                    <td class="total grand-total" style="color: gray;">{{ __('Grand Total') }}</td>
-                    <td class="total grand-total" style="text-align: right;">{{ currency($document->grand_total, $document->currency) }}</td>
+                    <td class="text-lg font-bold">{{ __('Grand Total') }}</td>
+                    <td class="text-lg font-bold text-right">{{ currency($document->grand_total, $document->currency) }}</td>
                 </tr>
 
                 @if ($document->splitted_total)
                     <tr>
-                        <td class="total grand-total" style="color: gray;">{{ __('Amount to be Paid') }}</td>
-                        <td class="total grand-total" style="text-align: right;">{{ currency($document->splitted_total, $document->currency) }}</td>
+                        <td class="text-lg font-bold">{{ __('Amount To Be Paid') }}</td>
+                        <td class="text-lg font-bold text-right">{{ currency($document->splitted_total, $document->currency) }}</td>
                     </tr>
                 @endif
             </table>
         </div>
     @endif
 
-    {{-- @if ($tq = data_get($settings, 'tq'))
-        <div style="
-            font-size: 24pt; 
-            font-weight: 700; 
-            text-align: right; 
-            margin: 0 0.5cm 0.5cm 0.5cm;
-        ">
-            {!! strtoupper($tq) !!}
-        </div>
-    @endif --}}
-
     @if ($note = $document->note)
-        <div style="color: #444; font-size: 8pt; padding: 0 0.5cm;">
+        <div class="text-xs px-4">
             {!! nl2br($note) !!}
         </div>
     @endif
 @endsection
 
-@section('footer')
-    @if ($footer = $document->footer)
-        <div style="
-            position: fixed;
-            bottom: -1.5cm;
-            height: 0.75cm;
-            padding: 0.15cm 0.75cm;
-            font-size: 8pt;
-        ">
-            {{ $footer }}
-        </div>
-    @endif    
-@endsection
+@if ($footer = $document->footer)
+    @section('footer')
+        {{ $footer }}
+    @endsection
+@endif

@@ -1,5 +1,5 @@
 @page {
-    margin: 0.5cm;
+    margin: 0;
 }
 
 * {
@@ -9,6 +9,28 @@
     line-height: 1;
 }
 
+/* header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5cm;
+    overflow: hidden;
+}
+
+/* footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.25cm 0.75cm;
+    white-space: nowrap;
+    font-size: 8pt;
+}
+
+/* table */
 table { width: 100%; border-collapse: collapse; }
 table td { vertical-align: top; }
 
@@ -19,6 +41,16 @@ table td { vertical-align: top; }
     text-transform: uppercase;
 }
 
+/* display */
+.block { display: block; }
+.inline-block { display: inline-block; }
+.inline { display: inline; }
+
+/* background color */
+.bg-gray-100 { background-color: #f5f7f9; }
+.bg-gray-200 { background-color: #e0e6ec; }
+
+/* border */
 .border { border: 1px solid #999; }
 .border-b { border-bottom: 1px solid #999; }
 .border-b-0 { border-bottom: 0px; }
@@ -27,11 +59,11 @@ table td { vertical-align: top; }
 .text-xs { font-size: 0.75rem; line-height: 1rem; }
 .text-sm { font-size: 0.875rem; line-height: 1rem; }
 .text-base { font-size: 1rem; line-height: 1rem; }
-.text-lg { font-size: 1.125rem; line-height: 1.5rem; }
-.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-.text-2xl { font-size: 1.5rem; line-height: 2rem; }
-.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-.text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.25rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.5rem; }
+.text-2xl { font-size: 1.5rem; line-height: 1.75rem; }
+.text-3xl { font-size: 1.875rem; line-height: 2rem; }
+.text-4xl { font-size: 2.25rem; line-height: 2.25rem; }
 .text-5xl { font-size: 3rem; line-height: 1; }
 .text-6xl { font-size: 3.75rem; line-height: 1; }
 .text-7xl { font-size: 4.5rem; line-height: 1; }
@@ -88,6 +120,7 @@ table td { vertical-align: top; }
 .w-72 { width: 18rem; }
 .w-80 { width: 20rem; }
 .w-96 { width: 24rem; }
+.w-1\/2 { width: 50%; }
 .w-auto { width: auto; }
 .w-full { width: 100%; }
 
@@ -528,3 +561,13 @@ table td { vertical-align: top; }
 .mr-auto { margin-right: auto; }
 .mb-auto { margin-bottom: auto; }
 .ml-auto { margin-left: auto; }
+
+/* vertical align */
+.align-baseline { vertical-align: baseline; }
+.align-top { vertical-align: top; }
+.align-middle { vertical-align: middle; }
+.align-bottom { vertical-align: bottom; }
+.align-text-top	{ vertical-align: text-top; }
+.align-text-bottom	{ vertical-align: text-bottom; }
+.align-sub { vertical-align: sub; }
+.align-super { vertical-align: super; }
