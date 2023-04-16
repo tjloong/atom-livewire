@@ -60,12 +60,14 @@ class IpayController extends Controller
     public function webhook()
     {
         if ($jobhandler = $this->getJobHandler()) {
-            return ($jobhandler)::dispatch([
+            ($jobhandler)::dispatch([
                 'provider' => 'ipay',
                 'status' => $this->getStatus(), 
                 'response' => request()->all(), 
                 'webhook' => true,
             ]);
+
+            return 'RECEIVEOK';
         }
     }
 
