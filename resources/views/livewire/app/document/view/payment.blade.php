@@ -1,5 +1,15 @@
 <x-box header="Payments">
-    <div class="grid divide-y">
+    <x-slot:buttons>
+        <x-button icon="plus" color="gray" size="xs"
+            :label="[
+                'invoice' => 'Receive',
+                'bill' => 'Issue',
+            ][$document->type]"
+            :href="route('app.document.payment.create', [$document->id])"
+        />
+    </x-slot:buttons>
+
+    <div class="flex flex-col divide-y">
         @if ($this->payments->count())
             <div class="max-h-[150px] overflow-auto">
                 <div class="flex flex-col divide-y">
@@ -7,12 +17,7 @@
                         <div class="py-2 px-4 text-sm hover:bg-slate-100">
                             <div class="flex items-center gap-2">
                                 <div class="grow">
-                                    <a href="{{ route('app.document.payment.update', [
-                                        'documentId' => $payment->document_id,
-                                        'documentPaymentId' => $payment->id,
-                                    ]) }}" class="font-medium">
-                                        {{ $payment->number }}
-                                    </a>    
+                                    <x-link :href="route('app.document.payment.update', [$payment->id])" :label="$payment->number"/>
                                 </div>
                                 
                                 <div class="shrink-0 text-gray-500 font-medium">
@@ -33,16 +38,8 @@
                     @endforeach
                 </div>
             </div>
+        @else
+            <x-empty-state size="xs" title="No Payment" subtitle="No payment found"/>
         @endif
-
-        <div class="p-4">
-            <x-button icon="plus" color="gray" block
-                :label="[
-                    'invoice' => 'Receive Payment',
-                    'bill' => 'Issue Payment',
-                ][$document->type]"
-                :href="route('app.document.payment.create', [$document->id])"
-            />
-        </div>
     </div>
 </x-box>

@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Document;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use AuthorizesRequests;
+
     public $document;
 
     /**
@@ -14,6 +17,8 @@ class Update extends Component
     public function mount($documentId)
     {
         $this->document = model('document')->readable()->findOrFail($documentId);
+
+        $this->authorize($this->document->type.'.update');
 
         if ($master = $this->document->splittedFrom) {
             $this->document = $master;

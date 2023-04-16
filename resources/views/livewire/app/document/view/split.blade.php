@@ -1,4 +1,14 @@
 <x-box header="Splitted Invoices">
+    @if (!in_array($document->status, ['paid', 'partial']))
+        <x-slot:buttons>
+            <x-button color="gray" size="xs"
+                :icon="$this->splits->count() ? 'edit' : 'scissors'"
+                :label="$this->splits->count() ? 'Edit' : 'Split'"
+                :href="route('app.document.split', [$document->id])"
+            />
+        </x-slot:buttons>
+    @endif
+
     <div class="grid divide-y">
         @if ($this->splits->count())
             <div class="max-h-[150px] overflow-auto">
@@ -38,16 +48,8 @@
                     @endforeach
                 </div>
             </div>
-        @endif
-
-        @if (!in_array($document->status, ['paid', 'partial']))
-            <div class="p-4">
-                <x-button color="gray" block
-                    :icon="$this->splits->count() ? 'edit' : 'scissors'"
-                    :label="$this->splits->count() ? 'Edit Splits' : 'Split Invoice'"
-                    :href="route('app.document.split', [$document->id])"
-                />
-            </div>
+        @else
+            <x-empty-state size="xs" title="No Splitted Invoice" subtitle="Invoice is not splitted"/>
         @endif
     </div>
 </x-box>

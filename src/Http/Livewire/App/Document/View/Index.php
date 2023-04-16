@@ -2,11 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Document\View;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Jiannius\Atom\Traits\Livewire\WithShareable;
 use Livewire\Component;
 
 class Index extends Component
 {
+    use AuthorizesRequests;
     use WithShareable;
 
     public $document;
@@ -17,6 +19,8 @@ class Index extends Component
     public function mount($documentId): void
     {
         $this->document = model('document')->readable()->findOrFail($documentId);
+
+        $this->authorize($this->document->type.'.view');
 
         breadcrumbs()->push('#'.$this->document->number);
     }

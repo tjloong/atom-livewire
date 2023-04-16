@@ -2,59 +2,50 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Document\Payment;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Form extends Component
 {
+    use WithForm;
     use WithPopupNotify;
 
     public $payment;
 
     /**
-     * Validation rules
+     * Validation
      */
-    public function rules()
+    protected function validation(): array
     {
         return [
-            'payment.paymode' => 'required',
-            'payment.currency' => 'nullable',
-            'payment.currency_rate' => 'nullable|numeric',
-            'payment.amount' => 'required|numeric',
-            'payment.paid_at' => 'nullable|date',
-            'payment.document_id' => 'required',
+            'payment.paymode' => ['required' => 'Payment method is required.'],
+            'payment.currency' => ['nullable'],
+            'payment.currency_rate' => ['nullable'],
+            'payment.amount' => ['required' => 'Payment amount is required.'],
+            'payment.paid_at' => ['nullable'],
+            'payment.document_id' => ['required' => 'Unknown document.'],
         ];
     }
 
     /**
-     * Validation message
+     * Get options property
      */
-    public function messages()
+    public function getOptionsProperty(): array
     {
         return [
-            'payment.amount.required' => __('Payment amount is required.'),
-            'payment.paymode.required' => __('Payment method is required.'),
-            'payment.document_id.required' => __('Unknown document.'),
+            'paymodes' => enabled_module('tenants') && ($tenant = $this->payment->document->tenant ?? null)
+                ? tenant('settings.paymodes', ['Cash'], $tenant)
+                : settings('paymodes', ['Cash']),
         ];
-    }
-
-    /**
-     * Get paymodes property
-     */
-    public function getPaymodesProperty()
-    {
-        return model('document')->enabledHasTenantTrait
-            ? tenant_settings('paymodes', ['Cash'])
-            : settings('paymodes', ['Cash']);
     }
 
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): mixed
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $this->payment->save();
         $this->payment->document->sumTotal();
@@ -65,7 +56,7 @@ class Form extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.document.payment.form');
     }

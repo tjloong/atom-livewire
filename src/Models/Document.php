@@ -157,7 +157,7 @@ class Document extends Model
     /**
      * Attribute for is splitted
      */
-    public function isSplitted(): Attribute
+    protected function isSplitted(): Attribute
     {
         return new Attribute(
             get: fn () => $this->splittedFrom || $this->splits()->count(),
@@ -167,29 +167,61 @@ class Document extends Model
     /**
      * Attribute for status
      */
-    public function status(): Attribute
+    protected function status(): Attribute
     {
         return new Attribute(
             get: function() {
-                if ($this->delivered_at) return 'delivered';
-                if ($this->due_at && ($this->due_at->isPast() || $this->due_at->isToday())) return 'due';
-                if ($this->issued_at && $this->issued_at->isFuture() && $this->type === 'invoice') return 'pending';
-            
-                if ($validfor = data_get($this->data, 'valid_for')) {
-                    if ($this->issued_at->addDays($validfor)->isPast()) return 'expired';
+                switch ($this->type) {
+                    case 'invoice':
+                        if ($this->paid_total > 0 && $this->paid_total >= $this->splitted_total) return 'paid';
+                        elseif ($this->paid_total > 0 && $this->paid_total >= $this->grand_total) return 'paid';
+                        elseif ($this->paid_total > 0) return 'partial';
+                        elseif ($this->due_at && ($this->due_at->isPast() || $this->due_at->isToday())) return 'due';
+                        elseif ($this->issued_at && $this->issued_at->isFuture()) return 'future';
+                        elseif ($this->last_sent_at) return 'sent';
+                        else return 'unpaid';
+                        break;
+
+                    case 'quotation':
+                        $validfor = data_get($this->data, 'valid_for');
+
+                        if ($this->convertedTo->count()) return 'invoiced';
+                        elseif ($this->issued_at && $validfor && $this->issued_at->addDays($validfor)->isPast()) return 'expired';
+                        elseif ($this->issued_at && $this->issued_at->isFuture()) return 'future';
+                        elseif ($this->last_sent_at) return 'sent';
+                        else return 'draft';
+                        break;
+                    
+                    case 'sales-order':
+                        if ($this->issued_at && $this->issued_at->isFuture()) return 'future';
+                        elseif ($this->convertedTo->count()) return 'invoiced';
+                        else return 'draft';
+                        break;
+
+                    case 'delivery-order':
+                        if ($this->delivered_at) return 'delivered';
+                        elseif ($this->issued_at && $this->issued_at->isFuture()) return 'future';
+                        else return 'draft';
+                        break;
+                    
+                    case 'purchase-order':
+                        if ($this->issued_at && $this->issued_at->isFuture()) return 'future';
+                        elseif ($this->convertedTo->count()) return 'billed';
+                        else return 'draft';
+                        break;
+
+                    case 'bill':
+                        if ($this->paid_total > 0 && $this->paid_total >= $this->grand_total) return 'paid';
+                        elseif ($this->paid_total > 0) return 'partial';
+                        elseif ($this->due_at && ($this->due_at->isPast() || $this->due_at->isToday())) return 'due';
+                        elseif ($this->issued_at && $this->issued_at->isFuture()) return 'future';
+                        else return 'unpaid';
+                        break;
+    
+                    default:
+                        return 'draft';
+                        break;
                 }
-            
-                if ($this->last_sent_at) return 'sent';
-            
-                if ($this->paid_total > 0 && $this->paid_total >= $this->splitted_total) return 'paid';
-                elseif ($this->paid_total > 0 && $this->paid_total >= $this->grand_total) return 'paid';
-                elseif ($this->paid_total > 0) return 'partial';
-            
-                return [
-                    'invoice' => 'unpaid',
-                    'bill' => 'unpaid',
-                    'delivery-order' => 'pending',
-                ][$this->type] ?? 'draft';
             },
         );
     }

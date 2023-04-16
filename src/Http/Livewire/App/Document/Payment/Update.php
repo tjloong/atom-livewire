@@ -15,12 +15,13 @@ class Update extends Component
     /**
      * Mount
      */
-    public function mount($documentId, $documentPaymentId)
+    public function mount($paymentId)
     {
-        $this->authorize('document-payment.update');
+        $this->payment = model('document-payment')
+            ->whereHas('document', fn($q) => $q->readable())
+            ->findOrFail($paymentId);
 
-        $this->document = model('document')->readable()->findOrFail($documentId);
-        $this->payment = $this->document->payments()->findOrFail($documentPaymentId);
+        $this->authorize($this->payment->document->type.'-payment.update');
 
         breadcrumbs()->push($this->payment->number);
     }

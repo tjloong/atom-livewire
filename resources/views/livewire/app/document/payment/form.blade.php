@@ -1,23 +1,7 @@
 <x-form>
-    <x-form.date label="Payment Date"
-        wire:model="payment.paid_at"
-    />
-
-    <x-form.number label="Amount"
-        wire:model.defer="payment.amount"
-        :prefix="data_get($payment, 'currency')"
-        :error="$errors->first('payment.amount')"
-        required
-    />
-
-    <x-form.select label="Payment Method"
-        wire:model="payment.paymode"
-        :options="$this->paymodes"
-        :error="$errors->first('payment.paymode')"
-        required
-    />
-
-    <x-slot:foot>
-        <x-button.submit/>
-    </x-slot:foot>
+    <x-form.group cols="2">
+        <x-form.date wire:model="payment.paid_at" label="Payment Date"/>
+        <x-form.number wire:model.defer="payment.amount" :prefix="data_get($payment, 'currency')" step=".01"/>
+        <x-form.select wire:model="payment.paymode" label="Payment Method" :options="data_get($this->options, 'paymodes')"/>
+    </x-form.group>
 </x-form>

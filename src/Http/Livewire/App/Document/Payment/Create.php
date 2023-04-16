@@ -17,9 +17,9 @@ class Create extends Component
      */
     public function mount($documentId)
     {
-        $this->authorize('document-payment.create');
-
         $this->document = model('document')->readable()->findOrFail($documentId);
+
+        $this->authorize($this->document->type.'-payment.create');
 
         $this->payment = model('document-payment')->fill([
             'currency' => $this->document->currency,
