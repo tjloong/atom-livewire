@@ -113,6 +113,17 @@ protected $middlewareGroups = [
 ];
 ```
 
+8. Configure Sentry for error monitoriing (Optional)
+
+```
+php artisan sentry:publish --dsn=<sentry dsn - get from sentry when create project>
+
+// if develop locally, remember to set sentry dsn to null in .env file
+// this is to avoid sending error to sentry server in local environment
+SENTRY_LARAVEL_DSN=null
+SENTRY_TRACES_SAMPLE_RATE=0
+```
+
 8. Start development
 
 ```
