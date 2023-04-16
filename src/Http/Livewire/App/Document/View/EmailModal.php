@@ -45,27 +45,13 @@ class EmailModal extends Component
     }
 
     /**
-     * Open
+     * Get settings property
      */
-    public function open(): void
+    public function getSettingsProperty(): mixed
     {
-        $settings = model('document')->enabledHasTenantTrait
-            ? tenant('settings.'.$this->document->type.'.email')
+        return ($tenant = $this->document->tenant)
+            ? tenant('settings.'.$this->document->type.'.email', null, $tenant)
             : settings('document.'.$this->document->type.'.email');
-
-        $this->inputs = [
-            'from' => [
-                'name' => data_get($settings, 'sender_name'),
-                'email' => data_get($settings, 'sender_email'),
-            ],
-            'to' => [head(data_get($this->options, 'emails'))],
-            'cc' => [],
-            'bcc' => (array)data_get($settings, 'notify_to'),
-            'subject' => $this->setEmailPlaceholder(data_get($settings, 'subject')),
-            'body' => $this->setEmailPlaceholder(data_get($settings, 'body')),
-        ];
-
-        $this->dispatchBrowserEvent('email-modal-open');
     }
 
     /**
@@ -84,6 +70,29 @@ class EmailModal extends Component
     }
 
     /**
+     * Open
+     */
+    public function open(): void
+    {
+        $this->inputs = [
+            'from' => [
+                'name' => data_get($this->settings, 'sender_name'),
+                'email' => data_get($this->settings, 'sender_email'),
+            ],
+            'to' => [head(data_get($this->options, 'emails'))],
+            'cc' => [],
+            'bcc' => (array)(
+                data_get($this->settings, 'notify_to')
+                ?? data_get($this->settings, 'bcc')
+            ),
+            'subject' => $this->setEmailPlaceholder(data_get($this->settings, 'subject')),
+            'body' => $this->setEmailPlaceholder(data_get($this->settings, 'body')),
+        ];
+
+        $this->dispatchBrowserEvent('email-modal-open');
+    }
+
+    /**
      * Set email placeholder
      */
     public function setEmailPlaceholder($str = null): mixed
@@ -99,6 +108,14 @@ class EmailModal extends Component
             ->replace('{bill_number}', $this->document->number)
             ->replace('{client_name}', optional($this->document->contact)->name)
             ->replace('{client_email}', optional($this->document->contact)->email)
+            ->replace('{company_name}', $this->document->tenant
+                ? $this->document->tenant->name
+                : settings('company'),
+            )
+            ->replace('{company_email}', $this->document->tenant
+                ? $this->document->tenant->email
+                : settings('email'),
+            )
             ->toString();
     }
 

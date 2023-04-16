@@ -1,7 +1,4 @@
-<x-form modal icon="paper-plane"
-    uid="email-modal" 
-    header="Send Email" 
->
+<x-form modal icon="paper-plane" uid="email-modal" header="Send Email">
     @if ($inputs)
         <x-form.group cols="2">
             <x-form.email wire:model.defer="inputs.from.email" label="Sender Email"/>
