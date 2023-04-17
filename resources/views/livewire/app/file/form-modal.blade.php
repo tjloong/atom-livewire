@@ -7,74 +7,31 @@
                         <x-thumbnail 
                             :file="$file" 
                             :square="false" 
-                            class="rounded-b-none"
+                            class="rounded-b-none w-full h-32"
                         />
                     </a>
                 @endif
 
                 @if ($file->type !== 'youtube')
-                    <div class="flex flex-col divide-y">
-                        <div class="p-4 grid gap-4">
-                            <x-form.field label="File Type">
-                                {{ $file->mime }}
-                            </x-form.field>
-                    
-                            <x-form.field label="File URL">
-                                <div class="grid">
-                                    <a class="truncate" href="{{ $file->url }}" target="_blank">
-                                        {{ $file->url }}
-                                    </a>
-                                </div>
-                            </x-form.field>
-                    
-                            @if ($file->size)
-                                <x-form.field label="File Size">
-                                    {{ $file->size }}
-                                </x-form.field>
-                            @endif
-                    
-                            @if ($dim = $file->data->dimension ?? null)
-                                <x-form.field label="Dimension">
-                                    {{ $dim }}
-                                </x-form.field>
-                            @endif
-                        </div>
+                    <div class="flex flex-col divide-y text-sm">
+                        <x-field label="File Type" :value="$file->mime"/>
+                        @if ($file->size) <x-field label="File Size" :value="$file->size"/> @endif
+                        @if ($dim = $file->data->dimension ?? null) <x-field label="Dimension" :value="$dim"/> @endif
 
-                        <a 
-                            target="_blank"
-                            href="{{ $file->url }}"
-                            class="py-2 px-4 flex items-center justify-center gap-2"
-                        >
-                            <x-icon name="download"/>
-                            {{ __('Download') }}
-                        </a>
+                        <x-link label="Download" :href="$file->url" icon="download" target="_blank" class="py-2 px-4 self-center"/>
                     </div>
                 @endif
             </div>
 
-            <x-form.text 
-                :label="$file->type === 'youtube' ? 'Video Name' : 'File Name'"
-                wire:model.defer="file.name" 
-            />
+            <x-form.text wire:model.defer="file.name" :label="$file->type === 'youtube' ? 'Video Name' : 'File Name'"/>
 
             @if ($file->is_image)
-                <x-form.text 
-                    label="Alt Text"
-                    wire:model.defer="file.data.alt" 
-                    placeholder="Insert Alt Text"
-                />
-
-                <x-form.text 
-                    label="Description"
-                    wire:model.defer="file.data.description" 
-                    placeholder="Insert Image Description"
-                />
+                <x-form.text wire:model.defer="file.data.alt" label="Alt Text" placeholder="Insert Alt Text"/>
+                <x-form.text wire:model.defer="file.data.description" placeholder="Insert Image Description"/>
             @endif
         
             <div class="flex items-center justify-between gap-2">
-                <x-button.submit type="button"
-                    wire:click="submit"
-                />
+                <x-button.submit type="button" wire:click="submit"/>
 
                 <x-button.delete inverted
                     title="Delete File"

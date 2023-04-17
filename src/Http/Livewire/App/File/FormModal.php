@@ -2,11 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\File;
 
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class FormModal extends Component
 {
+    use WithForm;
     use WithPopupNotify;
 
     public $file;
@@ -14,31 +16,21 @@ class FormModal extends Component
     protected $listeners = ['open'];
 
     /**
-     * Validation rules
+     * Validation
      */
-    protected function rules()
+    protected function validation(): array
     {
         return [
-            'file.name' => 'required',
-            'file.data.alt' => 'nullable',
-            'file.data.description' => 'nullable',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    protected function messages()
-    {
-        return [
-            'file.name.required' => 'File name is required.',
+            'file.name' => ['required' => 'File name is required.'],
+            'file.data.alt' => ['nullable'],
+            'file.data.description' => ['nullable'],
         ];
     }
 
     /**
      * Open
      */
-    public function open($id)
+    public function open($id): void
     {
         $this->file = model('file')->findOrFail($id);
         $this->dispatchBrowserEvent('file-form-modal-open');
@@ -47,7 +39,7 @@ class FormModal extends Component
     /**
      * Delete
      */
-    public function delete($id)
+    public function delete($id): void
     {
         if ($file = model('file')->find($id)) {
             $file->delete();
@@ -61,9 +53,12 @@ class FormModal extends Component
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
+        $this->validateForm();
+
         $this->file->save();
+
         $this->emitUp('refresh');
         $this->dispatchBrowserEvent('file-form-modal-close');
     }
@@ -71,7 +66,7 @@ class FormModal extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.file.form-modal');
     }

@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -29,13 +30,9 @@ class File extends Model
 
     /**
      * Model boot method
-     * 
-     * @return
      */
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-
         static::deleting(function($file) {
             $path = data_get($file->data, 'path');
             $provider = data_get($file->data, 'provider') ?? data_get($file->data, 'disk') ?? 'local';
@@ -53,33 +50,119 @@ class File extends Model
     }
 
     /**
-     * Scope for fussy search
-     *
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
+     * Attribute for is image
      */
-    public function scopeSearch($query, $search)
+    protected function isImage(): Attribute
     {
-        return $query->where(function($q) use ($search) {
-            $q
-                ->where('name', 'like', "%$search%")
-                ->orWhere('url', 'like', "%$search%");
-        });
+        return new Attribute(
+            get: fn() => str()->startsWith($this->mime, 'image/'),
+        );
+    }
+
+    /**
+     * Attribute for is video
+     */
+    protected function isVideo(): Attribute
+    {
+        return new Attribute(
+            get: fn() => str()->startsWith($this->mime, 'video/'),
+        );
+    }
+
+    /**
+     * Attribute for is audio
+     */
+    protected function isAudio(): Attribute
+    {
+        return new Attribute(
+            get: fn() => str()->startsWith($this->mime, 'audio/'),
+        );
+    }
+
+    /**
+     * Attribute for size
+     */
+    protected function size(): Attribute
+    {
+        return new Attribute(
+            get: fn($size) => format_filesize($size, 'KB'),
+        );
+    }
+
+    /**
+     * Attribute for url
+     */
+    protected function url(): Attribute
+    {
+        return new Attribute(
+            get: fn($url) => data_get($this->data, 'visibility') === 'private'
+                ? route('__file', [$this->id])
+                : $url,
+        );
+    }
+
+    /**
+     * Attribute for file type
+     */
+    protected function type(): Attribute
+    {
+        return new Attribute(
+            get: function() {
+                if (!$this->mime) return;
+                if ($this->mime === 'youtube') return $this->mime;
+        
+                $type = (explode('/', $this->mime))[1];
+        
+                if ($type === 'ld+json') return 'jsonld';
+                if ($type === 'svg+xml') return 'svg';
+                if ($type === 'plain') return 'txt';
+                if (in_array($type, ['msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document'])) return 'word';
+                if (in_array($type, ['vnd.ms-powerpoint', 'vnd.openxmlformats-officedocument.presentationml.presentation'])) return 'ppt';
+                if (in_array($type, ['vnd.ms-excel', 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) return 'excel';
+        
+                return $type;
+            },
+        );
+    }
+
+    /**
+     * Attribute for icon
+     */
+    protected function icon(): Attribute
+    {
+        return new Attribute(
+            get: function() {
+                if ($this->is_image) return 'image';
+                elseif ($this->is_video) return 'play';
+                elseif ($this->is_audio) return 'music';
+                elseif ($this->type === 'word') return 'word';
+                elseif ($this->type === 'excel') return 'excel';
+                elseif ($this->type === 'ppt') return 'ppt';
+                elseif ($this->type === 'pdf') return 'pdf';
+        
+                return 'file';
+            },
+        );
+    }
+
+    /**
+     * Scope for fussy search
+     */
+    public function scopeSearch($query, $search): void
+    {
+        $query->where(fn($q) => $q
+            ->where('name', 'like', "%$search%")
+            ->orWhere('url', 'like', "%$search%")
+        );
     }
 
     /**
      * Scope for type
-     * 
-     * @param Builder $query
-     * @param string $type
-     * @return Builder
      */
-    public function scopeType($query, $types)
+    public function scopeType($query, $types): void
     {
-        if ($types === 'all') return $query;
-        else {
-            return $query->where(function($q) use ($types) {
+        if ($types !== 'all') {
+            $query->where(function($q) use ($types) {
                 foreach ((array)$types as $type) {
                     if ($type === 'image') $q->orWhere('mime', 'like', 'image/%');
                     if ($type === 'video') $q->orWhere('mime', 'like', 'video/%');
@@ -96,101 +179,6 @@ class File extends Model
                 }
             });
         }
-    }
-
-    /**
-     * Get is image attribute
-     * 
-     * @return boolean
-     */
-    public function getIsImageAttribute()
-    {
-        return str()->startsWith($this->mime, 'image/');
-    }
-
-    /**
-     * Get is video attribute
-     * 
-     * @return boolean
-     */
-    public function getIsVideoAttribute()
-    {
-        return str()->startsWith($this->mime, 'video/');
-    }
-
-    /**
-     * Get is audio attribute
-     * 
-     * @return boolean
-     */
-    public function getIsAudioAttribute()
-    {
-        return str()->startsWith($this->mime, 'audio/');
-    }
-
-    /**
-     * Get size attribute
-     * 
-     * @param float $size
-     * @return string
-     */
-    public function getSizeAttribute($size)
-    {
-        return format_filesize($size, 'KB');
-    }
-
-    /**
-     * Get url attribute
-     * 
-     * @return string
-     */
-    public function getUrlAttribute($url)
-    {
-        // $path = data_get($this->data, 'path');
-        $visibility = data_get($this->data, 'visibility', 'public');
-        // $provider = data_get($this->data, 'provider', 'local');
-
-        if ($visibility === 'private') return route('__file', [$this->id]);
-        else return $url;
-        // else if ($path) return $this->getStorageDisk($provider)->url($path);
-    }
-
-    /**
-     * Get file type attribute
-     * 
-     * @return string
-     */
-    public function getTypeAttribute()
-    {
-        if (!$this->mime) return;
-        if ($this->mime === 'youtube') return $this->mime;
-
-        $type = (explode('/', $this->mime))[1];
-
-        if ($type === 'ld+json') return 'jsonld';
-        if ($type === 'svg+xml') return 'svg';
-        if ($type === 'plain') return 'txt';
-        if (in_array($type, ['msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document'])) return 'word';
-        if (in_array($type, ['vnd.ms-powerpoint', 'vnd.openxmlformats-officedocument.presentationml.presentation'])) return 'ppt';
-        if (in_array($type, ['vnd.ms-excel', 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) return 'excel';
-
-        return $type;
-    }
-
-    /**
-     * Get icon attribute
-     */
-    public function getIconAttribute()
-    {
-        if ($this->is_image) return 'image';
-        elseif ($this->is_video) return 'play';
-        elseif ($this->is_audio) return 'music';
-        elseif ($this->type === 'word') return 'word';
-        elseif ($this->type === 'excel') return 'excel';
-        elseif ($this->type === 'ppt') return 'ppt';
-        elseif ($this->type === 'pdf') return 'pdf';
-
-        return 'file';
     }
 
     /**
@@ -325,7 +313,7 @@ class File extends Model
 
         if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) return;
 
-        $img = Image::make($path);
+        $img = Image::make($path)->orientate();
 
         $img->resize(1440, 1440, function ($constraint) {
             $constraint->aspectRatio();
