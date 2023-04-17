@@ -3,7 +3,7 @@
     @apply block;
 }
 .prose .image img,
-.prose .image.image-style-align-center img {
+.prose .image.image-style-align-center {
     @apply mx-auto;
 }
 
@@ -16,21 +16,21 @@
 }
 
 .prose .image.image-style-block-align-left {
-    @apply block;
+    @apply block ml-0 mr-auto;
 }
-.prose .image.image-style-block-align-left img {
+/* .prose .image.image-style-block-align-left img {
     @apply ml-0 mr-auto;
-}
+} */
 
 .prose .image.image-style-block-align-right {
-    @apply block;
+    @apply block mr-0 ml-auto;
 }
-.prose .image.image-style-block-align-right img {
+/* .prose .image.image-style-block-align-right img {
     @apply mr-0 ml-auto;
-}
+} */
 
 .prose .image img {
-    @apply shadow rounded-md;
+    @apply rounded-md;
 }
 .prose .image figcaption {
     @apply text-center;
