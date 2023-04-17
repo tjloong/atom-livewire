@@ -6,6 +6,7 @@
         current_route([
             'app.blog.*', 
             'app.page.*', 
+            'app.settings',
         ]) ? 'ckeditor' : null,
     ],
 ])
