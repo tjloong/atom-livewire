@@ -60,9 +60,19 @@ trait WithForm
     /**
      * Validate form
      */
-    public function validateForm()
+    public function validateForm($config = [])
     {
         $this->resetValidation();
         $this->validate();
+
+        // auto trim values
+        $except = (array)data_get($config, 'trim_except');
+        
+        collect(array_keys($this->rules()))
+            ->reject(fn($key) => in_array($key, $except))
+            ->each(function($key) {
+                $value = data_get($this, $key);
+                if (is_string($value)) data_set($this, $key, trim($value));
+            });
     }
 }
