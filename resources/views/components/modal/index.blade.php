@@ -32,7 +32,8 @@
             $attributes->get('class', 'max-w-screen-sm'),
         ])->only('class') }}>
             @if ($header = $attributes->get('header'))
-                <div class="m-1 py-3 px-4 text-lg font-bold border-b">
+                <div class="m-1 py-3 px-4 text-lg font-bold border-b flex items-center gap-3">
+                    @if ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/> @endif
                     {{ __($header) }}
                 </div>
             @elseif (isset($header))

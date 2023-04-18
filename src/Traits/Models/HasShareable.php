@@ -2,26 +2,28 @@
 
 namespace Jiannius\Atom\Traits\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
 trait HasShareable
 {
     public $enabledHasShareableTrait = true;
 
     /**
      * Boot the trait
-     *
-     * @return void
      */
-    protected static function bootHasShareable()
+    protected static function bootHasShareable(): void
     {
-        //
+        static::saved(function($model) {
+            if (!$model->shareable) {
+                $model->shareable()->create(['is_enabled' => false]);
+            }
+        });
     }
 
     /**
      * Initialize the trait
-     * 
-     * @return void
      */
-    protected function initializeHasShareable()
+    protected function initializeHasShareable(): void
     {
         $this->casts['shareable_id'] = 'integer';
     }
@@ -29,8 +31,8 @@ trait HasShareable
     /**
      * Get shareable for model
      */
-    public function shareable()
+    public function shareable(): HasOne
     {
-        return $this->belongsTo(get_class(model('shareable')));
+        return $this->hasOne(model('shareable'));
     }
 }

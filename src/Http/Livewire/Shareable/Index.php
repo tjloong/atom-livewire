@@ -11,14 +11,15 @@ class Index extends Component
     /**
      * Mount
      */
-    public function mount($uuid)
+    public function mount($id)
     {
         if (!enabled_module('shareables')) abort('404');
 
-        $this->shareable = model('shareable')
-            ->status('active')
-            ->where('uuid', $uuid)
-            ->firstOrFail();
+        $this->shareable = model('shareable')->status('active')->when(
+            is_numeric($id),
+            fn($q) => $q->where('id', $id),
+            fn($q) => $q->where('uuid', $id),
+        )->firstOrFail();
     }
 
     /**

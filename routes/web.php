@@ -286,7 +286,7 @@ if (!config('atom.static_site')) {
  * Shareable
  */
 if (enabled_module('shareables')) {
-    define_route('shareable/{uuid}', 'Shareable')->name('shareable');
+    define_route('shareable/{id}', 'Shareable')->name('shareable');
 }
 
 /**

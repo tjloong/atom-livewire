@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\Models\HasFilters;
 
@@ -14,59 +15,77 @@ class Shareable extends Model
     protected $casts = [
         'data' => 'object',
         'valid_for' => 'integer',
+        'is_enabled' => 'boolean',
         'expired_at' => 'datetime',
     ];
 
     protected $appends = ['url'];
 
     /**
-     * Model boot
+     * Booted
      */
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-
-        static::creating(function($shareable) {
+        static::saving(function($shareable) {
             $shareable->uuid = $shareable->uuid ?? $shareable->generateUuid();
         });
+        
+        static::saved(function($shareable) {
+            $shareable->fill([
+                'expired_at' => $shareable->valid_for > 0 ? $shareable->updated_at->copy()->addDays($shareable->valid_for) : null,
+            ])->saveQuietly();
+        });
+    }
+
+    /**
+     * Attribute for url
+     */
+    protected function url(): Attribute
+    {
+        return new Attribute(
+            get: fn() => route('shareable', [$this->uuid]),
+        );
+    }
+
+    /**
+     * Attribute for status
+     */
+    protected function status(): Attribute
+    {
+        return new Attribute(
+            get: fn() => ($this->expired_at && ($this->expired_at->isPast() || $this->expired_at->isToday()))
+                ? 'expired'
+                : 'active',
+        );
     }
 
     /**
      * Scope for status
      */
-    public function scopeStatus($query, $status)
+    public function scopeStatus($query, $status): void
     {
-        if ($status === 'expired') return $query->where('expired_at', '<=', now());
-        if ($status === 'active') {
-            return $query->where(fn($q) => $q
-                ->where('expired_at', '>', now())
-                ->orWhereNull('expired_at')
-            );
-        }
-    }
-
-    /**
-     * Get url attribute
-     */
-    public function getUrlAttribute()
-    {
-        return route('shareable', [$this->uuid]);
-    }
-
-    /**
-     * Get status attribute
-     */
-    public function getStatusAttribute()
-    {
-        if ($this->expired_at && ($this->expired_at->isPast() || $this->expired_at->isToday())) return 'expired';
-
-        return 'active';
+        $query->where(function($q) use ($status) {
+            foreach ((array)$status as $val) {
+                if ($val === 'expired') $q->orWhere('expired_at', '<=', now());
+                if ($val === 'disabled') $q->orWhere('is_enabled', false);
+                if ($val === 'enabled') $q->orWhere('is_enabled', true);
+                if ($val === 'active') {
+                    $q->orWhere(fn($q) => $q
+                        ->where('is_enabled', true)
+                        ->where(fn($q) => $q
+                            ->where('expired_at', '>', now())
+                            ->orWhereNull('expired_at')
+                        )
+                    );
+                }
+            }
+        });
     }
 
     /**
      * Generate uuid
      */
-    public function generateUuid()
+    public function generateUuid(): string
     {
         $dup = true;
         $uuid = null;

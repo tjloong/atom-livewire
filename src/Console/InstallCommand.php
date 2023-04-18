@@ -45,9 +45,9 @@ class InstallCommand extends Command
         'plans',
         'products', 
         'promotions',
-        'shareables',
         'contacts',
         'documents',
+        'shareables',
         'tenants',
     ];
 
@@ -218,7 +218,6 @@ class InstallCommand extends Command
                 $table->json('data')->nullable();
 
                 if (Schema::hasTable('contacts')) $table->foreignId('contact_id')->constrained('contacts')->onDelete('cascade');
-                if (Schema::hasTable('shareables')) $table->foreignId('shareable_id')->nullable()->constrained('shareables')->onDelete('set null');
                 
                 $table->foreignId('revision_for_id')->nullable()->constrained('documents')->onDelete('cascade');
                 $table->foreignId('converted_from_id')->nullable()->constrained('documents')->onDelete('set null');
@@ -387,7 +386,11 @@ class InstallCommand extends Command
                 $table->uuid();
                 $table->integer('valid_for')->nullable();
                 $table->json('data')->nullable();
+                $table->boolean('is_enabled')->nullable();
                 $table->timestamp('expired_at')->nullable();
+
+                if (Schema::hasTable('documents')) $table->foreignId('document_id')->nullable()->constrained()->onDelete('cascade');
+
                 $table->timestamps();
             });
 

@@ -4,60 +4,39 @@ namespace Jiannius\Atom\Traits\Livewire;
 
 trait WithShareable
 {
-    /**
-     * Create shareable
-     */
-    public function createShareable()
-    {
-        $shareable = model('shareable')->create();
-
-        $this->createdShareable($shareable);
-
-        return $shareable->toArray();
-    }
+    public $shareable;
 
     /**
-     * Created shareable
+     * Mount
      */
-    public function createdShareable($shareable)
+    public function mountWithShareable()
     {
-        // override this in consuming class
+        if ($this->shareable && !is_array($this->shareable)) {
+            $this->shareable = $this->shareable->toArray();
+        }
     }
 
     /**
      * Regenerate shareable
      */
-    public function regenerateShareable($uuid)
+    public function regenerateShareable(): void
     {
-        model('shareable')->where('uuid', $uuid)->delete();
+        $shareable = model('shareable')->find(data_get($this->shareable, 'id'));
+        $shareable->fill(['uuid' => null])->save();
 
-        return $this->createShareable();
+        $this->shareable = $shareable->toArray();
     }
 
     /**
-     * Update shareable
+     * Updated shareable
      */
-    public function updateShareable($data)
+    public function updatedShareable($val, $attr)
     {
-        if ($shareable = model('shareable')->where('uuid', data_get($data, 'uuid'))->first()) {
-            $shareable->fill([
-                'valid_for' => empty(data_get($data, 'valid_for'))
-                    ? null
-                    : data_get($data, 'valid_for'),
-                'data' => data_get($data, 'data'),
-            ]);
+        $shareable = model('shareable')->find(data_get($this->shareable, 'id'));
+        $shareable->fill([
+            $attr => $attr === 'valid_for' && !is_numeric($val) ? null : $val,
+        ])->save();
 
-            if ($shareable->isDirty('valid_for')) {
-                $shareable->fill([
-                    'expired_at' => !empty($shareable->valid_for)
-                        ? $shareable->created_at->addDays($shareable->valid_for)
-                        : null,
-                ]);
-            }
-
-            $shareable->save();
-
-            return $shareable->toArray();
-        }
+        $this->shareable = $shareable->toArray();
     }
 }

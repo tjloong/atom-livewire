@@ -22,6 +22,8 @@ class Index extends Component
 
         $this->authorize($this->document->type.'.view');
 
+        $this->shareable = $this->document->shareable;
+
         breadcrumbs()->push('#'.$this->document->number);
     }
 
@@ -133,16 +135,8 @@ class Index extends Component
                 ? null
                 : now(),
         ])->saveQuietly();
-    }
 
-    /**
-     * Created shareable
-     */
-    public function createdShareable($shareable): void
-    {
-        $this->document->fill([
-            'shareable_id' => $shareable->id,
-        ])->saveQuietly();
+        $this->emit('refresh');
     }
 
     /**
