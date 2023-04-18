@@ -22,14 +22,10 @@ class Page extends Model
 
     /**
      * Scope for fussy search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('title', 'like', "%$search%")
             ->orWhere('slug', 'like', "%$search%")
@@ -39,7 +35,7 @@ class Page extends Model
     /**
      * Get all slugs
      */
-    public static function getSlugs()
+    public function getSlugs(): array
     {
         $slugs = [];
         $dir = resource_path('views/livewire/web/pages');
