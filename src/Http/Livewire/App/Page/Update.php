@@ -3,11 +3,13 @@
 namespace Jiannius\Atom\Http\Livewire\App\Page;
 
 use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
     use WithForm;
+    use WithPopupNotify;
     
     public $page;
     public $autosavedAt;
