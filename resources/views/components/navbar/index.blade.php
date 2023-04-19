@@ -35,59 +35,51 @@
     x-on:scroll-reveal="toggleScroll(true)"
     x-on:scroll-hide="toggleScroll(false)"
     x-bind:class="classes"
-    {{ $attributes->merge(['id' => 'navbar'])->class([
-        $attributes->get('class', 'transition p-4'),
-    ])->except(['config']) }}
+    id="{{ $attributes->get('id', 'navbar') }}"
+    {{ $attributes->class(['transition', $attributes->get('class', 'p-4')])->except(['config']) }}
 >
-    <div class="max-w-screen-xl mx-auto grid divide-y">
-        <div class="grid gap-4 items-center md:flex">
-            <div class="flex justify-between items-center">
-                @isset($logo)
+    <div class="max-w-screen-xl mx-auto">
+        <div class="flex items-center py-2 md:py-0">
+            <div class="shrink-0">
+                @if (isset($logo))
                     {{ $logo }}
+                @elseif (isset($head))
+                    {{ $head }}
                 @else
-                    <a href="/" class="w-[100px] h-[50px] md:w-[150px] md:h-[75px]">
+                    <a href="/" class="block w-[100px] h-[50px] md:w-[150px] md:h-[75px]">
                         @if ($attributes->get('logo'))
                             <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain object-left">
                         @else
                             <x-logo class="w-full h-full"/>
                         @endif
                     </a>
-                @endisset
-
-                <div x-on:click="show = !show" id="navbar-burger" class="flex px-2 cursor-pointer md:hidden">
-                    @isset($burger) {{ $burger }}
-                    @else <x-icon name="chevron-down" size="20" class="m-auto"/>
-                    @endisset
-                </div>
+                @endif
             </div>
 
-            <div 
-                x-bind:class="show ? 'fixed inset-0 z-40' : 'hidden'" 
-                class="grow p-6 md:static md:p-0 md:block"
-            >
-                <div x-on:click="show = false" class="absolute inset-0 bg-gray-400/50 md:hidden"></div>
+            <div class="grow flex items-center justify-end gap-3">
+                <div 
+                    x-bind:class="show ? 'fixed inset-0 z-40' : 'hidden'"
+                    class="md:grow md:static md:block"
+                >
+                    <div x-on:click="show = false" class="absolute inset-0 bg-black/50 md:hidden"></div>
 
-                <div class="
-                    relative flex flex-col items-center gap-3 bg-white rounded-lg shadow p-4 max-h-[100%] overflow-auto
-                    md:static md:bg-transparent md:shadow-none md:p-0 md:max-h-fit md:overflow-visible
-                    md:flex-row
-                ">
-                    <div class="grow">
+                    <div class="
+                        relative p-4 flex flex-col items-center gap-3 overflow-auto
+                        md:justify-between md:flex-row md:m-0 md:overflow-visible
+                    ">
                         @isset($body)
-                            <div {{ $body->attributes->merge([
-                                'class' => 'flex flex-col items-center gap-3 md:flex-row',
-                                'id' => 'navbar-body',
-                            ]) }}>
+                            <div id="{{ $body->attributes->get('id', 'navbar-body') }}" {{ $body->attributes->class([
+                                'w-full flex flex-col items-center p-2 md:grow md:flex-row md:gap-3 md:p-0 md:w-auto',
+                                $body->attributes->get('class', 'bg-white shadow rounded-lg md:bg-transparent md:shadow-none'),
+                            ])->only('class') }}>
                                 {{ $body }}
                             </div>
                         @endisset
-                    </div>
-
-                    <div class="shrink-0 w-full flex flex-col items-center gap-3 md:w-auto md:flex-row">
+    
                         @isset($end)
-                            <div {{ $end->attributes->merge([
-                                'class' => 'flex flex-col items-center gap-3 md:flex-row',
-                                'id' => 'navbar-end',
+                            <div id="{{ $end->attributes->get('id', 'navbar-end')}}" {{ $end->attributes->class([
+                                'w-full flex flex-col items-center gap-3 p-2 md:shrink-0 md:p-0 md:w-auto',
+                                $end->attributes->get('class', 'bg-white shadow rounded-lg md:bg-transparent md:shadow-none'),
                             ]) }}>
                                 {{ $end }}
                             </div>
@@ -97,25 +89,28 @@
                         @else
                             @auth <x-navbar.auth/>
                             @else
-                                <div class="flex items-center justify-center gap-3">
+                                <div class="w-full flex flex-col items-center bg-white shadow rounded-lg p-2 md:flex-row md:gap-3 md:bg-transparent md:shadow-none md:w-auto md:shrink-0">
                                     @if (Route::has('login'))
                                         <x-navbar.item href="/login" label="Login"/>
                                     @endif
 
                                     @if (Route::has('register'))
-                                        <x-button href="/register?ref=navbar" label="Register"/>
+                                        <x-navbar.item href="/register?ref=navbar" label="Register" class="md:hidden"/>
+                                        <div class="hidden md:block">
+                                            <x-button href="/register?ref=navbar" label="Register"/>
+                                        </div>
                                     @endif
-                                </div>                        
+                                </div>
                             @endauth
                         @endisset
                     </div>
                 </div>
 
-                <a x-on:click="show = false" class="absolute top-4 right-2 block w-8 h-8 md:hidden">
-                    <div class="w-full h-full rounded-full bg-white shadow flex">
-                        <x-icon name="xmark" class="m-auto text-gray-400"/>
-                    </div>
-                </a>
+                <div x-on:click="show = !show" id="navbar-burger" class="shrink-0 flex items-center gap-2 px-2 cursor-pointer md:hidden">
+                    @isset($menu) {{ $menu }}
+                    @else <x-icon name="chevron-down" size="20" class="m-auto"/>
+                    @endisset
+                </div>
             </div>
         </div>
     </div>

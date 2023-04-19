@@ -76,7 +76,7 @@
     >
         <x-navbar 
             :config="['sticky' => true]"
-            class="shrink-0 bg-white py-3 px-4 border-b print:hidden"
+            class="shrink-0 bg-white border-b px-4"
         >
             <x-slot:logo>
                 @isset($logo)

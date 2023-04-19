@@ -1,6 +1,6 @@
 @auth
     {{-- mobile view --}}
-    <div class="bg-gray-100 p-4 rounded-md grid md:hidden">
+    <div class="w-full bg-gray-100 p-4 rounded-md grid md:hidden">
         <div class="flex items-center justify-center gap-2">
             <x-icon name="circle-user" size="18px" class="text-gray-500"/>
             {{ str(auth()->user()->name)->limit(15) }}
