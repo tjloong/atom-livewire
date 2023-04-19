@@ -10,8 +10,6 @@ trait HasSlug
 
     /**
      * The "booted" method of the model.
-     *
-     * @return void
      */
     protected static function bootHasSlug()
     {
@@ -41,8 +39,8 @@ trait HasSlug
                     else $slug = trim($slug, '-');
         
                     // check for uniqueness
-                    if (
-                        DB::table($model->getTable())
+                    if (($model->slugMustUnique ?? true)
+                        && DB::table($model->getTable())
                             ->where($to, $slug)
                             ->when($model->enabledHasTenantTrait, fn($q) => $q->where('tenant_id', $model->tenant_id))
                             ->count() > 0
@@ -58,10 +56,6 @@ trait HasSlug
 
     /**
      * Scope for find by slug
-     *
-     * @param Builder $query
-     * @param string $slug
-     * @return Builder
      */
     public function scopeFindBySlug($query, $slug)
     {
@@ -75,10 +69,6 @@ trait HasSlug
 
     /**
      * Scope for find by slug or failed
-     *
-     * @param Builder $query
-     * @param string $slug
-     * @return Builder
      */
     public function scopeFindBySlugOrFail($query, $slug)
     {
