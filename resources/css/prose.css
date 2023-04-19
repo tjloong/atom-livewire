@@ -18,16 +18,10 @@
 .prose .image.image-style-block-align-left {
     @apply block ml-0 mr-auto;
 }
-/* .prose .image.image-style-block-align-left img {
-    @apply ml-0 mr-auto;
-} */
 
 .prose .image.image-style-block-align-right {
     @apply block mr-0 ml-auto;
 }
-/* .prose .image.image-style-block-align-right img {
-    @apply mr-0 ml-auto;
-} */
 
 .prose .image img {
     @apply rounded-md;
@@ -62,4 +56,9 @@
 .prose ol > li:before,
 .prose ul > li:before {
     color: inherit;
+}
+
+.prose table th,
+.prose table td {
+    @apply py-1 px-2 border border-gray-300 align-top;
 }
