@@ -28,13 +28,11 @@ class Aside extends Component
         if (is_null($active)) {
             if ($href) $this->isActive = str()->startsWith(url()->current(), $href);
             elseif ($route && Route::has($route)) {
-                $segments = explode('.', $route);
-
-                if (count($segments) > 2) array_pop($segments);
+                $home = breadcrumbs()->get('home');
 
                 $this->isActive = str()->startsWith(url()->current(), route($route, $params))
                     || current_route() === $route
-                    || str(current_route())->is(implode('.', $segments).'.*');
+                    || data_get($home, 'route') === $route;
             }
         }
         else $this->isActive = $active;

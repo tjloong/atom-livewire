@@ -19,10 +19,6 @@ class Listing extends Component
         'search' => null,
     ];
 
-    protected $queryString = [
-        'filters',
-    ];
-
     /**
      * Mount
      */
@@ -89,15 +85,9 @@ class Listing extends Component
             'statuses' => collect(['active', 'inactive'])->map(fn($val) => [
                 'value' => $val,
                 'label' => str()->headline($val),
-            ]),
+            ])->toArray(),
 
             'types' => model('product')->getTypes(),
-
-            'product_categories' => model('label')
-                ->readable()
-                ->where('type', 'product-category')
-                ->orderBy('name')
-                ->get(),
         ];
     }
 

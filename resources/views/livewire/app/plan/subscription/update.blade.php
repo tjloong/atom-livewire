@@ -3,7 +3,15 @@
         :title="$subscription->user->name" 
         :subtitle="collect([$subscription->price->plan->name, $subscription->price->name])->join(', ')"
         back
-    />
+    >
+        @tier('root')
+            <x-button.confirm label="Mask Login" icon="mask" color="gray"
+                title="Mask Login"
+                message="You will be login using the subscriber identity. Are you sure to proceed?"
+                callback="mask"
+            />
+        @endtier
+    </x-page-header>
 
     <x-form>
         <div class="flex flex-col divide-y">

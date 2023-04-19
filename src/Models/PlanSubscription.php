@@ -2,8 +2,10 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PlanSubscription extends Model
 {
@@ -24,7 +26,7 @@ class PlanSubscription extends Model
     /**
      * Get user for subscription
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(model('user'));
     }
@@ -32,7 +34,7 @@ class PlanSubscription extends Model
     /**
      * Get item for subscription
      */
-    public function item()
+    public function item(): BelongsTo
     {
         return $this->belongsTo(model('plan_order_item'), 'plan_order_item_id');
     }
@@ -40,7 +42,7 @@ class PlanSubscription extends Model
     /**
      * Get price for subscription
      */
-    public function price()
+    public function price(): BelongsTo
     {
         return $this->belongsTo(model('plan_price'), 'plan_price_id');
     }
@@ -48,9 +50,9 @@ class PlanSubscription extends Model
     /**
      * Scope for fussy search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->whereHas('price', fn($q) => $q
                 ->whereHas('plan', fn($q) => $q->search($search))
             )
@@ -61,13 +63,13 @@ class PlanSubscription extends Model
     /**
      * Scope for status
      */
-    public function scopeStatus($query, $statuses)
+    public function scopeStatus($query, $status): void
     {
-        return $query->where(function($q) use ($statuses) {
-            foreach ((array)$statuses as $status) {
-                if ($status === 'pending') $q->orWhere('start_at', '>', now());
-                if ($status === 'expired') $q->orWhere('expired_at', '<', now());
-                if ($status === 'active') {
+        $query->where(function($q) use ($status) {
+            foreach ((array)$status as $val) {
+                if ($val === 'pending') $q->orWhere('start_at', '>', now());
+                if ($val === 'expired') $q->orWhere('expired_at', '<', now());
+                if ($val === 'active') {
                     $q->orWhere(fn($q) => $q
                         ->where(fn($q) => $q
                             ->whereNull('start_at')
@@ -86,7 +88,7 @@ class PlanSubscription extends Model
     /**
      * Scope for plan
      */
-    public function scopePlan($query, $plan)
+    public function scopePlan($query, $plan): void
     {
         $id = is_numeric($plan) ? $plan : (
             is_string($plan) 
@@ -94,17 +96,31 @@ class PlanSubscription extends Model
                 : optional($plan)->id
         );
 
-        return $query->whereHas('price', fn($q) => $q->where('plan_id', $id));
+        $query->whereHas('price', fn($q) => $q->where('plan_id', $id));
     }
 
     /**
-     * Get status attribute
+     * Scope for price
      */
-    public function getStatusAttribute()
+    public function scopePrice($query, $price): void
     {
-        if ($this->start_at->greaterThan(now())) return 'pending';
-        if ($this->expired_at && $this->expired_at->lessThan(now())) return 'expired';
+        $id = is_numeric($price) ? $price : optional($price)->id;
 
-        return 'active';
+        $query->where('plan_price_id', $id);
+    }
+
+    /**
+     * Attribute for status
+     */
+    protected function status(): Attribute
+    {
+        return new Attribute(
+            get: function() {
+                if ($this->start_at->greaterThan(now())) return 'pending';
+                if ($this->expired_at && $this->expired_at->lessThan(now())) return 'expired';
+        
+                return 'active';
+            },
+        );
     }
 }

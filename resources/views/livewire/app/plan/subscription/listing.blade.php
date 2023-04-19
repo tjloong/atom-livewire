@@ -2,7 +2,7 @@
     <x-page-header :title="$this->title"/>
 
     @tier('root')
-        <x-table :data="$this->tableData">
+        <x-table :data="$this->table">
             <x-slot:header>
                 <x-table.searchbar :total="$this->paginator->total()"/>
                 
@@ -23,6 +23,16 @@
                             ])"
                             placeholder="All Plans"
                         />
+
+                        @if ($planSlug = data_get($this->filters, 'plan'))
+                            <x-form.select wire:model="filters.price" :label="false"
+                                :options="model('plan_price')->whereHas('plan', fn($q) => $q->where('slug', $planSlug))->get()->map(fn($price) => [
+                                    'value' => $price->id,
+                                    'label' => $price->name,
+                                ])"
+                                placeholder="All Prices"
+                            />
+                        @endif
                     </div>
                 </x-table.toolbar>
             </x-slot:header>

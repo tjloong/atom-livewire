@@ -74,6 +74,8 @@
                             ])->only('class') }}>
                                 {{ $body }}
                             </div>
+                        @else
+                            <div class="grow"></div>
                         @endisset
     
                         @isset($end)
@@ -108,7 +110,7 @@
 
                 <div x-on:click="show = !show" id="navbar-burger" class="shrink-0 flex items-center gap-2 px-2 cursor-pointer md:hidden">
                     @isset($menu) {{ $menu }}
-                    @else <x-icon name="chevron-down" size="20" class="m-auto"/>
+                    @else <x-icon name="bars" size="20" class="m-auto"/>
                     @endisset
                 </div>
             </div>

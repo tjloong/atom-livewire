@@ -1,7 +1,7 @@
 @auth
     {{-- mobile view --}}
     <div class="w-full bg-gray-100 p-4 rounded-md grid md:hidden">
-        <div class="flex items-center justify-center gap-2">
+        <div class="py-2 px-4 flex items-center justify-center gap-2 rounded-lg bg-slate-200 font-semibold">
             <x-icon name="circle-user" size="18px" class="text-gray-500"/>
             {{ str(auth()->user()->name)->limit(15) }}
         </div>

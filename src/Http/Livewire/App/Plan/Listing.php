@@ -11,8 +11,12 @@ class Listing extends Component
     use WithTable;
 
     public $renew;
+    public $fullpage;
     public $sort = 'name,asc';
-    public $filters = ['search' => null];
+
+    public $filters = [
+        'search' => null
+    ];
 
     /**
      * Mount
@@ -23,7 +27,9 @@ class Listing extends Component
             ? model('plan_subscription')->readable()->find(request()->query('renew'))
             : null;
 
-        breadcrumbs()->home('Plans');
+        if ($this->fullpage = current_route('app.plan.listing')) {
+            breadcrumbs()->home('Plans');
+        }
     }
 
     /**
@@ -42,11 +48,12 @@ class Listing extends Component
                         ->toArray()
                 )
             )
-            ->with(['prices' => fn($q) => $q->where('country', 
-                $this->renew->price->country
-                ?? geoip()->getLocation()->iso_code 
-                ?? null
-            )])
+            // ->with(['prices' => fn($q) => $q->where('country', 
+            //     $this->renew->price->country
+            //     ?? geoip()->getLocation()->iso_code 
+            //     ?? null
+            // )])
+            ->withCount('prices')
             ->filter($this->filters);
     }
 
@@ -65,8 +72,21 @@ class Listing extends Component
 
             [
                 'name' => 'Trial',
+                'class' => 'text-right',
                 'count' => $query->trial,
                 'uom' => 'day',
+            ],
+
+            [
+                'name' => 'Prices',
+                'class' => 'text-right',
+                'count' => $query->prices_count,
+                'uom' => 'price',
+            ],
+
+            [
+                'name' => 'Status',
+                'status' => $query->is_active ? 'active' : 'inactive',
             ],
         ];
     }

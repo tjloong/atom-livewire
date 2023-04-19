@@ -11,6 +11,22 @@
     }"
     class="min-h-screen h-px admin-panel" 
 >
+    @if (session('mask'))
+        <div class="fixed top-0 right-0 left-0 h-4 bg-red-500 z-40"></div>
+        <div class="fixed top-0 bottom-0 left-0 w-4 bg-red-500 z-40"></div>
+        <div class="fixed top-0 bottom-0 right-0 w-4 bg-red-500 z-40"></div>
+        <div class="fixed bottom-0 left-0 right-0 h-4 bg-red-500 z-40"></div>
+        <div class="fixed top-0 right-0 bg-red-500 z-40 p-4 min-w-[200px] text-center">
+            <div class="text-xs text-gray-200 uppercase">Masked As</div>
+            <div class="text-sm font-medium text-white">
+                {{ user('name') }}<br>{{ user('email') }}
+            </div>
+            <a href="/login?logout=1" class="flex items-center justify-center gap-2 text-white text-sm">
+                <x-icon name="arrow-left" size="12"/> Back
+            </a>
+        </div>
+    @endif
+
     <div
         x-ref="void"
         x-on:click="toggled = false"
@@ -67,12 +83,12 @@
 
     <main
         x-ref="container"
-        class="w-full h-full flex flex-col"
-        :class="{
+        x-bind:class="{
             'transition-0 duration-100 ease-in-out': animate,
             'lg:pl-0': toggled,
             'lg:pl-56': !toggled,
         }"
+        class="w-full h-full flex flex-col"
     >
         <x-navbar 
             :config="['sticky' => true]"
@@ -85,8 +101,12 @@
                     <div class="flex items-center gap-2">
                         <x-logo class="h-[40px] md:hidden" small/>
 
-                        <a class="flex-shrink-0 text-gray-800 flex items-center justify-center px-2" @click="toggled = !toggled; animate = true">
-                            <x-icon name="bars" size="18"/>
+                        <a 
+                            class="flex-shrink-0 text-gray-800 flex items-center justify-center px-2" 
+                            x-on:click="toggled = !toggled; animate = true"
+                        >
+                            <x-icon x-show="toggled" name="square-caret-left" size="18"/>
+                            <x-icon x-show="!toggled" name="square-caret-right" size="18"/>
                         </a>
                     </div>
                 @endisset

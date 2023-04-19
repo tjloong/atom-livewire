@@ -98,11 +98,21 @@ class Login extends Component
      */
     public function logout(): mixed
     {
-        auth()->logout();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
+        if ($mask = session('mask')) {
+            auth()->logout();
+            auth()->login($mask);
 
-        return redirect('/');
+            session()->forget('mask');
+
+            return redirect($mask->home());
+        }
+        else {
+            auth()->logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+    
+            return redirect('/');
+        }
     }
 
     /**

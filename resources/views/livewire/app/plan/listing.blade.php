@@ -1,13 +1,23 @@
 <div class="max-w-screen-xl mx-auto">
-    <x-page-header title="Plans">
-        @tier('root')
-            <x-button label="New Plan" :href="route('app.plan.create')"/>
-        @endtier
-    </x-page-header>
+    @if ($fullpage)
+        <x-page-header title="Plans">
+            @tier('root')
+                <x-button label="New Plan" :href="route('app.plan.create')"/>
+            @endtier
+        </x-page-header>
+    @endif
 
     @tier('root')
         <x-table :data="$this->table">
             <x-slot:header>
+                @if (!$fullpage)
+                    <x-table.header label="Plans">
+                        @tier('root')
+                            <x-button label="New Plan" :href="route('app.plan.create')" color="gray" size="sm"/>
+                        @endtier
+                    </x-table.header>
+                @endif
+                
                 <x-table.searchbar :total="$this->paginator->total()"/>
             </x-slot:header>
         </x-table>

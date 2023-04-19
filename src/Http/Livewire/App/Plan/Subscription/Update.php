@@ -47,6 +47,21 @@ class Update extends Component
     }
 
     /**
+     * Mask
+     */
+    public function mask(): mixed
+    {
+        session(['mask' => user()]);
+
+        auth()->logout();
+
+        $subscriber = $this->subscription->user;
+        auth()->login($subscriber);
+
+        return redirect($subscriber->home());
+    }
+
+    /**
      * Submit
      */
     public function submit(): void

@@ -16,6 +16,7 @@ class Listing extends Component
         'search' => null,
         'status' => null,
         'plan' => null,
+        'price' => null,
     ];
 
     /**

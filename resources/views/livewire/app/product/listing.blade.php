@@ -9,21 +9,18 @@
 
             <x-table.toolbar>
                 <div class="flex items-center gap-2">
-                    <x-form.select :label="false"
-                        wire:model="filters.status"
+                    <x-form.select wire:model="filters.status" :label="false"
                         :options="data_get($this->options, 'statuses')"
                         placeholder="All Status"
                     />
     
-                    <x-form.select :label="false"
-                        wire:model="filters.type"
+                    <x-form.select wire:model="filters.type" :label="false"
                         :options="data_get($this->options, 'types')"
                         placeholder="All Product Types"
                     />
-    
-                    <x-form.select :label="false"
-                        wire:model="filters.product_category"
-                        :options="data_get($this->options, 'product_categories')"
+
+                    <x-form.select.label wire:model="filters.product_category" :label="false"
+                        type="product-category"
                         placeholder="All Categories"
                     />
                 </div>
