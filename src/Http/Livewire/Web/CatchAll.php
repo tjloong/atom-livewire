@@ -51,6 +51,7 @@ class CatchAll extends Component
      */
     public function render()
     {
-        return atom_view('web.catchall');
+        if (!$this->livewire && $this->page && ($view = atom_view('web.'.$this->page->slug))) return $view;
+        else return atom_view('web.catchall');
     }
 }

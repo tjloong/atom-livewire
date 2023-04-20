@@ -24,6 +24,7 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -83,6 +84,7 @@ ClassicEditor.builtinPlugins = [
     InsertMedia,
     Italic,
     Link,
+    LinkImage,
     ListStyle,
     MediaEmbed,
     Paragraph,
@@ -118,7 +120,9 @@ ClassicEditor.defaultConfig = {
             'imageStyle:alignBlockRight',
             '|',
             'toggleImageCaption',
-            'imageTextAlternative'
+            'imageTextAlternative',
+            '|',
+            'linkImage',
         ],
     },
     table: {

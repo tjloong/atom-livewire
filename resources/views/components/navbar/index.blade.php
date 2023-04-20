@@ -64,7 +64,7 @@
                     <div x-on:click="show = false" class="absolute inset-0 bg-black/50 md:hidden"></div>
 
                     <div class="
-                        relative p-4 flex flex-col items-center gap-3 overflow-auto
+                        relative p-2 flex flex-col items-center gap-3 overflow-auto
                         md:justify-between md:flex-row md:m-0 md:overflow-visible
                     ">
                         @isset($body)
