@@ -22,6 +22,8 @@
 >
     @if ($icon = $attributes->get('icon'))
         <x-icon :name="$icon" class="opacity-70"/>
+    @elseif ($logo = $attributes->get('logo'))
+        <x-logo :name="$logo" size="20"/>
     @endif
 
     @if ($label = $attributes->get('label')) {{ __($label) }}

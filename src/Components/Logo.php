@@ -46,7 +46,7 @@ class Logo extends Component
     public function getSrc()
     {
         $filename = $this->name ?? ($this->small ? 'logo-sm' : 'logo');
-        
+
         $src = collect(['svg', 'png', 'jpg', 'jpeg'])->map(function($ext) use ($filename) {
             if (str($filename)->startsWith('logo')) {
                 if (file_exists(storage_path("app/public/img/$filename.$ext"))) {
