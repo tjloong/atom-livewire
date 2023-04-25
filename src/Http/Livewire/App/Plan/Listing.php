@@ -10,12 +10,13 @@ class Listing extends Component
 {
     use WithTable;
 
-    public $renew;
     public $fullpage;
     public $sort = 'name,asc';
 
     public $filters = [
-        'search' => null
+        'search' => null,
+        'country' => null,
+        'currency' => null,
     ];
 
     /**
@@ -23,13 +24,7 @@ class Listing extends Component
      */
     public function mount(): void
     {
-        $this->renew = !tier('root') && request()->query('renew')
-            ? model('plan_subscription')->readable()->find(request()->query('renew'))
-            : null;
-
-        if ($this->fullpage = current_route('app.plan.listing')) {
-            breadcrumbs()->home('Plans');
-        }
+        breadcrumbs()->home('Plans');
     }
 
     /**
@@ -39,21 +34,7 @@ class Listing extends Component
     {
         return model('plan')
             ->readable()
-            ->when($this->renew, fn($q) => $q
-                ->whereIn('id', 
-                    collect([$this->renew->price->plan_id])
-                        ->concat($this->renew->price->plan->upgradables->pluck('id')->toArray())
-                        ->concat($this->renew->price->plan->downgradables->pluck('id')->toArray())
-                        ->unique()
-                        ->toArray()
-                )
-            )
-            // ->with(['prices' => fn($q) => $q->where('country', 
-            //     $this->renew->price->country
-            //     ?? geoip()->getLocation()->iso_code 
-            //     ?? null
-            // )])
-            ->withCount('prices')
+            ->withCount('subscriptions')
             ->filter($this->filters);
     }
 
@@ -66,27 +47,47 @@ class Listing extends Component
             [
                 'name' => 'Plan',
                 'sort' => 'name',
-                'label' => $query->name,
+                'label' => $query->code,
+                'small' => $query->name,
                 'href' => route('app.plan.update', [$query->id]),
             ],
 
             [
-                'name' => 'Trial',
-                'class' => 'text-right',
-                'count' => $query->trial,
-                'uom' => 'day',
+                'name' => 'Valid',
+                'label' => str($query->valid ?? 'forever')->headline(),
             ],
 
             [
-                'name' => 'Prices',
+                'name' => 'Country',
+                'label' => $query->country
+                    ? data_get(countries()->firstWhere('code', $query->country), 'name')
+                    : 'All',
+            ],
+
+            [
+                'name' => 'Currency',
+                'label' => $query->currency ?? '--',
+            ],
+
+            [
+                'name' => 'Price',
                 'class' => 'text-right',
-                'count' => $query->prices_count,
-                'uom' => 'price',
+                'amount' => $query->price ?? '--',
+            ],
+
+            [
+                'name' => 'Subscriptions',
+                'class' => 'text-right',
+                'count' => $query->subscriptions_count,
+                'uom' => 'subscription',
             ],
 
             [
                 'name' => 'Status',
-                'status' => $query->is_active ? 'active' : 'inactive',
+                'status' => array_filter([
+                    $query->is_hidden ? 'hidden' : null,
+                    $query->is_active ? 'active' : 'inactive',
+                ]),
             ],
         ];
     }

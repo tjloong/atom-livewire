@@ -12,14 +12,12 @@ use Laravel\Sanctum\HasApiTokens;
 use Jiannius\Atom\Notifications\UserActivationNotification;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
-use Jiannius\Atom\Traits\Models\HasPlan;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
     use HasFilters;
-    use HasPlan;
     use HasTrace;
     use Notifiable;
     use SoftDeletes;

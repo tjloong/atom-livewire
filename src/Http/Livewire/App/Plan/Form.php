@@ -20,46 +20,45 @@ class Form extends Component
     protected function validation(): array
     {
         return [
-            'plan.name' => [
-                'required' => 'Plan name is required.',
+            'plan.name' => ['required' => 'Plan name is required.'],
+            'plan.code' => [
+                'required' => 'Plan code is required.',
                 function ($attr, $value, $fail) {
-                    if (model('plan')->where('name', $value)->where('id', '<>', $this->plan->id)->count()) {
-                        $fail('Plan name is taken.');
+                    if (model('plan')->where('code', $value)->where('id', '<>', $this->plan->id)->count()) {
+                        $fail('Plan code is taken.');
                     }
                 },
             ],
-            'plan.slug' => ['nullable'],
-            'plan.trial' => ['nullable'],
-            'plan.excerpt' => ['nullable'],
+            'plan.description' => ['nullable'],
             'plan.features' => ['nullable'],
-            'plan.payment_description' => ['nullable'],
-            'plan.cta' => ['nullable'],
+            'plan.invoice_description' => ['nullable'],
+            'plan.country' => ['nullable'],
+            'plan.currency' => ['nullable'],
+            'plan.price' => ['nullable'],
+            'plan.valid' => [
+                'nullable',
+                function ($attr, $value, $fail) {
+                    if ($this->plan->getEndDate(now()) === false) $fail('Invalid valid period.');
+                },
+            ],
+            'plan.trial_plan_id' => ['nullable'],
+            'plan.is_recurring' => ['nullable'],
+            'plan.is_hidden' => ['nullable'],
             'plan.is_active' => ['nullable'],
         ];
     }
 
     /**
-     * Mount
-     */
-    public function mount(): void
-    {
-        $this->fill([
-            'inputs.upgradables' => $this->plan->upgradables->pluck('id')->toArray(),
-            'inputs.downgradables' => $this->plan->downgradables->pluck('id')->toArray(),
-        ]);
-    }
-
-    /**
      * Get options property
      */
-    public function getOptionsProperty(): array
+    public function getOptionsProperty()
     {
         return [
-            'plans' => model('plan')
-                ->when($this->plan->exists, fn($q) => $q->where('id', '<>', $this->plan->id))
-                ->selectRaw('id as value, name as label')
-                ->get()
-                ->toArray(),
+            'trial_plans' => model('plan')->where('id', '<>', $this->plan->id)->get()->map(fn($plan) => [
+                'value' => $plan->id,
+                'label' => $plan->code,
+                'small' => $plan->name,
+            ])->toArray(),
         ];
     }
 
@@ -70,12 +69,7 @@ class Form extends Component
     {
         $this->validateForm();
 
-        $this->plan->fill([
-            'trial' => $this->plan->trial ?? null,
-        ])->save();
-
-        $this->plan->upgradables()->sync(data_get($this->inputs, 'upgradables'));
-        $this->plan->downgradables()->sync(data_get($this->inputs, 'downgradables'));
+        $this->plan->save();
 
         return $this->plan->wasRecentlyCreated
             ? redirect()->route('app.plan.update', [$this->plan->id])

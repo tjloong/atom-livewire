@@ -21,15 +21,6 @@ class Listing extends Component
         'in_team' => null,
     ];
 
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-            'status' => null,
-            'is_role' => null,
-            'in_team' => null,    
-        ]],
-    ];
-
     /**
      * Get query property
      */

@@ -9,26 +9,39 @@ class Breadcrumbs
 {
     /**
      * Set home
-     * 
-     * @param string $name
-     * @return $this
      */
-    public function home($name)
+    public function home($name, $url = null): void
     {
         $this->setTrailsToSession([
-            'home' => array_merge($this->generateTrail($name), ['is_home' => true]),
+            'home' => array_merge($this->generateTrail($name, $url), ['is_home' => true]),
             'trails' => [],
             'fallback' => [],
         ]);
     }
 
     /**
+     * Set home if condition matched
+     */
+    public function homeIf($bool, $name, $url = null): void
+    {
+        if ($bool) $this->home($name, $url);
+    }
+
+    /**
+     * Set home if home is empty
+     */
+    public function homeIfEmpty($name, $url = null): void
+    {
+        if (!$this->get('home')) $this->home($name, $url);
+    }
+
+    /**
      * Push trails
      */
-    public function push($name)
+    public function push($name, $url = null)
     {
         $trails = collect($this->get('trails', []));
-        $trail = $this->generateTrail($name);
+        $trail = $this->generateTrail($name, $url);
         $index = $trails->search(fn($val) => $val['route'] === $trail['route']);
 
         if ($index === false) $trails->push($trail);
@@ -41,6 +54,14 @@ class Breadcrumbs
         $this->updateReferer();
 
         return $this;
+    }
+
+    /**
+     * Push if condition matched
+     */
+    public function pushIf($bool, $name, $url = null): void
+    {
+        if ($bool) $this->push($name, $url);
     }
 
     /**
@@ -105,13 +126,10 @@ class Breadcrumbs
 
     /**
      * Generate trail object
-     * 
-     * @param string $name
-     * @return array
      */
-    private function generateTrail($name)
+    private function generateTrail($name, $url = null): array
     {
-        $url = url()->current();
+        $url = $url ?? url()->current();
 
         return array_merge([
             'label' => __($name),

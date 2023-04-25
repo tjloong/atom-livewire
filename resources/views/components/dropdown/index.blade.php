@@ -30,7 +30,7 @@
         <div x-ref="anchor" x-on:click="open()" class="inline-flex items-center gap-2 cursor-pointer">
             @if ($icon) <x-icon :name="$icon"/> @endif
             @if ($label) 
-                {{ __($label) }} 
+                {!! __($label) !!} 
                 <x-icon name="chevron-down" size="12"/>
             @endif
         </div>

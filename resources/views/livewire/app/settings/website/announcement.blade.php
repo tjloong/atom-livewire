@@ -1,12 +1,12 @@
 <div class="w-full">
-    <x-box header="Website Announcements">
-        <x-slot:buttons>
-            <x-button color="gray" size="sm" 
-                label="New Announcement"
-                wire:click="$emitTo('{{ lw('app.settings.website.announcement-modal') }}', 'open')"
-            />
-        </x-slot:buttons>
-    
+    <x-page-header title="Website Announcements">
+        <x-button
+            label="New Announcement"
+            wire:click="$emitTo('{{ lw('app.settings.website.announcement-modal') }}', 'open')"
+        />
+    </x-page-header>
+
+    <x-box>
         @if (count($announcements))
             <x-form.sortable wire:sorted="sort" :config="['handle' => '.cursor-move']" class="flex flex-col divide-y">
                 @foreach ($announcements as $announcement)

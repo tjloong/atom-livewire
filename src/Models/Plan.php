@@ -2,11 +2,11 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Plan extends Model
@@ -22,6 +22,8 @@ class Plan extends Model
         'is_active' => 'boolean',
     ];
 
+    public $slugify = ['name' => 'code'];
+
     /**
      * Get prices for plan
      */
@@ -31,19 +33,14 @@ class Plan extends Model
     }
 
     /**
-     * Get upgradables for plan
+     * Attribute for features
      */
-    public function upgradables(): BelongsToMany
+    protected function features(): Attribute
     {
-        return $this->belongsToMany(model('plan'), 'plan_upgradables', 'plan_id', 'upgradable_id');
-    }
-
-    /**
-     * Get downgradables for plan
-     */
-    public function downgradables(): BelongsToMany
-    {
-        return $this->belongsToMany(model('plan'), 'plan_downgradables', 'plan_id', 'downgradable_id');
+        return new Attribute(
+            get: fn($value) => collect(explode("\n", $value))->filter()->map(fn($val) => trim($val))->values()->all(),
+            set: fn($value) => is_string($value) ? $value : collect($value)->join("\n"),
+        );
     }
 
     /**
@@ -51,22 +48,27 @@ class Plan extends Model
      */
     public function scopeSearch($query, $search): void
     {
-        $query->where('name', 'like', "%$search%");
+        $query->where(fn($q) => $q
+            ->where('name', 'like', "%$search%")
+            ->orWhere('code', 'like', "%$search%")
+        );
     }
 
     /**
-     * Get features list attributes
+     * Scope for country
      */
-    public function getFeaturesListAttribute(): array
+    public function scopeCountry($query, $country = null): void
     {
-        return collect(explode("\n", $this->features))->filter()->map(fn($val) => trim($val))->values()->all();
+        $country = $country ?? geoip()->getLocation()->iso_code;
+
+        $query->where('country', $country);
     }
 
     /**
-     * Route guard
+     * Scope for subscribeable
      */
-    public function routeGuard(): array
+    public function scopeSubscribeable($query): void
     {
-        return [];
+        $query->country()->status('active')->has('prices');
     }
 }

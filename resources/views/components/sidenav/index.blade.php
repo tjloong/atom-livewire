@@ -1,10 +1,18 @@
+@props(['model' => $attributes->wire('model')->value()])
+
 <div
     x-data="{
         show: false,
-        value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
+        model: @js($model),
+        value: @js($attributes->get('value')),
+        init () {
+            if (this.model) {
+                this.value = this.$wire.get(this.model)
+                this.$watch('value', () => this.$wire.set(this.model, this.value))
+            }
+        },
     }"
     x-bind:class="show && 'fixed inset-0 z-20 md:static'"
-    {{ $attributes->whereStartsWith('wire') }}
 >
     <div x-show="show" class="absolute inset-0 bg-black opacity-50 md:hidden"></div>
     <div

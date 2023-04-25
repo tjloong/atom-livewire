@@ -2,11 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Plan;
 
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
-    public $tab;
+    use WithPopupNotify;
+    
     public $plan;
 
     /**
@@ -15,20 +17,8 @@ class Update extends Component
     public function mount($planId): void
     {
         $this->plan = model('plan')->findOrFail($planId);
-        $this->tab = $this->tab ?? data_get($this->tabs, '0.slug');
 
         breadcrumbs()->push($this->plan->name);
-    }
-
-    /**
-     * Get tabs property
-     */
-    public function getTabsProperty(): array
-    {
-        return [
-            ['slug' => 'info', 'label' => 'Plan Information', 'livewire' => 'app.plan.form'],
-            ['slug' => 'price', 'label' => 'Plan Prices', 'livewire' => 'app.plan.price.listing', 'count' => $this->plan->prices->count()],
-        ];
     }
 
     /**
@@ -36,6 +26,13 @@ class Update extends Component
      */
     public function delete(): mixed
     {
+        if ($this->plan->subscriptions->count()) {
+            return $this->popup([
+                'title' => 'Unable To Delete Plan',
+                'message' => 'There are subscriptions under this plan.',
+            ], 'alert', 'error');
+        }
+
         $this->plan->delete();
 
         return breadcrumbs()->back();

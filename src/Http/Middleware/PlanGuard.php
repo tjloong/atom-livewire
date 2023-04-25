@@ -17,28 +17,28 @@ class PlanGuard
      */
     public function handle(Request $request, Closure $next)
     {
-        if (enabled_module('plans')) {
-            $routeGuard = model('plan')->routeGuard();
-            $guardedRoutes = collect($routeGuard)->values()->flatten()->unique();
-            $violatedRoute = $guardedRoutes->first(fn($val) => 
-                current_route($val) && !current_route('app.plan.*')
-            );
+        // if (enabled_module('plans')) {
+        //     $routeGuard = model('plan')->routeGuard();
+        //     $guardedRoutes = collect($routeGuard)->values()->flatten()->unique();
+        //     $violatedRoute = $guardedRoutes->first(fn($val) => 
+        //         current_route($val) && !current_route('app.plan.*')
+        //     );
 
-            if ($violatedRoute) {
-                $mustHavePlans = collect(array_keys($routeGuard))
-                    ->filter(fn($key) => collect($routeGuard[$key])->search($violatedRoute) !== false)
-                    ->values();
+        //     if ($violatedRoute) {
+        //         $mustHavePlans = collect(array_keys($routeGuard))
+        //             ->filter(fn($key) => collect($routeGuard[$key])->search($violatedRoute) !== false)
+        //             ->values();
 
-                $subscribedPlans = $mustHavePlans->filter(fn($val) => $request->user()->isSubscribedToPlan($val));
+        //         $subscribedPlans = $mustHavePlans->filter(fn($val) => $request->user()->isSubscribedToPlan($val));
 
-                if (!$subscribedPlans->count() && !$request->user()->isTier('root')) {
-                    if (Route::has('app.plan.listing')) {
-                        return redirect()->route('app.plan.listing');
-                    }
-                    else abort(403);
-                }
-            }
-        }
+        //         if (!$subscribedPlans->count() && !$request->user()->isTier('root')) {
+        //             if (Route::has('app.plan.listing')) {
+        //                 return redirect()->route('app.plan.listing');
+        //             }
+        //             else abort(403);
+        //         }
+        //     }
+        // }
 
         return $next($request);
     }

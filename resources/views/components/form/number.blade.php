@@ -27,5 +27,19 @@
             @else <div class="shrink-0 text-gray-500 font-medium">{{ __($postfix) }}</div>
             @endif
         @endif
+
+        @isset($button)
+            @php $label = $button->attributes->get('label') @endphp 
+            @php $icon = $button->attributes->get('icon') @endphp 
+            <a {{ $button->attributes->class([
+                'flex items-center justify-center gap-1 rounded-full -mr-1 text-sm',
+                $label ? 'px-2 py-0.5' : null,
+                !$label && $icon ? 'p-1' : null,
+                $button->attributes->get('class', 'text-gray-800 bg-gray-200'),
+            ]) }}">
+                @if ($icon) <x-icon :name="$icon" size="12"/> @endif
+                {{ __($label) }}
+            </a>
+        @endisset
     </div>
 </x-form.field>

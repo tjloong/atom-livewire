@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PlanSubscription extends Model
 {
@@ -14,14 +15,25 @@ class PlanSubscription extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'is_trial' => 'boolean',
         'start_at' => 'datetime',
-        'expired_at' => 'datetime',
+        'end_at' => 'datetime',
         'data' => 'object',
+        'is_trial' => 'boolean',
         'user_id' => 'integer',
-        'plan_order_item_id' => 'integer',
-        'plan_price_id' => 'integer',
+        'price_id' => 'integer',
     ];
+
+    protected $appends = ['name', 'description'];
+
+    /**
+     * Booted
+     */
+    protected static function booted(): void
+    {
+        static::creating(function($subscription) {
+            $subscription->setValidity();
+        });
+    }
 
     /**
      * Get user for subscription
@@ -32,19 +44,67 @@ class PlanSubscription extends Model
     }
 
     /**
-     * Get item for subscription
-     */
-    public function item(): BelongsTo
-    {
-        return $this->belongsTo(model('plan_order_item'), 'plan_order_item_id');
-    }
-
-    /**
      * Get price for subscription
      */
     public function price(): BelongsTo
     {
-        return $this->belongsTo(model('plan_price'), 'plan_price_id');
+        return $this->belongsTo(model('plan_price'), 'price_id');
+    }
+
+    /**
+     * Get payment for subscription
+     */
+    public function payment(): HasOne
+    {
+        return $this->hasOne(model('plan_payment'), 'subscription_id');
+    }
+
+    /**
+     * Attribute for name
+     */
+    protected function name(): Attribute
+    {
+        return new Attribute(
+            get: fn() => collect([
+                $this->price->plan->name,
+                $this->is_trial ? __('Trial') : null,
+            ])->filter()->join(' '),
+        );
+    }
+
+    /**
+     * Attribute for description
+     */
+    protected function description(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->price->description,
+        );
+    }
+
+    /**
+     * Attribute for status
+     */
+    protected function status(): Attribute
+    {
+        return new Attribute(
+            get: function() {
+                if ($this->start_at->greaterThan(now())) return 'future';
+                if ($this->end_at && $this->end_at->lessThan(now())) return 'ended';
+        
+                return 'active';
+            },
+        );
+    }
+
+    /**
+     * Attribute for is auto renew
+     */
+    protected function isAutoRenew(): Attribute
+    {
+        return new Attribute(
+            get: fn() => !empty(data_get($this->data, 'stripe_subscription_id')),
+        );
     }
 
     /**
@@ -53,9 +113,7 @@ class PlanSubscription extends Model
     public function scopeSearch($query, $search): void
     {
         $query->where(fn($q) => $q
-            ->whereHas('price', fn($q) => $q
-                ->whereHas('plan', fn($q) => $q->search($search))
-            )
+            ->whereHas('price', fn($q) => $q->search($search))
             ->orWhereHas('user', fn($q) => $q->search($search))
         );
     }
@@ -67,8 +125,8 @@ class PlanSubscription extends Model
     {
         $query->where(function($q) use ($status) {
             foreach ((array)$status as $val) {
-                if ($val === 'pending') $q->orWhere('start_at', '>', now());
-                if ($val === 'expired') $q->orWhere('expired_at', '<', now());
+                if ($val === 'future') $q->orWhere('start_at', '>', now());
+                if ($val === 'ended') $q->orWhere('end_at', '<', now());
                 if ($val === 'active') {
                     $q->orWhere(fn($q) => $q
                         ->where(fn($q) => $q
@@ -76,8 +134,8 @@ class PlanSubscription extends Model
                             ->orWhere('start_at', '<=', now())
                         )
                         ->where(fn($q) => $q
-                            ->whereNull('expired_at')
-                            ->orWhere('expired_at', '>=', now())
+                            ->whereNull('end_at')
+                            ->orWhere('end_at', '>=', now())
                         )
                     );
                 }
@@ -100,27 +158,54 @@ class PlanSubscription extends Model
     }
 
     /**
-     * Scope for price
+     * Set validity
      */
-    public function scopePrice($query, $price): void
-    {
-        $id = is_numeric($price) ? $price : optional($price)->id;
+    public function setValidity(): void
+    {        
+        $existing = model('plan_subscription')
+            ->where('user_id', $this->user_id)
+            ->whereHas('price', fn($q) => $q->where('plan_id', $this->price->plan_id))
+            ->latest('id');
 
-        $query->where('plan_price_id', $id);
+        if (!$this->start_at) {
+            if (
+                ($last = $existing->first())
+                && $last->end_at
+                && $last->end_at->isFuture()    
+            ) {
+                $this->start_at = $last->end_at->addHour();
+            }
+            else $this->start_at = now();
+        }
+
+        $this->is_trial = $this->price->plan->trial > 0 
+            && !$existing->where('is_trial', true)->count();
+
+        $this->end_at = $this->end_at ?? $this->getEndDate();
     }
 
     /**
-     * Attribute for status
+     * Get end date
      */
-    protected function status(): Attribute
+    public function getEndDate(): mixed
     {
-        return new Attribute(
-            get: function() {
-                if ($this->start_at->greaterThan(now())) return 'pending';
-                if ($this->expired_at && $this->expired_at->lessThan(now())) return 'expired';
-        
-                return 'active';
-            },
-        );
+        $valid = $this->price->valid;
+        $count = data_get($valid, 'count');
+        $interval = data_get($valid, 'interval');
+
+        if (in_array($interval, ['forever', 'one-off'])) return null;
+
+        if ($this->is_trial) {
+            $count = $this->price->plan->trial;
+            $interval = 'day';
+        }
+
+        if (is_numeric($count)) {
+            if (in_array($interval, ['day', 'days'])) return $this->start_at->addDays($count);
+            if (in_array($interval, ['month', 'months'])) return $this->start_at->addMonths($count);
+            if (in_array($interval, ['year', 'years'])) return $this->start_at->addYears($count);
+        }
+
+        return null;
     }
 }

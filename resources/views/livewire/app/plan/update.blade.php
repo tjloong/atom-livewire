@@ -6,8 +6,5 @@
         />
     </x-page-header>
 
-    <div class="flex flex-col gap-6">
-        @livewire(lw('app.plan.form'), compact('plan'), key('form'))
-        @livewire(lw('app.plan.price.listing'), compact('plan'), key('price'))
-    </div>
+    @livewire(lw('app.plan.form'), compact('plan'), key('form'))
 </div>

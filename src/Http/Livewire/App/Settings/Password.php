@@ -3,11 +3,13 @@
 namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
 use Illuminate\Auth\Events\PasswordReset;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Password extends Component
 {
+    use WithForm;
     use WithPopupNotify;
 
     public $password = [
@@ -17,54 +19,45 @@ class Password extends Component
     ];
 
     /**
-     * Validation rules
+     * Validation
      */
-    public function rules()
+    protected function validation(): array
     {
         return [
-            'password.current' => 'required|current_password',
-            'password.new' => 'required|min:8|confirmed',
-            'password.new_confirmation' => 'required',
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    public function messages()
-    {
-        return [
-            'password.current.required' => __('Current password is required.'),
-            'password.current.current_password' => __('Incorrect password.'),
-            'password.new.required' => __('New password is required.'),
-            'password.new.min' => __('New password must be at least 8 characters.'),
-            'password.new.confirmed' => __('New password do not match with password confirmation.'),
-            'password.new_confirmation.required' => __('Confirm new password is required.'),
+            'password.current' => [
+                'required' => 'Current password is required.',
+                'current_password' => 'Incorrect password.',
+            ],
+            'password.new' => [
+                'required' => 'New password is required.',
+                'min:8' => 'New password must be at least 8 characters.',
+                'confirmed' => 'New password do not match with password confirmation.',
+            ],
+            'password.new_confirmation' => ['required' => 'Confirm new password is required.'],
         ];
     }
 
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
-        auth()->user()->forceFill([
+        user()->forceFill([
             'password' => bcrypt(data_get($this->password, 'new')),
         ])->save();
 
-        event(new PasswordReset(auth()->user()));
+        event(new PasswordReset(user()));
 
         $this->reset('password');
-        $this->popup('Updated Password');
+        $this->popup('Password Updated.');
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.settings.password');
     }

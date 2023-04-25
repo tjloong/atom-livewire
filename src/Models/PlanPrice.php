@@ -4,23 +4,26 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasTrace;
+use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class PlanPrice extends Model
 {
     use HasTrace;
+    use HasFilters;
     
     protected $guarded = [];
 
     protected $casts = [
         'amount' => 'float',
-        'expired_after' => 'integer',
+        'valid' => 'object',
         'is_recurring' => 'boolean',
-        'is_default' => 'boolean',
+        'is_active' => 'boolean',
         'plan_id' => 'integer',
     ];
+
+    protected $appends = ['valid_name'];
 
     /**
      * Get plan for price
@@ -29,38 +32,48 @@ class PlanPrice extends Model
     {
         return $this->belongsTo(model('plan'));
     }
-    
+
     /**
-     * Get users for price
+     * Get payments for price
      */
-    public function users(): BelongsToMany
+    public function payments()
     {
-        return $this->belongsToMany(model('user'), 'plan_subscriptions', 'plan_price_id', 'user_id');
+        return $this->hasMany(model('plan_payment'), 'price_id');
     }
 
     /**
-     * Attribute for name
+     * Attribute for valid name
      */
-    public function name(): Attribute
+    protected function validName(): Attribute
     {
         return new Attribute(
-            get: fn() => currency($this->amount, $this->currency).' '.$this->recurring,
+            get: function() {
+                if (!$this->valid) return null;
+
+                $count = data_get($this->valid, 'count');
+                $interval = data_get($this->valid, 'interval');
+
+                if ($count === 1 && $interval === 'day') return 'Daily';
+                if ($count === 1 && $interval === 'week') return 'Weekly';
+                if ($count === 1 && $interval === 'month') return 'Monthly';
+                if ($count === 3 && $interval === 'month') return 'Quarterly';
+                if ($count === 6 && $interval === 'month') return 'Half-Yearly';
+                if ($count === 1 && $interval === 'year') return 'Yearly';
+                if ($count === 2 && $interval === 'year') return 'Bi-Yearly';
+
+                return $count.' '.str($interval)->plural($count)->headline()->toString();
+            },
         );
     }
 
     /**
-     * Attribute for recurring
+     * Scope for fussy search
      */
-    public function recurring(): Attribute
+    public function scopeSearch($query, $search): void
     {
-        return new Attribute(
-            get: function() {
-                if (!$this->expired_after) return __('lifetime');
-                if ($this->expired_after === 1) return __('monthly');
-                if ($this->expired_after === 12) return __('yearly');
-
-                return __(':total months', ['total' => $this->expired_after]);
-            }, 
-        );        
+        $query->where(fn($q) => $q
+            ->where('code', 'like', "%$search%")
+            ->orWhereHas('plan', fn($q) => $q->search($search))
+        );
     }
 }

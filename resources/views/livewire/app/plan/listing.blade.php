@@ -1,24 +1,21 @@
 <div class="max-w-screen-xl mx-auto">
-    @if ($fullpage)
-        <x-page-header title="Plans">
-            @tier('root')
-                <x-button label="New Plan" :href="route('app.plan.create')"/>
-            @endtier
-        </x-page-header>
-    @endif
+    <x-page-header title="Plans">
+        @tier('root')
+            <x-button label="New Plan" :href="route('app.plan.create')"/>
+        @endtier
+    </x-page-header>
 
     @tier('root')
         <x-table :data="$this->table">
             <x-slot:header>
-                @if (!$fullpage)
-                    <x-table.header label="Plans">
-                        @tier('root')
-                            <x-button label="New Plan" :href="route('app.plan.create')" color="gray" size="sm"/>
-                        @endtier
-                    </x-table.header>
-                @endif
-                
                 <x-table.searchbar :total="$this->paginator->total()"/>
+
+                <x-table.toolbar>
+                    <div class="flex items-center gap-2">
+                        <x-form.select.country wire:model="filters.country" :label="false" placeholder="All Countries"/>
+                        <x-form.select.currency wire:model="filters.currency" :label="false" placeholder="All Currencies"/>
+                    </div>
+                </x-table.toolbar>
             </x-slot:header>
         </x-table>
 
@@ -26,7 +23,7 @@
     @else
         <div class="grid gap-6 md:grid-cols-3">
             @foreach ($this->query->orderBy('id')->get() as $plan)
-                <x-pricing
+                {{-- <x-pricing
                     :plan="$plan"
                     :prices="
                         $plan->prices
@@ -66,7 +63,7 @@
                             </div>
                         @endforeach
                     </x-slot:cta>
-                </x-pricing>
+                </x-pricing> --}}
             @endforeach
         </div>
     @endtier

@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Plan\Subscription;
+namespace Jiannius\Atom\Http\Livewire\App\Billing;
 
 use Livewire\Component;
 
-class CancelAutoBillingModal extends Component
+class CancelAutoRenewModal extends Component
 {
     public $subscriptions;
     public $stripeSubscriptionId;
@@ -27,7 +27,7 @@ class CancelAutoBillingModal extends Component
             ->where('data->stripe_subscription_id', $this->stripeSubscriptionId)
             ->get();
 
-        $this->dispatchBrowserEvent('cancel-auto-billing-modal-open');
+        $this->dispatchBrowserEvent('cancel-auto-renew-modal-open');
     }
 
     /**
@@ -35,6 +35,6 @@ class CancelAutoBillingModal extends Component
      */
     public function render(): mixed
     {
-        return atom_view('app.plan.subscription.cancel-auto-billing-modal');
+        return atom_view('app.billing.cancel-auto-renew-modal');
     }
 }

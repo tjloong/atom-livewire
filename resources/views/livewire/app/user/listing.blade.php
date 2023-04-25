@@ -1,13 +1,10 @@
 <div class="max-w-screen-xl mx-auto">
+    <x-page-header title="Users">
+        <x-button label="New User" :href="route('app.user.create')"/>
+    </x-page-header>
+
     <x-table :data="$this->table">
         <x-slot:header>
-            <x-table.header label="Users">
-                <x-button size="sm" color="gray"
-                    label="New User" 
-                    :href="route('app.user.create')"
-                />
-            </x-table.header>
-
             <x-table.searchbar :total="$this->paginator->total()"/>
 
             <x-table.toolbar>

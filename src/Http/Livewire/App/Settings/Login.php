@@ -3,68 +3,62 @@
 namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
 use Livewire\Component;
-use Illuminate\Validation\Rule;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Login extends Component
 {
+    use WithForm;
     use WithPopupNotify;
 
     public $user;
 
     /**
-     * Validation rules
+     * Validation
      */
-    public function rules()
+    protected function validation(): array
     {
         return [
-            'user.name' => 'required|string|max:255',
-            'user.email' => [
-                'required', 'email', 
-                Rule::unique('users', 'email')->ignore(auth()->user()),
+            'user.name' => [
+                'required' => 'Login name is required.',
+                'max:255' => 'Login name is too long (max 255 characters).',
             ],
-        ];
-    }
-
-    /**
-     * Validation messages
-     */
-    public function messages()
-    {
-        return [
-            'user.name.required' => __('Login name is required.'),
-            'user.name.string' => __('Invalid login name.'),
-            'user.name.max' => __('Login name is too long.'),
-            'user.email.required' => __('Login email is required.'),
-            'user.email.email' => __('Invalid login email.'),
-            'user.email.unique' => __('Login email is taken.'),
+            'user.email' => [
+                'required' => 'Login email is required.', 
+                'email' => 'Invalid login email', 
+                function ($attr, $value, $fail) {
+                    if (model('user')->where('email', $value)->where('id', '<>', user('id'))->count()) {
+                        $fail('Login email is taken.');
+                    }
+                },
+            ],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
-        $this->user = auth()->user();
+        $this->user = user();
     }
 
     /**
      * Submit
      */
-    public function submit()
+    public function submit(): void
     {
-        $this->resetValidation();
-        $this->validate();
+        $this->validateForm();
 
         $this->user->save();
-        $this->popup('Updated Login Information');
+
+        $this->popup('Login Updated.');
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.settings.login');
     }

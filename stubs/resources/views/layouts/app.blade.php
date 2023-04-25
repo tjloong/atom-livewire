@@ -35,9 +35,7 @@
     {{-- Onboarding layout --}}
     @elseroute(['app.onboarding', 'app.onboarding.*'])
         <div class="min-h-screen bg-gray-100 p-6">
-            <main class="max-w-screen-xl mx-auto grid gap-10">
-                {{ $slot }}
-            </main>
+            {{ $slot }}
         </div>
     
     {{-- App layout --}}

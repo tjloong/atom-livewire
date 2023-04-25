@@ -1,17 +1,17 @@
-<div
-    x-data="{ show: false }"
-    class="max-w-screen-xl mx-auto"
->
-    <x-box header="Files and Media" class="rounded-lg">
-        <x-slot:buttons>
-            @if (!$selected)
-                <x-button color="gray" 
-                    label="Upload" 
-                    x-on:click="show = !show"
-                />
-            @endif
-        </x-slot:buttons>
-        
+<div x-data="{ show: false }" class="max-w-screen-xl mx-auto">
+    <x-page-header title="Files and Media">
+        @if (!$selected)
+            <x-button label="Upload" x-on:click="show = !show"/>
+        @endif
+    </x-page-header>
+
+    <x-box>
+        <div x-show="show" class="p-4 border-b">
+            <x-form.file :library="false" multiple>
+                <x-slot:list></x-slot:list>
+            </x-form.file>
+        </div>
+
         <div class="flex flex-col divide-y">
             <div class="p-4 flex items-center justify-between gap-3">
                 <div class="shrink-0">
@@ -57,12 +57,6 @@
                         />
                     </div>
                 @endif
-            </div>
-
-            <div x-show="show" class="p-4">
-                <x-form.file :library="false" multiple>
-                    <x-slot:list></x-slot:list>
-                </x-form.file>
             </div>
 
             <div class="p-4 flex items-center justify-center gap-6 flex-wrap">

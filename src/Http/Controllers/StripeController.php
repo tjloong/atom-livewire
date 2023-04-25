@@ -25,7 +25,7 @@ class StripeController extends Controller
     public function success()
     {
         if ($jobhandler = $this->getJobHandler()) {
-            return ($jobhandler)::dispatchNow([
+            return ($jobhandler)::dispatchSync([
                 'provider' => 'stripe',
                 'metadata' => array_merge(request()->query(),[
                     'job' => $jobhandler,
@@ -41,7 +41,7 @@ class StripeController extends Controller
     public function cancel()
     {
         if ($jobhandler = $this->getJobHandler()) {
-            return ($jobhandler)::dispatchNow([
+            return ($jobhandler)::dispatchSync([
                 'provider' => 'stripe',
                 'metadata' => array_merge(request()->query(), [
                     'job' => $jobhandler,
@@ -93,7 +93,7 @@ class StripeController extends Controller
         $stripe->subscriptions->cancel(data_get($params, 'subscription_id'));
 
         $jobhandler = $this->getJobHandler();
-        ($jobhandler)::dispatchNow($params);
+        ($jobhandler)::dispatchSync($params);
         
         return $redirect
             ? redirect($redirect)

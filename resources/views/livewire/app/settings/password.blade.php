@@ -1,30 +1,14 @@
-<x-form header="Change Password">
-    <x-form.group cols="2">
-        <x-form.password 
-            label="Current Password"
-            wire:model.defer="password.current" 
-            :error="$errors->first('password.current')" 
-            required
-        />
-    </x-form.group>
-
-    <x-form.group cols="2">
-        <x-form.password 
-            label="New Password"
-            wire:model.defer="password.new" 
-            :error="$errors->first('password.new')" 
-            required
-        />
+<div class="w-full">
+    <x-page-header title="Change Password"/>
     
-        <x-form.password 
-            label="Confirm New Password"
-            wire:model.defer="password.new_confirmation" 
-            :error="$errors->first('password.new_confirmation')" 
-            required
-        />
-    </x-form.group>
-
-    <x-slot:foot>
-        <x-button.submit label="Change Password"/>
-    </x-slot:foot>
-</x-form>
+    <x-form>
+        <x-form.group cols="2">
+            <x-form.password wire:model.defer="password.current" label="Current Password"/>
+        </x-form.group>
+    
+        <x-form.group cols="2">
+            <x-form.password wire:model.defer="password.new" label="New Password"/>
+            <x-form.password wire:model.defer="password.new_confirmation" label="Confirm New Password"/>
+        </x-form.group>
+    </x-form>
+</div>

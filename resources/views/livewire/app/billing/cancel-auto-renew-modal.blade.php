@@ -1,4 +1,4 @@
-<x-modal uid="cancel-auto-billing-modal" header="Cancel Auto Billing" class="max-w-screen-sm">
+<x-modal id="cancel-auto-renew-modal" header="Cancel Auto Renew" class="max-w-screen-sm">
     @if ($count = count($subscriptions ?? []))
         <div class="p-6 grid gap-4">
             <x-alert>

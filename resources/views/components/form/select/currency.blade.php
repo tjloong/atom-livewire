@@ -1,5 +1,5 @@
 <x-form.select
-    :options="metadata()->countries()
+    :options="countries()
         ->map(fn($val) => [
             'value' => data_get($val, 'currency.code'),
             'label' => implode(' - ', array_filter([
@@ -11,6 +11,7 @@
         ->unique('value')
         ->sortBy('value')
         ->values()
+        ->all()
     "
     {{ $attributes->except('options') }}
 />

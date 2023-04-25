@@ -13,7 +13,6 @@ class Register extends Component
 
     public $ref;
     public $plan;
-    public $price;
     public $token;
     public $provider;
 
@@ -22,7 +21,7 @@ class Register extends Component
         'agree_marketing' => true,
     ];
 
-    protected $queryString = ['ref', 'token', 'provider', 'plan', 'price'];
+    protected $queryString = ['ref', 'token', 'provider', 'plan'];
     
     /**
      * Validation
@@ -54,7 +53,7 @@ class Register extends Component
      */
     public function mount()
     {
-        if (!$this->ref && !$this->token && !$this->provider) return redirect('/');        
+        if (!$this->ref && !$this->token && !$this->provider) return redirect('/');
         if ($this->token && $this->provider) return $this->socialLogin();
     }
 
@@ -142,7 +141,7 @@ class Register extends Component
         auth()->login($user);
 
         // clear refcode
-        Cookie::expire('_ref');
+        Cookie::forget('_ref');
 
         return $this->registered($user->fresh());
     }
@@ -152,13 +151,6 @@ class Register extends Component
      */
     public function registered($user): mixed
     {
-        if (enabled_module('plans') && $this->plan && $this->price) {
-            return redirect()->route('app.plan.subscription.create', [
-                'plan' => $this->plan, 
-                'price' => $this->price,
-            ]);
-        }
-
         return redirect()->route('app.onboarding');
     }
 

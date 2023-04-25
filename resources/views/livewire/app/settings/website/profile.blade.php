@@ -1,50 +1,25 @@
-<x-form header="Website Profile">
-    <x-form.group>
-        <x-form.text 
-            label="Company"
-            wire:model.defer="settings.company"
-        />
-    
-        <x-form.textarea 
-            label="Brief Description"
-            wire:model.defer="settings.briefs"
-        />
-    
-        <x-form.text 
-            label="Phone"
-            wire:model.defer="settings.phone"
-        />
-            
-        <x-form.text 
-            label="Email"
-            wire:model.defer="settings.email"
-        />
-    
-        <x-form.textarea 
-            label="Address"
-            wire:model.defer="settings.address"
-        />
-    
-        <x-form.text 
-            label="Google Map URL"
-            wire:model.defer="settings.gmap_url"
-        />
-    
-        <x-form.checkbox
-            label="Enable Whatsapp Bubble"
-            wire:model="settings.whatsapp_bubble"
-        />
-    
-        @if (data_get($settings, 'whatsapp_bubble'))
-            <x-form.phone 
-                label="Whatsapp Number"
-                wire:model.defer="settings.whatsapp" 
-            />
-    
-            <x-form.textarea 
-                label="Whatsapp Prefill Text"
-                wire:model.defer="settings.whatsapp_text"
-            />
-        @endif
-    </x-form.group>
-</x-form>
+<div class="w-full">
+    <x-page-header title="Website Profile"/>
+
+    <x-form>
+        <x-form.group cols="2">
+            <x-form.text wire:model.defer="settings.company"/>
+            <x-form.textarea wire:model.defer="settings.briefs" label="Brief Description"/>
+            <x-form.text wire:model.defer="settings.phone"/>
+            <x-form.text wire:model.defer="settings.email"/>
+            <x-form.textarea wire:model.defer="settings.address"/>
+            <x-form.text wire:model.defer="settings.gmap_url" label="Google Map URL"/>
+        </x-form.group>
+
+        <x-form.group cols="2">
+            <div class="col-span-2">
+                <x-form.checkbox wire:model="settings.whatsapp_bubble" label="Whatsapp Bubble"/>
+            </div>
+
+            @if (data_get($settings, 'whatsapp_bubble'))
+                <x-form.phone wire:model.defer="settings.whatsapp" label="Whatsapp Number"/>
+                <x-form.textarea wire:model.defer="settings.whatsapp_text" label="Whatsapp Prefill Text"/>
+            @endif
+        </x-form.group>
+    </x-form>
+</div>

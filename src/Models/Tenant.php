@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
-use App\Models\User;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -25,9 +25,7 @@ class Tenant extends Model
     protected static function booted(): void
     {
         static::saved(function($tenant) {
-            if (($sess = session('tenant.current')) && $sess->id === $tenant->id) {
-                session()->forget('tenant.current');
-            }
+            session()->forget('tenant.current');
         });
     }
 
@@ -56,6 +54,26 @@ class Tenant extends Model
     }
 
     /**
+     * Attribute for address
+     */
+    protected function address(): Attribute
+    {
+        return new Attribute(
+            get: fn() => format_address($this),
+        );
+    }
+
+    /**
+     * Attribute for owner
+     */
+    protected function owner(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->users()->wherePivot('is_owner', true)->first(),
+        );
+    }
+
+    /**
      * Scope for fussy search
      */
     public function scopeSearch($query, $search): void
@@ -64,22 +82,6 @@ class Tenant extends Model
             ->where('name', 'like', "%$search%")
             ->whereHas('users', fn($q) => $q->search($search))
         );
-    }
-
-    /**
-     * Get address attribute
-     */
-    public function getAddressAttribute(): string
-    {
-        return format_address($this);
-    }
-
-    /**
-     * Get owner attribute
-     */
-    public function getOwnerAttribute(): User
-    {
-        return $this->users()->wherePivot('is_owner', true)->first();
     }
 
     /**
