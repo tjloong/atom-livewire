@@ -91,7 +91,7 @@ class Index extends Component
                     'livewire' => 'app.billing.checkout',
                     'hidden' => true,
                 ],
-            ]],
+            ], 'disabled' => !enabled_module('plans')],
 
             ['group' => 'System', 'tabs' => [
                 [

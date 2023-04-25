@@ -50,6 +50,10 @@ class CdnScripts extends Component
             'shuffle' => [
                 'https://cdn.jsdelivr.net/npm/shufflejs@6.1.0/dist/shuffle.min.js',
             ],
+            'flipdown' => [
+                'https://cdn.jsdelivr.net/npm/flipdown@0.3.2/src/flipdown.min.js',
+                'https://cdn.jsdelivr.net/npm/flipdown@0.3.2/dist/flipdown.min.css',
+            ],
             'ckeditor' => [
                 '/ckeditor/ckeditor.js',
             ],

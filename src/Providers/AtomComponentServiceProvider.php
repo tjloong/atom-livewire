@@ -46,6 +46,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'empty-state',
             'alpine-data',
             'social-share',
+            'flip-countdown',
             'payment-gateway',
             'placeholder-bar',
             
