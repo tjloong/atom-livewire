@@ -188,7 +188,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isRole($names): bool
     {
         if (!enabled_module('roles')) return true;
-        if ($this->isTier('root')) return true;
         if (!$this->role) return false;
 
         return collect((array)$names)->filter(function($name) {
