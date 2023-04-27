@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Page;
 
+use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
@@ -9,6 +10,7 @@ use Livewire\Component;
 class Update extends Component
 {
     use WithForm;
+    use WithFile;
     use WithPopupNotify;
     
     public $page;

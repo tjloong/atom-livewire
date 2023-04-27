@@ -32,6 +32,13 @@
                                                 <x-close :color="$color" x-on:click="{{ $onClick }}"/>
                                             @endif
                                         </td>
+                                    @elseif ($status = data_get($td, 'status'))
+                                        @if (is_string($status)) <x-badge :label="$status"/>
+                                        @else
+                                            @foreach ((array)$status as $color => $val)
+                                                <x-badge :label="$val" :color="$color"/>
+                                            @endforeach
+                                        @endif
                                     @else
                                         @php $label = data_get($td, 'label') @endphp
                                         @php $amount = data_get($td, 'amount') @endphp

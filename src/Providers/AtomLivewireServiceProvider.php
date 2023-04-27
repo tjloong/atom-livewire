@@ -162,6 +162,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.plan.create' => 'App\Plan\Create',
             'atom.app.plan.update' => 'App\Plan\Update',
             'atom.app.plan.form' => 'App\Plan\Form',
+            'atom.app.plan.price-modal' => 'App\Plan\PriceModal',
 
             // plan subscription
             'atom.app.plan.subscription.listing' => 'App\Plan\Subscription\Listing',

@@ -34,7 +34,7 @@ class Listing extends Component
     {
         return model('plan')
             ->readable()
-            ->withCount('subscriptions')
+            ->with('prices')
             ->filter($this->filters);
     }
 
@@ -45,41 +45,33 @@ class Listing extends Component
     {
         return [
             [
-                'name' => 'Plan',
-                'sort' => 'name',
+                'name' => 'Plan Code',
+                'sort' => 'code',
                 'label' => $query->code,
-                'small' => $query->name,
                 'href' => route('app.plan.update', [$query->id]),
             ],
 
             [
-                'name' => 'Valid',
-                'label' => str($query->valid ?? 'forever')->headline(),
+                'name' => 'Plan Name',
+                'sort' => 'name',
+                'label' => $query->name,
+                'href' => route('app.plan.update', [$query->id]),
             ],
 
             [
                 'name' => 'Country',
+                'class' => 'text-right',
                 'label' => $query->country
                     ? data_get(countries()->firstWhere('code', $query->country), 'name')
                     : 'All',
             ],
 
             [
-                'name' => 'Currency',
-                'label' => $query->currency ?? '--',
-            ],
-
-            [
                 'name' => 'Price',
                 'class' => 'text-right',
-                'amount' => $query->price ?? '--',
-            ],
-
-            [
-                'name' => 'Subscriptions',
-                'class' => 'text-right',
-                'count' => $query->subscriptions_count,
-                'uom' => 'subscription',
+                'tags' => $query->prices
+                    ->map(fn($val) => currency($val->amount, $query->currency))
+                    ->toArray(),
             ],
 
             [

@@ -85,7 +85,16 @@ class AtomGateServiceProvider extends ServiceProvider
         $plans = $this->actionToParams(str($action)->replaceFirst('plan:', ''));
 
         if ($plans === 'plan') return count($subscribedPlans) > 0;  // @can('plan') will check user subscribed to any plan
-        else return collect($plans)->filter(fn($plan) => in_array($plan, $subscribedPlans))->count() > 0;
+        else {
+            return collect($plans)
+                ->filter(function($plan) use ($subscribedPlans) {
+                    if (str($plan)->endsWith('*') || str($plan)->startsWith('*')) {
+                        return !empty(collect($subscribedPlans)->first(fn($val) => str($val)->is($plan)));
+                    }
+                    else return in_array($plan, $subscribedPlans);
+                })
+                ->count() > 0;
+        }
     }
 
     /**
@@ -94,7 +103,9 @@ class AtomGateServiceProvider extends ServiceProvider
     public function checkPermissions($user, $action): bool
     {
         if (!enabled_module('permissions')) return true;
-        
+
+        session()->forget('can.permissions');
+
         $isSessionUser = $user->id === user('id');
         $action = str($action)->replace('-', '_')->toString();
         $permitted = $isSessionUser ? session('can.permissions') : [];
@@ -121,8 +132,13 @@ class AtomGateServiceProvider extends ServiceProvider
             if ($isSessionUser) session(['can.permissions' => $permitted]);
         }
 
+        $action = collect($action)->filter(fn($val) => isset($permitted[$val]));
+
+        // action is not defined, so return true
+        if (!$action->count()) return true;
+
         return collect($action)
-            ->filter(fn($val) => isset($permitted[$val]) && $permitted[$val] === true)
+            ->filter(fn($val) => $permitted[$val] === true)
             ->count() > 0;
     }
 

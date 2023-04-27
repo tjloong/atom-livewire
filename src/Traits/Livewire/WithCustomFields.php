@@ -15,7 +15,7 @@ trait WithCustomFields
     /**
      * Validate custom fields
      */
-    public function validateCustomFields()
+    public function validateCustomFields(): void
     {
         $rules = [];
         $messages = [];
@@ -45,6 +45,8 @@ trait WithCustomFields
             }
         }
 
-        $this->validate($rules, $messages);
+        if ($rules) {
+            $this->validate($rules, $messages);
+        }
     }
 }

@@ -75,9 +75,9 @@
         @elseif (is_bool($attributes->get('active')))
             <x-badge :label="$attributes->get('active') ? 'active' : 'inactive'"/>
         @elseif ($tags = $attributes->get('tags'))
-            @if (count($tags))
+            @if (count(array_filter($tags)))
                 <div class="inline-flex items-center gap-2">
-                    @foreach (collect($tags)->take(2) as $tag)
+                    @foreach (collect($tags)->filter()->take(2) as $tag)
                         <div 
                             @if (strlen($tag) > 20) x-tooltip="{{ $tag }}" @endif
                             class="text-xs font-medium bg-slate-100 rounded-md py-0.5 px-2 border"

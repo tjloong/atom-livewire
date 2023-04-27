@@ -14,6 +14,20 @@
                         @endif
                     </div>
                 </x-form.field>
+
+                @if ($features = $subscription->price->plan->features)
+                    <x-form.field label="Features">
+                        @foreach ($features as $feat)
+                            <div class="flex items-center gap-2">
+                                @if (str($feat)->startsWith('x ')) <x-icon name="circle-xmark" class="text-gray-400"/>
+                                @else <x-icon name="circle-check" class="text-green-500"/>
+                                @endif
+
+                                {{ str($feat)->replaceFirst('x ', '') }}
+                            </div>
+                        @endforeach
+                    </x-form.field>
+                @endif
             </div>
 
             <div class="bg-white border rounded-lg">

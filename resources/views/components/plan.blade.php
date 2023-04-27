@@ -11,13 +11,19 @@
 >
     <div class="grow p-6 flex flex-col gap-4">
         <div class="shrink-0">
-            <h2 class="text-xl text-gray-700 font-bold">{{ $plan->name }}</h2>
+            <h2 class="text-2xl text-gray-700 font-bold">{{ $plan->name }}</h2>
             <div class="text-gray-500 font-medium">{{ $plan->description }}</div>
         </div>
+
+        @if ($plan->trial)
+            <div class="shrink-0">
+                {{ __(':count '.str('day')->plural($plan->trial).' trial', ['count' => $plan->trial]) }}
+            </div>
+        @endif
     
         <div class="shrink-0 flex items-center gap-2">
             @foreach ($prices as $price)
-                <div x-show="price.code === @js(data_get($price, 'code'))" class="text-2xl font-bold">
+                <div x-show="price.code === @js(data_get($price, 'code'))" class="text-2xl font-medium">
                     {{ ($amount = data_get($price, 'amount')) ? currency($amount, data_get($plan, 'currency')) : __('Free') }}
                 </div>
             @endforeach

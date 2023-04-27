@@ -26,6 +26,18 @@ class PlanPrice extends Model
     protected $appends = ['valid_name'];
 
     /**
+     * Booted
+     */
+    protected static function booted(): void
+    {
+        static::saving(function($price) {
+            if (!data_get($price->valid, 'count') && !data_get($price->valid, 'interval')) {
+                $price->valid = null;
+            }
+        });
+    }
+
+    /**
      * Get plan for price
      */
     public function plan(): BelongsTo
@@ -52,6 +64,8 @@ class PlanPrice extends Model
 
                 $count = data_get($this->valid, 'count');
                 $interval = data_get($this->valid, 'interval');
+
+                if (!$count || !$interval) return null;
 
                 if ($count === 1 && $interval === 'day') return 'Daily';
                 if ($count === 1 && $interval === 'week') return 'Weekly';

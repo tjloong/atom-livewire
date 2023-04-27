@@ -14,6 +14,8 @@ class Form extends Component
     public $plan;
     public $inputs;
 
+    protected $listeners = ['refresh' => '$refresh'];
+
     /**
      * Validation
      */
@@ -30,36 +32,31 @@ class Form extends Component
                 },
             ],
             'plan.description' => ['nullable'],
-            'plan.features' => ['nullable'],
-            'plan.invoice_description' => ['nullable'],
             'plan.country' => ['nullable'],
             'plan.currency' => ['nullable'],
-            'plan.price' => ['nullable'],
-            'plan.valid' => [
-                'nullable',
-                function ($attr, $value, $fail) {
-                    if ($this->plan->getEndDate(now()) === false) $fail('Invalid valid period.');
-                },
-            ],
-            'plan.trial_plan_id' => ['nullable'],
-            'plan.is_recurring' => ['nullable'],
-            'plan.is_hidden' => ['nullable'],
+            'plan.trial' => ['nullable'],
             'plan.is_active' => ['nullable'],
+
+            'inputs.features' => ['nullable'],
         ];
     }
 
     /**
-     * Get options property
+     * Mount
      */
-    public function getOptionsProperty()
+    public function mount()
     {
-        return [
-            'trial_plans' => model('plan')->where('id', '<>', $this->plan->id)->get()->map(fn($plan) => [
-                'value' => $plan->id,
-                'label' => $plan->code,
-                'small' => $plan->name,
-            ])->toArray(),
-        ];
+        $this->fill(['inputs.features' => implode("\n", $this->plan->features)]);
+    }
+
+    /**
+     * Updated plan
+     */
+    public function updatedPlan()
+    {
+        if ($this->plan->name && !$this->plan->code) {
+            $this->plan->fill(['code' => str()->slug($this->plan->name)]);
+        }
     }
 
     /**
@@ -69,7 +66,9 @@ class Form extends Component
     {
         $this->validateForm();
 
-        $this->plan->save();
+        $this->plan->fill([
+            'features' => data_get($this->inputs, 'features'),
+        ])->save();
 
         return $this->plan->wasRecentlyCreated
             ? redirect()->route('app.plan.update', [$this->plan->id])
