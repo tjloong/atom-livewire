@@ -17,7 +17,7 @@
                         ])"
                         placeholder="All Status"
                     />
-    
+
                     @module('roles')
                         <x-form.select :label="false"
                             wire:model="filters.is_role"

@@ -420,12 +420,7 @@ function enabled_module($module)
     if (config('atom.static_site')) return false;
     if (app()->runningInConsole()) return true;
 
-    return rescue(function() use ($module) {
-        $settings = session('settings') ?? model('site_setting')->generate();
-        $modules = json_decode(data_get($settings, 'modules'));
-
-        return collect($modules)->contains($module);
-    }, false);
+    return collect($module)->filter(fn($val) => in_array($val, settings('modules')))->count() > 0;
 }
 
 /**

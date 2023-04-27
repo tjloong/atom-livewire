@@ -169,12 +169,17 @@ class InstallCommand extends Command
                 $table->boolean('is_owner')->nullable();
                 $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
                 $table->foreignId('user_id')->constrained()->onDelete('cascade');
-                $table->foreignId('role_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamp('blocked_at')->nullable();
                 $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
                 $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            });    
+            });
+
+            if (Schema::hasTable('permissions')) {
+                Schema::table('permissions', function(Blueprint $table) {
+                    $table->foreignId('tenant_id')->nullable()->constrained()->onDelete('cascade');
+                });
+            }
         }
     }
 
@@ -834,7 +839,6 @@ class InstallCommand extends Command
                 $table->id();
                 $table->string('permission');
                 $table->boolean('is_granted')->nullable();
-                $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade');
                 $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             });
         }

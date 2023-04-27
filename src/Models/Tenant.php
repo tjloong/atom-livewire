@@ -54,6 +54,16 @@ class Tenant extends Model
     }
 
     /**
+     * Get permissions for tenant
+     */
+    public function permissions(): mixed
+    {
+        if (!enabled_module('permissions')) return null;
+
+        return $this->hasMany(model('permission'));
+    }
+
+    /**
      * Attribute for address
      */
     protected function address(): Attribute
@@ -66,10 +76,10 @@ class Tenant extends Model
     /**
      * Attribute for owner
      */
-    protected function owner(): Attribute
+    protected function owners(): Attribute
     {
         return new Attribute(
-            get: fn() => $this->users()->wherePivot('is_owner', true)->first(),
+            get: fn() => $this->users()->wherePivot('is_owner', true)->get(),
         );
     }
 

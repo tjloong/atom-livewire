@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto">
     <div class="flex flex-col gap-6 md:flex-row">
         <div class="md:w-1/4">
-            <x-box header="Settings">
+            <x-box :header="$this->title">
                 <div class="p-2">
                     <x-sidenav>
                         @foreach ($this->filteredTabs as $item)

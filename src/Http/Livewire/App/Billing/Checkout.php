@@ -36,9 +36,17 @@ class Checkout extends Component
      */
     public function mount()
     {
-        breadcrumbs()->push('Change Subscription');
+        breadcrumbs()->push($this->title);
 
         if ($code = request()->query('plan')) $this->select($code);
+    }
+
+    /**
+     * Get title property
+     */
+    public function getTitleProperty()
+    {
+        return user()->can('plan') ? 'Change Subscription' : 'Subscribe Plan';
     }
 
     /**

@@ -114,7 +114,7 @@ class SiteSetting extends Model
         return cache()->remember('settings', now()->addDays(7), function() {
             return $this->get()
                 ->mapWithKeys(fn($val) => [
-                    $val->name => in_array($val->name, ['announcements', 'popup'])
+                    $val->name => in_array($val->name, ['modules', 'announcements', 'popup'])
                         ? json_decode($val->value, true)
                         : $val->value,
                 ])

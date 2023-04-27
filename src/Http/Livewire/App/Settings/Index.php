@@ -2,13 +2,10 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
 class Index extends Component
 {
-    use AuthorizesRequests;
-
     public $tab;
 
     /**
@@ -40,7 +37,7 @@ class Index extends Component
     /**
      * Get filtered tabs property
      */
-    public function getFilteredTabsProperty()
+    public function getFilteredTabsProperty(): array
     {
         return collect($this->tabs)
             ->filter(fn($tab) => data_get($tab, 'disabled') !== true)

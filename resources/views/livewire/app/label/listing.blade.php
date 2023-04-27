@@ -1,12 +1,9 @@
 <div class="max-w-screen-lg mx-auto">
-    <x-box :header="$this->title">
-        <x-slot:buttons>
-            <x-button size="sm" color="gray"
-                label="New"
-                wire:click="open({ type: '{{ $type }}' })"
-            />
-        </x-slot:buttons>
+    <x-page-header :title="$this->title">
+        <x-button label="Create New" wire:click="open({ type: '{{ $type }}' })"/>
+    </x-page-header>
 
+    <x-box>
         @if ($this->labels->count())
             <x-form.sortable
                 wire:sorted="sort"

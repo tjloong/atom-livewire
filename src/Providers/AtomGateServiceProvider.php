@@ -26,57 +26,114 @@ class AtomGateServiceProvider extends ServiceProvider
     {
         if (config('atom.static_site')) return;
         
-        Gate::before(function ($user, $name) {
+        Gate::before(function ($user, $action) {
             if ($user->isTier('root')) return true;
 
-            // role checking, eg: @can('role:admin,sales')
-            if (str($name)->is('role:*')) {
-                if (!enabled_module('roles')) return true;
-
-                $name = str($name)->replaceFirst('role:', '');
-
-                if ($name->is('*|*')) $roles = explode('|', $name->toString());
-                elseif ($name->is('*,*')) $roles = explode(',', $name->toString());
-                elseif ($name->is('*/*')) $roles = explode('/', $name->toString());
-                else $roles = $name->toString();
-
-                return $user->isRole($roles);
-            }
-            // tier checking, eg: @can('tier:root')
-            else if (str($name)->is('tier:*')) {
-                $name = str($name)->replaceFirst('tier:', '');
-
-                if ($name->is('*|*')) $tiers = explode('|', $name->toString());
-                elseif ($name->is('*,*')) $tiers = explode(',', $name->toString());
-                elseif ($name->is('*/*')) $tiers = explode('/', $name->toString());
-                else $tiers = $name->toString();
-
-                return $user->isTier($tiers);
-            }
-            // permission checking
-            else {
-                if (!enabled_module('permissions')) return true;
-
-                $name = str($name)->replace('-', '_')->toString();
-                $splits = explode('.', $name);
-                $module = $splits[0];
-                $action = $splits[1] ?? null;
-                $actions = data_get(model('permission')->getActions(), $module, []);
-                $isActionDefined = in_array($action, $actions);
-    
-                if (!$isActionDefined) return true;
-    
-                if (enabled_module('roles')) {
-                    return $user->permissions()->granted($name)->count() > 0 || (
-                        !$user->permissions()->forbidden($name)->count()
-                        && $user->role
-                        && $user->role->can($name)
-                    );
-                }
-                else {
-                    return $user->permissions()->granted($name)->count() > 0;
-                }
-            }
+            if (str($action)->is('role:*')) return $this->checkRoles($user, $action);   // eg. @can('role:admin|sales')
+            else if (str($action)->is('tier:*')) return $this->checkTiers($user, $action);  // eg. @can('tier:root')
+            else if ($action === 'plan' || str($action)->is('plan:*')) return $this->checkPlans($user, $action); // eg. @can('plan:starter')
+            else return $this->checkPermissions($user, $action); // eg. @can('contact.view')
         });
+    }
+
+    /**
+     * Check roles
+     */
+    public function checkRoles($user, $action): bool
+    {
+        if (!enabled_module('roles')) return true;
+
+        $roles = $this->actionToParams(str($action)->replaceFirst('role:', ''));
+
+        return $user->isRole($roles);
+    }
+
+    /**
+     * Check tiers
+     */
+    public function checkTiers($user, $action): bool
+    {
+        $tiers = $this->actionToParams(str($action)->replaceFirst('tier:', ''));
+
+        return $user->isTier($tiers);
+    }
+
+    /**
+     * Check plans
+     */
+    public function checkPlans($user, $action): bool
+    {
+        if (!enabled_module('plans')) return true;
+
+        $isSessionUser = $user->id === user('id');
+        $subscribedPlans = $isSessionUser ? session('can.plans') : [];
+
+        if (!$subscribedPlans) {
+            $subscribedPlans = collect();
+            $subscriptions = $user->subscriptions()->with('price')->status('active')->get();
+
+            foreach ($subscriptions as $subscription) {
+                $subscribedPlans->push($subscription->price->code);
+                $subscribedPlans->push($subscription->price->plan->code);
+            }
+
+            $subscribedPlans = $subscribedPlans->unique()->values()->all();
+
+            if ($isSessionUser) session(['can.plans' => $subscribedPlans]);
+        }
+
+        $plans = $this->actionToParams(str($action)->replaceFirst('plan:', ''));
+
+        if ($plans === 'plan') return count($subscribedPlans) > 0;  // @can('plan') will check user subscribed to any plan
+        else return collect($plans)->filter(fn($plan) => in_array($plan, $subscribedPlans))->count() > 0;
+    }
+
+    /**
+     * Check permissions
+     */
+    public function checkPermissions($user, $action): bool
+    {
+        if (!enabled_module('permissions')) return true;
+        
+        $isSessionUser = $user->id === user('id');
+        $action = str($action)->replace('-', '_')->toString();
+        $permitted = $isSessionUser ? session('can.permissions') : [];
+
+        if ($isSessionUser && tenant() && $user->isTenantOwner()) return true;
+
+        if (!$permitted) {
+            $permissions = collect(model('permission')->getPermissionList())
+                ->map(fn($actions, $module) => collect($actions)->map(fn($val) => $module.'.'.$val)->toArray())
+                ->collapse();
+
+            foreach ($permissions as $permission) {
+                $query = model('permission')
+                    ->where('permission', $permission)
+                    ->where('user_id', $user->id)
+                    ->when(tenant() && $isSessionUser, fn($q) => $q->where('tenant_id', tenant('id')));
+
+                $isForbidden = (clone $query)->where('is_granted', false)->count() > 0;
+                $isGranted = (clone $query)->where('is_granted', true)->count() > 0;
+
+                $permitted[$permission] = $isForbidden ? false : $isGranted;
+            }
+
+            if ($isSessionUser) session(['can.permissions' => $permitted]);
+        }
+
+        return collect($action)
+            ->filter(fn($val) => isset($permitted[$val]) && $permitted[$val] === true)
+            ->count() > 0;
+    }
+
+    /**
+     * Action to params
+     */
+    public function actionToParams($action): mixed
+    {
+        if ($action->is('*|*')) return explode('|', $action->toString());
+        elseif ($action->is('*,*')) return explode(',', $action->toString());
+        elseif ($action->is('*/*')) return explode('/', $action->toString());
+        else return $action->toString();
     }
 }

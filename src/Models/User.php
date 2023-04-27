@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
@@ -61,9 +62,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get role for user
      */
-    public function role()
+    public function role(): mixed
     {
-        if (!enabled_module('roles')) return;
+        if (!enabled_module('roles')) return null;
 
         return $this->belongsTo(model('role'));
     }
@@ -71,9 +72,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get permissions for user
      */
-    public function permissions()
+    public function permissions(): mixed
     {
-        if (!enabled_module('permissions')) return;
+        if (!enabled_module('permissions')) return null;
 
         return $this->hasMany(model('permission'));
     }
@@ -81,9 +82,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get teams for user
      */
-    public function teams()
+    public function teams(): mixed
     {
-        if (!enabled_module('teams')) return;
+        if (!enabled_module('teams')) return null;
 
         return $this->belongsToMany(model('team'), 'team_users');
     }
@@ -91,19 +92,35 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get subscriptions for user
      */
-    public function subscriptions()
+    public function subscriptions(): mixed
     {
-        if (!enabled_module('plans')) return;
+        if (!enabled_module('plans')) return null;
 
         return $this->hasMany(model('plan_subscription'));
     }
 
     /**
+     * Get tenants for user
+     */
+    public function tenants(): mixed
+    {
+        if (!enabled_module('tenants')) return null;
+
+        return $this->belongsToMany(model('tenant'), 'tenant_users')->withPivot([
+            'is_owner',
+            'blocked_at',
+            'blocked_by',
+        ]);
+    }
+
+    /**
      * Attribute for tier
      */
-    public function getTierAttribute()
+    protected function tier(): Attribute
     {
-        return $this->is_root ? 'root' : 'signup';
+        return new Attribute(
+            get: fn() => $this->is_root ? 'root' : 'signup',
+        );
     }
 
     /**
@@ -125,7 +142,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $query->when(
             enabled_module('roles'), 
-            fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', $name)) 
+            fn($q) => $q->whereHas('role', fn($q) => $q->where('roles.slug', $name)) 
         );
     }
 
@@ -200,6 +217,17 @@ class User extends Authenticatable implements MustVerifyEmail
         })->count() > 0;
     }
 
+    /**
+     * Check user is tenant owner
+     */
+    public function isTenantOwner($tenant = null)
+    {
+        if (!enabled_module('tenants')) return false;
+
+        $tenant = $tenant ?? tenant();
+
+        return !empty($tenant->owners->where('id', $this->id)->first());
+    }
 
     /**
      * Invite user to activate account

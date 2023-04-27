@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
@@ -16,16 +17,6 @@ class Role extends Model
     protected $guarded = [];
 
     /**
-     * Get permissions for role
-     */
-    public function permissions()
-    {
-        if (!enabled_module('permissions')) return;
-
-        return $this->hasMany(model('permission'));
-    }
-
-    /**
      * Get users for role
      */
     public function users()
@@ -34,36 +25,28 @@ class Role extends Model
     }
 
     /**
+     * Attribute for is admin
+     */
+    protected function isAdmin(): Attribute
+    {
+        return new Attribute(
+            get: fn() => in_array($this->slug, ['admin', 'administrator']),
+        );
+    }
+
+    /**
      * Scope for fussy search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where('name', 'like', "%$search%");
+        $query->where('name', 'like', "%$search%");
     }
 
     /**
      * Scope for is admin
      */
-    public function scopeIsAdmin($query)
+    public function scopeIsAdmin($query): void
     {
-        return $query->whereIn('slug', ['admin', 'administrator']);
-    }
-
-    /**
-     * Get is admin attribute
-     */
-    public function getIsAdminAttribute()
-    {
-        return in_array($this->slug, ['admin', 'administrator']);
-    }
-
-    /**
-     * Check role is granted a permission
-     */
-    public function can($permission)
-    {
-        if (!enabled_module('permissions')) return true;
-
-        return $this->is_admin || $this->permissions()->granted($permission)->count() > 0;
+        $query->whereIn('slug', ['admin', 'administrator']);
     }
 }

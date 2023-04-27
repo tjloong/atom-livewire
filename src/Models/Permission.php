@@ -3,36 +3,40 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Permission extends Model
 {
     protected $guarded = [];
 
     public $timestamps = false;
-    public $actions = [];
 
-    /**
-     * Get role for permission
-     */
-    public function role()
-    {
-        return $this->belongsTo(model('role'));
-    }
+    public $permissions = [];
 
     /**
      * Get user for permission
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(model('user'));
     }
 
     /**
+     * Get tenant for permission
+     */
+    public function tenant(): mixed
+    {
+        if (!enabled_module('tenants')) return null;
+
+        return $this->belongsTo(model('tenant'));
+    }
+
+    /**
      * Scope for granted abiltiy
      */
-    public function scopeGranted($query, $permission = null)
+    public function scopeGranted($query, $permission = null): void
     {
-        return $query
+        $query
             ->when($permission, fn($q) => $q->where('permission', $permission))
             ->where('is_granted', true);
     }
@@ -40,18 +44,18 @@ class Permission extends Model
     /**
      * Scope for forbidden ability
      */
-    public function scopeForbidden($query, $permission = null)
+    public function scopeForbidden($query, $permission = null): void
     {
-        return $query
+        $query
             ->when($permission, fn($q) => $q->where('permission', $permission))
             ->where('is_granted', false);
     }
 
     /**
-     * Get actions
+     * Get permission list
      */
-    public function getActions()
+    public function getPermissionList(): array
     {
-        return $this->actions;
+        return $this->permissions;
     }
 }

@@ -1,5 +1,5 @@
 <div class="max-w-screen-lg mx-auto">
-    <x-page-header title="Change Subscription" back/>
+    <x-page-header :title="$this->title"/>
 
     @if ($subscription)
         <div class="grid gap-4 md:grid-cols-2">
