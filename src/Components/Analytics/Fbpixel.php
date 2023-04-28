@@ -6,18 +6,6 @@ use Illuminate\View\Component;
 
 class Fbpixel extends Component
 {
-    public $id;
-    public $noscript;
-
-    /**
-     * Constructor
-     */
-    public function __construct($noscript = false)
-    {
-        $this->noscript = $noscript;
-        $this->id = config('atom.fbpixel_id') ?? settings('fbpixel_id');
-    }
-
     /**
      * Render
      */

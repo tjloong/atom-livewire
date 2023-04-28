@@ -6,18 +6,6 @@ use Illuminate\View\Component;
 
 class Gtm extends Component
 {
-    public $id;
-    public $noscript;
-
-    /**
-     * Constructor
-     */
-    public function __construct($noscript = false)
-    {
-        $this->noscript = $noscript;
-        $this->id = config('atom.gtm_id') ?? settings('gtm_id');
-    }
-
     /**
      * Render
      */
