@@ -767,36 +767,6 @@ class InstallCommand extends Command
             ]));
         }
         $this->line('Added default pages.');
-
-        foreach ([
-            ['name' => 'company', 'value' => null],
-            ['name' => 'phone', 'value' => null],
-            ['name' => 'email', 'value' => null],
-            ['name' => 'address', 'value' => null],
-            ['name' => 'gmap_url', 'value' => null],
-            ['name' => 'briefs', 'value' => null],
-            ['name' => 'facebook', 'value' => null],
-            ['name' => 'instagram', 'value' => null],
-            ['name' => 'twitter', 'value' => null],
-            ['name' => 'linkedin', 'value' => null],
-            ['name' => 'youtube', 'value' => null],
-            ['name' => 'spotify', 'value' => null],
-            ['name' => 'tiktok', 'value' => null],
-            ['name' => 'seo_title', 'value' => null],
-            ['name' => 'seo_description', 'value' => null],
-            ['name' => 'seo_image', 'value' => null],
-            ['name' => 'ga_id', 'value' => null],
-            ['name' => 'gtm_id', 'value' => null],
-            ['name' => 'fbpixel_id', 'value' => null],
-            ['name' => 'whatsapp', 'value' => null],
-            ['name' => 'whatsapp_bubble', 'value' => false],
-            ['name' => 'whatsapp_text', 'value' => null],
-            ['name' => 'announcements', 'value' => json_encode([])],
-        ] as $setting) {
-            if (DB::table('site_settings')->where('name', $setting['name'])->count()) continue;
-            DB::table('site_settings')->insert($setting);
-        }
-        $this->line('Added additional site settings.');
     }
 
     /**
@@ -893,56 +863,7 @@ class InstallCommand extends Command
             $this->line('site_settings table installed successfully.');
         }
 
-        foreach ([
-            ['name' => 'modules', 'value' => null],
-            ['name' => 'mailer', 'value' => 'smtp'],
-            ['name' => 'smtp_host', 'value' => 'smtp.mailtrap.io'],
-            ['name' => 'smtp_port', 'value' => '2525'],
-            ['name' => 'smtp_username', 'value' => '1f6300b6d6e996'],
-            ['name' => 'smtp_password', 'value' => '33647bb47622ee'],
-            ['name' => 'smtp_encryption', 'value' => 'tls'],
-            ['name' => 'mailgun_domain', 'value' => null],
-            ['name' => 'mailgun_secret', 'value' => null],
-            ['name' => 'notify_from', 'value' => 'no-reply@atom.test'],
-            ['name' => 'notify_to', 'value' => 'admin@atom.test'],
-            ['name' => 'filesystem', 'value' => 'local'],
-            ['name' => 'do_spaces_key', 'value' => null],
-            ['name' => 'do_spaces_secret', 'value' => null],
-            ['name' => 'do_spaces_region', 'value' => 'sgp1'],
-            ['name' => 'do_spaces_bucket', 'value' => null],
-            ['name' => 'do_spaces_endpoint', 'value' => 'https://sgp1.digitaloceanspaces.com'],
-            ['name' => 'do_spaces_folder', 'value' => null],
-            ['name' => 'google_client_id', 'value' => null],
-            ['name' => 'google_client_secret', 'value' => null],
-            ['name' => 'facebook_client_id', 'value' => null],
-            ['name' => 'facebook_client_secret', 'value' => null],
-            ['name' => 'linkedin_client_id', 'value' => null],
-            ['name' => 'linkedin_client_secret', 'value' => null],
-            ['name' => 'github_client_id', 'value' => null],
-            ['name' => 'github_client_secret', 'value' => null],
-            ['name' => 'twitter_client_id', 'value' => null],
-            ['name' => 'twitter_client_secret', 'value' => null],
-            ['name' => 'stripe_public_key', 'value' => null],
-            ['name' => 'stripe_secret_key', 'value' => null],
-            ['name' => 'stripe_webhook_signing_secret', 'value' => null],
-            ['name' => 'gkash_mid', 'value' => null],
-            ['name' => 'gkash_signature_key', 'value' => null],
-            ['name' => 'gkash_api_version', 'value' => '1.5.5'],
-            ['name' => 'gkash_sandbox_url', 'value' => 'https://api-staging.pay.asia/api/PaymentForm.aspx'],
-            ['name' => 'gkash_url', 'value' => 'https://api.gkash.my/api/PaymentForm.aspx'],
-            ['name' => 'ozopay_tid', 'value' => null],
-            ['name' => 'ozopay_secret', 'value' => null],
-            ['name' => 'ozopay_sandbox_url', 'value' => 'https://uatpayment.ozopay.com/PaymentEntry/PaymentOption'],
-            ['name' => 'ozopay_url', 'value' => 'https://checkout.ozopay.com/Paymententry/PaymentOption'],
-            ['name' => 'ipay_merchant_code', 'value' => null],
-            ['name' => 'ipay_merchant_key', 'value' => null],
-            ['name' => 'ipay_url', 'value' => 'https://payment.ipay88.com.my/epayment/entry.asp'],
-            ['name' => 'ipay_query_url', 'value' => 'https://payment.ipay88.com.my/epayment/enquiry.asp'],
-        ] as $setting) {
-            if (DB::table('site_settings')->where('name', $setting['name'])->count()) continue;
-            DB::table('site_settings')->insert($setting);
-        }
-
+        model('site_setting')->repair();
         $this->line('Added default site settings.');
     }
 

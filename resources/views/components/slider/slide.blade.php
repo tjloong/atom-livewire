@@ -28,6 +28,7 @@
         href="{{ $href }}" 
         target="{{ $attributes->get('target', '_blank') }}"
         class="swiper-slide block relative w-full h-full" 
+        {{ $attributes->except(['image', 'href', 'url']) }}
     >
         @if ($url)
             {!! $img !!}
@@ -40,7 +41,10 @@
         @endif
     </a>
 @else
-    <div class="swiper-slide relative w-full h-full">
+    <div
+        class="swiper-slide relative w-full h-full"
+        {{ $attributes->except(['image', 'href', 'url']) }}
+    >
         @if ($url)
             {!! $img !!}
         @endif

@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class SiteSetting extends Model
 {
@@ -114,12 +115,44 @@ class SiteSetting extends Model
         return cache()->remember('settings', now()->addDays(7), function() {
             return $this->get()
                 ->mapWithKeys(fn($val) => [
-                    $val->name => in_array($val->name, ['modules', 'announcements', 'popup'])
+                    $val->name => in_array(data_get($val, 'name'), ['modules', 'announcements', 'popup', 'analytics'])
                         ? json_decode($val->value, true)
                         : $val->value,
                 ])
                 ->toArray();
         });
+    }
+
+    /**
+     * Repair
+     */
+    public function repair()
+    {
+        $defaults = json_decode(file_get_contents(atom_path('resources/json/site-settings.json')), true);
+        $settings = settings();
+        $inserts = collect();
+
+        foreach ($defaults as $name => $value) {
+            if ($name === 'analytics') {
+                $existingData = [
+                    'ja_id' => null,
+                    'ga_id' => data_get($settings, 'ga_id'),
+                    'gtm_id' => data_get($settings, 'gtm_id'),
+                    'fbp_id' => data_get($settings, 'fbpixel_id'),
+                ];
+            }
+            else $existingData = data_get($settings, $name);
+
+            $value = $existingData ?? $value;
+
+            $inserts->push([
+                'name' => $name,
+                'value' => is_array($value) ? json_encode($value) : $value,
+            ]);
+        }
+
+        DB::table($this->getTable())->truncate();
+        DB::table($this->getTable())->insert($inserts->toArray());
     }
 
     /**

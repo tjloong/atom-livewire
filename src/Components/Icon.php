@@ -182,6 +182,7 @@ class Icon extends Component
         'accounts' => 'user-plus',
         'add' => 'plus',
         'address' => 'location-dot',
+        'analytics' => 'chart-simple',
         'article' => 'feather-pointed',
         'assign' => 'plus',
         'back' => 'arrow-left',

@@ -16,9 +16,7 @@ class Analytics extends Component
      */
     public function mount()
     {
-        model('site_setting')->group('analytics')->get()->each(function($setting) {
-            $this->settings[$setting->name] = $setting->value;
-        });
+        $this->settings = settings('analytics');
     }
 
     /**
@@ -26,7 +24,8 @@ class Analytics extends Component
      */
     public function submit()
     {
-        settings($this->settings);
+        settings(['analytics' => $this->settings]);
+        
         $this->popup('Website Analytics Updated.');
     }
 
