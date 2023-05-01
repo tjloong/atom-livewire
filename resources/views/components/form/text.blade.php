@@ -8,9 +8,10 @@
     <div 
         x-data="{ focus: false }"
         x-bind:class="focus && 'active'"
-        class="form-input w-full flex items-center gap-2 {{ 
-            component_error(optional($errors), $attributes) ? 'error' : ''
-        }}"
+        class="form-input w-full flex items-center gap-2 
+            {{ component_error(optional($errors), $attributes) ? 'error' : '' }}
+            {{ $attributes->get('readonly') ? 'readonly' : '' }}
+        "
     >
         @if (is_string($prefix))
             @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>
@@ -21,7 +22,7 @@
 
         <div class="grow">
             <input type="text" 
-                class="w-full"
+                class="w-full bg-transparent"
                 x-on:focus="focus = true"
                 x-on:blur="focus = false"
                 {{ $attributes

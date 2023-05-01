@@ -54,6 +54,9 @@ select.form-input,
 .form-input.transparent {
     @apply bg-transparent appearance-none p-0 border-0 focus:ring-0 hover:ring-0;
 }
+.form-input.readonly {
+    @apply bg-gray-100;
+}
 
 .form-input[disabled] {
     @apply bg-gray-100;

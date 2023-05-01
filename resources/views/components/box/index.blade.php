@@ -17,7 +17,7 @@
                 <div class="shrink-0 flex items-center gap-2">
                     @if($icon = $attributes->get('icon') ?? $attributes->get('header-icon'))
                         @if (str($icon)->is('*:*')) <x-icon :name="head(explode(':', $icon))" :class="last(explode(':', $icon))"/>
-                        @else <x-icon :name="$icon"/>
+                        @else <x-icon :name="$icon" class="text-gray-500"/>
                         @endif
                     @endif
 

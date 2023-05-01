@@ -50,7 +50,8 @@
         }}>
             @if ($header = $attributes->get('header'))
                 <div class="m-1 py-3 px-4 border-b flex flex-wrap items-center gap-3">
-                    <div class="grow text-lg font-bold">
+                    <div class="grow text-lg font-bold flex items-center gap-3">
+                        @if ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/> @endif
                         {{ __($header) }}
                     </div>
 
