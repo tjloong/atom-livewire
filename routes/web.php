@@ -93,6 +93,15 @@ if (!config('atom.static_site')) {
         }
 
         /**
+         * Invitation
+         */
+        if (enabled_module('invitations')) {
+            define_route()->prefix('invitation')->as('app.invitation.')->group(function() {
+                define_route('create', 'App\Invitation\Create')->name('create');
+            });
+        }
+
+        /**
          * Role
          */
         if (enabled_module('roles')) {

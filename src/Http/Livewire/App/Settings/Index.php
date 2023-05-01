@@ -98,6 +98,13 @@ class Index extends Component
                     'livewire' => 'app.user.listing'
                 ],
                 [
+                    'slug' => 'invitation',
+                    'label' => 'Invitations',
+                    'icon' => 'envelope-circle-check',
+                    'livewire' => 'app.invitation.listing',
+                    'disabled' => !enabled_module('invitations'),
+                ],
+                [
                     'slug' => 'role', 
                     'label' => 'Roles', 
                     'icon' => 'user-tag', 

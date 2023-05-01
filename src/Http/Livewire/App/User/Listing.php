@@ -32,6 +32,33 @@ class Listing extends Component
     }
 
     /**
+     * Get options property
+     */
+    public function getOptionsProperty(): array
+    {
+        return [
+            'status' => collect(['active', 'inactive', 'blocked', 'trashed'])->map(fn($val) => [
+                'value' => $val, 
+                'label' => ucfirst($val),
+            ])->toArray(),
+
+            'roles' => enabled_module('roles')
+                ? model('role')->readable()->get()->map(fn($role) => [
+                    'value' => $role->slug,
+                    'label' => $role->name,
+                ])->toArray()
+                : null,
+
+            'teams' => enabled_module('teams')
+                ? model('team')->readable()->get()->map(fn($team) => [
+                    'value' => (string)$team->id,
+                    'label' => $team->name,
+                ])->toArray()
+                : null,
+        ];
+    }
+
+    /**
      * Get table columns
      */
     public function getTableColumns($query): array

@@ -1,11 +1,11 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\User\Update;
+namespace Jiannius\Atom\Http\Livewire\App\User;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class Index extends Component
+class Update extends Component
 {
     use WithPopupNotify;
     

@@ -76,66 +76,21 @@ class Form extends Component
     }
 
     /**
-     * Get can property
-     */
-    public function getCanProperty(): array
-    {
-        return [
-            'name' => !$this->user->exists || tier('root'),
-            'email' => !$this->user->exists || tier('root'),
-            'role' => enabled_module('roles') && (!$this->user->exists || tier('root')),
-            'team' => enabled_module('teams') && (!$this->user->exists || tier('root')),
-            'root' => false,
-            'visibility' => !$this->user->exists && tier('signup') && !role('admin'),
-        ];
-    }
-
-    /**
-     * Update user is root
-     */
-    public function updatedUserIsRoot($val): void
-    {
-        if ($val) $this->user->fill(['visibility' => 'global']);
-    }
-
-    /**
-     * Updated user role id
-     */
-    public function updatedUserRoleId($id): void
-    {
-        if ($this->user->isRole('admin')) $this->user->fill(['visibility' => 'global']);
-    }
-
-    /**
      * Submit
      */
     public function submit(): mixed
     {
         $this->validateForm();
 
-        $this->persist();
-
-        return $this->user->wasRecentlyCreated
-            ? breadcrumbs()->back()
-            : $this->popup('User Updated.');
-    }
-
-    /**
-     * Persist
-     */
-    public function persist(): void
-    {
         $this->user->save();
 
         if (enabled_module('teams')) {
             $this->user->teams()->sync($this->teams);
         }
 
-        if (enabled_module('tenants') && tenant()) {
-            tenant()->users()->attach([
-                $this->user->id => ['invited_at' => now()],
-            ]);
-        }
+        return $this->user->wasRecentlyCreated
+            ? breadcrumbs()->back()
+            : $this->popup('User Updated.');
     }
 
     /**

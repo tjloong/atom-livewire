@@ -1,11 +1,11 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\User\Update;
+namespace Jiannius\Atom\Http\Livewire\App\User;
 
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class Delete extends Component
+class BtnDelete extends Component
 {
     use WithPopupNotify;
 
@@ -14,7 +14,7 @@ class Delete extends Component
     /**
      * Restore
      */
-    public function restore()
+    public function restore(): mixed
     {
         $this->user->restore();
         
@@ -24,7 +24,7 @@ class Delete extends Component
     /**
      * Delete
      */
-    public function delete()
+    public function delete(): mixed
     {
         if ($this->user->trashed()) $this->user->forceDelete();
         else $this->user->delete();
@@ -35,8 +35,8 @@ class Delete extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
-        return atom_view('app.user.update.delete');
+        return atom_view('app.user.btn-delete');
     }
 }

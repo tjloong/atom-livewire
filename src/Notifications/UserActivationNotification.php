@@ -49,7 +49,7 @@ class UserActivationNotification extends Notification implements ShouldQueue
         ]));
 
         return (new MailMessage)
-            ->subject('[' . config('app.name') . '] Activate Your Account')
+            ->subject('['.config('app.name').'] Activate Your Account')
             ->greeting('Hello!')
             ->line('Please click the button below to activate your account.')
             ->action('Activate Account', $url);

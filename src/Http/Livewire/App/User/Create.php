@@ -15,6 +15,7 @@ class Create extends Component
     {
         $this->user = model('user')->fill([
             'visibility' => 'restrict',
+            'is_root' => tier('root'),
         ]);
 
         breadcrumbs()->push('Create User');

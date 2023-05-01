@@ -11,34 +11,25 @@
                 <div class="flex items-center gap-2">
                     <x-form.select  :label="false"
                         wire:model="filters.status"
-                        :options="collect(['active', 'inactive', 'blocked', 'trashed'])->map(fn($val) => [
-                            'value' => $val, 
-                            'label' => ucfirst($val),
-                        ])"
+                        :options="data_get($this->options, 'status')"
                         placeholder="All Status"
                     />
 
-                    @module('roles')
+                    @if ($roles = data_get($this->options, 'roles'))
                         <x-form.select :label="false"
                             wire:model="filters.is_role"
-                            :options="model('role')->readable()->get()->map(fn($role) => [
-                                'value' => $role->slug,
-                                'label' => $role->name,
-                            ])"
+                            :options="$roles"
                             placeholder="All Roles"
                         />
-                    @endmodule
+                    @endif
     
-                    @module('teams')
+                    @if ($teams = data_get($this->options, 'teams'))
                         <x-form.select :label="false"
                             wire:model="filters.in_team"
-                            :options="model('team')->readable()->get()->map(fn($team) => [
-                                'value' => (string)$team->id,
-                                'label' => $team->name,
-                            ])"
+                            :options="$teams"
                             placeholder="All Teams"
                         />
-                    @endmodule
+                    @endif
                 </div>
 
                 <x-table.trashed :count="$this->query->onlyTrashed()->count()"/>

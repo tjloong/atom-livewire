@@ -34,6 +34,7 @@ class InstallCommand extends Command
 
     protected $modules = [
         'base',
+        'invitations',
         'roles',
         'permissions',
         'taxes',
@@ -174,6 +175,12 @@ class InstallCommand extends Command
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
                 $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             });
+            
+            if (Schema::hasTable('invitations')) {
+                Schema::table('invitations', function (Blueprint $table) {
+                    $table->foreignId('tenant_id')->nullable()->after('email')->constrained()->onDelete('cascade');
+                });
+            }
 
             if (Schema::hasTable('permissions')) {
                 Schema::table('permissions', function(Blueprint $table) {
@@ -841,6 +848,28 @@ class InstallCommand extends Command
                 $table->foreignId('role_id')->nullable()->after('visibility')->constrained('roles')->onDelete('set null');
             });
             $this->line('Added role_id column to users table.');
+        }
+    }
+
+    /**
+     * Install invitations
+     */
+    private function installInvitations()
+    {
+        $this->newLine();
+        $this->info('Installing invitations module...');
+
+        if (Schema::hasTable('invitations')) $this->warn('invitations table exists, skipped.');
+        else {
+            Schema::create('invitations', function (Blueprint $table) {
+                $table->id();
+                $table->string('email')->nullable();
+                $table->datetime('accepted_at')->nullable();
+                $table->datetime('declined_at')->nullable();
+                $table->datetime('expired_at')->nullable();
+                $table->timestamps();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
+            });
         }
     }
 

@@ -114,16 +114,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Attribute for tier
-     */
-    protected function tier(): Attribute
-    {
-        return new Attribute(
-            get: fn() => $this->is_root ? 'root' : 'signup',
-        );
-    }
-
-    /**
      * Scope for fussy search
      */
     public function scopeSearch($query, $search): void
@@ -168,16 +158,12 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope for tier
      */
-    public function scopeTier($query, $tier = null): void
+    public function scopeTier($query, $tier): void
     {
         $query->where(function($q) use ($tier) {
             foreach ((array)$tier as $val) {
-                if ($val === 'root') {
-                    $q->orWhere('is_root', true);
-                }
-                else if ($val === 'signup') {
-                    $q->orWhere('is_root', false);
-                }
+                if ($val === 'root') $q->orWhere('is_root', true);
+                else if ($val === 'signup') $q->orWhere('is_root', false);
             }
         });
     }
@@ -196,7 +182,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isTier($tier): bool
     {
-        return in_array($this->tier, (array)$tier);
+        if ($tier === 'root') return $this->is_root === true;
+        elseif ($tier === 'signup') return !$this->is_root;
+
+        return false;
     }
 
     /**

@@ -54,6 +54,14 @@ class Tenant extends Model
     }
 
     /**
+     * Get invitations for tenant
+     */
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(model('tenant_invitation'));
+    }
+
+    /**
      * Get permissions for tenant
      */
     public function permissions(): mixed

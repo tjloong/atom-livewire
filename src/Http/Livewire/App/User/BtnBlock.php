@@ -1,17 +1,17 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\User\Update;
+namespace Jiannius\Atom\Http\Livewire\App\User;
 
 use Livewire\Component;
 
-class Block extends Component
+class BtnBlock extends Component
 {
     public $user;
 
     /**
      * Block
      */
-    public function block()
+    public function block(): mixed
     {
         $this->user->block();
 
@@ -21,7 +21,7 @@ class Block extends Component
     /**
      * Unblock
      */
-    public function unblock()
+    public function unblock(): mixed
     {
         $this->user->unblock();
         
@@ -31,8 +31,8 @@ class Block extends Component
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
-        return atom_view('app.user.update.block');
+        return atom_view('app.user.btn-block');
     }
 }
