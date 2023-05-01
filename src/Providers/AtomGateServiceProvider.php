@@ -104,8 +104,6 @@ class AtomGateServiceProvider extends ServiceProvider
     {
         if (!enabled_module('permissions')) return true;
 
-        session()->forget('can.permissions');
-
         $isSessionUser = $user->id === user('id');
         $action = str($action)->replace('-', '_')->toString();
         $permitted = $isSessionUser ? session('can.permissions') : [];

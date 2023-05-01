@@ -7,41 +7,31 @@ use Livewire\Component;
 class Form extends Component
 {
     public $user;
-    public $role;
 
     /**
-     * Get title property
+     * Get query property
      */
-    public function getTitleProperty()
+    public function getQueryProperty(): mixed
     {
-        if ($this->user) return 'User Permissions';
-        if ($this->role) return 'Role Permissions';
+        return model('permission')
+            ->where('user_id', $this->user->id)
+            ->when(tenant(), fn($q) => $q->where('tenant_id', tenant('id')));
     }
 
     /**
      * Get permissions property
      */
-    public function getPermissionsProperty()
+    public function getPermissionsProperty(): array
     {
         $permissions = [];
 
-        foreach (model('permission')->getActions() as $module => $actions) {
-            $permissions[$module] = collect($actions)->map(function($action) use ($module) {
-                $ability = $module.'.'.$action;
-                $permission = ['name' => $action];
+        foreach (model('permission')->getPermissionList() as $module => $actions) {
+            $permissions[$module] = collect($actions)->mapWithKeys(function($action) use ($module) {
+                $permission = $module.'.'.$action;
+                $forbidden = (clone $this->query)->where('permission', $permission)->where('is_granted', false)->count() > 0;
+                $granted = (clone $this->query)->where('permission', $permission)->where('is_granted', true)->count() > 0;
 
-                if ($this->user) {
-                    $permission['is_granted'] = $this->user->can($ability);
-                    $permission['is_granted_by_role'] = enabled_module('roles')
-                        && $this->user->role
-                        && !$this->user->permissions()->where('permission', $ability)->count()
-                        && $this->user->role->can($ability);
-                }
-                else if ($this->role) {
-                    $permission['is_granted'] = $this->role->can($ability);
-                }
-
-                return $permission;
+                return [$action => $forbidden ? false : $granted];
             });
         }
 
@@ -49,60 +39,27 @@ class Form extends Component
     }
 
     /**
-     * Get is admin property
-     */
-    public function getIsAdminProperty()
-    {
-        return ($this->role ?? $this->user->role)->is_admin;
-    }
-
-    /**
      * Toggle
      */
-    public function toggle($module, $action)
+    public function toggle($permission, $granted): void
     {
-        $ability = $module.'.'.$action;
+        (clone $this->query)->where('permission', $permission)->delete();
 
-        if ($this->user) {
-            if (enabled_module('roles') && $this->user->role) {
-                if ($this->user->permissions()->where('permission', $ability)->count()) {
-                    $this->user->permissions()->where('permission', $ability)->delete();
-                }
-                else if ($rolePermission = $this->user->role->permissions()->where('permission', $ability)->first()) {
-                    $this->user->permissions()->create([
-                        'permission' => $ability,
-                        'is_granted' => !$rolePermission->is_granted,
-                    ]);
-                }
-                else {
-                    $this->user->permissions()->create([
-                        'permission' => $ability,
-                        'is_granted' => true,
-                    ]);
-                }
-            }
-            else {
-                if ($this->user->permissions()->granted($ability)->count()) {
-                    $this->user->permissions()->where('permission', $ability)->delete();
-                }
-                else {
-                    $permission = $this->user->permissions()->firstOrCreate(['permission' => $ability]);
-                    $permission->is_granted = true;
-                    $permission->save();
-                }
-            }
-        }
-        else if ($this->role) {
-            $permission = $this->role->permissions()->firstOrNew(['permission' => $ability]);
-            $permission->is_granted = !$permission->is_granted;
-            $permission->save();
-        }
+        model('permission')->create(array_merge(
+            [
+                'permission' => $permission,
+                'is_granted' => $granted,
+                'user_id' => $this->user->id,
+            ],
+
+            tenant() ? ['tenant_id' => tenant('id')] : [],
+        ));
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.permission.form');
     }
