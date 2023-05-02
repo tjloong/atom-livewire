@@ -25,7 +25,7 @@
                 })
             }
             else {
-                this.$nextTick(() => this.slider.slideTo(index + 1))
+                this.$nextTick(() => this.slider.slideTo(index))
             }
         },
         close () {
