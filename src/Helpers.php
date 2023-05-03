@@ -393,6 +393,19 @@ function excelsheets($sheets, $config = [], $iterator = null)
 }
 
 /**
+ * Set the SEO
+ */
+function seo($seo)
+{
+    if ($title = data_get($seo, 'title')) config(['atom.seo.title' => $title]);
+    if ($description = data_get($seo, 'description')) config(['atom.seo.description' => $description]);
+    if ($image = data_get($seo, 'image')) config(['atom.seo.image' => $image]);
+    if ($hreflang = data_get($seo, 'hreflang')) config(['atom.seo.hreflang' => $hreflang]);
+    if ($canonical = data_get($seo, 'canonical')) config(['atom.seo.canonical' => $canonical]);
+    if ($jsonld = data_get($seo, 'jsonld')) config(['atom.seo.jsonld' => $jsonld]);
+}
+
+/**
  * Make model instance
  * 
  * @param string $name

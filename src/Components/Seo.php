@@ -29,19 +29,15 @@ class Seo extends Component
         }
         else {
             if (!config('atom.static_site')) {
-                $settings = model('site_setting')->group('seo')->get();
-
-                if ($settings->count()) {
-                    $this->title = $settings->where('name', 'seo_title')->first()->value;
-                    $this->description = $settings->where('name', 'seo_description')->first()->value;
-                    $this->image = $settings->where('name', 'seo_image')->first()->value;
-                    $this->jsonld = [
-                        '@context' => 'http://schema.org',
-                        '@type' => 'Website',
-                        'url' => url()->current(),
-                        'name' => $this->title,
-                    ];
-                }
+                $this->title = settings('seo_title');
+                $this->description = settings('seo_description');
+                $this->image = settings('seo_image');
+                $this->jsonld = [
+                    '@context' => 'http://schema.org',
+                    '@type' => 'Website',
+                    'url' => url()->current(),
+                    'name' => $this->title,
+                ];
             }
     
             if (config('atom.seo.title')) $this->title = config('atom.seo.title');
