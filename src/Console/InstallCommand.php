@@ -167,13 +167,11 @@ class InstallCommand extends Command
 
             Schema::create('tenant_users', function (Blueprint $table) {
                 $table->id();
+                $table->string('visibility')->nullable();
                 $table->boolean('is_owner')->nullable();
+                $table->boolean('is_preferred')->nullable();
                 $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
                 $table->foreignId('user_id')->constrained()->onDelete('cascade');
-                $table->timestamp('blocked_at')->nullable();
-                $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-                $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             });
             
             if (Schema::hasTable('invitations')) {
@@ -864,6 +862,7 @@ class InstallCommand extends Command
             Schema::create('invitations', function (Blueprint $table) {
                 $table->id();
                 $table->string('email')->nullable();
+                $table->json('data')->nullable();
                 $table->datetime('accepted_at')->nullable();
                 $table->datetime('declined_at')->nullable();
                 $table->datetime('expired_at')->nullable();

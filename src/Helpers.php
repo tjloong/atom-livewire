@@ -675,10 +675,8 @@ function format_address($value)
 
 /**
  * Format date to string
- * 
- * @return string
  */
-function format_date($date, $format = 'date', $tz = null)
+function format_date($date, $format = 'date', $tz = null): mixed
 {
     if (!$date) return $date;
 

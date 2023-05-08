@@ -1,48 +1,57 @@
-<div class="max-w-screen-lg mx-auto">
-    <x-page-header :title="$user->name" back>
+<div class="max-w-screen-md mx-auto">
+    <x-page-header :title="$user->name" :status="$user->isTenantOwner() ? ['yellow' => 'owner'] : null" back="auto">
         <div class="flex items-center gap-2">
-            @livewire(lw('app.user.btn-block'), compact('user'), key('block'))
-            @livewire(lw('app.user.btn-delete'), compact('user'), key('delete'))
+            @if (tenant())
+                <x-button.confirm label="Remove User" color="red" inverted icon="close"
+                    title="Remove User"
+                    message="Are you sure to REMOVE this user?"
+                    callback="remove"
+                />
+            @else
+                @livewire(lw('app.user.btn-block'), compact('user'), key('block'))
+                @livewire(lw('app.user.btn-delete'), compact('user'), key('delete'))
+            @endif
         </div>
     </x-page-header>
 
-    <div class="flex flex-col gap-4 md:flex-row">
-        <div class="md:w-2/3 flex flex-col gap-4">
-            @livewire(lw('app.user.form'), compact('user'), key('form'))
+    <div class="flex flex-col gap-6">
+        @if ($user->status === 'inactive')
+            <x-alert type="warning">
+                {{ __('User account is pending for activation.') }}<br>
+                <x-link wire:click="resend" label="Resend account activation email" class="text-sm"/>
+            </x-alert>
+        @endif
 
-            @module('permissions')
-                @livewire(lw('app.permission.form'), compact('user'), key('permission'))
-            @endmodule
-        </div>
+        <x-box>
+            <div class="flex flex-col divide-y">
+                @foreach (array_merge(
+                    [
+                        'Name' => $user->name,
+                        'Email' => $user->email,
+                        'Join' => format_date($user->created_at, 'datetime') ?? '--'
+                    ],
 
-        <div class="md:w-1/3">
-            <x-box header="Additional Information">
-                <div class="flex flex-col divide-y">
-                    <x-field label="Status" :badge="$user->status"/>
-                    <x-field label="Created Date" :value="format_date($user->created_at)"/>
-        
-                    @if ($user->blocked_at)
-                        <x-field label="Blocked Date" :value="format_date($user->blocked_at)"/>
-                        <x-field label="Blocked By" :value="$user->blockedBy->name"/>
-                    @endif
-        
-                    @if ($user->trashed())
-                        <x-field label="Trashed Date" :value="format_date($user->deleted_at)"/>
-                        <x-field label="Trashed By" :value="$user->deletedBy->name"/>
-                    @endif
-        
-                    @if ($user->status === 'inactive')
-                        <div class="p-4">
-                            <x-alert type="warning">
-                                {{ __('User account is pending for activation.') }}<br>
-                                <a wire:click="resendActivationEmail" class="text-sm">
-                                    {{ __('Resend account activation email to user') }}
-                                </a>
-                            </x-alert>
-                        </div>
-                    @endif
-                </div>
-            </x-box>
-        </div>
+                    $user->blocked_at ? [
+                        'Blocked' => format_date($user->blocked_at, 'datetime') ?? '--',
+                    ] : [],
+
+                    $user->deleted_at ? [
+                        'Trashed' => format_date($user->deleted_at, 'datetime') ?? '--',
+                    ] : [],
+
+                    ['Last Active' => format_date($user->last_active_at, 'datetime') ?? '--'],
+                ) as $key => $val)
+                    <x-field :label="$key" 
+                        :value="is_string($val) ? $val : data_get($val, 'value')"
+                        :small="data_get($val, 'small')"
+                    />
+                @endforeach
+            </div>
+        </x-box>
+
+        @livewire(lw('app.user.role'), compact('user'), key('role'))
+        @livewire(lw('app.user.team'), compact('user'), key('team'))
+        @livewire(lw('app.user.permission'), compact('user'), key('permission'))
+        @livewire(lw('app.user.visibility'), compact('user'), key('visibility'))
     </div>
 </div>

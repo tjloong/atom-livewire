@@ -16,6 +16,7 @@ class Invitation extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'data' => 'object',
         'accepted_at' => 'datetime',
         'declined_at' => 'datetime',
         'expired_at' => 'datetime',
@@ -45,7 +46,7 @@ class Invitation extends Model
      */
     protected function status(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: function() {
                 if ($this->accepted_at) return 'accepted';
                 if ($this->declined_at) return 'declined';

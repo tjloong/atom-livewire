@@ -9,9 +9,9 @@ use Jiannius\Atom\Traits\Models\HasFilters;
 
 class Label extends Model
 {
-    use HasSlug;
-    use HasLocale;
     use HasFilters;
+    use HasLocale;
+    use HasSlug;
 
     protected $guarded = [];
 

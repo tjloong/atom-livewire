@@ -1,6 +1,10 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header title="Users">
-        <x-button label="New User" :href="route('app.user.create')"/>
+        @if (tenant() && enabled_module('invitations'))
+            <x-button label="Invite User" :href="route('app.invitation.create')"/>
+        @else
+            <x-button label="New User" :href="route('app.user.create')"/>
+        @endif
     </x-page-header>
 
     <x-table :data="$this->table">

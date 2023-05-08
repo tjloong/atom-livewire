@@ -43,6 +43,17 @@
             </div>
         @endif
 
+        @if ($status = $attributes->get('status'))
+            <div>
+                @if (is_string($status)) <x-badge :label="$status"/>
+                @else
+                    @foreach ($status as $color => $val)
+                        <x-badge :label="$val" :color="$color"/>
+                    @endforeach
+                @endif
+            </div>
+        @endif
+
         @if ($tinylink = $attributes->get('tinylink'))
             <div>
                 <a 

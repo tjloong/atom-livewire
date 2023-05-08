@@ -107,10 +107,25 @@ class User extends Authenticatable implements MustVerifyEmail
         if (!enabled_module('tenants')) return null;
 
         return $this->belongsToMany(model('tenant'), 'tenant_users')->withPivot([
+            'visibility',
             'is_owner',
-            'blocked_at',
-            'blocked_by',
+            'is_preferred',
         ]);
+    }
+
+    /**
+     * Attribute for visibility
+     */
+    public function visibility(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (!enabled_module('tenants')) return null;
+                if (!tenant()) return null;
+
+                return tenant()->users->firstWhere('id', $this->id)->pivot->visibility;
+            },
+        );
     }
 
     /**
@@ -163,7 +178,9 @@ class User extends Authenticatable implements MustVerifyEmail
         $query->where(function($q) use ($tier) {
             foreach ((array)$tier as $val) {
                 if ($val === 'root') $q->orWhere('is_root', true);
-                else if ($val === 'signup') $q->orWhere('is_root', false);
+                elseif ($val === 'tenant' && enabled_module('tenants')) $q->orWhere(fn($q) => $q->has('tenants')->whereRaw('(is_root = false or is_root is null)'));
+                elseif ($val === 'system') $q->orWhere(fn($q) => $q->whereNull('signup_at')->whereRaw('(is_root = false or is_root is null)'));
+                elseif ($val === 'signup') $q->orWhere(fn($q) => $q->whereNotNull('signup_at')->whereRaw('(is_root = false or is_root is null)'));
             }
         });
     }
@@ -173,8 +190,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function home(): string
     {
-        if ($this->isTier('signup')) return '/';
-        else return route('app.home');
+        return route('app.dashboard');
     }
 
     /**
@@ -183,7 +199,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isTier($tier): bool
     {
         if ($tier === 'root') return $this->is_root === true;
-        elseif ($tier === 'signup') return !$this->is_root;
+        elseif ($tier === 'tenant') return enabled_module('tenants') && $this->tenants->count() > 0;
+        elseif ($tier === 'system') return !$this->is_root && empty($this->signup_at);
+        elseif ($tier === 'signup') return !$this->is_root && !empty($this->signup_at);
 
         return false;
     }
@@ -212,10 +230,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isTenantOwner($tenant = null)
     {
         if (!enabled_module('tenants')) return false;
+        
+        if ($tenant = $tenant ?? tenant()) return !empty($tenant->owners->where('id', $this->id)->first());
 
-        $tenant = $tenant ?? tenant();
-
-        return !empty($tenant->owners->where('id', $this->id)->first());
+        return false;
     }
 
     /**
@@ -261,15 +279,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function canAccessPortal($portal): bool
     {
-        if ($portal === 'app') {
-            return current_route([
-                'app.settings', 
-                'app.ticketing.*', 
-                'app.plan.*',
-                'app.onboarding.*',
-            ]) || $this->isTier('root');
-        }
-
         return true;
     }
 }

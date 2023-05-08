@@ -13,16 +13,16 @@ class Index extends Component
      */
     public function mount()
     {
+        breadcrumbs()->home($this->title);
+        
         if ($this->tab) {
             $tab = tabs($this->tabs, $this->tab);
-            if (!$tab || data_get($tab, 'disabled')) abort(404);
+            if (!$tab || data_get($tab, 'enabled') === false) abort(404);
     
-            $this->tab = data_get($tab, 'slug');
-    
-            breadcrumbs()->home($this->title);
+            $this->tab = data_get($tab, 'slug');    
         }
-        else {
-            return redirect()->route('app.preferences', [data_get(tabs($this->filteredTabs)->first(), 'slug')]);
+        elseif ($first = data_get(tabs($this->filteredTabs)->first(), 'slug')) {
+            return redirect()->route('app.preferences', [$first]);
         }
     }
 
@@ -40,13 +40,13 @@ class Index extends Component
     public function getFilteredTabsProperty(): array
     {
         return collect($this->tabs)
-            ->filter(fn($tab) => data_get($tab, 'disabled') !== true)
+            ->filter(fn($tab) => data_get($tab, 'enabled') !== false)
             ->filter(fn($tab) => data_get($tab, 'hidden') !== true)
             ->values()
             ->map(fn($tab) => ($children = data_get($tab, 'tabs'))
                 ? array_merge($tab, [
                     'tabs' => collect($children)
-                        ->filter(fn($tab) => data_get($tab, 'disabled') !== true)
+                        ->filter(fn($tab) => data_get($tab, 'enabled') !== false)
                         ->filter(fn($tab) => data_get($tab, 'hidden') !== true)
                         ->values()
                         ->all(),

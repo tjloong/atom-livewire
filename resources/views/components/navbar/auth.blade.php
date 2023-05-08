@@ -59,19 +59,15 @@
                 </div>
             </x-slot:anchor>
     
-            <div class="grid divide-y">
-                @if ($slot->isNotEmpty()) {{ $slot }}
-                @else 
-                    <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
-                    @can('preference.manage') <x-navbar.dropdown.item :href="route('app.preferences')" label="Preferences"/> @endcan
-                @endif
-                    
+            <div class="flex flex-col divide-y">
+                {{ $slot }}
+                
                 @if ($canBackToApp)
                     <x-navbar.dropdown.item :href="auth()->user()->home()" label="Back to App"/>
                 @endif
-    
+                    
                 <x-navbar.dropdown.item :href="route('login', ['logout' => true])" label="Logout"/>
-
+                        
                 @isset($foot)
                     {{ $foot }}
                 @endisset

@@ -149,9 +149,14 @@ class Login extends Component
      */
     private function redirectTo($user): string
     {
-        return $user->status === 'new'
-            ? route('app.onboarding')
-            : $user->home();
+        if ($user->status === 'new') return route('app.onboarding');
+        
+        if (
+            enabled_module('invitations') 
+            && model('invitation')->where('email', $user->email)->status('pending')->count()
+        ) return route('app.invitation.pending');
+
+        return $user->home();
     }
 
     /**

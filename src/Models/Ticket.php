@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
@@ -11,8 +12,8 @@ use Jiannius\Atom\Notifications\TicketCreateNotification;
 
 class Ticket extends Model
 {
-    use HasTrace;
     use HasFilters;
+    use HasTrace;
     use HasUniqueNumber;
     
     protected $guarded = [];
@@ -20,21 +21,17 @@ class Ticket extends Model
     /**
      * Get comments for ticket
      */
-    public function comments()
+    public function comments(): HasMany
     {
         return $this->hasMany(get_class(model('ticket_comment')));
     }
 
     /**
      * Scope for search
-     * 
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('subject', 'like', "%$search%")
             ->orWhere('description', 'like', "%$search%")
         );
@@ -43,7 +40,7 @@ class Ticket extends Model
     /**
      * Notification
      */
-    public function notify()
+    public function notify(): void
     {
         if ($notifyTo = $this->notifyTo ?? settings('notify_to')) {
             Notification::route('mail', $notifyTo)->notify(new TicketCreateNotification($this));

@@ -36,8 +36,15 @@ class Listing extends Component
     {
         return [
             [
+                'name' => 'Date',
+                'date' => $query->created_at,
+            ],
+
+            [
                 'name' => 'Email',
                 'label' => $query->email,
+                'href' => route('app.invitation.update', [$query->id]),
+                'small' => __('Invited by :name', ['name' => $query->createdBy->name]),
             ],
 
             [
@@ -45,17 +52,6 @@ class Listing extends Component
                 'class' => 'text-right',
                 'status' => $query->status,
             ],
-
-            [
-                'name' => 'Invited Date',
-                'class' => 'text-right',
-                'date' => $query->created_at,
-            ],
-
-            [
-                'name' => 'Invited By',
-                'label' => optional($query->createdBy)->name ?? '--',
-            ]
         ];
     }
 

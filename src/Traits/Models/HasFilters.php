@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Traits\Models;
 
-use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Schema;
 
@@ -13,7 +12,7 @@ trait HasFilters
      */
     public function scopeReadable($query, $data = null): void
     {
-        //
+        if ($this->enabledHasTenantTrait) $query->forTenant();
     }
 
     /**
@@ -54,47 +53,9 @@ trait HasFilters
     }
 
     /**
-     * Scope for visibility
-     */
-    public function scopeVisible($query, $user = null)
-    {
-        $user = $user ?? user();
-        
-        if ($user->isTier('root') || $user->isRole('admin') || $user->visibility === 'global') {
-            if ($this->enabledHasTenantTrait) return $query->where('tenant_id', $user->tenant_id);
-            else return $query;
-        }
-
-        if ($user->visibility === 'restrict') {
-            return $query->where(fn($q) => $q
-                ->where('created_by', $user->id)
-                ->when(
-                    Schema::hasColumn($this->getTable(), 'owned_by'), 
-                    fn($q) => $q->orWhere('owned_by', $user->id)
-                )
-            );
-        }
-        else if ($user->visibility === 'team') {
-            if (!enabled_module('teams')) return $query;
-            
-            $teamId = $user->teams->pluck('id')->toArray();
-
-            return $query->where(fn($q) => $q
-                ->whereHas('createdBy', fn($q) => $q->inTeam($teamId))
-                ->when(
-                    Schema::hasColumn($this->getTable(), 'owned_by'), 
-                    fn($q) => $q->orWhereHas('ownedBy', fn($q) => $q->inTeam($teamId))
-                )
-            );
-        }
-    }
-
-    /**
      * Check model has a specific column
-     * 
-     * @return boolean
      */
-    public function hasColumn($column)
+    public function hasColumn($column): bool
     {
         $table = $this->getTable();
 
@@ -104,10 +65,8 @@ trait HasFilters
 
     /**
      * Check model column is a date type
-     * 
-     * @return boolean
      */
-    public function isDateColumn($column)
+    public function isDateColumn($column): bool
     {
         return $this->hasColumn($column)
             && Schema::getColumnType($this->getTable(), $column) === 'date';
@@ -115,10 +74,8 @@ trait HasFilters
 
     /**
      * Check model column is a datetime type
-     * 
-     * @return boolean
      */
-    public function isDatetimeColumn($column)
+    public function isDatetimeColumn($column): bool
     {
         return $this->hasColumn($column)
             && in_array(Schema::getColumnType($this->getTable(), $column), ['datetime', 'timestamp']);
@@ -126,10 +83,8 @@ trait HasFilters
 
     /**
      * Parse filters array
-     * 
-     * @return array
      */
-    public function parseFilters($filters)
+    public function parseFilters($filters): array
     {
         $parsed = [];
 

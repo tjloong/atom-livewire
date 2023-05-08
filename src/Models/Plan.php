@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Plan extends Model
 {
+    use HasFilters;
     use HasSlug;
     use HasTrace;
-    use HasFilters;
     
     protected $guarded = [];
 

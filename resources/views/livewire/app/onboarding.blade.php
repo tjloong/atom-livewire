@@ -2,10 +2,10 @@
     <div class="w-full flex flex-col gap-10">
         <nav class="flex flex-wrap items-center justify-between gap-2">
             <x-logo class="w-40"/>
-            @if (!$this->isOnboarded) <x-button inverted icon="arrow-left" label="I'll do this later" wire:click="later"/> @endif
+            @if (!$this->isOnboarded) <x-button inverted icon="arrow-left" label="I'll do this later" wire:click="close"/> @endif
         </nav>
-    
-        @if (user()->status !== 'new')
+
+        @if ($this->isOnboarded)
             <div class="max-w-screen-lg mx-auto flex flex-col gap-10">
                 <div class="flex flex-col gap-1">
                     <div class="text-3xl font-bold">
@@ -18,10 +18,7 @@
                 </div>
             
                 <div>
-                    <x-button size="md" icon="house"
-                        label="Back to Home"
-                        :href="$redirect ?? optional(user())->home() ?? '/'"
-                    />
+                    <x-button wire:click="close" label="Back to Home" size="md" icon="house"/>
                 </div>
             </div>
         @else
@@ -50,6 +47,8 @@
                                             'tab' => data_get($item, 'slug'),
                                             'redirect' => $redirect,
                                         ])"
+                                        :disabled="$tab !== data_get($item, 'slug') 
+                                            && !in_array(data_get($item, 'slug'), session('onboarding', []))"
                                     >
                                         <x-slot:icon>
                                             <div class="flex items-center justify-center">
@@ -69,7 +68,14 @@
             
                 <div class="{{ count($this->tabs) > 1 ? 'md:w-3/4' : 'w-full' }}">
                     @if ($com = data_get(collect($this->tabs)->firstWhere('slug', $tab), 'livewire'))
-                        @livewire(lw($com), ['onboarding' => true], key($tab))
+                        @if (is_string($com)) 
+                            @livewire(lw($com), ['onboarding' => true], key($tab))
+                        @else 
+                            @livewire(lw(data_get($com, 'name')), array_merge(
+                                ['onboarding' => true],
+                                data_get($com, 'data'),
+                            ),key($tab))
+                        @endif
                     @endif
                 </div>
             </div>

@@ -22,9 +22,33 @@ class Update extends Component
     }
 
     /**
+     * Remove
+     */
+    public function remove(): mixed
+    {
+        if (!enabled_module('tenants')) return null;
+        if (!tenant()) return null;
+
+        if ($this->user->id === user('id')) {
+            return $this->popup([
+                'title' => 'Unable To Remove User',
+                'message' => 'You cannot remove youself.',
+            ], 'alert', 'error');
+        }
+
+        tenant()->users()->detach($this->user->id);
+
+        if (enabled_module('invitations')) {
+            tenant()->invitations()->where('email', $this->user->email)->delete();
+        }
+
+        return breadcrumbs()->back();
+    }
+
+    /**
      * Resend activation email
      */
-    public function resendActivationEmail(): void
+    public function resend(): void
     {
         $this->user->sendActivation();
 

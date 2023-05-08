@@ -42,7 +42,7 @@ class Shareable extends Model
      */
     protected function url(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => route('shareable', [$this->uuid]),
         );
     }
@@ -52,7 +52,7 @@ class Shareable extends Model
      */
     protected function status(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => ($this->expired_at && ($this->expired_at->isPast() || $this->expired_at->isToday()))
                 ? 'expired'
                 : 'active',

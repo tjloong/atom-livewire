@@ -33,6 +33,10 @@ class PlanSubscription extends Model
         static::creating(function($subscription) {
             $subscription->setValidity();
         });
+
+        static::saved(function($subscription) {
+            session()->forget('can.plans');
+        });
     }
 
     /**

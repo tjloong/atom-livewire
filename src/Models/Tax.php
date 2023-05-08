@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,25 +20,25 @@ class Tax extends Model
     protected $appends = ['label'];
 
     /**
-     * Scope for search
+     * Attribute for label
      */
-    public function scopeSearch($query, $search)
+    protected function label(): Attribute
     {
-        return $query->where(fn($q) => $q
-            ->where('name', 'like', "%$search%")
-            ->orWhere('country', 'like', "%$search%")
-            ->orWhere('region', 'like', "%$search%")
+        return Attribute::make(
+            get: fn() => collect([$this->name, str($this->rate)->finish('%')->toString()])->join(' '),
         );
     }
 
     /**
-     * Get label attribute
+     * Scope for search
      */
-    public function getLabelAttribute()
+    public function scopeSearch($query, $search): void
     {
-        $rate = $this->rate.'%';
-
-        return collect([$this->name, $rate])->join(' ');
+        $query->where(fn($q) => $q
+            ->where('name', 'like', "%$search%")
+            ->orWhere('country', 'like', "%$search%")
+            ->orWhere('region', 'like', "%$search%")
+        );
     }
 
     /**

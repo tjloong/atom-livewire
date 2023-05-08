@@ -68,6 +68,7 @@ class AtomGateServiceProvider extends ServiceProvider
         $isSessionUser = $user->id === user('id');
         $subscribedPlans = $isSessionUser ? session('can.plans') : [];
 
+        // get all subscribed plans from user
         if (!$subscribedPlans) {
             $subscribedPlans = collect();
             $subscriptions = $user->subscriptions()->with('price')->status('active')->get();

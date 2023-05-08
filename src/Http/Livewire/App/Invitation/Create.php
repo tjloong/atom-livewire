@@ -100,18 +100,16 @@ class Create extends Component
             $this->popup([
                 'title' => 'Unable To Invite User',
                 'message' => 'User has been invited before.',
-            ], 'alert');
+            ], 'alert', 'error');
+
+            $this->reset('inputs');
         }
         else {
-            model('invitation')->create(['email' => $email]);
+            $invitation = model('invitation')->create(['email' => $email]);
 
-            $this->popup([
-                'title' => 'Successfully Invite User',
-                'message' => 'Invitation email is sent to '.$email,
-            ], 'alert');
+            return redirect()->route('app.invitation.update', [$invitation->id]);
         }
 
-        $this->reset('inputs');
     }
 
     /**

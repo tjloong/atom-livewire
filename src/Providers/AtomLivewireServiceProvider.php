@@ -50,12 +50,22 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.user.listing' => 'App\User\Listing',
             'atom.app.user.create' => 'App\User\Create',
             'atom.app.user.update' => 'App\User\Update',
-            'atom.app.user.form' => 'App\User\Form',
+            'atom.app.user.role' => 'App\User\Role',
+            'atom.app.user.team' => 'App\User\Team',
+            'atom.app.user.permission' => 'App\User\Permission',
+            'atom.app.user.visibility' => 'App\User\Visibility',
             'atom.app.user.btn-block' => 'App\User\BtnBlock',
             'atom.app.user.btn-delete' => 'App\User\BtnDelete',
 
+            // tenant
+            'atom.app.tenant.create' => 'App\Tenant\Create',
+            'atom.app.tenant.form' => 'App\Tenant\Form',
+            'atom.app.tenant.switcher' => 'App\Tenant\Switcher',
+
             // invitation
             'atom.app.invitation.create' => 'App\Invitation\Create',
+            'atom.app.invitation.update' => 'App\Invitation\Update',
+            'atom.app.invitation.pending' => 'App\Invitation\Pending',
             'atom.app.invitation.listing' => 'App\Invitation\Listing',
 
             // signup
@@ -68,9 +78,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.role.create' => 'App\Role\Create',
             'atom.app.role.update' => 'App\Role\Update',
             'atom.app.role.form' => 'App\Role\Form',
-
-            // permission
-            'atom.app.permission.form' => 'App\Permission\Form',
 
             // team
             'atom.app.team.listing' => 'App\Team\Listing',

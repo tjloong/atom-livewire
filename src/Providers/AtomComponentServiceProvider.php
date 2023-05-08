@@ -41,6 +41,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'checkbox',
             'shareable',
             'thumbnail',
+            'plan-alert',
             'breadcrumbs',
             'cdn-scripts',
             'empty-state',

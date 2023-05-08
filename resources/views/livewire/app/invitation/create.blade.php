@@ -33,7 +33,12 @@
                         </div>
 
                         <div class="shrink-0">
-                            <x-button wire:click="invite('{{ data_get($user, 'email') }}')" size="xs" label="Invite" color="green" icon="plus"/>
+                            <x-button.confirm label="Invite" color="green" icon="plus" size="xs"
+                                title="Invite User"
+                                message="Are you sure to invite {{ data_get($user, 'email') }}?"
+                                callback="invite"
+                                :params="data_get($user, 'email')"
+                            />
                         </div>
                     </div>
                 @endforeach

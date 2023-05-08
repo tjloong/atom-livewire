@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
-    use HasTrace;
     use HasFilters;
+    use HasTrace;
     
     protected $guarded = [];
 

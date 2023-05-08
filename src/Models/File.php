@@ -11,8 +11,8 @@ use Jiannius\Atom\Traits\Models\HasFilters;
 
 class File extends Model
 {
-    use HasTrace;
     use HasFilters;
+    use HasTrace;
     
     protected $guarded = [];
 
@@ -54,7 +54,7 @@ class File extends Model
      */
     protected function isImage(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => str()->startsWith($this->mime, 'image/'),
         );
     }
@@ -64,7 +64,7 @@ class File extends Model
      */
     protected function isVideo(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => str()->startsWith($this->mime, 'video/'),
         );
     }
@@ -74,7 +74,7 @@ class File extends Model
      */
     protected function isAudio(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => str()->startsWith($this->mime, 'audio/'),
         );
     }
@@ -84,7 +84,7 @@ class File extends Model
      */
     protected function size(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn($size) => format_filesize($size, 'KB'),
         );
     }
@@ -94,7 +94,7 @@ class File extends Model
      */
     protected function url(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn($url) => data_get($this->data, 'visibility') === 'private'
                 ? route('__file', [$this->id])
                 : $url,
@@ -106,7 +106,7 @@ class File extends Model
      */
     protected function type(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: function() {
                 if (!$this->mime) return;
                 if ($this->mime === 'youtube') return $this->mime;
@@ -130,7 +130,7 @@ class File extends Model
      */
     protected function icon(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: function() {
                 if ($this->is_image) return 'image';
                 elseif ($this->is_video) return 'play';

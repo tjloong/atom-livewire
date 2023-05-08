@@ -92,14 +92,14 @@
     >
         <x-navbar 
             :config="['sticky' => true]"
-            class="shrink-0 bg-white border-b px-4"
+            class="shrink-0 bg-white border-b py-1"
         >
             <x-slot:logo>
                 @isset($logo)
                     {{ $logo }}
                 @else
-                    <div class="flex items-center gap-2">
-                        <x-logo class="h-[40px] md:hidden" small/>
+                    <div class="flex items-center gap-2 md:hidden">
+                        <x-logo class="h-[40px]" small/>
 
                         <a 
                             class="flex-shrink-0 text-gray-800 flex items-center justify-center px-2" 

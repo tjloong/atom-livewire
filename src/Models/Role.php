@@ -7,19 +7,20 @@ use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
+    use HasFilters;
     use HasSlug;
     use HasTrace;
-    use HasFilters;
     
     protected $guarded = [];
 
     /**
      * Get users for role
      */
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany(model('user'));
     }
@@ -29,7 +30,7 @@ class Role extends Model
      */
     protected function isAdmin(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => in_array($this->slug, ['admin', 'administrator']),
         );
     }

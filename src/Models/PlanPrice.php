@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PlanPrice extends Model
 {
-    use HasTrace;
     use HasFilters;
+    use HasTrace;
     
     protected $guarded = [];
 

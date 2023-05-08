@@ -2,14 +2,16 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Promotion extends Model
 {
-    use HasTrace;
     use HasFilters;
+    use HasTrace;
     
     protected $guarded = [];
 
@@ -24,17 +26,45 @@ class Promotion extends Model
     /**
      * Get product for promotion
      */
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(get_class(model('product')));
     }
 
     /**
+     * Attribute for status
+     */
+    protected function status(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->end_at && $this->end_at->lte(today())) return 'ended';
+                if (!$this->is_active) return 'inactive';
+        
+                return 'active';
+            },
+        );
+    }
+
+    /**
+     * Attribute for rate display
+     */
+    protected function rateDisplay(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->type === 'fixed') return currency($this->rate, tenant('settings.default_currency') ?? settings('default_currency'));
+                if ($this->type === 'percentage') return $this->rate.'%';
+            },
+        );
+    }
+
+    /**
      * Scope for fussy search
      */
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search): void
     {
-        return $query->where(fn($q) => $q
+        $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('code', 'like', "%$search%")
             ->orWhere('description', 'like', "%$search%")
@@ -44,13 +74,13 @@ class Promotion extends Model
     /**
      * Scope for status
      */
-    public function scopeStatus($query, $statuses)
+    public function scopeStatus($query, $status): void
     {
-        return $query->where(function($q) use ($statuses) {
-            foreach ((array)$statuses as $status) {
-                if ($status === 'ended') $q->orWhereDate('end_at', '<=', today());
-                if ($status === 'inactive') $q->orWhere(fn($q) => $q->where('is_active', false)->orWhereNull('is_active'));
-                if ($status === 'active') {
+        $query->where(function($q) use ($status) {
+            foreach ((array)$status as $val) {
+                if ($val === 'ended') $q->orWhereDate('end_at', '<=', today());
+                if ($val === 'inactive') $q->orWhere(fn($q) => $q->where('is_active', false)->orWhereNull('is_active'));
+                if ($val === 'active') {
                     $q->orWhere(fn($q) => $q
                         ->where('is_active', true)
                         ->where(fn($q) => $q
@@ -61,25 +91,5 @@ class Promotion extends Model
                 }
             }
         });
-    }
-
-    /**
-     * Get status attribute
-     */
-    public function getStatusAttribute()
-    {
-        if ($this->end_at && $this->end_at->lte(today())) return 'ended';
-        if (!$this->is_active) return 'inactive';
-
-        return 'active';
-    }
-
-    /**
-     * Get rate display attribute
-     */
-    public function getRateDisplayAttribute()
-    {
-        if ($this->type === 'fixed') return currency($this->rate, tenant_settings('currency'));
-        if ($this->type === 'percentage') return $this->rate.'%';
     }
 }

@@ -68,10 +68,12 @@ class Listing extends Component
                 'name' => 'Name',
                 'sort' => 'name',
                 'label' => $query->name.($query->id === user()->id ? ' ('.__('You').')' : ''),
-                'href' => $query->id === user()->id 
-                    ? route('app.settings', ['login'])
-                    : route('app.user.update', [$query->id]),
-                'small' => $query->email,
+                'href' => route('app.user.update', [$query->id]),
+            ],
+
+            [
+                'name' => 'Email',
+                'label' => $query->email,
             ],
 
             enabled_module('roles') ? [
@@ -79,28 +81,9 @@ class Listing extends Component
                 'label' => $query->role->name ?? '--',
             ] : null,
 
-            [
-                'name' => 'Status',
-                'status' => array_filter([
-                    $query->is_root ? 'root' : null, 
-                    $query->status,
-                ]),
-                'class' => 'text-right',
-            ],
-
-            [
-                'name' => 'Created Date',
-                'sort' => 'created_at',
-                'date' => $query->created_at,
-                'class' => 'text-right',
-            ],
-
-            [
-                'name' => 'Last Active',
-                'sort' => 'last_active_at',
-                'datetime' => $query->last_active_at,
-                'class' => 'text-right',
-            ],
+            tenant() ? [
+                'status' => $query->isTenantOwner() ? ['yellow' => 'owner'] : null,
+            ] : null,
         ];
     }
 

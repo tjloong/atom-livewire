@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 use Jiannius\Atom\Traits\Models\HasFilters;
 
 class Tenant extends Model
@@ -25,7 +26,7 @@ class Tenant extends Model
     protected static function booted(): void
     {
         static::saved(function($tenant) {
-            session()->forget('tenant.current');
+            $tenant->clearSessions();
         });
     }
 
@@ -42,7 +43,11 @@ class Tenant extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(model('user'), 'tenant_users');
+        return $this->belongsToMany(model('user'), 'tenant_users')->withPivot([
+            'visibility',
+            'is_owner',
+            'is_preferred',
+        ]);
     }
 
     /**
@@ -56,8 +61,10 @@ class Tenant extends Model
     /**
      * Get invitations for tenant
      */
-    public function invitations(): HasMany
+    public function invitations(): mixed
     {
+        if (!enabled_module('invitations')) return null;
+
         return $this->hasMany(model('tenant_invitation'));
     }
 
@@ -76,7 +83,7 @@ class Tenant extends Model
      */
     protected function address(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => format_address($this),
         );
     }
@@ -86,7 +93,7 @@ class Tenant extends Model
      */
     protected function owners(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => $this->users()->wherePivot('is_owner', true)->get(),
         );
     }
@@ -103,15 +110,47 @@ class Tenant extends Model
     }
 
     /**
+     * Set user as owner for tenant
+     */
+    public function setOwner($user, $isOwner = true): void
+    {
+        $id = is_numeric($user) ? $user : $user->id;
+        $exists = $this->users()->where('users.id', $id)->count();
+
+        if ($exists) $this->users()->updateExistingPivot($id, ['is_owner' => $isOwner]);
+        else $this->users()->attach([$id => ['is_owner' => $isOwner]]);
+
+        $this->clearSessions();
+    }
+
+    /**
+     * Set tenant as preferred for user
+     */
+    public function setPreferred($user): void
+    {
+        $id = is_numeric($user) ? $user : $user->id;
+        $exists = $this->users()->where('users.id', $id)->count();
+
+        if (!$exists) $this->users()->attach($id);
+
+        DB::table('tenant_users')->where('user_id', $id)->update(['is_preferred' => false]);
+        DB::table('tenant_users')->where('user_id', $id)->where('tenant_id', $this->id)->update(['is_preferred' => true]);
+        
+        $this->clearSessions();
+    }
+
+    /**
      * Current tenant
      */
     public function current(): mixed
     {
-        return model('tenant')
-            ->whereHas('users', fn($q) => $q->where('users.id', user('id')))
-            ->when(user('pref.tenant'), fn($q, $id) => $q->where('id', $id))
-            ->oldest()
-            ->first();
+        $query = DB::table('tenant_users')->where('user_id', user('id'));
+        
+        $pivot = (clone $query)->where('is_preferred', true)->latest('id')->first()
+            ?? (clone $query)->where('is_owner', true)->latest('id')->first()
+            ?? (clone $query)->latest('id')->first();
+
+        return $pivot ? model('tenant')->find($pivot->tenant_id) : null;
     }
 
     /**
@@ -163,5 +202,23 @@ class Tenant extends Model
         else {
             return $tenant;
         }    
+    }
+
+    /**
+     * Clear tenant sessions
+     */
+    public function clearSessions(): void
+    {
+        session()->forget('tenant.current');
+        session()->forget('tenant.settings');
+        session()->forget('tenants');
+    }
+
+    /**
+     * Setup tenant
+     */
+    public function setup()
+    {
+        //
     }
 }

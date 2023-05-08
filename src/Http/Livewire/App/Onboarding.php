@@ -36,7 +36,7 @@ class Onboarding extends Component
      */
     public function getIsOnboardedProperty(): bool
     {
-        return user()->status !== 'new';
+        return count(session('onboarding', [])) === count($this->tabs);
     }
 
     /**
@@ -51,11 +51,7 @@ class Onboarding extends Component
                 ->toArray(),
         ]);
 
-        if (
-            $next = collect($this->tabs)->pluck('slug')->filter()
-                ->filter(fn($slug) => !in_array($slug, session('onboarding')))
-                ->first()
-        )  {
+        if ($next = $this->getNextTab()) {
             return redirect()->route('app.onboarding', [
                 'tab' => $next,
                 'redirect' => $this->redirect,
@@ -70,17 +66,26 @@ class Onboarding extends Component
      */
     public function completed(): void
     {
-        session()->forget('onboarding');
-        user()->fill(['onboarded_at' => now()])->save();
+        if (!user('onboarded_at')) user()->fill(['onboarded_at' => now()])->save();
     }
 
     /**
-     * Later
+     * Close
      */
-    public function later(): mixed
+    public function close(): mixed
     {
         session()->forget('onboarding');
         return redirect(user()->home());
+    }
+
+    /**
+     * Get next tab
+     */
+    public function getNextTab()
+    {
+        return collect($this->tabs)->pluck('slug')->filter()
+            ->filter(fn($slug) => !in_array($slug, session('onboarding', [])))
+            ->first();
     }
 
     /**

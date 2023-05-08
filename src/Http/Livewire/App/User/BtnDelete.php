@@ -26,6 +26,13 @@ class BtnDelete extends Component
      */
     public function delete(): mixed
     {
+        if ($this->user->id === user('id')) {
+            return $this->popup([
+                'title' => 'Unable To Delete User',
+                'message' => 'You cannot delete yourself.',
+            ], 'alert', 'error');
+        }
+
         if ($this->user->trashed()) $this->user->forceDelete();
         else $this->user->delete();
 

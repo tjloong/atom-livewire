@@ -13,16 +13,16 @@ class Index extends Component
      */
     public function mount()
     {
+        breadcrumbs()->home($this->title);
+
         if ($this->tab) {
             $tab = tabs($this->tabs, $this->tab);
-            if (!$tab || data_get($tab, 'disabled')) abort(404);
-    
+            if (!$tab || data_get($tab, 'enabled') === false) abort(404);
+
             $this->tab = data_get($tab, 'slug');
-    
-            breadcrumbs()->home($this->title);
         }
-        else {
-            return redirect()->route('app.settings', [data_get(tabs($this->filteredTabs)->first(), 'slug')]);
+        elseif ($first = data_get(tabs($this->filteredTabs)->first(), 'slug')) {
+            return redirect()->route('app.settings', [$first]);
         }
     }
 
@@ -40,13 +40,13 @@ class Index extends Component
     public function getFilteredTabsProperty(): array
     {
         return collect($this->tabs)
-            ->filter(fn($tab) => data_get($tab, 'disabled') !== true)
+            ->filter(fn($tab) => data_get($tab, 'enabled') !== false)
             ->filter(fn($tab) => data_get($tab, 'hidden') !== true)
             ->values()
             ->map(fn($tab) => ($children = data_get($tab, 'tabs'))
                 ? array_merge($tab, [
                     'tabs' => collect($children)
-                        ->filter(fn($tab) => data_get($tab, 'disabled') !== true)
+                        ->filter(fn($tab) => data_get($tab, 'enabled') !== false)
                         ->filter(fn($tab) => data_get($tab, 'hidden') !== true)
                         ->values()
                         ->all(),
@@ -88,7 +88,7 @@ class Index extends Component
                     'livewire' => 'app.billing.checkout',
                     'hidden' => true,
                 ],
-            ], 'disabled' => !enabled_module('plans')],
+            ], 'enabled' => enabled_module('plans')],
 
             ['group' => 'System', 'tabs' => [
                 [
@@ -102,28 +102,28 @@ class Index extends Component
                     'label' => 'Invitations',
                     'icon' => 'envelope-circle-check',
                     'livewire' => 'app.invitation.listing',
-                    'disabled' => !enabled_module('invitations'),
+                    'enabled' => enabled_module('invitations'),
                 ],
                 [
                     'slug' => 'role', 
                     'label' => 'Roles', 
                     'icon' => 'user-tag', 
                     'livewire' => 'app.role.listing',
-                    'disabled' => !enabled_module('roles'),
+                    'enabled' => enabled_module('roles'),
                 ],
                 [
                     'slug' => 'team', 
                     'label' => 'Teams', 
                     'icon' => 'people-group', 
                     'livewire' => 'app.team.listing',
-                    'disabled' => !enabled_module('teams'),
+                    'enabled' => enabled_module('teams'),
                 ],
                 [
                     'slug' => 'pages', 
                     'label' => 'Pages', 
                     'icon' => 'file', 
                     'livewire' => 'app.page.listing',
-                    'disabled' => !enabled_module('pages'),
+                    'enabled' => enabled_module('pages'),
                 ],
                 [
                     'slug' => 'file', 
@@ -180,13 +180,13 @@ class Index extends Component
                     'slug' => 'integration/payment',
                     'label' => 'Payment',
                     'icon' => 'money-bill',
-                    'disabled' => !count(config('atom.payment_gateway')),
+                    'enabled' => count(config('atom.payment_gateway')) > 0,
                 ],
                 [
                     'slug' => 'integration/social-login',
                     'label' => 'Social Login',
                     'icon' => 'login',
-                    'disabled' => !count(config('atom.auth.login')),
+                    'enabled' => count(config('atom.auth.login')) > 0,
                 ],
             ]]
         ];

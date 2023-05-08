@@ -4,9 +4,12 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Jiannius\Atom\Traits\Models\HasFilters;
 
 class Permission extends Model
 {
+    use HasFilters;
+    
     protected $guarded = [];
 
     public $timestamps = false;
@@ -14,21 +17,21 @@ class Permission extends Model
     public $permissions = [];
 
     /**
+     * Booted
+     */
+    protected static function booted(): void
+    {
+        static::saved(function($permission) {
+            session()->forget('can.permissions');
+        });
+    }
+
+    /**
      * Get user for permission
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(model('user'));
-    }
-
-    /**
-     * Get tenant for permission
-     */
-    public function tenant(): mixed
-    {
-        if (!enabled_module('tenants')) return null;
-
-        return $this->belongsTo(model('tenant'));
     }
 
     /**

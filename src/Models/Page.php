@@ -10,8 +10,8 @@ use Jiannius\Atom\Traits\Models\HasFilters;
 
 class Page extends Model
 {
-    use HasSlug;
     use HasFilters;
+    use HasSlug;
 
     protected $guarded = [];
 
