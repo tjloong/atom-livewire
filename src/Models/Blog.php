@@ -43,6 +43,36 @@ class Blog extends Model
     }
 
     /**
+     * Get status for blog
+     */
+    protected function status(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => !$this->published_at || $this->published_at->isFuture()
+                ? 'draft'
+                : 'published',
+        );
+    }
+
+    /**
+     * Get seo for blog
+     */
+    protected function seo(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                $seo = json_decode($value);
+
+                return [
+                    'title' => data_get($seo, 'title') ?? $this->title,
+                    'description' => data_get($seo, 'description') ?? str($this->excerpt ?? strip_tags($this->content))->limit(255)->toString(),
+                    'image' => data_get($seo, 'image') ?? optional($this->cover)->url,
+                ];
+            },
+        );
+    }
+
+    /**
      * Scope for fussy search
      */
     public function scopeSearch($query, $search): void
@@ -63,17 +93,5 @@ class Blog extends Model
         $query
             ->when($status === 'draft', fn($q) => $q->whereNull('published_at'))
             ->when($status === 'published', fn($q) => $q->whereNotNull('published_at'));
-    }
-
-    /**
-     * Get status for blog
-     * 
-     * @return string
-     */
-    public function getStatusAttribute()
-    {
-        if (!$this->published_at || $this->published_at->isFuture()) return 'draft';
-
-        return 'published';
     }
 }

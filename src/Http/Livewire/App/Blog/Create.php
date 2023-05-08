@@ -8,30 +8,38 @@ class Create extends Component
 {
     public $blog;
 
-    protected $listeners = ['saved'];
+    protected $listeners = ['submitted'];
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->blog = model('blog');
-        breadcrumbs()->push('Create Blog');
+
+        breadcrumbs()->push($this->title);
     }
 
     /**
-     * Save
+     * Get title property
      */
-    public function saved($id)
+    public function getTitleProperty(): string
     {
-        session()->flash('flash', 'Blog created::success');
+        return 'Create Blog';
+    }
+
+    /**
+     * Submitted
+     */
+    public function submitted($id): mixed
+    {
         return redirect()->route('app.blog.update', [$id]);
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.blog.create');
     }

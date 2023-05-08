@@ -1,22 +1,33 @@
-<x-box header="Sign-Up Information">
-    <div class="grid divide-y">
-        <x-box.row label="Name">{{ $user->name }}</x-box.row>
-        <x-box.row label="Login Email">{{ $user->email }}</x-box.row>
-        <x-box.row label="Sign-Up Timestamp">{{ format_date($user->signup_at, 'datetime') }}</x-box.row>
-        <x-box.row label="Last Login Timestamp">{{ format_date($user->login_at, 'datetime') }}</x-box.row>
-        <x-box.row label="Last Active Timestamp">{{ format_date($user->last_active_at, 'datetime') }}</x-box.row>
-        <x-box.row label="Status"><x-badge>{{ $user->status }}</x-badge></x-box.row>
+<div class="w-full flex flex-col gap-4">
+    <x-box header="Sign-Up Information">
+        <div class="flex flex-col divide-y">
+            @foreach (array_merge(
+                [
+                    'Name' => $user->name,
+                    'Login Email' => $user->email,
+                ],
 
-        @if ($user->status === 'blocked')
-            <x-box.row label="Blocked Timestamp">{{ format_date($user->blocked_at, 'datetime') }}</x-box.row>
-            <x-box.row label="Blocked By">{{ $user->blockedBy->name ?? 'Unknown' }}</x-box.row>
-        @endif
+                ($signup = data_get($user->data, 'signup')) ? [
+                    'Agreed to T&C' => data_get($signup, 'agree_tnc') ? 'Yes' : 'No',
+                    'Agreed to Marketing' => data_get($signup, 'agree_marketing') ? 'Yes' : 'No',
+                    'Registered IP Address' => data_get($signup, 'geo.ip', '--'),
+                    'Registered From Country' => data_get($signup, 'geo.country', '--'),
+                ] : [],
+            ) as $key => $val)
+                <x-field :label="$key" :value="$val"/>
+            @endforeach
 
-        @if ($signup = data_get($user->data, 'signup'))
-            <x-box.row label="Agreed to T&C">{{ data_get($signup, 'agree_tnc') ? 'Yes' : 'No' }}</x-box.row>
-            <x-box.row label="Agreed to Marketing">{{ data_get($signup, 'agree_marketing') ? 'Yes' : 'No' }}</x-box.row>
-            <x-box.row label="Registered IP Address">{{ data_get($signup, 'geo.ip', '--') }}</x-box.row>
-            <x-box.row label="Registered From Country">{{ data_get($signup, 'geo.country', '--') }}</x-box.row>
-        @endif
-    </div>
-</x-box>
+            <x-field label="Status" :badge="$user->status"/>
+        </div>
+    </x-box>
+
+    <x-box header="Timestamps">
+        <div class="flex flex-col divide-y">
+            <x-field label="Join" :value="format_date($user->signup_at, 'datetime') ?? '--'"/>
+            <x-field label="Login" :value="format_date($user->login_at, 'datetime') ?? '--'"/>
+            <x-field label="Active" :value="format_date($user->last_active_at, 'datetime') ?? '--'"/>
+            <x-field label="Blocked" :value="format_date($user->blocked_at, 'datetime') ?? '--'" :small="optional($user->blockedBy)->name"/>
+        </div>
+    </x-box>
+</div>
+

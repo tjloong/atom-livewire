@@ -1,12 +1,12 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Blog\Update;
+namespace Jiannius\Atom\Http\Livewire\App\Blog;
 
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
-class Content extends Component
+class Form extends Component
 {
     use WithForm;
     use WithFile;
@@ -54,8 +54,10 @@ class Content extends Component
     public function submit(): void
     {
         $this->validateForm();
+
         $this->blog->save();
-        $this->emitUp('saved', $this->blog->id);
+        
+        $this->emit('submitted', $this->blog->id);
     }
 
     /**
@@ -63,6 +65,6 @@ class Content extends Component
      */
     public function render(): mixed
     {
-        return atom_view('app.blog.update.content');
+        return atom_view('app.blog.form');
     }
 }

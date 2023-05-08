@@ -24,15 +24,9 @@ class Blog extends Component
      */
     public function mount(): void
     {
-        $this->preview = auth()->user() && request()->query('preview');
+        $this->preview = user() && request()->query('preview');
 
-        if ($this->blog) {
-            config([
-                'atom.seo.title' => $this->blog->seo->title ?? $this->blog->title,
-                'atom.seo.description' => $this->blog->seo->description ?? html_excerpt($this->blog->excerpt ?? $this->blog->content),
-                'atom.seo.image' => $this->blog->seo->image ?? $this->blog->cover->url ?? null,
-            ]);
-        }
+        if ($this->blog) seo($this->blog->seo);
 
         if (!$this->filters) {
             $this->fill([

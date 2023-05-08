@@ -18,7 +18,12 @@ class Update extends Component
             ? model('user')->findOrFail($userId)
             : user();
 
-        $this->tab = $this->tab ?? data_get($this->flatTabs->first(), 'slug');
+        if (!$this->tab) {
+            return redirect()->route('app.signup.update', [
+                $this->user->id,
+                'tab' => data_get(tabs($this->tabs), '0.slug'),
+            ]);
+        }
 
         breadcrumbs()->push($this->user->name);
     }
@@ -26,7 +31,7 @@ class Update extends Component
     /**
      * Get tabs property
      */
-    public function getTabsProperty()
+    public function getTabsProperty(): array
     {
         return [
             ['group' => 'Account', 'tabs' => [
@@ -36,47 +41,9 @@ class Update extends Component
     }
 
     /**
-     * Get flat tabs property
-     */
-    public function getFlatTabsProperty()
-    {
-        return collect($this->tabs)->pluck('tabs')->collapse()->values();
-    }
-
-    /**
-     * Block
-     */
-    public function block()
-    {
-        $this->user->block();
-
-        return breadcrumbs()->back();
-    }
-
-    /**
-     * Unblock
-     */
-    public function unblock()
-    {
-        $this->user->unblock();
-
-        return breadcrumbs()->back();
-    }
-
-    /**
-     * Delete
-     */
-    public function delete()
-    {
-        $this->user->delete();
-        
-        return breadcrumbs()->back();
-    }
-
-    /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.signup.update');
     }

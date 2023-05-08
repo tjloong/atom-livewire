@@ -101,12 +101,11 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.label.form-modal' => 'App\Label\FormModal',
 
             // blog
-            'atom.app.blog.create' => 'App\Blog\Create',
             'atom.app.blog.listing' => 'App\Blog\Listing',
-            'atom.app.blog.update' => 'App\Blog\Update\Index',
-            'atom.app.blog.update.content' => 'App\Blog\Update\Content',
-            'atom.app.blog.update.seo' => 'App\Blog\Update\Seo',
-            'atom.app.blog.update.settings' => 'App\Blog\Update\Settings',
+            'atom.app.blog.create' => 'App\Blog\Create',
+            'atom.app.blog.update' => 'App\Blog\Update',
+            'atom.app.blog.form' => 'App\Blog\Form',
+            'atom.app.blog.setting' => 'App\Blog\Setting',
 
             // enquiry
             'atom.app.enquiry.listing' => 'App\Enquiry\Listing',

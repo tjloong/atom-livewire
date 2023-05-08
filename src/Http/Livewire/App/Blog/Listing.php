@@ -10,41 +10,70 @@ class Listing extends Component
     use WithTable;
 
     public $sort = 'updated_at,desc';
+
     public $filters = [
         'search' => null,
         'status' => null,
     ];
 
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-            'status' => null,
-        ]], 
-    ];
-
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
-        breadcrumbs()->home('Blogs');
+        breadcrumbs()->home($this->title);
     }
 
     /**
-     * Get blogs property
+     * Get title property
      */
-    public function getBlogsProperty()
+    public function getTitleProperty(): string
     {
-        return model('blog')
-            ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->maxRows);
+        return 'Blogs';
+    }
+
+    /**
+     * Get query property
+     */
+    public function getQueryProperty(): mixed
+    {
+        return model('blog')->readable()->filter($this->filters);
+    }
+
+    /**
+     * Get table columns
+     */
+    public function getTableColumns($query): array
+    {
+        return [
+            [
+                'name' => 'Title',
+                'label' => $query->title,
+                'href' => route('app.blog.update', [$query->id]),
+            ],
+
+            [
+                'name' => 'Category',
+                'tags' => $query->labels->pluck('name.'.app()->currentLocale())->toArray(),
+            ],
+
+            [
+                'name' => 'Updated',
+                'class' => 'text-right',
+                'from_now' => $query->updated_at,
+            ],
+
+            [
+                'name' => 'Status',
+                'status' => $query->status,
+            ],
+        ];
     }
 
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
         return atom_view('app.blog.listing');
     }
