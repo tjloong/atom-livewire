@@ -32,7 +32,9 @@
         @if ($small) <br><span class="text-gray-500 font-medium {{ $size === 'sm' ? 'text-xs' : 'text-sm' }}">{{ __($small) }}</span> @endif
     @elseif ($icon)
         <x-icon :name="$icon" :size="$attributes->get('size', '14')"/>
-    @else 
+    @elseif ($slot->isNotEmpty())
         {{ $slot }}
+    @elseif ($href)
+        {{ $href }}
     @endif
 </a>

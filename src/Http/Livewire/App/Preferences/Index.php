@@ -16,7 +16,7 @@ class Index extends Component
         breadcrumbs()->home($this->title);
         
         if ($this->tab) {
-            $tab = tabs($this->tabs, $this->tab);
+            $tab = tabs($this->filteredTabs, $this->tab);
             if (!$tab || data_get($tab, 'enabled') === false) abort(404);
     
             $this->tab = data_get($tab, 'slug');    

@@ -247,7 +247,7 @@ function tabs($tabs, $slug = false)
 
     return $slug !== false
         ? $col->firstWhere('slug', $slug)
-        : $col->filter()->values();
+        : $col->filter(fn($col) => isset($col['slug']))->values();
 }
 
 /**

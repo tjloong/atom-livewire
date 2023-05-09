@@ -198,12 +198,14 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isTier($tier): bool
     {
-        if ($tier === 'root') return $this->is_root === true;
-        elseif ($tier === 'tenant') return enabled_module('tenants') && $this->tenants->count() > 0;
-        elseif ($tier === 'system') return !$this->is_root && empty($this->signup_at);
-        elseif ($tier === 'signup') return !$this->is_root && !empty($this->signup_at);
+        $valid = collect([
+            'root' => $this->is_root === true,
+            'tenant' => enabled_module('tenants') && $this->tenants->count() > 0,
+            'system' => !$this->is_root && empty($this->signup_at),
+            'signup' => !$this->is_root && !empty($this->signup_at),
+        ])->filter(fn($val, $key) => in_array($key, (array)$tier))->search(true);
 
-        return false;
+        return !empty($valid);
     }
 
     /**

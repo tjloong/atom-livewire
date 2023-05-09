@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;

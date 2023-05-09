@@ -38,7 +38,7 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
         $this->user = model('user')->fill(['is_root' => tier('root')]);
 
