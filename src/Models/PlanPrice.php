@@ -46,11 +46,11 @@ class PlanPrice extends Model
     }
 
     /**
-     * Get payments for price
+     * Get subscriptions for price
      */
-    public function payments()
+    public function subscriptions()
     {
-        return $this->hasMany(model('plan_payment'), 'price_id');
+        return $this->hasMany(model('plan_subscriptions'), 'price_id');
     }
 
     /**
@@ -58,7 +58,7 @@ class PlanPrice extends Model
      */
     protected function validName(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: function() {
                 if (!$this->valid) return null;
 

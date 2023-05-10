@@ -5,6 +5,7 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasRunningNumber;
 use Jiannius\Atom\Traits\Models\HasTrace;
@@ -20,18 +21,8 @@ class PlanPayment extends Model
     protected $casts = [
         'amount' => 'float',
         'data' => 'object',
-        'price_id' => 'integer',
         'user_id' => 'integer',
-        'subscription_id' => 'integer',
     ];
-
-    /**
-     * Get price for payment
-     */
-    public function price(): BelongsTo
-    {
-        return $this->belongsTo(model('plan_price'), 'price_id');
-    }
 
     /**
      * Get user for payment
@@ -42,11 +33,11 @@ class PlanPayment extends Model
     }
 
     /**
-     * Get subscription for payment
+     * Get subscriptions for payment
      */
-    public function subscription(): BelongsTo
+    public function subscriptions(): HasMany
     {
-        return $this->belongsTo(model('plan_subscription'), 'subscription_id');
+        return $this->hasMany(model('plan_subscription'), 'payment_id');
     }
 
     /**
@@ -54,7 +45,7 @@ class PlanPayment extends Model
      */
     protected function isAutoBilling(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => data_get($this->data, 'pay_response.data.object.billing_reason') === 'subscription_cycle',
         );
     }

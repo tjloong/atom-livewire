@@ -8,6 +8,8 @@ class Create extends Component
 {
     public $plan;
 
+    protected $listeners = ['submitted'];
+
     /**
      * Mount
      */
@@ -18,6 +20,14 @@ class Create extends Component
         ]);
 
         breadcrumbs()->push('Create Plan');
+    }
+
+    /**
+     * Submitted
+     */
+    public function submitted($id)
+    {
+        return redirect()->route('app.plan.update', [$id]);
     }
 
     /**

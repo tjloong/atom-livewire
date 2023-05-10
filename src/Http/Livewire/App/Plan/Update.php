@@ -11,6 +11,8 @@ class Update extends Component
     
     public $plan;
 
+    protected $listeners = ['submitted'];
+
     /**
      * Mount
      */
@@ -36,6 +38,14 @@ class Update extends Component
         $this->plan->delete();
 
         return breadcrumbs()->back();
+    }
+
+    /**
+     * Submitted
+     */
+    public function submitted()
+    {
+        return $this->popup('Plan Updated.');
     }
 
     /**

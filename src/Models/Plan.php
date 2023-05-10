@@ -7,6 +7,7 @@ use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Plan extends Model
@@ -33,11 +34,19 @@ class Plan extends Model
     }
 
     /**
+     * Get upgrades for plan
+     */
+    public function upgrades(): BelongsToMany
+    {
+        return $this->belongsToMany(model('plan'), 'plan_upgrades', 'plan_id', 'upgrade_id');
+    }
+
+    /**
      * Attribute for features
      */
     protected function features(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn($value) => collect(explode("\n", $value))->filter()->map(fn($val) => trim($val))->values()->all(),
             set: fn($value) => is_string($value) ? $value : collect($value)->join("\n"),
         );

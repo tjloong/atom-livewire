@@ -8,6 +8,7 @@
             <x-form.select.country wire:model="plan.country"/>
             <x-form.select.currency wire:model="plan.currency"/>
             <x-form.number wire:model.defer="plan.trial" label="Trial Period" postfix="days"/>
+            <x-form.select wire:model="inputs.upgrades" :options="data_get($this->options, 'upgrades')" multiple/>
         </x-form.group>
     
         @if ($plan->exists)

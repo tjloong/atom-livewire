@@ -3,13 +3,11 @@
 namespace Jiannius\Atom\Http\Livewire\App\Plan;
 
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Form extends Component
 {
     use WithForm;
-    use WithPopupNotify;
     
     public $plan;
     public $inputs;
@@ -36,17 +34,37 @@ class Form extends Component
             'plan.currency' => ['nullable'],
             'plan.trial' => ['nullable'],
             'plan.is_active' => ['nullable'],
-
-            'inputs.features' => ['nullable'],
         ];
     }
 
     /**
      * Mount
      */
-    public function mount()
+    public function mount(): void
     {
-        $this->fill(['inputs.features' => implode("\n", $this->plan->features)]);
+        $this->fill([
+            'inputs.features' => implode("\n", $this->plan->features),
+            'inputs.upgrades' => $this->plan->upgrades->pluck('id')->toArray(),
+        ]);
+    }
+
+    /**
+     * Get options property
+     */
+    public function getOptionsProperty(): array
+    {
+        return [
+            'upgrades' => model('plan')
+                ->status('active')
+                ->where('id', '<>', $this->plan->id)
+                ->get()
+                ->map(fn($plan) => [
+                    'value' => $plan->id,
+                    'label' => $plan->code,
+                    'small' => $plan->name,
+                ])
+                ->toArray(),
+        ];
     }
 
     /**
@@ -62,7 +80,7 @@ class Form extends Component
     /**
      * Submit
      */
-    public function submit(): mixed
+    public function submit(): void
     {
         $this->validateForm();
 
@@ -70,9 +88,9 @@ class Form extends Component
             'features' => data_get($this->inputs, 'features'),
         ])->save();
 
-        return $this->plan->wasRecentlyCreated
-            ? redirect()->route('app.plan.update', [$this->plan->id])
-            : $this->popup('Plan Updated.');
+        $this->plan->upgrades()->sync(data_get($this->inputs, 'upgrades'));
+
+        $this->emit('submitted', $this->plan->id);
     }
 
     /**

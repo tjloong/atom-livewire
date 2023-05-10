@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PlanSubscription extends Model
 {
@@ -15,12 +14,14 @@ class PlanSubscription extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'start_at' => 'datetime',
-        'end_at' => 'datetime',
         'data' => 'object',
         'is_trial' => 'boolean',
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+        'terminated_at' => 'datetime',
         'user_id' => 'integer',
         'price_id' => 'integer',
+        'payment_id' => 'integer',
     ];
 
     protected $appends = ['name', 'description'];
@@ -58,9 +59,9 @@ class PlanSubscription extends Model
     /**
      * Get payment for subscription
      */
-    public function payment(): HasOne
+    public function payment(): BelongsTo
     {
-        return $this->hasOne(model('plan_payment'), 'subscription_id');
+        return $this->belongsTo(model('plan_payment'), 'payment_id');
     }
 
     /**
@@ -68,7 +69,7 @@ class PlanSubscription extends Model
      */
     protected function name(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => collect([
                 $this->price->plan->name,
                 $this->is_trial ? __('Trial') : null,
@@ -81,7 +82,7 @@ class PlanSubscription extends Model
      */
     protected function description(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => $this->price->description,
         );
     }
@@ -91,9 +92,10 @@ class PlanSubscription extends Model
      */
     protected function status(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: function() {
                 if ($this->start_at->greaterThan(now())) return 'future';
+                if ($this->terminated_at && $this->terminated_at->lessThan(now())) return 'terminated';
                 if ($this->end_at && $this->end_at->lessThan(now())) return 'ended';
         
                 return 'active';
@@ -106,7 +108,7 @@ class PlanSubscription extends Model
      */
     protected function isAutoRenew(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => !empty(data_get($this->data, 'stripe_subscription_id')),
         );
     }
@@ -119,6 +121,7 @@ class PlanSubscription extends Model
         $query->where(fn($q) => $q
             ->whereHas('price', fn($q) => $q->search($search))
             ->orWhereHas('user', fn($q) => $q->search($search))
+            ->orWhereHas('payment', fn($q) => $q->where('number', $search))
         );
     }
 
@@ -130,6 +133,7 @@ class PlanSubscription extends Model
         $query->where(function($q) use ($status) {
             foreach ((array)$status as $val) {
                 if ($val === 'future') $q->orWhere('start_at', '>', now());
+                if ($val === 'terminated') $q->orWhere('terminated_at', '<', now());
                 if ($val === 'ended') $q->orWhere('end_at', '<', now());
                 if ($val === 'active') {
                     $q->orWhere(fn($q) => $q
