@@ -2,6 +2,7 @@
     'header' => $attributes->get('header', 'Files and Media'),
     'multiple' => $attributes->get('multiple', false),
     'filters' => $attributes->get('filters', []),
+    'upload' => $attributes->get('upload', false),
 ])
 
 <x-modal :header="$header" class="max-w-screen-lg">
@@ -17,6 +18,7 @@
                 return this.files.filter(file => (file.is_checked)).map(file => (file.id))
             },
             open () {
+                this.loading = false
                 this.page = 1
                 this.files = []
                 this.getFiles()
@@ -55,8 +57,13 @@
             }
         }"
         x-on:open="open"
-        class="flex flex-col divide-y"
+        class="relative flex flex-col divide-y"
     >
+        <div x-show="loading" class="absolute inset-0 z-10 bg-white/80"></div>
+        <div x-show="loading" class="absolute inset-0 z-10 flex items-center justify-center">
+            <x-spinner size="50" class="text-theme"/>
+        </div>
+
         <div x-show="files.length" x-ref="files" class="p-5 max-h-[500px] overflow-auto">
             <div class="grid grid-cols-3 gap-4 md:grid-cols-6">
                 <template x-for="file in files">
@@ -90,12 +97,8 @@
             class="px-4 py-2 text-sm font-medium text-gray-500"
         ></div>
     
-        <div x-show="loading" class="flex items-center justify-center gap-2 py-4">
-            <x-spinner size="20" class="text-theme"/> Loading...
-        </div>
-                
         <div 
-            x-show="!loading && (selected.length || page !== null)" 
+            x-show="(selected.length || page !== null)" 
             class="flex items-center justify-between gap-3 p-4 bg-gray-100 rounded-b-lg border-t"
         >
             <div>
@@ -106,7 +109,39 @@
                 />
             </div>
 
-            <div>
+            <div class="flex items-center gap-3">
+                @if ($upload)
+                    <div x-data="{
+                        upload (files) {                            
+                            this.$wire.set('upload.location', @js(data_get($upload, 'location', 'uploads')))
+                            this.$wire.set('upload.visibility', @js(data_get($upload, 'visibility', 'public')))
+                            
+                            let progress = 0
+                            loading = true
+                            Array.from(files).forEach(file => {
+                                this.$wire.upload('upload.file', file,
+                                    () => progress >= 100 && open(),
+                                    () => {}, // error
+                                    (event) => progress = event.detail.progress
+                                )
+                            })
+                        },
+                    }">
+                        <input 
+                            x-ref="file" 
+                            x-on:change="upload($event.target.files)"
+                            type="file" 
+                            class="hidden" 
+                            multiple
+                            accept="{{ [
+                                'image' => 'image/*',
+                            ][data_get($filters, 'type')] ?? '*' }}"
+                        >
+
+                        <x-button x-on:click="$refs.file.click()" label="Upload" color="gray"/>
+                    </div>
+                @endif
+
                 <x-button color="gray"
                     label="Load More"
                     x-show="page !== null"
@@ -115,7 +150,7 @@
             </div>
         </div>
     
-        <div x-show="!loading && !files.length">
+        <div x-show="!files.length">
             <x-empty-state/>
         </div>
     </div>

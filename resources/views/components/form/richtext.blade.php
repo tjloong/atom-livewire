@@ -73,6 +73,6 @@
         class="{{ $attributes->get('class') }}"
     >
         <div x-ref="ckeditor" x-show="!loading"></div>
-        <x-form.file.library :filters="['type' => 'image']"/>
+        <x-form.file.library :filters="['type' => 'image']" upload/>
     </div>
 </x-form.field>
