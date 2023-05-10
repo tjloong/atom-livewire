@@ -40,7 +40,7 @@
         <x-analytics.fbpixel/>
     @endif
 
-    <x-cdn-scripts :scripts="array_filter($cdn ?? [])"/>
+    <x-cdn-scripts :libs="array_filter($cdn ?? [])"/>
 
     @vite(array_merge(
         ['resources/css/app.css'],

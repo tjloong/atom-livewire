@@ -1,9 +1,67 @@
-@foreach ($scripts as $script)
-    @if (str()->endsWith($script, '.css'))
-        <link rel="stylesheet" href="{{ $script }}">
-    @elseif (str()->startsWith($script, 'defer:'))
-        <script defer src="{{ str()->replaceFirst('defer:', '', $script) }}"></script>
-    @else
-        <script src="{{ $script }}"></script>
+@props([
+    'cdns' => [
+        'floating-ui' => [
+            'https://cdn.jsdelivr.net/npm/@floating-ui/core@1.0.0/dist/floating-ui.core.umd.min.js',
+            'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.0.0/dist/floating-ui.dom.umd.min.js',
+        ],
+        'flatpickr' => [
+            'https://cdn.jsdelivr.net/npm/flatpickr',
+            'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
+        ],
+        'dayjs' => [
+            'https://cdn.jsdelivr.net/npm/dayjs@1.11.4/dayjs.min.js',
+            'https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/utc.js',
+            'https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/relativeTime.js',
+        ],
+        'social-share' => [
+            'https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js',
+        ],
+        'sortable' => [
+            'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js',
+        ],
+        'swiper' => [
+            'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js',
+            'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css',
+        ],
+        'chartjs' => [
+            'https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js',
+        ],
+        'colorpicker' => [
+            'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css',
+            'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js',
+        ],
+        'clipboard' => [
+            'https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js',
+        ],
+        'shuffle' => [
+            'https://cdn.jsdelivr.net/npm/shufflejs@6.1.0/dist/shuffle.min.js',
+        ],
+        'flipdown' => [
+            'https://cdn.jsdelivr.net/npm/flipdown@0.3.2/src/flipdown.min.js',
+            'https://cdn.jsdelivr.net/npm/flipdown@0.3.2/dist/flipdown.min.css',
+        ],
+        'ckeditor' => [
+            '/ckeditor/ckeditor.js',
+        ],
+    ],
+    'libs' => $attributes->get('libs', []),
+])
+
+@foreach (array_merge([
+    'alpinejs', 
+    'floating-ui', 
+    'flatpickr', 
+    'dayjs',
+], $libs) as $name)
+    @if ($cdn = collect($cdns)->get($name))
+        @foreach ($cdn as $script)
+            @if (str()->endsWith($script, '.css'))
+                <link rel="stylesheet" href="{{ $script }}">
+            @elseif (str()->startsWith($script, 'defer:'))
+                <script defer src="{{ str()->replaceFirst('defer:', '', $script) }}"></script>
+            @else
+                <script src="{{ $script }}"></script>
+            @endif
+        @endforeach
     @endif
 @endforeach

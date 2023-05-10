@@ -1,0 +1,20 @@
+:root {
+    --ck-border-radius: 6px;
+}
+
+.ck.ck-content.ck-editor__editable {
+    min-height: 250px;
+    max-height: 600px;
+    overflow: auto;
+}
+
+/* .ck.ck-toolbar.ck-toolbar_grouping > .ck-toolbar__items {
+    flex-wrap: wrap;
+} */
+
+.ck-content {
+    @apply prose max-w-none;
+}
+.ck-widget.html-object-embed {
+    @apply w-full;
+}
