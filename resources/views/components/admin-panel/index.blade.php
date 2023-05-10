@@ -90,43 +90,42 @@
         }"
         class="w-full h-full flex flex-col"
     >
-        <x-navbar 
-            :config="['sticky' => true]"
-            class="shrink-0 bg-white border-b py-1"
-        >
-            <x-slot:logo>
-                @isset($logo)
-                    {{ $logo }}
-                @else
-                    <div class="flex items-center gap-2 md:hidden">
-                        <x-logo class="h-[40px]" small/>
-
-                        <a 
-                            class="flex-shrink-0 text-gray-800 flex items-center justify-center px-2" 
-                            x-on:click="toggled = !toggled; animate = true"
-                        >
-                            <x-icon x-show="toggled" name="square-caret-left" size="18"/>
-                            <x-icon x-show="!toggled" name="square-caret-right" size="18"/>
-                        </a>
-                    </div>
+        <div class="sticky top-0">
+            <x-navbar class="shrink-0 bg-white border-b py-1">
+                <x-slot:logo>
+                    @isset($logo)
+                        {{ $logo }}
+                    @else
+                        <div class="flex items-center gap-2 md:hidden">
+                            <x-logo class="h-[40px]" small/>
+    
+                            <a 
+                                class="flex-shrink-0 text-gray-800 flex items-center justify-center px-2" 
+                                x-on:click="toggled = !toggled; animate = true"
+                            >
+                                <x-icon x-show="toggled" name="square-caret-left" size="18"/>
+                                <x-icon x-show="!toggled" name="square-caret-right" size="18"/>
+                            </a>
+                        </div>
+                    @endisset
+                </x-slot:logo>
+    
+                @isset($links)
+                    <x-slot:body>
+                        {{ $links }}
+                    </x-slot:body>
                 @endisset
-            </x-slot:logo>
+    
+                <x-slot:auth>
+                    @isset($auth) {{ $auth }}
+                    @else <x-navbar.auth/>
+                    @endif
+                </x-slot:auth>
+            </x-navbar>
 
-            @isset($links)
-                <x-slot:body>
-                    {{ $links }}
-                </x-slot:body>
-            @endisset
-
-            <x-slot:auth>
-                @isset($auth) {{ $auth }}
-                @else <x-navbar.auth/>
-                @endif
-            </x-slot:auth>
-        </x-navbar>
-
-        <div class="shrink-0 bg-white px-4 border-b print:hidden">
-            <x-breadcrumbs class="max-w-screen-xl mx-auto"/>
+            <div class="bg-white px-4 border-b print:hidden">
+                <x-breadcrumbs class="max-w-screen-xl mx-auto"/>
+            </div>
         </div>
     
         @if ($unverified)

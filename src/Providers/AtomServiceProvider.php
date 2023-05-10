@@ -47,6 +47,7 @@ class AtomServiceProvider extends ServiceProvider
                 \Jiannius\Atom\Console\InstallCommand::class,
                 \Jiannius\Atom\Console\PublishCommand::class,
                 \Jiannius\Atom\Console\RefreshCommand::class,
+                \Jiannius\Atom\Console\RepairCommand::class,
             ]);
 
             // publishing
