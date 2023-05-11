@@ -58,17 +58,20 @@
     x-transition.opacity
     x-on:{{ $uid }}-open.window="open($event.detail)"
     x-on:click="close()"
+    x-on:keyup.escape.window="show && close()"
     class="fixed inset-0 bg-black/80 z-40 py-20 px-6"
 >
     <a class="absolute top-4 right-8 w-10 h-10 bg-white shadow rounded-full flex">
         <x-icon name="xmark" class="m-auto" size="16px"/>
     </a>
 
-    <div x-ref="slider" x-on:click.stop class="swiper w-full h-full">
-        <div class="swiper-wrapper">{{ $slot }}</div>
-        <div class="swiper-pagination hidden"></div>
-        <div class="swiper-scrollbar hidden"></div>
-        <x-slider.nav prev/>
-        <x-slider.nav next/>
+    <div class="max-w-screen-lg mx-auto h-full">
+        <div x-ref="slider" x-on:click.stop class="swiper w-full h-full">
+            <div class="swiper-wrapper">{{ $slot }}</div>
+            <div class="swiper-pagination hidden"></div>
+            <div class="swiper-scrollbar hidden"></div>
+            <x-slider.nav prev/>
+            <x-slider.nav next/>
+        </div>
     </div>
 </div>

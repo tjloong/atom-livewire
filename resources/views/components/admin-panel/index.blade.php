@@ -90,7 +90,7 @@
         }"
         class="w-full h-full flex flex-col"
     >
-        <div class="sticky top-0">
+        <div class="sticky top-0 z-10">
             <x-navbar class="shrink-0 bg-white border-b py-1">
                 <x-slot:logo>
                     @isset($logo)

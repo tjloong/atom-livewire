@@ -25,6 +25,7 @@
             close (e, force = false) {
                 if (force || !e.target.closest('#form-modal-container')) {
                     this.show = false
+                    this.$dispatch('close')
                 }
             },
         }"
