@@ -94,6 +94,7 @@ class PlanSubscription extends Model
     {
         return Attribute::make(
             get: function() {
+                if (!$this->provisioned_at) return 'draft';
                 if ($this->start_at->greaterThan(now())) return 'future';
                 if ($this->terminated_at && $this->terminated_at->lessThan(now())) return 'terminated';
                 if ($this->end_at && $this->end_at->lessThan(now())) return 'ended';
@@ -132,19 +133,26 @@ class PlanSubscription extends Model
     {
         $query->where(function($q) use ($status) {
             foreach ((array)$status as $val) {
-                if ($val === 'future') $q->orWhere('start_at', '>', now());
-                if ($val === 'terminated') $q->orWhere('terminated_at', '<', now());
-                if ($val === 'ended') $q->orWhere('end_at', '<', now());
-                if ($val === 'active') {
+                if ($val === 'draft') {
+                    $q->orWhereNull('provisioned_at');
+                }
+                else {
                     $q->orWhere(fn($q) => $q
-                        ->where(fn($q) => $q
-                            ->whereNull('start_at')
-                            ->orWhere('start_at', '<=', now())
-                        )
-                        ->where(fn($q) => $q
-                            ->whereNull('end_at')
-                            ->orWhere('end_at', '>=', now())
-                        )
+                        ->whereNotNull('provisioned_at')
+                        ->where(function ($q) use ($val) {
+                            if ($val === 'future') $q->where('start_at', '>', now());
+                            if ($val === 'terminated') $q->where('terminated_at', '<', now());
+                            if ($val === 'ended') $q->where('end_at', '<', now());
+                            if ($val === 'active') {
+                                $q->where(fn($q) => $q
+                                    ->whereNull('start_at')
+                                    ->orWhere('start_at', '<=', now())
+                                )->where(fn($q) => $q
+                                    ->whereNull('end_at')
+                                    ->orWhere('end_at', '>=', now())
+                                );
+                            }
+                        })
                     );
                 }
             }

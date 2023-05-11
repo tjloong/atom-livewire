@@ -16,7 +16,7 @@ class Receipt extends Component
     public function getQueryProperty(): Builder
     {
         return model('plan_payment')
-            ->whereHas('subscription', fn($q) => $q->where('user_id', user('id')))
+            ->whereHas('subscriptions', fn($q) => $q->where('user_id', user('id')))
             ->latest();
     }
 

@@ -12,19 +12,19 @@
                     <div class="py-2 px-4 flex gap-2">
                         <div class="grow">
                             <div class="font-medium">
-                                @if (data_get($subscription, 'is_trial')) {{ data_get($subscription, 'name') }}
-                                @else {{ data_get($subscription, 'description') }}
+                                @if ($subscription->is_trial) {{ $subscription->name }}
+                                @else {{ $subscription->price->description }}
                                 @endif
                             </div>
     
-                            @if ($start = data_get($subscription, 'start_at')) 
+                            @if ($start = $subscription->start_at) 
                                 <div class="text-gray-500 text-sm">
                                     {{ __('Start on :date', ['date' => format_date($start)]) }} 
                                 </div>
                             @endif
     
                             <div class="text-gray-500 text-sm">
-                                @if ($end = data_get($subscription, 'end_at')) {{ __('End on :date', ['date' => format_date($end)]) }}
+                                @if ($end = $subscription->end_at) {{ __('End on :date', ['date' => format_date($end)]) }}
                                 @else {{ __('No End Date') }}
                                 @endif
                             </div>
@@ -48,7 +48,7 @@
             <div>
                 <x-payment-gateway header="Payment Method">
                     <x-slot:stripe>
-                        @if ($payment->price->is_recurring && !data_get($subscription, 'is_trial'))
+                        @if ($price->is_recurring && !$subscription->is_trial)
                             <x-form.checkbox wire:model="inputs.enable_auto_billing" label="Enable Auto Billing"/>
                         @endif
                     </x-slot:stripe>

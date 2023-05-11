@@ -7,13 +7,15 @@
                     <div class="text-gray-500">{{ $subscription->description }}</div>
                 </x-form.field>
 
-                <x-form.field label="Price">
-                    <div class="text-lg font-medium">
-                        @if ($subscription->amount) {{ currency($subscription->amount, $subscription->currency) }}
-                        @else {{ __('Free') }}
-                        @endif
-                    </div>
-                </x-form.field>
+                @if ($price = $subscription->price)
+                    <x-form.field label="Price">
+                        <div class="text-lg font-medium">
+                            @if ($amount = data_get($subscription->data, 'amount')) {{ currency($amount, data_get($subscription->data, 'currency')) }}
+                            @else {{ __('Free') }}
+                            @endif
+                        </div>
+                    </x-form.field>
+                @endif
 
                 @if ($features = $subscription->price->plan->features)
                     <x-form.field label="Features">

@@ -48,7 +48,7 @@ class PlanPaymentProvision implements ShouldQueue
             $this->provision();
         }
 
-        return redirect()->route('app.settings', ['billing']);
+        return redirect($this->payment->user->home())->with('plan-payment', $this->payment->status);
     }
 
     /**
@@ -88,7 +88,22 @@ class PlanPaymentProvision implements ShouldQueue
             ]),
         ])->save();
 
-        $this->createSubscription();
+        if ($this->payment->status === 'success') {
+            $this->payment->subscriptions()
+                ->whereNull('provisioned_at')
+                ->get()
+                ->each(function($subscription) {
+                    $subscription->fill([
+                        'data' => [
+                            'stripe_customer_id' => data_get($this->metadata, 'stripe_customer_id'),
+                            'stripe_subscription_id' => data_get($this->metadata, 'stripe_subscription_id'),
+                            'amount' => $subscription->price->amount,    
+                            'currency' => $subscription->price->currency,    
+                        ],
+                        'provisioned_at' => now(),
+                    ])->save();
+                });
+        }
     }
 
     /**
@@ -100,121 +115,17 @@ class PlanPaymentProvision implements ShouldQueue
             'currency' => $this->payment->currency,
             'amount' => $this->payment->amount,
             'mode' => 'stripe',
-            'price_id' => $this->payment->price_id,
+            'user_id' => $this->payment->user_id,
         ]);
+
+        foreach ($this->payment->subscriptions()->get() as $subscription) {
+            model('plan_subscription')->create([
+                'user_id' => $subscription->user_id,
+                'price_id' => $subscription->price_id,
+                'payment_id' => $newpayment->id,
+            ]);
+        }
 
         $this->payment = $newpayment;
-
-        // $order = $this->payment->order;
-
-        // // only use recurring order items
-        // $items = $order->items
-        //     ->filter(fn($item) => is_numeric(data_get($item->data, 'recurring.count')));
-
-        // $neworder = model('plan_order')->create([
-        //     'currency' => $order->currency,
-        //     'amount' => $items->sum('grand_total'),
-        //     'data' => $order->data,
-        //     'user_id' => $order->user_id,
-        // ]);
-
-        // foreach ($items as $item) {
-        //     $neworder->items()->create([
-        //         'name' => $item->name,
-        //         'currency' => $item->currency,
-        //         'amount' => $item->amount,
-        //         'discounted_amount' => $item->discounted_amount,
-        //         'grand_total' => $item->grand_total,
-        //         'data' => $item->data,
-        //         'plan_price_id' => $item->plan_price_id,
-        //     ]);
-        // }
-
-        // $this->payment = $neworder->payments()->create([
-        //     'currency' => $this->payment->currency,
-        //     'amount' => $neworder->amount,
-        //     'status' => $neworder->amount > 0 ? 'draft' : 'success',
-        //     'provider' => 'stripe',
-        //     'status' => $this->status === 'renew-failed' ? 'failed' : 'success',
-        //     'data' => [
-        //         'metadata' => $this->metadata,
-        //         'pay_response' => $this->payResponse,
-        //     ],
-        //     'plan_order_id' => $neworder->id,
-        // ]);
-    }
-
-    /**
-     * Create subscription
-     */
-    public function createSubscription()
-    {
-        if ($this->payment->status !== 'success') return;
-
-        // stripe info
-        $stripeData = array_filter([
-            'stripe_customer_id' => data_get($this->metadata, 'stripe_customer_id'),
-            'stripe_subscription_id' => data_get($this->metadata, 'stripe_subscription_id'),
-        ]);
-
-        $subscription = model('plan_subscription')->create([
-            'user_id' => $this->payment->user_id,
-            'price_id' => $this->payment->price_id,
-            'data' => $stripeData,
-        ]);
-
-        $this->payment->fill([
-            'subscription_id' => $subscription->id,
-        ])->save();
-
-        // foreach ($this->payment->order->items as $item) {
-        //     if ($subscription = model('plan_subscription')->firstWhere('plan_order_item_id', $item->id)) {
-        //         $subscription->fill(['data' => array_merge((array)$subscription->data, $stripeData)])->save();
-        //     }
-        //     else {
-        //         $price = $item->price;
-    
-        //         // trial
-        //         if ($price->plan->trial && !$this->payment->order->user->isSubscribedToPlan($price)) {
-        //             $fields = [
-        //                 'is_trial' => true,
-        //                 'start_at' => $this->payment->created_at,
-        //                 'expired_at' => $this->payment->created_at->addDays($price->plan->trial),
-        //             ];
-        //         }
-        //         // non-trial
-        //         else {
-        //             $lastSubscription = $this->payment->order->user->subscriptions()
-        //                 ->where('plan_price_id', $price->id)
-        //                 ->latest()
-        //                 ->first();
-
-        //             $start = $lastSubscription 
-        //                 ? $lastSubscription->expired_at->addSecond() 
-        //                 : $this->payment->created_at;
-
-        //             $end = $price->is_lifetime
-        //                 ? null
-        //                 : $start->copy()->addMonths($price->expired_after);
-    
-        //             $fields = [
-        //                 'is_trial' => false,
-        //                 'start_at' => $start,
-        //                 'expired_at' => $end,
-        //             ];
-        //         }
-                    
-        //         $this->payment->order->user->subscriptions()->create(array_merge(
-        //             $fields, 
-        //             ['data' => $stripeData],
-        //             [
-        //                 'plan_order_item_id' => $item->id,
-        //                 'plan_price_id' => $price->id,
-        //             ]
-        //         ));
-        //     }
-        // }
-
-        // $this->payment->fill(['provisioned_at' => now()])->save();
     }
 }

@@ -601,9 +601,10 @@ class InstallCommand extends Command
                 $table->timestamp('start_at')->nullable();
                 $table->timestamp('end_at')->nullable();
                 $table->timestamp('terminated_at')->nullable();
+                $table->timestamp('provisioned_at')->nullable();
                 $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
                 $table->foreignId('price_id')->nullable()->constrained('plan_prices')->onDelete('set null');
-                $table->foreignId('payment_id')->nullable()->constrained('plan_payments')->onDelete('set null');
+                $table->foreignId('payment_id')->nullable()->constrained('plan_payments')->onDelete('cascade');
                 $table->timestamps();
             });
 

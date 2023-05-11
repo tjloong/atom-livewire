@@ -10,6 +10,7 @@ class Checkout extends Component
 {
     use WithForm;
 
+    public $price;
     public $payment;
     public $subscription;
 
@@ -23,8 +24,13 @@ class Checkout extends Component
         return [
             'payment.currency' => ['nullable'],
             'payment.amount' => ['nullable'],
-            'payment.price_id' => ['required' => 'Price is required.'],
             'payment.user_id' => ['required' => 'User is required.'],
+
+            'subscription.start_at' => ['nullable'],
+            'subscription.end_at' => ['nullable'],
+            'subscription.is_trial' => ['nullable'],
+            'subscription.user_id' => ['required' => 'Subscription user is required.'],
+            'subscription.price_id' => ['required' => 'Subscription price is required.'],
 
             'inputs.agree_privacy' => ['accepted' => 'Please agree to the privacy agreement.'],
             'inputs.enable_auto_billing' => ['nullable'],
@@ -62,23 +68,20 @@ class Checkout extends Component
      */
     public function select($code): void
     {
-        $price = model('plan_price')->where('code', $code)->first();
+        if ($this->price = model('plan_price')->where('code', $code)->first()) {
+            $this->subscription = model('plan_subscription')->fill([
+                'user_id' => user('id'),
+                'price_id' => $this->price->id,
+            ]);
 
-        $subscription = model('plan_subscription')->fill([
-            'user_id' => user('id'),
-            'price_id' => $price->id,
-        ]);
-
-        $subscription->setValidity();
-
-        $this->payment = model('plan_payment')->fill([
-            'currency' => $price->plan->currency,
-            'amount' => $subscription->is_trial ? 0 : ($price->amount ?? 0),
-            'price_id' => $price->id,
-            'user_id' => user('id'),
-        ]);
-
-        $this->subscription = $subscription->toArray();
+            $this->subscription->setValidity();
+    
+            $this->payment = model('plan_payment')->fill([
+                'currency' => $this->price->plan->currency,
+                'amount' => $this->subscription->is_trial ? 0 : ($this->price->amount ?? 0),
+                'user_id' => user('id'),
+            ]);
+        }
     }
 
     /**
@@ -88,6 +91,7 @@ class Checkout extends Component
     {
         $this->subscription = null;
         $this->payment = null;
+        $this->price = null;
     }
 
     /**
@@ -99,9 +103,13 @@ class Checkout extends Component
 
         $this->payment->fill([
             'mode' => $mode,
-            'description' => $this->payment->price->description,
+            'description' => $this->price->description,
             'status' => 'draft',
             'data' => ['agree_privacy' => data_get($this->inputs, 'agree_privacy')],
+        ])->save();
+
+        $this->subscription->fill([
+            'payment_id' => $this->payment->id,
         ])->save();
 
         // no payment amount, provision straight away
@@ -114,7 +122,7 @@ class Checkout extends Component
                 ],
             ]);
 
-            return redirect()->route('app.settings', ['billing']);
+            return redirect(user()->home())->with('plan-payment', 'success');
         }
         // payment gateway
         else {
