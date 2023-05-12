@@ -68,7 +68,7 @@
         "delay": null
     },
     "analytics": {
-        "ja_id": null,
+        "fathom_id": null,
         "ga_id": null,
         "gtm_id": null,
         "fbp_id": null

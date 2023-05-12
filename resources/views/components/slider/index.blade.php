@@ -30,6 +30,7 @@
                 } : { enabled: false },
                 on: {
                     init: (swiper) => this.$dispatch('slider-init', swiper),
+                    click: (swiper) => this.$dispatch('slider-slide-click', swiper),
                     slideChangeTransitionEnd: (swiper) => this.$dispatch('slider-slide-change', swiper),
                 },
                 ...@js($config),

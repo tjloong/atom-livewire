@@ -135,7 +135,7 @@ class SiteSetting extends Model
         foreach ($defaults as $name => $value) {
             if ($name === 'analytics') {
                 $existingData = [
-                    'ja_id' => null,
+                    'fathom_id' => data_get($settings, 'fathom_id'),
                     'ga_id' => data_get($settings, 'ga_id'),
                     'gtm_id' => data_get($settings, 'gtm_id'),
                     'fbp_id' => data_get($settings, 'fbpixel_id'),

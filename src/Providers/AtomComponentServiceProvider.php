@@ -67,10 +67,10 @@ class AtomComponentServiceProvider extends ServiceProvider
             'admin-panel.index',
             'admin-panel.aside',
             
-            'analytics.ja',
+            'analytics.fathom',
+            'analytics.fbpixel',
             'analytics.ga',
             'analytics.gtm',
-            'analytics.fbpixel',
 
             'popup.index',
             'popup.alert',

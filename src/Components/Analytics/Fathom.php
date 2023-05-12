@@ -4,13 +4,13 @@ namespace Jiannius\Atom\Components\Analytics;
 
 use Illuminate\View\Component;
 
-class Ja extends Component
+class Fathom extends Component
 {
     /**
      * Render
      */
-    public function render()
+    public function render(): mixed
     {
-        return view('atom::components.analytics.ja');
+        return view('atom::components.analytics.fathom');
     }
 }

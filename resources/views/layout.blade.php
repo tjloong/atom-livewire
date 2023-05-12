@@ -34,7 +34,7 @@
     @endif
 
     @if ($enabledAnalytics = $analytics ?? false)
-        <x-analytics.ja/>
+        <x-analytics.fathom/>
         <x-analytics.gtm/>
         <x-analytics.ga/>
         <x-analytics.fbpixel/>
