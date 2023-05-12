@@ -26,7 +26,7 @@
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
             @if ($icon = $attributes->get('icon')) <x-icon :name="$icon"/> @endif
-            @if ($label = $attributes->get('label')) <div data-label class="grow">{{ __($label) }}</div> @endif
+            @if ($label = $attributes->get('label')) <div data-label class="grow">{!! __($label) !!}</div> @endif
             @if ($count = $attributes->get('count'))
                 <div class="shrink-0">
                     <div class="px-2 py-0.5 rounded-full bg-gray-200 text-gray-800 text-xs font-semibold">
