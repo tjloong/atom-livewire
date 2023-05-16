@@ -540,6 +540,7 @@ class InstallCommand extends Command
                 $table->string('country')->nullable();
                 $table->string('currency')->nullable();
                 $table->integer('trial')->nullable();
+                $table->boolean('is_unique_trial')->nullable();
                 $table->boolean('is_active')->nullable();
                 $table->timestamps();
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
@@ -596,6 +597,10 @@ class InstallCommand extends Command
         else {
             Schema::create('plan_subscriptions', function(Blueprint $table) {
                 $table->id();
+                $table->string('currency')->nullable();
+                $table->decimal('amount', 20, 2)->nullable();
+                $table->decimal('discounted_amount', 20, 2)->nullable();
+                $table->integer('extension')->nullable();
                 $table->json('data')->nullable();
                 $table->boolean('is_trial')->nullable();
                 $table->timestamp('start_at')->nullable();

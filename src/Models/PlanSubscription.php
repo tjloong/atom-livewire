@@ -14,11 +14,15 @@ class PlanSubscription extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'amount' => 'float',
+        'discounted_amount' => 'float',
+        'extension' => 'integer',
         'data' => 'object',
         'is_trial' => 'boolean',
         'start_at' => 'datetime',
         'end_at' => 'datetime',
         'terminated_at' => 'datetime',
+        'provisioned_at' => 'datetime',
         'user_id' => 'integer',
         'price_id' => 'integer',
         'payment_id' => 'integer',
@@ -31,10 +35,6 @@ class PlanSubscription extends Model
      */
     protected static function booted(): void
     {
-        static::creating(function($subscription) {
-            $subscription->setValidity();
-        });
-
         static::saved(function($subscription) {
             session()->forget('can.plans');
         });
@@ -94,13 +94,24 @@ class PlanSubscription extends Model
     {
         return Attribute::make(
             get: function() {
-                if (!$this->provisioned_at) return 'draft';
-                if ($this->start_at->greaterThan(now())) return 'future';
-                if ($this->terminated_at && $this->terminated_at->lessThan(now())) return 'terminated';
-                if ($this->end_at && $this->end_at->lessThan(now())) return 'ended';
-        
-                return 'active';
+                if (empty($this->provisioned_at)) return 'draft';
+                else if ($this->start_at->greaterThan(now())) return 'future';
+                else if ($this->terminated_at && $this->terminated_at->lessThan(now())) return 'terminated';
+                else if ($this->end_at && $this->end_at->addDays($this->extended ?? 0)->lessThan(now())) return 'ended';
+                else return 'active';
             },
+        );
+    }
+
+    /**
+     * Attribute for dayrate
+     */
+    protected function dayrate(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->end_at
+                ? $this->grand_total / ($this->start_at->diffInDays($this->end_at))
+                : null,
         );
     }
 
@@ -111,6 +122,19 @@ class PlanSubscription extends Model
     {
         return Attribute::make(
             get: fn() => !empty(data_get($this->data, 'stripe_subscription_id')),
+        );
+    }
+
+    /**
+     * Attribute for grand total
+     */
+    protected function grandTotal(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $total = $this->amount - $this->discounted_amount;
+                return $total > 0 ? $total : 0;
+            },
         );
     }
 
@@ -140,23 +164,35 @@ class PlanSubscription extends Model
                     $q->orWhere(fn($q) => $q
                         ->whereNotNull('provisioned_at')
                         ->where(function ($q) use ($val) {
-                            if ($val === 'future') $q->where('start_at', '>', now());
-                            if ($val === 'terminated') $q->where('terminated_at', '<', now());
-                            if ($val === 'ended') $q->where('end_at', '<', now());
-                            if ($val === 'active') {
-                                $q->where(fn($q) => $q
-                                    ->whereNull('start_at')
-                                    ->orWhere('start_at', '<=', now())
-                                )->where(fn($q) => $q
-                                    ->whereNull('end_at')
-                                    ->orWhere('end_at', '>=', now())
-                                );
+                            if ($val === 'terminated') $q->whereNotNull('terminated_at');
+                            else {
+                                $q->whereNull('terminated_at')->where(function($q) use ($val) {
+                                    if ($val === 'future') $q->where('start_at', '>', now());
+                                    if ($val === 'ended') $q->whereRaw('end_at + interval (if (extension is not null, extension, 0)) day < ?', [now()]);
+                                    if ($val === 'active') {
+                                        $q->where(fn($q) => $q
+                                            ->whereNull('start_at')
+                                            ->orWhere('start_at', '<=', now())
+                                        )->where(fn($q) => $q
+                                            ->whereNull('end_at')
+                                            ->orWhereRaw('end_at + interval (if (extension is not null, extension, 0)) day >= ?', [now()])
+                                        );
+                                    }
+                                });
                             }
                         })
                     );
                 }
             }
         });
+    }
+
+    /**
+     * Scope for enabled auto renew
+     */
+    public function scopeEnabledAutoRenew($query): void
+    {
+        $query->whereNotNull('data->stripe_subscription_id');
     }
 
     /**
@@ -177,51 +213,175 @@ class PlanSubscription extends Model
      * Set validity
      */
     public function setValidity(): void
-    {        
-        $existing = model('plan_subscription')
-            ->where('user_id', $this->user_id)
-            ->whereHas('price', fn($q) => $q->where('plan_id', $this->price->plan_id))
-            ->latest('id');
-
-        if (!$this->start_at) {
-            if (
-                ($last = $existing->first())
-                && $last->end_at
-                && $last->end_at->isFuture()    
-            ) {
-                $this->start_at = $last->end_at->addHour();
-            }
-            else $this->start_at = now();
-        }
-
-        $this->is_trial = $this->price->plan->trial > 0 
-            && !$existing->where('is_trial', true)->count();
-
-        $this->end_at = $this->end_at ?? $this->getEndDate();
+    {
+        $this->setAmount();
+        $this->setStartDate();
+        $this->setIsTrial();
+        $this->setEndDate();
+        $this->setProrated();
     }
 
     /**
-     * Get end date
+     * Set amount
      */
-    public function getEndDate(): mixed
+    public function setAmount(): void
+    {
+        $this->currency = $this->price->plan->currency;
+        $this->amount = $this->price->amount;
+    }
+
+    /**
+     * Set start date
+     */
+    public function setStartDate(): void
+    {
+        if (!$this->start_at) {
+            if (
+                ($sibling = $this->getSiblings()->status(['active', 'future'])->first())
+                && optional($sibling->end_at)->isFuture()
+            ) {
+                $this->start_at = $sibling->end_at->addHour();
+            }
+            else if (
+                ($relative = $this->getRelatives()->status(['active', 'future'])->where('amount', '>', $this->amount)->first())
+                && optional($relative->end_at)->isFuture()
+            ) {
+                $this->start_at = $relative->end_at->addHour();
+            }
+            else $this->start_at = now();
+        }
+    }
+
+    /**
+     * Set end date
+     */
+    public function setEndDate(): void
     {
         $valid = $this->price->valid;
         $count = data_get($valid, 'count');
         $interval = data_get($valid, 'interval');
 
-        if (in_array($interval, ['forever', 'one-off'])) return null;
+        if (in_array($interval, ['forever', 'one-off'])) $this->end_at = null;
+        else if ($this->is_trial && ($count = $this->price->plan->trial)) $this->end_at = $this->start_at->addDays($count);
+        else if (is_numeric($count)) {
+            if (in_array($interval, ['day', 'days'])) $this->end_at = $this->start_at->addDays($count);
+            if (in_array($interval, ['month', 'months'])) $this->end_at = $this->start_at->addMonths($count);
+            if (in_array($interval, ['year', 'years'])) $this->end_at = $this->start_at->addYears($count);
+        }
+        else $this->end_at = null;
+    }
 
-        if ($this->is_trial) {
-            $count = $this->price->plan->trial;
-            $interval = 'day';
+    /**
+     * Set is trial
+     */
+    public function setIsTrial(): void
+    {
+        if (!$this->price->plan->trial) {
+            $this->is_trial = false;
+        }
+        else if ($this->price->plan->is_unique_trial) {
+            $this->is_trial = $this->getSiblings()
+                ->where('is_trial', true)
+                ->count() <= 0;
+        }
+        else {
+            $this->is_trial = model('plan_subscription')
+                ->where('user_id', $this->user_id)
+                ->where('is_trial', true)
+                ->count() <= 0;
         }
 
-        if (is_numeric($count)) {
-            if (in_array($interval, ['day', 'days'])) return $this->start_at->addDays($count);
-            if (in_array($interval, ['month', 'months'])) return $this->start_at->addMonths($count);
-            if (in_array($interval, ['year', 'years'])) return $this->start_at->addYears($count);
-        }
+        if ($this->is_trial) $this->discounted_amount = $this->amount;
+    }
 
-        return null;
+    /**
+     * Set prorated
+     */
+    public function setProrated(): void
+    {
+        if (($terminations = $this->getTerminationQueue()) && $terminations->count()) {
+            $prorated = $terminations->pluck('price.plan.code')->unique()->values()->map(function($code) use ($terminations) {
+                $group = $terminations->filter(fn($termination) => $termination->price->plan->code === $code)->values();
+                
+                $credits = $group->map(function($termination) {
+                    $rate = $termination->dayrate ?? 0;
+
+                    if ($termination->start_at->lte($this->start_at)) return $rate * ($this->start_at->diffInDays($termination->end_at));
+                    else return $rate * ($termination->start_at->diffInDays($termination->end_at));
+                })->sum();
+
+                if ($credits > $this->amount) {
+                    $discount = $this->amount;
+                    $extension = round(($credits - $this->amount) / $this->dayrate);
+                }
+                else {
+                    $discount = $credits;
+                }
+
+                return [
+                    'code' => $code,
+                    'plan' => model('plan')->where('code', $code)->first()->name,
+                    'credits' => $credits ?? 0,
+                    'discount' => $discount ?? 0,
+                    'extension' => $extension ?? 0,
+                ];
+            });
+
+            $this->discounted_amount = ($this->discounted_amount ?? 0) + $prorated->sum('discount');
+            $this->extension = $prorated->sum('extension');
+            $this->data = array_merge((array)$this->data, ['prorated' => $prorated->toArray()]);
+        }
+    }
+
+    /**
+     * Get siblings (subscriptions with same plan)
+     */
+    public function getSiblings(): mixed
+    {
+        return model('plan_subscription')
+            ->where('user_id', $this->user_id)
+            ->whereHas('price', fn($q) => $q->where('plan_id', $this->price->plan_id))
+            ->latest('id');
+    }
+
+    /**
+     * Get relatives (subscriptions with upgraded plan)
+     */
+    public function getRelatives(): mixed
+    {
+        $prices = model('plan')
+            ->whereHas('upgrades', fn($q) => $q->where('plan_upgrades.upgrade_id', $this->price->plan_id))
+            ->get()
+            ->map(fn($plan) => $plan->prices->pluck('id'))
+            ->collapse()
+            ->values()
+            ->toArray();
+
+        return model('plan_subscription')
+            ->where('user_id', $this->user_id)
+            ->whereIn('price_id', $prices)
+            ->latest('id');
+    }
+
+    /**
+     * Get termination queue
+     */
+    public function getTerminationQueue(): mixed
+    {
+        if ($this->status !== 'draft') return null;
+
+        return $this->getRelatives()
+            ->with('price.plan')
+            ->status(['active', 'future'])
+            ->where('amount', '<=', $this->amount)
+            ->get();
+    }
+
+    /**
+     * Terminate subscription
+     */
+    public function terminate(): void
+    {
+        $this->fill(['terminated_at' => now()])->save();
     }
 }

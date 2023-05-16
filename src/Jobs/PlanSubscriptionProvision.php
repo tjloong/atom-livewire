@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class PlanPaymentProvision implements ShouldQueue
+class PlanSubscriptionProvision implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
@@ -89,20 +89,18 @@ class PlanPaymentProvision implements ShouldQueue
         ])->save();
 
         if ($this->payment->status === 'success') {
-            $this->payment->subscriptions()
-                ->whereNull('provisioned_at')
-                ->get()
-                ->each(function($subscription) {
-                    $subscription->fill([
-                        'data' => [
-                            'stripe_customer_id' => data_get($this->metadata, 'stripe_customer_id'),
-                            'stripe_subscription_id' => data_get($this->metadata, 'stripe_subscription_id'),
-                            'amount' => $subscription->price->amount,    
-                            'currency' => $subscription->price->currency,    
-                        ],
-                        'provisioned_at' => now(),
-                    ])->save();
-                });
+            $this->payment->subscriptions()->whereNull('provisioned_at')->get()->each(function($subscription) {
+                // terminate less expensive relatives
+                $subscription->getTerminationQueue()->each(fn($relative) => $relative->terminate());
+    
+                $subscription->fill([
+                    'data' => [
+                        'stripe_customer_id' => data_get($this->metadata, 'stripe_customer_id'),
+                        'stripe_subscription_id' => data_get($this->metadata, 'stripe_subscription_id'),
+                    ],
+                    'provisioned_at' => now(),
+                ])->save();
+            });
         }
     }
 
@@ -119,11 +117,13 @@ class PlanPaymentProvision implements ShouldQueue
         ]);
 
         foreach ($this->payment->subscriptions()->get() as $subscription) {
-            model('plan_subscription')->create([
+            $newsubscription = model('plan_subscription')->create([
                 'user_id' => $subscription->user_id,
                 'price_id' => $subscription->price_id,
                 'payment_id' => $newpayment->id,
             ]);
+
+            $newsubscription->setValidity();
         }
 
         $this->payment = $newpayment;

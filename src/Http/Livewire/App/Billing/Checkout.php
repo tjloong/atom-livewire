@@ -2,16 +2,18 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Billing;
 
-use Jiannius\Atom\Jobs\PlanPaymentProvision;
+use Jiannius\Atom\Jobs\PlanSubscriptionProvision;
+use Jiannius\Atom\Models\PlanPayment;
 use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Checkout extends Component
 {
     use WithForm;
+    use WithPopupNotify;
 
     public $price;
-    public $payment;
     public $subscription;
 
     public $inputs = [
@@ -22,12 +24,13 @@ class Checkout extends Component
     protected function validation(): array
     {
         return [
-            'payment.currency' => ['nullable'],
-            'payment.amount' => ['nullable'],
-            'payment.user_id' => ['required' => 'User is required.'],
-
+            'subscription.currency' => ['nullable'],
+            'subscription.amount' => ['nullable'],
+            'subscription.discounted_amount' => ['nullable'],
+            'subscription.extension' => ['nullable'],
             'subscription.start_at' => ['nullable'],
             'subscription.end_at' => ['nullable'],
+            'subscription.data' => ['nullable'],
             'subscription.is_trial' => ['nullable'],
             'subscription.user_id' => ['required' => 'Subscription user is required.'],
             'subscription.price_id' => ['required' => 'Subscription price is required.'],
@@ -60,28 +63,45 @@ class Checkout extends Component
      */
     public function getPlansProperty()
     {
-        return model('plan')->subscribeable()->with('prices')->get();
+        return model('plan')
+            ->subscribeable()
+            ->with('prices')
+            ->get()
+            ->map(function ($plan) {
+                $plan->subscription = model('plan_subscription')
+                    ->status(['active', 'future'])
+                    ->plan($plan->id)
+                    ->where('user_id', user('id'))
+                    ->latest('id')
+                    ->first();
+                return $plan;
+            });
     }
 
     /**
      * Select price
      */
-    public function select($code): void
+    public function select($code): mixed
     {
         if ($this->price = model('plan_price')->where('code', $code)->first()) {
             $this->subscription = model('plan_subscription')->fill([
                 'user_id' => user('id'),
                 'price_id' => $this->price->id,
             ]);
-
-            $this->subscription->setValidity();
     
-            $this->payment = model('plan_payment')->fill([
-                'currency' => $this->price->plan->currency,
-                'amount' => $this->subscription->is_trial ? 0 : ($this->price->amount ?? 0),
-                'user_id' => user('id'),
-            ]);
+            $this->subscription->setValidity();
+
+            if ($this->subscription->getRelatives()->enabledAutoRenew()->count()) {
+                $this->clear();
+
+                return $this->popup([
+                    'title' => 'Unable To Subscribe Plan',
+                    'message' => 'There are subscriptions with auto renew enabled. Please cancel the auto renewal and try again.',
+                ], 'alert', 'error');
+            }
         }
+        
+        return false;
     }
 
     /**
@@ -89,9 +109,8 @@ class Checkout extends Component
      */
     public function clear(): void
     {
-        $this->subscription = null;
-        $this->payment = null;
         $this->price = null;
+        $this->subscription = null;
     }
 
     /**
@@ -101,23 +120,14 @@ class Checkout extends Component
     {
         $this->validateForm();
 
-        $this->payment->fill([
-            'mode' => $mode,
-            'description' => $this->price->description,
-            'status' => 'draft',
-            'data' => ['agree_privacy' => data_get($this->inputs, 'agree_privacy')],
-        ])->save();
-
-        $this->subscription->fill([
-            'payment_id' => $this->payment->id,
-        ])->save();
+        $payment = $this->persist($mode);
 
         // no payment amount, provision straight away
-        if (!$this->payment->amount) {
-            PlanPaymentProvision::dispatchSync([
+        if (!$payment->amount) {
+            PlanSubscriptionProvision::dispatchSync([
                 'webhook' => true,
                 'metadata' => [
-                    'payment_id' => $this->payment->id,
+                    'payment_id' => $payment->id,
                     'status' => 'success',
                 ],
             ]);
@@ -127,32 +137,32 @@ class Checkout extends Component
         // payment gateway
         else {
             $req = [
-                'job' => 'PlanPaymentProvision',
+                'job' => 'PlanSubscriptionProvision',
                 'customer' => array_merge(
                     ['email' => user('email')],
                     $mode === 'stripe'
                         ? ['stripe_customer_id' => $this->getStripeCustomerId()]
                         : []
                 ),
-                'payment_id' => $this->payment->id,
-                'payment_description' => 'Plan Payment #'.$this->payment->number,
-                'currency' => $this->payment->currency,
-                'amount' => currency($this->payment->amount),
+                'payment_id' => $payment->id,
+                'payment_description' => 'Plan Payment #'.$payment->number,
+                'currency' => $payment->currency,
+                'amount' => currency($payment->amount),
                 'items' => [
                     [
-                        'name' => $this->payment->price->description,
-                        'amount' => currency($this->payment->amount),
-                        'currency' => $this->payment->currency,
+                        'name' => $this->price->description,
+                        'amount' => currency($payment->amount),
+                        'currency' => $payment->currency,
                         'qty' => 1,
-                        'recurring' => $this->payment->price->is_recurring && data_get($this->inputs, 'enable_auto_billing')
-                            ? $this->payment->price->valid
+                        'recurring' => $this->price->is_recurring && data_get($this->inputs, 'enable_auto_billing')
+                            ? $this->price->valid
                             : false,
                     ],
                 ],
             ];
 
-            $this->payment->fill([
-                'data' => array_merge((array)$this->payment->data, [
+            $payment->fill([
+                'data' => array_merge((array)$payment->data, [
                     'pay_request' => $req,
                 ]),
             ])->save();
@@ -164,12 +174,32 @@ class Checkout extends Component
     }
 
     /**
+     * Persist
+     */
+    public function persist($mode): PlanPayment
+    {
+        $payment = model('plan_payment')->create([
+            'mode' => $mode,
+            'currency' => $this->price->plan->currency,
+            'amount' => $this->price->amount,
+            'description' => $this->price->description,
+            'status' => 'draft',
+            'data' => ['agree_privacy' => data_get($this->inputs, 'agree_privacy')],
+            'user_id' => user('id'),
+        ]);
+
+        $this->subscription->fill(['payment_id' => $payment->id])->save();
+
+        return $payment->fresh();
+    }
+
+    /**
      * Get stripe customer id
      */
     public function getStripeCustomerId(): mixed
     {
         $history = model('plan_payment')
-            ->whereHas('subscription', fn($q) => $q->where('user_id', user('id')))
+            ->whereHas('subscriptions', fn($q) => $q->where('user_id', user('id')))
             ->where('mode', 'stripe')
             ->whereNotNull('data->metadata->stripe_customer_id')
             ->latest()

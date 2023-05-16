@@ -31,22 +31,11 @@
                                 </div>
                             @endif
                         </div>
-        
-                        @if ($subscription->end_at)
-                            <div class="text-gray-500 text-sm font-medium flex items-center gap-2">
-                                @if ($subscription->is_auto_renew)
-                                    {{ __('Auto renew on :date', ['date' => format_date($subscription->end_at)]) }}
-                                @else
-                                    {{ __('Ends on :date', ['date' => format_date($subscription->end_at)]) }} 
-                                @endif
-        
-                                ({{ $subscription->end_at->fromNow() }})
-                            </div>
-                        @else
-                            <div class="text-gray-500 text-sm font-medium">
-                                {{ __('No End Date') }}
-                            </div>
-                        @endif
+
+                        <div class="text-gray-500 text-sm font-medium flex items-center gap-2">
+                            {{ collect([format_date($subscription->start_at), format_date($subscription->end_at) ?? 'forever'])->join(' ~ ') }}
+                            @if ($subscription->is_auto_renew) <br>{{ __('Auto renew on :date', ['date' => format_date($subscription->end_at)]) }} @endif
+                        </div>
                     </div>
                 </x-box>
             @endforeach

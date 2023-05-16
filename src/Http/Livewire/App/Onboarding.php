@@ -15,7 +15,7 @@ class Onboarding extends Component
     /**
      * Mount
      */
-    public function mount(): void
+    public function mount()
     {
         $this->tab = $this->tab ?? data_get(collect($this->tabs)
             ->filter(fn($val) => !empty(data_get($val, 'slug')))

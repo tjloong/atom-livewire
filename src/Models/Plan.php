@@ -20,6 +20,7 @@ class Plan extends Model
 
     protected $casts = [
         'trial' => 'integer',
+        'is_unique_trial' => 'boolean',
         'is_active' => 'boolean',
     ];
 

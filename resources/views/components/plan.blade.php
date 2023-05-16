@@ -24,7 +24,7 @@
         <div class="shrink-0 flex items-center gap-2">
             @foreach ($prices as $price)
                 <div x-show="price.code === @js(data_get($price, 'code'))" class="text-2xl font-medium">
-                    {{ ($amount = data_get($price, 'amount')) ? currency($amount, data_get($plan, 'currency')) : __('Free') }}
+                    {{ currency(data_get($price, 'amount'), data_get($plan, 'currency')) }}
                 </div>
             @endforeach
     
@@ -56,11 +56,13 @@
                 @endforeach
             </div>
         @endif
+
+        {{ $slot }}
     </div>
 
-    @if ($slot->isNotEmpty())
+    @if (isset($foot) && $foot->isNotEmpty())
         <div class="bg-gray-100 p-4">
-            {{ $slot }}
+            {{ $foot }}
         </div>
-    @endif
+    @endisset
 </div>

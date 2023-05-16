@@ -14,7 +14,7 @@ class Create extends Component
     /**
      * Mount
      */
-    public function mount(): void
+    public function mount()
     {
         $this->tenant = model('tenant')->fill([
             'country' => tenant()
