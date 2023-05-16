@@ -3,6 +3,7 @@
         'sortable', 
         'chartjs', 
         'clipboard',
+        'swiper',
         current_route([
             'app.blog.*', 
             'app.page.*', 
@@ -42,7 +43,7 @@
     @elseroute('app.*')
         <x-admin-panel>
             <x-slot:links>
-                <a href="/" class="text-gray-800">Go To Site</a>
+                <x-link href="/" icon="globe" label="Go To Site" class="text-gray-800"/>
             </x-slot:links>
 
             <x-slot:aside>

@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Promotion extends Model
+class Coupon extends Model
 {
     use HasFilters;
     use HasTrace;
@@ -17,18 +18,30 @@ class Promotion extends Model
 
     protected $casts = [
         'rate' => 'float',
-        'data' => 'object',
+        'min_amount' => 'float',
+        'limit' => 'integer',
         'is_active' => 'boolean',
-        'end_at' => 'datetime',
-        'product_id' => 'integer',
+        'end_at' => 'date',
     ];
 
     /**
-     * Get product for promotion
+     * Get products for coupon
      */
-    public function product(): BelongsTo
+    public function products(): BelongsToMany
     {
-        return $this->belongsTo(get_class(model('product')));
+        if (!enabled_module('products')) return null;
+
+        return $this->belongsToMany(model('product'), 'coupon_products');
+    }
+
+    /**
+     * Get orders for coupon
+     */
+    public function orders(): HasMany
+    {
+        if (!enabled_module('orders')) return null;
+
+        return $this->hasMany(model('order'));
     }
 
     /**
@@ -39,9 +52,8 @@ class Promotion extends Model
         return Attribute::make(
             get: function () {
                 if ($this->end_at && $this->end_at->lte(today())) return 'ended';
-                if (!$this->is_active) return 'inactive';
-        
-                return 'active';
+                else if (!$this->is_active) return 'inactive';
+                else return 'active';
             },
         );
     }
@@ -54,7 +66,7 @@ class Promotion extends Model
         return Attribute::make(
             get: function () {
                 if ($this->type === 'fixed') return currency($this->rate, tenant('settings.default_currency') ?? settings('default_currency'));
-                if ($this->type === 'percentage') return $this->rate.'%';
+                if ($this->type === 'percentage') return str($this->rate)->finish('%')->toString();
             },
         );
     }

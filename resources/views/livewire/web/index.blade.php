@@ -41,7 +41,7 @@
                     'https://images.unsplash.com/photo-1639439815255-824da6a3adfe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw3Mnx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60',
                     'https://images.unsplash.com/photo-1642922808971-0529d555c105?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5MXx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60',
                 ] as $url)
-                    <x-slider.slide :image="['url' => $url]"/>
+                    <x-slider.slide :image="$url"/>
                 @endforeach
             </x-slider>
         </div>
@@ -70,40 +70,4 @@
             </div>
         </div>
     </section>
-
-    @if ($this->plans)
-        <section class="grid gap-4">
-            <div class="text-xl font-bold">Pricing Table</div>
-
-            <div class="max-w-screen-md mx-auto">
-                <div class="grid gap-6 md:grid-cols-2">
-                    @foreach ($this->plans as $plan)
-                        <x-pricing 
-                            :plan="$plan" 
-                            :prices="$plan->planPrices->map(fn($planPrice) => $planPrice->append('recurring'))"
-                            :trial="$plan->trial"
-                        >
-                            <x-slot:cta>
-                                @foreach ($plan->planPrices as $planPrice)
-                                    <x-button 
-                                        x-show="variant === '{{ $planPrice->recurring }}'"
-                                        block
-                                        :href="auth()->user() && Route::has('billing')
-                                            ? route('billing')
-                                            : (Route::has('register') 
-                                                ? route('register', ['ref' => 'pricing', 'plan' => $plan->slug, 'price' => $planPrice->id])
-                                                : '#'
-                                            )
-                                        " 
-                                        size="md"
-                                        :label="$plan->cta"
-                                    />
-                                @endforeach
-                            </x-slot:cta>
-                        </x-pricing>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
 </main>

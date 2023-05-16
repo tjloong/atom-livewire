@@ -210,13 +210,35 @@ if (!config('atom.static_site')) {
         }
 
         /**
-         * Promotions
+         * Coupons
          */
-        if (enabled_module('promotions')) {
-            define_route()->prefix('promotion')->as('app.promotion.')->group(function() {
-                define_route('listing', 'App\Promotion\Listing')->name('listing');
-                define_route('create', 'App\Promotion\Create')->name('create');
-                define_route('{promotion}', 'App\Promotion\Update')->name('update');
+        if (enabled_module('coupons')) {
+            define_route()->prefix('coupon')->as('app.coupon.')->group(function() {
+                define_route('listing', 'App\Coupon\Listing')->name('listing');
+                define_route('create', 'App\Coupon\Create')->name('create');
+                define_route('{couponId}', 'App\Coupon\Update')->name('update');
+            });
+        }
+
+        /**
+         * Orders
+         */
+        if (enabled_module('orders')) {
+            define_route()->prefix('order')->as('app.order.')->group(function() {
+                define_route('listing', 'App\Order\Listing')->name('listing');
+                define_route('create', 'App\Order\Create')->name('create');
+                define_route('{orderId}', 'App\Order\Update')->name('update');
+            });
+        }
+
+        /**
+         * Payments
+         */
+        if (enabled_module('payments')) {
+            define_route()->prefix('payment')->as('app.payment.')->group(function() {
+                define_route('listing', 'App\Payment\Listing')->name('listing');
+                define_route('create', 'App\Payment\Create')->name('create');
+                define_route('{paymentId}', 'App\Payment\Update')->name('update');
             });
         }
 

@@ -44,8 +44,10 @@ class InstallCommand extends Command
         'enquiries',
         'ticketing',
         'plans',
-        'products', 
-        'promotions',
+        'products',
+        'coupons',
+        'orders',
+        'payments', 
         'contacts',
         'documents',
         'shareables',
@@ -406,41 +408,6 @@ class InstallCommand extends Command
     }
 
     /**
-     * Install promotions
-     */
-    private function installPromotions()
-    {
-        $this->newLine();
-        $this->info('Installing promotions table...');
-
-        if (Schema::hasTable('promotions')) $this->warn('promotions table exists, skipped.');
-        else {
-            Schema::create('promotions', function ($table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->string('code')->indexed()->nullable();
-                $table->string('type')->nullable();
-                $table->decimal('rate', 20, 2)->nullable();
-                $table->integer('usable_limit')->nullable();
-                $table->text('description')->nullable();
-                $table->json('data')->nullable();
-                $table->datetime('end_at')->nullable();
-                $table->boolean('is_active')->nullable();
-
-                if (Schema::hasTable('products')) {
-                    $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
-                }
-
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-                $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-
-            $this->line('promotions table created successfully.');
-        }
-    }
-
-    /**
      * Install products
      */
     private function installProducts()
@@ -518,6 +485,156 @@ class InstallCommand extends Command
     
                 $this->line('product_taxes table created successfully.');
             }
+        }
+    }
+
+    /**
+     * Install coupons
+     */
+    private function installCoupons()
+    {
+        $this->newLine();
+        $this->info('Installing coupons module...');
+
+        if (Schema::hasTable('coupons')) $this->warn('coupons table exists, skipped.');
+        else {
+            Schema::create('coupons', function(Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('code')->unique();
+                $table->string('type')->nullable();
+                $table->double('rate')->nullable();
+                $table->double('min_amount')->nullable();
+                $table->integer('limit')->nullable();
+                $table->boolean('is_active')->nullable();
+                $table->date('end_at')->nullable();
+                $table->timestamps();
+            });
+
+            $this->line('coupons table created successfully.');
+        }
+
+        if (Schema::hasTable('products')) {
+            Schema::create('coupon_products', function(Blueprint $table) {
+                $table->id();
+                $table->foreignId('coupon_id')->constrained()->onDelete('cascade');
+                $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            });
+        }
+    }
+
+    /**
+     * Install orders
+     */
+    private function installOrders()
+    {
+        $this->newLine();
+        $this->info('Installing orders module...');
+
+        if (Schema::hasTable('orders')) $this->warn('orders table exists, skipped.');
+        else {
+            Schema::create('orders', function(Blueprint $table) {
+                $table->id();
+                $table->string('number')->unique();
+                $table->string('name')->nullable();
+                $table->string('phone')->nullable();
+                $table->string('email')->nullable();
+                $table->string('address_1')->nullable();
+                $table->string('address_2')->nullable();
+                $table->string('city')->nullable();
+                $table->string('postcode')->nullable();
+                $table->string('state')->nullable();
+                $table->string('country')->nullable();
+                $table->string('currency')->nullable();
+                $table->double('subtotal')->nullable();
+                $table->double('discount_amount')->nullable();
+                $table->double('shipment_amount')->nullable();
+                $table->double('grand_total')->nullable();
+                $table->string('status')->nullable();
+                $table->json('data')->nullable();
+                $table->text('remark')->nullable();
+
+                if (Schema::hasTable('contacts')) {
+                    $table->foreignId('contact_id')->nullable()->constrained()->onDelete('cascade');
+                }
+                
+                if (Schema::hasTable('coupons')) {
+                    $table->foreignId('coupon_id')->nullable()->constrained()->onDelete('set null');
+                }
+
+                $table->timestamp('closed_at')->nullable();
+                $table->timestamps();
+                $table->foreignId('owned_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('closed_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+
+            $this->line('orders table created successfully.');
+        }
+
+        if (Schema::hasTable('order_items')) $this->warn('order_items table exists, skipped.');
+        else {
+            Schema::create('order_items', function(Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->double('qty')->nullable();
+                $table->double('unit_amount')->nullable();
+                $table->double('grand_total')->nullable();
+                $table->json('data')->nullable();
+                $table->foreignId('order_id')->nullable()->constrained()->onDelete('cascade');
+                $table->foreignId('product_id')->nullable()->constrained()->onDelete('set null');
+                $table->foreignId('product_variant_id')->nullable()->constrained()->onDelete('set null');
+                $table->timestamps();
+            });
+
+            $this->line('order_items table created successfully.');
+        }
+
+        if (Schema::hasTable('order_shipments')) $this->warn('order_shipments table exists, skipped.');
+        else {
+            Schema::create('order_shipments', function(Blueprint $table) {
+                $table->id();
+                $table->string('provider')->nullable();
+                $table->json('data')->nullable();
+                $table->foreignId('order_id')->nullable()->constrained()->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            $this->line('order_shipments table created successfully.');
+        }
+    }
+
+    /**
+     * Install payments
+     */
+    private function installPayments()
+    {
+        $this->newLine();
+        $this->info('Installing payments module...');
+
+        if (Schema::hasTable('payments')) $this->warn('payments table exists, skipped.');
+        else {
+            Schema::create('payments', function(Blueprint $table) {
+                $table->id();
+                $table->string('number')->unique();
+                $table->double('amount')->nullable();
+                $table->string('mode')->nullable();
+                $table->string('status')->nullable();
+                $table->json('data')->nullable();
+
+                if (Schema::hasTable('orders')) {
+                    $table->foreignId('order_id')->nullable()->constrained('orders')->onDelete('set null');
+                }
+                
+                $table->timestamps();
+                $table->timestamp('deleted_at')->nullable();
+                $table->timestamp('refunded_at')->nullable();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+                $table->foreignId('refunded_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+
+            $this->line('payments table created successfully.');
         }
     }
 

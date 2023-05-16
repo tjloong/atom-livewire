@@ -60,7 +60,11 @@ trait HasTrace
         $this->casts['updated_by'] = 'integer';
         $this->casts['deleted_by'] = 'integer';
         $this->casts['blocked_by'] = 'integer';
+        $this->casts['closed_by'] = 'integer';
+        $this->casts['refunded_by'] = 'integer';
         $this->casts['blocked_at'] = 'datetime';
+        $this->casts['closed_at'] = 'datetime';
+        $this->casts['refunded_at'] = 'datetime';
     }
 
     /**
@@ -104,11 +108,43 @@ trait HasTrace
     }
 
     /**
+     * Get closed_by_user for model
+     */
+    public function closedBy()
+    {
+        return $this->belongsTo(model('user'), 'closed_by');
+    }
+
+    /**
+     * Get refunded_by_user for model
+     */
+    public function refundedBy()
+    {
+        return $this->belongsTo(model('user'), 'refunded_by');
+    }
+
+    /**
      * Check model is blocked
      */
     public function blocked()
     {
         return $this->blocked_at && $this->blocked_at->lessThan(now());
+    }
+
+    /**
+     * Check model is closed
+     */
+    public function closed()
+    {
+        return $this->closed_at && $this->closed_at->lessThan(now());
+    }
+
+    /**
+     * Check model is refunded
+     */
+    public function refunded()
+    {
+        return $this->refunded_at && $this->refunded_at->lessThan(now());
     }
 
     /**
@@ -131,5 +167,49 @@ trait HasTrace
             'blocked_at' => null,
             'blocked_by' => null,
         ])->save();
+    }
+
+    /**
+     * Close the model
+     */
+    public function close()
+    {
+        $this->fill([
+            'closed_at' => now(),
+            'closed_by' => user('id'),
+        ]);
+    }
+
+    /**
+     * Unclose the model
+     */
+    public function unclose()
+    {
+        $this->fill([
+            'closed_at' => null,
+            'closed_by' => null,
+        ]);
+    }
+
+    /**
+     * Refund the model
+     */
+    public function refund()
+    {
+        $this->fill([
+            'refunded_at' => now(),
+            'refunded_by' => user('id'),
+        ]);
+    }
+
+    /**
+     * Unrefund the model
+     */
+    public function unrefund()
+    {
+        $this->fill([
+            'refunded_at' => null,
+            'refunded_by' => null,
+        ]);
     }
 }

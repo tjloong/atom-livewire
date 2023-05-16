@@ -56,6 +56,16 @@ class Product extends Model
     }
 
     /**
+     * Get coupons for product
+     */
+    public function coupons(): BelongsToMany
+    {
+        if (!enabled_module('coupons')) return null;
+
+        return $this->belongsToMany(model('coupon'), 'coupon_products');
+    }
+
+    /**
      * Scope for search
      */
     public function scopeSearch($query, $search): void

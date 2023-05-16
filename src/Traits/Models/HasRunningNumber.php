@@ -19,7 +19,14 @@ trait HasRunningNumber
                 $duplicated = true;
                 $table = $model->getTable();
                 $prefix = $model->getRunningNumberPrefix();
-                $last = optional(DB::table($table)->latest()->first())->number;
+
+                $last = optional(
+                    DB::table($table)
+                        ->when($model->enabledHasTenantTrait && tenant(), fn($q) => $q->where('tenant_id', tenant('id')))
+                        ->latest()
+                        ->first()
+                )->number;
+
                 $n = $last
                     ? (integer) str($last)->replaceFirst($prefix.'-', '')->toString()
                     : 0;
@@ -28,7 +35,10 @@ trait HasRunningNumber
                     $n = $n + 1;
                     $postfix = str()->padLeft($n, 6, '0');
                     $number = collect([$prefix, $postfix])->filter()->join('-');
-                    $duplicated = DB::table($table)->where('number', $number)->count() > 0;
+                    $duplicated = DB::table($table)
+                        ->when($model->enabledHasTenantTrait && tenant(), fn($q) => $q->where('tenant_id', tenant('id')))
+                        ->where('number', $number)
+                        ->count() > 0;
                 }
 
                 $model->number = $number;
