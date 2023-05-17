@@ -1,6 +1,6 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header :title="$this->title">
-        <x-button label="Create New" wire:click="open({ type: '{{ $type }}' })"/>
+        <x-button label="Create New" :href="route('app.label.create', compact('type'))"/>
     </x-page-header>
 
     <x-box>
@@ -18,10 +18,7 @@
                             </div>
                                 
                             <div class="grow flex items-center gap-3">
-                                <a 
-                                    wire:click="open(@js(['id' => $label->id]))"
-                                    class="text-black grid"
-                                >
+                                <a class="text-black grid" href="{{ route('app.label.update', [$label->id]) }}">
                                     <div class="truncate">
                                         {{ $label->locale('name') }}
                                     </div>
@@ -42,7 +39,10 @@
                                 @if ($maxDepth > 0)
                                     <x-button size="xs" color="gray"
                                         :label="$this->addSublabelButtonName ?? 'Add Sub-label'"
-                                        wire:click="open({ parent_id: {{ $label->id }}, type: '{{ $type }}' })"
+                                        :href="route('app.label.create', [
+                                            'parent_id' => $label->id,
+                                            'type' => $type,
+                                        ])"
                                     />
                                 @endif
 
@@ -75,6 +75,4 @@
             />
         @endif
     </x-box>
-
-    @livewire(lw('app.label.form-modal'), key('label-form-modal'))
 </div>

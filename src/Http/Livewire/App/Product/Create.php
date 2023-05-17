@@ -8,6 +8,8 @@ class Create extends Component
 {
     public $product;
 
+    protected $listeners = ['submitted'];
+
     /**
      * Mount
      */
@@ -19,6 +21,14 @@ class Create extends Component
         ]);
 
         breadcrumbs()->push('Create Product');
+    }
+
+    /**
+     * Submitted
+     */
+    public function submitted($id): mixed
+    {
+        return redirect()->route('app.product.update', [$id]);
     }
 
     /**

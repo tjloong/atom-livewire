@@ -150,6 +150,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.file.dropzone',
 
             'form.select.index',
+            'form.select.tax',
             'form.select.label',
             'form.select.owner',
             'form.select.state',

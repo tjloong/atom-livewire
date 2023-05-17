@@ -11,4 +11,10 @@
         ])
         ->toArray()"
     {{ $attributes->except(['type', 'options']) }}
-/>
+>
+    <x-slot:foot 
+        :label="'New '.component_label($attributes, 'Label')"
+        :href="route('app.label.create', ['type' => $attributes->get('type')])"
+        icon="plus"
+    ></x-slot:foot>
+</x-form.select>

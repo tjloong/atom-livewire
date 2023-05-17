@@ -98,8 +98,10 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // label
             'atom.app.label.listing' => 'App\Label\Listing',
+            'atom.app.label.create' => 'App\Label\Create',
+            'atom.app.label.update' => 'App\Label\Update',
+            'atom.app.label.form' => 'App\Label\Form',
             'atom.app.label.children' => 'App\Label\Children',
-            'atom.app.label.form-modal' => 'App\Label\FormModal',
 
             // blog
             'atom.app.blog.listing' => 'App\Blog\Listing',
@@ -218,7 +220,11 @@ class AtomLivewireServiceProvider extends ServiceProvider
         ];
 
         foreach ($components as $name => $class) {
-            Livewire::component($name, 'Jiannius\\Atom\\Http\\Livewire\\'.$class);
+            $ns = 'Jiannius\\Atom\\Http\\Livewire\\'.$class;
+
+            if (file_exists(atom_ns_path($ns))) {
+                Livewire::component($name, $ns);
+            }
         }
     }
 }

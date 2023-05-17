@@ -41,6 +41,7 @@ class InstallCommand extends Command
         'pages',
         'teams',
         'blogs',
+        'contacts',
         'enquiries',
         'ticketing',
         'plans',
@@ -48,7 +49,6 @@ class InstallCommand extends Command
         'coupons',
         'orders',
         'payments', 
-        'contacts',
         'documents',
         'shareables',
         'tenants',
@@ -101,7 +101,7 @@ class InstallCommand extends Command
                 $selected = $this->argument('modules')
                     ? explode(',', $this->argument('modules'))
                     : $this->choice('Please select modules to install', array_merge(['all'], $this->modules), null, null, true);
-    
+
                 foreach ($this->modules as $module) {
                     if (in_array('all', $selected) || in_array($module, $selected)) {
                         call_user_func([$this, str()->camel('install-'.$module)]);
@@ -417,15 +417,17 @@ class InstallCommand extends Command
 
         if (Schema::hasTable('products')) $this->warn('products table exists, skipped.');
         else {
-            Schema::create('products', function($table) {
+            Schema::create('products', function(Blueprint $table) {
                 $table->id();
                 $table->string('name');
                 $table->string('code')->nullable()->index();
                 $table->string('type')->nullable();
+                $table->string('slug')->nullable()->index();
                 $table->text('description')->nullable();
                 $table->decimal('price', 20, 2)->nullable();
                 $table->decimal('stock', 20, 2)->nullable();
                 $table->boolean('is_active')->nullable();
+                $table->boolean('is_featured')->nullable();
                 $table->timestamps();
             });
 
@@ -582,6 +584,11 @@ class InstallCommand extends Command
                 $table->double('grand_total')->nullable();
                 $table->json('data')->nullable();
                 $table->foreignId('order_id')->nullable()->constrained()->onDelete('cascade');
+
+                if (Schema::hasTable('coupons')) {
+                    $table->foreignId('coupon_id')->nullable()->constrained()->onDelete('set null');
+                }
+
                 $table->foreignId('product_id')->nullable()->constrained()->onDelete('set null');
                 $table->foreignId('product_variant_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamps();
@@ -1247,7 +1254,7 @@ class InstallCommand extends Command
         });
 
         $routes = base_path('routes/web.php');
-        file_put_contents($routes, '');
+        file_put_contents($routes, '<?php');
     }
 
     /**

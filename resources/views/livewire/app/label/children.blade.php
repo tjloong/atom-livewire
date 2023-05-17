@@ -14,7 +14,7 @@
                 </div>
 
                 <div class="grow flex items-center gap-2">
-                    <a wire:click="$emitUp('open', @js(['id' => $child->id]))" class="text-gray-800">
+                    <a class="text-gray-800" href="{{ route('app.label.update', [$child->id]) }}">
                         {{ $child->locale('name') }}
                     </a>
 
@@ -33,7 +33,10 @@
                     @if ($maxDepth > $depth)
                         <x-button size="xs" color="gray"
                             :label="$this->addSublabelButtonName ?? 'Add Sub-label'"
-                            wire:click="$emitUp('open', { parent_id: {{ $child->id }}, type: '{{ $child->type }}' })"
+                            :href="route('app.label.create', [
+                                'parent_id' => $child->id,
+                                'type' => $child->type,
+                            ])"
                         />
                     @endif
 

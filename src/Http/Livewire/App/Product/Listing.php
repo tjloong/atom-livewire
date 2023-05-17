@@ -65,7 +65,7 @@ class Listing extends Component
             ],
             [
                 'name' => 'Category',
-                'tags' => $query->categories->pluck('name.'.app()->currentLocale()),
+                'tags' => $query->categories->pluck('name.'.app()->currentLocale())->toArray(),
             ],
             [
                 'name' => 'Price',

@@ -7,10 +7,12 @@ use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Jiannius\Atom\Traits\Models\HasSlug;
 
 class Product extends Model
 {
     use HasFilters;
+    use HasSlug;
     use HasTrace;
     
     protected $guarded = [];
@@ -19,16 +21,17 @@ class Product extends Model
         'price' => 'float',
         'stock' => 'integer',
         'is_active' => 'boolean',
+        'is_featured' => 'boolean',
     ];
 
     /**
      * Get taxes for product
      */
-    public function taxes(): BelongsToMany
+    public function taxes(): mixed
     {
-        if (enabled_module('taxes')) {
-            return $this->belongsToMany(model('tax'), 'product_taxes');
-        }
+        if (!enabled_module('taxes')) return null;
+
+        return $this->belongsToMany(model('tax'), 'product_taxes');
     }
 
     /**
@@ -58,7 +61,7 @@ class Product extends Model
     /**
      * Get coupons for product
      */
-    public function coupons(): BelongsToMany
+    public function coupons(): mixed
     {
         if (!enabled_module('coupons')) return null;
 

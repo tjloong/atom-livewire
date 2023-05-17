@@ -33,6 +33,7 @@ class Form extends Component
                 },
             ],
             'product.type' => ['required' => 'Product type is required.'],
+            'product.slug' => ['nullable'],
             'product.description' => ['nullable'],
             'product.price' => ['nullable'],
             'product.stock' => ['nullable'],
@@ -56,38 +57,13 @@ class Form extends Component
      */
     public function getOptionsProperty(): array
     {
-        return array_merge(
-            [
-                'types' => collect(model('product')->getTypes())
-                    ->when(
-                        $this->product->exists,
-                        fn($types) => $types->filter(fn($val) => data_get($val, 'value') === $this->product->type)
-                    )
-                    ->map(fn($val) => [
-                        'value' => data_get($val, 'value'),
-                        'label' => data_get($val, 'label'),
-                        'small' => data_get($val, 'description'),
-                    ])
-                    ->toArray(),
-                
-                'categories' => model('label')->readable()
-                    ->where('type', 'product-category')
-                    ->orderBy('name')
-                    ->get()
-                    ->transform(fn($label) => [
-                        'value' => $label->id,
-                        'label' => $label->locale('name'),
-                    ])
-                    ->toArray(),
-            ],
-
-            enabled_module('taxes') ? [
-                'taxes' => model('tax')->readable()->orderBy('name')->get()->map(fn($tax) => [
-                    'value' => $tax->id, 
-                    'label' => $tax->label,
-                ])->toArray(),
-            ] : [],
-        );
+        return [
+            'types' => collect(model('product')->getTypes())->map(fn($val) => [
+                'value' => data_get($val, 'value'),
+                'label' => data_get($val, 'label'),
+                'small' => data_get($val, 'description'),
+            ])->toArray(),
+        ];
     }
 
     /**
@@ -103,14 +79,13 @@ class Form extends Component
     /**
      * Submit
      */
-    public function submit(): mixed
+    public function submit(): void
     {
         $this->validateForm();
+
         $this->persist();
 
-        return $this->product->wasRecentlyCreated
-            ? redirect()->route('app.product.update', [$this->product->id])
-            : $this->popup('Product Updated.');
+        $this->emit('submitted');
     }
 
     /**

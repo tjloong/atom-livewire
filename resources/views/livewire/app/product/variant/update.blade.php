@@ -1,4 +1,4 @@
-<div class="max-w-screen-sm mx-auto">
+<div class="max-w-screen-md mx-auto">
     <x-page-header :title="$variant->name" :subtitle="$variant->code" back>
         <x-button.delete inverted
             title="Delete Product Variant"

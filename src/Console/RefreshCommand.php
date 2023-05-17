@@ -26,8 +26,11 @@ class RefreshCommand extends Command
      */
     public function handle()
     {
-        $this->call('view:clear');
         $this->call('cache:clear');
+        $this->call('view:clear');
+        $this->call('event:clear');
+        $this->call('route:clear');
+        $this->call('config:clear');
         $this->call('livewire:discover');
     }
 }

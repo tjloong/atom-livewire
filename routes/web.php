@@ -77,6 +77,15 @@ if (!config('atom.static_site')) {
             define_route('{userId}', 'App\User\Update')->name('update');
         });
 
+        /**
+         * Labels
+         */
+        define_route()->prefix('label')->as('app.label.')->group(function() {
+            define_route('create', 'App\Label\Create')->name('create');
+            define_route('listing', 'App\Label\Listing')->name('listing');
+            define_route('{labelId}', 'App\Label\Update')->name('update');
+        });
+
         if (config('atom.auth.register')) {
             /**
              * Sign-Ups

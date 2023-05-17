@@ -48,14 +48,6 @@ class Listing extends Component
     }
 
     /**
-     * Open
-     */
-    public function open($data): void
-    {
-        $this->emitTo(lw('app.label.form-modal'), 'open', $data);
-    }
-
-    /**
      * Sort
      */
     public function sort($data): void

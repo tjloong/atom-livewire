@@ -2,43 +2,50 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Label;
 
-use Illuminate\Support\Collection;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
-class FormModal extends Component
+class Form extends Component
 {
     use WithForm;
     use WithPopupNotify;
 
     public $label;
-    public $names;
-
-    protected $listeners = ['open'];
+    public $inputs;
 
     /**
      * Validation
      */
     protected function validation(): array
     {
-        $rules = [
-            'label.type' => ['nullable'],
-            'label.slug' => ['nullable'],
-            'label.parent_id' => ['nullable'],
-        ];
+        return array_merge(
+            [
+                'label.type' => ['nullable'],
+                'label.slug' => ['nullable'],
+                'label.parent_id' => ['nullable'],
+            ],
 
-        foreach ($this->locales as $locale) {
-            $rules['names.'.$locale] = ['required' => 'Label name ('.$locale.') is required.'];
-        }
+            $this->locales->mapWithKeys(fn($locale, $key) => [
+                'inputs.name.'.$locale => ['required' => 'Label name ('.$locale.') is required.'],
+            ])->toArray(),
+        );
+    }
 
-        return $rules;
+    /**
+     * Mount
+     */
+    public function mount()
+    {
+        $this->fill([
+            'inputs.name' => (array)$this->label->name,
+        ]);
     }
 
     /**
      * Get locales property
      */
-    public function getLocalesProperty(): Collection
+    public function getLocalesProperty(): mixed
     {
         return collect(config('atom.locales'));
     }
@@ -60,20 +67,6 @@ class FormModal extends Component
     }
 
     /**
-     * Open
-     */
-    public function open($data): void
-    {
-        $this->label = data_get($data, 'id')
-            ? model('label')->readable()->findOrFail(data_get($data, 'id'))
-            : model('label')->fill($data);
-
-        $this->names = (array)$this->label->name;
-
-        $this->dispatchBrowserEvent('label-form-modal-open');
-    }
-
-    /**
      * Submit
      */
     public function submit(): void
@@ -81,12 +74,11 @@ class FormModal extends Component
         $this->validateForm();
 
         $this->label->fill([
-            'name' => $this->names,
+            'name' => data_get($this->inputs, 'name'),
             'slug' => null,
         ])->save();
 
-        $this->emit('refresh');
-        $this->dispatchBrowserEvent('label-form-modal-close');
+        $this->emit('submitted');
     }
 
     /**
@@ -94,6 +86,6 @@ class FormModal extends Component
      */
     public function render(): mixed
     {
-        return atom_view('app.label.form-modal');
+        return atom_view('app.label.form');
     }
 }

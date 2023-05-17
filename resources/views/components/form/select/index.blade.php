@@ -201,6 +201,17 @@
                     @endforelse
                 @endif
             </div>
+
+            @isset($foot)
+                @if ($foot->isNotEmpty())
+                    {{ $foot }}
+                @else
+                    @php $icon = $foot->attributes->get('icon') @endphp
+                    @php $label = $foot->attributes->get('label') @endphp
+                    @php $href = $foot->attributes->get('href') @endphp
+                    <x-link :icon="$icon" :label="$label" :href="$href" class="p-4 flex items-center justify-center"/>
+                @endif
+            @endisset
         </div>
     </div>
 </x-form.field>

@@ -1,12 +1,10 @@
 <x-form>
     <x-form.group cols="2">
         <x-form.text wire:model.defer="variant.name" label="Variant Name"/>
-    
-        <x-form.field label="Variant Code" name="variant.code">
-            <x-form.text wire:model.defer="variant.code" :label="false">
-                <x-slot:button wire:click="generateCode" icon="refresh"></x-slot:button>
-            </x-form.text>
-        </x-form.field>
+
+        <x-form.text wire:model.defer="variant.code" label="Variant Code">
+            <x-slot:button label="Generate" icon="refresh" wire:click="generateCode"></x-slot:button>
+        </x-form.text>
 
         <x-form.number wire:model.defer="variant.price"/>
         <x-form.number wire:model.defer="variant.stock"/>
@@ -14,7 +12,9 @@
     </x-form.group>
 
     <x-form.group>
-        <x-form.checkbox wire:model="variant.is_default" label="This is default variant"/>
-        <x-form.checkbox wire:model="variant.is_active" label="This variant is active"/>
+        <div>
+            <x-form.checkbox wire:model="variant.is_default" label="Default"/>
+            <x-form.checkbox wire:model="variant.is_active" label="Active"/>
+        </div>
     </x-form.group>
 </x-form>
