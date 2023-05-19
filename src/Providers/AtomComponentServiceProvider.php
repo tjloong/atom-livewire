@@ -145,9 +145,10 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'form.file.index',
             'form.file.url',
+            'form.file.dropzone',
+            'form.file.uploader',
             'form.file.library',
             'form.file.preview',
-            'form.file.dropzone',
 
             'form.select.index',
             'form.select.tax',

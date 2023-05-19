@@ -2,26 +2,57 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Tax;
 
-use Illuminate\Database\Eloquent\Collection;
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
 class Listing extends Component
 {
+    use WithTable;
+
     public $onboarding;
 
-    protected $listeners = ['refresh' => '$refresh'];
-
     /**
-     * Get taxes property
+     * Get query property
      */
-    public function getTaxesProperty(): Collection
+    public function getQueryProperty()
     {
         return model('tax')
             ->readable()
             ->orderBy('country')
             ->orderBy('region')
-            ->orderBy('name')
-            ->get();
+            ->orderBy('name');
+    }
+
+    /**
+     * Get table column
+     */
+    public function getTableColumns($query): array
+    {
+        return [
+            [
+                'name' => 'Tax',
+                'sort' => 'name',
+                'label' => $query->name,
+                'href' => route('app.tax.update', [$query->id]),
+            ],
+
+            [
+                'name' => 'Rate',
+                'sort' => 'rate',
+                'label' => str($query->rate)->finish('%'),
+            ],
+
+            [
+                'name' => 'Region',
+                'class' => 'text-right',
+                'label' => collect([$query->region, $query->country])->filter()->join(', '),
+            ],
+
+            [
+                'name' => 'Status',
+                'status' => $query->is_active ? 'active' : 'inactive',
+            ],
+        ];
     }
 
     /**

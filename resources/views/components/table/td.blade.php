@@ -102,16 +102,27 @@
             <div class="text-sm text-gray-500">{{ format_date($datetime, 'time') }}</div>
         @elseif ($fromNow = $attributes->get('from-now'))
             {{ format_date($fromNow, 'human') }}
-        @elseif ($attributes->get('avatar') || $attributes->get('avatar-placeholder'))
+        @elseif (
+            $attributes->get('avatar') 
+            || $attributes->get('avatar-placeholder')
+            || $attributes->get('file')
+            || $attributes->get('image')
+        )
             <div class="flex items-center gap-3">
                 <div class="shrink-0 flex items-center justify-center">
-                    <x-thumbnail
-                        :url="$attributes->get('avatar')"
-                        :placeholder="$attributes->get('avatar-placeholder')"
-                        size="36"
-                        circle
-                        color="random"
-                    />
+                    @if ($attributes->get('avatar') || $attributes->get('avatar-placeholder'))
+                        <x-thumbnail
+                            :url="$attributes->get('avatar')"
+                            :placeholder="$attributes->get('avatar-placeholder')"
+                            size="36"
+                            circle
+                            color="random"
+                        />
+                    @elseif ($attributes->get('image'))
+                        <x-thumbnail :url="$attributes->get('image')" size="36"/>
+                    @elseif ($attributes->get('file'))
+                        <x-thumbnail :file="$attributes->get('file')" size="36"/>
+                    @endif
                 </div>
 
                 <div class="grid">

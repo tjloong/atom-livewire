@@ -96,7 +96,7 @@ class Index extends Component
             'gray' => [
                 'normal' => 'bg-gray-200 border-2 border-gray-200 text-gray-800',
                 'inverted' => 'border-2 border-transparent hover:bg-gray-100 hover:border-gray-100 text-gray-800',
-                'outlined' => 'bg-white border-2 border-gray-800 text-gray-800',
+                'outlined' => 'bg-white border border-gray-300 text-gray-800',
             ],
             'black' => [
                 'normal' => 'bg-black border-2 border-black text-white',

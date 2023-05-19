@@ -62,10 +62,10 @@
                                 }
                             })
 
-                            window.removeEventListener('library', insert)
+                            window.removeEventListener('media', insert)
                         }
 
-                        window.addEventListener('library', insert)
+                        window.addEventListener('media', insert)
                     })
                 })
             },
@@ -73,6 +73,8 @@
         class="{{ $attributes->get('class') }}"
     >
         <div x-ref="ckeditor" x-show="!loading"></div>
-        <x-form.file.library :filters="['type' => 'image']" upload/>
+        <div x-on:input="$dispatch('media', $event.detail)">
+            <x-form.file.library accept="image/*"/>
+        </div>
     </div>
 </x-form.field>

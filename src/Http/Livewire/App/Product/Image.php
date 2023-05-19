@@ -11,48 +11,38 @@ class Image extends Component
     use WithFile;
     use WithPopupNotify;
 
-    public $files;
+    public $images;
     public $product;
-    public $checkboxes = [];
-
-    protected $listeners = ['refresh' => '$refresh'];
 
     /**
-     * Updated files
+     * Mount
      */
-    public function updatedFiles(): void
+    public function mount()
     {
-        foreach ($this->files as $id) {
-            if (!$this->product->images()->find($id)) {
-                $this->product->images()->attach($id);
-            }
-        }
-
-        $this->files = [];
-        $this->emit('refresh');
+        $this->setImages();
     }
 
     /**
-     * Checkbox
+     * Set images
      */
-    public function checkbox($id): void
+    public function setImages(): void
     {
-        $checkboxes = collect($this->checkboxes);
-
-        if ($checkboxes->contains($id)) $checkboxes = $checkboxes->reject($id);
-        else $checkboxes->push($id);
-
-        $this->checkboxes = $checkboxes->values()->all();
+        $this->fill(['images' => $this->product
+            ->images()
+            ->orderBy('product_images.seq')
+            ->get()
+            ->pluck('id')
+            ->toArray(),
+        ]);
     }
 
     /**
-     * Delete
+     * Updated images
      */
-    public function delete(): void
+    public function updatedImages(): void
     {
-        $this->product->images()->detach($this->checkboxes);
-        $this->reset('checkboxes');
-        $this->emit('refresh');
+        $this->product->images()->sync($this->images);
+        $this->sort(array_keys($this->images));
     }
 
     /**
@@ -61,13 +51,10 @@ class Image extends Component
     public function sort($data): void
     {
         foreach ($data as $seq => $id) {
-            if ($image = $this->product->images()->find($id)) {
-                $image->pivot->seq = $seq;
-                $image->pivot->save();
-            }
+            $this->product->images()->updateExistingPivot($id, compact('seq'));
         }
 
-        $this->popup('Product Images Sorted.');
+        $this->setImages();
     }
 
     /**

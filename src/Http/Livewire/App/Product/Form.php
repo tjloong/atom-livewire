@@ -38,6 +38,7 @@ class Form extends Component
             'product.price' => ['nullable'],
             'product.stock' => ['nullable'],
             'product.is_active' => ['nullable'],
+            'product.is_featured' => ['nullable'],
         ];
     }
 

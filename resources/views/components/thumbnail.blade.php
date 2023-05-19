@@ -61,9 +61,11 @@
                             )
                         }}"
                     />
-                    <div class="grid">
-                        <span class="truncate">{{ $file->name }}</span>
-                    </div>
+                    @if ($size > 40)
+                        <div class="grid">
+                            <span class="truncate">{{ $file->name }}</span>
+                        </div>
+                    @endif
                 </div>
             @endif
         @elseif ($url)

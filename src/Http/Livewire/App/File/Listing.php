@@ -2,83 +2,61 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\File;
 
+use Illuminate\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
+use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class Listing extends Component
 {
     use WithFile;
-    use WithPagination;
     use WithPopupNotify;
+    use WithTable;
 
-    public $selected = [];
-
+    public $sort = 'updated_at,desc';
     public $filters = [
-        'type' => null,
+        'mime' => null,
         'search' => null,
     ];
 
     protected $listeners = ['refresh' => '$refresh'];
 
     /**
-     * Get files property
+     * Get query property
      */
-    public function getFilesProperty()
+    public function getQueryProperty(): Builder
     {
-        return model('file')
-            ->readable()
-            ->filter($this->filters)
-            ->latest()
-            ->paginate(120);
+        return model('file')->readable()->filter($this->filters);
     }
 
     /**
-     * Updated filters
+     * Get options property
      */
-    public function updatedFilters()
+    public function getOptionsProperty(): array
     {
-        $this->resetPage();
+        return [
+            'mime' => [
+                ['value' => 'image/*', 'label' => 'Image'],
+                ['value' => 'video/*', 'label' => 'Video'],
+                ['value' => 'audio/*', 'label' => 'Audio'],
+                ['value' => 'file', 'label' => 'File'],
+                ['value' => 'youtube', 'label' => 'Youtube'],
+            ],
+        ];
     }
 
     /**
-     * Select
+     * Delete
      */
-    public function select($id)
+    public function delete(): void
     {
-        if ($id === '*') {
-            $this->selected = count($this->selected) === count($this->files->items())
-                ? []
-                : collect($this->files->items())->pluck('id')->toArray();
+        if ($this->checkboxes) {
+            model('file')->whereIn('id', $this->checkboxes)->get()->each(fn($q) => $q->delete());
+
+            $this->popup(count($this->checkboxes).' Files Deleted');
+            $this->resetCheckboxes();
         }
-        else if (in_array($id, $this->selected)) {
-            $this->selected = collect($this->selected)->reject(fn($val) => $val === $id)->values()->all();
-        }
-        else {
-            array_push($this->selected, $id);
-        }
-    }
-
-    /**
-     * Edit
-     */
-    public function edit($id)
-    {
-        $this->emitTo(lw('app.file.form-modal'), 'open', $id);
-    }
-
-    /**
-     * Delete file
-     */
-    public function delete()
-    {
-        if (!$this->selected) return;
-
-        model('file')->whereIn('id', $this->selected)->get()->each(fn($q) => $q->delete());
-
-        $this->popup(count($this->selected).' Files Deleted');
-        $this->reset('selected');
     }
 
     /**

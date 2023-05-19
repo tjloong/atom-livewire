@@ -7,6 +7,6 @@
     </x-form.group>
 
     <x-form.group>
-        <x-form.checkbox label="Tax is active" wire:model="tax.is_active"/>
+        <x-form.checkbox wire:model="tax.is_active" label="Active"/>
     </x-form.group>
 </x-form>

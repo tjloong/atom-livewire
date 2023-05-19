@@ -1,102 +1,101 @@
-<div x-data="{ show: false }" class="max-w-screen-xl mx-auto">
-    <x-page-header title="Files and Media">
-        @if (!$selected)
-            <x-button label="Upload" x-on:click="show = !show"/>
-        @endif
-    </x-page-header>
+<div class="max-w-screen-xl mx-auto">
+    <x-page-header title="Files and Media"/>
 
-    <x-box>
-        <div x-show="show" class="p-4 border-b">
-            <x-form.file :library="false" multiple>
-                <x-slot:list></x-slot:list>
-            </x-form.file>
-        </div>
-
-        <div class="flex flex-col divide-y">
-            <div class="p-4 flex items-center justify-between gap-3">
-                <div class="shrink-0">
-                    <div class="flex items-center gap-2">
-                        <x-form.select :label="false"
-                            wire:model="filters.type"
-                            :options="collect(['image', 'video', 'audio', 'file', 'youtube'])
-                                ->map(fn($val) => ['value' => $val, 'label' => ucfirst($val)])"
-                            placeholder="All Types"
-                        />
-
-                        @if ($count = count($selected))
-                            <div class="flex items-center divide-x divide-gray-300 bg-gray-200 text-sm text-black font-medium rounded-full">
-                                <div class="flex items-center gap-2 py-1 px-3">
-                                    <x-icon name="check" class="text-green-500"/>
-                                    <div class="flex items-center gap-1 font-medium">
-                                        {{ __(':count Selected', ['count' => $count]) }}
-                                    </div>
-                                </div>
-                            
-                                <div wire:click="select('*')" class="flex items-center gap-2 justify-center py-1 px-3 cursor-pointer">
-                                    <x-icon name="check-double" class="text-gray-400" size="12"/>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-                    
-                @if ($count)
-                    <div class="shrink-0">
-                        <x-button.delete inverted
-                            :label="'Delete ('.$count.')'"
-                            title="Delete Multiple Files"
-                            message="Are you sure to delete the selected {{ $count }} files?"
-                        />
-                    </div>
-                @else
-                    <div class="shrink-0">
-                        <x-form.text placeholder="Search Files" :label="false"
-                            prefix="icon:search"
-                            wire:model.debounce.300ms="filters.search"
-                            :clear="!empty(data_get($filters, 'search'))"
-                        />
-                    </div>
-                @endif
-            </div>
-
-            <div class="p-4 flex items-center justify-center gap-6 flex-wrap">
-                @forelse ($this->files as $file)
-                    <div wire:click="edit({{ $file->id }})" class="flex flex-col gap-1 cursor-pointer">
-                        <div class="relative rounded-md overflow-hidden shadow">
-                            <x-thumbnail :file="$file" size="125"/>
-
-                            @if (in_array($file->id, $selected) || $selected === 'full')
-                                <div class="absolute inset-0 bg-black/50"></div>
-                            @endif
-
-                            <div
-                                wire:click.stop="select({{ $file->id }})"
-                                class="absolute top-0 left-0 right-0 p-2 bg-gradient-to-b from-gray-500 to-transparent cursor-pointer"
-                            >
-                                <div class="flex items-center justify-between">
-                                    <x-icon name="circle-check" class="{{ in_array($file->id, $selected) ? 'text-green-500' : 'text-white' }}"/>
-
-                                    @if ($type = $file->type)
-                                        <x-badge :label="$type" size="xs"/>
-                                    @endif
-                                </div>
+    <x-table>
+        <x-slot:header>
+            <x-table.searchbar :total="$this->paginator->total()"/>
+            
+            @if ($count = count($checkboxes))
+                <x-table.toolbar>
+                    <x-table.checkboxes :count="$count"/>
+                    <x-button.delete inverted
+                        :label="'Delete ('.$count.')'"
+                        title="Delete Files"
+                        message="Are you sure to DELETE the selected files?"
+                    />
+                </x-table.toolbar>
+            @else
+                <x-table.toolbar class="w-full">
+                    <div 
+                        x-data="{
+                            url: false,
+                            uploading: false,
+                            upload (files) {
+                                document.querySelector('#file-uploader').dispatchEvent(
+                                    new CustomEvent('upload', { bubble: false, detail: files })
+                                )
+                            },
+                        }"
+                        x-on:uploading="uploading = true"
+                        x-on:uploaded="uploading = false; $wire.emit('refresh')"
+                    >
+                        <div x-show="!uploading && !url" class="p-4 bg-white flex items-center gap-3 justify-between">
+                            <x-form.select :label="false"
+                                wire:model="filters.mime"
+                                :options="data_get($this->options, 'mime')"
+                                placeholder="All Types"
+                            />
+            
+                            <div class="flex items-center gap-2">
+                                <input x-ref="file" 
+                                    x-on:change="upload($event.target.files)" 
+                                    x-on:input.stop
+                                    type="file" 
+                                    class="hidden" 
+                                    multiple
+                                >
+                
+                                <x-button label="Upload" x-on:click="$refs.file.click()" color="gray" outlined/>
+                                <x-button label="From URL" x-on:click="url = true" icon="code" color="gray" outlined/>
                             </div>
                         </div>
-        
-                        <div class="font-medium text-gray-500 px-1 text-sm">
-                            {{ str($file->name)->limit(12) }}
+
+                        <div class="bg-slate-100">
+                            <x-form.file.uploader/>
+                        </div>
+
+                        <div x-show="url" x-on:input.stop="url = false; $wire.emit('refresh')" class="p-4">
+                            <div class="flex justify-end">
+                                <x-close x-on:click="url = false"/>
+                            </div>
+                            <x-form.file.url/>
                         </div>
                     </div>
-                @empty
-                    <div class="col-span-6">
-                        <x-empty-state title="No Files" subtitle="File list is empty"/>
-                    </div>
-                @endforelse
-            </div>
-        </div>
-    </x-box>
 
-    {!! $this->files->links() !!}
+                </x-table.toolbar>
+            @endif
+        </x-slot:header>
+
+        <x-slot:thead>
+            <x-table.th checkbox/>
+            <x-table.th label="File Name" sort="name"/>
+            <x-table.th label="Size" sort="size"/>
+            <x-table.th label="Last Updated" sort="updated_at"/>
+        </x-slot:thead>
+
+        @foreach ($this->paginator->items() as $file)
+            <x-table.tr>
+                <x-table.td :checkbox="$file->id"/>
+                <x-table.td>
+                    <div class="flex items-center gap-3">
+                        <x-thumbnail :file="$file" size="30"/>
+                        <div class="grow">
+                            <div wire:click="$emitTo(@js(lw('app.file.form-modal')), 'open', @js($file->id))" class="cursor-pointer font-medium">
+                                {{ str($file->name)->limit(50) }}
+                            </div>
+                            <div class="text-sm font-medium text-gray-500">
+                                {{ $file->mime }}
+                            </div>
+                        </div>
+                    </div>
+                </x-table.td>
+                <x-table.td :label="$file->size" class="text-right"/>
+                <x-table.td :date="$file->updated_at" class="text-right"/>
+            </x-table.tr>
+        @endforeach
+    </x-table>
+
+    {!! $this->paginator->links() !!}
 
     @livewire(lw('app.file.form-modal'), key('file-form'))
 </div>

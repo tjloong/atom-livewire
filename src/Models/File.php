@@ -157,28 +157,27 @@ class File extends Model
     }
 
     /**
-     * Scope for type
+     * Scope for mime
      */
-    public function scopeType($query, $types): void
+    public function scopeMime($query, $mime): void
     {
-        if ($types !== 'all') {
-            $query->where(function($q) use ($types) {
-                foreach ((array)$types as $type) {
-                    if ($type === 'image') $q->orWhere('mime', 'like', 'image/%');
-                    if ($type === 'video') $q->orWhere('mime', 'like', 'video/%');
-                    if ($type === 'audio') $q->orWhere('mime', 'like', 'audio/%');
-                    if ($type === 'youtube') $q->orWhere('mime', 'youtube');
-                    if ($type === 'file') {
-                        $q->orWhere(fn($q) => $q
-                            ->where('mime', 'not like', 'image/%')
-                            ->where('mime', 'not like', 'video/%')
-                            ->where('mime', 'not like', 'audio/%')
-                            ->where('mime', '<>', 'youtube')
-                        );
-                    }
+        $mime = explode(',', $mime);
+        
+        $query->where(function($q) use ($mime) {
+            foreach ($mime as $val) {
+                if ($val === 'file') {
+                    $q->orWhere(fn($q) => $q
+                        ->where('mime', 'not like', 'image/%')
+                        ->where('mime', 'not like', 'video/%')
+                        ->where('mime', 'not like', 'audio/%')
+                        ->where('mime', '<>', 'youtube')
+                    );
                 }
-            });
-        }
+                else {
+                    $q->orWhere('mime', 'like', str($val)->replace('*', '%')->toString());
+                }
+            }
+        });
     }
 
     /**

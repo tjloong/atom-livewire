@@ -1,8 +1,5 @@
 @if ($slot->isNotEmpty())
-    <div {{ $attributes->class([
-        'py-3 px-4',
-        $attributes->get('class', 'flex items-center justify-between gap-2')
-    ]) }}>
+    <div class="{{ $attributes->get('class', 'py-3 px-4 flex items-center justify-between gap-2') }}">
         {{ $slot }}
     </div>
 @endif
