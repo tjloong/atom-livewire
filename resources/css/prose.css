@@ -63,7 +63,7 @@
 }
 .prose table th,
 .prose table td {
-    @apply py-1 px-2 border border-gray-300 align-top;
+    @apply py-1 px-2 border border-gray-300;
 }
 .prose figure.table {
     @apply m-0;
