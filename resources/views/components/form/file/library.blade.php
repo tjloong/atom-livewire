@@ -25,7 +25,7 @@
         },
         open () {
             this.show = true
-            this.$nextTick(() => this.fetch())
+            if (!this.files.length) this.$nextTick(() => this.fetch())
         },
         close () {
             this.show = false
@@ -68,7 +68,6 @@
         reset () {
             this.page = 1
             this.text = null
-            this.files = []
             this.checkboxes = []
             this.url = false
         },
@@ -77,7 +76,7 @@
                 this.files.find(file => (file.id === id))
             ))
 
-            this.$dispatch('input', this.config.multiple ? value : value[0])
+            this.$dispatch('input', value)
             this.close()
         },
     }"

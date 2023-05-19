@@ -65,7 +65,7 @@
                 {{ $attributes->wire('sorted') }}
             >
                 @if ($accept === 'image/*')
-                    <div x-ref="sortable" class="flex items-center gap-4 flex-wrap p-4 bg-white">
+                    <div x-ref="sortable" class="flex items-center gap-4 flex-wrap p-4 bg-white max-h-[400px] overflow-auto">
                         @foreach ($files as $file)
                             <div class="rounded-lg" data-sortable-id="{{ $file->id }}">
                                 <x-thumbnail :file="$file" x-on:click.stop="preview('{{ $file->url }}')">
@@ -89,7 +89,7 @@
                         @endforeach
                     </div>
                 @else
-                    <div x-ref="sortable" class="flex flex-col divide-y bg-white">
+                    <div x-ref="sortable" class="flex flex-col divide-y bg-white max-h-[400px] overflow-auto">
                         @foreach ($files as $file)
                             <div class="py-2 px-4 flex items-center gap-3" data-sortable-id="{{ $file->id }}">
                                 @if ($file->is_image)
