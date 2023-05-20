@@ -1,6 +1,6 @@
 <div {{
     $attributes->class([
-        'box bg-white border shadow print:shadow-transparent',
+        'box bg-white border shadow overflow-hidden',
         $attributes->get('class', 'rounded-xl'),
     ])->except('header')
 }}>
@@ -41,7 +41,7 @@
 
     @isset ($foot)
         <div {{ $foot->attributes->class([
-            'bg-gray-100 rounded-b-md',
+            'bg-slate-100',
             $foot->attributes->get('class', 'p-4'),
         ]) }}">
             {{ $foot }}

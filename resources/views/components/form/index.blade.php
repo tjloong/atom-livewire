@@ -88,12 +88,12 @@
         
             @isset($foot)
                 @if ($foot->isNotEmpty())
-                    <div class="py-4 px-6 bg-gray-100 rounded-b-lg">
+                    <div class="py-4 px-6 bg-slate-100 rounded-b-lg">
                         {{ $foot }}
                     </div>
                 @endif
             @else
-                <div class="py-4 px-6 bg-gray-100 rounded-b-lg">
+                <div class="py-4 px-6 bg-slate-100 rounded-b-lg">
                     <x-button.submit/>
                 </div>
             @endisset

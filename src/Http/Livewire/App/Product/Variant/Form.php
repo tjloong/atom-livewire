@@ -63,12 +63,13 @@ class Form extends Component
     /**
      * Submit
      */
-    public function submit(): mixed
+    public function submit(): void
     {
         $this->validateForm();
+
         $this->persist();
 
-        return breadcrumbs()->back();
+        $this->emit('submitted', $this->variant->id);
     }
 
     /**

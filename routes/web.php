@@ -345,10 +345,10 @@ if (enabled_module('shareables')) {
 }
 
 /**
- * Web
+ * Blogs
  */
 if (enabled_module('blogs')) {
-    define_route(config('atom.blog.route', 'blog/{slug?}'), 'Web\Blog')->name('web.blog');
+    define_route('blog/{slug?}', 'Web\Blog')->name('web.blog');
 }
 
 /**
@@ -356,10 +356,15 @@ if (enabled_module('blogs')) {
  */
 define_route('thank/{slug?}', 'Web\Thank')->name('web.thank');
 
+/**
+ * Landing page
+ */
+define_route('/', 'Web\Home')->name('web.home');
+
 // A catch all route after the app is booted
 // so this route will be register after the consuming app's routes
 app()->booted(function() {
-    define_route('{slug?}', 'Web\CatchAll')
+    define_route('{slug}', 'Web\CatchAll')
         ->middleware('web')
         // slugs to exclude
         ->where(['slug' => '^(?!'.implode('|', [

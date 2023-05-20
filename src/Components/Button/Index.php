@@ -24,7 +24,7 @@ class Index extends Component
         $icon = null,
         $label = null,
         $size = 'base',
-        $color = 'theme',
+        $color = 'default',
         $block = false,
         $inverted = false, 
         $outlined = false,
@@ -102,6 +102,11 @@ class Index extends Component
                 'normal' => 'bg-black border-2 border-black text-white',
                 'inverted' => 'border-2 border-transparent hover:bg-black hover:border-black text-black',
                 'outlined' => 'bg-white border-2 border-black text-black',
+            ],
+            'default' => [
+                'normal' => 'bg-white border border-gray-300 text-gray-800',
+                'inverted' => 'bg-white border border-gray-300 text-gray-800',
+                'outlined' => 'bg-white border border-gray-300 text-gray-800',
             ],
         ];
 

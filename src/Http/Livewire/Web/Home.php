@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Http\Livewire\Web;
 
 use Livewire\Component;
 
-class Index extends Component
+class Home extends Component
 {
     /**
      * Get plans property
@@ -21,6 +21,6 @@ class Index extends Component
      */
     public function render()
     {
-        return atom_view('web');
+        return atom_view('web.home');
     }
 }

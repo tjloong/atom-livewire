@@ -34,6 +34,7 @@ class Listing extends Component
     {
         return model('product')
             ->readable()
+            ->with('variants', 'categories')
             ->filter($this->filters);
     }
 
@@ -61,9 +62,6 @@ class Listing extends Component
                     : null
             ],
             [
-                'active' => $query->is_active,
-            ],
-            [
                 'name' => 'Category',
                 'tags' => $query->categories->pluck('name.'.app()->currentLocale())->toArray(),
             ],
@@ -71,8 +69,20 @@ class Listing extends Component
                 'name' => 'Price',
                 'sort' => 'price',
                 'class' => 'text-right',
-                'amount' => $query->price,
+                'label' => $query->type === 'variant'
+                    ? (collect([
+                        currency($query->variants->min('price')),
+                        currency($query->variants->max('price')),
+                    ])->filter()->join(' ~ '))
+                    : currency($query->price),
             ],
+            [
+                'name' => 'Status',
+                'status' => collect([
+                    'yellow' => $query->is_featured ? 'feat' : null,
+                    $query->is_active ? 'active' : 'inactive',
+                ])->filter()->toArray(),
+            ]
         ];
     }
 

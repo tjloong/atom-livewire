@@ -9,6 +9,8 @@ class Create extends Component
     public $product;
     public $variant;
 
+    protected $listeners = ['submitted'];
+
     /**
      * Mount
      */
@@ -23,6 +25,14 @@ class Create extends Component
         ]);
     
         breadcrumbs()->push('Create Product Variant');
+    }
+
+    /**
+     * Submitted
+     */
+    public function submitted(): mixed
+    {
+        return breadcrumbs()->back();
     }
 
     /**

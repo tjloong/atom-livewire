@@ -2,11 +2,16 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Product\Variant;
 
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithPopupNotify;
+
     public $variant;
+
+    protected $listeners = ['submitted'];
 
     /**
      * Mount
@@ -26,6 +31,14 @@ class Update extends Component
         $this->variant->delete();
 
         return breadcrumbs()->back();
+    }
+
+    /**
+     * Submitted
+     */
+    public function submitted(): mixed
+    {
+        return $this->popup('Product Variant Updated.');
     }
 
     /**

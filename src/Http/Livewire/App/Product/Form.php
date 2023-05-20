@@ -2,12 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Product;
 
+use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Form extends Component
 {
+    use WithFile;
     use WithForm;
     use WithPopupNotify;
 
@@ -47,10 +49,7 @@ class Form extends Component
      */
     public function mount(): void
     {
-        $this->fill([
-            'inputs.taxes' => $this->product->taxes->pluck('id')->toArray(),
-            'inputs.categories' => $this->product->categories->pluck('id')->toArray(),
-        ]);
+        $this->setInputs();
     }
 
     /**
@@ -68,6 +67,33 @@ class Form extends Component
     }
 
     /**
+     * Updated inputs images
+     */
+    public function updatedInputsImages(): void
+    {
+        $this->product->images()->sync(data_get($this->inputs, 'images'));
+        $this->sort(array_keys(data_get($this->inputs, 'images')));
+        $this->setInputs();
+    }
+
+    /**
+     * Set inputs
+     */
+    public function setInputs(): void
+    {
+        $this->fill([
+            'inputs.taxes' => $this->product->taxes->pluck('id')->toArray(),
+            'inputs.categories' => $this->product->categories->pluck('id')->toArray(),
+            'inputs.images' => $this->product
+                ->images()
+                ->orderBy('product_images.seq')
+                ->get()
+                ->pluck('id')
+                ->toArray(),
+        ]);
+    }
+
+    /**
      * Generate code
      */
     public function generateCode(): void
@@ -75,6 +101,18 @@ class Form extends Component
         $this->product->fill([
             'code' => model('product')->generateCode(),
         ]);
+    }
+
+    /**
+     * Sort images
+     */
+    public function sort($data): void
+    {
+        foreach ($data as $seq => $id) {
+            $this->product->images()->updateExistingPivot($id, compact('seq'));
+        }
+
+        $this->setInputs();
     }
 
     /**

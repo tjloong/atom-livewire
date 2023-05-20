@@ -1,67 +1,53 @@
-<x-box header="Product Variants">
-    <x-slot:buttons>
-        <x-button size="sm" color="gray"
+<x-box header="Variants">
+    @if (count($this->variants))
+        <div class="max-w-[500px] overflow-auto">
+            <x-form.sortable wire:sorted="sort" class="flex flex-col divide-y">
+                @foreach ($this->variants as $variant)
+                    <a 
+                        href="{{ route('app.product.variant.update', [$variant->id]) }}"
+                        class="flex items-center gap-4 py-2 px-4 text-gray-800 hover:bg-slate-100"
+                        data-sortable-id="{{ $variant->id }}"
+                    >
+                        <div class="grow flex flex-col">
+                            <div class="font-medium truncate">
+                                {{ $variant->name }}
+                            </div>
+    
+                            @if ($code = $variant->code)
+                                <div class="text-sm text-gray-400 font-medium">
+                                    {{ $code }}
+                                </div>
+                            @endif
+                        </div>
+    
+                        <div class="shrink-0">
+                            @if (!$variant->is_active)
+                                <x-badge label="inactive" size="xs"/>
+                            @elseif ($variant->is_default)
+                                <x-badge label="default" size="xs"/>
+                            @endif
+                        </div>
+    
+                        <div class="shrink-0">
+                            @if (is_numeric($variant->price)) 
+                                {{ currency($variant->price) }}
+                            @else
+                                {{ currency(
+                                    data_get($variant->price, 'amount'), 
+                                    data_get($variant->price, 'currency')
+                                ) }}
+                            @endif
+                        </div>
+                    </a>
+                @endforeach
+            </x-form.sortable>
+        </div>
+    @endif
+
+    <x-slot:foot>
+        <x-button block
             label="New Variant"
             :href="route('app.product.variant.create', [$product->id])"
         />
-    </x-slot:buttons>
-
-    @if (count($this->variants))
-        <x-form.sortable wire:sorted="sort" :config="['handle' => '.sort-handle']" class="grid divide-y">
-            @foreach ($this->variants as $variant)
-                <div 
-                    class="flex items-center gap-4 py-2 px-4 hover:bg-gray-100"
-                    data-sortable-id="{{ $variant->id }}"
-                >
-                    <div class="shrink-0 cursor-move sort-handle flex text-gray-400">
-                        <x-icon name="sort" class="m-auto"/>
-                    </div>
-
-                    <div class="shrink-0">
-                        <figure class="w-8 h-8 bg-gray-100 rounded shadow overflow-hidden">
-                            @if ($url = optional($variant->image)->url)
-                                <img src="{{ $url }}" class="w-full h-full object-cover">
-                            @endif
-                        </figure>
-                    </div>
-
-                    <div class="grow">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="grid">
-                                <a href="{{ route('app.product.variant.update', [$variant->id]) }}" class="grow">
-                                    {{ $variant->name }}
-                                </a>
-
-                                @if ($code = $variant->code)
-                                    <div class="text-sm text-gray-400 font-medium">
-                                        {{ $code }}
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="shrink-0">
-                                @if ($variant->is_default)
-                                    <x-badge label="default"/>
-                                @endif
-                                <x-badge :label="$variant->is_active ? 'active' : 'inactive'"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="shrink-0">
-                        @if (is_numeric($variant->price)) 
-                            {{ currency($variant->price) }}
-                        @else
-                            {{ currency(
-                                data_get($variant->price, 'amount'), 
-                                data_get($variant->price, 'currency')
-                            ) }}
-                        @endif
-                    </div>
-                </div>
-            @endforeach
-        </x-form.sortable>
-    @else
-        <x-empty-state title="No product variants" subtitle="This product do not have any variants."/>
-    @endif
+    </x-slot:foot>
 </x-box>

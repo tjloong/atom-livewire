@@ -23,15 +23,18 @@
         @module('taxes')
             <x-form.select.tax wire:model="inputs.taxes" multiple/>
         @endmodule
-        
-        @if ($product->type === 'variant')
-            <div class="col-span-2">
-                <x-alert>
-                    {{ __('Selling prices will follow each variant configuration.') }}
-                </x-alert>
-            </div>
-        @else
+
+        @if ($product->type !== 'variant')
             <x-form.number wire:model.defer="product.price"/>
+        @endif
+
+        @if ($product->exists)
+            <div class="col-span-2">
+                <x-form.file accept="image/*" multiple sortable
+                    wire:model="inputs.images"
+                    wire:sorted="sort"
+                />
+            </div>
         @endif
     </x-form.group>
 

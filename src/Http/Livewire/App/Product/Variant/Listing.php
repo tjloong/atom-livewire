@@ -20,7 +20,9 @@ class Listing extends Component
     {
         return $this->product->variants()
             ->filter($this->filters)
+            ->orderBy('is_active', 'desc')
             ->orderBy('seq')
+            ->orderBy('id')
             ->get();
     }
 
