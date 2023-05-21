@@ -183,6 +183,17 @@ if (!config('atom.static_site')) {
         }
 
         /**
+         * Banners
+         */
+        if (enabled_module('banners')) {
+            define_route()->prefix('banner')->as('app.banner.')->group(function() {
+                define_route('listing', 'App\Banner\Listing')->name('listing');
+                define_route('create', 'App\Banner\Create')->name('create');
+                define_route('update/{bannerId}', 'App\Banner\Update')->name('update');
+            });
+        }
+
+        /**
          * Contacts
          */
         if (enabled_module('contacts')) {

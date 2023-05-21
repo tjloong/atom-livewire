@@ -1,11 +1,27 @@
+@props([
+    'sortable' => !empty($attributes->wire('sorted')->value()),
+])
+
 <div 
     id="{{ $attributes->get('id', 'table') }}"
     x-cloak
     x-data="{
+        sortable: @js($sortable),
         checkboxes: [],
         get isEmpty () {
             const rows = Array.from($el.querySelectorAll('table > tbody > tr')).length
             return rows <= 0
+        },
+        init () {
+            if (this.sortable) {
+                new Sortable(this.$el.querySelector('tbody'), { onSort: () => this.sort() })
+            }
+        },
+        sort () {
+            const values = Array.from(this.$el.querySelectorAll('tbody > tr'))
+                .map(tr => (tr.getAttribute('data-sortable-id')))
+
+            this.$dispatch('sorted', values)
         },
         toggleCheckbox (data) {
             if (data === '*') {
@@ -28,6 +44,7 @@
         },
     }"
     class="relative flex flex-col divide-y bg-white border shadow rounded-lg"
+    {{ $attributes->wire('sorted') }}
 >
     @isset($header) {{ $header }} @endif
 
@@ -39,10 +56,12 @@
         @else <x-empty-state/>
         @endif
     @else
-        <div {{ $attributes->class([
-            'w-full overflow-auto rounded-b-lg',
-            $attributes->get('class', 'max-h-screen'),
-        ])->only('class') }}>
+        <div 
+            {{ $attributes->class([
+                'w-full overflow-auto rounded-b-lg',
+                $attributes->get('class', 'max-h-screen'),
+            ])->only('class') }}
+        >
             <table class="w-max min-w-full divide-y divide-gray-200">
                 @if ($data = $attributes->get('data'))
                     <thead>
@@ -70,7 +89,9 @@
 
                     <tbody class="bg-white">
                         @foreach ($data as $row)
-                            <x-table.tr>
+                            <x-table.tr data-sortable-id="{{
+                                data_get(collect($row)->first(), 'sortable_id')
+                            }}">
                                 @foreach (array_values($row) as $i => $col)
                                     <x-table.td
                                         :checkbox="data_get($col, 'checkbox')"
@@ -89,6 +110,7 @@
                                         :small="data_get($col, 'small')"
                                         :avatar="data_get($col, 'avatar')"
                                         :avatar-placeholder="data_get($col, 'avatar-placeholder')"
+                                        :image="data_get($col, 'image')"
                                         :active="data_get($col, 'active')"
                                         :menu="data_get($col, 'menu')"
                                         :class="

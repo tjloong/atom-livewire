@@ -51,6 +51,7 @@ class InstallCommand extends Command
         'payments', 
         'documents',
         'shareables',
+        'banners',
         'tenants',
     ];
 
@@ -130,6 +131,33 @@ class InstallCommand extends Command
         $value = $enabled->unique()->values()->all();
 
         $query->update(['value' => json_encode($value)]);
+    }
+
+    /**
+     * Install banners
+     */
+    private function installBanners()
+    {
+        $this->newLine();
+        $this->info('Installing banners table...');
+
+        if (Schema::hasTable('banners')) $this->warn('banners table exists, skipped.');
+        else {
+            Schema::create('banners', function (Blueprint $table) {
+                $table->id();
+                $table->string('type')->nullable();
+                $table->string('name')->nullable();
+                $table->string('slug')->nullable();
+                $table->text('description')->nullable();
+                $table->json('placement')->nullable();
+                $table->string('url')->nullable();
+                $table->integer('seq')->nullable();
+                $table->boolean('is_active')->nullable();
+                $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
+                $table->timestamps();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            });
+        }
     }
 
     /**
