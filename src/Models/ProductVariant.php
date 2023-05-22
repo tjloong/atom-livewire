@@ -20,6 +20,16 @@ class ProductVariant extends Model
         'image_id' => 'integer',
         'product_id' => 'integer',
     ];
+
+    /**
+     * Model booted
+     */
+    protected static function booted(): void
+    {
+        static::saving(function ($variant) {
+            $variant->code = $variant->code ?? $variant->generateCode();
+        });
+    }
     
     /**
      * Get product for product variant

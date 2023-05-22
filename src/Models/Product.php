@@ -25,6 +25,16 @@ class Product extends Model
     ];
 
     /**
+     * Model booted
+     */
+    protected static function booted(): void
+    {
+        static::saving(function ($product) {
+            $product->code = $product->code ?? $product->generateCode();
+        });
+    }
+
+    /**
      * Get taxes for product
      */
     public function taxes(): mixed

@@ -124,7 +124,7 @@ class Form extends Component
 
         $this->persist();
 
-        $this->emit('submitted');
+        $this->emit('submitted', $this->product->id);
     }
 
     /**

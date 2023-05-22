@@ -3,7 +3,7 @@
         <x-form.text wire:model.defer="variant.name" label="Variant Name"/>
 
         <x-form.text wire:model.defer="variant.code" label="Variant Code">
-            <x-slot:button label="Generate" icon="refresh" wire:click="generateCode"></x-slot:button>
+            <x-slot:button icon="refresh" wire:click="generateCode"></x-slot:button>
         </x-form.text>
 
         <x-form.number wire:model.defer="variant.price"/>

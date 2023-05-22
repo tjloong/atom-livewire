@@ -3,7 +3,7 @@
         <x-form.text wire:model.defer="product.name" label="Product Name"/>
         
         <x-form.text wire:model.defer="product.code" label="Product Code">
-            <x-slot:button label="Generate" icon="arrows-rotate" wire:click="generateCode"></x-slot:button>
+            <x-slot:button icon="arrows-rotate" wire:click="generateCode"></x-slot:button>
         </x-form.text>
 
         <x-form.slug wire:model.defer="product.slug" :url="url('product/'.$product->slug)"/>
