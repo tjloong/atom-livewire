@@ -12,16 +12,20 @@
 ])
 
 <x-form.field {{ $attributes }}>
-    <div x-data="{
-        checkboxes: [],
-        config: {
-            model: @js($model),
-            accept: @js($accept),
-            multiple: @js($multiple),
-            sortable: @js($sortable),
-            upload: @js($upload),
-        },
-    }" class="relative border rounded-lg bg-slate-100 flex flex-col divide-y overflow-hidden" id="{{ $id }}">
+    <div
+        x-data="{
+            checkboxes: [],
+            config: {
+                model: @js($model),
+                accept: @js($accept),
+                multiple: @js($multiple),
+                sortable: @js($sortable),
+                upload: @js($upload),
+            },
+        }"
+        class="relative border rounded-lg bg-slate-100 flex flex-col divide-y overflow-hidden"
+        id="{{ $id }}"
+    >
         @if (
             $value
             && ($files = model('file')->whereIn('id', (array)$value)->get())
@@ -61,6 +65,7 @@
                     },
                 }"
                 class="flex flex-col divide-y"
+                id="{{ $id }}-uploaded-list"
                 {{ $attributes->wire('remove') }}
                 {{ $attributes->wire('sorted') }}
             >
@@ -99,7 +104,7 @@
                                 @else
                                     <x-icon name="file" class="text-gray-400 shrink-0"/>
                                 @endif
-                                <div class="grow truncate">{{ $file->name }}</div>
+                                <div x-on:click="window.open(@js($file->url), '_blank')" class="grow truncate cursor-pointer font-medium">{{ $file->name }}</div>
                                 <div x-on:click.stop="checkboxes = [{{ $file->id }}]; remove()" class="shrink-0">
                                     <x-close color="red"/>
                                 </div>
@@ -128,84 +133,90 @@
             </div>
         @endif
         
-        <div 
-            x-data="{
-                dropzone: false,
-                uploading: false,
-                upload (files) {
-                    this.dropzone = false
-                    document.querySelector(@js('#'.$id.'-uploader')).dispatchEvent(
-                        new CustomEvent('upload', { bubble: false, detail: files })
-                    )
-                },
-                browse () {
-                    document.querySelector('#{{ $id.'-library'}}').dispatchEvent(
-                        new CustomEvent('open', { bubble: false })
-                    )
-                },
-                input (files) {
-                    this.uploading = false
+        @if (
+            !$multiple
+            || $multiple === true
+            || (is_numeric($multiple) && count($value) < $multiple)
+        )
+            <div 
+                x-data="{
+                    dropzone: false,
+                    uploading: false,
+                    upload (files) {
+                        this.dropzone = false
+                        document.querySelector(@js('#'.$id.'-uploader')).dispatchEvent(
+                            new CustomEvent('upload', { bubble: false, detail: files })
+                        )
+                    },
+                    browse () {
+                        document.querySelector('#{{ $id.'-library'}}').dispatchEvent(
+                            new CustomEvent('open', { bubble: false })
+                        )
+                    },
+                    input (files) {
+                        this.uploading = false
 
-                    const id = config.multiple ? files.map(file => (file.id)) : files[0].id
+                        const id = config.multiple ? files.map(file => (file.id)) : files[0].id
 
-                    if (config.model) {
-                        if (config.multiple) {
-                            const value = (this.$wire.get(config.model) || []).concat(id)
-                            const unique = [...new Set(value)]
-                            this.$wire.set(config.model, unique)
+                        if (config.model) {
+                            if (config.multiple) {
+                                const value = (this.$wire.get(config.model) || []).concat(id)
+                                const unique = [...new Set(value)]
+                                this.$wire.set(config.model, unique)
+                            }
+                            else this.$wire.set(config.model, id)
                         }
-                        else this.$wire.set(config.model, id)
                     }
-                }
-            }"
-            x-show="!checkboxes.length"
-            x-on:dropped="upload($event.detail)"
-            x-on:uploaded="input($event.detail)"
-            x-on:uploading="uploading = true"
-            id="uploader"
-        >
-            @if ($upload)
-                <x-form.file.uploader :id="$id.'-uploader'" 
-                    :accept="$accept"
-                    :location="$location"
-                    :visibility="$visibility"
-                />
-            @endif
-
-            <div x-show="!uploading" class="p-4 flex items-center gap-2 flex-wrap">
-                @if ($library)
-                    <x-button icon="folder-open" color="gray" outlined
-                        x-on:click="browse"
-                        label="Browse Library"
+                }"
+                x-show="!checkboxes.length"
+                x-on:dropped="upload($event.detail)"
+                x-on:uploaded="input($event.detail)"
+                x-on:uploading="uploading = true"
+                id="{{ $id }}-actions"
+            >
+                @if ($upload)
+                    <x-form.file.uploader :id="$id.'-uploader'" 
+                        :accept="$accept"
+                        :location="$location"
+                        :visibility="$visibility"
                     />
                 @endif
-            
-                @if ($upload)
-                    <input x-ref="input"
-                        x-on:change="upload($event.target.files)"
-                        x-on:input.stop
-                        type="file" 
-                        accept="{{ $accept }}" 
-                        class="hidden" 
-                        {{ $multiple ? 'multiple' : null }}
-                    >
 
-                    <x-button x-on:click="$refs.input.click()" label="Upload File" color="gray" outlined/>
+                <div x-show="!uploading" class="p-4 flex items-center gap-2 flex-wrap">
+                    @if ($library)
+                        <x-button icon="folder-open" color="gray" outlined
+                            x-on:click="browse"
+                            label="Browse Library"
+                        />
+                    @endif
+                
+                    @if ($upload)
+                        <input x-ref="input"
+                            x-on:change="upload($event.target.files)"
+                            x-on:input.stop
+                            type="file" 
+                            accept="{{ $accept }}" 
+                            class="hidden" 
+                            {{ $multiple ? 'multiple' : null }}
+                        >
 
-                    <x-form.file.dropzone class="grow"/>    
+                        <x-button x-on:click="$refs.input.click()" label="Upload File" color="gray" outlined/>
+
+                        <x-form.file.dropzone class="grow"/>    
+                    @endif
+                </div>
+
+                @if ($library)
+                    <div x-on:input="input($event.detail)">
+                        <x-form.file.library 
+                            :id="$id.'-library'"
+                            :accept="$accept" 
+                            :multiple="$multiple"
+                            :header="'Select '.component_label($attributes)"
+                        />
+                    </div>
                 @endif
             </div>
-
-            @if ($library)
-                <div x-on:input="input($event.detail)">
-                    <x-form.file.library 
-                        :id="$id.'-library'"
-                        :accept="$accept" 
-                        :multiple="$multiple"
-                        :header="'Select '.component_label($attributes)"
-                    />
-                </div>
-            @endif
-        </div>
+        @endif
     </div>
 </x-form.field>
