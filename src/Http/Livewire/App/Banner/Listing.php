@@ -14,6 +14,7 @@ class Listing extends Component
 
     public $filters = [
         'search' => null,
+        'status' => null,
     ];
 
     /**
@@ -39,6 +40,9 @@ class Listing extends Component
     {
         return [
             [
+                'checkbox' => $query->id,
+            ],
+            [
                 'name' => 'Name',
                 'sort' => 'name',
                 'label' => $query->name,
@@ -52,8 +56,18 @@ class Listing extends Component
                 'label' => $query->type,
             ],
             [
+                'name' => 'Start Date',
+                'sort' => 'start_at',
+                'date' => $query->start_at ?? '--',
+            ],
+            [
+                'name' => 'End Date',
+                'sort' => 'end_at',
+                'date' => $query->end_at ?? '--',
+            ],
+            [
                 'name' => 'Status',
-                'status' => $query->is_active ? 'active' : 'inactive',
+                'status' => $query->status,
             ],
         ];
     }
@@ -75,6 +89,7 @@ class Listing extends Component
     {
         if ($this->checkboxes) {
             model('banner')->whereIn('id', $this->checkboxes)->delete();
+            $this->resetCheckboxes();
         }
     }
 

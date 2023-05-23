@@ -36,6 +36,8 @@ class Form extends Component
             'banner.placement' => ['nullable'],
             'banner.is_active' => ['nullable'],
             'banner.image_id' => ['required' => 'Image is required.'],
+            'banner.start_at' => ['nullable'],
+            'banner.end_at' => ['nullable'],
         ];
     }
 

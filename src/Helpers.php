@@ -75,6 +75,7 @@ function get_status_color($status = null)
         'admin' => 'yellow',
         'unpaid' => 'yellow',
         'opened' => 'yellow',
+        'upcoming' => 'yellow',
         'queueing' => 'yellow',
         'submitted' => 'yellow',
         'checked-out' => 'yellow',

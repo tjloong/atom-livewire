@@ -154,6 +154,8 @@ class InstallCommand extends Command
                 $table->integer('seq')->nullable();
                 $table->boolean('is_active')->nullable();
                 $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
+                $table->date('start_at')->nullable();
+                $table->date('end_at')->nullable();
                 $table->timestamps();
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             });
