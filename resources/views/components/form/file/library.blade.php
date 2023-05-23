@@ -4,6 +4,7 @@
     'accept' => $attributes->get('accept'),
     'multiple' => $attributes->get('multiple', false),
     'upload' => $attributes->get('upload', true),
+    'compress' => $attributes->get('compress', true),
     'max' => $attributes->get('max-upload-size') ?? config('atom.max_upload_size') ?? 10,
     'visibility' => $attributes->get('visibility', 'public'),
     'location' => $attributes->get('location', 'uploads'),
@@ -161,6 +162,7 @@
             @if ($upload)
                 <x-form.file.uploader :id="$id.'-uploader'"
                     :accept="$accept"
+                    :compress="$compress"
                     :location="$location"
                     :visibility="$visibility"
                 />

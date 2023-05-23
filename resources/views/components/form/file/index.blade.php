@@ -5,6 +5,7 @@
     'accept' => $attributes->get('accept'),
     'multiple' => $attributes->get('multiple', false),
     'sortable' => $attributes->get('sortable', false),
+    'compress' => $attributes->get('compress', true),
     'library' => $attributes->get('library', true),
     'upload' => $attributes->get('upload', true),
     'visibility' => $attributes->get('visibility', 'public'),
@@ -20,6 +21,7 @@
                 accept: @js($accept),
                 multiple: @js($multiple),
                 sortable: @js($sortable),
+                compress: @js($compress),
                 upload: @js($upload),
             },
         }"
@@ -179,6 +181,7 @@
                         :accept="$accept"
                         :location="$location"
                         :visibility="$visibility"
+                        :compress="$compress"
                     />
                 @endif
 
@@ -212,6 +215,7 @@
                             :id="$id.'-library'"
                             :accept="$accept" 
                             :multiple="$multiple"
+                            :compress="$compress"
                             :header="'Select '.component_label($attributes)"
                         />
                     </div>

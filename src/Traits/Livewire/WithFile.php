@@ -10,6 +10,7 @@ trait WithFile
 
     public $upload = [
         'file' => null,
+        'compress' => true,
         'location' => null,
         'visibility' => 'public',
     ];
@@ -20,11 +21,12 @@ trait WithFile
     public function updatedUploadFile()
     {
         $upload = data_get($this->upload, 'file');
+        $compress = data_get($this->upload, 'compress');
         $location = data_get($this->upload, 'location', 'uploads');
         $visibility = data_get($this->upload, 'visibility', 'public');
         $filename = $upload->getFilename();
 
-        $file = model('file')->store($upload, $location, $visibility);
+        $file = model('file')->store($upload, $location, $visibility, $compress);
 
         $this->dispatchBrowserEvent('upload-completed', [
             'filename' => $filename,

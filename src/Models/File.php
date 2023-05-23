@@ -28,6 +28,11 @@ class File extends Model
         'is_audio',
     ];
 
+    protected $compression = [
+        'width' => 1440,
+        'height' => 1440,
+    ];
+
     /**
      * Model boot method
      */
@@ -183,9 +188,9 @@ class File extends Model
     /**
      * Store file content
      */
-    public function store($content, $location = 'uploads', $visibility = 'public')
+    public function store($content, $location = 'uploads', $visibility = 'public', $compress = true)
     {
-        $this->compress($content);
+        if ($compress) $this->compress($content);
 
         $meta = $this->getMeta($content);
         
@@ -303,7 +308,7 @@ class File extends Model
     /**
      * Compress file content
      */
-    public static function compress($content)
+    public function compress($content)
     {
         if (is_string($content)) return;
 
@@ -314,10 +319,14 @@ class File extends Model
 
         $img = Image::make($path)->orientate();
 
-        $img->resize(1440, 1440, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        })->save();
+        $img->resize(
+            data_get($this->compression, 'width'),
+            data_get($this->compression, 'height'),
+            function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            },
+        )->save();
 
         clearstatcache();
     }

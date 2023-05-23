@@ -1,6 +1,7 @@
 @props([
     'id' => component_id($attributes, 'file-uploader'),
     'accept' => $attributes->get('accept'),
+    'compress' => $attributes->get('compress', true),
     'max' => $attributes->get('max-upload-size') ?? config('atom.max_upload_size') ?? 10,
     'location' => $attributes->get('location', 'uploads'),
     'visibility' => $attributes->get('visibility', 'public'),
@@ -27,6 +28,7 @@
             if (!this.queue.length) return
 
             this.$dispatch('uploading')
+            this.$wire.set('upload.compress', @js($compress))
             this.$wire.set('upload.location', @js($location))
             this.$wire.set('upload.visibility', @js($visibility))
 
