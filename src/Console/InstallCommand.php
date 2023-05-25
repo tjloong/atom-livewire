@@ -48,6 +48,7 @@ class InstallCommand extends Command
         'products',
         'coupons',
         'orders',
+        'shippings',
         'payments', 
         'documents',
         'shareables',
@@ -454,10 +455,12 @@ class InstallCommand extends Command
                 $table->string('type')->nullable();
                 $table->string('slug')->nullable()->index();
                 $table->text('description')->nullable();
-                $table->decimal('price', 20, 2)->nullable();
-                $table->decimal('stock', 20, 2)->nullable();
+                $table->double('price')->nullable();
+                $table->double('stock')->nullable();
+                $table->double('weight')->nullable();
                 $table->boolean('is_active')->nullable();
                 $table->boolean('is_featured')->nullable();
+                $table->boolean('is_required_shipment')->nullable();
                 $table->timestamps();
             });
 
@@ -638,6 +641,43 @@ class InstallCommand extends Command
             });
 
             $this->line('order_shipments table created successfully.');
+        }
+    }
+
+    /**
+     * Install shippings
+     */
+    private function installShippings()
+    {
+        $this->newLine();
+        $this->info('Installing shippings module...');
+
+        if (Schema::hasTable('shipping_rates')) $this->warn('shipping_rates table exists, skipped.');
+        else {
+            Schema::create('shipping_rates', function(Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->double('price')->nullable();
+                $table->string('condition')->nullable();
+                $table->double('min')->nullable();
+                $table->double('max')->nullable();
+                $table->boolean('is_active')->nullable();
+                $table->timestamps();
+            });
+
+            $this->line('shipping_rates table created successfully.');
+        }
+
+        if (Schema::hasTable('shipping_countries')) $this->warn('shipping_countries table exists, skipped.');
+        else {
+            Schema::create('shipping_countries', function(Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->foreignId('rate_id')->constrained('shipping_rates')->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            $this->line('shipping_countries table created successfully.');
         }
     }
 

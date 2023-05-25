@@ -37,7 +37,7 @@ class Banner extends Model
     /**
      * Attribute for status
      */
-    public function status(): Attribute
+    protected function status(): Attribute
     {
         return Attribute::make(
             get: function () {

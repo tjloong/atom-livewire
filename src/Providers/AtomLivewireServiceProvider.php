@@ -144,6 +144,12 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.product.variant.update' => 'App\Product\Variant\Update',
             'atom.app.product.variant.form' => 'App\Product\Variant\Form',
 
+            // shipping
+            'atom.app.shipping.listing' => 'App\Shipping\Listing',
+            'atom.app.shipping.create' => 'App\Shipping\Create',
+            'atom.app.shipping.update' => 'App\Shipping\Update',
+            'atom.app.shipping.form' => 'App\Shipping\Form',
+
             // promotion
             'atom.app.promotion.listing' => 'App\Promotion\Listing',
             'atom.app.promotion.create' => 'App\Promotion\Create',

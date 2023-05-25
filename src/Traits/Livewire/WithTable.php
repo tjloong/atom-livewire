@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Traits\Livewire;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\WithPagination;
 

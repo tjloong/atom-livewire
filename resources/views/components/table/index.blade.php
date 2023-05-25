@@ -113,6 +113,7 @@
                                         :image="data_get($col, 'image')"
                                         :active="data_get($col, 'active')"
                                         :menu="data_get($col, 'menu')"
+                                        :limit="data_get($col, 'limit')"
                                         :class="
                                             data_get($col, 'tdclass') 
                                             ?? data_get($col, 'class') 

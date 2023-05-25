@@ -38,11 +38,11 @@ class Td extends Component
         }
 
         if ($limit) {
-            $this->label = str()->limit($this->label, $limit);
-            
             if ($this->tooltip !== false && empty($this->tooltip) && strlen($this->label) > $limit) {
                 $this->tooltip = $this->label;
             }
+
+            $this->label = str()->limit($this->label, $limit);
         }
     }
 

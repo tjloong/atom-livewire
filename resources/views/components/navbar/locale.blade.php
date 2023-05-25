@@ -33,13 +33,14 @@
     </x-slot:anchor>
 
     @foreach (config('atom.locales') as $name)
-        <x-dropdown.item 
-            :href="route('__locale.set', [$name])" 
-            :label="data_get(
-                collect($locales)->first(fn($val) => str($name)->is(data_get($val, 'pattern'))),
-                'label',
-            )"
-            :icon="$name === app()->currentLocale() ? 'check' : null"
-        />
+        <x-dropdown.item>
+            <a href="{{ route('__locale.set', [$name]) }}" class="py-2 px-4 flex items-center gap-3 text-gray-800 hover:bg-slate-100">
+                <div class="grow">{{ data_get(collect($locales)->first(fn($val) => str($name)->is(data_get($val, 'pattern'))), 'label') }}</div>
+                <div class="shrink-0 flex items-center gap-2">
+                    @if ($name === app()->currentLocale()) <x-icon name="check" size="12" class="text-green-500"/> @endif
+                    <div class="bg-slate-100 rounded-lg text-sm px-2 border border-slate-100 text-gray-500">{{ $name }}</div>
+                </div>
+            </a>
+        </x-dropdown.item>
     @endforeach
 </x-dropdown>
