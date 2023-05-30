@@ -12,6 +12,8 @@ class Listing extends Component
     use WithTable;
     use WithPopupNotify;
 
+    public $sort;
+
     public $filters = [
         'search' => null,
         'status' => null,
@@ -30,7 +32,9 @@ class Listing extends Component
      */
     public function getQueryProperty(): Builder
     {
-        return model('banner')->filter($this->filters)->oldest('seq')->latest('id');
+        return model('banner')
+            ->filter($this->filters)
+            ->when(!$this->sort, fn($q) => $q->oldest('seq')->latest('id'));
     }
 
     /**
