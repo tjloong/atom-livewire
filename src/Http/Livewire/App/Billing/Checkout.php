@@ -180,9 +180,9 @@ class Checkout extends Component
     {
         $payment = model('plan_payment')->create([
             'mode' => $mode,
-            'currency' => $this->price->plan->currency,
-            'amount' => $this->price->amount,
-            'description' => $this->price->description,
+            'currency' => $this->subscription->currency,
+            'amount' => $this->subscription->grand_total,
+            'description' => $this->subscription->price->description,
             'status' => 'draft',
             'data' => ['agree_privacy' => data_get($this->inputs, 'agree_privacy')],
             'user_id' => user('id'),
@@ -199,7 +199,7 @@ class Checkout extends Component
     public function getStripeCustomerId(): mixed
     {
         $history = model('plan_payment')
-            ->whereHas('subscriptions', fn($q) => $q->where('user_id', user('id')))
+            ->whereHas('subscription', fn($q) => $q->where('user_id', user('id')))
             ->where('mode', 'stripe')
             ->whereNotNull('data->metadata->stripe_customer_id')
             ->latest()

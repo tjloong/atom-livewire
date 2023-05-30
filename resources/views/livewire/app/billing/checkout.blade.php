@@ -98,7 +98,7 @@
             <div>
                 <x-payment-gateway header="Payment Method">
                     <x-slot:stripe>
-                        @if ($price->is_recurring && !$subscription->is_trial)
+                        @if ($price->is_recurring && !$subscription->is_trial && !$subscription->start_at->isFuture())
                             <x-form.checkbox wire:model="inputs.enable_auto_billing" label="Enable Auto Billing"/>
                         @endif
                     </x-slot:stripe>
@@ -119,7 +119,7 @@
                                 <div class="text-gray-500 text-sm font-medium">
                                     {{ __('Auto renew on :date', ['date' => format_date($plan->subscription->end_at)]) }}
                                 </div>
-                                <a class="text-sm" wire:click="$emitTo(@js(lw('app.billing.cancel-auto-renew-modal')), 'open', @js($plan->subscription->id))">
+                                <a class="text-sm" wire:click="$emitTo(@js(lw('app.billing.subscription-modal')), 'open', @js($plan->subscription->id))">
                                     {{ __('Cancel auto renew') }}
                                 </a>
                             </x-slot:foot>
@@ -147,11 +147,13 @@
                         @endif
                     @else
                         <x-slot:foot>
-                            <x-button label="Subscribe" x-on:click="$wire.select(price.code)" block/>
+                            <x-button label="Subscribe" x-on:click="$wire.select(price.code)" color="theme" block/>
                         </x-slot:foot>
                     @endif
                 </x-plan>
             @endforeach
         </div>
     @endif
+
+    @livewire(lw('app.billing.subscription-modal'))
 </div>

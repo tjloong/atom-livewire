@@ -10,8 +10,8 @@ class Listing extends Component
 {
     use WithTable;
 
+    public $sort;
     public $fullpage;
-    public $sort = 'created_at,desc';
     public $filters = ['search' => null];
 
     /**
@@ -39,7 +39,8 @@ class Listing extends Component
     {
         return model('plan_payment')
             ->readable()
-            ->filter($this->filters);
+            ->filter($this->filters)
+            ->when(!$this->sort, fn($q) => $q->latest());
     }
 
     /**
@@ -56,14 +57,16 @@ class Listing extends Component
             
             [
                 'name' => 'Receipt',
+                'sort' => 'number',
                 'label' => $query->number,
                 'href' => route('app.plan.payment.update', [$query->id]),
             ],
-
+            
             [
-                'name' => 'Description',
-                'label' => str($query->description)->limit(50),
-                'small' => tier('root') ? $query->order->user->name : null,
+                'name' => 'Amount',
+                'sort' => 'amount',
+                'amount' => $query->amount,
+                'currency' => $query->currency,
             ],
 
             [
@@ -73,12 +76,10 @@ class Listing extends Component
                     $query->is_auto_billing ? 'auto' : null,
                 ]),
             ],
-            
+
             [
-                'name' => 'Amount',
-                'sort' => 'amount',
-                'amount' => $query->amount,
-                'currency' => $query->currency,
+                'name' => 'User',
+                'label' => optional($query->user)->name,
             ],
         ];
     }

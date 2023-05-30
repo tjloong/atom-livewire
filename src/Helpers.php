@@ -9,6 +9,14 @@ use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
 
 /**
+ * Get stripe service
+ */
+function stripe($credentials = null)
+{
+    return new Jiannius\Atom\Services\Stripe($credentials);
+}
+
+/**
  * Component ID
  */
 function component_id($attributes, $default = null)

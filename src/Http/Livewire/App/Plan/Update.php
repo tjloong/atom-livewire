@@ -28,7 +28,7 @@ class Update extends Component
      */
     public function delete(): mixed
     {
-        if ($this->plan->subscriptions->count()) {
+        if (model('plan_subscription')->whereHas('price', fn($q) => $q->where('plan_id', $this->plan->id))->count()) {
             return $this->popup([
                 'title' => 'Unable To Delete Plan',
                 'message' => 'There are subscriptions under this plan.',

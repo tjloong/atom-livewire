@@ -104,6 +104,22 @@ class PlanSubscription extends Model
     }
 
     /**
+     * Attribute for status color
+     */
+    protected function statusColor(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => [
+                'draft' => 'gray',
+                'future' => 'blue',
+                'terminated' => 'black',
+                'ended' => 'gray',
+                'active' => 'green',
+            ][$this->status] ?? 'gray',
+        );
+    }
+
+    /**
      * Attribute for dayrate
      */
     protected function dayrate(): Attribute
@@ -237,16 +253,16 @@ class PlanSubscription extends Model
     {
         if (!$this->start_at) {
             if (
-                ($sibling = $this->getSiblings()->status(['active', 'future'])->first())
+                ($sibling = $this->getSiblings()->where('is_trial', false)->status(['active', 'future'])->first())
                 && optional($sibling->end_at)->isFuture()
             ) {
-                $this->start_at = $sibling->end_at->addHour();
+                $this->start_at = $sibling->end_at;
             }
             else if (
                 ($relative = $this->getRelatives()->status(['active', 'future'])->where('amount', '>', $this->amount)->first())
                 && optional($relative->end_at)->isFuture()
             ) {
-                $this->start_at = $relative->end_at->addHour();
+                $this->start_at = $relative->end_at;
             }
             else $this->start_at = now();
         }
@@ -281,11 +297,13 @@ class PlanSubscription extends Model
         }
         else if ($this->price->plan->is_unique_trial) {
             $this->is_trial = $this->getSiblings()
+                ->whereNotNull('provisioned_at')
                 ->where('is_trial', true)
                 ->count() <= 0;
         }
         else {
             $this->is_trial = model('plan_subscription')
+                ->whereNotNull('provisioned_at')
                 ->where('user_id', $this->user_id)
                 ->where('is_trial', true)
                 ->count() <= 0;
@@ -300,15 +318,11 @@ class PlanSubscription extends Model
     public function setProrated(): void
     {
         if (($terminations = $this->getTerminationQueue()) && $terminations->count()) {
-            $prorated = $terminations->pluck('price.plan.code')->unique()->values()->map(function($code) use ($terminations) {
-                $group = $terminations->filter(fn($termination) => $termination->price->plan->code === $code)->values();
-                
-                $credits = $group->map(function($termination) {
-                    $rate = $termination->dayrate ?? 0;
-
-                    if ($termination->start_at->lte($this->start_at)) return $rate * ($this->start_at->diffInDays($termination->end_at));
-                    else return $rate * ($termination->start_at->diffInDays($termination->end_at));
-                })->sum();
+            $prorated = $terminations->map(function($termination) {
+                $rate = $termination->dayrate ?? 0;
+                $credits = $termination->start_at->lte($this->start_at)
+                    ? ($rate * ($this->start_at->diffInDays($termination->end_at)))
+                    : ($rate * ($termination->start_at->diffInDays($termination->end_at)));
 
                 if ($credits > $this->amount) {
                     $discount = $this->amount;
@@ -319,8 +333,8 @@ class PlanSubscription extends Model
                 }
 
                 return [
-                    'code' => $code,
-                    'plan' => model('plan')->where('code', $code)->first()->name,
+                    'code' => $termination->price->plan->code,
+                    'plan' => $termination->name,
                     'credits' => $credits ?? 0,
                     'discount' => $discount ?? 0,
                     'extension' => $extension ?? 0,
@@ -374,7 +388,13 @@ class PlanSubscription extends Model
             ->with('price.plan')
             ->status(['active', 'future'])
             ->where('amount', '<=', $this->amount)
-            ->get();
+            ->get()
+            ->concat(
+                $this->getSiblings()
+                    ->where('is_trial', true)
+                    ->status(['active', 'future'])
+                    ->get()
+            );
     }
 
     /**

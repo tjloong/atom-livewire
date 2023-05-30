@@ -1,5 +1,40 @@
 <x-modal uid="subscription-modal" header="Subscription">
-    @if ($subscription)
+    @if ($queue)
+        <div class="p-6 grid gap-4">
+            <x-alert title="Cancelling Auto Renewal" type="warning">
+                {{ __('The following subscriptions are within the same auto billing cycle. All of them will be cancelled. This operation is irreversible.') }}
+            </x-alert>
+
+            <div class="flex flex-col gap-2">
+                @foreach ($queue as $item)
+                    <x-box>
+                        <div class="p-4 flex items-center justify-between gap-2">
+                            <div class="font-medium">
+                                {{ $item->name }} <x-badge :label="$item->status" :color="$item->status_color"/>
+                            </div>
+    
+                            <div class="shrink-0 text-sm text-gray-500">
+                                {{ collect([format_date($item->start_at), format_date($item->end_at)])->filter()->join(' ~ ') }}
+                            </div>
+                        </div>
+                    </x-box>
+                @endforeach
+            </div>
+        </div>
+
+        <x-slot:foot>
+            <div class="flex items-center gap-2">
+                <x-button.confirm icon="circle-exclamation" color="red" label="Cancel Auto Renewal" 
+                    title="Cancel Auto Renewal"
+                    message="Are you sure to cancel the auto renewal? This action is irreversible."
+                    callback="cancel"
+                    :params="true"
+                />
+
+                <x-button label="Do Not Cancel" wire:click="cancel(false)"/>
+            </div>
+        </x-slot:foot>
+    @elseif ($subscription)
         <div class="p-4 flex flex-col gap-4">
             <div class="flex flex-col gap-4">
                 <x-form.field label="Plan">
@@ -41,9 +76,7 @@
                         <x-field label="Auto Renew">
                             <div class="text-right">
                                 {{ __('Enabled') }}<br>
-                                <a wire:click="$emitTo(@js(lw('app.billing.cancel-auto-renew-modal')), 'open', @js($subscription->id))" class="text-sm">
-                                    {{ __('Cancel auto renew') }}
-                                </a>
+                                <x-link label="Cancel Auto Renew" wire:click="cancel" class="text-sm"/>
                             </div>
                         </x-field>
                     @else
@@ -55,8 +88,8 @@
 
         <x-slot:foot>
             <div class="flex items-center gap-2">
-                <x-button label="Change Plan" :href="route('app.billing.checkout')"/>
-                <x-button label="Close" color="gray" x-on:click="$dispatch('close')"/>
+                <x-button label="Change Plan" :href="route('app.billing.checkout')" color="theme"/>
+                <x-button label="Close" x-on:click="$dispatch('close')"/>
             </div>
         </x-slot:foot>
     @endif

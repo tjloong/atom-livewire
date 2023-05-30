@@ -22,8 +22,6 @@ class PlanSubscriptionProvision implements ShouldQueue
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
     public function __construct($params)
     {
@@ -37,8 +35,6 @@ class PlanSubscriptionProvision implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle()
     {
@@ -54,7 +50,7 @@ class PlanSubscriptionProvision implements ShouldQueue
     /**
      * Handle webhook
      */
-    public function handleWebhook()
+    public function handleWebhook(): void
     {
         if (
             in_array($this->status, ['success', 'failed'])
@@ -64,21 +60,22 @@ class PlanSubscriptionProvision implements ShouldQueue
         }
         // renewal (only application to stripe auto billing)
         else if (str($this->status)->startsWith('renew')) {
-            $billingReason = data_get($this->payResponse, 'data.object.billing_reason');
-            if ($billingReason !== 'subscription_cycle') {
-                logger('not going to renew');
-                return;
-            }
+            logger('renewing payment');
 
-            $this->duplicate();
-            $this->provision();
+            $billingReason = data_get($this->payResponse, 'data.object.billing_reason');
+
+            if ($billingReason !== 'subscription_cycle') logger('not going to renew');
+            else {
+                $this->duplicate();
+                $this->provision();
+            }
         }
     }
 
     /**
      * Provision payment
      */
-    public function provision()
+    public function provision(): void
     {
         $this->payment->fill([
             'status' => $this->status === 'renew-failed' ? 'failed' : $this->status,
@@ -88,43 +85,48 @@ class PlanSubscriptionProvision implements ShouldQueue
             ]),
         ])->save();
 
-        if ($this->payment->status === 'success') {
-            $this->payment->subscriptions()->whereNull('provisioned_at')->get()->each(function($subscription) {
-                // terminate less expensive relatives
+        if (
+            in_array($this->payment->status, ['renew', 'success'])
+            && ($subscription = $this->payment->subscription)
+            && !$subscription->provisioned_at
+        ) {
+            // terminate less expensive relatives
+            if ($this->payment->status === 'success') {
                 $subscription->getTerminationQueue()->each(fn($relative) => $relative->terminate());
-    
-                $subscription->fill([
-                    'data' => [
-                        'stripe_customer_id' => data_get($this->metadata, 'stripe_customer_id'),
-                        'stripe_subscription_id' => data_get($this->metadata, 'stripe_subscription_id'),
-                    ],
-                    'provisioned_at' => now(),
-                ])->save();
-            });
+            }
+
+            $subscription->fill([
+                'data' => [
+                    'stripe_customer_id' => data_get($this->metadata, 'stripe_customer_id'),
+                    'stripe_subscription_id' => data_get($this->metadata, 'stripe_subscription_id'),
+                ],
+                'provisioned_at' => now(),
+            ])->save();
         }
     }
 
     /**
      * Duplicate payment
      */
-    public function duplicate()
+    public function duplicate(): void
     {
         $newpayment = model('plan_payment')->create([
             'currency' => $this->payment->currency,
             'amount' => $this->payment->amount,
             'mode' => 'stripe',
+            'description' => $this->payment->description,
+            'status' => 'draft',
             'user_id' => $this->payment->user_id,
         ]);
 
-        foreach ($this->payment->subscriptions()->get() as $subscription) {
-            $newsubscription = model('plan_subscription')->create([
-                'user_id' => $subscription->user_id,
-                'price_id' => $subscription->price_id,
-                'payment_id' => $newpayment->id,
-            ]);
+        $newsubscription = model('plan_subscription')->fill([
+            'user_id' => $this->payment->subscription->user_id,
+            'price_id' => $this->payment->subscription->price_id,
+            'payment_id' => $newpayment->id,
+        ]);
 
-            $newsubscription->setValidity();
-        }
+        $newsubscription->setValidity();
+        $newsubscription->save();
 
         $this->payment = $newpayment;
     }

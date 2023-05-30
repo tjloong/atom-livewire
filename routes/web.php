@@ -17,7 +17,6 @@ if (in_array('stripe', config('atom.payment_gateway'))) {
         define_route('success', 'StripeController@success')->name('success');
         define_route('cancel', 'StripeController@cancel')->name('cancel');
         define_route('webhook', 'StripeController@webhook', 'post')->name('webhook');
-        define_route('cancel-subscription', 'StripeController@cancelSubscription')->name('cancel-subscription');
     });
 }
 

@@ -1,7 +1,7 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header title="Subscription">
         @if ($this->subscriptions->count())
-            <x-button label="Change Plan" :href="route('app.billing.checkout')"/>
+            <x-button label="Change Plan" :href="route('app.billing.checkout')" color="theme"/>
         @endif
     </x-page-header>
 
@@ -51,5 +51,4 @@
     </div>
 
     @livewire(lw('app.billing.subscription-modal'), key('subscription-modal'))
-    @livewire(lw('app.billing.cancel-auto-renew-modal'), key('cancel-auto-renew-modal'))
 </div>

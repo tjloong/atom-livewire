@@ -23,22 +23,14 @@
             </div>
         </x-box>
 
-        @if ($items = $payment->order->items)
+        @if ($subscription = $payment->subscription)
             <x-box header="Order Summary">
                 <div class="flex flex-col divide-y">
-                    @foreach ($items as $item)
-                        <x-field :label="$item->name">
-                            <div class="text-right">
-                                <div>{{ currency($item->grand_total, $item->currency) }}</div>
-
-                                @if ($item->discount) 
-                                    <div class="text-sm text-gray-500">
-                                        {{ __('Discounted') }} {{ currency($item->discount, $item->currency) }}
-                                    </div>
-                                @endif
-                            </div>
-                        </x-field>
-                    @endforeach
+                    <x-field label="Plan" :value="$subscription->price->plan->name"/>
+                    <x-field label="Price" :value="currency($subscription->amount, $subscription->currency)"/>
+                    @if ($subscription->discounted_amount) 
+                        <x-field label="Discount" :value="currency($subscription->discounted_amount, $subscription->currency)"/>
+                    @endif
                 </div>
             </x-box>
         @endif
@@ -46,14 +38,14 @@
         @if ($payment->amount > 0)
             <x-box header="Payment Details">
                 <div class="flex flex-col divide-y">
-                    <x-field label="Provider" :value="str()->headline($payment->provider)"/>
+                    <x-field label="Mode" :value="str()->headline($payment->mode)"/>
 
                     @if ($payment->is_auto_billing)
                         <x-field label="Auto Billing" value="Yes"/>
                     @endif
 
                     @tier('root')
-                        @if ($payment->provider === 'stripe')
+                        @if ($payment->mode === 'stripe')
                             @if ($customerId = data_get($payment->data, 'metadata.stripe_customer_id'))
                                 <x-field label="Stripe Customer ID" :value="$customerId"/>
                             @endif
@@ -61,19 +53,23 @@
                                 <x-field label="Stripe Customer ID" :value="$subscriptionId"/>
                             @endif
                         @endif
+
+                        @if ($res = data_get($payment->data, 'pay_response'))
+                            <div x-data="{ show: false }">
+                                <x-field label="Payment Response">
+                                    <a x-on:click="show = !show" class="flex items-center justify-end gap-2">
+                                        <x-icon name="eye"/> {{ __('View') }}
+                                    </a>
+                                </x-field>
+
+                                <div x-show="show" class="bg-gray-100 p-4 overflow-auto">
+                                    <pre x-text="JSON.stringify(@js($res), null, 4)"></pre>
+                                </div>
+                            </div>
+                        @endif
                     @endtier
                 </div>
             </x-box>
         @endif
-
-        @tier('root')
-            @if ($res = data_get($payment->data, 'pay_response'))
-                <x-box header="Payment Response">
-                    <div class="p-4 bg-slate-100 overflow-auto">
-                        <pre x-text="JSON.stringify(@js($res), null, 4)"></pre>
-                    </div>
-                </x-box>
-            @endif
-        @endtier
     </div>
 </div>

@@ -6,6 +6,8 @@ use Livewire\Component;
 
 class Index extends Component
 {
+    protected $listeners = ['refresh' => '$refresh'];
+
     /**
      * Mount
      */

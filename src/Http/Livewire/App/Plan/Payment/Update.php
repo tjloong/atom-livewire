@@ -13,10 +13,9 @@ class Update extends Component
      */
     public function mount($paymentId): void
     {
-        $this->payment = model('plan_payment')->when(
-            !tier('root'),
-            fn($q) => $q->whereHas('order', fn($q) => $q->where('user_id', user('id'))),
-        )->findOrFail($paymentId);
+        $this->payment = model('plan_payment')
+            ->when(!tier('root'), fn($q) => $q->where('user_id', user('id')))
+            ->findOrFail($paymentId);
 
         breadcrumbs()->push('Payment #'.$this->payment->number);
     }

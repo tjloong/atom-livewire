@@ -11,6 +11,6 @@
             </div>
         </div>
 
-        <x-button label="Go to Billing" :href="route('app.settings', ['billing'])"/>
+        <x-button label="Go to Billing" :href="route('app.settings', ['billing'])" icon="gear"/>
     </div>
 </x-box>

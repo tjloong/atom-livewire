@@ -16,7 +16,7 @@ class Receipt extends Component
     public function getQueryProperty(): Builder
     {
         return model('plan_payment')
-            ->whereHas('subscriptions', fn($q) => $q->where('user_id', user('id')))
+            ->whereHas('subscription', fn($q) => $q->where('user_id', user('id')))
             ->latest();
     }
 
@@ -40,8 +40,8 @@ class Receipt extends Component
             [
                 'name' => 'Status',
                 'status' => array_filter([
-                    $query->status,
-                    $query->is_auto_billing ? 'auto' : null,
+                    $query->status_color => $query->status,
+                    'blue' => $query->is_auto_billing ? 'auto' : null,
                 ]),
             ],
             

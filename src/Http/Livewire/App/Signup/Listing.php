@@ -63,7 +63,7 @@ class Listing extends Component
                 ? [
                     'column_name' => 'Plan',
                     'tags' => $query->subscriptions
-                        ->map(fn($sub) => $sub->planPrice->plan->name)
+                        ->map(fn($sub) => $sub->price->plan->name)
                         ->unique()
                         ->toArray(),
                 ] : null,
