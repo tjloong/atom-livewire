@@ -69,9 +69,9 @@
                 <div class="{{ count($this->tabs) > 1 ? 'md:w-3/4' : 'w-full' }}">
                     @if ($com = data_get(collect($this->tabs)->firstWhere('slug', $tab), 'livewire'))
                         @if (is_string($com)) 
-                            @livewire(lw($com), ['onboarding' => true], key($tab))
+                            @livewire(atom_lw($com), ['onboarding' => true], key($tab))
                         @else 
-                            @livewire(lw(data_get($com, 'name')), array_merge(
+                            @livewire(atom_lw(data_get($com, 'name')), array_merge(
                                 ['onboarding' => true],
                                 data_get($com, 'data'),
                             ),key($tab))

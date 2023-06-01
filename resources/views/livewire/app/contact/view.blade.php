@@ -101,7 +101,7 @@
 
                     @if ($lw = $this->livewire)
                         @livewire(
-                            lw(data_get($lw, 'name') ?? $lw),
+                            atom_lw(data_get($lw, 'name') ?? $lw),
                             array_merge(compact('contact'), data_get($lw, 'data', [])),
                             key($tab)
                         )

@@ -18,5 +18,5 @@
         </div>
     </x-page-header>
 
-    @livewire(lw('app.document.payment.form'), compact('payment'))
+    @livewire(atom_lw('app.document.payment.form'), compact('payment'))
 </div>

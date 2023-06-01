@@ -13,7 +13,7 @@
         </x-slot:title>
     </x-page-header>
 
-    @if ($com = lw('app.page.'.$this->slug))
+    @if ($com = atom_lw('app.page.'.$this->slug))
         @livewire($com, compact('page'))
     @else
         <x-form>

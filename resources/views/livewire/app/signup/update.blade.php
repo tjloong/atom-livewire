@@ -1,8 +1,8 @@
 <div class="max-w-screen-xl mx-auto">
     <x-page-header :title="$user->name" back>
         <div class="flex items-center gap-2">
-            @livewire(lw('app.user.btn-block'), compact('user'), key('block'))
-            @livewire(lw('app.user.btn-delete'), compact('user'), key('delete'))
+            @livewire(atom_lw('app.user.btn-block'), compact('user'), key('block'))
+            @livewire(atom_lw('app.user.btn-delete'), compact('user'), key('delete'))
         </div>            
     </x-page-header>
 
@@ -36,7 +36,7 @@
         <div class="md:w-3/4 flex flex-col gap-6">
             @if ($com = $tab ? data_get(tabs($this->tabs, $tab), 'livewire') : null)
                 @livewire(
-                    is_string($com) ? lw($com) : lw(data_get($com, 'name')),
+                    is_string($com) ? atom_lw($com) : atom_lw(data_get($com, 'name')),
                     is_string($com) ? compact('user') : data_get($com, 'data', []),
                     key($tab)
                 )

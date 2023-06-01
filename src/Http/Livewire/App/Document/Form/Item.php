@@ -96,7 +96,7 @@ class Item extends Component
      */
     public function open()
     {
-        $this->emitTo(lw('app.document.form.product-modal'), 'open', $this->item);
+        $this->emitTo(atom_lw('app.document.form.product-modal'), 'open', $this->item);
     }
 
     /**

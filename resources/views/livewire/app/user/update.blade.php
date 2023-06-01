@@ -8,8 +8,8 @@
                     callback="remove"
                 />
             @else
-                @livewire(lw('app.user.btn-block'), compact('user'), key('block'))
-                @livewire(lw('app.user.btn-delete'), compact('user'), key('delete'))
+                @livewire(atom_lw('app.user.btn-block'), compact('user'), key('block'))
+                @livewire(atom_lw('app.user.btn-delete'), compact('user'), key('delete'))
             @endif
         </div>
     </x-page-header>
@@ -49,9 +49,9 @@
             </div>
         </x-box>
 
-        @livewire(lw('app.user.role'), compact('user'), key('role'))
-        @livewire(lw('app.user.team'), compact('user'), key('team'))
-        @livewire(lw('app.user.permission'), compact('user'), key('permission'))
-        @livewire(lw('app.user.visibility'), compact('user'), key('visibility'))
+        @livewire(atom_lw('app.user.role'), compact('user'), key('role'))
+        @livewire(atom_lw('app.user.team'), compact('user'), key('team'))
+        @livewire(atom_lw('app.user.permission'), compact('user'), key('permission'))
+        @livewire(atom_lw('app.user.visibility'), compact('user'), key('visibility'))
     </div>
 </div>

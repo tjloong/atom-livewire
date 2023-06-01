@@ -59,7 +59,7 @@
 
                         @if ($maxDepth > 0 && $label->children->count())
                             <div x-show="show" class="bg-gray-100 m-2 rounded-lg">
-                                @livewire(lw('app.label.children'), [
+                                @livewire(atom_lw('app.label.children'), [
                                     'parent' => $label,
                                     'maxDepth' => $maxDepth,
                                 ], key($label->id.'-'.$label->children->count()))

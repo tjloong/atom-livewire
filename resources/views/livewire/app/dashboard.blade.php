@@ -93,7 +93,7 @@
                             />
                         @elseif ($widget->get('type') === 'livewire')
                             @livewire(
-                                lw($widget->get('component')),
+                                atom_lw($widget->get('component')),
                                 $widget->except(['type', 'component', 'col'])->merge(['filters' => $filters])->toArray(),
                                 key(uniqid()),
                             )

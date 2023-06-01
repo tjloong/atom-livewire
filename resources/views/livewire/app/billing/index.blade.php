@@ -10,7 +10,7 @@
             @foreach ($this->subscriptions as $subscription)
                 <x-box>
                     <div 
-                        wire:click="$emitTo(@js(lw('app.billing.subscription-modal')), 'open', @js($subscription->id))" 
+                        wire:click="$emitTo(@js(atom_lw('app.billing.subscription-modal')), 'open', @js($subscription->id))" 
                         class="p-4 cursor-pointer flex flex-col gap-2 hover:bg-slate-100"
                     >
                         <div class="flex gap-2">
@@ -47,8 +47,8 @@
             </x-box>
         @endif
         
-        @livewire(lw('app.billing.receipt'), key('receipt'))
+        @livewire(atom_lw('app.billing.receipt'), key('receipt'))
     </div>
 
-    @livewire(lw('app.billing.subscription-modal'), key('subscription-modal'))
+    @livewire(atom_lw('app.billing.subscription-modal'), key('subscription-modal'))
 </div>

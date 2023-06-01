@@ -50,7 +50,7 @@
 
             @if ($child->children->count())
                 <div x-show="show">
-                    @livewire(lw('app.label.children'), [
+                    @livewire(atom_lw('app.label.children'), [
                         'parent' => $child,
                         'depth' => $depth + 1,
                         'maxDepth' => $maxDepth,

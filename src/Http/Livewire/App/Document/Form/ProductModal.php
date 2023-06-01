@@ -102,7 +102,7 @@ class ProductModal extends Component
         ]);
 
         $this->emitTo(
-            lw('app.document.form.item'), 
+            atom_lw('app.document.form.item'), 
             'setProduct:'.(data_get($this->item, 'id') ?? data_get($this->item, 'ulid')),
             array_merge($this->item, [
                 'name' => collect([data_get($product, 'name'), data_get($variant, 'name')])

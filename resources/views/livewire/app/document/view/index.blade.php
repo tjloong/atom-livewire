@@ -21,7 +21,7 @@
                 <x-dropdown.item wire:click="pdf" label="View PDF" icon="pdf" target="_blank"/>
                 
                 @can($document->type.'.update')
-                    <x-dropdown.item wire:click="$emitTo('{{ lw('app.document.view.email-modal') }}', 'open')" label="Send Email" icon="paper-plane"/>
+                    <x-dropdown.item wire:click="$emitTo('{{ atom_lw('app.document.view.email-modal') }}', 'open')" label="Send Email" icon="paper-plane"/>
                     <x-dropdown.item wire:click="toggleSent" :label="$document->last_sent_at ? 'Unmark Sent' : 'Mark Sent'" icon="share-from-square"/>
                     <x-shareable header="Share Document">
                         <x-dropdown.item label="Share" icon="share"/>
@@ -40,7 +40,7 @@
 
     <div class="flex flex-col gap-6 md:flex-row">
         <div class="md:w-8/12">
-            @livewire(lw('app.document.view.body'), compact('document'), key('body'))
+            @livewire(atom_lw('app.document.view.body'), compact('document'), key('body'))
         </div>
 
         <div class="md:w-4/12">
@@ -59,24 +59,24 @@
                 </x-box>
                 
                 @if ($document->convertedTo()->count())
-                    @livewire(lw('app.document.view.converted'), compact('document'), key('converted'))
+                    @livewire(atom_lw('app.document.view.converted'), compact('document'), key('converted'))
                 @endif
 
                 @if (
                     $document->type === 'invoice'
                     && ($document->splits()->count() || !in_array($document->status, ['paid', 'partial']))
                 )
-                    @livewire(lw('app.document.view.split'), compact('document'), key('split'))
+                    @livewire(atom_lw('app.document.view.split'), compact('document'), key('split'))
                 @endif
 
                 @if (in_array($document->type, ['invoice', 'bill']))
-                    @livewire(lw('app.document.view.payment'), compact('document'), key('payment'))
+                    @livewire(atom_lw('app.document.view.payment'), compact('document'), key('payment'))
                 @endif
 
-                @livewire(lw('app.document.view.attachment'), compact('document'), key('attachment'))
+                @livewire(atom_lw('app.document.view.attachment'), compact('document'), key('attachment'))
             </div>
         </div>
     </div>
 
-    @livewire(lw('app.document.view.email-modal'), compact('document'), key('email-modal'))
+    @livewire(atom_lw('app.document.view.email-modal'), compact('document'), key('email-modal'))
 </div>

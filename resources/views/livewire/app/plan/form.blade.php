@@ -17,7 +17,7 @@
                     [
                         'name' => 'Price Code',
                         'label' => $price->code,
-                        'emitTo' => [lw('app.plan.price-modal'), 'open', ['id' => $price->id]],
+                        'emitTo' => [atom_lw('app.plan.price-modal'), 'open', ['id' => $price->id]],
                     ],
                     [
                         'name' => 'Amount',
@@ -31,7 +31,7 @@
                     ],
                 ])">
                     <x-slot:button label="Add Price" 
-                        wire:click="$emitTo('{{ lw('app.plan.price-modal') }}', 'open', {{ json_encode(['plan_id' => $plan->id]) }})"
+                        wire:click="$emitTo('{{ atom_lw('app.plan.price-modal') }}', 'open', {{ json_encode(['plan_id' => $plan->id]) }})"
                     ></x-slot:button>
                 </x-form.items>
             </x-form.group>
@@ -46,5 +46,5 @@
         @endif
     </x-form>
 
-    @livewire(lw('app.plan.price-modal'))
+    @livewire(atom_lw('app.plan.price-modal'))
 </div>

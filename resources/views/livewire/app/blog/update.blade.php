@@ -12,7 +12,7 @@
     </x-page-header>
 
     <div class="flex flex-col gap-6">
-        @livewire(lw('app.blog.form'), compact('blog'), key('form'))
-        @livewire(lw('app.blog.setting'), compact('blog'), key('setting'))
+        @livewire(atom_lw('app.blog.form'), compact('blog'), key('form'))
+        @livewire(atom_lw('app.blog.setting'), compact('blog'), key('setting'))
     </div>
 </div>

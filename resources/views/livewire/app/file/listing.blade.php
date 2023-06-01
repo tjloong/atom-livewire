@@ -80,7 +80,7 @@
                     <div class="flex items-center gap-3">
                         <x-thumbnail :file="$file" size="30"/>
                         <div class="grow">
-                            <div wire:click="$emitTo(@js(lw('app.file.form-modal')), 'open', @js($file->id))" class="cursor-pointer font-medium">
+                            <div wire:click="$emitTo(@js(atom_lw('app.file.form-modal')), 'open', @js($file->id))" class="cursor-pointer font-medium">
                                 {{ str($file->name)->limit(50) }}
                             </div>
                             <div class="text-sm font-medium text-gray-500">
@@ -97,5 +97,5 @@
 
     {!! $this->paginator->links() !!}
 
-    @livewire(lw('app.file.form-modal'), key('file-form'))
+    @livewire(atom_lw('app.file.form-modal'), key('file-form'))
 </div>

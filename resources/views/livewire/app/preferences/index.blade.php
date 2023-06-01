@@ -36,7 +36,7 @@
                 ?? 'app.preferences.'.$tab
             ) : null)
                 @livewire(
-                    is_string($com) ? lw($com) : lw(data_get($com, 'name')),
+                    is_string($com) ? atom_lw($com) : atom_lw(data_get($com, 'name')),
                     data_get($com, 'data', []),
                     key($tab)
                 )

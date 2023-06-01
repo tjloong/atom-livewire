@@ -6,7 +6,7 @@
             x-cloak
             x-data
             x-init="$wire.emitTo(
-                @js(lw('app.billing.order')),
+                @js(atom_lw('app.billing.order')),
                 'open',
                 @js($preselect),
             )"
@@ -25,7 +25,7 @@
 
                                 <div class="shrink-0">
                                     <x-link wire:click="$emitTo(
-                                        '{{ lw('app.billing.subscription-modal') }}', 
+                                        '{{ atom_lw('app.billing.subscription-modal') }}', 
                                         'open', 
                                         {{ $plan->subscription->id }},
                                     )" label="View" icon="eye" class="text-sm"/>
@@ -53,7 +53,7 @@
 
                         <x-slot:foot>
                             <x-button label="Renew" x-on:click="$wire.emitTo(
-                                '{{ lw('app.billing.order') }}',
+                                '{{ atom_lw('app.billing.order') }}',
                                 'open',
                                 price.code,
                             )" color="blue" block/>
@@ -62,7 +62,7 @@
                 @else
                     <x-slot:foot>
                         <x-button label="Subscribe" x-on:click="$wire.emitTo(
-                            '{{ lw('app.billing.order') }}',
+                            '{{ atom_lw('app.billing.order') }}',
                             'open',
                             price.code,
                         )" color="theme" block/>
@@ -72,6 +72,6 @@
         @endforeach
     </div>
 
-    @livewire(lw('app.billing.subscription-modal'), key('subscription-modal'))
-    @livewire(lw('app.billing.order'), key('order'))
+    @livewire(atom_lw('app.billing.subscription-modal'), key('subscription-modal'))
+    @livewire(atom_lw('app.billing.order'), key('order'))
 </div>

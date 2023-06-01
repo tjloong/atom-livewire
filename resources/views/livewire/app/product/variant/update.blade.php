@@ -6,5 +6,5 @@
         />
     </x-page-header>
 
-    @livewire(lw('app.product.variant.form'), compact('variant'))
+    @livewire(atom_lw('app.product.variant.form'), compact('variant'))
 </div>

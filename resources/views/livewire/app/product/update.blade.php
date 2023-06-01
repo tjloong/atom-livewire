@@ -8,12 +8,12 @@
 
     <div class="flex flex-col gap-6 md:flex-row">
         <div class="{{ $product->type === 'variant' ? 'md:w-8/12' : 'w-full' }}">
-            @livewire(lw('app.product.form'), compact('product'), key('form'))
+            @livewire(atom_lw('app.product.form'), compact('product'), key('form'))
         </div>
 
         @if ($product->type === 'variant')
             <div class="md:w-4/12">
-                @livewire(lw('app.product.variant.listing'), compact('product'), key('variant'))
+                @livewire(atom_lw('app.product.variant.listing'), compact('product'), key('variant'))
             </div>            
         @endif
     </div>

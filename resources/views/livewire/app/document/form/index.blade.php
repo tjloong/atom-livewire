@@ -96,7 +96,7 @@
                             </div>
     
                             <div class="grow pl-2 pr-4">
-                                @livewire(lw('app.document.form.item'), [
+                                @livewire(atom_lw('app.document.form.item'), [
                                     'item' => $item,
                                     'columns' => $columns,
                                     'document' => $document,
@@ -114,7 +114,7 @@
 
         @if ($items)
             <x-form.group>
-                @livewire(lw('app.document.form.total'), compact('document', 'items'), key('total'))
+                @livewire(atom_lw('app.document.form.total'), compact('document', 'items'), key('total'))
             </x-form.group>
         @endif
 
@@ -132,7 +132,7 @@
     </x-form>
 
     @module('products')
-        @livewire(lw('app.document.form.product-modal'), [
+        @livewire(atom_lw('app.document.form.product-modal'), [
             'currency' => $document->currency,
         ], key(uniqid()))
     @endmodule

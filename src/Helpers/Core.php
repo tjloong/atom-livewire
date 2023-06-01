@@ -3,68 +3,9 @@
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
-
-/**
- * Get stripe service
- */
-function stripe($credentials = null)
-{
-    return new Jiannius\Atom\Services\Stripe($credentials);
-}
-
-/**
- * Component ID
- */
-function component_id($attributes, $default = null)
-{
-    if ($attributes->get('uuid') === true) return str()->uuid();
-    if ($attributes->get('ulid') === true) return str()->ulid();
-
-    if ($id = $attributes->get('id') ?? $attributes->get('uid') ?? null) {
-        return $id;
-    }
-
-    if ($name = $attributes->wire('model')->value() ?? $attributes->get('name') ?? component_label($attributes) ?? null) {
-        return str($name)->replace('.', '-')->slug()->toString();
-    }
-
-    return $default;
-}
-
-/**
- * Component label
- */
-function component_label($attributes, $default = null, $trans = true)
-{
-    if ($attributes->get('label') === false) return null;
-    
-    $label = $attributes->get('label');
-
-    if (!$label) {
-        if ($name = $attributes->get('name') ?? $attributes->wire('model')->value() ?? null) {
-            $last = last(explode('.', $name));
-            $last = str($last)->is('*_id') ? str($last)->replaceLast('_id', '')->toString() : $last;
-            $label = str($last)->headline()->toString();
-        }
-        else $label = $default;
-    }
-
-    return $trans ? __($label) : $label;
-}
-
-function component_error($errors, $attributes)
-{
-    if (!$errors) return false;
-
-    $name = $attributes->get('name');
-    $model = $attributes->wire('model')->value();
-
-    return $errors->first($name ?? $model);
-}
 
 /**
  * Get status color
@@ -189,30 +130,6 @@ function verify_recaptcha($token, $secret = null)
 	$result = json_decode($response);
 
 	return $result->success;
-}
-
-/**
- * Get livewire component name
- */
-function lw($name)
-{
-    $name = str()->replace('/', '.', $name);
-    $segments = explode('.', $name);
-    $last = last($segments);
-    $slashed = collect($segments)->map(fn($str) => str()->studly($str))->filter()->join('\\');
-    $class = collect([
-        'App\Http\Livewire\\'.$slashed,
-        'App\Http\Livewire\\'.$slashed.'\Index',
-        'App\Http\Livewire\\'.$slashed.'\\'.str()->studly($last),
-        'Jiannius\Atom\Http\Livewire\\'.$slashed,
-        'Jiannius\Atom\Http\Livewire\\'.$slashed.'\Index',
-        'Jiannius\Atom\Http\Livewire\\'.$slashed.'\\'.str()->studly($last),
-    ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
-
-    if ($class) {
-        if (str($class)->startsWith('Jiannius\Atom')) return 'atom.'.$name;
-        else return $name;
-    }
 }
 
 /**
@@ -446,57 +363,6 @@ function enabled_module($module)
 }
 
 /**
- * Define route
- */
-function define_route($path = null, $action = null, $method = 'get')
-{
-    if (!$path && !$action) return app('router');
-    if (is_callable($action)) return app('router')->$method($path, $action);
-
-    // controller
-    if (str()->is('*Controller@*', $action)) {
-        $postfix = substr($action, 0, strpos($action, '@'));
-        $classmethod = str_replace('@', '', substr($action, strpos($action, '@'), strlen($action)));
-        $class = collect([
-            'App\Http\Controllers\\'.$postfix,
-            'Jiannius\Atom\Http\Controllers\\'.$postfix,
-        ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
-
-        return app('router')->$method($path, [$class, $classmethod]);
-    }
-    // livewire
-    else {
-        $class = collect([
-            'App\Http\Livewire\\'.$action,
-            'App\Http\Livewire\\'.$action.'\Index',
-            'Jiannius\Atom\Http\Livewire\\'.$action,
-            'Jiannius\Atom\Http\Livewire\\'.$action.'\Index',
-        ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
-
-        return app('router')->$method($path, $class);
-    }
-}
-
-/**
- * Get current route
- * 
- * @return string
- */
-function current_route($name = null)
-{
-    $route = request()->route()->getName();
-
-    if (is_string($name)) return str($route)->is($name);
-    elseif (is_array($name)) {
-        return is_numeric(
-            collect($name)->search(fn($val) => str($route)->is($val))
-        );
-    }
-
-    return $route;
-}
-
-/**
  * Mask email address
  */
 function mask_email($email)
@@ -543,7 +409,7 @@ function countries($key = false)
 {
     $path = collect([
         resource_path('json/countries.json'),
-        __DIR__.'/../resources/json/countries.json',
+        __DIR__.'/../../resources/json/countries.json',
     ])->first(fn($val) => file_exists($val));
 
     $json = json_decode(file_get_contents($path), true);
@@ -765,53 +631,4 @@ function html_excerpt($html)
 
     if ($length > 100) return str()->limit($content, 100);
     else return $content;
-}
-
-/**
- * Get atom path
- */
-function atom_path($path = null)
-{
-    return base_path('vendor/jiannius/atom-livewire'.($path ? '/'.$path : ''));
-}
-
-/**
- * Get atom class path
- */
-function atom_ns_path($ns)
-{
-    $filepath = str($ns)->replace("\\", "/")->toString().'.php';
-
-    if (str($filepath)->startsWith('App')) $filepath = app_path(str()->replaceFirst('App/', '', $filepath));
-    if (str($filepath)->startsWith('Jiannius/Atom')) $filepath = atom_path('src/'.str()->replaceFirst('Jiannius/Atom/', '', $filepath));
-
-    return $filepath;
-}
-
-/**
- * Get atom view
- */
-function atom_view($name, $data = [])
-{
-    $path = str($name)->replace('.', '/');
-
-    $view = collect([
-        base_path('resources/views/livewire/'.$path) => 'livewire.'.$name,
-        base_path('resources/views/livewire/'.$path.'/index') => 'livewire.'.$name.'.index',
-        base_path('resources/views/'.$path) => $name,
-        base_path('resources/views/'.$path.'/index') => $name.'.index',
-        atom_path('resources/views/livewire/'.$path) => 'atom::livewire.'.$name,
-        atom_path('resources/views/livewire/'.$path.'/index') => 'atom::livewire.'.$name.'.index',
-        atom_path('resources/views/'.$path) => 'atom::'.$name,
-        atom_path('resources/views/'.$path.'/index') => 'atom::'.$name.'.index',
-    ])->first(fn($val, $key) => file_exists(str($key)->finish('.blade.php')));
-
-    if ($view) {
-        $main = head(explode('.', $name));
-
-        if (file_exists(base_path('resources/views/layouts/'.$main.'.blade.php'))) {
-            return view($view, $data)->layout('layouts.'.$main);
-        }
-        else return view($view, $data);
-    }
 }

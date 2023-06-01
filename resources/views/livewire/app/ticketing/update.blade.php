@@ -39,6 +39,6 @@
             </div>
         </x-box>
 
-        @livewire(lw('app.ticketing.comments'), compact('ticket'), key('comments'))
+        @livewire(atom_lw('app.ticketing.comments'), compact('ticket'), key('comments'))
     </div>
 </div>

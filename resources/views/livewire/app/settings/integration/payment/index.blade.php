@@ -19,7 +19,7 @@
                     </a>
     
                     @if ($provider === $item)
-                        @livewire(lw('app.settings.integration.payment.'.$item), key($item))
+                        @livewire(atom_lw('app.settings.integration.payment.'.$item), key($item))
                     @endif
                 </div>
             @endforeach

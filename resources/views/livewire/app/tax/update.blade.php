@@ -6,5 +6,5 @@
         />
     </x-page-header>
 
-    @livewire(lw('app.tax.form'), compact('tax'))
+    @livewire(atom_lw('app.tax.form'), compact('tax'))
 </div>

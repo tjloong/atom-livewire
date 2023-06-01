@@ -1,6 +1,6 @@
-<x-drawer uid="file-form-modal" icon="file" header="Update File">
+<x-drawer id="file-form-modal" icon="file" header="Update File">
     @if ($file)
-        <div class="grid gap-6">
+        <div class="p-4 grid gap-6">
             <div class="rounded-lg bg-slate-100 flex flex-col overflow-hidden shadow">
                 @if ($file->is_video || $file->is_image || $file->type === 'youtube')
                     <a href="{{ $file->url }}" target="_blank">

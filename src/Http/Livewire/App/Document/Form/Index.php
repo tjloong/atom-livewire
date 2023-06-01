@@ -285,7 +285,7 @@ class Index extends Component
             ->values()
             ->toArray();
 
-        $this->emitTo(lw('app.document.form.total'), 'setItems', $this->items);
+        $this->emitTo(atom_lw('app.document.form.total'), 'setItems', $this->items);
     }
 
     /**

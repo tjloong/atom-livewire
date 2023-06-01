@@ -2,7 +2,7 @@
     <x-page-header title="Website Announcements">
         <x-button
             label="New Announcement"
-            wire:click="$emitTo('{{ lw('app.settings.website.announcement-modal') }}', 'open')"
+            wire:click="$emitTo('{{ atom_lw('app.settings.website.announcement-modal') }}', 'open')"
         />
     </x-page-header>
 
@@ -17,7 +17,7 @@
     
                         <div class="grow flex items-center justify-between gap-2">
                             <div class="grid">
-                                <a class="truncate" wire:click="$emitTo('{{ lw('app.settings.website.announcement-modal') }}', 'open', @js($announcement))">
+                                <a class="truncate" wire:click="$emitTo('{{ atom_lw('app.settings.website.announcement-modal') }}', 'open', @js($announcement))">
                                     {{ data_get($announcement, 'title') }}
                                 </a>
                                 <div class="text-sm text-gray-500 font-medium truncate">
@@ -45,5 +45,5 @@
         @endif
     </x-box>
 
-    @livewire(lw('app.settings.website.announcement-modal'))
+    @livewire(atom_lw('app.settings.website.announcement-modal'))
 </div>
