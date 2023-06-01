@@ -47,6 +47,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'empty-state',
             'alpine-data',
             'social-share',
+            'shopping-cart',
             'flip-countdown',
             'payment-gateway',
             'placeholder-bar',
@@ -179,6 +180,7 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'navbar.index',
             'navbar.auth',
+            'navbar.cart',
             'navbar.item',
             'navbar.locale',
             'navbar.dropdown.index',

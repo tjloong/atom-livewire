@@ -274,7 +274,16 @@ class Icon extends Component
             ->first(fn($val, $key) => str($name)->slug()->is($key.'*'))
         ) {
             if ($svg = data_get($this->svgs, $alias)) return $svg;
+            else $name = $alias;
         }
+
+        $parts = collect(explode(' ', $name));
+
+        if (!in_array($parts->first(), ['solid', 'regular', 'light', 'thin', 'duotone'])) {
+            $parts->prepend('solid');
+        }
+
+        return $parts->map(fn($part) => 'fa-'.$part)->join(' ');
     }
 
     /**

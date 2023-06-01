@@ -4,13 +4,13 @@ namespace Jiannius\Atom\Components;
 
 use Illuminate\View\Component;
 
-class Drawer extends Component
+class ShoppingCart extends Component
 {
     /**
      * Render
      */
     public function render()
     {
-        return view('atom::components.drawer');
+        return view('atom::components.shopping-cart');
     }
 }
