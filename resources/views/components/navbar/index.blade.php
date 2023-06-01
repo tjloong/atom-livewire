@@ -99,7 +99,7 @@
                                     @if (Route::has('register'))
                                         <x-navbar.item href="/register?ref=navbar" label="Register" class="md:hidden"/>
                                         <div class="hidden md:block">
-                                            <x-button href="/register?ref=navbar" label="Register"/>
+                                            <x-button href="/register?ref=navbar" label="Register" color="theme"/>
                                         </div>
                                     @endif
                                 </div>

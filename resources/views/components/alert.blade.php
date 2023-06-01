@@ -1,7 +1,8 @@
 @props([
     'type' => $attributes->get('type', 'info'),
-    'errors' => $attributes->get('errors'),
     'title' => $attributes->get('title'),
+    'errors' => $attributes->get('errors'),
+    'err' => $attributes->get('err'),
 
     'icon' => [
         'neutral' => 'circle-info',
@@ -22,7 +23,7 @@
         'title' => [
             'neutral' => 'text-gray-500',
             'info' => 'text-blue-800',
-            'error' => 'text-red-800',
+            'error' => 'text-red-600',
             'success' => 'text-green-800',
             'warning' => 'text-yellow-800',
         ],
@@ -52,10 +53,10 @@
 
 <div {{ $attributes->class([
     'p-4 rounded-md', 
-    data_get($color, 'bg.'.($errors->all() ? 'error' : $type)), 
-    data_get($color, 'border.'.($errors->all() ? 'error' : $type)),
+    data_get($color, 'bg.'.($err ? 'error' : $type)), 
+    data_get($color, 'border.'.($err ? 'error' : $type)),
 ])->except('errors') }}>
-    @if ($errors->all())
+    @if ($err)
         <div class="grid gap-1">
             @foreach ($errors->all() as $error)
                 <div class="flex items-center gap-2">

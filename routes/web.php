@@ -13,7 +13,6 @@ define_route('__locale/{locale}', 'LocaleController@set')->name('__locale.set');
  */
 if (in_array('stripe', config('atom.payment_gateway'))) {
     define_route()->prefix('__stripe')->as('__stripe.')->group(function() {
-        define_route('checkout', 'StripeController@checkout')->name('checkout');
         define_route('success', 'StripeController@success')->name('success');
         define_route('cancel', 'StripeController@cancel')->name('cancel');
         define_route('webhook', 'StripeController@webhook', 'post')->name('webhook');

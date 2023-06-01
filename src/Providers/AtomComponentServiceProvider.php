@@ -93,6 +93,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             
             'modal.index',
             'modal.row',
+            'modal.overlay',
             
             'table.index',
             'table.th',

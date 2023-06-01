@@ -7,20 +7,6 @@ use App\Http\Controllers\Controller;
 class StripeController extends Controller
 {
     /**
-     * Checkout
-     */
-    public function checkout()
-    {
-        if ($params = session('pay_request')) {
-            $checkout = stripe($params)->checkout($params);
-
-            return redirect($checkout->url);
-        }
-
-        return back();
-    }
-
-    /**
      * Success
      */
     public function success()

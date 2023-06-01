@@ -199,10 +199,10 @@ class AtomLivewireServiceProvider extends ServiceProvider
             
             // billing
             'atom.app.billing' => 'App\Billing\Index',
+            'atom.app.billing.order' => 'App\Billing\Order',
             'atom.app.billing.checkout' => 'App\Billing\Checkout',
             'atom.app.billing.receipt' => 'App\Billing\Receipt',
             'atom.app.billing.subscription-modal' => 'App\Billing\SubscriptionModal',
-            'atom.app.billing.cancel-auto-renew-modal' => 'App\Billing\CancelAutoRenewModal',
 
             // ticket
             'atom.app.ticketing.listing' => 'App\Ticketing\Listing',

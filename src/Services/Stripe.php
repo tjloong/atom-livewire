@@ -141,62 +141,68 @@ class Stripe
     }
 
     /**
+     * Sample params
+     */
+    public function sample()
+    {
+        return [
+            'customer' => 'cus_NzHqNbIaJ56Juq',
+            'customer_email' => 'test@sign.up',
+            'mode' => 'subscription',
+            'metadata' => [
+                'job' => 'PlanSubscriptionProvision',
+                'payment_id' => 1,
+                'tenant_id' => null,
+            ],
+            'line_items' => [
+                [
+                    'quantity' => 1,
+                    'price_data' => [
+                        'currency' => 'USD',
+                        'product_data' => [
+                            'name' => 'HumbleBear Pro Plan Monthly',
+                        ],
+                        'unit_amount' => '1500',
+                        'recurring' => [
+                            'interval_count' => 1,
+                            'interval' => 'month',
+                        ],
+                    ],
+                ],
+            ],
+            'subscription_data' => [
+                'metadata' => [
+                    'job' => 'PlanSubscriptionProvision',
+                    'payment_id' => 1,
+                    'tenant_id' => null,
+                ],
+            ],
+            'success_url' => route('__stripe.success'),
+            'cancel_url' => route('__stripe.cancel'),
+        ];
+    }
+
+    /**
      * Checkout
      */
     public function checkout($params)
     {
-        $hasRecurringItems = collect(data_get($params, 'items'))->search(fn($item) => !empty(data_get($item, 'recurring')));
-        $mode = is_numeric($hasRecurringItems) ? 'subscription' : 'payment';
+        // change product amount to proper format (eg. 25.00 -> 2500)
+        $params['line_items'] = collect($params['line_items'])->map(fn($item) =>
+            collect($item)->replaceRecursive([
+                'price_data' => [
+                    'unit_amount' => str(data_get($item, 'price_data.unit_amount'))
+                        ->replace('.', '')
+                        ->replace(',', '')
+                        ->toString(),
+                ],
+            ])->toArray()
+        )->toArray();
 
-        $metadata = [
-            'job' => data_get($params, 'job'), 
-            'payment_id' => data_get($params, 'payment_id'),
-            'tenant_id' => data_get($params, 'tenant_id'),
-        ];
+        // create stripe checkout session
+        $session = $this->client->checkout->sessions->create($params);
 
-        $lineItems = collect(data_get($params, 'items', []))->map(function($item) {
-            $recurring = [
-                'interval' => data_get($item, 'recurring.interval'),
-                'interval_count' => data_get($item, 'recurring.count'),
-            ];
-
-            $unitAmount = str(data_get($item, 'amount'))
-                ->replace('.', '')
-                ->replace(',', '')
-                ->toString();
-
-            return [
-                'quantity' => data_get($item, 'qty'),
-                'price_data' => array_filter([
-                    'currency' => data_get($item, 'currency'),
-                    'product_data' => ['name' => data_get($item, 'name')],
-                    'unit_amount' => $unitAmount,
-                    'recurring' => $recurring['interval_count'] && $recurring['interval']
-                        ? $recurring
-                        : null,
-                ]),
-            ];
-        })->all();
-
-        $subscriptionData = $mode === 'subscription' 
-            ? ['metadata' => $metadata] 
-            : null;
-        
-        $email = data_get($params, 'customer.email');
-        $customerId = data_get($params, 'customer.stripe_customer_id');
-
-        $sessionObject = array_filter([
-            'mode' => $mode,
-            'metadata' => $metadata,
-            'customer_email' => $customerId ? null : $email,
-            'customer' => $customerId,
-            'subscription_data' => $subscriptionData,
-            'success_url' => route('__stripe.success', $metadata),
-            'cancel_url' => route('__stripe.cancel', $metadata),
-            'line_items' => $lineItems,
-        ]);
-
-        return $this->client->checkout->sessions->create($sessionObject);
+        return redirect($session->url);
     }
 
     /**
