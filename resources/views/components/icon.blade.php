@@ -1,4 +1,4 @@
-@if ($icon || isset($svg))
+@if (str($icon)->startsWith('<svg '))
     <i {{ $attributes
         ->class(['inline-block'])
         ->merge(['style' => 'width: '.$size.'px; height:'.$size.'px'])
@@ -8,4 +8,6 @@
         @else {!! $icon !!}
         @endisset
     </i>
+@else
+    <i class="{{ $icon }}"></i>
 @endif
