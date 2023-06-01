@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
 
 class AtomServiceProvider extends ServiceProvider
 {
@@ -28,17 +27,15 @@ class AtomServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../../lang', 'atom');
 
         // helpers
-        require_once __DIR__.'/../Helpers.php';
+        require_once __DIR__.'/../Helpers/Core.php';
+        require_once __DIR__.'/../Helpers/Atom.php';
+        require_once __DIR__.'/../Helpers/Component.php';
+        require_once __DIR__.'/../Helpers/Route.php';
+        require_once __DIR__.'/../Helpers/PaymentGateway.php';
         
         // middleware
         $router = app('router');
         $router->aliasMiddleware('track-ref', \Jiannius\Atom\Http\Middleware\TrackReferer::class);
-
-        // routes
-        Route::group(['middleware' => 'web'], function () {
-            $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
-            $this->loadRoutesFrom(__DIR__.'/../../routes/auth.php');
-        });
 
         if ($this->app->runningInConsole()) {
             // commands
@@ -48,6 +45,8 @@ class AtomServiceProvider extends ServiceProvider
                 \Jiannius\Atom\Console\PublishCommand::class,
                 \Jiannius\Atom\Console\RefreshCommand::class,
                 \Jiannius\Atom\Console\RepairCommand::class,
+                \Jiannius\Atom\Console\CkeditorCommand::class,
+                \Jiannius\Atom\Console\FontawesomeCommand::class,
             ]);
 
             // publishing
@@ -92,6 +91,7 @@ class AtomServiceProvider extends ServiceProvider
             __DIR__.'/../../stubs/resources/views/layouts' => base_path('resources/views/layouts'),
             __DIR__.'/../../stubs/resources/css' => base_path('resources/css'),
             __DIR__.'/../../stubs/resources/js' => base_path('resources/js'),
+            __DIR__.'/../../stubs/routes' => base_path('routes'),
             __DIR__.'/../../resources/views/errors' => base_path('resources/views/errors'),
             __DIR__.'/../../resources/views/vendor' => base_path('resources/views/vendor'),
         ], 'atom-base');
