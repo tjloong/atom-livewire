@@ -1,10 +1,14 @@
 @props([
     'config' => $attributes->get('config'),
+    'thumbs' => $attributes->get('thumbs'),
 ])
 
 <div 
+    
     x-cloak
     x-data="{
+        thumbs: @js($thumbs),
+        swiper: null,
         get slides () {
             return Array.from(this.$refs.slider.querySelectorAll('.swiper-slide'))
         },
@@ -36,19 +40,31 @@
                 ...@js($config),
             }
         },
-        init () {
-            const swiper = new Swiper(this.$refs.slider, this.config)
+        start (thumbsId) {
+            if (this.thumbs) {
+                const id = this.thumbs === true ? 'thumbs' : this.thumbs
+                const thumbs = id === thumbsId ? document.querySelector(`#${id}`) : null
+            }
+            
+            this.swiper = new Swiper(this.$refs.slider, { 
+                ...this.config,
+                thumbs: thumbs ? { swiper: thumbs.swiper } : null,
+            })
 
             this.$nextTick(() => {
                 [
-                    swiper.navigation.prevEl && '#swiper-prev',
-                    swiper.navigation.nextEl && '#swiper-next',
-                    swiper.pagination.el && '.swiper-pagination',
-                    swiper.scrollbar.el && '.swiper-scrollbar',
+                    this.swiper.navigation.prevEl && '#swiper-prev',
+                    this.swiper.navigation.nextEl && '#swiper-next',
+                    this.swiper.pagination.el && '.swiper-pagination',
+                    this.swiper.scrollbar.el && '.swiper-scrollbar',
                 ].filter(Boolean).forEach(selector => this.$el.querySelector(selector).classList.remove('hidden'))
             })
         },
     }"
+    @if ($thumbs) x-on:thumbs-started.window="start($event.detail)"
+    @else x-init="start()"
+    @endif
+    wire:ignore
     {{ $attributes }}
 >
     <div x-ref="slider" class="swiper w-full h-full">
