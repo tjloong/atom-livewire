@@ -206,20 +206,20 @@ function tenant($attr = null, $default = null, $tenant = null)
 /**
  * Settings
  */
-function settings($name = null, $default = null)
+function settings($attr = null, $default = null)
 {
     if (config('atom.static_site')) return $default;
 
     $settings = model('site_setting')->generate();
 
-    if (!$name) {
+    if (!$attr) {
         return $settings;
     }
-    else if (is_string($name)) {
-        return data_get($settings, $name, $default);
+    else if (is_string($attr)) {
+        return data_get($settings, $attr, $default);
     }
-    else if (is_array($name)) {
-        foreach ($name as $key => $val) {
+    else if (is_array($attr)) {
+        foreach ($attr as $key => $val) {
             $setting = model('site_setting')->where('name', $key)->first();
             $setting->fill(['value' => $val])->save();
         }
@@ -433,6 +433,44 @@ function countries($key = false)
     }
 
     return $values;
+}
+
+/**
+ * Get currencies
+ */
+function currencies($country = false)
+{
+    $currencies = countries()
+        ->map(function ($val) {
+            if ($currency = data_get($val, 'currency')) {
+                return array_merge(
+                    [
+                        'country_name' => data_get($val, 'name'),
+                        'country_code' => data_get($val, 'code'),
+                    ],
+                    $currency,
+                );
+            }
+
+            return null;
+        })
+        ->filter()
+        ->values();
+
+    if ($country !== false) {
+        $split = explode('.', $country);
+        $name = $split[0];
+        $field = $split[1] ?? null;
+        $value = $currencies->first(fn($val) => 
+            strtolower(data_get($val, 'country_code')) === strtolower($name)
+            || strtolower(data_get($val, 'country_name')) === strtolower($name)
+        );
+
+        if ($value && $field) return data_get($value, $field);
+        elseif ($value) return $value;
+    }
+
+    return $currencies;
 }
 
 /**

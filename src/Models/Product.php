@@ -6,7 +6,6 @@ use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Jiannius\Atom\Traits\Models\HasSlug;
 
 class Product extends Model
@@ -19,6 +18,7 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'float',
+        'cost' => 'float',
         'stock' => 'integer',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
@@ -32,16 +32,6 @@ class Product extends Model
         static::saving(function ($product) {
             $product->code = $product->code ?? $product->generateCode();
         });
-    }
-
-    /**
-     * Get taxes for product
-     */
-    public function taxes(): mixed
-    {
-        if (!enabled_module('taxes')) return null;
-
-        return $this->belongsToMany(model('tax'), 'product_taxes');
     }
 
     /**
@@ -63,8 +53,10 @@ class Product extends Model
     /**
      * Get product variants for product
      */
-    public function variants(): HasMany
+    public function variants(): mixed
     {
+        if (!has_table('product_variants')) return null;
+
         return $this->hasMany(model('product_variant'));
     }
 
@@ -73,9 +65,19 @@ class Product extends Model
      */
     public function coupons(): mixed
     {
-        if (!enabled_module('coupons')) return null;
+        if (!has_table('coupon_products')) return null;
 
         return $this->belongsToMany(model('coupon'), 'coupon_products');
+    }
+
+    /**
+     * Get taxes for product
+     */
+    public function taxes(): mixed
+    {
+        if (!has_table('product_taxes')) return null;
+
+        return $this->belongsToMany(model('tax'), 'product_taxes');
     }
 
     /**

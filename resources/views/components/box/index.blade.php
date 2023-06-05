@@ -1,7 +1,7 @@
 <div {{
     $attributes->class([
-        'box bg-white border shadow overflow-hidden',
-        $attributes->get('class', 'rounded-xl'),
+        'box bg-white border shadow',
+        $attributes->get('class', 'rounded-lg'),
     ])->except('header')
 }}>
     <div class="p-1 flex flex-col divide-y">
@@ -41,7 +41,7 @@
 
     @isset ($foot)
         <div {{ $foot->attributes->class([
-            'bg-slate-100',
+            'bg-slate-100 rounded-b-lg',
             $foot->attributes->get('class', 'p-4'),
         ]) }}">
             {{ $foot }}

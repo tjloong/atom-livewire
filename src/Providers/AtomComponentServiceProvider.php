@@ -30,7 +30,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'link',
             'logo',
             'plan',
-            'alert',
             'badge',
             'field',
             'image',
@@ -51,6 +50,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'flip-countdown',
             'payment-gateway',
             'placeholder-bar',
+            
+            'alert.index',
+            'alert.errors',
             
             'dashboard.chart',
             'dashboard.listing',
@@ -161,6 +163,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.select.gender',
             'form.select.contact',
             'form.select.country',
+            'form.select.product',
             'form.select.currency',
 
             'form.checkbox.index',

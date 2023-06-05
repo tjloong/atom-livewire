@@ -30,6 +30,7 @@ class AtomServiceProvider extends ServiceProvider
         require_once __DIR__.'/../Helpers/Core.php';
         require_once __DIR__.'/../Helpers/Atom.php';
         require_once __DIR__.'/../Helpers/Component.php';
+        require_once __DIR__.'/../Helpers/Database.php';
         require_once __DIR__.'/../Helpers/Route.php';
         require_once __DIR__.'/../Helpers/PaymentGateway.php';
         

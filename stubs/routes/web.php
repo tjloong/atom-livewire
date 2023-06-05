@@ -25,6 +25,7 @@ define_route()->prefix('app')->middleware('auth')->group(function() {
     load_routes('app.blog');
     load_routes('app.contact');
     load_routes('app.coupon');
+    load_routes('app.dashboard');
     load_routes('app.document');
     load_routes('app.enquiry');
     load_routes('app.invitation');

@@ -39,24 +39,6 @@
             @endif
         </div>
 
-        @if ($columns->get('price'))
-            @if (
-                (float) $this->recommendedPrice > 0
-                && (float) data_get($item, 'amount') !== (float) $this->recommendedPrice
-            )
-                <div class="bg-yellow-100 text-sm py-2 px-4 rounded-lg border border-yellow-200 flex items-center gap-2">
-                    <x-icon name="circle-info" size="12" class="shrink-0 text-yellow-500"/>
-                    <div class="grow text-yellow-800 font-medium">
-                        {{ __('Recommended '.strtolower($columns->get('price'))) }}:
-                        {{ currency($this->recommendedPrice) }}
-                    </div>
-                    <a wire:click="$set('item.amount', @js($this->recommendedPrice))" class="shrink-0">
-                        {{ __('Use') }}
-                    </a>
-                </div>
-            @endif
-        @endif
-
         @if (enabled_module('taxes') && $columns->has('tax'))
             <div class="bg-slate-100 rounded-lg flex flex-col divide-y">
                 @if (count($this->taxes) || data_get($item, 'taxes'))

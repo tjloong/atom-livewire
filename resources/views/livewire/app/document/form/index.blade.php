@@ -13,7 +13,7 @@
                             :label="$this->contactLabel" 
                             :options="data_get($this->options, 'contacts')"
                         >
-                            @if (Route::has('app.contact.create'))
+                            @if (has_route('app.contact.create'))
                                 <x-slot:footlink label="Create New" :href="route('app.contact.create', [$document->type])"></x-slot:footlink>
                             @endif
                         </x-form.select>
@@ -100,7 +100,7 @@
                                     'item' => $item,
                                     'columns' => $columns,
                                     'document' => $document,
-                                ], key($id))
+                                ], key($id.'-'.$fingerprint))
                             </div>
                         </div>
                     @endforeach
@@ -114,7 +114,7 @@
 
         @if ($items)
             <x-form.group>
-                @livewire(atom_lw('app.document.form.total'), compact('document', 'items'), key('total'))
+                @livewire(atom_lw('app.document.form.total'), compact('document', 'items'), key('total-'.$fingerprint))
             </x-form.group>
         @endif
 
@@ -134,6 +134,6 @@
     @module('products')
         @livewire(atom_lw('app.document.form.product-modal'), [
             'currency' => $document->currency,
-        ], key(uniqid()))
+        ], key('product-modal-'.$fingerprint))
     @endmodule
 </div>

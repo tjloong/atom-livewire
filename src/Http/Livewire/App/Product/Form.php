@@ -38,9 +38,11 @@ class Form extends Component
             'product.slug' => ['nullable'],
             'product.description' => ['nullable'],
             'product.price' => ['nullable'],
+            'product.cost' => ['nullable'],
             'product.stock' => ['nullable'],
             'product.is_active' => ['nullable'],
             'product.is_featured' => ['nullable'],
+            'product.is_required_shipment' => ['nullable'],
         ];
     }
 

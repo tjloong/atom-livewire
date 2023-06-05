@@ -16,6 +16,7 @@ class Index extends Component
     public $columns;
     public $document;
     public $settings;
+    public $fingerprint;
 
     public $inputs = [
         'labels' => [],
@@ -103,6 +104,8 @@ class Index extends Component
         $this->settings = tenant()
             ? tenant('settings.'.$this->document->type)
             : settings('document.'.$this->document->type);
+
+        $this->fingerprint = time();
 
         $this->fill([
             'inputs.labels' => $this->document->labels->pluck('id')->toArray(),
@@ -221,6 +224,8 @@ class Index extends Component
                 'payterm' => $this->document->type === 'delivery-order' ? null : $contact->payterm,
             ] : [],
         ));
+
+        $this->fingerprint = time();
     }
 
     /**
@@ -229,6 +234,8 @@ class Index extends Component
     public function setDocument($data): void
     {
         $this->document->fill($data);
+
+        $this->fingerprint = time();
     }
 
     /**

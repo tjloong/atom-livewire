@@ -20,6 +20,14 @@ function current_route($name = null)
 }
 
 /**
+ * Check has route
+ */
+function has_route($name)
+{
+    return Route::has($name);
+}
+
+/**
  * Define route
  */
 function define_route($path = null, $action = null, $method = 'get')

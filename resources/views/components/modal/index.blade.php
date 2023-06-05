@@ -5,57 +5,55 @@
 <div
     x-cloak
     x-data="{
-        show: @js($attributes->get('opened', false)),
+        show: false,
         open () { this.show = true },
-        close (e, force = false) {
-            if (force || !e.target.closest('#modal-container')) this.show = false
-        },
+        close () { this.show = false},
     }"
     x-show="show"
     x-transition.opacity
+    x-on:{{ $id }}-open.window="open"
+    x-on:{{ $id }}-close.window="close"
     x-on:open="open"
-    x-on:close="close(null, true)"
-    x-on:{{ $id }}-open.window="open()"
-    x-on:{{ $id }}-close.window="close(null, true)"
-    x-bind:class="show && 'inset-0 z-50'"
-    class="fixed"
+    x-on:close="close"
+    class="fixed inset-0 z-50 overflow-auto"
     id="{{ $id }}"
 >
-    <div class="fixed inset-0 bg-black/80"></div>
+    @if ($attributes->get('bg-close', true)) <x-modal.overlay x-on:click="close"/>
+    @else <x-modal.overlay/>
+    @endif
 
-    <div 
-        @if ($attributes->get('on-bg-close', true)) x-on:click="close" @endif
-        class="absolute inset-0 overflow-auto px-6 py-10"
-    >
-        <div id="modal-container" {{ $attributes->class([
-            'bg-white rounded-xl border shadow mx-auto relative mx-auto',
-            $attributes->get('class', 'max-w-screen-sm'),
-        ])->only('class') }}>
-            @if ($header = $attributes->get('header'))
-                <div class="m-1 py-3 px-4 text-lg font-bold border-b flex items-center gap-3">
-                    @if ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/> @endif
-                    {{ __($header) }}
+    <div class="relative mx-auto py-10 px-4 {{ [
+        'sm' => 'max-w-screen-sm',
+        'md' => 'max-w-screen-md',
+        'lg' => 'max-w-screen-lg',
+    ][$attributes->get('size', 'sm')] }}">
+        <div class="bg-white rounded-lg shadow-lg flex flex-col divide-y">
+            <div class="flex items-center justify-between p-4">
+                <div class="grow">
+                    @if ($header = $attributes->get('header'))
+                        <div class="text-lg font-bold flex items-center gap-3">
+                            @if ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/> @endif
+                            {{ __($header) }}
+                        </div>
+                    @elseif (isset($header))
+                        {{ $header }}
+                    @endif
                 </div>
-            @elseif (isset($header))
-                <div {{ $header->attributes->class(['m-1']) }}>
-                    {{ $header }}
-                </div>
-            @endif
 
-            <div class="absolute -top-4 -right-4 bg-white border shadow rounded-full p-1">
-                <x-close x-on:click="close(null, true)"/>
+                <div class="shrink-0">
+                    <x-close x-on:click.stop="close"/>
+                </div>
             </div>
 
-            <div class="p-1">
+            <div class="grow">
                 {{ $slot }}
             </div>
 
             @isset($foot)
-                <div class="py-4 px-6 bg-gray-100 rounded-b-lg">
+                <div class="shrink-0 p-4 bg-slate-100 rounded-b-lg">
                     {{ $foot }}
                 </div>
             @endisset
         </div>
     </div>
 </div>
-

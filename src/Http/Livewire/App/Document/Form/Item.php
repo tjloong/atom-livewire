@@ -49,19 +49,9 @@ class Item extends Component
      */
     public function getVariantProperty(): mixed
     {
-        if (!$this->product) return null;
+        if (!$this->product || !$this->product->variants()) return null;
 
         return $this->product->variants()->find(data_get($this->item, 'product_variant_id'));
-    }
-
-    /**
-     * Get recommended price property
-     */
-    public function getRecommendedPriceProperty(): mixed
-    {
-        return in_array($this->document->type, ['purchase-order', 'bill'])
-            ? optional($this->variant ?? $this->product)->cost
-            : optional($this->variant ?? $this->product)->price;
     }
 
     /**

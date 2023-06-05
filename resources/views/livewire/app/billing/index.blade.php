@@ -42,7 +42,7 @@
         @else
             <x-box>
                 <x-empty-state title="No subscription" subtitle="You do not have any active subscription">
-                    <x-button label="Subscribe Plan" :href="route('app.billing.checkout')"/>
+                    <x-button label="Subscribe Plan" :href="route('app.billing.checkout')" color="theme"/>
                 </x-empty-state>
             </x-box>
         @endif

@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Product;
 
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
@@ -10,7 +9,7 @@ class Listing extends Component
 {
     use WithTable;
 
-    public $sort = 'updated_at,desc';
+    public $sort;
 
     public $filters = [
         'type' => null,
@@ -30,12 +29,13 @@ class Listing extends Component
     /**
      * Get query property
      */
-    public function getQueryProperty(): Builder
+    public function getQueryProperty(): mixed
     {
         return model('product')
             ->readable()
             ->with('variants', 'categories')
-            ->filter($this->filters);
+            ->filter($this->filters)
+            ->when(!$this->sort, fn($q) => $q->latest('updated_at'));
     }
 
     /**
@@ -70,10 +70,7 @@ class Listing extends Component
                 'sort' => 'price',
                 'class' => 'text-right',
                 'label' => $query->type === 'variant'
-                    ? (collect([
-                        currency($query->variants->min('price')),
-                        currency($query->variants->max('price')),
-                    ])->filter()->join(' ~ '))
+                    ? 'variants'
                     : currency($query->price),
             ],
             [

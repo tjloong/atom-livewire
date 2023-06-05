@@ -6,7 +6,9 @@
             <x-slot:button icon="arrows-rotate" wire:click="generateCode"></x-slot:button>
         </x-form.text>
 
-        <x-form.slug wire:model.defer="product.slug" :url="url('product/'.$product->slug)"/>
+        @if (has_route('web.product.view'))
+            <x-form.slug wire:model.defer="product.slug" :url="route('web.product.view', [$product->slug])"/>
+        @endif
 
         @if ($product->exists)
             <x-form.text :value="str($product->type)->headline()" label="Product Type" readonly/>
@@ -17,7 +19,7 @@
         <x-form.select.label wire:model="inputs.categories" type="product-category" multiple/>
 
         @if ($product->type === 'normal')
-            <x-form.number wire:model.defer="product.stock" step=".01"/>
+            <x-form.number wire:model.defer="product.stock" label="Initial Stock" step=".01"/>
         @endif
 
         @module('taxes')
@@ -25,7 +27,8 @@
         @endmodule
 
         @if ($product->type !== 'variant')
-            <x-form.number wire:model.defer="product.price"/>
+            <x-form.number wire:model.defer="product.price" :prefix="tenant('settings.default_currency') ?? settings('default_currency')"/>
+            <x-form.number wire:model.defer="product.cost" :prefix="tenant('settings.default_currency') ?? settings('default_currency')"/>
         @endif
 
         @if ($product->exists)
@@ -42,6 +45,7 @@
         <div>
             <x-form.checkbox wire:model="product.is_active" label="Active"/>
             <x-form.checkbox wire:model="product.is_featured" label="Featured"/>
+            <x-form.checkbox wire:model="product.is_required_shipment" label="Required shipment"/>
         </div>
     </x-form.group>
 </x-form>

@@ -287,6 +287,9 @@ class InstallCommand extends Command
 
                 if (Schema::hasTable('products')) {
                     $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('set null');
+                }
+
+                if (Schema::hasTable('product_variants')) {
                     $table->foreignId('product_variant_id')->nullable()->constrained('product_variants')->onDelete('set null');                    
                 }
                 
@@ -456,6 +459,7 @@ class InstallCommand extends Command
                 $table->string('slug')->nullable()->index();
                 $table->text('description')->nullable();
                 $table->double('price')->nullable();
+                $table->double('cost')->nullable();
                 $table->double('stock')->nullable();
                 $table->double('weight')->nullable();
                 $table->boolean('is_active')->nullable();
