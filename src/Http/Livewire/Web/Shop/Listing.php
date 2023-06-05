@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Web\Product;
+namespace Jiannius\Atom\Http\Livewire\Web\Shop;
 
 use Livewire\Component;
 
@@ -11,6 +11,6 @@ class Listing extends Component
      */
     public function render(): mixed
     {
-        return atom_view('web.product.listing');
+        return atom_view('web.shop.listing');
     }
 }

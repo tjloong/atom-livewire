@@ -49,7 +49,8 @@ class InstallCommand extends Command
         'coupons',
         'orders',
         'shippings',
-        'payments', 
+        'payments',
+        'carts', 
         'documents',
         'shareables',
         'banners',
@@ -718,6 +719,28 @@ class InstallCommand extends Command
             });
 
             $this->line('payments table created successfully.');
+        }
+    }
+
+    /**
+     * Install carts
+     */
+    private function installCarts()
+    {
+        $this->newLine();
+        $this->info('Installing plans module...');
+
+        if (Schema::hasTable('carts')) $this->warn('carts table exists, skipped.');
+        else {
+            Schema::create('carts', function(Blueprint $table) {
+                $table->id();
+                $table->double('qty')->nullable();
+                $table->double('price')->nullable();
+                $table->foreignId('product_id')->nullable()->constrained()->onDelete('cascade');
+                $table->foreignId('product_variant_id')->nullable()->constrained()->onDelete('cascade');
+                $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+                $table->timestamps();
+            });
         }
     }
 

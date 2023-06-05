@@ -8,14 +8,14 @@ class Cart extends Component
 {
     public $items = [];
 
-    protected $listeners = ['add', 'open'];
+    protected $listeners = ['add'];
 
     /**
      * Updated items
      */
     public function updatedItems()
     {
-        session(['cart-items' => collect($this->items)
+        session(['cart' => collect($this->items)
             ->map(fn($item) => 
                 collect($item)->only(
                     'qty',
@@ -34,38 +34,49 @@ class Cart extends Component
      */
     public function setItems()
     {
-        if (!session('cart-items')) $this->items = [];
+        if (session('cart')) {
+            $items = collect(session('cart'))->map(function($item) {
+                if (
+                    ($productId = data_get($item, 'product_id'))
+                    && !data_get($item, 'product')
+                ) {
+                    $item['product'] = model('product')->readable()->find($productId);
+                }
 
-        $products = ($id = collect(session('cart-items'))->pluck('product_id')->toArray())
-            ? model('product')->readable()->whereIn('id', $id)->get()
-            : collect();
+                if (
+                    ($variantId = data_get($item, 'product_variant_id'))
+                    && !data_get($item, 'product_variant')
+                ) {
+                    $item['product_variant'] = model('product_variant')->find($variantId);
+                }
 
-        $variants = ($id = collect(session('cart-items'))->pluck('product_variant_id')->toArray())
-            ? model('product_variant')->whereIn('id', $id)->get()
-            : collect();
+                if (!data_get($item, 'amount')) {
+                    $item['amount'] = data_get($item, 'qty') 
+                        * (data_get($item, 'product_variant.price') ?? data_get($item, 'product.price'));
+                }
 
-        $this->items = collect(session('cart-items'))->map(function ($item) use ($products, $variants) {
-            $product = $products->firstWhere('id', data_get($item, 'product_id'));
-            $variant = $variants->firstWhere('id', data_get($item, 'product_variant_id'));
-            $amount = data_get($item, 'qty') * ($variant ?? $product)->price;
+                return $item;
+            })->toArray();
 
-            return array_merge($item, [
-                'product' => $product,
-                'product_variant' => $variant,
-                'amount' => $amount,
-            ]);
-        })->values()->all();
+            $this->items = $items;
 
-        $this->dispatchBrowserEvent('cart-count', collect(session('cart-items'))->sum('qty'));
-    }
+            session(['cart' => $items]);
+        }
+        elseif (user()) {
+            $this->items = model('cart')
+                ->with(['product', 'variant'])
+                ->where('user_id', user('id'))
+                ->latest()
+                ->get()
+                ->toArray();
 
-    /**
-     * Open
-     */
-    public function open()
-    {
-        $this->setItems();
-        $this->dispatchBrowserEvent('cart-open');
+            session(['cart' => $this->items]);
+        }
+        else {
+            $this->items = [];
+        }
+
+        $this->dispatchBrowserEvent('cart-count', collect($this->items)->sum('qty'));
     }
 
     /**
@@ -73,27 +84,43 @@ class Cart extends Component
      */
     public function add($data)
     {
-        $items = collect(session('cart-items', []));
-        $search = $items->search(function($item) use ($data) {
-            $matchProduct = data_get($item, 'product_id') === data_get($data, 'product_id');
-            $matchVariant = data_get($item, 'product_variant_id') === data_get($data, 'product_variant_id');
+        if (user()) {
+            $item = model('cart')
+                ->where('user_id', user('id'))
+                ->when(data_get($data, 'product_id'), fn($q, $id) => $q->where('product_id', $id))
+                ->when(data_get($data, 'product_variant_id'), fn($q, $id) => $q->where('product_variant_id', $id))
+                ->first();
 
-            return data_get($data, 'product_variant_id')
-                ? $matchProduct && $matchVariant
-                : $matchProduct;
-        });
+            if ($item) $item->fill(['qty' => $item->qty + data_get($data, 'qty')])->save();
+            else model('cart')->create(array_merge($data, ['user_id' => user('id')]));
 
-        if (is_numeric($search)) {
-            $items->put($search, array_merge(
-                $items->get($search),
-                ['qty' => data_get($items->get($search), 'qty') + data_get($data, 'qty')],
-            ));
+            session()->forget('cart');
         }
-        else $items->push($data);
+        else {
+            $items = collect(session('cart'));
 
-        session(['cart-items' => $items]);
+            $search = $items->search(function($item) use ($data) {
+                $matchProduct = data_get($item, 'product_id') === data_get($data, 'product_id');
+                $matchVariant = data_get($item, 'product_variant_id') === data_get($data, 'product_variant_id');
+    
+                return data_get($data, 'product_variant_id')
+                    ? $matchProduct && $matchVariant
+                    : $matchProduct;
+            });
 
-        $this->open();
+            if (is_numeric($search)) {
+                $items->put($search, array_merge(
+                    $items->get($search),
+                    ['qty' => data_get($items->get($search), 'qty') + data_get($data, 'qty')],
+                ));
+            }
+            else $items->push($data);
+
+            session(['cart' => $items->values()->all()]);
+        }
+
+        $this->setItems();
+        $this->dispatchBrowserEvent('cart-open');
     }
 
     /**
@@ -101,10 +128,21 @@ class Cart extends Component
      */
     public function remove($i)
     {
-        $items = collect($this->items);
-        $items->splice($i, 1);
+        if (user()) {
+            $item = collect($this->items)->get($i);
 
-        session(['cart-items' => $items->values()->all()]);
+            optional(
+                model('cart')->where('user_id', user('id'))->find(data_get($item, 'id'))
+            )->delete();
+
+            session()->forget('cart');
+        }
+        else {
+            $items = collect($this->items);
+            $items->splice($i, 1);
+    
+            session(['cart' => $items->values()->all()]);
+        }
 
         $this->setItems();
     }

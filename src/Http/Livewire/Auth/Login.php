@@ -149,6 +149,8 @@ class Login extends Component
      */
     private function redirectTo($user): string
     {
+        if (enabled_module('carts')) session()->forget('cart');
+
         if ($user->status === 'new') return route('app.onboarding');
         
         if (

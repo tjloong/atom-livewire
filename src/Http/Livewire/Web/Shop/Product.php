@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\Web\Product;
+namespace Jiannius\Atom\Http\Livewire\Web\Shop;
 
 use Livewire\Component;
 
-class View extends Component
+class Product extends Component
 {
     public $product;
     public $inputs;
@@ -97,6 +97,6 @@ class View extends Component
      */
     public function render(): mixed
     {
-        return atom_view('web.product.view');
+        return atom_view('web.shop.product');
     }
 }

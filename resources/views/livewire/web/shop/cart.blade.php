@@ -1,21 +1,30 @@
 <x-drawer id="cart" header="Shopping Cart">
-    <div x-data x-on:cart-open.window="$wire.setItems()">
+    <div x-data x-init="$wire.setItems()">
         <div class="flex flex-col divide-y">
             @forelse ($items as $i => $item)
-                @php $product = data_get($item, 'product') @endphp
-                @php $variant = data_get($item, 'product_variant') @endphp
                 <div class="p-4 flex gap-4 hover:bg-slate-100">
                     <div class="shrink-0 flex items-center justify-center">
-                        <x-thumbnail :url="$product->image->url ?? $variant->image->url ?? null" size="80"/>
+                        <x-thumbnail size="80"
+                            :url="data_get($item, 'product_variant.image.url') ?? data_get($item, 'product.image.url') ?? null"
+                        />
                     </div>
 
                     <div class="grow flex flex-col gap-2">
                         <div class="flex flex-col">
-                            <x-link :label="$product->name" :href="route('web.product.view', [$product->slug])" text/>
-                            @if ($variant) 
-                                <div class="font-medium text-gray-500 truncate">{{ $variant->name }}</div>
+                            <x-link text
+                                :label="data_get($item, 'product.name')" 
+                                :href="route('web.shop.product', [data_get($item, 'product.slug')])"
+                            />
+
+                            @if ($variant = data_get($item, 'product_variant.name')) 
+                                <div class="font-medium text-gray-500 truncate">
+                                    {{ $variant }}
+                                </div>
                             @endif
-                            <div class="font-medium text-gray-500 truncate">{{ currency(($variant ?? $product)->price) }}</div>
+
+                            <div class="font-medium text-gray-500 truncate">
+                                {{ currency(data_get($item, 'product_variant.price') ?? data_get($item, 'product.price')) }}
+                            </div>
                         </div>
                         <div class="md:w-48">
                             <x-form.qty wire:model.debounce.500ms="items.{{ $i }}.qty" :label="false" uuid/>

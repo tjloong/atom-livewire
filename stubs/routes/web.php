@@ -51,7 +51,6 @@ define_route()->prefix('app')->middleware('auth')->group(function() {
 // web
 load_routes('web.blog');
 load_routes('web.contact');
-load_routes('web.product');
 load_routes('web.shareable');
 load_routes('web.shop');
 load_routes('web.thank');
