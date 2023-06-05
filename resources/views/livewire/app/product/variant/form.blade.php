@@ -7,7 +7,11 @@
         </x-form.text>
 
         <x-form.number wire:model.defer="variant.price"/>
+        <x-form.number wire:model.defer="variant.cost"/>
         <x-form.number wire:model.defer="variant.stock"/>
+    </x-form.group>
+
+    <x-form.group>
         <x-form.file wire:model="variant.image_id" accept="image/*"/>
     </x-form.group>
 

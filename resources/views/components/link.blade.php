@@ -5,6 +5,7 @@
     'icon' => $attributes->get('icon'),
     'small' => $attributes->get('small'),
     'size' => $attributes->get('size'),
+    'text' => $attributes->get('text', false),
 ])
 
 <a 
@@ -14,7 +15,8 @@
     @endif
     
     {{ $attributes->class([
-        'font-medium text-blue-700', 
+        'font-medium', 
+        $text ? 'text-gray-800' : 'text-blue-700',
         $size === 'sm' ? 'text-sm' : null,
         $attributes->get('class')
     ])->only('class') }}

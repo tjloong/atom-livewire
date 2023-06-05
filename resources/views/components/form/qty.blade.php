@@ -1,4 +1,5 @@
 @props([
+    'id' => component_id($attributes),
     'min' => $attributes->get('min'),
     'max' => $attributes->get('max'),
     'step' => $attributes->get('step', 1),
@@ -35,6 +36,7 @@
             'form-input flex items-center gap-2',
             $attributes->get('class'),
         ]) }}
+        id="{{ $id }}"
     >
         <div x-on:click="decrease" class="shrink-0 flex items-center justify-center cursor-pointer">
             <x-icon name="minus"/>

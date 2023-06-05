@@ -14,7 +14,7 @@
         @if ($product->type === 'variant')
             <div class="md:w-4/12">
                 @livewire(atom_lw('app.product.variant.listing'), compact('product'), key('variant'))
-            </div>            
+            </div>
         @endif
     </div>
 </div>

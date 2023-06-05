@@ -35,6 +35,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.web.thank.contact-us' => 'Web\Thank\ContactUs',
             'atom.web.product.listing' => 'Web\Product\Listing',
             'atom.web.product.view' => 'Web\Product\View',
+            'atom.web.shop.cart' => 'Web\Shop\Cart',
+            'atom.web.shop.checkout' => 'Web\Shop\Checkout',
 
             // auth
             'atom.auth.login' => 'Auth\Login',

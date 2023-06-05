@@ -13,6 +13,7 @@ class ProductVariant extends Model
 
     protected $casts = [
         'price' => 'float',
+        'cost' => 'float',
         'stock' => 'integer',
         'seq' => 'integer',
         'is_default' => 'boolean',
@@ -20,6 +21,8 @@ class ProductVariant extends Model
         'image_id' => 'integer',
         'product_id' => 'integer',
     ];
+
+    protected $with = ['image'];
 
     /**
      * Model booted

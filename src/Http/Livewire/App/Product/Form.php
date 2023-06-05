@@ -114,6 +114,7 @@ class Form extends Component
             $this->product->images()->updateExistingPivot($id, compact('seq'));
         }
 
+        $this->product->touch();
         $this->setInputs();
     }
 

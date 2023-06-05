@@ -18,10 +18,6 @@
 
         <x-form.select.label wire:model="inputs.categories" type="product-category" multiple/>
 
-        @if ($product->type === 'normal')
-            <x-form.number wire:model.defer="product.stock" label="Initial Stock" step=".01"/>
-        @endif
-
         @module('taxes')
             <x-form.select.tax wire:model="inputs.taxes" multiple/>
         @endmodule
@@ -31,15 +27,27 @@
             <x-form.number wire:model.defer="product.cost" :prefix="tenant('settings.default_currency') ?? settings('default_currency')"/>
         @endif
 
-        @if ($product->exists)
-            <div class="col-span-2">
-                <x-form.file accept="image/*" multiple sortable
-                    wire:model="inputs.images"
-                    wire:sorted="sort"
-                />
-            </div>
+        @if ($product->type === 'normal')
+            <x-form.number wire:model.defer="product.stock" label="Initial Stock" step=".01"/>
         @endif
     </x-form.group>
+
+    @if ($product->exists)
+        <x-form.group>
+            <x-form.file accept="image/*" multiple sortable
+                wire:model="inputs.images"
+                wire:sorted="sort"
+            />
+        </x-form.group>
+
+        <x-form.group>
+            <x-form.richtext wire:model.defer="product.description" :toolbar="[
+                'bold', 'italic', 'underline', 'fontSize', 'fontColor', 'link', 'bulletedList', 'numberedList',
+                '|', 'alignment', 'outdent', 'indent', 'horizontalLine',
+                '|', 'blockQuote', 'insertTable', 'undo', 'redo',
+            ]"/>
+        </x-form.group>
+    @endif
 
     <x-form.group>
         <div>

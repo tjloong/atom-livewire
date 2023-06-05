@@ -465,6 +465,7 @@ class InstallCommand extends Command
                 $table->boolean('is_active')->nullable();
                 $table->boolean('is_featured')->nullable();
                 $table->boolean('is_required_shipment')->nullable();
+                $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
                 $table->timestamps();
             });
 
@@ -500,8 +501,9 @@ class InstallCommand extends Command
                 $table->id();
                 $table->string('name');
                 $table->string('code')->nullable()->index();
-                $table->decimal('price', 20, 2)->nullable();
-                $table->decimal('stock', 20, 2)->nullable();
+                $table->double('price')->nullable();
+                $table->double('cost')->nullable();
+                $table->double('stock')->nullable();
                 $table->integer('seq')->nullable();
                 $table->boolean('is_default')->nullable();
                 $table->boolean('is_active')->nullable();

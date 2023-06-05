@@ -85,7 +85,11 @@ class View extends Component
      */
     public function addToCart()
     {
-
+        $this->emitTo(atom_lw('web.shop.cart'), 'add', [
+            'qty' => data_get($this->inputs, 'qty'),
+            'product_id' => $this->product->id,
+            'product_variant_id' => data_get($this->inputs, 'variant_id'),
+        ]);
     }
 
     /**

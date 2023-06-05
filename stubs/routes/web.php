@@ -53,6 +53,7 @@ load_routes('web.blog');
 load_routes('web.contact');
 load_routes('web.product');
 load_routes('web.shareable');
+load_routes('web.shop');
 load_routes('web.thank');
 
 // default

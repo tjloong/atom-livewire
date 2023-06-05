@@ -2,9 +2,11 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Jiannius\Atom\Traits\Models\HasSlug;
 
@@ -20,9 +22,12 @@ class Product extends Model
         'price' => 'float',
         'cost' => 'float',
         'stock' => 'integer',
+        'image_id' => 'integer',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
     ];
+
+    protected $with = ['image'];
 
     /**
      * Model booted
@@ -31,7 +36,18 @@ class Product extends Model
     {
         static::saving(function ($product) {
             $product->code = $product->code ?? $product->generateCode();
+            $product->image_id = optional($product->images()
+                ->orderBy('product_images.seq')
+                ->first())->id;
         });
+    }
+
+    /**
+     * Get image for product
+     */
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(model('file'), 'image_id');
     }
 
     /**
