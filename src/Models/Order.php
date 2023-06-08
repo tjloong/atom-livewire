@@ -2,49 +2,62 @@
 
 namespace Jiannius\Atom\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Jiannius\Atom\Traits\Models\HasRunningNumber;
+use Jiannius\Atom\Traits\Models\HasUlid;
 
 class Order extends Model
 {
     use HasFilters;
     use HasTrace;
     use HasRunningNumber;
+    use HasUlid;
     
     protected $guarded = [];
 
     protected $casts = [
+        'shipping_address' => 'array',
+        'billing_address' => 'array',
         'subtotal' => 'float',
         'discount_amount' => 'float',
-        'shipment_amount' => 'float',
+        'shipping_amount' => 'float',
         'grand_total' => 'float',
-        'data' => 'object',
+        'data' => 'array',
         'coupon_id' => 'integer',
-        'contact_id' => 'integer',
+        'user_id' => 'integer',
+        'shipping_rate_id' => 'integer',
     ];
+
+    /**
+     * Model booted
+     */
+    protected static function booted(): void
+    {
+        static::saving(function ($order) {
+            $order->setAttributes();
+        });
+    }
 
     /**
      * Get coupon for order
      */
     public function coupon(): mixed
     {
-        if (!enabled_module('coupons')) return null;
+        if (!has_table('coupons')) return null;
 
         return $this->belongsTo(model('coupon'));
     }
 
     /**
-     * Get contact for order
+     * Get user for order
      */
-    public function contact(): mixed
+    public function user(): BelongsTo
     {
-        if (!enabled_module('contacts')) return null;
-
-        return $this->belongsTo(model('contact'));
+        return $this->belongsTo(model('user'));
     }
 
     /**
@@ -66,26 +79,19 @@ class Order extends Model
     /**
      * Get payments for order
      */
-    public function payments(): mixed
+    public function payments()
     {
-        if (!enabled_module('payments')) return null;
-
-        return $this->hasMany(model('payments'));
+        return $this->hasMany(model('payment'));
     }
 
     /**
-     * Attribute for status
+     * Get shipping rate for order
      */
-    protected function status(): Attribute
+    public function shippingRate(): mixed
     {
-        return Attribute::make(
-            get: function () {
-                if (!empty($this->closed_at)) return 'closed';
-                else if ($this->shipments->count()) return 'shipped';
-                else if (enabled_module('payments') && $this->payments->where('status', 'success')->count()) return 'paid';
-                else return 'pending';
-            },
-        );
+        if (!has_table('shipping_rates')) return null;
+
+        return $this->belongsTo(model('shipping_rate'));
     }
 
     /**
@@ -95,7 +101,7 @@ class Order extends Model
     {
         $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
-            ->when(enabled_module('contacts'), fn($q) => $q->orWhereHas('contact', fn($q) => $q->search($search)))
+            ->when(fn($q) => $q->orWhereHas('user', fn($q) => $q->search($search)))
         );
     }
 
@@ -126,5 +132,39 @@ class Order extends Model
                 }
             }
         });
+    }
+
+    /**
+     * Set attributes
+     */
+    public function setAttributes()
+    {
+        $items = $this->items()->get();
+        $subtotal = $items->sum('subtotal');
+        $shipping = optional(model('shipping_rate')->find($this->shipping_rate_id))->price;
+        $tax = $items->sum('tax_amount');
+        $coupon = model('coupon')->find($this->coupon_id);
+        $discount = optional($coupon)->is_for_product
+            ? $items->sum('discount_amount')
+            : optional($coupon)->calculate($subtotal);
+
+        $grand = $subtotal + $shipping + $tax - $discount;
+
+        if (!empty($this->closed_at)) $status = 'closed';
+        else if ($this->shipments->count()) $status = 'shipped';
+        else if ($this->payments->count()) {
+            if ($this->payments->where('status', 'success')->count()) $status = 'paid';
+            else $status = 'failed';
+        }
+        else $status = 'pending';
+
+        return $this->fill([
+            'subtotal' => $subtotal,
+            'shipping_amount' => $shipping,
+            'tax_amount' => $tax,
+            'discount_amount' => $discount,
+            'grand_total' => $grand > 0 ? $grand : 0,
+            'status' => $status,
+        ]);
     }
 }

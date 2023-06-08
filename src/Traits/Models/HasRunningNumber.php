@@ -15,7 +15,10 @@ trait HasRunningNumber
     {
         // listen to creating event
         static::saving(function ($model) {
-            if (!$model->number) {
+            if ($model->number === 'temp') {
+                $model->number = collect(['TEMP', str()->random(), time()])->join('-');
+            }
+            else if (!$model->number) {
                 $duplicated = true;
                 $table = $model->getTable();
                 $prefix = $model->getRunningNumberPrefix();
@@ -23,6 +26,7 @@ trait HasRunningNumber
                 $last = optional(
                     DB::table($table)
                         ->when($model->enabledHasTenantTrait && tenant(), fn($q) => $q->where('tenant_id', tenant('id')))
+                        ->where('number', 'not like', "TEMP-%")
                         ->latest()
                         ->first()
                 )->number;

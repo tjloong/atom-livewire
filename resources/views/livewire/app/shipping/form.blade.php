@@ -2,7 +2,7 @@
     <x-form.group cols="2">
         <x-form.text wire:model.defer="rate.name"/>
         <x-form.number wire:model.defer="rate.price" step=".01"/>
-        <x-form.select.country wire:model="inputs.countries" multiple/>
+        <x-form.select.country wire:model="rate.countries" multiple/>
     </x-form.group>
 
     <x-form.group cols="2" label="Base on Condition">

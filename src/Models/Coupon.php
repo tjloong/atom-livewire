@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Coupon extends Model
 {
@@ -21,15 +19,26 @@ class Coupon extends Model
         'min_amount' => 'float',
         'limit' => 'integer',
         'is_active' => 'boolean',
+        'is_for_product' => 'boolean',
         'end_at' => 'date',
     ];
 
     /**
+     * Model booted
+     */
+    protected static function booted(): void
+    {
+        static::saving(function ($coupon) {
+            $coupon->is_for_product = $coupon->products->count() > 0;
+        });
+    }
+
+    /**
      * Get products for coupon
      */
-    public function products(): BelongsToMany
+    public function products(): mixed
     {
-        if (!enabled_module('products')) return null;
+        if (!has_table('coupon_products')) return null;
 
         return $this->belongsToMany(model('product'), 'coupon_products');
     }
@@ -37,9 +46,9 @@ class Coupon extends Model
     /**
      * Get orders for coupon
      */
-    public function orders(): HasMany
+    public function orders(): mixed
     {
-        if (!enabled_module('orders')) return null;
+        if (!has_table('orders')) return null;
 
         return $this->hasMany(model('order'));
     }
@@ -103,5 +112,15 @@ class Coupon extends Model
                 }
             }
         });
+    }
+
+    /**
+     * Calculate discount amount
+     */
+    public function calculate($amount)
+    {
+        return $this->type === 'percentage'
+            ? ($this->rate/100) * $amount
+            : $this->rate;
     }
 }

@@ -25,6 +25,7 @@ class Product extends Model
         'image_id' => 'integer',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
+        'is_required_shipping' => 'boolean',
     ];
 
     protected $with = ['image'];

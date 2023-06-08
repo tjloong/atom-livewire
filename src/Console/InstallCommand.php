@@ -21,6 +21,7 @@ class InstallCommand extends Command
     protected $node = [
         'devDependencies' => [
             '@tailwindcss/typography' => '^0.5',
+            '@ryangjchandler/alpine-hooks' => '^1',
             'alpinejs' => '^3',
             'autoprefixer' => '^10',
             'postcss' => '^8',
@@ -47,10 +48,9 @@ class InstallCommand extends Command
         'plans',
         'products',
         'coupons',
-        'orders',
         'shippings',
+        'orders',
         'payments',
-        'carts', 
         'documents',
         'shareables',
         'banners',
@@ -465,7 +465,7 @@ class InstallCommand extends Command
                 $table->double('weight')->nullable();
                 $table->boolean('is_active')->nullable();
                 $table->boolean('is_featured')->nullable();
-                $table->boolean('is_required_shipment')->nullable();
+                $table->boolean('is_required_shipping')->nullable();
                 $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
                 $table->timestamps();
             });
@@ -549,6 +549,7 @@ class InstallCommand extends Command
                 $table->double('min_amount')->nullable();
                 $table->integer('limit')->nullable();
                 $table->boolean('is_active')->nullable();
+                $table->boolean('is_for_product')->nullable();
                 $table->date('end_at')->nullable();
                 $table->timestamps();
             });
@@ -577,31 +578,32 @@ class InstallCommand extends Command
         else {
             Schema::create('orders', function(Blueprint $table) {
                 $table->id();
+                $table->ulid()->unique();
                 $table->string('number')->unique();
-                $table->string('name')->nullable();
-                $table->string('phone')->nullable();
                 $table->string('email')->nullable();
-                $table->string('address_1')->nullable();
-                $table->string('address_2')->nullable();
-                $table->string('city')->nullable();
-                $table->string('postcode')->nullable();
-                $table->string('state')->nullable();
-                $table->string('country')->nullable();
+                $table->string('phone')->nullable();
+                $table->json('shipping_address')->nullable();
+                $table->json('billing_address')->nullable();
                 $table->string('currency')->nullable();
                 $table->double('subtotal')->nullable();
                 $table->double('discount_amount')->nullable();
-                $table->double('shipment_amount')->nullable();
+                $table->double('shipping_amount')->nullable();
+                $table->double('tax_amount')->nullable();
                 $table->double('grand_total')->nullable();
                 $table->string('status')->nullable();
                 $table->json('data')->nullable();
                 $table->text('remark')->nullable();
 
-                if (Schema::hasTable('contacts')) {
-                    $table->foreignId('contact_id')->nullable()->constrained()->onDelete('cascade');
+                if (Schema::hasTable('users')) {
+                    $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
                 }
                 
                 if (Schema::hasTable('coupons')) {
                     $table->foreignId('coupon_id')->nullable()->constrained()->onDelete('set null');
+                }
+
+                if (Schema::hasTable('shipping_rates')) {
+                    $table->foreignId('shipping_rate_id')->nullable()->constrained()->onDelete('set null');
                 }
 
                 $table->timestamp('closed_at')->nullable();
@@ -619,18 +621,25 @@ class InstallCommand extends Command
             Schema::create('order_items', function(Blueprint $table) {
                 $table->id();
                 $table->string('name')->nullable();
+                $table->text('description')->nullable();
                 $table->double('qty')->nullable();
                 $table->double('unit_amount')->nullable();
+                $table->double('subtotal')->nullable();
+                $table->double('discount_amount')->nullable();
+                $table->double('tax_amount')->nullable();
                 $table->double('grand_total')->nullable();
+                $table->double('weight')->nullable();
                 $table->json('data')->nullable();
+                $table->boolean('is_required_shipping')->nullable();
                 $table->foreignId('order_id')->nullable()->constrained()->onDelete('cascade');
-
-                if (Schema::hasTable('coupons')) {
-                    $table->foreignId('coupon_id')->nullable()->constrained()->onDelete('set null');
-                }
-
                 $table->foreignId('product_id')->nullable()->constrained()->onDelete('set null');
                 $table->foreignId('product_variant_id')->nullable()->constrained()->onDelete('set null');
+                $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
+
+                if (Schema::hasTable('taxes')) {
+                    $table->foreignId('tax_id')->nullable()->constrained()->onDelete('set null');
+                }
+
                 $table->timestamps();
             });
 
@@ -668,23 +677,12 @@ class InstallCommand extends Command
                 $table->string('condition')->nullable();
                 $table->double('min')->nullable();
                 $table->double('max')->nullable();
+                $table->json('countries')->nullable();
                 $table->boolean('is_active')->nullable();
                 $table->timestamps();
             });
 
             $this->line('shipping_rates table created successfully.');
-        }
-
-        if (Schema::hasTable('shipping_countries')) $this->warn('shipping_countries table exists, skipped.');
-        else {
-            Schema::create('shipping_countries', function(Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->foreignId('rate_id')->constrained('shipping_rates')->onDelete('cascade');
-                $table->timestamps();
-            });
-
-            $this->line('shipping_countries table created successfully.');
         }
     }
 
@@ -700,6 +698,7 @@ class InstallCommand extends Command
         else {
             Schema::create('payments', function(Blueprint $table) {
                 $table->id();
+                $table->ulid()->unique();
                 $table->string('number')->unique();
                 $table->double('amount')->nullable();
                 $table->string('mode')->nullable();
@@ -709,7 +708,8 @@ class InstallCommand extends Command
                 if (Schema::hasTable('orders')) {
                     $table->foreignId('order_id')->nullable()->constrained('orders')->onDelete('set null');
                 }
-                
+
+                $table->foreignId('file_id')->nullable()->constrained()->onDelete('set null');
                 $table->timestamps();
                 $table->timestamp('deleted_at')->nullable();
                 $table->timestamp('refunded_at')->nullable();
@@ -719,28 +719,6 @@ class InstallCommand extends Command
             });
 
             $this->line('payments table created successfully.');
-        }
-    }
-
-    /**
-     * Install carts
-     */
-    private function installCarts()
-    {
-        $this->newLine();
-        $this->info('Installing plans module...');
-
-        if (Schema::hasTable('carts')) $this->warn('carts table exists, skipped.');
-        else {
-            Schema::create('carts', function(Blueprint $table) {
-                $table->id();
-                $table->double('qty')->nullable();
-                $table->double('price')->nullable();
-                $table->foreignId('product_id')->nullable()->constrained()->onDelete('cascade');
-                $table->foreignId('product_variant_id')->nullable()->constrained()->onDelete('cascade');
-                $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
-                $table->timestamps();
-            });
         }
     }
 

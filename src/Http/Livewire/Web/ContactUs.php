@@ -87,7 +87,7 @@ class ContactUs extends Component
             Notification::route('mail', $mail['to'])->notify(new EnquiryNotification($mail['params']));
         }
         
-        return redirect()->route('web.thank', ['contact-us']);
+        return redirect()->route('web.thank', ['enquiry']);
     }
 
     /**

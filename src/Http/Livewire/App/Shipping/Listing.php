@@ -31,7 +31,6 @@ class Listing extends Component
     {
         return model('shipping_rate')
             ->readable()
-            ->with('countries')
             ->filter($this->filters);
     }
 
@@ -58,7 +57,7 @@ class Listing extends Component
             ],
             [
                 'name' => 'Country',
-                'tags' => $query->countries->pluck('name')->map(fn($val) => countries($val.'.name'))->toArray(),
+                'tags' => collect($query->countries)->map(fn($val) => countries($val.'.name'))->toArray(),
             ],
         ];
     }

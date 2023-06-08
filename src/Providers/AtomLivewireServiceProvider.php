@@ -26,17 +26,20 @@ class AtomLivewireServiceProvider extends ServiceProvider
     {
         $components = [
             // web
-            'atom.web' => 'Web\Index',
+            'atom.web.home' => 'Web\Home',
             'atom.web.blog' => 'Web\Blog',
             'atom.web.contact-us' => 'Web\ContactUs',
             'atom.web.thank' => 'Web\Thank\Index',
-            'atom.web.thank.payment' => 'Web\Thank\Payment',
-            'atom.web.thank.plan-payment' => 'Web\Thank\PlanPayment',
-            'atom.web.thank.contact-us' => 'Web\Thank\ContactUs',
-            'atom.web.shop.cart' => 'Web\Shop\Cart',
+            'atom.web.thank.enquiry' => 'Web\Thank\Enquiry',
+            'atom.web.thank.shop.payment' => 'Web\Thank\Shop\Payment',
+            'atom.web.thank.plan.payment' => 'Web\Thank\Plan\Payment',
             'atom.web.shop.listing' => 'Web\Shop\Listing',
             'atom.web.shop.product' => 'Web\Shop\Product',
             'atom.web.shop.checkout' => 'Web\Shop\Checkout',
+            'atom.web.shop.cart' => 'Web\Shop\Cart\Index',
+            'atom.web.shop.cart.drawer' => 'Web\Shop\Cart\Drawer',
+            'atom.web.shop.cart.item' => 'Web\Shop\Cart\Item',
+            'atom.web.shop.cart.sum' => 'Web\Shop\Cart\Sum',
 
             // auth
             'atom.auth.login' => 'Auth\Login',

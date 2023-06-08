@@ -1,8 +1,12 @@
 <div 
     x-cloak
-    x-data="{ count: 0 }"
-    x-on:click="$dispatch('cart-open')"
-    x-on:cart-count.window="count = $event.detail"
+    x-data="{ count: @js(session('shop_cart_count')) }"
+    x-on:shop-cart-count.window="count = $event.detail"
+
+    @if (current_route('web.shop.cart')) x-on:click="window.location.reload()"
+    @else x-on:click="$dispatch('cart-open')"
+    @endif
+    
     class="py-1.5 px-3 cursor-pointer"
 >
     <div class="relative flex items-center justify-center gap-2">

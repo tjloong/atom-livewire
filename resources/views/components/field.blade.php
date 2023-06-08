@@ -45,7 +45,9 @@
                 <x-link :href="$href" :target="$attributes->get('target', '_self')"/>
             @endif
 
-            @if ($small = $attributes->get('small'))
+            @if (isset($small))
+                <div class="text-sm text-gray-500 font-medium">{{ $small }}</div>
+            @elseif ($small = $attributes->get('small'))
                 <div class="text-sm text-gray-500 font-medium">{!! $small !!}</div>
             @endif
         </div>

@@ -10,7 +10,6 @@ class Form extends Component
     use WithForm;
 
     public $rate;
-    public $inputs;
 
     /**
      * Validation
@@ -23,6 +22,7 @@ class Form extends Component
             'rate.condition' => ['nullable'],
             'rate.min' => ['nullable'],
             'rate.max' => ['nullable'],
+            'rate.countries' => ['nullable'],
             'rate.is_active' => ['nullable'],
         ];
     }
@@ -32,9 +32,7 @@ class Form extends Component
      */
     public function mount()
     {
-        $this->fill([
-            'inputs.countries' => $this->rate->countries->pluck('name')->toArray(),
-        ]);
+        if (!$this->rate->countries) $this->rate->countries = [];
     }
 
     /**
@@ -45,15 +43,6 @@ class Form extends Component
         $this->validateForm();
 
         $this->rate->save();
-
-        // countries
-        $this->rate->countries()->whereNotIn('name', data_get($this->inputs, 'countries'))->delete();
-
-        foreach (data_get($this->inputs, 'countries') as $country) {
-            if (!$this->rate->countries()->where('name', $country)->count()) {
-                $this->rate->countries()->create(['name' => $country]);
-            }
-        }
 
         $this->emit('submitted', $this->rate->id);
     }
