@@ -12,8 +12,8 @@ use Jiannius\Atom\Traits\Models\HasUlid;
 class Payment extends Model
 {
     use HasFilters;
-    use HasTrace;
     use HasRunningNumber;
+    use HasTrace;
     use HasUlid;
     
     protected $guarded = [];
@@ -21,8 +21,8 @@ class Payment extends Model
     protected $casts = [
         'amount' => 'float',
         'data' => 'object',
-        'order_id' => 'integer',
         'file_id' => 'integer',
+        'order_id' => 'integer',
     ];
 
     /**
@@ -31,18 +31,8 @@ class Payment extends Model
     protected static function booted(): void
     {
         static::saving(function($payment) {
-            $payment->status = $payment->status ?? 'draft';
+            $payment->setAttributes();
         });
-    }
-
-    /**
-     * Get order for payment
-     */
-    public function order(): mixed
-    {
-        if (!has_table('orders')) return null;
-
-        return $this->belongsTo(model('order'));
     }
 
     /**
@@ -54,6 +44,16 @@ class Payment extends Model
     }
 
     /**
+     * Get order for payment
+     */
+    public function order(): mixed
+    {
+        if (!$this->hasColumn('order_id')) return null;
+
+        return $this->belongsTo(model('order'));
+    }
+
+    /**
      * Scope for fussy search
      */
     public function scopeSearch($query, $search): void
@@ -62,5 +62,15 @@ class Payment extends Model
             ->where('number', $search)
             ->when(has_table('orders'), fn($q) => $q->orWhereHas('order', fn($q) => $q->search($search)))
         );
+    }
+
+    /**
+     * Set attributes
+     */
+    public function setAttributes()
+    {
+        return $this->fill([
+            'status' => $this->status ?? 'draft',
+        ]);
     }
 }

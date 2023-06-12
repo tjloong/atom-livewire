@@ -20,8 +20,9 @@ class Order extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'shipping_address' => 'array',
-        'billing_address' => 'array',
+        'customer' => 'array',
+        'shipping' => 'array',
+        'billing' => 'array',
         'subtotal' => 'float',
         'discount_amount' => 'float',
         'shipping_amount' => 'float',
@@ -30,6 +31,8 @@ class Order extends Model
         'coupon_id' => 'integer',
         'user_id' => 'integer',
         'shipping_rate_id' => 'integer',
+        'closed_at' => 'datetime',
+        'shipped_at' => 'datetime',
     ];
 
     /**
@@ -40,16 +43,6 @@ class Order extends Model
         static::saving(function ($order) {
             $order->setAttributes();
         });
-    }
-
-    /**
-     * Get coupon for order
-     */
-    public function coupon(): mixed
-    {
-        if (!has_table('coupons')) return null;
-
-        return $this->belongsTo(model('coupon'));
     }
 
     /**
@@ -65,33 +58,31 @@ class Order extends Model
      */
     public function items(): HasMany
     {
-        return $this->hasMany(model('order_item'));
-    }
-
-    /**
-     * Get shipments for order
-     */
-    public function shipments(): HasMany
-    {
-        return $this->hasMany(model('order_shipment'));
+        return $this->hasMany(model('line_item'));
     }
 
     /**
      * Get payments for order
      */
-    public function payments()
+    public function payments(): HasMany
     {
         return $this->hasMany(model('payment'));
     }
 
     /**
-     * Get shipping rate for order
+     * Get coupon for order
      */
-    public function shippingRate(): mixed
+    public function coupon(): BelongsTo
     {
-        if (!has_table('shipping_rates')) return null;
+        return $this->belongsTo(model('coupon'));
+    }
 
-        return $this->belongsTo(model('shipping_rate'));
+    /**
+     * Get shipping for order
+     */
+    public function shipping_rate(): BelongsTo
+    {
+        return $this->belongsTo(model('shipping_rate'), 'shipping_rate_id');
     }
 
     /**
@@ -116,17 +107,15 @@ class Order extends Model
                 else {
                     $q->orWhere(fn($q) => $q->whereNull('closed_at')->where(function($q) use ($val) {
                         if ($val === 'shipped') {
-                            $q->has('shipments')->when(enabled_module('payments'), fn($q) => $q
-                                ->whereDoesntHave('payments', fn($q) => $q->where('status', 'success'))
-                            );
+                            $q->whereNotNull('shipped_at')
+                                ->whereDoesntHave('payments', fn($q) => $q->where('status', 'success'));
                         }
-                        if ($val === 'paid' && enabled_module('payments')) {
+                        if ($val === 'paid') {
                             $q->whereHas('payments', fn($q) => $q->where('status', 'success'));
                         }
                         if ($val === 'pending') {
-                            $q->doesntHave('shipments')->when(enabled_module('payments'), fn($q) => $q
-                                ->whereDoesntHave('payments', fn($q) => $q->where('status', 'success'))
-                            );
+                            $q->whereNull('shipped_at')
+                                ->whereDoesntHave('payments', fn($q) => $q->where('status', 'success'));
                         }
                     }));
                 }
@@ -141,30 +130,32 @@ class Order extends Model
     {
         $items = $this->items()->get();
         $subtotal = $items->sum('subtotal');
-        $shipping = optional(model('shipping_rate')->find($this->shipping_rate_id))->price;
         $tax = $items->sum('tax_amount');
-        $coupon = model('coupon')->find($this->coupon_id);
-        $discount = optional($coupon)->is_for_product
-            ? $items->sum('discount_amount')
-            : optional($coupon)->calculate($subtotal);
+        $shipping = optional(model('shipping_rate')->find($this->shipping_rate_id))->price;
+        $discount = $this->discount_amount;
+
+        if ($coupon = model('coupon')->find($this->coupon_id)) {
+            $discount = $coupon->is_for_product
+                ? $items->sum('discount_amount')
+                : $coupon->calculate($subtotal);
+        }
 
         $grand = $subtotal + $shipping + $tax - $discount;
 
-        if (!empty($this->closed_at)) $status = 'closed';
-        else if ($this->shipments->count()) $status = 'shipped';
-        else if ($this->payments->count()) {
-            if ($this->payments->where('status', 'success')->count()) $status = 'paid';
-            else $status = 'failed';
-        }
-        else $status = 'pending';
-
         return $this->fill([
+            'currency' => $this->currency ?? tenant('settings.currency') ?? settings('currency'),
             'subtotal' => $subtotal,
             'shipping_amount' => $shipping,
             'tax_amount' => $tax,
             'discount_amount' => $discount,
             'grand_total' => $grand > 0 ? $grand : 0,
-            'status' => $status,
+            'status' => collect([
+                'closed' => !empty($this->closed_at),
+                'shipped' => !empty($this->shipped_at),
+                'paid' => $this->payments->where('status', 'success')->count() > 0,
+                'failed' => $this->payments->count() > 0 
+                    && $this->payments->where('status', 'success')->count() <= 0,
+            ])->filter()->keys()->first() ?? 'pending',
         ]);
     }
 }

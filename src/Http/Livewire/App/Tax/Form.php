@@ -20,7 +20,7 @@ class Form extends Component
             'tax.name' => ['required' => 'Tax name is required.'],
             'tax.country' => ['required' => 'Country is required.'],
             'tax.rate' => ['required' => 'Tax rate is required.'],
-            'tax.region' => ['nullable'],
+            'tax.state' => ['nullable'],
             'tax.is_active' => ['nullable'],
         ];
     }

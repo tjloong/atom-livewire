@@ -2,11 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\Web\Shop;
 
+use Jiannius\Atom\Traits\Livewire\WithCart;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Checkout extends Component
 {
+    use WithCart;
     use WithForm;
 
     public $step;
@@ -20,23 +22,37 @@ class Checkout extends Component
      */
     protected function validation(): array
     {
-        return [
-            'inputs.email' => ['required' => 'Email is required.'],
-            'inputs.phone' => ['required' => 'Phone is required.'],
-            'inputs.shipping_address.first_name' => ['nullable'],
-            'inputs.shipping_address.last_name' => ['required' => 'Last name is required.'],
-            'inputs.shipping_address.company' => ['nullable'],
-            'inputs.shipping_address.address_1' => ['required' => 'Address line 1 is required.'],
-            'inputs.shipping_address.address_2' => ['nullable'],
-            'inputs.shipping_address.postcode' => ['required' => 'Postcode is required.'],
-            'inputs.shipping_address.city' => ['required' => 'City is required.'],
-            'inputs.shipping_address.state' => ['required' => 'State is required.'],
-            'inputs.shipping_address.country' => ['required' => 'Country is required.'],
-            'inputs.billing_address.same_as_shipping' => ['nullable'],
-            'inputs.data.agree_email_marketing' => ['nullable'],
-            'inputs.data.agree_phone_marketing' => ['nullable'],
-            'inputs.shipping_rate_id' => ['nullable'],
-        ];
+        return array_merge(
+            [
+                'inputs.customer.email' => ['required' => 'Email is required.'],
+                'inputs.customer.phone' => ['required' => 'Phone is required.'],
+                'inputs.shipping.first_name' => ['nullable'],
+                'inputs.shipping.last_name' => ['required' => 'Last name is required.'],
+                'inputs.shipping.company' => ['nullable'],
+                'inputs.shipping.address_1' => ['required' => 'Address line 1 is required.'],
+                'inputs.shipping.address_2' => ['nullable'],
+                'inputs.shipping.postcode' => ['required' => 'Postcode is required.'],
+                'inputs.shipping.city' => ['required' => 'City is required.'],
+                'inputs.shipping.state' => ['required' => 'State is required.'],
+                'inputs.shipping.country' => ['required' => 'Country is required.'],
+                'inputs.data.agree_email_marketing' => ['nullable'],
+                'inputs.data.agree_phone_marketing' => ['nullable'],
+                'inputs.shipping_rate_id' => ['nullable'],
+            ],
+
+            data_get($this->inputs, 'billing.same_as_shipping') ? [] : [
+                'inputs.billing.same_as_shipping' => ['nullable'],
+                'inputs.billing.first_name' => ['nullable'],
+                'inputs.billing.last_name' => ['required' => 'Last name is required.'],
+                'inputs.billing.company' => ['nullable'],
+                'inputs.billing.address_1' => ['required' => 'Address line 1 is required.'],
+                'inputs.billing.address_2' => ['nullable'],
+                'inputs.billing.postcode' => ['required' => 'Postcode is required.'],
+                'inputs.billing.city' => ['required' => 'City is required.'],
+                'inputs.billing.state' => ['required' => 'State is required.'],
+                'inputs.billing.country' => ['required' => 'Country is required.'],
+            ],
+        );
     }
 
     /**
@@ -44,28 +60,31 @@ class Checkout extends Component
      */
     public function mount()
     {
-        $this->order = model('order')
-            ->status('pending')
-            ->where('ulid', session('shop_order'))
-            ->when(user(), fn($q) => $q->where('user_id', user('id')))
-            ->first();
+        $this->loadOrder();
 
-        $this->items = optional($this->order)->items;
+        if ($this->order) {
+            $this->items = $this->order->items;
 
-        if (optional($this->items)->count()) {
-            $this->step = request()->query('step', 'info');
-
-            $this->fill([
-                'inputs.email' => $this->order->email ?? user('email'),
-                'inputs.phone' => $this->order->phone ?? user('profile.phone'),
-                'inputs.shipping_address' => $this->order->shipping_address ?? user('profile.shipping_address') ?? ['country' => 'MY'],
-                'inputs.billing_address' => $this->order->billing_address ?? user('profile.billing_address') ?? ['same_as_shipping' => true],
-                'inputs.data.agree_email_marketing' => true,
-                'inputs.data.agree_phone_marketing' => false,
-            ]);
-        }
-        else {
-            return redirect()->route('web.shop.cart');
+            if ($this->items->count()) {
+                $this->step = request()->query('step', 'info');
+    
+                $this->fill([
+                    'inputs.customer' => $this->order->customer ?? [
+                        'email' => user('email'),
+                        'phone' => user('profile.phone'),
+                    ],
+                    'inputs.shipping' => $this->order->shipping 
+                        ?? user('profile.shipping') 
+                        ?? ['country' => 'MY'],
+    
+                    'inputs.billing' => $this->order->billing 
+                        ?? user('profile.billing') 
+                        ?? ['same_as_shipping' => true],
+    
+                    'inputs.data.agree_email_marketing' => true,
+                    'inputs.data.agree_phone_marketing' => false,
+                ]);
+            }
         }
     }
 
@@ -74,7 +93,7 @@ class Checkout extends Component
      */
     public function getRatesProperty()
     {
-        if (collect($this->items)->where('is_required_shipping', true)->count()) {
+        if (collect($this->items)->where('data.is_required_shipping', true)->count()) {
             $weight = $this->items->sum('weight');
             $total = $this->items->sum('amount');
     
@@ -83,7 +102,7 @@ class Checkout extends Component
                     ->where(fn($q) => $q->weightCondition($weight))
                     ->orWhere(fn($q) => $q->amountCondition($total))
                 )
-                ->when(data_get($this->inputs, 'shipping_address.country'), fn($q, $country) => $q->country($country))
+                ->when(data_get($this->inputs, 'shipping.country'), fn($q, $country) => $q->country($country))
                 ->status('active')
                 ->orderBy('price')
                 ->get();
@@ -97,8 +116,23 @@ class Checkout extends Component
      */
     public function updatedInputs($val, $attr)
     {
-        if ($attr === 'shipping_address.country') $this->fill(['inputs.shipping_address.state' => null]);
-        if ($attr === 'billing_address.country') $this->fill(['inputs.billing_address.state' => null]);
+        if ($attr === 'shipping.country') $this->fill(['inputs.shipping.state' => null]);
+        if ($attr === 'billing.country') $this->fill(['inputs.billing.state' => null]);
+
+        if ($attr === 'billing.same_as_shipping') {
+            if ($val) $this->fill(['inputs.billing' => ['same_as_shipping' => true]]);
+            else $this->fill([
+                'inputs.billing.first_name' => null,
+                'inputs.billing.last_name' => null,
+                'inputs.billing.company' => null,
+                'inputs.billing.address_1' => null,
+                'inputs.billing.address_2' => null,
+                'inputs.billing.postcode' => null,
+                'inputs.billing.city' => null,
+                'inputs.billing.state' => null,
+                'inputs.billing.country' => data_get($this->inputs, 'shipping.country'),
+            ]);
+        }
     }
 
     /**
@@ -117,6 +151,13 @@ class Checkout extends Component
         $this->validateForm();
 
         $this->order->fill($this->inputs)->save();
+
+        $this->order->items->each(fn($item) => $item->setTaxes(
+            data_get($this->inputs, 'billing.country') ?? data_get($this->inputs, 'shipping.country'),
+            data_get($this->inputs, 'billing.state') ?? data_get($this->inputs, 'shipping.state'),
+        ));
+
+        $this->order->touch();
 
         if ($this->step === 'info' && $this->rates->count()) {
             if (!$this->order->shipping_rate_id) {

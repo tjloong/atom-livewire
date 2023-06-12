@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 trait HasTenant
 {
-    public $enabledHasTenantTrait = true;
+    public $usesHasTenant = true;
 
     /**
      * Boot the trait

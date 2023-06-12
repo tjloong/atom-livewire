@@ -115,8 +115,16 @@ class Product extends Model
     public function getTypes(): array
     {
         return [
-            ['value' => 'normal', 'label' => 'Normal', 'description' => 'Single item product, eg. can drink, book, phone.'],
-            ['value' => 'variant', 'label' => 'With multiple variants', 'description' => 'Product with multiple options, eg. shirt with multiple sizes'],
+            [
+                'value' => 'normal',
+                'label' => 'Normal',
+                'description' => 'Single item product, eg. can drink, book, phone.',
+            ],
+            [
+                'value' => 'variant',
+                'label' => 'With multiple variants',
+                'description' => 'Product with multiple options, eg. shirt with multiple sizes',
+            ],
         ];
     }
 

@@ -333,13 +333,10 @@ function seo($seo)
 
 /**
  * Make model instance
- * 
- * @param string $name
- * @param boolean $instance
  */
 function model($name)
 {
-    $name = str()->studly($name);
+    $name = str($name)->singular()->studly()->toString();
 
     $class = collect([
         'App\\Models\\'.$name,
@@ -430,6 +427,7 @@ function countries($key = false)
 
         if ($value && $field) return data_get($value, $field);
         elseif ($value) return $value;
+        else return null;
     }
 
     return $values;

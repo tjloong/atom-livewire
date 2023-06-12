@@ -43,6 +43,7 @@
     "ipay_merchant_key": null,
     "ipay_url": "https://payment.ipay88.com.my/epayment/entry.asp",
     "ipay_query_url": "https://payment.ipay88.com.my/epayment/enquiry.asp",
+    "currency": "MYR",
     "company": null,
     "phone": null,
     "email": null,

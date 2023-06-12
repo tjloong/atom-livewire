@@ -22,7 +22,7 @@ class InvitationNotification extends Notification implements ShouldQueue
     {
         $this->invitation = $invitation;
         $this->by = optional($this->invitation->createdBy)->name ?? 'User';
-        $this->join = $this->invitation->enabledHasTenantTrait && $this->invitation->tenant
+        $this->join = $this->invitation->usesHasTenant && $this->invitation->tenant
             ? $this->invitation->tenant->name
             : config('app.name');
 

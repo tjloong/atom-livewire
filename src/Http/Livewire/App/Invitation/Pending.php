@@ -40,7 +40,7 @@ class Pending extends Component
                 'email' => $invitation->email,
                 'created_by' => $invitation->createdBy->name,
                 'date' => format_date($invitation->created_at),
-                'tenant' => enabled_module('tenants') && model('invitation')->enabledHasTenantTrait
+                'tenant' => enabled_module('tenants') && model('invitation')->usesHasTenant
                     ? $invitation->tenant->name
                     : null,
             ]);

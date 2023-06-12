@@ -36,8 +36,8 @@ class Tax extends Model
     {
         $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
-            ->orWhere('country', 'like', "%$search%")
-            ->orWhere('region', 'like', "%$search%")
+            ->orWhere('country', $search)
+            ->orWhere('state', $search)
         );
     }
 

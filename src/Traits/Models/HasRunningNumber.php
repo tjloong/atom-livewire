@@ -21,11 +21,11 @@ trait HasRunningNumber
             else if (!$model->number) {
                 $duplicated = true;
                 $table = $model->getTable();
-                $prefix = $model->getRunningNumberPrefix();
+                $prefix = $model->getPrefix();
 
                 $last = optional(
                     DB::table($table)
-                        ->when($model->enabledHasTenantTrait && tenant(), fn($q) => $q->where('tenant_id', tenant('id')))
+                        ->when($model->usesHasTenant && tenant(), fn($q) => $q->where('tenant_id', tenant('id')))
                         ->where('number', 'not like', "TEMP-%")
                         ->latest()
                         ->first()
@@ -40,7 +40,7 @@ trait HasRunningNumber
                     $postfix = str()->padLeft($n, 6, '0');
                     $number = collect([$prefix, $postfix])->filter()->join('-');
                     $duplicated = DB::table($table)
-                        ->when($model->enabledHasTenantTrait && tenant(), fn($q) => $q->where('tenant_id', tenant('id')))
+                        ->when($model->usesHasTenant && tenant(), fn($q) => $q->where('tenant_id', tenant('id')))
                         ->where('number', $number)
                         ->count() > 0;
                 }
@@ -51,13 +51,10 @@ trait HasRunningNumber
     }
 
     /**
-     * Get unique number prefix
-     * 
-     * @return string
+     * Get prefix
      */
-    protected function getRunningNumberPrefix()
+    protected function getPrefix()
     {
-        if (method_exists($this, 'runningNumberPrefix')) return $this->runningNumberPrefix();
-        else return $this->runningNumberPrefix ?? null;
+        return $this->prefix ?? null;
     }
 }

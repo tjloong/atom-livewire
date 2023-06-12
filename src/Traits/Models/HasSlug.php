@@ -42,7 +42,7 @@ trait HasSlug
                     if (($model->slugMustUnique ?? true)
                         && DB::table($model->getTable())
                             ->where($to, $slug)
-                            ->when($model->enabledHasTenantTrait, fn($q) => $q->where('tenant_id', $model->tenant_id))
+                            ->when($model->usesHasTenant, fn($q) => $q->where('tenant_id', $model->tenant_id))
                             ->count() > 0
                     ) {
                         $slug = $slug.'-'.strtolower(str()->random(5));

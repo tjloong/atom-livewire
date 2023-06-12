@@ -91,7 +91,7 @@ class Create extends Component
             ->status('pending')
             ->where('email', $email)
             ->when(
-                tenant() && model('invitation')->enabledHasTenantTrait,
+                tenant() && model('invitation')->usesHasTenant,
                 fn($q) => $q->where('tenant_id', tenant('id')),
             )
             ->count() > 0;

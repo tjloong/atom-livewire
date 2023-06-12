@@ -125,7 +125,7 @@ class Index extends Component
             'icon' => [
                 'name' => str($this->icon)->is('*:*')
                     ? last(explode(':', $this->icon))
-                    : ($this->icon ?? $this->label),
+                    : $this->icon,
                 'size' => [
                     'xs' => '10',
                     'sm' => '12',

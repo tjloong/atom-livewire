@@ -19,12 +19,12 @@
                 <div class="flex flex-col divide-y">
                     @foreach ([
                         'Number' => $order->number,
-                        'Email' => $order->email,
-                        'Phone' => $order->phone,
-                        'Shipping Address' => format_address($order->shipping_address),
-                        'Billing Address' => data_get($order->billing_address, 'same_as_shipping')
+                        'Email' => data_get($order->customer, 'email'),
+                        'Phone' => data_get($order->customer, 'phone'),
+                        'Shipping Address' => format_address($order->shipping),
+                        'Billing Address' => data_get($order->billing, 'same_as_shipping')
                             ? __('Same as shipping address')
-                            : format_address($order->billing_address),
+                            : format_address($order->billing),
                     ] as $key => $val)
                         <x-field :label="$key" :value="$val"/>
                     @endforeach
@@ -44,5 +44,5 @@
         </div>
     @endif
 
-    <x-button inverted href="/" label="Back to Home"/>
+    <x-button inverted href="/" label="Back to Home" icon="arrow-left"/>
 </div>

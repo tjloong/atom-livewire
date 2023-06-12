@@ -23,15 +23,15 @@
                             <div class="flex flex-col">
                                 <x-link text :label="$item->name" :href="route('web.shop.product', [$item->product->slug])"/>
         
-                                @if ($desc = $item->description) 
+                                @if ($item->variant_name) 
                                     <div class="font-medium text-gray-500 truncate">
-                                        {{ $desc }}
+                                        {{ $item->variant_name }}
                                     </div>
                                 @endif
                             </div>
 
                             <div>
-                                <x-badge :label="$item->qty.' x '.currency($item->unit_amount)"/>
+                                <x-badge :label="$item->qty.' x '.currency($item->amount)"/>
                             </div>
                         </div>
 
@@ -49,14 +49,14 @@
                             <div class="flex flex-col">
                                 <x-link text :label="$item->name" :href="route('web.shop.product', [$item->product->slug])"/>
         
-                                @if ($desc = $item->description) 
+                                @if ($item->variant_name) 
                                     <div class="font-medium text-gray-500 truncate">
-                                        {{ $desc }}
+                                        {{ $item->variant_name }}
                                     </div>
                                 @endif
         
                                 <div class="font-medium text-gray-500 truncate">
-                                    {{ currency($item->unit_amount) }}
+                                    {{ currency($item->amount) }}
                                 </div>
                             </div>
                             
@@ -85,9 +85,9 @@
                                 <div>
                                     <x-link text :label="$item->name" :href="route('web.shop.product', [$item->product->slug])"/>
             
-                                    @if ($desc = $item->description) 
+                                    @if ($item->variant_name) 
                                         <div class="font-medium text-gray-500 truncate">
-                                            {{ $desc }}
+                                            {{ $item->variant_name }}
                                         </div>
                                     @endif
                                 </div>
@@ -104,7 +104,7 @@
                         </div>
 
                         <div class="md:col-span-2 md:text-right">
-                            {{ currency($item->unit_amount) }}
+                            {{ currency($item->amount) }}
                         </div>
 
                         <div class="md:col-span-2">

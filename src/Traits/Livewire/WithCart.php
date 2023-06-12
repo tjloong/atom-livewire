@@ -19,8 +19,9 @@ trait WithCart
             ->where('ulid', session('shop_order'))
             ->when(user(), fn($q) => $q->where('user_id', user('id')))
             ->first();
-        
-        $this->countOrderItems();
+
+        if (!$this->order) $this->clearCartSession();
+        else $this->countOrderItems();
     }
 
     /**

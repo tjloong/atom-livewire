@@ -12,7 +12,7 @@ trait HasFilters
      */
     public function scopeReadable($query, $data = null): void
     {
-        if ($this->enabledHasTenantTrait) $query->forTenant();
+        if ($this->usesHasTenant) $query->forTenant();
     }
 
     /**
@@ -57,10 +57,7 @@ trait HasFilters
      */
     public function hasColumn($column): bool
     {
-        $table = $this->getTable();
-
-        return ($this->connection && Schema::connection($this->connection)->hasColumn($table, $column))
-                    || (!$this->connection && Schema::hasColumn($table, $column));
+        return has_column($this->getTable(), $column);
     }
 
     /**
@@ -68,8 +65,7 @@ trait HasFilters
      */
     public function isDateColumn($column): bool
     {
-        return $this->hasColumn($column)
-            && Schema::getColumnType($this->getTable(), $column) === 'date';
+        return get_column_type($this->getTable(), $column) === 'date';
     }
 
     /**
@@ -77,8 +73,10 @@ trait HasFilters
      */
     public function isDatetimeColumn($column): bool
     {
-        return $this->hasColumn($column)
-            && in_array(Schema::getColumnType($this->getTable(), $column), ['datetime', 'timestamp']);
+        return in_array(
+            get_column_type($this->getTable(), $column),
+            ['datetime', 'timestamp'],
+        );
     }
 
     /**

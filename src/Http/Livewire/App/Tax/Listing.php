@@ -19,7 +19,7 @@ class Listing extends Component
         return model('tax')
             ->readable()
             ->orderBy('country')
-            ->orderBy('region')
+            ->orderBy('state')
             ->orderBy('name');
     }
 
@@ -45,7 +45,7 @@ class Listing extends Component
             [
                 'name' => 'Region',
                 'class' => 'text-right',
-                'label' => collect([$query->region, $query->country])->filter()->join(', '),
+                'label' => collect([$query->state, $query->country])->filter()->join(', '),
             ],
 
             [
