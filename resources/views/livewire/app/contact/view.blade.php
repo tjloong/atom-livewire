@@ -16,7 +16,7 @@
 
         <div class="flex items-center gap-2">
             @can('contact.update')
-                <x-button color="gray"
+                <x-button icon="edit"
                     label="Edit"
                     :href="route('app.contact.update', [$contact->id])"
                 />

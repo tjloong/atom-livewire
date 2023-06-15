@@ -51,13 +51,17 @@
 
             {{ $slot }}
 
-            <x-slot:foot>
-                @isset($foot)
-                    {{ $foot }}
-                @else
-                    <x-button.submit/>
+            @isset($foot)
+                @if ($foot->isNotEmpty())
+                    <x-slot:foot>
+                        {{ $foot }}
+                    </x-slot:foot>
                 @endif
-            </x-slot:foot>
+            @else
+                <x-slot:foot>
+                    <x-button.submit/>
+                </x-slot:foot>
+            @endif
         </x-box>
     @endif
 </form>

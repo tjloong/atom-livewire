@@ -10,9 +10,9 @@ class Listing extends Component
 {
     use WithTable;
 
+    public $sort;
     public $category;
     public $fullpage;
-    public $sort = 'created_at,desc';
 
     public $filters = [
         'search' => null,
@@ -44,7 +44,8 @@ class Listing extends Component
         return model('contact')
             ->readable()
             ->where('category', $this->category)
-            ->filter($this->filters);
+            ->filter($this->filters)
+            ->when(!$this->sort, fn($q) => $q->orderBy('created_at', 'desc'));
     }
 
     /**

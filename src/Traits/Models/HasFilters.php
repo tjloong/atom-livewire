@@ -3,10 +3,19 @@
 namespace Jiannius\Atom\Traits\Models;
 
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Schema;
 
 trait HasFilters
 {
+    /**
+     * Model boot
+     */
+    protected static function bootHasFilters(): void
+    {
+        static::saving(function ($model) {
+            $model->sanitizeNumericColumns();
+        });
+    }
+
     /**
      * Scope for readable
      */
@@ -122,5 +131,25 @@ trait HasFilters
         }
 
         return $parsed;
+    }
+
+    /**
+     * Sanitize numeric columns
+     */
+    public function sanitizeNumericColumns()
+    {
+        $columns = collect(get_table_columns($this->getTable()))->filter(function ($col) {
+            $type = data_get($col, 'type');
+            $str = str($type);
+
+            return $str->is('decimal*') 
+                || $str->is('double*') 
+                || $str->is('int*') 
+                || $str->is('bigint*');
+        })->map(fn($col) => data_get($col, 'name'))->values()->all();
+
+        foreach ($columns as $col) {
+            if (empty($this->$col)) $this->$col = null;
+        }
     }
 }

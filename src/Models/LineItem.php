@@ -109,7 +109,7 @@ class LineItem extends Model
         $qty = $this->qty;
         $amount = $this->amount ?? optional($this->variant)->price ?? optional($this->product)->price ?? 0;
         $subtotal = $qty * $amount;
-        $tax = $this->taxes->map(fn($tax) => $tax->pivot->amount)->sum();
+        $tax = $this->taxes ? $this->taxes->map(fn($tax) => $tax->pivot->amount)->sum() : 0;
         $discount = $this->discount;
 
         if (
@@ -122,6 +122,17 @@ class LineItem extends Model
 
         $grand = $subtotal + $tax - $discount;
 
+        $data = $this->data ?? (
+            $this->product ? [
+                'weight' => $qty * (optional($this->product)->weight ?? 0),
+                'is_required_shipping' => optional($this->product)->is_required_shipping,
+            ] : null
+        );
+
+        $image = $this->image_id ?? optional($this->variant)->image_id ?? (
+            $this->product ? optional($this->product->images()->orderBy('seq')->orderBy('id')->first())->id : null
+        );
+
         $this->fill([
             'name' => $this->name ?? optional($this->product)->name,
             'variant_name' => $this->variant_name ?? optional($this->variant)->name,
@@ -131,13 +142,8 @@ class LineItem extends Model
             'tax_amount' => $tax,
             'discount_amount' => $discount,
             'grand_total' => $grand > 0 ? $grand : 0,
-            'data' => $this->data ?? [
-                'weight' => $qty * (optional($this->product)->weight ?? 0),
-                'is_required_shipping' => optional($this->product)->is_required_shipping,
-            ],
-            'image_id' => $this->image_id
-                ?? optional($this->variant)->image_id
-                ?? optional($this->product->images()->orderBy('seq')->orderBy('id')->first())->id,
+            'data' => $data,
+            'image_id' => $image,
         ]);
     }
 }

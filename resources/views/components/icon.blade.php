@@ -9,5 +9,5 @@
         @endisset
     </i>
 @else
-    <i class="{{ $icon }}"></i>
+    <i class="{{ $icon }}" {{ $attributes->except('class') }}></i>
 @endif

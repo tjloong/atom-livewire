@@ -1,6 +1,9 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header :title="$this->title">
-        <x-button label="Create New" :href="route('app.label.create', compact('type'))"/>
+        <x-button icon="add"
+            label="Create New" :
+            href="route('app.label.create', compact('type'))"
+        />
     </x-page-header>
 
     <x-box>

@@ -1,7 +1,10 @@
 <div class="max-w-screen-sm mx-auto">
     <x-page-header :title="$this->role->name" back>
         @can('role.manage')
-            <x-button color="gray" label="Duplicate" wire:click="duplicate"/>
+            <x-button icon="copy"
+                label="Duplicate" 
+                wire:click="duplicate"
+            />
 
             <x-button.delete inverted
                 title="Delete Role"

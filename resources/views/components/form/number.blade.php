@@ -16,9 +16,8 @@
         <input type="number"
             x-on:focus="focus = true"
             x-on:blur="focus = false"
-            {{ $attributes->class([
-                'appearance-none bg-transaprent border-0 p-0 focus:ring-0 w-full'
-            ])->except(['error', 'caption']) }}
+            class="appearance-none bg-transaprent border-0 p-0 focus:ring-0 w-full"
+            {{ $attributes->except(['error', 'caption']) }}
         >
 
         @isset($postfix) {{ $postfix }}

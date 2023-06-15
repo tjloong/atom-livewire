@@ -5,7 +5,8 @@
             :tinylink="$this->preferencesRoute ? ['label' => 'Preferences', 'href' => $this->preferencesRoute] : null"
         >
             @if (user()->can('contact.create') || user()->can($category.'.create'))
-                <x-button :label="'New '.str($this->title)->singular()"
+                <x-button icon="add"
+                    :label="'New '.str($this->title)->singular()"
                     :href="route('app.contact.create', [$category])"
                 />
             @endif
@@ -17,7 +18,8 @@
             @if (!$fullpage)
                 <x-table.header :label="$this->title">
                     @if (user()->can('contact.create') || user()->can($category.'.create'))
-                        <x-button color="gray" size="sm" :label="'New '.str($this->title)->singular()"
+                        <x-button size="sm" icon="add" 
+                            :label="'New '.str($this->title)->singular()"
                             :href="route('app.contact.create', [$category])"
                         />
                     @endif
