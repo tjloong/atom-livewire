@@ -2,6 +2,7 @@
     'prefix' => $prefix ?? $attributes->get('prefix'),
     'postfix' => $postfix ?? $attributes->get('postfix'),
     'clear' => $attributes->get('clear', false),
+    'placeholder' => $attributes->get('placeholder'),
 ])
 
 <x-form.field {{ $attributes }}>
@@ -28,7 +29,9 @@
                 {{ $attributes
                     ->class(['form-input transparent w-full'])
                     ->merge([
-                        'placeholder' => __($attributes->get('placeholder')),
+                        'placeholder' => $placeholder === 'autogen'
+                            ? 'Leave empty to auto generate'
+                            : __($placeholder),
                     ])
                     ->except(['error', 'required', 'caption', 'label', 'label-tag', 'prefix', 'postfix'])
                 }}

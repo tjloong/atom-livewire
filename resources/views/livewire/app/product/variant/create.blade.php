@@ -1,4 +1,0 @@
-<div class="max-w-screen-md mx-auto">
-    <x-page-header title="Create Product Variant" back/>
-    @livewire(atom_lw('app.product.variant.form'), compact('variant'))
-</div>

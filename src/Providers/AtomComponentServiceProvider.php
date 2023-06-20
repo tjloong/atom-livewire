@@ -144,6 +144,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.sortable',
             'form.textarea',
             'form.recaptcha',
+            'form.line-item',
             'form.date-range',
             'form.checkbox-select',
 
@@ -173,7 +174,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'document.index',
             'document.item',
             'document.item-header',
-            'document.total',
+            'document.totals',
 
             'page-header.index',
             'page-header.back',

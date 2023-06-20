@@ -33,13 +33,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.web.thank.enquiry' => 'Web\Thank\Enquiry',
             'atom.web.thank.shop.payment' => 'Web\Thank\Shop\Payment',
             'atom.web.thank.plan.payment' => 'Web\Thank\Plan\Payment',
-            'atom.web.shop.listing' => 'Web\Shop\Listing',
-            'atom.web.shop.product' => 'Web\Shop\Product',
-            'atom.web.shop.checkout' => 'Web\Shop\Checkout',
-            'atom.web.shop.cart' => 'Web\Shop\Cart\Index',
-            'atom.web.shop.cart.drawer' => 'Web\Shop\Cart\Drawer',
-            'atom.web.shop.cart.item' => 'Web\Shop\Cart\Item',
-            'atom.web.shop.cart.sum' => 'Web\Shop\Cart\Sum',
 
             // auth
             'atom.auth.login' => 'Auth\Login',
@@ -138,36 +131,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.contact.person.update' => 'App\Contact\Person\Update',
             'atom.app.contact.person.form' => 'App\Contact\Person\Form',
 
-            // product
-            'atom.app.product.listing' => 'App\Product\Listing',
-            'atom.app.product.create' => 'App\Product\Create',
-            'atom.app.product.update' => 'App\Product\Update',
-            'atom.app.product.form' => 'App\Product\Form',
-            'atom.app.product.image' => 'App\Product\Image',
-
-            // product variant
-            'atom.app.product.variant.listing' => 'App\Product\Variant\Listing',
-            'atom.app.product.variant.create' => 'App\Product\Variant\Create',
-            'atom.app.product.variant.update' => 'App\Product\Variant\Update',
-            'atom.app.product.variant.form' => 'App\Product\Variant\Form',
-
-            // shipping
-            'atom.app.shipping.listing' => 'App\Shipping\Listing',
-            'atom.app.shipping.create' => 'App\Shipping\Create',
-            'atom.app.shipping.update' => 'App\Shipping\Update',
-            'atom.app.shipping.form' => 'App\Shipping\Form',
-
-            // promotion
-            'atom.app.promotion.listing' => 'App\Promotion\Listing',
-            'atom.app.promotion.create' => 'App\Promotion\Create',
-            'atom.app.promotion.update' => 'App\Promotion\Update',
-            'atom.app.promotion.form' => 'App\Promotion\Form',
-
-            // order
-            'atom.app.order.listing' => 'App\Order\Listing',
-            'atom.app.order.create' => 'App\Order\Create',
-            'atom.app.order.update' => 'App\Order\Update',
-            'atom.app.order.form' => 'App\Order\Form',
+            // email
+            'atom.app.email.form-modal' => 'App\Email\FormModal',
 
             // document
             'atom.app.document.listing' => 'App\Document\Listing',
@@ -180,7 +145,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.document.view.attachment' => 'App\Document\View\Attachment',
             'atom.app.document.view.split' => 'App\Document\View\Split',
             'atom.app.document.view.payment' => 'App\Document\View\Payment',
-            'atom.app.document.view.email-modal' => 'App\Document\View\EmailModal',
             'atom.app.document.form' => 'App\Document\Form\Index',
             'atom.app.document.form.item' => 'App\Document\Form\Item',
             'atom.app.document.form.total' => 'App\Document\Form\Total',

@@ -6,13 +6,12 @@ use Illuminate\View\Component;
 
 class Index extends Component
 {
-    public $options;
-
     /**
      * Constructor
      */
-    public function __construct($options = [])
-    {
+    public function __construct(
+        public mixed $options = []
+    ) {
         $this->options = collect($options)->map(function($opt) {
             if (is_string($opt)) return ['value' => $opt, 'label' => $opt];
             else {

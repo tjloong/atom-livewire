@@ -106,15 +106,20 @@ class LineItem extends Model
      */
     public function setAttributes()
     {
+        $product = $this->product() ? $this->product : null;
+        $variant = $this->variant() ? $this->variant : null;
+        $order = $this->order() ? $this->order : null;
+        $taxes = $this->taxes() ? $this->taxes : null;
+
         $qty = $this->qty;
-        $amount = $this->amount ?? optional($this->variant)->price ?? optional($this->product)->price ?? 0;
+        $amount = $this->amount ?? optional($variant)->price ?? optional($product)->price ?? 0;
         $subtotal = $qty * $amount;
-        $tax = $this->taxes ? $this->taxes->map(fn($tax) => $tax->pivot->amount)->sum() : 0;
+        $tax = $taxes ? $taxes->map(fn($tax) => $tax->pivot->amount)->sum() : 0;
         $discount = $this->discount;
 
         if (
             !$this->discount 
-            && ($coupon = optional($this->order)->coupon)
+            && ($coupon = optional($order)->coupon)
             && $coupon->products->where('id', $this->product_id)->count()
         ) {
             $discount = $coupon->calculate($subtotal);
@@ -123,20 +128,22 @@ class LineItem extends Model
         $grand = $subtotal + $tax - $discount;
 
         $data = $this->data ?? (
-            $this->product ? [
-                'weight' => $qty * (optional($this->product)->weight ?? 0),
-                'is_required_shipping' => optional($this->product)->is_required_shipping,
+            $product ? [
+                'weight' => $qty * (optional($product)->weight ?? 0),
+                'is_required_shipping' => optional($product)->is_required_shipping,
             ] : null
         );
 
-        $image = $this->image_id ?? optional($this->variant)->image_id ?? (
-            $this->product ? optional($this->product->images()->orderBy('seq')->orderBy('id')->first())->id : null
+        $image = $this->image_id ?? optional($variant)->image_id ?? (
+            $product
+                ? optional($product->images()->orderBy('seq')->orderBy('id')->first())->id 
+                : null
         );
 
-        $this->fill([
-            'name' => $this->name ?? optional($this->product)->name,
-            'variant_name' => $this->variant_name ?? optional($this->variant)->name,
-            'description' => $this->description ?? optional($this->product)->description,
+        foreach ([
+            'name' => $this->name ?? optional($product)->name,
+            'variant_name' => $this->variant_name ?? optional($variant)->name,
+            'description' => $this->description ?? optional($product)->description,
             'amount' => $amount,
             'subtotal' => $subtotal,
             'tax_amount' => $tax,
@@ -144,6 +151,10 @@ class LineItem extends Model
             'grand_total' => $grand > 0 ? $grand : 0,
             'data' => $data,
             'image_id' => $image,
-        ]);
+        ] as $col => $val) {
+            if (has_column($this->getTable(), $col)) $this->fill([$col => $val]);
+        }
+
+        return $this;
     }
 }
