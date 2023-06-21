@@ -14,12 +14,12 @@
             @if ($key === array_key_last($totals))
                 <div class="grid grid-cols-2 text-lg font-bold">
                     <div class="md:text-right">{{ __(str()->upper($key)) }}</div>
-                    <div class="text-right">{{ $val }}</div>    
+                    <div class="text-right">{{ currency($val, $currency) }}</div>    
                 </div>
             @else
                 <div class="grid grid-cols-2 font-medium text-gray-500">
                     <div class="md:text-right">{{ __(str()->upper($key)) }}</div>
-                    <div class="text-right">{{ $val }}</div>
+                    <div class="text-right">{{ currency($val, $currency) }}</div>
                 </div>
             @endif
         @endforeach
