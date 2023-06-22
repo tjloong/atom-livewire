@@ -41,15 +41,16 @@
             }
         },
         start (thumbsId) {
+            let config = { ...this.config }
+
             if (this.thumbs) {
                 const id = this.thumbs === true ? 'thumbs' : this.thumbs
                 const thumbs = id === thumbsId ? document.querySelector(`#${id}`) : null
+
+                config.thumbs = { swiper: thumbs.swiper }
             }
             
-            this.swiper = new Swiper(this.$refs.slider, { 
-                ...this.config,
-                thumbs: thumbs ? { swiper: thumbs.swiper } : null,
-            })
+            this.swiper = new Swiper(this.$refs.slider, config)
 
             this.$nextTick(() => {
                 [

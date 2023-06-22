@@ -2,7 +2,7 @@
     <x-page-header :title="$this->title">
         <x-button icon="add"
             label="Create New" :
-            href="route('app.label.create', compact('type'))"
+            :href="route('app.label.create', compact('type'))"
         />
     </x-page-header>
 
