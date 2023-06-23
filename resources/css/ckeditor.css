@@ -300,7 +300,7 @@
 /* @ckeditor/ckeditor5-list/theme/list.css */
 .ck-content ul {
     list-style-type: disc;
-    list-style-position: inside;
+    list-style-position: outside;
     padding: 1rem;
 }
 /* @ckeditor/ckeditor5-list/theme/list.css */
