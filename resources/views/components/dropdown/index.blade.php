@@ -36,12 +36,25 @@
         </div>
     @endisset
 
-    <div
-        x-ref="dd"
-        x-show="show"
-        x-transition.opacity
-        class="absolute z-20 w-max bg-white border border-gray-300 shadow-lg rounded-md max-w-md min-w-[250px] overflow-hidden"
-    >
-        {{ $slot }}
-    </div>
+    @if ($slot->isNotEmpty())
+        <div
+            x-ref="dd"
+            x-show="show"
+            x-transition.opacity
+            class="absolute z-20 w-max bg-white border border-gray-300 shadow-lg rounded-md max-w-md min-w-[250px] overflow-hidden"
+        >
+            {{ $slot }}
+        </div>
+    @elseif (isset($items))
+        <div
+            x-ref="dd"
+            x-show="show"
+            x-transition.opacity
+            {{ $items->attributes->merge([
+                'class' => 'absolute z-20 w-max bg-white border border-gray-300 shadow-lg rounded-md max-w-md',
+            ]) }}
+        >
+            {{ $items }}
+        </div>
+    @endif
 </div>

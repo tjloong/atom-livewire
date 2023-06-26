@@ -33,7 +33,7 @@
                     @if ($header = $attributes->get('header'))
                         <div class="text-lg font-bold flex items-center gap-3">
                             @if ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/> @endif
-                            {{ __($header) }}
+                            {!! __($header) !!}
                         </div>
                     @elseif (isset($header))
                         {{ $header }}

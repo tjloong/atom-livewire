@@ -14,8 +14,10 @@ class Time implements CastsAttributes
      * @param  array<string, mixed>  $attributes
      * @return array<string, mixed>
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): string
+    public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
+        if (!$value) return $value;
+
         $carbon = Carbon::createFromFormat('Y-m-d H:i:s', '1970-01-01 '.$value);
 
         return $carbon->format('h:i A');
@@ -26,7 +28,7 @@ class Time implements CastsAttributes
      *
      * @param  array<string, mixed>  $attributes
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
         $str = str($value)
             ->replaceLast(' AM', 'AM')

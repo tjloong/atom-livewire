@@ -9,5 +9,5 @@
         @endisset
     </i>
 @else
-    <i class="{{ $icon }}" {{ $attributes->except('class') }}></i>
+    <i {{ $attributes->merge(['class' => $icon]) }}></i>
 @endif
