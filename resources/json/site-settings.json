@@ -64,14 +64,10 @@
     "whatsapp_bubble": false,
     "whatsapp_text": null,
     "announcements": [],
-    "popup": {
-        "content": null, 
-        "delay": null
-    },
-    "analytics": {
-        "fathom_id": null,
-        "ga_id": null,
-        "gtm_id": null,
-        "fbp_id": null
-    }
+    "popup_content": null,
+    "popup_delay": null,
+    "facebook_pixel_id": null,
+    "fathom_analytics_id": null,
+    "google_analytics_id": null,
+    "google_tag_manager_id": null
 }
