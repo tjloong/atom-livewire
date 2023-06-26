@@ -4,11 +4,14 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\HasUlid;
 
 class Shareable extends Model
 {
     use HasFilters;
+    use HasUlid;
 
     protected $guarded = [];
 
@@ -16,40 +19,39 @@ class Shareable extends Model
         'data' => 'object',
         'valid_for' => 'integer',
         'is_enabled' => 'boolean',
+        'parent_id' => 'integer',
         'expired_at' => 'datetime',
     ];
 
     protected $appends = ['url'];
 
-    /**
-     * Booted
-     */
+    // booted
     protected static function booted(): void
     {
-        static::saving(function($shareable) {
-            $shareable->uuid = $shareable->uuid ?? $shareable->generateUuid();
-        });
-        
         static::saved(function($shareable) {
             $shareable->fill([
-                'expired_at' => $shareable->valid_for > 0 ? $shareable->updated_at->copy()->addDays($shareable->valid_for) : null,
+                'expired_at' => $shareable->valid_for > 0 
+                    ? $shareable->updated_at->copy()->addDays($shareable->valid_for) 
+                    : null,
             ])->saveQuietly();
         });
     }
 
-    /**
-     * Attribute for url
-     */
+    // get parent for shareable
+    public function parent(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    // attribute for url
     protected function url(): Attribute
     {
         return Attribute::make(
-            get: fn() => route('shareable', [$this->uuid]),
+            get: fn() => route('shareable', [(string) $this->ulid]),
         );
     }
 
-    /**
-     * Attribute for status
-     */
+    // attribute for status
     protected function status(): Attribute
     {
         return Attribute::make(
@@ -59,9 +61,7 @@ class Shareable extends Model
         );
     }
 
-    /**
-     * Scope for status
-     */
+    // scope for status
     public function scopeStatus($query, $status): void
     {
         $query->where(function($q) use ($status) {
@@ -80,21 +80,5 @@ class Shareable extends Model
                 }
             }
         });
-    }
-
-    /**
-     * Generate uuid
-     */
-    public function generateUuid(): string
-    {
-        $dup = true;
-        $uuid = null;
-
-        while ($dup) {
-            $uuid = str()->uuid();
-            $dup = model('shareable')->where('uuid', $uuid)->count() > 0;
-        }
-
-        return $uuid;
     }
 }

@@ -2,13 +2,13 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasUniqueNumber;
-use Jiannius\Atom\Notifications\TicketCreateNotification;
 
 class Ticket extends Model
 {
@@ -18,17 +18,24 @@ class Ticket extends Model
     
     protected $guarded = [];
 
-    /**
-     * Get comments for ticket
-     */
-    public function comments(): HasMany
+    // get comments for ticket
+    public function comments(): MorphMany
     {
-        return $this->hasMany(get_class(model('ticket_comment')));
+        return $this->morphMany(model('comment'), 'parent');
     }
 
-    /**
-     * Scope for search
-     */
+    // attribute for unread_count
+    public function unreadCount(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->comments()
+                ->when(user(), fn($q) => $q->where('comments.created_by', '<>', user('id')))
+                ->whereNull('read_at')
+                ->count(),
+        );
+    }
+
+    // scope for search
     public function scopeSearch($query, $search): void
     {
         $query->where(fn($q) => $q
@@ -37,13 +44,17 @@ class Ticket extends Model
         );
     }
 
-    /**
-     * Notification
-     */
+    // notify
     public function notify(): void
     {
-        if ($notifyTo = $this->notifyTo ?? settings('notify_to')) {
-            Notification::route('mail', $notifyTo)->notify(new TicketCreateNotification($this));
+        if (
+            $notifyTo = $this->notifyTo ?? settings('notify_to')
+            && ($notification = collect([
+                'App\Notifications\Ticket\CreateNotification',
+                'Jiannius\Atom\Notifications\Ticket\CreateNotification',
+            ])->first(fn($ns) => file_exists(atom_ns_path($ns))))
+        ) {
+            Notification::route('mail', $notifyTo)->notify(new $notification($this));
         }
     }
 }

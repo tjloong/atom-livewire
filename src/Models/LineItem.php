@@ -5,6 +5,7 @@ namespace Jiannius\Atom\Models;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class LineItem extends Model
 {
@@ -20,15 +21,11 @@ class LineItem extends Model
         'tax_amount' => 'float',
         'grand_total' => 'float',
         'data' => 'array',
-        'order_id' => 'integer',
-        'product_id' => 'integer',
-        'product_variant_id' => 'integer',
+        'seq' => 'integer',
         'image_id' => 'integer',
     ];
 
-    /**
-     * Model booted
-     */
+    // model booted
     protected static function booted(): void
     {
         static::saving(function($item) {
@@ -36,55 +33,19 @@ class LineItem extends Model
         });
     }
 
-    /**
-     * Get order for item
-     */
-    public function order(): BelongsTo
-    {
-        return $this->belongsTo(model('order'));
-    }
-
-    /**
-     * Get image for item
-     */
+    // get image for item
     public function image(): BelongsTo
     {
         return $this->belongsTo(model('file'), 'image_id');
     }
 
-    /**
-     * Get product for item
-     */
-    public function product(): mixed
+    // get taxes for item
+    public function taxes(): BelongsToMany
     {
-        if (!$this->hasColumn('product_id')) return null;
-
-        return $this->belongsTo(model('product'));
-    }
-
-    /**
-     * Get product variant for item
-     */
-    public function variant(): mixed
-    {
-        if (!$this->hasColumn('product_variant_id')) return null;
-
-        return $this->belongsTo(model('product_variant'), 'product_variant_id');
-    }
-
-    /**
-     * Get taxes for item
-     */
-    public function taxes(): mixed
-    {
-        if (!has_table('line_item_taxes')) return null;
-
         return $this->belongsToMany(model('tax'), 'line_item_taxes')->withPivot('amount');
     }
 
-    /**
-     * Set taxes
-     */
+    // set taxes
     public function setTaxes($country, $state = null)
     {
         if ($this->product) {
@@ -101,9 +62,7 @@ class LineItem extends Model
         }
     }
 
-    /**
-     * Set attributes
-     */
+    // set attributes
     public function setAttributes()
     {
         $product = $this->product() ? $this->product : null;

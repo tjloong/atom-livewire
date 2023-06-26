@@ -42,9 +42,9 @@ class InstallCommand extends Command
         'pages',
         'teams',
         'blogs',
-        'contacts',
         'enquiries',
-        'ticketing',
+        'tickets',
+        'comments',
         'plans',
         'line_items',
         'emails',
@@ -197,202 +197,13 @@ class InstallCommand extends Command
                 $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
             });
 
-            Schema::create('tenant_users', function (Blueprint $table) {
+            Schema::create('user_tenants', function (Blueprint $table) {
                 $table->id();
                 $table->string('visibility')->nullable();
                 $table->boolean('is_owner')->nullable();
                 $table->boolean('is_preferred')->nullable();
                 $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
                 $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            });
-            
-            if (Schema::hasTable('invitations')) {
-                Schema::table('invitations', function (Blueprint $table) {
-                    $table->foreignId('tenant_id')->nullable()->after('email')->constrained()->onDelete('cascade');
-                });
-            }
-
-            if (Schema::hasTable('permissions')) {
-                Schema::table('permissions', function(Blueprint $table) {
-                    $table->foreignId('tenant_id')->nullable()->constrained()->onDelete('cascade');
-                });
-            }
-        }
-    }
-
-    /**
-     * Install documents
-     */
-    private function installDocuments()
-    {
-        $this->newLine();
-        $this->info('Installing documents table...');
-
-        if (Schema::hasTable('documents')) $this->warn('documents table exists, skipped.');
-        else {
-            Schema::create('documents', function($table) {
-                $table->id();
-                $table->string('type')->nullable();
-                $table->string('prefix')->nullable();
-                $table->string('postfix')->nullable();
-                $table->string('rev')->nullable();
-                $table->string('number')->nullable()->indexed();
-                $table->string('name')->nullable();
-                $table->string('address')->nullable();
-                $table->string('person')->nullable();
-                $table->string('reference')->nullable();
-                $table->string('payterm')->nullable();
-                $table->text('description')->nullable();
-                $table->text('summary')->nullable();
-                $table->string('currency')->nullable();
-                $table->decimal('currency_rate', 20, 2)->nullable();
-                $table->decimal('subtotal', 20, 2)->nullable();
-                $table->decimal('discount_total', 20, 2)->nullable();
-                $table->decimal('tax_total', 20, 2)->nullable();
-                $table->decimal('paid_total', 20, 2)->nullable();
-                $table->decimal('grand_total', 20, 2)->nullable();
-                $table->decimal('splitted_total', 20, 2)->nullable();
-                $table->text('footer')->nullable();
-                $table->text('note')->nullable();
-                $table->json('data')->nullable();
-
-                if (Schema::hasTable('contacts')) $table->foreignId('contact_id')->constrained('contacts')->onDelete('cascade');
-                
-                $table->foreignId('revision_for_id')->nullable()->constrained('documents')->onDelete('cascade');
-                $table->foreignId('converted_from_id')->nullable()->constrained('documents')->onDelete('set null');
-                $table->foreignId('splitted_from_id')->nullable()->constrained('documents')->onDelete('cascade');
-                $table->date('issued_at')->nullable();
-                $table->date('due_at')->nullable();
-                $table->timestamp('last_sent_at')->nullable();
-                $table->timestamp('delivered_at')->nullable();
-                $table->timestamps();
-                $table->timestamp('deleted_at')->nullable();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-                $table->foreignId('owned_by')->nullable()->constrained('users')->onDelete('set null');
-                $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-        }
-
-        if (Schema::hasTable('document_items')) $this->warn('document_items table exists, skipped.');
-        else {
-            Schema::create('document_items', function($table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->longText('description')->nullable();
-                $table->decimal('qty', 20, 2)->nullable();
-                $table->decimal('amount', 20, 2)->nullable();
-                $table->decimal('subtotal', 20, 2)->nullable();
-                $table->integer('seq')->nullable();
-
-                if (Schema::hasTable('products')) {
-                    $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('set null');
-                }
-
-                if (Schema::hasTable('product_variants')) {
-                    $table->foreignId('product_variant_id')->nullable()->constrained('product_variants')->onDelete('set null');                    
-                }
-                
-                $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
-                $table->timestamps();
-            });
-        }
-
-        if (Schema::hasTable('taxes')) {
-            if (Schema::hasTable('document_item_taxes')) $this->warn('document_item_taxes table exists, skipped.');
-            else {
-                Schema::create('document_item_taxes', function($table) {
-                    $table->id();
-                    $table->decimal('amount', 20, 2)->nullable();
-                    $table->foreignId('tax_id')->nullable()->constrained('taxes')->onDelete('set null');
-                    $table->foreignId('document_item_id')->constrained('document_items')->onDelete('cascade');
-                });
-            }
-        }
-
-        if (Schema::hasTable('document_files')) $this->warn('document_files table exists, skipped.');
-        else {
-            Schema::create('document_files', function($table) {
-                $table->id();
-                $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
-                $table->foreignId('file_id')->constrained('files')->onDelete('cascade');
-            });
-        }
-
-        if (Schema::hasTable('document_payments')) $this->warn('document_payments table exists, skipped.');
-        else {
-            Schema::create('document_payments', function($table) {
-                $table->id();
-                $table->string('number')->indexed();
-                $table->string('paymode')->nullable();
-                $table->string('currency')->nullable();
-                $table->decimal('currency_rate', 20, 2)->nullable();
-                $table->decimal('amount', 20, 2)->nullable();
-                $table->text('notes')->nullable();
-                $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
-                $table->date('paid_at')->nullable();
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-        }
-
-        if (Schema::hasTable('document_labels')) $this->warn('document_labels table exists, skipped.');
-        else {
-            Schema::create('document_labels', function ($table) {
-                $table->id();
-                $table->foreignId('document_id')->constrained('documents')->onDelete('cascade');
-                $table->foreignId('label_id')->constrained('labels')->onDelete('cascade');
-            });
-
-            $this->line('document_labels table created successfully.');
-        }
-    }
-
-    /**
-     * Install contacts
-     */
-    private function installContacts()
-    {
-        $this->newLine();
-        $this->info('Installing contacts table...');
-
-        if (Schema::hasTable('contacts')) $this->warn('contacts table exists, skipped.');
-        else {
-            Schema::create('contacts', function($table) {
-                $table->id();
-                $table->string('category')->nullable();
-                $table->string('type')->nullable();
-                $table->string('name')->nullable();
-                $table->string('email')->nullable();
-                $table->string('phone')->nullable();
-                $table->string('fax')->nullable();
-                $table->string('brn')->nullable();
-                $table->string('tax_number')->nullable();
-                $table->string('website')->nullable();
-                $table->string('address_1')->nullable();
-                $table->string('address_2')->nullable();
-                $table->string('zip')->nullable();
-                $table->string('city')->nullable();
-                $table->string('state')->nullable();
-                $table->string('country')->nullable();
-                $table->json('data')->nullable();
-                $table->foreignId('avatar_id')->nullable()->constrained('files')->onDelete('set null');
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-                $table->foreignId('owned_by')->nullable()->constrained('users')->onDelete('set null');
-                $table->timestamps();
-            });
-        }
-
-        if (Schema::hasTable('contact_persons')) $this->warn('contact_persons table exists, skipped.');
-        else {
-            Schema::create('contact_persons', function($table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->string('salutation')->nullable();
-                $table->string('email')->nullable();
-                $table->string('phone')->nullable();
-                $table->string('designation')->nullable();
-                $table->foreignId('contact_id')->nullable()->constrained('contacts')->onDelete('cascade');
-                $table->timestamps();
             });
         }
     }
@@ -407,16 +218,15 @@ class InstallCommand extends Command
 
         if (Schema::hasTable('shareables')) $this->warn('shareables table exists, skipped.');
         else {
-            Schema::create('shareables', function($table) {
+            Schema::create('shareables', function(Blueprint $table) {
                 $table->id();
-                $table->uuid();
+                $table->ulid();
                 $table->integer('valid_for')->nullable();
                 $table->json('data')->nullable();
                 $table->boolean('is_enabled')->nullable();
+                $table->string('parent_type')->nullable();
+                $table->unsignedBigInteger('parent_id')->nullable();
                 $table->timestamp('expired_at')->nullable();
-
-                if (Schema::hasTable('documents')) $table->foreignId('document_id')->nullable()->constrained()->onDelete('cascade');
-
                 $table->timestamps();
             });
 
@@ -445,6 +255,7 @@ class InstallCommand extends Command
                 $table->double('discount_amount')->nullable();
                 $table->double('tax_amount')->nullable();
                 $table->double('grand_total')->nullable();
+                $table->integer('seq')->nullable();
                 $table->json('data')->nullable();
                 $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
                 $table->timestamps();
@@ -586,16 +397,16 @@ class InstallCommand extends Command
     }
 
     /**
-     * Install ticketing
+     * Install tickets
      */
-    private function installTicketing()
+    private function installTickets()
     {
         $this->newLine();
-        $this->info('Installing ticketing module...');
+        $this->info('Installing tickets module...');
 
         if (Schema::hasTable('tickets')) $this->warn('tickets table exists, skipped.');
         else {
-            Schema::create('tickets', function ($table) {
+            Schema::create('tickets', function (Blueprint $table) {
                 $table->id();
                 $table->string('number')->unique();
                 $table->string('subject')->nullable();
@@ -607,19 +418,26 @@ class InstallCommand extends Command
 
             $this->line('tickets table created successfully.');
         }
+    }
 
-        if (Schema::hasTable('ticket_comments')) $this->warn('ticket_comments table exists, skipped.');
+    /**
+     * Install comments
+     */
+    private function installComments()
+    {
+        if (Schema::hasTable('comments')) $this->warn('comments table exists, skipped.');
         else {
-            Schema::create('ticket_comments', function($table) {
+            Schema::create('comments', function (Blueprint $table) {
                 $table->id();
                 $table->text('body')->nullable();
-                $table->boolean('is_read')->nullable();
-                $table->foreignId('ticket_id')->nullable()->constrained()->onDelete('cascade');
+                $table->string('parent_type')->nullable();
+                $table->unsignedBigInteger('parent_id')->nullable();
+                $table->timestamp('read_at')->nullable();
                 $table->timestamps();
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
             });
 
-            $this->line('ticket_comments table created successfully.');
+            $this->line('comments table created successfully.');
         }
     }
 
@@ -937,7 +755,7 @@ class InstallCommand extends Command
         $this->newLine();
         $this->info('Installing users module...');
 
-        Schema::table('users', function ($table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('password')->nullable()->change();
             $table->timestamp('last_active_at')->nullable()->after('remember_token');
             $table->timestamp('login_at')->nullable()->after('remember_token');
@@ -953,6 +771,13 @@ class InstallCommand extends Command
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+        });
+
+        Schema::create('user_settings', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->json('value')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
         });
 
         $this->line('users table installed successfully.');

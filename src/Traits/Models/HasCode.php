@@ -35,7 +35,7 @@ trait HasCode
         $dup = true;
 
         while ($dup) {
-            $code = str()->upper(str()->random(6));
+            $code = str()->upper(str()->random($this->codeLength ?? 6));
             $dup = DB::table($this->getTable())
                 ->when(has_column($this->getTable(), 'tenant_id'), fn($q) => $q->where('tenant_id', $this->tenant_id))
                 ->where('code', $code)

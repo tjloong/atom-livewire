@@ -28,7 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
-        'data' => 'object',
+        'data' => 'array',
         'is_root' => 'boolean',
         'signup_at' => 'datetime',
         'onboarded_at' => 'datetime',
@@ -38,9 +38,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Model boot
-     */
+    protected $appends = ['settings'];
+
+    // booted
     protected static function booted(): void
     {
         static::saving(function($user) {
@@ -48,6 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
         });
 
         static::created(function($user) {
+            model('user_setting')->initialize($user->id);
             $user->sendActivation();
         });
 
@@ -59,9 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
-    /**
-     * Get role for user
-     */
+    // get role for user
     public function role(): mixed
     {
         if (!enabled_module('roles')) return null;
@@ -69,9 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(model('role'));
     }
 
-    /**
-     * Get permissions for user
-     */
+    // get permissions for user
     public function permissions(): mixed
     {
         if (!enabled_module('permissions')) return null;
@@ -79,9 +76,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(model('permission'));
     }
     
-    /**
-     * Get teams for user
-     */
+    // get teams for user
     public function teams(): mixed
     {
         if (!enabled_module('teams')) return null;
@@ -89,9 +84,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(model('team'), 'team_users');
     }
 
-    /**
-     * Get subscriptions for user
-     */
+    // get subscriptions for user
     public function subscriptions(): mixed
     {
         if (!enabled_module('plans')) return null;
@@ -99,24 +92,34 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(model('plan_subscription'));
     }
 
-    /**
-     * Get tenants for user
-     */
+    // get tenants for user
     public function tenants(): mixed
     {
         if (!enabled_module('tenants')) return null;
 
-        return $this->belongsToMany(model('tenant'), 'tenant_users')->withPivot([
+        return $this->belongsToMany(model('tenant'), 'user_tenants')->withPivot([
             'visibility',
             'is_owner',
             'is_preferred',
         ]);
     }
 
-    /**
-     * Attribute for visibility
-     */
-    public function visibility(): Attribute
+    // attribute for settings
+    protected function settings(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return model('user_setting')
+                    ->where('user_id', $this->id)
+                    ->get()
+                    ->mapWithKeys(fn($setting) => [$setting->key => $setting->value])
+                    ->toArray();
+            },
+        );
+    }
+
+    // attribute for visibility
+    protected function visibility(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -128,9 +131,7 @@ class User extends Authenticatable implements MustVerifyEmail
         );
     }
 
-    /**
-     * Scope for fussy search
-     */
+    // scope for fussy search
     public function scopeSearch($query, $search): void
     {
         $query->where(fn($q) => $q
@@ -140,9 +141,7 @@ class User extends Authenticatable implements MustVerifyEmail
         );
     }
 
-    /**
-     * Scope for is role
-     */
+    // scope for is role
     public function scopeIsRole($query, $name): void
     {
         $query->when(
@@ -151,9 +150,7 @@ class User extends Authenticatable implements MustVerifyEmail
         );
     }
 
-    /**
-     * Scope for in team
-     */
+    // scope for in team
     public function scopeInTeam($query, $id): void
     {
         $query->when(
@@ -162,17 +159,13 @@ class User extends Authenticatable implements MustVerifyEmail
         );
     }
 
-    /**
-     * Scope for status
-     */
+    // scope for status
     public function scopeStatus($query, $status): void
     {
         $query->withTrashed()->whereIn('status', (array)$status);
     }
 
-    /**
-     * Scope for tier
-     */
+    // scope for tier
     public function scopeTier($query, $tier): void
     {
         $query->where(function($q) use ($tier) {
@@ -185,17 +178,13 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
-    /**
-     * Get user home
-     */
+    // get user home
     public function home(): string
     {
         return route('app.dashboard');
     }
 
-    /**
-     * Check user tier
-     */
+    // check user tier
     public function isTier($tier): bool
     {
         $valid = collect([
@@ -208,9 +197,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return !empty($valid);
     }
 
-    /**
-     * Check user is role
-     */
+    // check user is role
     public function isRole($names): bool
     {
         if (!enabled_module('roles')) return true;
@@ -226,9 +213,7 @@ class User extends Authenticatable implements MustVerifyEmail
         })->count() > 0;
     }
 
-    /**
-     * Check user is tenant owner
-     */
+    // check user is tenant owner
     public function isTenantOwner($tenant = null)
     {
         if (!enabled_module('tenants')) return false;
@@ -238,9 +223,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return false;
     }
 
-    /**
-     * Invite user to activate account
-     */
+    // invite user to activate account
     public function sendActivation(): void
     {
         if ($this->status === 'inactive') {
@@ -248,9 +231,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
     }
 
-    /**
-     * Send password reset link
-     */
+    // send password reset link
     public function sendPasswordResetLink(): mixed
     {
         $status = Password::sendResetLink(['email' => $this->email]);
@@ -259,9 +240,7 @@ class User extends Authenticatable implements MustVerifyEmail
         else return false;
     }
 
-    /**
-     * Generate status
-     */
+    // generate status
     public function generateStatus(): string
     {
         if ($this->trashed()) return 'trashed';
@@ -276,9 +255,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return 'inactive';
     }
 
-    /**
-     * Check user can access portal
-     */
+    // check user can access portal
     public function canAccessPortal($portal): bool
     {
         return true;

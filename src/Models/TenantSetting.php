@@ -16,8 +16,6 @@ class TenantSetting extends Model
         'tenant_id' => 'integer',
     ];
 
-    protected $touches = ['tenant'];
-
     /**
      * Model booted
      */

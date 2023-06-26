@@ -62,7 +62,7 @@ function get_tables()
 function get_table_columns($table)
 {
     return cache()->rememberForever('database_columns_'.$table, function () use ($table) {
-        return collect(DB::select('show columns from '.$table))
+        return collect(DB::select("show columns from `$table`"))
             ->map(fn($val) => [
                 'name' => data_get($val, 'Field'),
                 'type' => data_get($val, 'Type'),
