@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto">
     @if ($fullpage)
         <x-page-header title="Support Tickets">
-            <x-button :href="route('app.ticketing.create')" label="New Ticket"/>
+            <x-button :href="route('app.ticket.create')" label="New Ticket"/>
         </x-page-header>
     @endif
 
@@ -11,7 +11,7 @@
                 <x-table.header label="Support Tickets">
                     <x-button size="sm" color="gray"
                         label="New Ticket"
-                        :href="route('app.ticketing.create')" 
+                        :href="route('app.ticket.create')" 
                     />
                 </x-table.header>
             @endif

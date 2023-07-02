@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Ticketing;
+namespace Jiannius\Atom\Http\Livewire\App\Ticket;
 
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
@@ -28,7 +28,7 @@ class Listing extends Component
      */
     public function mount()
     {
-        if ($this->fullpage = current_route('app.ticketing.listing')) {
+        if ($this->fullpage = current_route('app.ticket.listing')) {
             breadcrumbs()->home('Support Tickets');
         }
     }
@@ -58,14 +58,14 @@ class Listing extends Component
                     'column_name' => 'Number',
                     'column_sort' => 'number',
                     'label' => $ticket->number,
-                    'href' => route('app.ticketing.update', [$ticket->id]),
+                    'href' => route('app.ticket.update', [$ticket->id]),
                 ],
                 [
                     'column_name' => 'Subject',
                     'column_sort' => 'subject',
                     'label' => str($ticket->subject)->limit(50),
                     'small' => str($ticket->description)->limit(50),
-                    'href' => route('app.ticketing.update', [$ticket->id]),
+                    'href' => route('app.ticket.update', [$ticket->id]),
                 ],
                 [
                     'tags' => collect([model('ticket_comment')->getUnreadCount($ticket->id)])
@@ -90,6 +90,6 @@ class Listing extends Component
      */
     public function render()
     {
-        return atom_view('app.ticketing.listing');
+        return atom_view('app.ticket.listing');
     }
 }

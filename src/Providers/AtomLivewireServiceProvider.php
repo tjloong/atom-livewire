@@ -120,17 +120,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.banner.update' => 'App\Banner\Update',
             'atom.app.banner.form' => 'App\Banner\Form',
 
-            // contact
-            'atom.app.contact.listing' => 'App\Contact\Listing',
-            'atom.app.contact.create' => 'App\Contact\Create',
-            'atom.app.contact.update' => 'App\Contact\Update',
-            'atom.app.contact.form' => 'App\Contact\Form',
-            'atom.app.contact.view' => 'App\Contact\View',
-            'atom.app.contact.person.listing' => 'App\Contact\Person\Listing',
-            'atom.app.contact.person.create' => 'App\Contact\Person\Create',
-            'atom.app.contact.person.update' => 'App\Contact\Person\Update',
-            'atom.app.contact.person.form' => 'App\Contact\Person\Form',
-
             // email
             'atom.app.email.form-modal' => 'App\Email\FormModal',
 
@@ -182,10 +171,10 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.billing.subscription-modal' => 'App\Billing\SubscriptionModal',
 
             // ticket
-            'atom.app.ticketing.listing' => 'App\Ticketing\Listing',
-            'atom.app.ticketing.create' => 'App\Ticketing\Create',
-            'atom.app.ticketing.update' => 'App\Ticketing\Update',
-            'atom.app.ticketing.comments' => 'App\Ticketing\Comments',
+            'atom.app.ticket.listing' => 'App\Ticket\Listing',
+            'atom.app.ticket.create' => 'App\Ticket\Create',
+            'atom.app.ticket.update' => 'App\Ticket\Update',
+            'atom.app.ticket.comments' => 'App\Ticket\Comments',
 
             // settings
             'atom.app.settings.index' => 'App\Settings\Index',

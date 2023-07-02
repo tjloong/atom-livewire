@@ -12,31 +12,25 @@ class TenantSetting extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'value' => 'object',
+        'value' => 'array',
         'tenant_id' => 'integer',
     ];
 
-    /**
-     * Model booted
-     */
+    // booted
     protected static function booted(): void
     {
         static::saving(function() {
-            session()->forget('tenant.settings');
+            session()->forget('tenant');
         });
     }
 
-    /**
-     * Get tenant for setting
-     */
+    // get tenant for setting
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(model('tenant'));
     }
 
-    /**
-     * Retrieve settings for tenant
-     */
+    // retrieve settings for tenant
     public function retrieve($tenant)
     {
         $settings = session('tenant.settings') ?? ($tenant 

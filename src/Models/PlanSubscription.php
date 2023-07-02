@@ -378,7 +378,7 @@ class PlanSubscription extends Model
     }
 
     /**
-     * Get termination queue
+     * Get termination queue (terminate less expensive subscription)
      */
     public function getTerminationQueue(): mixed
     {
@@ -387,7 +387,7 @@ class PlanSubscription extends Model
         return $this->getRelatives()
             ->with('price.plan')
             ->status(['active', 'future'])
-            ->where('amount', '<=', $this->amount)
+            ->where('amount', '<=', $this->amount ?? 0)
             ->get()
             ->concat(
                 $this->getSiblings()

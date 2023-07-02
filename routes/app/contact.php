@@ -1,6 +1,6 @@
 <?php
 
-define_route()->prefix('contact')->as('app.contact.')->group(function() {
+define_route()->prefix('contact')->as('contact.')->group(function() {
     // contact person
     define_route()->prefix('person')->as('person.')->group(function() {
         define_route('create/{contactId}', 'App\Contact\Person\Create')->name('create');

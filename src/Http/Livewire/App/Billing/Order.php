@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Billing;
 
-use Jiannius\Atom\Jobs\PlanSubscriptionProvision;
+use Jiannius\Atom\Jobs\Plan\Subscription\Provision;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
@@ -118,7 +118,7 @@ class Order extends Component
      */
     public function provision($payment): mixed
     {
-        PlanSubscriptionProvision::dispatchSync([
+        Provision::dispatchSync([
             'webhook' => true,
             'metadata' => [
                 'payment_id' => $payment->id,
@@ -135,7 +135,7 @@ class Order extends Component
     public function checkoutToStripe($payment): mixed
     {
         $metadata = [
-            'job' => 'PlanSubscriptionProvision',
+            'job' => 'Plan\Subscription\Provision',
             'payment_id' => $payment->id,
         ];
 

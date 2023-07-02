@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Ticketing;
+namespace Jiannius\Atom\Http\Livewire\App\Ticket;
 
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
@@ -61,6 +61,6 @@ class Update extends Component
      */
     public function render(): mixed
     {
-        return atom_view('app.ticketing.update');
+        return atom_view('app.ticket.update');
     }
 }

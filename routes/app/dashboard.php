@@ -1,3 +1,3 @@
 <?php
 
-define_route('dashboard', 'App\Dashboard')->name('app.dashboard');
+define_route('dashboard', 'App\Dashboard')->name('dashboard');

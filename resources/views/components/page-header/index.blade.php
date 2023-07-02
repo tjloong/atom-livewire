@@ -59,9 +59,9 @@
                 <a 
                     href="{{ data_get($tinylink, 'href') }}"
                     x-tooltip:right="{{ data_get($tinylink, 'label') }}"
-                    class="text-gray-400 text-xs flex items-center gap-1 py-1" 
+                    class="text-gray-400 flex items-center gap-1 py-1" 
                 >
-                    <x-icon :name="data_get($tinylink, 'icon', 'gear')" size="12"/>
+                    <x-icon :name="data_get($tinylink, 'icon', 'gear')"/>
                 </a>
             </div>
         @endif

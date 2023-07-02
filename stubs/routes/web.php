@@ -44,7 +44,7 @@ define_route()->prefix('app')->middleware('auth')->group(function() {
     load_routes('app.tax');
     load_routes('app.team');
     load_routes('app.tenant');
-    load_routes('app.ticketing');
+    load_routes('app.ticket');
     load_routes('app.user');
 });
 

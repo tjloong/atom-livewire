@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Ticketing;
+namespace Jiannius\Atom\Http\Livewire\App\Ticket;
 
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
@@ -51,6 +51,6 @@ class Create extends Component
      */
     public function render(): mixed
     {
-        return atom_view('app.ticketing.create');
+        return atom_view('app.ticket.create');
     }
 }

@@ -14,6 +14,7 @@
             :label="false"
             :required="$required"
             :placeholder="data_get($field, 'placeholder')"
+            step=".01"
         />
     @elseif (in_array($type, ['dropdown', 'multiple']))
         <x-form.select wire:model="{{ $model }}"

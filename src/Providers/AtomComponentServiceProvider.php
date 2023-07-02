@@ -80,6 +80,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'popup.confirm',
             
             'box.index',
+            'box.fieldset',
             'box.row',
             
             'button.index',
@@ -161,7 +162,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.select.owner',
             'form.select.state',
             'form.select.gender',
-            'form.select.contact',
             'form.select.country',
             'form.select.product',
             'form.select.currency',

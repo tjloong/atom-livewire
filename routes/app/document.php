@@ -1,6 +1,6 @@
 <?php
 
-define_route()->prefix('document')->as('app.document.')->group(function() {
+define_route()->prefix('document')->as('document.')->group(function() {
     define_route('listing/{type}', 'App\Document\Listing')->name('listing');
     define_route('create/{type}', 'App\Document\Create')->name('create');
 

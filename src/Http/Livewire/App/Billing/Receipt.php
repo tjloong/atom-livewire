@@ -48,7 +48,7 @@ class Receipt extends Component
             [
                 'name' => 'Amount',
                 'sort' => 'amount',
-                'amount' => $query->amount,
+                'amount' => $query->amount ?? 0,
                 'currency' => $query->currency,
             ],
         ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Jobs;
+namespace Jiannius\Atom\Jobs\Plan\Subscription;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class PlanSubscriptionProvision implements ShouldQueue
+class Provision implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 

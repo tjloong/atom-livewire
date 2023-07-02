@@ -1,6 +1,6 @@
 <?php
 
-define_route()->prefix('plan')->as('app.plan.')->group(function() {
+define_route()->prefix('plan')->as('plan.')->group(function() {
     define_route('listing', 'App\Plan\Listing')->name('listing');
     define_route('create', 'App\Plan\Create')->name('create');
 

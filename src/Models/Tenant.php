@@ -20,9 +20,7 @@ class Tenant extends Model
         'avatar_id' => 'integer',
     ];
 
-    /**
-     * Model booted
-     */
+    // booted
     protected static function booted(): void
     {
         static::saved(function($tenant) {
@@ -30,37 +28,29 @@ class Tenant extends Model
         });
     }
 
-    /**
-     * Get avatar for tenant
-     */
+    // get avatar for tenant
     public function avatar(): BelongsTo
     {
         return $this->belongsTo(model('file'), 'avatar_id');
     }
 
-    /**
-     * Get users for tenant
-     */
+    // get users for tenant
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(model('user'), 'tenant_users')->withPivot([
+        return $this->belongsToMany(model('user'), 'user_tenants')->withPivot([
             'visibility',
             'is_owner',
             'is_preferred',
         ]);
     }
 
-    /**
-     * Get settings for tenant
-     */
+    // get settings for tenant
     public function settings(): HasMany
     {
         return $this->hasMany(model('tenant_setting'));
     }
 
-    /**
-     * Get invitations for tenant
-     */
+    // get invitations for tenant
     public function invitations(): mixed
     {
         if (!enabled_module('invitations')) return null;
@@ -68,9 +58,7 @@ class Tenant extends Model
         return $this->hasMany(model('tenant_invitation'));
     }
 
-    /**
-     * Get permissions for tenant
-     */
+    // get permissions for tenant
     public function permissions(): mixed
     {
         if (!enabled_module('permissions')) return null;
@@ -78,9 +66,7 @@ class Tenant extends Model
         return $this->hasMany(model('permission'));
     }
 
-    /**
-     * Attribute for address
-     */
+    // attribute for address
     protected function address(): Attribute
     {
         return Attribute::make(
@@ -88,9 +74,7 @@ class Tenant extends Model
         );
     }
 
-    /**
-     * Attribute for owner
-     */
+    // attribute for owner
     protected function owners(): Attribute
     {
         return Attribute::make(
@@ -98,9 +82,7 @@ class Tenant extends Model
         );
     }
 
-    /**
-     * Scope for fussy search
-     */
+    // scope for fussy search
     public function scopeSearch($query, $search): void
     {
         $query->where(fn($q) => $q
@@ -109,9 +91,7 @@ class Tenant extends Model
         );
     }
 
-    /**
-     * Set user as owner for tenant
-     */
+    // set user as owner for tenant
     public function setOwner($user, $isOwner = true): void
     {
         $id = is_numeric($user) ? $user : $user->id;
@@ -123,9 +103,7 @@ class Tenant extends Model
         $this->clearSessions();
     }
 
-    /**
-     * Set tenant as preferred for user
-     */
+    // set tenant as preferred for user
     public function setPreferred($user): void
     {
         $id = is_numeric($user) ? $user : $user->id;
@@ -133,18 +111,16 @@ class Tenant extends Model
 
         if (!$exists) $this->users()->attach($id);
 
-        DB::table('tenant_users')->where('user_id', $id)->update(['is_preferred' => false]);
-        DB::table('tenant_users')->where('user_id', $id)->where('tenant_id', $this->id)->update(['is_preferred' => true]);
+        DB::table('user_tenants')->where('user_id', $id)->update(['is_preferred' => false]);
+        DB::table('user_tenants')->where('user_id', $id)->where('tenant_id', $this->id)->update(['is_preferred' => true]);
         
         $this->clearSessions();
     }
 
-    /**
-     * Current tenant
-     */
+    // current tenant
     public function current(): mixed
     {
-        $query = DB::table('tenant_users')->where('user_id', user('id'));
+        $query = DB::table('user_tenants')->where('user_id', user('id'));
         
         $pivot = (clone $query)->where('is_preferred', true)->latest('id')->first()
             ?? (clone $query)->where('is_owner', true)->latest('id')->first()
@@ -153,9 +129,7 @@ class Tenant extends Model
         return $pivot ? model('tenant')->find($pivot->tenant_id) : null;
     }
 
-    /**
-     * Retrieve tenant
-     */
+    // retrieve tenant
     public function retrieve($attr = null, $default = null, $tenant = null): mixed
     {
         $tenant = $tenant ?? session('tenant.current') ?? model('tenant')->current();
@@ -204,21 +178,11 @@ class Tenant extends Model
         }    
     }
 
-    /**
-     * Clear tenant sessions
-     */
+    // clear tenant sessions
     public function clearSessions(): void
     {
         session()->forget('tenant.current');
         session()->forget('tenant.settings');
         session()->forget('tenants');
-    }
-
-    /**
-     * Setup tenant
-     */
-    public function setup()
-    {
-        //
     }
 }

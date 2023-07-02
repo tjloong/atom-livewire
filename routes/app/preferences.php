@@ -1,5 +1,5 @@
 <?php
 
 define_route('preferences/{tab?}', 'App\Preferences\Index')
-    ->name('app.preferences')
+    ->name('preferences')
     ->where('tab', '.*');

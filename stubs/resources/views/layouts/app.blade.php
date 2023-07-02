@@ -48,15 +48,15 @@
 
             <x-slot:aside>
                 <x-admin-panel.aside label="Dashboard" route="app.dashboard"/>                
-                <x-admin-panel.aside label="Blogs" route="app.blog.listing" can="blog.manage"/>
-                <x-admin-panel.aside label="Enquiries" route="app.enquiry.listing" can="enquiry.manage"/>
-                <x-admin-panel.aside label="Accounts" route="app.account.listing" can="account.manage"/>
-                <x-admin-panel.aside label="Support Tickets" route="app.ticketing.listing" can="ticketing.manage"/>
+                <x-admin-panel.aside label="Blogs" route="app.blog.listing"/>
+                <x-admin-panel.aside label="Enquiries" route="app.enquiry.listing"/>
+                <x-admin-panel.aside label="Sign-Ups" route="app.signup.listing"/>
+                <x-admin-panel.aside label="Support Tickets" route="app.ticket.listing"/>
             </x-slot:aside>
 
             <x-slot:asidefoot>
                 <x-admin-panel.aside label="Settings" route="app.settings"/>
-                <x-admin-panel.aside label="Preferences" route="app.preferences" can="preference.manage"/>
+                <x-admin-panel.aside label="Preferences" route="app.preferences"/>
             </x-slot:asidefoot>
 
             {{ $slot }}

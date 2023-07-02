@@ -12,7 +12,7 @@
                 <x-field label="Ticket Number" :value="$ticket->number"/>
     
                 @if (
-                    (enabled_module('permissions') && user()->can('ticketing.status'))
+                    (enabled_module('permissions') && user()->can('ticket.status'))
                     || (enabled_module('roles') && role('admin'))
                     || (
                         !enabled_module('roles') 
@@ -39,6 +39,6 @@
             </div>
         </x-box>
 
-        @livewire(atom_lw('app.ticketing.comments'), compact('ticket'), key('comments'))
+        @livewire(atom_lw('app.ticket.comments'), compact('ticket'), key('comments'))
     </div>
 </div>

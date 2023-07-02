@@ -41,7 +41,7 @@ class PublishCommand extends Command
                     'base',
                     'web',
                     'auth',
-                    'app-ticketing',
+                    'app-ticket',
                     'app-onboarding',
                     'app-user',
                     'app-role',
