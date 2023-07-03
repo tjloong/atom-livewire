@@ -27,12 +27,14 @@ class Aside extends Component
 
         if (is_null($active)) {
             if ($href) $this->isActive = str()->startsWith(url()->current(), $href);
-            elseif ($route && Route::has($route)) {
-                $home = breadcrumbs()->get('home');
-
+            elseif ($route && has_route($route)) {
                 $this->isActive = str()->startsWith(url()->current(), route($route, $params))
                     || current_route() === $route
-                    || data_get($home, 'route') === $route;
+                    || (
+                        ($trails = breadcrumbs()->for(current_route())->trails)
+                        && ($home = head($trails))
+                        && data_get($home, 'route') === route($route)
+                    );
             }
         }
         else $this->isActive = $active;

@@ -181,16 +181,7 @@ function tabs($tabs, $slug = false)
  */
 function breadcrumbs()
 {
-    $classes = [
-        'try' => 'App\\Services\\Breadcrumbs',
-        'use' => 'Jiannius\\Atom\\Services\\Breadcrumbs',
-    ];
-
-    $class = class_exists($classes['try'])
-        ? $classes['try']
-        : $classes['use'];
-
-    return app($class);
+    return app('breadcrumbs');
 }
 
 /**

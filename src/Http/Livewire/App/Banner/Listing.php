@@ -19,17 +19,7 @@ class Listing extends Component
         'status' => null,
     ];
 
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        breadcrumbs()->home('Banners');
-    }
-
-    /**
-     * Get query property
-     */
+    // get query property
     public function getQueryProperty(): Builder
     {
         return model('banner')
@@ -37,9 +27,7 @@ class Listing extends Component
             ->when(!$this->sort, fn($q) => $q->oldest('seq')->latest('id'));
     }
 
-    /**
-     * Get table columns
-     */
+    // get table columns
     public function getTableColumns($query): array
     {
         return [
@@ -76,9 +64,7 @@ class Listing extends Component
         ];
     }
 
-    /**
-     * Sort
-     */
+    // sort
     public function sort($data): void
     {
         foreach ($data as $seq => $id) {
@@ -86,9 +72,7 @@ class Listing extends Component
         }
     }
 
-    /**
-     * Delete
-     */
+    // delete
     public function delete()
     {
         if ($this->checkboxes) {
@@ -97,9 +81,7 @@ class Listing extends Component
         }
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.banner.listing');

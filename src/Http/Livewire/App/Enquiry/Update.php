@@ -2,20 +2,20 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
+use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithBreadcrumbs;
     use WithForm;
     use WithPopupNotify;
 
     public $enquiry;
 
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -24,19 +24,13 @@ class Update extends Component
         ];
     }
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount($enquiryId): void
     {
         $this->enquiry = model('enquiry')->readable()->findOrFail($enquiryId);
-
-        breadcrumbs()->push($this->enquiry->name);
     }
 
-    /**
-     * Delete
-     */
+    // delete
     public function delete(): mixed
     {
         $this->enquiry->delete();
@@ -44,19 +38,17 @@ class Update extends Component
         return breadcrumbs()->back();
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): void
     {
         $this->validateForm();
+
         $this->enquiry->save();
+        
         $this->popup('Enquiry Updated.');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.enquiry.update');

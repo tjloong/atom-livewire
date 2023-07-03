@@ -2,30 +2,26 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Banner;
 
+use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithBreadcrumbs;
     use WithPopupNotify;
     
     public $banner;
 
     protected $listeners = ['submitted'];
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount($bannerId): void
     {
         $this->banner = model('banner')->findOrFail($bannerId);
-
-        breadcrumbs()->push($this->banner->name);
     }
 
-    /**
-     * Delete
-     */
+    // delete
     public function delete(): mixed
     {
         $this->banner->delete();
@@ -33,17 +29,13 @@ class Update extends Component
         return breadcrumbs()->back();
     }
 
-    /**
-     * Submitted
-     */
+    // submitted
     public function submitted()
     {
         $this->popup('Banner Updated.');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.banner.update');

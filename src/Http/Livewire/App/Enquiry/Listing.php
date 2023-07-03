@@ -2,11 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
+use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
 class Listing extends Component
 {
+    use WithBreadcrumbs;
     use WithTable;
 
     public $sort;
@@ -14,12 +16,6 @@ class Listing extends Component
     public $filters = [
         'search' => null,
     ];
-
-    // mount
-    public function mount(): void
-    {
-        breadcrumbs()->home($this->title);
-    }
 
     // get title property
     public function getTitleProperty(): string

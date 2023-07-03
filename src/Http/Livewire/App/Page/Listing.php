@@ -9,27 +9,20 @@ class Listing extends Component
 {
     use WithTable;
 
-    public $sort = 'name,asc';
+    public $sort;
+
     public $filters = ['search' => null];
 
-    protected $queryString = [
-        'filters' => ['search' => null], 
-    ];
-
-    /**
-     * Get pages property
-     */
+    // get pages property
     public function getPagesProperty()
     {
         return model('page')
             ->filter($this->filters)
-            ->orderBy($this->sortBy, $this->sortOrder)
+            ->when(!$this->sort, fn($q) => $q->latest())
             ->get();
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render()
     {
         return atom_view('app.page.listing');

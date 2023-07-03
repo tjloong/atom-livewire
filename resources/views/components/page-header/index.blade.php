@@ -1,19 +1,35 @@
-@props(['size' => $attributes->get('size')])
+@props([
+    'size' => $attributes->get('size'),
+    'back' => $attributes->get('back'),
+])
 
 <div {{ $attributes->class([
     'w-full flex flex-wrap justify-between md:flex-nowrap',
     $size === 'sm' ? 'mb-4' : 'mb-6',
 ])->only('class') }}>
-    <div class="grow flex gap-4 my-1">
-        @if (request()->query('back'))
-            <div class="shrink-0 py-2 print:hidden">
-                <x-page-header.back :size="$size" :href="request()->query('back')"/>
-            </div>
-        @elseif ($back)
-            <div class="shrink-0 py-2 print:hidden">
-                <x-page-header.back :size="$size" :href="is_string($back) ? str($back)->toHtmlString() : null"/>
-            </div>
-        @endif
+    <div class="grow flex my-1">
+        <div class="shrink-0">        
+            @if ($href = request()->query('back'))
+                <x-page-header.back :size="$size" :href="$href"/>
+            @elseif ($back === true)
+                <x-page-header.back :size="$size" x-on:click.prevent="history.back()"/>
+            @elseif ($back === 'auto')
+                <div x-data="{
+                    back () {
+                        const href = Array.from(document.querySelectorAll('#breadcrumbs li a'))
+                            .map(a => a.getAttribute('href'))
+                            .pop()
+                        
+                        if (!empty(href)) window.location = href
+                        else history.back()
+                    }
+                }">
+                    <x-page-header.back :size="$size" x-on:click.prevent="back"/>
+                </div>
+            @elseif ($back)
+                <x-page-header.back :size="$size" :href="$back"/>
+            @endif
+        </div>
 
         @isset($title)
             <div {{ $title->attributes->merge(['class' => 'self-center']) }}>

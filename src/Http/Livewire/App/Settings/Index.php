@@ -8,13 +8,9 @@ class Index extends Component
 {
     public $tab;
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount()
     {
-        breadcrumbs()->home($this->title);
-
         if ($this->tab) {
             $tab = tabs($this->filteredTabs, $this->tab);
             if (!$tab || data_get($tab, 'enabled') === false) abort(404);
@@ -26,17 +22,13 @@ class Index extends Component
         }
     }
 
-    /**
-     * Get title propert
-     */
+    // get title propert
     public function getTitleProperty(): string
     {
         return 'Settings';
     }
 
-    /**
-     * Get filtered tabs property
-     */
+    // get filtered tabs property
     public function getFilteredTabsProperty(): array
     {
         return collect($this->tabs)
@@ -56,9 +48,7 @@ class Index extends Component
             ->all();
     }
 
-    /**
-     * Get tabs property
-     */
+    // get tabs property
     public function getTabsProperty(): array
     {
         return [
@@ -192,9 +182,7 @@ class Index extends Component
         ];
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.settings');

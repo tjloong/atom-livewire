@@ -1,5 +1,5 @@
-@if ($trails)
-    <ol
+@if ($trails = breadcrumbs()->trails)
+    <ol id="breadcrumbs"
         itemscope
         itemtype="https://schema.org/BreadcrumbList"
         {{ $attributes->class([
@@ -18,17 +18,17 @@
                     <x-icon name="house" class="text-gray-400 shrink-0"/>
                 @endif
 
-                @if ($label = data_get($trail, 'label'))
-                    @if ($i === array_key_last($trails) || !data_get($trail, 'url'))
-                        <span itemprop="name" class="text-gray-500 font-medium truncate">
-                            {{ str($label)->limit(100) }}
-                        </span>
-                    @elseif ($href = data_get($trail, 'url'))
+                @if ($label = __(data_get($trail, 'label')))
+                    @if ($href = data_get($trail, 'route'))
                         <a itemprop="item" href="{{ $href }}" class="text-gray-800 font-medium truncate">
                             <span itemprop="name" class="">
-                                {{ str($label)->limit(100) }}
+                                {!! str($label)->limit(100) !!}
                             </span>
                         </a>
+                    @else
+                        <span itemprop="name" class="text-gray-500 font-medium truncate">
+                            {!! str($label)->limit(100) !!}
+                        </span>
                     @endif
                 @endif
             </li>

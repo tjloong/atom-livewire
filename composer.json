@@ -40,6 +40,7 @@
                 "Jiannius\\Atom\\Providers\\AtomComponentServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomGateServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomEmailServiceProvider",
+                "Jiannius\\Atom\\Providers\\AtomBreadcrumbsServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomSocialiteServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomLivewireServiceProvider"
             ]
