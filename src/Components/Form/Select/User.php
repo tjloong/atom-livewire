@@ -4,13 +4,10 @@ namespace Jiannius\Atom\Components\Form\Select;
 
 use Illuminate\View\Component;
 
-class Owner extends Component
+class User extends Component
 {
-    /**
-     * Render
-     */
     public function render()
     {
-        return view('atom::components.form.select.owner');
+        return view('atom::components.form.select.user');
     }
 }

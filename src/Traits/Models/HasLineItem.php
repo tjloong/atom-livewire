@@ -12,37 +12,38 @@ trait HasLineItem
     }
 
     // set contact info
-    public function setContactInfo(
-        $columns = ['name', 'address', 'person', 'payterm']
-    ): mixed {
-        $values = collect($columns)
-            ->filter(fn($col) => has_column($this->getTable(), $col))
-            ->mapWithKeys(fn($col) => [
-                $col => [
-                    'name' => optional($this->contact)->name,
+    // public function setContactInfo(
+    //     $columns = ['name', 'address', 'person', 'payterm']
+    // ): mixed {
+    //     $values = collect($columns)
+    //         ->filter(fn($col) => has_column($this->getTable(), $col))
+    //         ->mapWithKeys(fn($col) => [
+    //             $col => [
+    //                 'name' => optional($this->contact)->name,
 
-                    'address' => $this->contact ? (
-                        format_address($this->contact)
-                        ?? format_address($this->contact->billing)
-                        ?? format_address($this->contact->shipping)
-                    ) : null,
+    //                 'address' => $this->contact ? (
+    //                     format_address($this->contact)
+    //                     ?? format_address($this->contact->billing)
+    //                     ?? format_address($this->contact->shipping)
+    //                 ) : null,
                     
-                    'person' => $this->contact &&  optional($this->contact->persons)->count() === 1
-                        ? $this->contact->persons->first()->name
-                        : null,
+    //                 'person' => $this->contact &&  optional($this->contact->persons)->count() === 1
+    //                     ? $this->contact->persons->first()->name
+    //                     : null,
 
-                    'payterm' => optional($this->contact)->payterm,
-                ][$col] ?? null,
-            ])
-            ->toArray();
+    //                 'payterm' => optional($this->contact)->payterm,
+    //             ][$col] ?? null,
+    //         ])
+    //         ->toArray();
 
-        $this->fill($values);
+    //     $this->fill($values);
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     // save line items
-    public function saveLineItems($lineItems): void {
+    public function saveLineItems($lineItems): void 
+    {
         if ($id = collect($lineItems)->pluck('id')->values()->all()) {
             $this->line_items()->whereNotIn('id', $id)->delete();
         }
@@ -58,21 +59,12 @@ trait HasLineItem
     }
 
     // update or create line item
-    public function updateOrCreateLineItem($input): void {
-        $data = collect($input)->only([
-            'id',
-            'name', 
-            'description', 
-            'qty', 
-            'amount', 
-            'grand_total',
-            'data',
-            'product_id', 
-            'product_variant_id',
-        ])->toArray();
+    public function updateOrCreateLineItem($input): void 
+    {
+        $input = collect($input)->except('ulid');
 
-        if ($item = $this->line_items()->find(data_get($data, 'id'))) $item->fill($data)->save();
-        else $item = $this->line_items()->create($data);
+        if ($item = $this->line_items()->find($input->get('id'))) $item->fill($input->toArray())->save();
+        else $item = $this->line_items()->create($input->toArray());
 
         if ($taxes = data_get($input, 'taxes')) {
             $item->taxes()->sync(
@@ -84,7 +76,8 @@ trait HasLineItem
     }
 
     // sum line items total
-    public function sumLineItemsTotal(): mixed {
+    public function sumLineItemsTotal(): mixed 
+    {
         $subtotal = $this->line_items->sum('subtotal');
         $tax = $this->line_items->sum('tax_amount');
         $grandTotal = $this->line_items->sum('grand_total');
@@ -101,7 +94,8 @@ trait HasLineItem
     }
 
     // set line items summary
-    public function setLineItemsSummary(): mixed {
+    public function setLineItemsSummary(): mixed 
+    {
         if (has_column($this->getTable(), 'summary')) {
             $summary = str()->limit($this->line_items->pluck('name')->join(', '), 200);
             $this->fill(compact('summary'));

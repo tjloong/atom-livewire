@@ -2,9 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-/**
- * Get current route
- */
+// get current route
 function current_route($name = null)
 {
     $route = request()->route()->getName();
@@ -19,17 +17,28 @@ function current_route($name = null)
     return $route;
 }
 
-/**
- * Check has route
- */
+// get previous route
+function previous_route($name = null)
+{
+    $route = app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName();
+    
+    if (is_string($name)) return str($route)->is($name);
+    elseif (is_array($name)) {
+        return is_numeric(
+            collect($name)->search(fn($val) => str($route)->is($val))
+        );
+    }
+
+    return $route;
+}
+
+// check has route
 function has_route($name)
 {
     return Route::has($name);
 }
 
-/**
- * Define route
- */
+// define route
 function define_route($path = null, $action = null, $method = 'get')
 {
     if (!$path && !$action) return app('router');
@@ -59,9 +68,7 @@ function define_route($path = null, $action = null, $method = 'get')
     }
 }
 
-/**
- * Load routes
- */
+// load routes
 function load_routes($name, $middleware = 'web')
 {
     $path = str($name)->replace('.', '/')->finish('.php')->toString();

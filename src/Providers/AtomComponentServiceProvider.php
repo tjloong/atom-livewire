@@ -45,6 +45,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'cdn-scripts',
             'empty-state',
             'alpine-data',
+            'page-overlay',
             'social-share',
             'flip-countdown',
             'payment-gateway',
@@ -158,8 +159,8 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'form.select.index',
             'form.select.tax',
+            'form.select.user',
             'form.select.label',
-            'form.select.owner',
             'form.select.state',
             'form.select.gender',
             'form.select.country',

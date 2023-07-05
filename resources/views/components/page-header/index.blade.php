@@ -8,12 +8,10 @@
     $size === 'sm' ? 'mb-4' : 'mb-6',
 ])->only('class') }}>
     <div class="grow flex my-1">
-        <div class="shrink-0">        
+        <div class="shrink-0">
             @if ($href = request()->query('back'))
                 <x-page-header.back :size="$size" :href="$href"/>
             @elseif ($back === true)
-                <x-page-header.back :size="$size" x-on:click.prevent="history.back()"/>
-            @elseif ($back === 'auto')
                 <div x-data="{
                     back () {
                         const href = Array.from(document.querySelectorAll('#breadcrumbs li a'))
@@ -22,7 +20,7 @@
                         
                         if (!empty(href)) window.location = href
                         else history.back()
-                    }
+                    },
                 }">
                     <x-page-header.back :size="$size" x-on:click.prevent="back"/>
                 </div>

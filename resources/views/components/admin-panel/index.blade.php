@@ -9,7 +9,8 @@
             document.querySelector('html').style.fontSize = '14px'
         },
     }"
-    class="min-h-screen h-px admin-panel" 
+    class="min-h-screen h-px" 
+    id="admin-panel"
 >
     @if (session('mask'))
         <div class="fixed top-0 right-0 left-0 h-4 bg-red-500 z-40"></div>

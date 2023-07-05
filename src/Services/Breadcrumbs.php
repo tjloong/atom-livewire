@@ -24,7 +24,7 @@ class Breadcrumbs
     }
 
     // push trail to collection
-    public function push($label, $route = null): mixed
+    public function push(mixed $label, string $route = null): mixed
     {
         $sets = $this->collection->get($this->for, collect());
         $sets->push(compact('label', 'route'));
@@ -37,27 +37,31 @@ class Breadcrumbs
     // make breadcrumbs with data for closures
     public function make($params = null): mixed
     {
-        $trails = optional($this->collection->get($this->for))->map(function($trail) use ($params) {
-            $label = data_get($trail, 'label');
-            $route = data_get($trail, 'route');
+        if (
+            $trails = optional($this->collection->get($this->for))->map(function($trail) use ($params) {
+                $label = data_get($trail, 'label');
+                $route = data_get($trail, 'route');
 
-            if ($label instanceof \Closure) {
-                $fx = new \ReflectionFunction($label);
-                $args = collect($fx->getParameters())->map(fn($param) => data_get($params, $param->name));
-                data_set($trail, 'label', $label(...$args));
-            }
+                if ($label instanceof \Closure) {
+                    $fx = new \ReflectionFunction($label);
+                    $args = collect($fx->getParameters())->map(fn($param) => data_get($params, $param->name));
+                    $value = $label(...$args);
 
-            if ($route instanceof \Closure) {
-                $fx = new \ReflectionFunction($route);
-                $args = collect($fx->getParameters())->map(fn($param) => data_get($params, $param->name));
-                data_set($trail, 'route', $route(...$args));
-            }
-            elseif (has_route($route)) data_set($trail, 'route', route($route));
-            
-            return $trail;
-        });
-
-        $this->trails = optional($trails)->toArray();
+                    if (is_string($value)) data_set($trail, 'label', $value);
+                    else {
+                        data_set($trail, 'label', $value[0]);
+                        data_set($trail, 'route', $value[1]);
+                    }
+                }
+                elseif (has_route($route)) data_set($trail, 'route', route($route));
+                
+                return $trail;
+            })
+        ) {
+            $this->trails = $trails
+                ->reject(fn($trail) => !data_get($trail, 'label'))
+                ->toArray();
+        }
 
         return $this;
     }
