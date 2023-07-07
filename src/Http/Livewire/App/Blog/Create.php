@@ -2,43 +2,36 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Blog;
 
+use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
 use Livewire\Component;
 
 class Create extends Component
 {
+    use WithBreadcrumbs;
+    
     public $blog;
 
     protected $listeners = ['submitted'];
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount(): void
     {
         $this->blog = model('blog');
-
-        breadcrumbs()->push($this->title);
     }
 
-    /**
-     * Get title property
-     */
+    // get title property
     public function getTitleProperty(): string
     {
         return 'Create Blog';
     }
 
-    /**
-     * Submitted
-     */
+    // submitted
     public function submitted($id): mixed
     {
-        return redirect()->route('app.blog.update', [$id]);
+        return to_route('app.blog.update', [$id]);
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.blog.create');

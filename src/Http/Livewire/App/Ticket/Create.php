@@ -2,18 +2,18 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Ticket;
 
+use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Create extends Component
 {
+    use WithBreadcrumbs;
     use WithForm;
 
     public $ticket;
 
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -23,19 +23,13 @@ class Create extends Component
         ];
     }
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount(): void
     {
         $this->ticket = model('ticket')->fill(['status' => 'pending']);
-
-        breadcrumbs()->push('Create Ticket');
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): mixed
     {
         $this->validateForm();
@@ -43,12 +37,10 @@ class Create extends Component
         $this->ticket->save();
         $this->ticket->notify();
 
-        return breadcrumbs()->back();
+        return to_route('app.ticket.listing');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.ticket.create');

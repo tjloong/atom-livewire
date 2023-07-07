@@ -10,43 +10,32 @@ class Listing extends Component
     use WithTable;
 
     public $fullpage;
-    public $sort = 'created_at,desc';
+    public $sort;
+
     public $filters = [
         'search' => null,
         'status' => null,
     ];
 
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-            'status' => null,
-        ]],
-    ];
-
-    /**
-     * Mount
-     */
+    // mount
     public function mount()
     {
-        if ($this->fullpage = current_route('app.ticket.listing')) {
-            breadcrumbs()->home('Support Tickets');
-        }
+        $this->fullpage = current_route('app.ticket.listing');
     }
 
-    /**
-     * Get tickets property
-     */
+    // get tickets property
     public function getTicketsProperty()
     {
         return model('ticket')
             ->selectRaw('tickets.*, if (tickets.status = "new", 0, 1) as seq')
             ->when(
-                !auth()->user()->is_root, 
+                !user()->isTier('root'), 
                 fn($q) => $q->where('created_by', auth()->user()->id)
             )
+            ->withCount(['comments' => fn($q) => $q->unread()])
             ->filter($this->filters)
+            ->when(!$this->sort, fn($q) => $q->latest())
             ->orderBy('seq')
-            ->orderBy($this->sortBy, $this->sortOrder)
             ->paginate($this->maxRows)
             ->through(fn($ticket) => array_filter([
                 [
@@ -68,7 +57,7 @@ class Listing extends Component
                     'href' => route('app.ticket.update', [$ticket->id]),
                 ],
                 [
-                    'tags' => collect([model('ticket_comment')->getUnreadCount($ticket->id)])
+                    'tags' => collect([$ticket->comments_count])
                         ->filter(fn($n) => $n > 0)
                         ->values()
                         ->all(),
@@ -85,9 +74,7 @@ class Listing extends Component
             ]));
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render()
     {
         return atom_view('app.ticket.listing');

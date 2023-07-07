@@ -9,10 +9,10 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
-use Jiannius\Atom\Notifications\UserActivationNotification;
-use Jiannius\Atom\Traits\Models\HasTrace;
+use Jiannius\Atom\Notifications\Auth\ActivateNotification;
 use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\HasTrace;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -227,7 +227,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendActivation(): void
     {
         if ($this->status === 'inactive') {
-            $this->notify(new UserActivationNotification());
+            $this->notify(new ActivateNotification());
         }
     }
 

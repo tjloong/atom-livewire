@@ -1,6 +1,6 @@
 <div class="max-w-screen-lg mx-auto">
     <x-page-header title="Update Blog" back>
-        <x-button color="gray" icon="show" target="_blank" 
+        <x-button icon="show" target="_blank" 
             label="Preview"
             href="/blog/{{ $blog->slug }}?preview=1"
         />

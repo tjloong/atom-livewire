@@ -10,40 +10,23 @@ class Listing extends Component
     use WithTable;
 
     public $tier;
-    public $sort = 'signup_at,desc';
+    public $sort;
+
     public $filters = [
         'search' => null,
         'status' => null,
     ];
 
-    protected $queryString = [
-        'filters' => ['except' => [
-            'search' => null,
-            'status' => null,
-        ]],
-    ];
-
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        breadcrumbs()->home('Sign-Ups');
-    }
-
-    /**
-     * Get query property
-     */
+    // get query property
     public function getQueryProperty()
     {
         return model('user')
             ->tier('signup')
-            ->filter($this->filters);
+            ->filter($this->filters)
+            ->when(!$this->sort, fn($q) => $q->latest('signup_at'));
     }
 
-    /**
-     * Get table columns
-     */
+    // get table columns
     public function getTableColumns($query)
     {
         return [
@@ -81,9 +64,7 @@ class Listing extends Component
         ];
     }
 
-    /**
-     * Export
-     */
+    // export
     public function export()
     {
         return excel(
@@ -101,9 +82,7 @@ class Listing extends Component
         );
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render()
     {
         return atom_view('app.signup.listing');

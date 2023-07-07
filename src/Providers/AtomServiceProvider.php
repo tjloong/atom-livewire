@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Providers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AtomServiceProvider extends ServiceProvider
@@ -37,6 +38,11 @@ class AtomServiceProvider extends ServiceProvider
         // middleware
         $router = app('router');
         $router->aliasMiddleware('track-ref', \Jiannius\Atom\Http\Middleware\TrackReferer::class);
+
+        // custom polymorphic types
+        if ($morphMap = config('atom.morph_map')) {
+            Relation::enforceMorphMap($morphMap);
+        }
 
         if ($this->app->runningInConsole()) {
             // commands

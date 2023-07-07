@@ -33,8 +33,6 @@
         </div>
     </div>
 
-    <x-slot:error-alert></x-slot:error-alert>
-
     <x-slot:foot>
         <x-button.submit icon="send" label="Post Comment"/>
     </x-slot:foot>

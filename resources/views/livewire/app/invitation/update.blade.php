@@ -1,5 +1,5 @@
 <div class="max-w-screen-md mx-auto">
-    <x-page-header :title="$this->title" :status="$invitation->status" back="auto">
+    <x-page-header :title="$this->title" :status="$invitation->status" back>
         <x-button.delete inverted label="Cancel Invitation"
             title="Cancel Invitation"
             message="Are you sure to Cancel this invitation?"

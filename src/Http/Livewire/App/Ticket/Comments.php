@@ -16,9 +16,7 @@ class Comments extends Component
     public $ticket;
     public $content;
 
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -26,19 +24,15 @@ class Comments extends Component
         ];
     }
 
-    /**
-     * Get comments property
-     */
+    // get comments property
     public function getCommentsProperty(): mixed
     {
         return $this->ticket->comments()
             ->orderBy('created_at', 'desc')
-            ->paginate(30);
+            ->paginate(100);
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): void
     {
         $this->validateForm();
@@ -50,9 +44,7 @@ class Comments extends Component
         $this->popup('Comment Saved.');
     }
 
-    /**
-     * Delete
-     */
+    // delete
     public function delete($id): void
     {
         if ($comment = $this->ticket->comments()->where('created_by', user()->id)->find($id)) {
@@ -61,9 +53,7 @@ class Comments extends Component
         }
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.ticket.comments');

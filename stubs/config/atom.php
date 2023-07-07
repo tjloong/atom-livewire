@@ -28,4 +28,9 @@ return [
             'linkedin',    
         ],
     ],
+
+    // custom polymorphic types
+    'morph_map' => [
+        'ticket' => 'Jiannius\Atom\Models\Ticket',
+    ],
 ];

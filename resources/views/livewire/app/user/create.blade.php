@@ -1,5 +1,5 @@
 <div class="max-w-screen-sm mx-auto">
-    <x-page-header title="Create User" back="auto"/>
+    <x-page-header title="Create User" back/>
 
     <x-form>
         <x-form.group cols="2">

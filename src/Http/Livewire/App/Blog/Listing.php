@@ -9,40 +9,28 @@ class Listing extends Component
 {
     use WithTable;
 
-    public $sort = 'updated_at,desc';
+    public $sort;
 
     public $filters = [
         'search' => null,
         'status' => null,
     ];
 
-    /**
-     * Mount
-     */
-    public function mount(): void
-    {
-        breadcrumbs()->home($this->title);
-    }
-
-    /**
-     * Get title property
-     */
+    // get title property
     public function getTitleProperty(): string
     {
         return 'Blogs';
     }
 
-    /**
-     * Get query property
-     */
+    // get query property
     public function getQueryProperty(): mixed
     {
-        return model('blog')->readable()->filter($this->filters);
+        return model('blog')->readable()
+            ->filter($this->filters)
+            ->when(!$this->sort, fn($q) => $q->latest('updated_at'));
     }
 
-    /**
-     * Get table columns
-     */
+    // get table columns
     public function getTableColumns($query): array
     {
         return [
@@ -70,9 +58,7 @@ class Listing extends Component
         ];
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.blog.listing');

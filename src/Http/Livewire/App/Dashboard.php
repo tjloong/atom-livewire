@@ -19,13 +19,9 @@ class Dashboard extends Component
         ]],
     ];
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount()
     {
-        breadcrumbs()->home('Dashboard');
-
         if (!data_get($this->filters, 'date')) {
             $this->fill([
                 'filters.date' => [
@@ -36,9 +32,7 @@ class Dashboard extends Component
         }
     }
 
-    /**
-     * Get date range property
-     */
+    // get date range property
     public function getDateRangeProperty()
     {
         $date = data_get($this->filters, 'date');
@@ -59,9 +53,7 @@ class Dashboard extends Component
         ];
     }
 
-    /**
-     * Get teams property
-     */
+    // get teams property
     public function getTeamsProperty()
     {
         return model('team')
@@ -70,9 +62,7 @@ class Dashboard extends Component
             ->get();
     }
 
-    /**
-     * Get sections property
-     */
+    // get sections property
     public function getSectionsProperty()
     {
         return [
@@ -104,9 +94,7 @@ class Dashboard extends Component
         ];
     }
 
-    /**
-     * Get chart date range breakdown
-     */
+    // get chart date range breakdown
     public function getChartDateRangeBreakdown($eloq = null)
     {
         $from = data_get($this->dateRange, 'from')->setTimezone(user('pref.timezone'));
@@ -178,9 +166,7 @@ class Dashboard extends Component
         return $breakdown;
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render()
     {
         return atom_view('app.dashboard');

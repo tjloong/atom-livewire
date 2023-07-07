@@ -2,48 +2,40 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Blog;
 
+use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithBreadcrumbs;
     use WithPopupNotify;
     
     public $blog;
 
     protected $listeners = ['submitted'];
 
-    /**
-     * Mount
-     */
-    public function mount($blogId): void
+    // mount
+    public function mount($id): void
     {
-        $this->blog = model('blog')->findOrFail($blogId);
-
-        breadcrumbs()->push($this->blog->title);
+        $this->blog = model('blog')->findOrFail($id);
     }
 
-    /**
-     * Delete
-     */
+    // delete
     public function delete(): mixed
     {
         $this->blog->delete();
 
-        return breadcrumbs()->back();
+        return to_route('app.blog.listing');
     }
 
-    /**
-     * Submitted
-     */
+    // submitted
     public function submitted(): mixed
     {
         return $this->popup('Blog Updated.');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.blog.update');

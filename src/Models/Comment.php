@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Notification;
@@ -26,31 +25,33 @@ class Comment extends Model
         return $this->morphTo();
     }
 
-    // attribute for is self
-    protected function isSelf(): Attribute
+    // scope for unread
+    public function scopeUnread($query, $user = null): void
     {
-        return Attribute::make(
-            get: fn() => $this->created_by === $this->ticket->created_by,
-        );
+        $user = $user ?? user();
+
+        $query
+            ->when($user, fn($q) => $q->where('created_by', '<>', $user->id))
+            ->whereNull('read_at');
+    }
+
+    // notify to
+    public function notifyTo(): mixed
+    {
+        return settings('notify_to');
     }
 
     // notify
-    public function notify($notification = null): void
+    public function notify(): void
     {
-        $notification = $notification ?? collect([
-            'App\Notifications\Comment\SendNotification',
-            'Jiannius\Atom\Notifications\Comment\SendNotification',
-        ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
-
-        // creator comment, send notification to admin
-        if ($this->is_self) {
-            if ($to = settings('notify_to')) {
-                Notification::route('mail', $to)->notify(new $notification($this));
-            }
-        }
-        // non-creator comment, send notification to creator
-        else {
-            optional($this->ticket->createdBy)->notify(new $notification($this));
+        if (
+            ($to = $this->notifyTo()) 
+            && ($notification = $notification ?? collect([
+                'App\Notifications\Comment\SendNotification',
+                'Jiannius\Atom\Notifications\Comment\SendNotification',
+            ])->first(fn($ns) => file_exists(atom_ns_path($ns))))
+        ) {
+            Notification::route('mail', $to)->notify(new $notification($this));
         }
     }
 }

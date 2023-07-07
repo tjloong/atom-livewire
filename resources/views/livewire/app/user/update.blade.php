@@ -1,5 +1,5 @@
 <div class="max-w-screen-md mx-auto">
-    <x-page-header :title="$user->name" :status="$user->isTenantOwner() ? ['yellow' => 'owner'] : null" back="auto">
+    <x-page-header :title="$user->name" :status="$user->isTenantOwner() ? ['yellow' => 'owner'] : null" back>
         <div class="flex items-center gap-2">
             @if (tenant())
                 <x-button.confirm label="Remove User" color="red" inverted icon="close"

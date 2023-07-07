@@ -2,20 +2,20 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Ticket;
 
+use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithBreadcrumbs;
     use WithForm;
     use WithPopupNotify;
 
     public $ticket;
 
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -23,42 +23,33 @@ class Update extends Component
         ];
     }
 
-    /**
-     * Mount
-     */
-    public function mount($ticketId): void
+    // mount
+    public function mount($id): void
     {
-        $this->ticket = model('ticket')->findOrFail($ticketId);
+        $this->ticket = model('ticket')->findOrFail($id);
 
         $this->ticket->comments()
-            ->where('created_by', '<>', auth()->user()->id)
-            ->update(['is_read' => true]);
-
-        breadcrumbs()->push($this->ticket->number);
+            ->where('created_by', '<>', user('id'))
+            ->update(['read_at' => now()]);
     }
 
-    /**
-     * Updated ticket status
-     */
+    // updated ticket status
     public function updatedTicketStatus(): void
     {
         $this->ticket->save();
+
         $this->popup('Ticket Updated.');
     }
 
-    /**
-     * Delete
-     */
+    // delete
     public function delete(): mixed
     {
         $this->ticket->delete();
 
-        return breadcrumbs()->back();
+        return to_route('app.ticket.listing');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.ticket.update');

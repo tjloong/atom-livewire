@@ -2,35 +2,32 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Signup;
 
+use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
 use Livewire\Component;
 
 class Update extends Component
 {
+    use WithBreadcrumbs;
+
     public $tab;
     public $user;
 
-    /**
-     * Mount
-     */
-    public function mount($userId = null)
+    // mount
+    public function mount($id = null)
     {
         $this->user = tier('root')
-            ? model('user')->findOrFail($userId)
+            ? model('user')->findOrFail($id)
             : user();
 
         if (!$this->tab) {
-            return redirect()->route('app.signup.update', [
+            return to_route('app.signup.update', [
                 $this->user->id,
                 'tab' => data_get(tabs($this->tabs), '0.slug'),
             ]);
         }
-
-        breadcrumbs()->push($this->user->name);
     }
 
-    /**
-     * Get tabs property
-     */
+    // get tabs property
     public function getTabsProperty(): array
     {
         return [
@@ -40,9 +37,7 @@ class Update extends Component
         ];
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.signup.update');

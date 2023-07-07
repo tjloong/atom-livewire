@@ -24,17 +24,6 @@ class Ticket extends Model
         return $this->morphMany(model('comment'), 'parent');
     }
 
-    // attribute for unread_count
-    public function unreadCount(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->comments()
-                ->when(user(), fn($q) => $q->where('comments.created_by', '<>', user('id')))
-                ->whereNull('read_at')
-                ->count(),
-        );
-    }
-
     // scope for search
     public function scopeSearch($query, $search): void
     {
@@ -44,17 +33,23 @@ class Ticket extends Model
         );
     }
 
+    // notify to
+    public function notifyTo(): mixed
+    {
+        return settings('notify_to');
+    }
+
     // notify
-    public function notify(): void
+    public function notify($comment = null): void
     {
         if (
-            $notifyTo = $this->notifyTo ?? settings('notify_to')
+            ($to = $this->notifyTo()) 
             && ($notification = collect([
                 'App\Notifications\Ticket\CreateNotification',
                 'Jiannius\Atom\Notifications\Ticket\CreateNotification',
             ])->first(fn($ns) => file_exists(atom_ns_path($ns))))
         ) {
-            Notification::route('mail', $notifyTo)->notify(new $notification($this));
+            Notification::route('mail', $to)->notify(new $notification($this));
         }
     }
 }

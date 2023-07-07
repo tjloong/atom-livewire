@@ -48,9 +48,13 @@ class Breadcrumbs
                     $value = $label(...$args);
 
                     if (is_string($value)) data_set($trail, 'label', $value);
-                    else {
+                    else if (!empty($value)) {
                         data_set($trail, 'label', $value[0]);
                         data_set($trail, 'route', $value[1]);
+                    }
+                    else {
+                        data_set($trail, 'label', null);
+                        data_set($trail, 'route', null);
                     }
                 }
                 elseif (has_route($route)) data_set($trail, 'route', route($route));

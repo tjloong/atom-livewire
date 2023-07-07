@@ -1,7 +1,10 @@
 <div class="max-w-screen-xl mx-auto">
     @if ($fullpage)
         <x-page-header title="Support Tickets">
-            <x-button :href="route('app.ticket.create')" label="New Ticket"/>
+            <x-button icon="add" 
+                label="New Ticket"
+                :href="route('app.ticket.create')" 
+            />
         </x-page-header>
     @endif
 
@@ -9,7 +12,7 @@
         <x-slot:header>
             @if (!$fullpage)
                 <x-table.header label="Support Tickets">
-                    <x-button size="sm" color="gray"
+                    <x-button size="sm" icon="add"
                         label="New Ticket"
                         :href="route('app.ticket.create')" 
                     />
