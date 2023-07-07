@@ -31,6 +31,7 @@ class Index extends Component
                     'avatar_placeholder' => data_get($opt, 'avatar_placeholder'),
                     'image' => data_get($opt, 'image'),
                     'flag' => data_get($opt, 'flag'),
+                    'color' => data_get($opt, 'color'),
                     'searchable' => str()->slug(collect([$value, $label, $small, $remark])->filter()->join('-')),
                 ];
             }
