@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
-use Illuminate\Database\Eloquent\Builder;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
@@ -12,7 +11,7 @@ class Listing extends Component
     use WithPopupNotify;
     use WithTable;
 
-    public $sort = 'created_at,desc';
+    public $sort;
 
     public $filters = [
         'search' => null,
@@ -21,19 +20,16 @@ class Listing extends Component
         'in_team' => null,
     ];
 
-    /**
-     * Get query property
-     */
-    public function getQueryProperty(): Builder
+    // get query property
+    public function getQueryProperty(): mixed
     {
         return model('user')
             ->readable()
-            ->filter($this->filters);
+            ->filter($this->filters)
+            ->when(!$this->sort, fn($q) => $q->latest());
     }
 
-    /**
-     * Get options property
-     */
+    // get options property
     public function getOptionsProperty(): array
     {
         return [
@@ -58,9 +54,7 @@ class Listing extends Component
         ];
     }
 
-    /**
-     * Get table columns
-     */
+    // get table columns
     public function getTableColumns($query): array
     {
         return [
@@ -87,9 +81,7 @@ class Listing extends Component
         ];
     }
 
-    /**
-     * Empty trashed
-     */
+    // empty trashed
     public function emptyTrashed(): void
     {
         (clone $this->query)->onlyTrashed()->forceDelete();
@@ -99,9 +91,7 @@ class Listing extends Component
         $this->emit('refresh');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.user.listing');

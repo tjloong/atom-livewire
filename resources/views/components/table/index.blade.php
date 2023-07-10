@@ -100,6 +100,7 @@
                                         :datetime="data_get($col, 'datetime')"
                                         :from-now="data_get($col, 'from_now')"
                                         :href="data_get($col, 'href')"
+                                        :target="data_get($col, 'target')"
                                         :amount="data_get($col, 'amount')"
                                         :currency="data_get($col, 'currency')"
                                         :count="data_get($col, 'count')"
