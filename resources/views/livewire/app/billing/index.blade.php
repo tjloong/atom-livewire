@@ -39,6 +39,9 @@
                     </div>
                 </x-box>
             @endforeach
+
+            @livewire(atom_lw('app.billing.receipt'), key('receipt'))
+            @livewire(atom_lw('app.billing.subscription-modal'), key('subscription-modal'))
         @else
             <x-box>
                 <x-empty-state title="No subscription" subtitle="You do not have any active subscription">
@@ -46,9 +49,5 @@
                 </x-empty-state>
             </x-box>
         @endif
-        
-        @livewire(atom_lw('app.billing.receipt'), key('receipt'))
     </div>
-
-    @livewire(atom_lw('app.billing.subscription-modal'), key('subscription-modal'))
 </div>

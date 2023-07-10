@@ -58,7 +58,7 @@
         @endif
 
         @if ($status = $attributes->get('status'))
-            <div>
+            <div class="shrink-0 px-2">
                 @if (is_string($status)) <x-badge :label="$status"/>
                 @else
                     @foreach ($status as $color => $val)
@@ -69,7 +69,7 @@
         @endif
 
         @if ($tinylink = $attributes->get('tinylink'))
-            <div>
+            <div class="shrink-0 px-2">
                 <a 
                     href="{{ data_get($tinylink, 'href') }}"
                     x-tooltip:right="{{ data_get($tinylink, 'label') }}"

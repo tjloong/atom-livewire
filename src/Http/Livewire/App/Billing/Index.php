@@ -8,17 +8,7 @@ class Index extends Component
 {
     protected $listeners = ['refresh' => '$refresh'];
 
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        breadcrumbs()->homeIf(current_route('app.billing'), 'Subscription');
-    }
-
-    /**
-     * Get subscriptions property
-     */
+    // get subscriptions property
     public function getSubscriptionsProperty(): mixed
     {
         return model('plan_subscription')
@@ -28,9 +18,7 @@ class Index extends Component
             ->get();
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.billing');
