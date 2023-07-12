@@ -159,6 +159,9 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'form.select.index',
             'form.select.tax',
+            'form.select.enum',
+            'form.select.role',
+            'form.select.team',
             'form.select.user',
             'form.select.label',
             'form.select.state',

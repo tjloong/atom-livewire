@@ -2,71 +2,38 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Role;
 
-use Illuminate\Contracts\Database\Eloquent\Builder;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 use Livewire\Component;
 
 class Listing extends Component
 {
-    use WithPopupNotify;
     use WithTable;
 
-    public $sort = 'name,asc';
+    public $sort;
 
     public $filters = [
         'search' => null,
     ];
 
-    /**
-     * Get query property
-     */
-    public function getQueryProperty(): Builder
+    protected $listeners = ['refresh' => '$refresh'];
+
+    // get query property
+    public function getQueryProperty(): mixed
     {
         return model('role')
             ->readable()
-            ->when(enabled_module('permissions'), fn($q) => $q->withCount('permissions'))
             ->withCount('users')
-            ->filter($this->filters);
+            ->filter($this->filters)
+            ->when(!$this->sort, fn($q) => $q->orderBy('name'));
     }
 
-    /**
-     * Get table columns
-     */
-    public function getTableColumns($query): array
+    // update or create
+    public function updateOrCreate($id = null): void
     {
-        return array_filter([
-            [
-                'name' => 'Role',
-                'sort' => 'name',
-                'label' => $query->name,
-                'href' => route('app.role.update', [$query->id]),
-            ],
-
-            enabled_module('permissions') ? [
-                'name' => 'Permissions',
-                'class' => 'text-right',
-                'count' => in_array($query->slug, ['admin', 'administrator'])
-                    ? '∞'
-                    : $query->permissions_count,
-                'uom' => 'permission',
-            ] : null,
-
-            [
-                'name' => 'Users',
-                'count' => $query->users_count,
-                'uom' => 'user',
-                'href' => route('app.settings', [
-                    'tab' => 'user',
-                    'filters' => ['is_role' => $query->slug],
-                ]),
-            ],
-        ]);
+        $this->emitTo(atom_lw('app.role.form'), 'open', $id);
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.role.listing');

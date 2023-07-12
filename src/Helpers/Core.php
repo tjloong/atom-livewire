@@ -7,6 +7,25 @@ use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
 
+// enum
+function enum($name, $value = null)
+{
+    $name = collect(explode('.', $name))
+        ->map(fn($val) => str($val)->singular()->studly()->toString())
+        ->join('\\');
+
+    $ns = collect([
+        'App\\Enums\\'.$name,
+        'Jiannius\\Atom\\Enums\\'.$name,
+    ])->first(fn($val) => file_exists(atom_ns_path($val)));
+
+    if (is_null($value)) return collect($ns::cases());
+    else {
+        if ($ret = $ns::tryFrom($value)) return $ret;
+        if ($ret = $ns::$value) return $ret;
+    }
+}
+
 /**
  * Get status color
  */

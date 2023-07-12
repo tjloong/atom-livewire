@@ -1,4 +1,3 @@
-
 @if ($attributes->has('options') && ($options = $attributes->get('options', [])))
     <x-form.checkbox.multiple {{ $attributes }}/>
 @else
@@ -12,22 +11,15 @@
     <div
         x-cloak
         x-data="{
-            active: false,
             disabled: @js($disabled),
-            toggle () {
-                if (this.disabled) return
-                this.active = this.$refs.checkbox?.checked
+            get active () {
+                return this.$refs.checkbox?.checked
             },
         }"
         id="{{ $id }}"
         class="{{ $disabled ? 'opacity-30' : null }}"
     >
-        <label 
-            x-init="toggle"
-            x-on:input="toggle"
-            class="flex gap-2" 
-            @disabled($disabled)
-        >
+        <label class="flex gap-2" @disabled($disabled)>
             <input x-ref="checkbox" type="checkbox" class="hidden" {{ $attributes }}>
 
             <div x-ref="box"

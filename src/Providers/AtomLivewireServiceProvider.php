@@ -49,14 +49,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // user
             'atom.app.user.listing' => 'App\User\Listing',
-            'atom.app.user.create' => 'App\User\Create',
-            'atom.app.user.update' => 'App\User\Update',
-            'atom.app.user.role' => 'App\User\Role',
-            'atom.app.user.team' => 'App\User\Team',
-            'atom.app.user.permission' => 'App\User\Permission',
-            'atom.app.user.visibility' => 'App\User\Visibility',
-            'atom.app.user.btn-block' => 'App\User\BtnBlock',
-            'atom.app.user.btn-delete' => 'App\User\BtnDelete',
+            'atom.app.user.form' => 'App\User\Form',
+            // 'atom.app.user.permission' => 'App\User\Permission',
+            // 'atom.app.user.visibility' => 'App\User\Visibility',
 
             // tenant
             'atom.app.tenant.create' => 'App\Tenant\Create',

@@ -22,28 +22,38 @@
     @else <x-modal.overlay x-on:click.stop="$dispatch('close')"/>
     @endif
 
-    <div class="absolute top-0 bottom-0 right-0 left-0 p-4 md:left-auto md:w-1/2 lg:w-4/12 md:p-0">
-        <div class="bg-white shadow-lg rounded-lg border flex flex-col w-full h-full overflow-hidden md:rounded-none">
-            <div class="shrink-0 p-4 flex items-center justify-between gap-3 border-b">
-                @isset($header) 
-                    {{ $header }}
-                @else
+    <div class="absolute top-0 bottom-0 right-0 left-0 py-1 pl-2 md:left-auto md:w-1/2 lg:w-4/12">
+        <div {{ $attributes->class([
+            'shadow-lg rounded-l-lg border flex flex-col w-full h-full overflow-hidden',
+            $attributes->get('class', 'bg-white'),
+        ]) }}>
+            <div class="shrink-0 bg-white py-3 px-6 flex items-center justify-between gap-3 border-b">
+                <div class="cursor-pointer" x-on:click="$dispatch('close')">
+                    <x-icon name="arrow-right-long" class="text-lg"/>
+                </div>
+
+                @isset($buttons)
                     <div class="flex items-center gap-2">
+                        {{ $buttons }}
+                    </div>
+                @endisset
+            </div>
+
+            <div class="shrink-0">
+                @isset($header) {{ $header }}
+                @else
+                    <div class="flex items-center gap-2 text-xl p-6">
                         @if ($icon = $attributes->get('icon'))
                             <x-icon :name="$icon" class="text-gray-400"/>
                         @endif
 
                         @if ($header = $attributes->get('header'))
-                            <div class="text-lg font-semibold">
+                            <div class="font-bold">
                                 {{ __($header) }}
                             </div>
-                        @endif
+                        @endif                        
                     </div>
-                @endif
-
-                <div class="shrink-0">
-                    <x-close x-on:click="$dispatch('close')"/>
-                </div>
+                @endisset
             </div>
 
             <div class="grow overflow-auto">

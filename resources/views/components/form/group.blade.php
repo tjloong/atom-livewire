@@ -5,7 +5,7 @@
 @if ($slot->isNotEmpty())
     <div {{ 
         $attributes
-            ->merge(['class' => 'p-5 border-t first:border-t-0'])
+            ->merge(['class' => 'p-5 border-t mt-4 first:border-t-0 first:mt-0'])
             ->except(['cols', 'label']) 
     }}>
         <div class="flex flex-col gap-4">

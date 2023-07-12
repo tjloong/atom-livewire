@@ -20,6 +20,8 @@ class Listing extends Component
         'in_team' => null,
     ];
 
+    protected $listeners = ['refresh' => '$refresh'];
+
     // get query property
     public function getQueryProperty(): mixed
     {
@@ -29,56 +31,10 @@ class Listing extends Component
             ->when(!$this->sort, fn($q) => $q->latest());
     }
 
-    // get options property
-    public function getOptionsProperty(): array
+    // update or create
+    public function updateOrCreate($id = null): void
     {
-        return [
-            'status' => collect(['active', 'inactive', 'blocked', 'trashed'])->map(fn($val) => [
-                'value' => $val, 
-                'label' => ucfirst($val),
-            ])->toArray(),
-
-            'roles' => enabled_module('roles')
-                ? model('role')->readable()->get()->map(fn($role) => [
-                    'value' => $role->slug,
-                    'label' => $role->name,
-                ])->toArray()
-                : null,
-
-            'teams' => enabled_module('teams')
-                ? model('team')->readable()->get()->map(fn($team) => [
-                    'value' => (string)$team->id,
-                    'label' => $team->name,
-                ])->toArray()
-                : null,
-        ];
-    }
-
-    // get table columns
-    public function getTableColumns($query): array
-    {
-        return [
-            [
-                'name' => 'Name',
-                'sort' => 'name',
-                'label' => $query->name.($query->id === user()->id ? ' ('.__('You').')' : ''),
-                'href' => route('app.user.update', [$query->id]),
-            ],
-
-            [
-                'name' => 'Email',
-                'label' => $query->email,
-            ],
-
-            enabled_module('roles') ? [
-                'name' => 'Role',
-                'label' => $query->role->name ?? '--',
-            ] : null,
-
-            tenant() ? [
-                'status' => $query->isTenantOwner() ? ['yellow' => 'owner'] : null,
-            ] : null,
-        ];
+        $this->emitTo(atom_lw('app.user.form'), 'open', $id);
     }
 
     // empty trashed
