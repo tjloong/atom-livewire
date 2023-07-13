@@ -16,7 +16,14 @@
             <x-form.email wire:model.defer="user.email" label="Login Email"/>
             <x-form.select.role wire:model="user.role_id"/>
             <x-form.select.team wire:model="inputs.teams" multiple/>
-            <x-form.checkbox wire:model="inputs.is_blocked" label="Blocked"/>
+
+            <div>
+                <x-form.checkbox wire:model="inputs.is_blocked" label="Blocked"/>
+
+                @tier('root')
+                    <x-form.checkbox wire:model="user.is_root" label="Root"/>
+                @endtier
+            </div>
         </x-form.group>
 
         @if ($user->exists)
