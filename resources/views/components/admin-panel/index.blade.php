@@ -83,7 +83,6 @@
     </aside>
 
     <main
-        x-ref="container"
         x-bind:class="{
             'transition-0 duration-100 ease-in-out': animate,
             'lg:pl-0': toggled,
@@ -145,7 +144,7 @@
             </div> 
         @endif
 
-        <div class="grow bg-gray-50 print:bg-transparent">
+        <div class="grow bg-gray-50">
             <div class="px-5 pt-5 pb-20 md:px-8 md:pt-8 print:px-0 print:pt-0 print:pb-0 overflow-y-auto h-full">
                 {{ $slot }}
             </div>

@@ -3,14 +3,9 @@
 <div
     x-data="{
         show: false,
-        model: @js($model),
-        value: @js($attributes->get('value')),
-        init () {
-            if (this.model) {
-                this.value = this.$wire.get(this.model)
-                this.$watch('value', () => this.$wire.set(this.model, this.value))
-            }
-        },
+        @if ($model) value: @entangle($model), 
+        @else value: @js($attributes->get('value')),
+        @endif
     }"
     x-bind:class="show && 'fixed inset-0 z-20 md:static'"
 >

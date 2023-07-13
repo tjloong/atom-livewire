@@ -14,12 +14,15 @@
             @elseif ($back === true)
                 <div x-data="{
                     back () {
-                        const href = Array.from(document.querySelectorAll('#breadcrumbs li a'))
-                            .map(a => a.getAttribute('href'))
-                            .pop()
-                        
-                        if (!empty(href)) window.location = href
-                        else history.back()
+                        if (this.$el.closest('.page-overlay')) this.$dispatch('close')
+                        else {
+                            const href = Array.from(document.querySelectorAll('#breadcrumbs li a'))
+                                .map(a => a.getAttribute('href'))
+                                .pop()
+                            
+                            if (!empty(href)) window.location = href
+                            else history.back()
+                        }
                     },
                 }">
                     <x-page-header.back :size="$size" x-on:click.prevent="back"/>
