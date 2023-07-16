@@ -14,7 +14,7 @@ class Label extends Component
         $type = null, 
         $parent = null,
         $options = null,
-        $children = false,
+        $children = true,
     ) {
         $this->type = $type;
         $this->options = collect();
