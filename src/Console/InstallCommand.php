@@ -818,7 +818,7 @@ class InstallCommand extends Command
             '--force' => $this->option('force'),
         ]);
 
-        $this->removeLaravelInstalltionFiles();
+        $this->removeLaravelInstallationFiles();
         $this->installUsers();
         $this->installLabels();
         $this->installFiles();
@@ -911,7 +911,7 @@ class InstallCommand extends Command
     /**
      * Remove laravel installation files
      */
-    private function removeLaravelInstalltionFiles()
+    private function removeLaravelInstallationFiles()
     {
         if (!$this->option('force')) return;
         

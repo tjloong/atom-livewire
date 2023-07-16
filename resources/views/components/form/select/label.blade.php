@@ -1,20 +1,12 @@
 <x-form.select
-    :options="model('label')
-        ->readable()
-        ->when($attributes->get('type'), fn($q, $type) => $q->where('type', $type))
-        ->oldest('seq')
-        ->oldest('id')
-        ->get()
-        ->transform(fn($label) => [
-            'value' => $attributes->get('slug') ? $label->slug : $label->id,
-            'label' => $label->locale('name'),
-        ])
-        ->toArray()"
-    {{ $attributes->except(['type', 'options']) }}
+    :options="$options"
+    {{ $attributes->except(['type', 'options', 'id', 'children']) }}
 >
-    <x-slot:foot 
-        :label="'New '.component_label($attributes, 'Label')"
-        :href="route('app.label.create', ['type' => $attributes->get('type')])"
-        icon="plus"
-    ></x-slot:foot>
+    @isset($foot) {{ $foot }}
+    @else
+        <x-slot:foot icon="add"
+            :label="'New '.component_label($attributes, 'Label')"
+            wire:click="$emitTo('{{ atom_lw('app.label.form') }}', 'open', { type: '{{ $type }}' })"
+        ></x-slot:foot>
+    @endisset
 </x-form.select>

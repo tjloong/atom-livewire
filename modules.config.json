@@ -1,0 +1,6 @@
+{
+    "app.label": {
+        "models": ["Label"],
+        "migrations": []
+    }
+}

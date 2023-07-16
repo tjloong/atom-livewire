@@ -1,16 +1,17 @@
-<x-form>
-    <x-form.group>
-        @if (count($this->parentTrails))
-            <x-form.field label="Parent Label">
-                <div class="flex flex-wrap items-center gap-2">
-                    @foreach ($this->parentTrails as $i => $trail)
-                        <div class="shrink-0">{{ $trail }}</div>
-                        @if ($i !== array_key_last($this->parentTrails)) <x-icon name="arrow-right"/> @endif
-                    @endforeach
-                </div>
-            </x-form.field>
-        @endif
+<x-form id="label-form" :header="optional($label)->exists ? 'Update Label' : 'Create Label'" drawer>
+@if ($label)
+    <x-slot:buttons>
+        <x-button.submit size="sm"/>
 
+        @if ($label->exists)
+            <x-button.delete inverted size="sm" :label="false"
+                title="Delete Label"
+                message="Are you sure to DELETE this label?"
+            />
+        @endif
+    </x-slot:buttons>
+
+    <x-form.group>
         @if ($type = $label->type)
             <x-form.text :value="str()->headline($type)" label="Label Type" readonly/>
         @endif
@@ -26,6 +27,12 @@
                     @endforeach
                 </div>
             </x-form.field>
+
+            @if ($label->parents->count())
+                <x-form.field label="Parent" :value="$label->parents
+                    ->map(fn($parent) => $parent->locale('name'))
+                    ->join(' / ')"/>
+            @endif
         @else
             <x-form.field label="Label Name" required>
                 <div class="flex flex-col gap-2">
@@ -34,8 +41,12 @@
                     @endforeach
                 </div>
             </x-form.field>
-    
-            <x-form.slug wire:model.defer="label.slug" prefix="/"/>
+
+            <x-form.text wire:model.defer="label.slug" prefix="/" placeholder="autogen"/>
+            <x-form.select.label wire:model="label.parent_id" :type="$type" children>
+                <x-slot:foot></x-slot:foot>
+            </x-form.select.label>
         @endif
     </x-form.group>
+@endif
 </x-form>

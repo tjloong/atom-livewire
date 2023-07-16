@@ -14,7 +14,7 @@ trait HasLocale
         $col = data_get($this, $column);
         $keys = array_keys((array)$col);
 
-        if (is_object($col)) {
+        if (is_object($col) || is_array($col)) {
             return data_get($col, app()->currentLocale())
                 ?? data_get($col, head($keys));
         }

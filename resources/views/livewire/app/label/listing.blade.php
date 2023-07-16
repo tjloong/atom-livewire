@@ -1,81 +1,44 @@
-<div class="max-w-screen-lg mx-auto">
-    <x-page-header :title="$this->title">
-        <x-button icon="add"
-            label="Create New" :
-            :href="route('app.label.create', compact('type'))"
-        />
-    </x-page-header>
-
-    <x-box>
-        @if ($this->labels->count())
-            <x-form.sortable
-                wire:sorted="sort"
-                :config="['handle' => '.cursor-move']"
-                class="grid divide-y"
+<x-sortable wire:ignore wire:sorted="sort" class="flex flex-col divide-y">
+    @foreach ($labels as $label)
+        <x-sortable.item :id="$label->id" handle>
+            @php $count = $label->children->count() @endphp
+            <div 
+                x-data="{ show: false }"
+                x-on:click="show = !show"
+                class="py-2 pr-4 flex flex-col gap-2 {{ $count ? 'cursor-pointer' : null }}"
             >
-                @foreach ($this->labels as $label)
-                    <div x-data="{ show: false }" data-sortable-id="{{ $label->id }}">
-                        <div class="py-2 px-4 flex items-center gap-3 hover:bg-slate-100">
-                            <div class="shrink-0 cursor-move p-2 flex">
-                                <x-icon name="sort" class="m-auto text-gray-400"/>
-                            </div>
-                                
-                            <div class="grow flex items-center gap-3">
-                                <a class="text-black grid" href="{{ route('app.label.update', [$label->id]) }}">
-                                    <div class="truncate">
-                                        {{ $label->locale('name') }}
-                                    </div>
-                                </a>
+                <div class="flex items-center gap-3">
+                    <div class="grow flex items-center gap-3">
+                        <x-link :label="$label->locale('name')" 
+                            wire:click.stop="$emit('updateOrCreate', {{ $label->id }})"
+                            class="font-medium"
+                        />
 
-                                @if ($maxDepth > 0)
-                                    <a x-on:click="show = !show" class="shrink-0 text-gray-800 px-2 flex items-center gap-2">
-                                        @if ($count = $label->children->count()) 
-                                            <x-badge :label="$count" size="xs" color="blue"/> 
-                                        @endif
-                                        <x-icon x-show="!show" name="chevron-right" size="12"/>
-                                        <x-icon x-show="show" name="chevron-down" size="12"/>
-                                    </a>
-                                @endif
-                            </div>
-
-                            <div class="shrink-0 flex items-center gap-2">
-                                @if ($maxDepth > 0)
-                                    <x-button size="xs" color="gray"
-                                        :label="$this->addSublabelButtonName ?? 'Add Sub-label'"
-                                        :href="route('app.label.create', [
-                                            'parent_id' => $label->id,
-                                            'type' => $type,
-                                        ])"
-                                    />
-                                @endif
-
-                                <x-close.delete
-                                    title="Delete Label"
-                                    :message="collect([
-                                        'Are you sure to DELETE this label?',
-                                        $label->children->count() ? 'All sub-labels will be DELETED as well!' : null,
-                                    ])->filter()->join(' ')"
-                                    :params="$label->id"
-                                />
-                            </div>
-                        </div>
-
-                        @if ($maxDepth > 0 && $label->children->count())
-                            <div x-show="show" class="bg-gray-100 m-2 rounded-lg">
-                                @livewire(atom_lw('app.label.children'), [
-                                    'parent' => $label,
-                                    'maxDepth' => $maxDepth,
-                                ], key($label->id.'-'.$label->children->count()))
-                            </div>
-                        @endif
+                        @if ($count) <x-badge :label="$count" color="blue"/> @endif
                     </div>
-                @endforeach
-            </x-form.sortable>
-        @else
-            <x-empty-state
-                :title="'No '.str($this->title)->singular()->headline()"
-                :subtitle="'You do not have any '.str($this->title)->singular()->headline()->lower()"
-            />
-        @endif
-    </x-box>
-</div>
+
+                    @if ($count)
+                        <div class="shrink-0">
+                            <x-icon x-show="show" name="chevron-down" size="12"/>
+                            <x-icon x-show="!show" name="chevron-right" size="12"/>
+                        </div>
+                    @endif
+                </div>
+
+                @if ($count)
+                    <div 
+                        x-show="show" 
+                        x-on:click.stop 
+                        x-on:sorted.stop
+                        class="border rounded"
+                    >
+                        @livewire(atom_lw('app.label.listing'), [
+                            'labels' => $label->children->sortBy('seq'),
+                            'isChildren' => true,
+                        ], key('children-for-'.$label->id))
+                    </div>
+                @endif
+            </div>
+        </x-sortable.item>
+    @endforeach
+</x-sortable>

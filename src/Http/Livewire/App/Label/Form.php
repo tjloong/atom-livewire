@@ -14,9 +14,9 @@ class Form extends Component
     public $label;
     public $inputs;
 
-    /**
-     * Validation
-     */
+    protected $listeners = ['open'];
+
+    // validation
     protected function validation(): array
     {
         return array_merge(
@@ -32,43 +32,44 @@ class Form extends Component
         );
     }
 
-    /**
-     * Mount
-     */
-    public function mount()
-    {
-        $this->fill([
-            'inputs.name' => (array)$this->label->name,
-        ]);
-    }
-
-    /**
-     * Get locales property
-     */
+    // get locales property
     public function getLocalesProperty(): mixed
     {
         return collect(config('atom.locales'));
     }
 
-    /**
-     * Get parent trails property
-     */
-    public function getParentTrailsProperty(): array
+    // open
+    public function open($data = null): void
     {
-        $trails = collect();
-        $parent = $this->label->parent;
+        $id = is_numeric($data) ? $data : data_get($data, 'id');
 
-        while ($parent) {
-            $trails->push($parent->locale('name'));
-            $parent = $parent->parent;
-        }
+        $this->label = $id 
+            ? model('label')->readable()->findOrFail($id)
+            : model('label')->fill($data);
 
-        return $trails->reverse()->values()->all();
+        $this->fill([
+            'inputs.name' => (array) $this->label->name,
+        ]);
+    
+        $this->dispatchBrowserEvent('label-form-open');
     }
 
-    /**
-     * Submit
-     */
+    // close
+    public function close(): void
+    {
+        $this->emit('refresh');
+        $this->reset('label', 'inputs');
+        $this->dispatchBrowserEvent('label-form-close');
+    }
+
+    // delete
+    public function delete($id): void
+    {
+        $this->label->delete();
+        $this->close();
+    }
+
+    // submit
     public function submit(): void
     {
         $this->validateForm();
@@ -78,12 +79,10 @@ class Form extends Component
             'slug' => null,
         ])->save();
 
-        $this->emit('submitted');
+        $this->close();
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.label.form');

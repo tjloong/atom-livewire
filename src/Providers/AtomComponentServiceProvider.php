@@ -50,6 +50,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'flip-countdown',
             'payment-gateway',
             'placeholder-bar',
+
+            'sortable.index',
+            'sortable.item',
             
             'alert.index',
             'alert.errors',

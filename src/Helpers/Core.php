@@ -618,6 +618,44 @@ function format_date($date, $format = 'date', $tz = null): mixed
     else if ($format) return $date->format($format);
 }
 
+// format class path
+function format_class_path($path, $prefix = ''): mixed
+{
+    $path = str($path);
+    $isPhp = $path->endsWith('.php');
+    
+    if ($isPhp) $path = $path->replaceLast('.php', '');
+
+    $path = $path
+        ->replace('.', '/')
+        ->split('/\//')
+        ->map(fn($s) => str()->studly($s))
+        ->join('/');
+
+    $formatted = $prefix.$path;
+
+    return $isPhp ? str($formatted)->finish('.php') : $formatted;
+}
+
+// format view path
+function format_view_path($path, $prefix = ''): mixed
+{
+    $path = str($path);
+    $isPhp = $path->endsWith('.php');
+    
+    if ($isPhp) $path = $path->replaceLast('.php', '');
+
+    $path = $path
+        ->replace('.', '/')
+        ->split('/\//')
+        ->map(fn($s) => str()->kebab($s))
+        ->join('/');
+
+    $formatted = $prefix.$path;
+
+    return $isPhp ? str($formatted)->finish('.php') : $formatted;
+}
+
 /**
  * Parse date range from string
  *

@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasLocale;
@@ -16,32 +17,44 @@ class Label extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'name' => 'object',
+        'name' => 'array',
         'seq' => 'integer',
-        'data' => 'object',
+        'data' => 'array',
     ];
 
     protected $slugify = ['name.en' => 'slug'];
 
-    /**
-     * Get children for label
-     */
+    // get children for label
     public function children()
     {
         return $this->hasMany(model('label'), 'parent_id');
     }
 
-    /**
-     * Get parent for label
-     */
+    // get parent for label
     public function parent()
     {
         return $this->belongsTo(model('label'), 'parent_id');
     }
 
-    /**
-     * Scope for fussy search
-     */
+    // attribute for parents
+    protected function parents(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $parents = collect();
+                $parent = $this->parent;
+
+                while ($parent) {
+                    $parents->push($parent);
+                    $parent = $parent->parent;
+                }
+
+                return $parents->reverse()->values();
+            }
+        );
+    }
+
+    // scope for fussy search
     public function scopeSearch($query, $search)
     {
         return $query->where(fn($q) => $q

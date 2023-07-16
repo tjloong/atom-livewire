@@ -92,11 +92,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.tax.form' => 'App\Tax\Form',
 
             // label
-            'atom.app.label.listing' => 'App\Label\Listing',
-            'atom.app.label.create' => 'App\Label\Create',
-            'atom.app.label.update' => 'App\Label\Update',
+            'atom.app.label' => 'App\Label\Index',
             'atom.app.label.form' => 'App\Label\Form',
-            'atom.app.label.children' => 'App\Label\Children',
+            'atom.app.label.listing' => 'App\Label\Listing',
 
             // blog
             'atom.app.blog.listing' => 'App\Blog\Listing',

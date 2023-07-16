@@ -28,7 +28,7 @@
                 <x-icon :name="$icon" :size="$size === 'sm' ? '11' : '14'"/> {{ __($label) }}
             </span>
         @else
-            {{ __($label) }}
+            {!! __($label) !!}
         @endif
 
         @if ($small) <br><span class="text-gray-500 font-medium {{ $size === 'sm' ? 'text-xs' : 'text-sm' }}">{{ __($small) }}</span> @endif

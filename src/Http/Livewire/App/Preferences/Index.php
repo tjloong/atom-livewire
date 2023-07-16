@@ -54,7 +54,7 @@ class Index extends Component
         return [
             ['group' => 'General', 'tabs' => [
                 ['slug' => 'blog-category', 'label' => 'Blog Categories', 'livewire' => [
-                    'name' => 'app.label.listing',
+                    'name' => 'app.label',
                     'data' => ['type' => 'blog-category'],
                 ]],
             ]],
