@@ -32,10 +32,11 @@
                         x-on:sorted.stop
                         class="border rounded"
                     >
-                        @livewire(atom_lw('app.label.listing'), [
-                            'labels' => $label->children->sortBy('seq'),
-                            'isChildren' => true,
-                        ], key('children-for-'.$label->id))
+                        @livewire(
+                            atom_lw('app.label.listing'), 
+                            ['labels' => $label->children->sortBy('seq')],
+                            key('children-for-'.$label->id),
+                        )
                     </div>
                 @endif
             </div>

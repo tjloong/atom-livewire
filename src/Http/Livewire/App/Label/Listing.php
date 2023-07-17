@@ -10,7 +10,6 @@ class Listing extends Component
     use WithPopupNotify;
 
     public $labels;
-    public $isChildren;
 
     // sort
     public function sort($data): void
