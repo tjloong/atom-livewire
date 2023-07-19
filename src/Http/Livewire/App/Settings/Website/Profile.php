@@ -16,11 +16,11 @@ class Profile extends Component
      */
     public function mount()
     {
-        model('site_setting')->group('profile')->get()->each(function($setting) {
+        model('setting')->group('profile')->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
 
-        model('site_setting')->group('whatsapp')->get()->each(function($setting) {
+        model('setting')->group('whatsapp')->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->name === 'whatsapp_bubble'
                 ? (bool)$setting->value
                 : $setting->value;

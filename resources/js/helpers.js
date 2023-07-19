@@ -108,6 +108,22 @@ window.currency = (val, symbol = null, round = true) => {
     else return num.toLocaleString('en-US', config)
 }
 
+// screen size
+window.screensize = (size = null) => {
+    const w = window.innerWidth
+    let value
+
+    if (w <= 640) value = 'sm'
+    if (w > 640 && w <= 768) value = 'md'
+    if (w > 768 && w <= 1024) value = 'lg'
+    if (w > 1024 && w <= 1280) value = 'xl'
+    if (w > 1280 && w <= 1536) value = '2xl'
+    if (w > 1536 && w <= 2000) value = '3xl'
+
+    if (size) return [size].flat().includes(value)
+    else return value
+}
+
 // device type
 window.deviceType = () => {
     const ua = navigator.userAgent

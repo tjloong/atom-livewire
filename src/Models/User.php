@@ -63,7 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // get role for user
     public function role(): mixed
     {
-        if (!enabled_module('roles')) return null;
+        if (!has_table('roles')) return null;
 
         return $this->belongsTo(model('role'));
     }
@@ -71,7 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // get permissions for user
     public function permissions(): mixed
     {
-        if (!enabled_module('permissions')) return null;
+        if (!has_table('permissions')) return null;
 
         return $this->hasMany(model('permission'));
     }
@@ -79,7 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // get teams for user
     public function teams(): mixed
     {
-        if (!enabled_module('teams')) return null;
+        if (!has_table('teams')) return null;
 
         return $this->belongsToMany(model('team'), 'team_users');
     }
@@ -87,7 +87,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // get subscriptions for user
     public function subscriptions(): mixed
     {
-        if (!enabled_module('plans')) return null;
+        if (!has_table('plans')) return null;
 
         return $this->hasMany(model('plan_subscription'));
     }
@@ -95,7 +95,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // get tenants for user
     public function tenants(): mixed
     {
-        if (!enabled_module('tenants')) return null;
+        if (!has_table('tenants')) return null;
 
         return $this->belongsToMany(model('tenant'), 'user_tenants')->withPivot([
             'visibility',
@@ -123,7 +123,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return Attribute::make(
             get: function () {
-                if (!enabled_module('tenants')) return null;
+                if (!has_table('tenants')) return null;
                 if (!tenant()) return null;
 
                 return tenant()->users->firstWhere('id', $this->id)->pivot->visibility;
@@ -145,7 +145,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeIsRole($query, $name): void
     {
         $query->when(
-            enabled_module('roles'), 
+            has_table('roles'), 
             fn($q) => $q->whereHas('role', fn($q) => $q->where('roles.slug', $name)) 
         );
     }
@@ -154,7 +154,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeInTeam($query, $id): void
     {
         $query->when(
-            enabled_module('teams'),
+            has_table('teams'),
             fn($q) => $q->whereHas('teams', fn($q) => $q->whereIn('teams.id', (array)$id))
         );
     }
@@ -171,7 +171,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $query->where(function($q) use ($tier) {
             foreach ((array)$tier as $val) {
                 if ($val === 'root') $q->orWhere('is_root', true);
-                elseif ($val === 'tenant' && enabled_module('tenants')) $q->orWhere(fn($q) => $q->has('tenants')->whereRaw('(is_root = false or is_root is null)'));
+                elseif ($val === 'tenant' && has_table('tenants')) $q->orWhere(fn($q) => $q->has('tenants')->whereRaw('(is_root = false or is_root is null)'));
                 elseif ($val === 'system') $q->orWhere(fn($q) => $q->whereNull('signup_at')->whereRaw('(is_root = false or is_root is null)'));
                 elseif ($val === 'signup') $q->orWhere(fn($q) => $q->whereNotNull('signup_at')->whereRaw('(is_root = false or is_root is null)'));
             }
@@ -189,7 +189,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $valid = collect([
             'root' => $this->is_root === true,
-            'tenant' => enabled_module('tenants') && $this->tenants->count() > 0,
+            'tenant' => has_table('tenants') && $this->tenants->count() > 0,
             'system' => !$this->is_root && empty($this->signup_at),
             'signup' => !$this->is_root && !empty($this->signup_at),
         ])->filter(fn($val, $key) => in_array($key, (array)$tier))->search(true);
@@ -200,7 +200,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // check user is role
     public function isRole($names): bool
     {
-        if (!enabled_module('roles')) return true;
+        if (!has_table('roles')) return true;
         if (!$this->role) return false;
 
         return collect((array)$names)->filter(function($name) {
@@ -216,7 +216,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // check user is tenant owner
     public function isTenantOwner($tenant = null)
     {
-        if (!enabled_module('tenants')) return false;
+        if (!has_table('tenants')) return false;
         
         if ($tenant = $tenant ?? tenant()) return !empty($tenant->owners->where('id', $this->id)->first());
 

@@ -34,7 +34,7 @@ class Update extends Component
      */
     public function getPermissionsProperty(): mixed
     {
-        if (!enabled_module('permissions')) return null;
+        if (!has_table('permissions')) return null;
 
         return model('permission')->getPermissionList();
     }

@@ -66,7 +66,7 @@ class Index extends Component
             ];
         }
         else if ($useSiteSettings) {
-            return model('site_setting')->getContactInfo();
+            return model('setting')->getContactInfo();
         }
 
         return (object)[];
@@ -78,7 +78,7 @@ class Index extends Component
     public function getLegals()
     {
         if (config('atom.static_site')) return null;
-        if (!enabled_module('pages')) return null;
+        if (!has_table('pages')) return null;
 
         return model('page')->whereIn('name', [
             'Privacy',

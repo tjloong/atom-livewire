@@ -63,7 +63,7 @@ class Pre extends Component
             ];
         }
         else if ($useSiteSettings) {
-            return model('site_setting')->getContactInfo();
+            return model('setting')->getContactInfo();
         }
 
         return (object)[];

@@ -47,12 +47,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // onboarding
             'atom.app.onboarding' => 'App\Onboarding',
 
-            // user
-            'atom.app.user.listing' => 'App\User\Listing',
-            'atom.app.user.form' => 'App\User\Form',
-            // 'atom.app.user.permission' => 'App\User\Permission',
-            // 'atom.app.user.visibility' => 'App\User\Visibility',
-
             // tenant
             'atom.app.tenant.create' => 'App\Tenant\Create',
             'atom.app.tenant.form' => 'App\Tenant\Form',
@@ -68,22 +62,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.signup.listing' => 'App\Signup\Listing',
             'atom.app.signup.update' => 'App\Signup\Update',
             'atom.app.signup.info' => 'App\Signup\Info',
-
-            // role
-            'atom.app.role.listing' => 'App\Role\Listing',
-            'atom.app.role.create' => 'App\Role\Create',
-            'atom.app.role.update' => 'App\Role\Update',
-            'atom.app.role.form' => 'App\Role\Form',
-
-            // team
-            'atom.app.team.listing' => 'App\Team\Listing',
-            'atom.app.team.create' => 'App\Team\Create',
-            'atom.app.team.update' => 'App\Team\Update',
-            'atom.app.team.form' => 'App\Team\Form',
-
-            // file
-            'atom.app.file.listing' => 'App\File\Listing',
-            'atom.app.file.form-modal' => 'App\File\FormModal',
 
             // tax
             'atom.app.tax.listing' => 'App\Tax\Listing',
@@ -173,6 +151,26 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.settings.index' => 'App\Settings\Index',
             'atom.app.settings.login' => 'App\Settings\Login',
             'atom.app.settings.password' => 'App\Settings\Password',
+
+            // settings > user
+            'atom.app.settings.user' => 'App\Settings\User\Index',
+            'atom.app.settings.user.form' => 'App\Settings\User\Form',
+            // 'atom.app.settings.user.permission' => 'App\Settings\User\Permission',
+            // 'atom.app.settings.user.visibility' => 'App\Settings\User\Visibility',
+
+            // settings > role
+            'atom.app.settings.role' => 'App\Settings\Role\Index',
+            'atom.app.settings.role.form' => 'App\Settings\Role\Form',
+
+            // settings > team
+            'atom.app.settings.team' => 'App\Settings\Team\Index',
+            'atom.app.settings.team.form' => 'App\Settings\Team\Form',
+
+            // settings > file
+            'atom.app.settings.file' => 'App\Settings\File\Index',
+            'atom.app.settings.file.form' => 'App\Settings\File\Form',
+
+            // settings > website
             'atom.app.settings.website.profile' => 'App\Settings\Website\Profile',
             'atom.app.settings.website.seo' => 'App\Settings\Website\Seo',
             'atom.app.settings.website.analytics' => 'App\Settings\Website\Analytics',
@@ -180,6 +178,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.settings.website.announcement' => 'App\Settings\Website\Announcement',
             'atom.app.settings.website.announcement-modal' => 'App\Settings\Website\AnnouncementModal',
             'atom.app.settings.website.popup' => 'App\Settings\Website\Popup',
+
+            // settings > integration
             'atom.app.settings.integration.email' => 'App\Settings\Integration\Email',
             'atom.app.settings.integration.storage' => 'App\Settings\Integration\Storage',
             'atom.app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',

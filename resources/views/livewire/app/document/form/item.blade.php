@@ -1,15 +1,15 @@
 <div class="flex flex-col gap-4 md:flex-row">
     <div class="grow flex flex-col gap-4">
-        @if (enabled_module('products') && ($productId = data_get($item, 'product_id')))
+        @if ($productId = data_get($item, 'product_id'))
             <div class="flex items-center justify-between gap-3">
                 <x-link :href="route('app.product.update', [$productId])" :label="data_get($item, 'name')" target="_blank" icon="open" class="grow"/>
                 <x-close wire:click="clearProduct"/>
             </div>
         @else
             <x-form.text wire:model.debounce.300ms="item.name" :placeholder="$columns->get('item_name')" :label="false">
-                @module('products')
+                @if (has_table('products'))
                     <x-slot:button wire:click="open" label="Product" icon="cube"></x-slot:button>
-                @endmodule
+                @endif 
             </x-form.text>
         @endif
 
@@ -39,7 +39,7 @@
             @endif
         </div>
 
-        @if (enabled_module('taxes') && $columns->has('tax'))
+        @if ($columns->has('tax'))
             <div class="bg-slate-100 rounded-lg flex flex-col divide-y">
                 @if (count($this->taxes) || data_get($item, 'taxes'))
                     <div class="p-4">

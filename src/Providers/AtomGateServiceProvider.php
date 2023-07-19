@@ -41,7 +41,7 @@ class AtomGateServiceProvider extends ServiceProvider
      */
     public function checkRoles($user, $action): bool
     {
-        if (!enabled_module('roles')) return true;
+        if (!has_table('roles')) return true;
 
         $roles = $this->actionToParams(str($action)->replaceFirst('role:', ''));
 
@@ -63,7 +63,7 @@ class AtomGateServiceProvider extends ServiceProvider
      */
     public function checkPlans($user, $action): bool
     {
-        if (!enabled_module('plans')) return true;
+        if (!has_table('plans')) return true;
 
         $isSessionUser = $user->id === user('id');
         $subscribedPlans = $isSessionUser ? session('can.plans') : [];
@@ -103,7 +103,7 @@ class AtomGateServiceProvider extends ServiceProvider
      */
     public function checkPermissions($user, $action): bool
     {
-        if (!enabled_module('permissions')) return true;
+        if (!has_table('permissions')) return true;
 
         $isSessionUser = $user->id === user('id');
         $action = str($action)->replace('-', '_')->toString();

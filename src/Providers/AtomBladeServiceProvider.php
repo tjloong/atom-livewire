@@ -32,10 +32,6 @@ class AtomBladeServiceProvider extends ServiceProvider
             return !collect((array)$value)->contains(fn($name) => current_route($name));
         });
 
-        Blade::if('module', function($value) {
-            return enabled_module($value);
-        });
-
         Blade::if('tier', function($value) {
             return tier($value);
         });

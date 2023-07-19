@@ -10,14 +10,29 @@ use RecursiveIteratorIterator;
 class PublishCommand extends Command
 {
     protected $signature = 'atom:publish
-                            {component? : Component to be published.}
+                            {module? : Component to be published.}
                             {--force : Force overwrite if file exists.}
-                            {--list : List all available components.}
                             {--routes : Publish routes only.}
                             {--models : Publish models only.}
-                            {--static : Publish static site.}';
+                            {--config : Show config for module.}';
 
-    protected $description = 'Publish Atom\'s livewire components.';
+    protected $description = 'Publish Atom\'s modules.';
+
+    protected $modules = [
+        'base' => [
+            'models' => ['User'],
+            'livewire' => [],
+            'routes' => [
+                'auth/socialite.php',
+                'auth/login.php',
+                'auth/register.php',
+                'auth/verification.php',
+                'app/dashboard.php',
+                'app/settings.php',
+                'web/home.php',
+            ],
+        ],
+    ];
 
     /**
      * Create a new command instance.
@@ -32,49 +47,112 @@ class PublishCommand extends Command
      */
     public function handle(): void
     {
-        if ($component = $this->argument('component')) {
-            $this->newLine();
+        if ($module = $this->argument('module')) {
+            $config = $this->getModuleConfig($module);
 
-            if ($this->option('routes')) $this->publishRoutes($component);
-            if ($this->option('models')) $this->publishModels($component);
+            if ($this->option('config')) dump($config);
+            else if ($config) {
+                $confirm = $this->option('force') || $this->confirm(
+                    $module === 'base'
+                        ? 'This will publish Atom base. You should only do this once. Continue?'
+                        : 'Publish '.$module.', continue?'
+                    , true
+                );
 
-            if (!$this->option('routes') && !$this->option('models')) {
-                $this->publishLivewire($component);
-                $this->publishModels($component);
-                $this->publishEnums($component);
-                $this->publishJobs($component);
-                $this->publishNotifications($component);
-                $this->publishRoutes($component);
+                if (!$confirm) return;
+
+                if ($this->option('routes')) $this->publishRoutes($config);
+                if ($this->option('models')) $this->publishModels($config);
+
+                if (!$this->option('routes') && !$this->option('models')) {
+                    // $this->publishLivewire($config);
+                    $this->publishModels($config);
+                    // $this->publishEnums($config);
+                    // $this->publishJobs($config);
+                    // $this->publishNotifications($config);
+                    $this->publishRoutes($config);
+                }
+
+                if ($module === 'base') {
+                    // publish base stubs
+                    $this->call('vendor:publish', ['--tag' => 'atom-base', '--force' => true]);
+                }
             }
-        }
-        elseif ($this->option('list')) {
-            foreach ($this->getComponents() as $val) {
-                $this->line($val);
-            }
+            else $this->error('Unable to find module '.$module);
         }
         else {
-            $components = collect($this->getComponents())
-                ->filter(fn($val) => str($val)->split('/\./')->count() === 2)
-                ->map(fn($val) => str($val)->is('app.*') ? $val : str($val)->split('/\./')->first())
-                ->unique()
-                ->values()
-                ->toArray();
-
-            if ($component = $this->choice('Please choose a component', $components)) {
+            if ($module = $this->choice('Please choose a module', array_keys($this->modules))) {
                 $this->call('atom:publish', [
-                    'component' => $component,
+                    'module' => $module,
                     '--force' => $this->option('force'),
-                    '--route' => $this->option('route'),
-                    '--static' => $this->option('static'),
+                    '--routes' => $this->option('routes'),
+                    '--models' => $this->option('models'),
                 ]);
             }
         }
     }
 
-    // publish livewire
-    public function publishLivewire($component): void
+    // get module config
+    public function getModuleConfig($module): mixed
     {
-        $path = $this->getConfig($component, 'livewire', $component);
+        if (!in_array($module, array_keys($this->modules))) return null;
+
+        $config = $this->modules[$module];
+
+        return [
+            'module' => $module,
+            'models' => (array) data_get($config, 'models', str()->studly(str($module)->split('/\./')->last())),
+            'routes' => (array) data_get($config, 'routes', str(format_view_path($module))->finish('.php')->toString()),
+            'livewire' => (array) data_get($config, 'livewire', format_class_path($module)),
+            'enums' => (array) data_get($config, 'enums', []),
+            'jobs' => (array) data_get($config, 'jobs', []),
+            'notifications' => (array) data_get($config, 'notifications', []),
+        ];
+    }
+
+    // publish routes
+    public function publishRoutes($config): void
+    {
+        foreach (data_get($config, 'routes') as $route) {
+            $path = atom_path(str($route)->start('routes/')->toString());
+
+            if (!file_exists($path)) $this->error('Unable to find route at '.$path);
+            else {
+                $source = file_get_contents($path);
+                $source = str($source)->replace("<?php\n", "")->trim();
+                $topath = base_path('routes/web.php');
+                $target = file_get_contents($topath);
+                $content = str($target);
+    
+                if ($content->contains($source)) $this->warn("Routes for $route already configured in routes/web.php.");
+                else {
+                    $content = $content->append("\n\n".$source)->toString();
+                    file_put_contents($topath, $content);
+                    $this->info("Appended $route to routes/web.php.");
+                }
+            }
+        }
+        
+        $this->newLine();
+    }
+
+    // publish models
+    public function publishModels($config): void
+    {
+        $models = collect(data_get($config, 'models'))
+            ->map(fn($s) => str($s)->finish('.php'))
+            ->map(fn($s) => ['src/Models/'.$s, 'app/Models/'.$s]);
+
+        if ($models->count()) {
+            $this->copy($models);
+            $this->newLine();
+        }
+    }
+
+    // publish livewire
+    public function publishLivewire($module): void
+    {
+        $path = $this->getConfig($module, 'livewire', $module);
 
         $this->copy([
             // for classes
@@ -92,23 +170,10 @@ class PublishCommand extends Command
         $this->newLine();
     }
 
-    // publish models
-    public function publishModels($component): void
-    {
-        $models = collect($this->getConfig($component, 'models'))
-            ->map(fn($s) => str($s)->finish('.php'))
-            ->map(fn($s) => ['src/Models/'.$s, 'app/Models/'.$s]);
-
-        if ($models->count()) {
-            $this->copy($models);
-            $this->newLine();
-        }
-    }
-
     // publish enums
-    public function publishEnums($component): void
+    public function publishEnums($module): void
     {
-        $enums = collect($this->getConfig($component, 'enums'))
+        $enums = collect($this->getConfig($module, 'enums'))
             ->map(fn($s) => ['src/Enums/'.$s, 'app/Enums/'.$s]);
 
         if ($enums->count()) {
@@ -118,9 +183,9 @@ class PublishCommand extends Command
     }
 
     // publish jobs
-    public function publishJobs($component): void
+    public function publishJobs($module): void
     {
-        $jobs = collect($this->getConfig($component, 'jobs'))
+        $jobs = collect($this->getConfig($module, 'jobs'))
             ->map(fn($s) => ['src/Jobs/'.$s, 'app/Jobs/'.$s]);
 
         if ($jobs->count()) {
@@ -130,9 +195,9 @@ class PublishCommand extends Command
     }
 
     // publish notifications
-    public function publishNotifications($component): void
+    public function publishNotifications($module): void
     {
-        $notifications = collect($this->getConfig($component, 'notifications'))
+        $notifications = collect($this->getConfig($module, 'notifications'))
             ->map(fn($s) => ['src/Notifications/'.$s, 'app/Notifications/'.$s]);
 
         if ($notifications->count()) {
@@ -141,45 +206,8 @@ class PublishCommand extends Command
         }
     }
 
-    // publish routes
-    public function publishRoutes($component): void
-    {
-        $path = str(
-            format_view_path($this->getConfig($component, 'routes', $component), 'routes/')
-        )->finish('.php')->toString();
-
-        $path = atom_path($path);
-
-        if (!file_exists($path)) $this->error('No route configured for component '.$component);
-        else {
-            $source = file_get_contents($path);
-            $source = str($source)->replace("<?php\n", "")->trim()->prepend("// $component (from atom)\n");
-            $topath = base_path('routes/web.php');
-            $target = file_get_contents($topath);
-            $content = str($target);
-
-            if ($content->contains($source)) $this->warn("Routes for $component already configured in routes/web.php.");
-            else {
-                $content = $content->append("\n\n".$source)->toString();
-                file_put_contents($topath, $content);
-                $this->info("Appended $component routes to routes/web.php.");
-            }
-        }
-    }
-
-    // get config
-    public function getConfig($component, $key = null, $default = null): mixed
-    {
-        $json = json_decode(file_get_contents(atom_path('modules.config.json')), true);
-        $config = $json[$component] ?? null;
-
-        if ($key) return data_get($config, $key, $default);
-
-        return $config;
-    }
-
-    // get components
-    public function getComponents(): array
+    // get livewire components
+    public function getLivewireComponents(): array
     {
         $path = __DIR__.'/../Http/Livewire';
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));

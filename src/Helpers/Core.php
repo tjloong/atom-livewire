@@ -3,9 +3,16 @@
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
+
+// check command exists
+function command_exists($name)
+{
+    return in_array($name, array_keys(Artisan::all()));
+}
 
 // enum
 function enum($name, $value = null)
@@ -208,7 +215,7 @@ function breadcrumbs()
  */
 function tenant($attr = null, $default = null, $tenant = null)
 {
-    if (!enabled_module('tenants')) return;
+    if (!has_table('tenants')) return;
 
     return model('tenant')->retrieve($attr, $default, $tenant);
 }
@@ -220,7 +227,7 @@ function settings($attr = null, $default = null)
 {
     if (config('atom.static_site')) return $default;
 
-    $settings = model('site_setting')->generate();
+    $settings = model('setting')->generate();
 
     if (!$attr) {
         return $settings;
@@ -230,7 +237,7 @@ function settings($attr = null, $default = null)
     }
     else if (is_array($attr)) {
         foreach ($attr as $key => $val) {
-            $setting = model('site_setting')->where('name', $key)->first();
+            $setting = model('setting')->where('name', $key)->first();
             $setting->fill(['value' => $val])->save();
         }
     }
@@ -354,19 +361,6 @@ function model($name)
     ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
 
     return app($class);
-}
-
-/**
- * Check module is enabled
- * 
- * @return boolean
- */
-function enabled_module($module)
-{
-    if (config('atom.static_site')) return false;
-    if (app()->runningInConsole()) return true;
-
-    return collect($module)->filter(fn($val) => in_array($val, settings('modules')))->count() > 0;
 }
 
 /**

@@ -38,7 +38,7 @@ class Item extends Component
      */
     public function getProductProperty(): mixed
     {
-        if (!enabled_module('products')) return null;
+        if (!has_table('products')) return null;
         if (!data_get($this->item, 'product_id')) return null;
 
         return model('product')->find(data_get($this->item, 'product_id'));
@@ -67,7 +67,7 @@ class Item extends Component
      */
     public function getTaxesProperty(): mixed
     {
-        if (!enabled_module('taxes')) return null;
+        if (!has_table('taxes')) return null;
 
         return model('tax')->readable()->status('active')->get();
     }

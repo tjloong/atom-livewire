@@ -1,5 +1,4 @@
 <?php
 
-define_route('settings/{tab?}', 'App\Settings\Index')
-    ->name('settings')
-    ->where('tab', '.*');
+// app/setting
+define_route('app/settings/{tab?}', 'App\Settings')->middleware('auth')->where('tab', '.*')->name('app.settings');

@@ -11,38 +11,26 @@ class EnquiryNotification extends Notification
 {
     use Queueable;
 
-    public $enquiry;
-
     /**
      * Create a new notification instance.
-     *
-     * @param Enquiry $enquiry
-     * @param array $cc
-     * @return void
      */
-    public function __construct($enquiry)
+    public function __construct(public $enquiry)
     {
-        $this->enquiry = $enquiry;
+        //
     }
 
     /**
      * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }
 
     /**
      * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): \Illuminate\Notifications\Messages\MailMessage
     {
         return (new MailMessage)
             ->subject('['.config('app.name').'] New enquiry from '.data_get($this->enquiry, 'name'))
@@ -58,11 +46,8 @@ class EnquiryNotification extends Notification
 
     /**
      * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         return [
             //

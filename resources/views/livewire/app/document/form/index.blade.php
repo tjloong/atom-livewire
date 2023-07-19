@@ -131,9 +131,9 @@
         </x-form.group>
     </x-form>
 
-    @module('products')
+    @if (has_table('products'))
         @livewire(atom_lw('app.document.form.product-modal'), [
             'currency' => $document->currency,
         ], key('product-modal-'.$fingerprint))
-    @endmodule
+    @endif 
 </div>

@@ -13,9 +13,7 @@ class Email extends Component
     
     public $settings;
 
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -31,9 +29,7 @@ class Email extends Component
         ];
     }
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount(): void
     {
         foreach ([
@@ -52,21 +48,17 @@ class Email extends Component
         }
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): void
     {
         $this->validateForm();
 
         settings($this->settings);
         
-        $this->popup('Email Integration Updated.');
+        $this->popup('Email Configurations Updated.');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.settings.integration.email');

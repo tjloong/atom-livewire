@@ -4,7 +4,7 @@
             <div class="flex flex-col py-0.5 gap-1 text-gray-500">
                 {{ __($attributes->get('label', 'I have read and agreed to the website\'s Terms of Use and Privacy Policy.')) }}
         
-                @module('pages')
+                @if (has_table('pages'))
                     @if (
                         $links = model('page')->whereIn('name', ['Terms', 'Privacy'])->get()
                             ->mapWithKeys(fn($page) => [$page->title => '/'.$page->slug])
@@ -19,7 +19,7 @@
                             @endforeach
                         </div>
                     @endif
-                @endmodule
+                @endif 
             </div>
         </x-form.checkbox>
     </div>

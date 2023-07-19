@@ -37,6 +37,7 @@
             "providers": [
                 "Jiannius\\Atom\\Providers\\AtomServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomBladeServiceProvider",
+                "Jiannius\\Atom\\Providers\\AtomCommandServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomComponentServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomGateServiceProvider",
                 "Jiannius\\Atom\\Providers\\AtomEmailServiceProvider",

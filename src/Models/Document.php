@@ -242,7 +242,7 @@ class Document extends Model
      */
     public function getTaxes(): mixed
     {
-        if (!enabled_module('taxes')) return null;
+        if (!has_table('taxes')) return null;
 
         $items = $this->splittedFrom
             ? $this->splittedFrom->items
@@ -300,7 +300,7 @@ class Document extends Model
      */
     public function setPrefixAndPostfix(): void
     {
-        $pattern = enabled_module('tenants') 
+        $pattern = has_table('tenants') 
             ? tenant('settings.'.$this->type.'.prefix')
             : data_get($this->numberPrefix, $this->type);
 
@@ -339,7 +339,7 @@ class Document extends Model
     public function sumTotal(): void
     {
         $subtotal = $this->items()->sum('subtotal');
-        $taxTotal = enabled_module('taxes') ? $this->getTaxes()->sum('amount') : 0;
+        $taxTotal = has_table('taxes') ? $this->getTaxes()->sum('amount') : 0;
         $paidTotal = $this->payments()->sum('amount');
 
         $this->fill([

@@ -41,7 +41,7 @@ class Ozopay extends Component
      */
     public function mount()
     {
-        model('site_setting')->group('ozopay')->get()->each(function($setting) {
+        model('setting')->group('ozopay')->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
     }

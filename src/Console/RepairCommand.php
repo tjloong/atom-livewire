@@ -11,8 +11,6 @@ class RepairCommand extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -21,12 +19,11 @@ class RepairCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
-        model('site_setting')->repair();
+        model('setting')->repair();
+
         $this->call('atom:refresh');
     }
 }

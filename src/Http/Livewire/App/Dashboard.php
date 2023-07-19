@@ -56,6 +56,8 @@ class Dashboard extends Component
     // get teams property
     public function getTeamsProperty()
     {
+        if (!has_table('teams')) return collect();
+        
         return model('team')
             ->readable()
             ->orderBy('name')
@@ -67,25 +69,25 @@ class Dashboard extends Component
     {
         return [
             collect([
-                enabled_module('blogs') ? [
+                has_table('blogs') ? [
                     'title' => 'Total Articles',
                     'type' => 'statbox',
                     'count' => model('blog')->whereBetween('created_at', data_get($this->filters, 'date'))->count(),
                 ] : null,
 
-                enabled_module('blogs') ? [
+                has_table('blogs') ? [
                     'title' => 'Total Published',
                     'type' => 'statbox',
                     'count' => model('blog')->whereBetween('published_at', data_get($this->filters, 'date'))->count(),
                 ] : null,
 
-                enabled_module('enquiries') ? [
+                has_table('enquiries') ? [
                     'title' => 'Total Enquiries',
                     'type' => 'statbox',
                     'count' => model('enquiry')->whereBetween('created_at', data_get($this->filters, 'date'))->count(),
                 ] : null,
 
-                enabled_module('enquiries') ? [
+                has_table('enquiries') ? [
                     'title' => 'Total Pending Enquiries',
                     'type' => 'statbox',
                     'count' => model('enquiry')->whereBetween('created_at', data_get($this->filters, 'date'))->where('status', 'pending')->count(),

@@ -81,7 +81,7 @@
                                         {{ currency($item->subtotal, null, false) }}
                                     </div>
         
-                                    @if (enabled_module('taxes') && $this->columns->has('tax'))
+                                    @if ($this->columns->has('tax'))
                                         @if ($taxes = $item->taxes)
                                             <div class="flex flex-col">
                                                 @foreach ($taxes as $tax)

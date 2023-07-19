@@ -90,24 +90,18 @@
         }"
         class="w-full h-full flex flex-col"
     >
-        <div class="sticky top-0 z-10">
-            <x-navbar class="shrink-0 bg-white border-b py-1">
+        <div class="shrink-0 bg-white sticky top-0 z-10 py-1 px-4 border-b">
+            <x-navbar>
                 <x-slot:logo>
-                    @isset($logo)
-                        {{ $logo }}
-                    @else
-                        <div class="flex items-center gap-2 md:hidden">
-                            <x-logo class="h-[40px]" small/>
-    
-                            <a 
-                                class="flex-shrink-0 text-gray-800 flex items-center justify-center px-2" 
-                                x-on:click="toggled = !toggled; animate = true"
-                            >
-                                <x-icon x-show="toggled" name="square-caret-left" size="18"/>
-                                <x-icon x-show="!toggled" name="square-caret-right" size="18"/>
-                            </a>
+                    <div class="flex items-center gap-4 md:hidden">
+                        <div x-on:click="toggled = !toggled" class="shrink-0 border rounded-lg p-2 flex cursor-pointer">
+                            <x-icon name="table-list" class="m-auto"/>
                         </div>
-                    @endisset
+
+                        @isset($logo) {{ $logo }}
+                        @else <x-logo class="h-[30px]" small/>
+                        @endisset
+                    </div>
                 </x-slot:logo>
     
                 @isset($links)
@@ -122,12 +116,12 @@
                     @endif
                 </x-slot:auth>
             </x-navbar>
-
-            <div class="bg-white px-4 border-b print:hidden">
-                <x-breadcrumbs class="max-w-screen-xl mx-auto"/>
-            </div>
         </div>
-    
+
+        <div class="shrink-0 bg-white px-4 border-b">
+            <x-breadcrumbs class="max-w-screen-xl mx-auto"/>
+        </div>
+
         @if ($unverified)
             <div x-data class="shrink-0 py-3 px-4 bg-yellow-100 print:hidden">
                 <div class="flex flex-wrap items-center gap-2">
@@ -144,10 +138,8 @@
             </div> 
         @endif
 
-        <div class="grow bg-gray-50">
-            <div class="px-5 pt-5 pb-20 md:px-8 md:pt-8 print:px-0 print:pt-0 print:pb-0 overflow-y-auto h-full">
-                {{ $slot }}
-            </div>
+        <div class="grow bg-slate-50">
+            {{ $slot }}
         </div>
     </main>
 </div>

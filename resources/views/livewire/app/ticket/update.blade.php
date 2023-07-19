@@ -11,15 +11,7 @@
             <div class="flex flex-col divide-y">
                 <x-field label="Ticket Number" :value="$ticket->number"/>
     
-                @if (
-                    (enabled_module('permissions') && user()->can('ticket.status'))
-                    || (enabled_module('roles') && role('admin'))
-                    || (
-                        !enabled_module('roles') 
-                        && !enabled_module('permissions') 
-                        && tier('root')
-                    )
-                )
+                @if (user()->can('ticket.status') || role('admin') || tier('root'))
                     <x-field label="Status">
                         <div class="w-40 ml-auto">
                             <x-form.select :label="false" wire:model="ticket.status"

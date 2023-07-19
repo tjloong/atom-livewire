@@ -11,7 +11,7 @@ class Home extends Component
      */
     public function getPlansProperty()
     {
-        if (!enabled_module('plans')) return;
+        if (!has_table('plans')) return;
         
         return model('plan')->where('is_active', true)->get();
     }

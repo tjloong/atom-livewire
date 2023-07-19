@@ -1,24 +1,28 @@
-@props(['model' => $attributes->wire('model')->value()])
+@props([
+    'model' => $attributes->wire('model')->value(),
+])
 
-<div
-    x-data="{
+<div 
+    x-data="{ 
         show: false,
-        @if ($model) value: @entangle($model), 
+        label: null,
+        @if ($model) value: @entangle($model),
         @else value: @js($attributes->get('value')),
         @endif
     }"
-    x-bind:class="show && 'fixed inset-0 z-20 md:static'"
+    x-on:input="label = $event.detail.label"
+    class="sidenav flex flex-col gap-4"
 >
-    <div x-show="show" class="absolute inset-0 bg-black opacity-50 md:hidden"></div>
-    <div
-        x-on:click="show = false"
-        x-bind:class="show && 'absolute inset-0 px-6 pt-6 pb-16 md:static md:p-0'"
-    >
-        <div
-            x-on:click.stop
-            x-bind:class="show && 'bg-white rounded-md shadow max-w-sm mx-auto p-4 h-[500px] overflow-auto md:bg-transparent md:shadow-none md:max-w-none md:p-0 md:h-auto md:rounded-none'"
-        >
-            {{ $slot }}
-        </div>
+    <div x-on:click="show = !show" class="flex items-center gap-3 cursor-pointer md:cursor-auto">
+        <x-icon name="bars" class="text-gray-500 md:hidden"/>
+
+        @isset($header) {{ $header }}
+        @elseif ($header = $attributes->get('header')) <div class="text-xl font-bold">{{ __($header) }}</div>
+        @else <div x-text="label" class="font-semibold"></div>
+        @endisset
+    </div>
+
+    <div x-show="screensize('sm') ? show : true" x-collapse class="flex flex-col">
+        {{ $slot }}
     </div>
 </div>

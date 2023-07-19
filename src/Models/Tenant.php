@@ -53,7 +53,7 @@ class Tenant extends Model
     // get invitations for tenant
     public function invitations(): mixed
     {
-        if (!enabled_module('invitations')) return null;
+        if (!has_table('invitations')) return null;
 
         return $this->hasMany(model('tenant_invitation'));
     }
@@ -61,7 +61,7 @@ class Tenant extends Model
     // get permissions for tenant
     public function permissions(): mixed
     {
-        if (!enabled_module('permissions')) return null;
+        if (!has_table('permissions')) return null;
 
         return $this->hasMany(model('permission'));
     }

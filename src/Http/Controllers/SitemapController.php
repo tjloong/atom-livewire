@@ -36,13 +36,13 @@ class SitemapController extends Controller
     {
         $sitemap = ['/' => 'monthly'];
 
-        if (enabled_module('blogs')) {
+        if (has_table('blogs')) {
             foreach (model('blog')->status('published')->latest()->take(500)->get() as $blog) {
                 $sitemap['/blog/'.$blog->slug] = 'monthly';
             }
         }
         
-        if (enabled_module('pages')) {
+        if (has_table('pages')) {
             foreach (model('page')->getSlugs() as $slug) {
                 $sitemap['/'.$slug] = 'monthly';
             }

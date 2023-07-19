@@ -42,7 +42,7 @@ class Ipay extends Component
      */
     public function mount()
     {
-        model('site_setting')->group('ipay')->get()->each(function($setting) {
+        model('setting')->group('ipay')->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
     }

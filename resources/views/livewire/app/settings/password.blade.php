@@ -1,4 +1,4 @@
-<div class="w-full">
+<div class="max-w-screen-md">
     <x-page-header title="Change Password"/>
     
     <x-form>

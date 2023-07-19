@@ -40,7 +40,7 @@ class Pending extends Component
                 'email' => $invitation->email,
                 'created_by' => $invitation->createdBy->name,
                 'date' => format_date($invitation->created_at),
-                'tenant' => enabled_module('tenants') && model('invitation')->usesHasTenant
+                'tenant' => model('invitation')->usesHasTenant
                     ? $invitation->tenant->name
                     : null,
             ]);
@@ -54,11 +54,11 @@ class Pending extends Component
         $invitation = model('invitation')->find($id);
         $invitation->fill(['accepted_at' => now()])->save();
 
-        if (enabled_module('tenants') && ($tenant = $invitation->tenant)) {
+        if ($tenant = $invitation->tenant) {
             $tenant->setPreferred(user());
         }
 
-        if (enabled_module('permissions') && ($permissions = data_get($invitation->data, 'permissions'))) {
+        if ($permissions = data_get($invitation->data, 'permissions')) {
             foreach ($permissions as $permission) {
                 model('permission')->create(array_merge(
                     [

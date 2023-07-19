@@ -11,47 +11,35 @@ class SocialLogin extends Component
     use WithForm;
     use WithPopupNotify;
     
-    public $platform;
     public $settings;
 
-    /**
-     * Validation
-     */
+    // validation
     public function validation(): array
     {
-        return [
-            'settings.'.$this->platform.'_client_id' => ['nullable'],
-            'settings.'.$this->platform.'_client_secret' => ['nullable'],
-
-        ];
+        return collect($this->platforms)->mapWithKeys(fn($platform) => [
+            'settings.'.$platform.'_client_id' => ['nullable'],
+            'settings.'.$platform.'_client_secret' => ['nullable'],
+        ])->toArray();
     }
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount(): void
     {
         $this->settings = collect($this->platforms)
-            ->mapWithKeys(fn($val) => [
-                $val.'_client_id' => settings($val.'_client_id'),
-                $val.'_client_secret' => settings($val.'_client_secret'),
+            ->mapWithKeys(fn($platform) => [
+                $platform.'_client_id' => settings($platform.'_client_id'),
+                $platform.'_client_secret' => settings($platform.'_client_secret'),
             ])
             ->toArray();
-
-        $this->platform = head($this->platforms);
     }
 
-    /**
-     * Get platforms property
-     */
+    // get platforms property
     public function getPlatformsProperty(): array
     {
         return config('atom.auth.login', []);
     }
 
-    /**
-     * Get platform labels property
-     */
+    // get platform labels property
     public function getPlatformLabelsProperty(): array
     {
         return [
@@ -63,9 +51,7 @@ class SocialLogin extends Component
         ];
     }
 
-    /**
-     * Get client id label property
-     */
+    // get client id label property
     public function getClientIdLabelsProperty(): array
     {
         return [
@@ -77,9 +63,7 @@ class SocialLogin extends Component
         ];
     }
 
-    /**
-     * Get client secret label property
-     */
+    // get client secret label property
     public function getClientSecretLabelsProperty(): array
     {
         return [
@@ -91,24 +75,17 @@ class SocialLogin extends Component
         ];
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): void
     {
         $this->validateForm();
 
-        settings([
-            $this->platform.'_client_id' => data_get($this->settings, $this->platform.'_client_id'),
-            $this->platform.'_client_secret' => data_get($this->settings, $this->platform.'_client_secret'),
-        ]);
+        settings($this->settings);
 
-        $this->popup(data_get($this->platformLabels, $this->platform, str()->headline($this->platform)).' Credential Updated.');
+        $this->popup('Social Login Credentials Updated.');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.settings.integration.social-login');

@@ -42,7 +42,7 @@ class Listing extends Component
                 'label' => $query->email,
             ],
 
-            enabled_module('plans')
+            has_table('plans')
                 ? [
                     'column_name' => 'Plan',
                     'tags' => $query->subscriptions

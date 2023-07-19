@@ -89,7 +89,7 @@ class Index extends Component
         $this->columns = $this->document->getColumns();
 
         $this->items = $this->document->items->map(function($item) {
-            return enabled_module('taxes') 
+            return has_table('taxes') 
                 ? array_merge(
                     $item->toArray(), 
                     ['taxes' => $item->taxes->map(fn($tax) => [
@@ -347,7 +347,7 @@ class Index extends Component
      */
     public function syncDocumentItemTaxes($item, $input): void
     {
-        if (enabled_module('taxes') && (
+        if (has_table('taxes') && (
             $taxes = collect(data_get($input, 'taxes'))->mapWithKeys(fn($val) => [
                 data_get($val, 'id') => ['amount' => data_get($val, 'amount')],
             ])

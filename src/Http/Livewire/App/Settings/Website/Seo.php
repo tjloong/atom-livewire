@@ -16,7 +16,7 @@ class Seo extends Component
      */
     public function mount()
     {
-        model('site_setting')->group('seo')->get()->each(function($setting) {
+        model('setting')->group('seo')->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
     }

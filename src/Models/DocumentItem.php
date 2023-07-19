@@ -43,7 +43,7 @@ class DocumentItem extends Model
      */
     public function product(): BelongsTo
     {
-        if (!enabled_module('products')) return null;
+        if (!has_table('products')) return null;
 
         return $this->belongsTo(model('product'));
     }
@@ -53,7 +53,7 @@ class DocumentItem extends Model
      */
     public function productVariant(): BelongsTo
     {
-        if (!enabled_module('products')) return null;
+        if (!has_table('products')) return null;
 
         return $this->belongsTo(model('product_variant'));
     }
@@ -71,7 +71,7 @@ class DocumentItem extends Model
      */
     public function taxes()
     {
-        if (!enabled_module('taxes')) return null;
+        if (!has_table('taxes')) return null;
         
         return $this->belongsToMany(model('tax'), 'document_item_taxes')->withPivot('amount');
     }

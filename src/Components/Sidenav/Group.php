@@ -6,9 +6,6 @@ use Illuminate\View\Component;
 
 class Group extends Component
 {
-    /**
-     * Render
-     */
     public function render()
     {
         return view('atom::components.sidenav.group');

@@ -13,9 +13,7 @@ class Storage extends Component
     
     public $settings;
 
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -29,9 +27,7 @@ class Storage extends Component
         ];
     }
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount(): void
     {
         foreach ([
@@ -47,21 +43,17 @@ class Storage extends Component
         }
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): void
     {
         $this->validateForm();
 
         settings($this->settings);
 
-        $this->popup('Storage Integration Updated.');
+        $this->popup('Storage Configurations Updated.');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.settings.integration.storage');

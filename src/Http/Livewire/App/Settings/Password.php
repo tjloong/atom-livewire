@@ -18,9 +18,7 @@ class Password extends Component
         'new_confirmation' => null,
     ];
 
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -37,9 +35,7 @@ class Password extends Component
         ];
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): void
     {
         $this->validateForm();
@@ -54,9 +50,7 @@ class Password extends Component
         $this->popup('Password Updated.');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.settings.password');

@@ -27,9 +27,11 @@ function atom_lw($name)
 /**
  * Get atom path
  */
-function atom_path($path = null)
+function atom_path($path = null, $relative = false)
 {
-    return base_path('vendor/jiannius/atom-livewire'.($path ? '/'.$path : ''));
+    return $relative
+        ? 'vendor/jiannius/atom-livewire'.($path ? '/'.$path : '')
+        : base_path('vendor/jiannius/atom-livewire'.($path ? '/'.$path : ''));
 }
 
 /**

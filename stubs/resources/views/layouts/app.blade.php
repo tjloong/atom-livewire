@@ -56,10 +56,15 @@
 
             <x-slot:asidefoot>
                 <x-admin-panel.aside label="Settings" route="app.settings"/>
-                <x-admin-panel.aside label="Preferences" route="app.preferences"/>
             </x-slot:asidefoot>
 
-            {{ $slot }}
+            @route('app.settings')
+                {{ $slot }}
+            @else
+                <div class="p-5 pb-10">
+                    {{ $slot }}
+                </div>
+            @endroute
         </x-admin-panel>
 
     {{-- Web layout --}}
@@ -77,7 +82,18 @@
         {{ $slot }}
 
         <footer>
-            <x-footer/>
+            <div class="bg-gray-700 px-4 py-10">
+                <div class="max-w-screen-xl mx-auto">
+                    <x-logo class="w-40 brightness-0 invert"/>
+                </div>
+            </div>
+            <div class="bg-gray-900 p-4">
+                <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+                    <div class="font-medium text-white text-xs md:text-sm">
+                        © {{ date('Y') }} Jiannius. All rights reserved.
+                    </div>
+                </div>
+            </div>
         </footer>
     @endroute
 @endsection

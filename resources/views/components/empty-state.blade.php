@@ -8,7 +8,7 @@
 @if ($size === 'xs') 
     <div class="flex justify-center gap-3 py-4">
         <div class="w-8 h-8 rounded-full bg-slate-100 shadow flex border">
-            <x-icon :name="$icon" size="14" class="text-gray-400 m-auto"/>
+            <x-icon :name="$icon.' sm'" class="text-gray-400 m-auto"/>
         </div>
         <div class="flex flex-col gap-4">
             <div>
@@ -24,7 +24,7 @@
 @elseif ($size === 'sm')
     <div class="flex flex-col items-center justify-center gap-3 py-8">
         <div class="w-12 h-12 rounded-full bg-slate-100 shadow flex border">
-            <x-icon :name="$icon" size="18" class="text-gray-400 m-auto"/>
+            <x-icon :name="$icon" class="text-gray-400 m-auto"/>
         </div>
         <div class="flex flex-col gap-4">
             <div class="text-center">
@@ -42,7 +42,7 @@
 @else
     <div class="flex flex-col items-center justify-center gap-3 py-8">
         <div class="w-20 h-20 rounded-full bg-slate-100 shadow flex border">
-            <x-icon :name="$icon" size="24" class="text-gray-400 m-auto"/>
+            <x-icon :name="$icon.' xl'" class="text-gray-400 m-auto"/>
         </div>
         <div class="flex flex-col gap-4">
             <div class="text-center">

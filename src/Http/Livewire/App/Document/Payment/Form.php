@@ -34,7 +34,7 @@ class Form extends Component
     public function getOptionsProperty(): array
     {
         return [
-            'paymodes' => enabled_module('tenants') && ($tenant = $this->payment->document->tenant ?? null)
+            'paymodes' => has_table('tenants') && ($tenant = $this->payment->document->tenant ?? null)
                 ? tenant('settings.paymodes', ['Cash'], $tenant)
                 : settings('paymodes', ['Cash']),
         ];

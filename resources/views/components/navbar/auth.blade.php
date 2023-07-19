@@ -3,13 +3,11 @@
     <div class="w-full bg-gray-100 p-4 rounded-md grid md:hidden">
         <div class="py-2 px-4 flex items-center justify-center gap-2 rounded-lg bg-slate-200 font-semibold">
             <x-icon name="circle-user" size="18px" class="text-gray-500"/>
-            {{ str(auth()->user()->name)->limit(15) }}
+            {{ str(user()->name)->limit(15) }}
         </div>
 
         @if ($slot->isNotEmpty()) {{ $slot }}
-        @else 
-            <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
-            @can('preference.manage') <x-navbar.dropdown.item :href="route('app.preferences')" label="Preferences"/> @endcan
+        @else <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
         @endif
 
         @if ($canBackToApp)
@@ -28,7 +26,7 @@
         <x-dropdown>
             <x-slot:anchor>
                 <div 
-                    x-data="{
+                    {{-- x-data="{
                         classes: {},
                         init () {
                             if (this.config.scrollHide) this.toggleScroll(false)
@@ -42,7 +40,7 @@
                     }"
                     x-on:scroll-reveal.window="toggleScroll(true)"
                     x-on:scroll-hide.window="toggleScroll(false)"
-                    x-bind:class="classes"
+                    x-bind:class="classes" --}}
                     class="flex items-center justify-center gap-2 px-3 text-center font-medium"
                 >
                     @if (
@@ -60,7 +58,9 @@
             </x-slot:anchor>
     
             <div class="flex flex-col divide-y">
-                {{ $slot }}
+                @if ($slot->isNotEmpty()) {{ $slot }}
+                @else <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
+                @endif
                 
                 @if ($canBackToApp)
                     <x-navbar.dropdown.item :href="auth()->user()->home()" label="Back to App"/>

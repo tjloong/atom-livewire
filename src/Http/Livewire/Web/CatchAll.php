@@ -30,7 +30,7 @@ class CatchAll extends Component
     {
         if (!$this->slug) return;
         if (config('atom.static_site')) return;
-        if (!enabled_module('pages')) return;
+        if (!has_table('pages')) return;
 
         $pages = model('page')->where('slug', $this->slug)->get();
 

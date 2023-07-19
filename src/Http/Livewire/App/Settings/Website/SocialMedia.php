@@ -27,7 +27,7 @@ class SocialMedia extends Component
             'tiktok',
         ];
 
-        model('site_setting')->group('social')->get()->each(function($setting) {
+        model('setting')->group('social')->get()->each(function($setting) {
             $this->settings[$setting->name] = $setting->value;
         });
     }

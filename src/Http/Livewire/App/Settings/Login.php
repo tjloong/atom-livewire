@@ -13,9 +13,7 @@ class Login extends Component
 
     public $user;
 
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -35,17 +33,13 @@ class Login extends Component
         ];
     }
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount(): void
     {
         $this->user = user();
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): void
     {
         $this->validateForm();
@@ -55,9 +49,7 @@ class Login extends Component
         $this->popup('Login Updated.');
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render(): mixed
     {
         return atom_view('app.settings.login');

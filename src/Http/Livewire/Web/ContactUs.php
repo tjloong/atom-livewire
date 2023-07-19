@@ -33,14 +33,12 @@ class ContactUs extends Component
     public function mount(): void
     {
         $this->ref = request()->query('ref');
-        $this->enquiry = enabled_module('enquiries')
-            ? model('enquiry')
-            : [
-                'name' => null,
-                'phone' => null,
-                'email' => null,
-                'message' => null,
-            ];
+        $this->enquiry = [
+            'name' => null,
+            'phone' => null,
+            'email' => null,
+            'message' => null,
+        ];
     }
 
     /**
@@ -69,25 +67,24 @@ class ContactUs extends Component
 
         $mail = ['to' => null, 'params' => null];
 
-        if (enabled_module('enquiries')) {
-            if (is_array($this->enquiry)) $this->enquiry = model('enquiry')->create($this->enquiry);
-            else $this->enquiry->save();
+        if (has_table('enquiries')) {
+            $enquiry = model('enquiry')->create($this->enquiry);
 
-            if ($this->ref) $this->enquiry->fill(['data' => ['ref' => $this->ref]])->save();
+            if ($this->ref) $enquiry->fill(['data' => ['ref' => $this->ref]])->save();
 
             $mail['to'] = settings('notify_to');
-            $mail['params'] = $this->enquiry;
+            $mail['params'] = $enquiry;
         }
         else {
             $mail['to'] = env('NOTIFY_TO');
-            $mail['params'] = (object)$this->enquiry;
+            $mail['params'] = $this->enquiry;
         }
 
         if ($mail['to']) {
             Notification::route('mail', $mail['to'])->notify(new EnquiryNotification($mail['params']));
         }
         
-        return redirect()->route('web.thank', ['enquiry']);
+        return to_route('web.thank.enquiry');
     }
 
     /**

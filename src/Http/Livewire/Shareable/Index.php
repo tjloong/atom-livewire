@@ -13,8 +13,6 @@ class Index extends Component
      */
     public function mount($id)
     {
-        if (!enabled_module('shareables')) abort('404');
-
         $this->shareable = model('shareable')->status('active')->when(
             is_numeric($id),
             fn($q) => $q->where('id', $id),
