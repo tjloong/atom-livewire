@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    public $rootUsername = 'root';
     public $rootEmail = 'root@jiannius.com';
     public $rootPassword = 'password';
 
@@ -15,7 +16,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement('ALTER TABLE users MODIFY COLUMN email_verified_at TIMESTAMP AFTER remember_token');
+        
         Schema::table('users', function (Blueprint $table) {
+            $table->string('username')->nullable()->after('name');
+            $table->string('email')->nullable()->change();
             $table->string('password')->nullable()->change();
             $table->timestamp('last_active_at')->nullable()->after('remember_token');
             $table->timestamp('login_at')->nullable()->after('remember_token');
@@ -44,6 +49,7 @@ return new class extends Migration
         if (!DB::table('users')->where('email', $this->rootEmail)->count()) {
             DB::table('users')->insert([
                 'name' => 'Root',
+                'username' => $this->rootUsername,
                 'email' => $this->rootEmail,
                 'password' => bcrypt($this->rootPassword),
                 'visibility' => 'global',

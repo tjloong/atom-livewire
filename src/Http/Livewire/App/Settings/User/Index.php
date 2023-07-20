@@ -2,12 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\User;
 
+use Jiannius\Atom\Component;
+use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
-use Livewire\Component;
 
 class Index extends Component
 {
+    use WithLoginMethods;
     use WithPopupNotify;
     use WithTable;
 
@@ -34,7 +36,7 @@ class Index extends Component
     // update or create
     public function updateOrCreate($id = null): void
     {
-        $this->emitTo(atom_lw('app.settings.user.form'), 'open', $id);
+        $this->emitTo('app.settings.user.form', 'open', $id);
     }
 
     // empty trashed
@@ -45,11 +47,5 @@ class Index extends Component
         $this->popup('Trash Cleared');
         $this->reset('filters');
         $this->emit('refresh');
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.settings.user');
     }
 }

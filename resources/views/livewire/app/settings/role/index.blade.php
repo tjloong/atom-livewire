@@ -23,5 +23,5 @@
 
     {!! $this->paginator->links() !!}
 
-    @livewire(atom_lw('app.settings.role.form'))
+    @livewire('app.settings.role.form')
 </div>

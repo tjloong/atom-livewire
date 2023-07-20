@@ -250,8 +250,8 @@ class User extends Authenticatable implements MustVerifyEmail
             if ($this->onboarded_at) return 'onboarded';
             if ($this->signup_at) return 'new';
         }
-        else if ($this->activated_at) return 'active';
-        
+        else if ($this->password) return 'active';
+
         return 'inactive';
     }
 

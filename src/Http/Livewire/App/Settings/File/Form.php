@@ -2,9 +2,9 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\File;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class Form extends Component
 {
@@ -56,11 +56,5 @@ class Form extends Component
         $this->validateForm();
         $this->file->save();
         $this->close();
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.settings.file.form');
     }
 }

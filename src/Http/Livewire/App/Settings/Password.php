@@ -3,9 +3,9 @@
 namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
 use Illuminate\Auth\Events\PasswordReset;
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class Password extends Component
 {
@@ -48,11 +48,5 @@ class Password extends Component
 
         $this->reset('password');
         $this->popup('Password Updated.');
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.settings.password');
     }
 }

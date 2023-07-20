@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
-use Livewire\Component;
+use Jiannius\Atom\Component;
 
 class Index extends Component
 {
@@ -11,9 +11,11 @@ class Index extends Component
     // mount
     public function mount()
     {
+        parent::mount();
+
         $this->tab = $this->tab ?? data_get(tabs($this->tabs), '0.slug');
 
-        if (!$this->livewire) abort(404);
+        if (!$this->component) abort(404);
     }
 
     // get tabs property
@@ -53,17 +55,25 @@ class Index extends Component
         ];
     }
 
-    // get livewire property
-    public function getLivewireProperty(): mixed
+    // get component property
+    public function getComponentProperty(): mixed
     {
-        if (tabs($this->tabs, $this->tab)) {
-            return atom_lw('app.settings.'.$this->tab);
-        }
-    }
+        if ($tab = tabs($this->tabs, $this->tab)) {
+            $slug = data_get($tab, 'slug');
 
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.settings');
+            if (has_component('app.settings.'.$slug)) {
+                $name = str('app.settings.'.$slug)->replace('/', '.')->toString();
+                $params = null;
+            }
+            else {
+                $split = collect(explode('/', $slug));
+                $name = 'app.settings.'.$split->shift();
+                $params = $split->toArray();
+            }
+
+            return compact('name', 'params');
+        }
+
+        return null;
     }
 }

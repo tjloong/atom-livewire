@@ -29,7 +29,8 @@
 
         <x-slot:thead>
             <x-table.th label="Name" sort="name"/>
-            <x-table.th label="Email"/>
+            @if ($this->isLoginMethod('username')) <x-table.th label="Username"/> @endif
+            @if ($this->isLoginMethod('email')) <x-table.th label="Email"/> @endif
             @if (has_table('roles')) <x-table.th label="Role"/> @endif
             <x-table.th label="Status"/>
         </x-slot:thead>
@@ -37,7 +38,8 @@
         @foreach ($this->paginator->items() as $user)
             <x-table.tr>
                 <x-table.td :label="$user->name" wire:click="updateOrCreate({{ $user->id }})"/>
-                <x-table.td :label="$user->email"/>
+                @if ($this->isLoginMethod('username')) <x-table.td :label="$user->username"/> @endif
+                @if ($this->isLoginMethod('email')) <x-table.td :label="$user->email"/> @endif
                 @if (has_table('roles')) <x-table.td :label="$user->role->name ?? '--'"/> @endif
                 <x-table.td :status="$user->status"/>
             </x-table.tr>
@@ -50,5 +52,5 @@
 
     {!! $this->paginator->links() !!}
 
-    @livewire(atom_lw('app.settings.user.form'), key('create'))
+    @livewire('app.settings.user.form', key('create'))
 </div>

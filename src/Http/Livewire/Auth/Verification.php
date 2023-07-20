@@ -2,19 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
-use Livewire\Component;
+use Jiannius\Atom\Component;
 
 class Verification extends Component
 {
     // mount
-    public function mount(\Illuminate\Foundation\Auth\EmailVerificationRequest $request): void
+    public function mount(\Illuminate\Foundation\Auth\EmailVerificationRequest $request = null): void
     {
         $request->fulfill();
-    }
-
-    // render
-    public function render()
-    {
-        return atom_view('auth.verification');
     }
 }

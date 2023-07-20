@@ -2,10 +2,10 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\File;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
-use Livewire\Component;
 
 class Index extends Component
 {
@@ -40,11 +40,5 @@ class Index extends Component
             $this->popup(count($this->checkboxes).' Files Deleted');
             $this->resetCheckboxes();
         }
-    }
-
-    // render
-    public function render()
-    {
-        return atom_view('app.settings.file');
     }
 }

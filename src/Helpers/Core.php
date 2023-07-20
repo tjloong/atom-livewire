@@ -8,10 +8,19 @@ use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
 
-// check command exists
-function command_exists($name)
+// check has command
+function has_command($name)
 {
     return in_array($name, array_keys(Artisan::all()));
+}
+
+// check has component
+function has_component($name)
+{
+    return collect([
+        format_class_path($name, 'App/Http/Livewire/'),
+        format_class_path($name, 'Jiannius/Atom/Http/Livewire/'),
+    ])->contains(fn($val) => file_exists(atom_ns_path($val)));
 }
 
 // enum
@@ -628,7 +637,7 @@ function format_class_path($path, $prefix = ''): mixed
 
     $formatted = $prefix.$path;
 
-    return $isPhp ? str($formatted)->finish('.php') : $formatted;
+    return $isPhp ? str($formatted)->finish('.php')->toString() : $formatted;
 }
 
 // format view path

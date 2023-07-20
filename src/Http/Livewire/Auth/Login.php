@@ -4,168 +4,155 @@ namespace Jiannius\Atom\Http\Livewire\Auth;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Validation\ValidationException;
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
 use Laravel\Socialite\Facades\Socialite;
-use Livewire\Component;
 
 class Login extends Component
 {
     use WithForm;
+    use WithLoginMethods;
 
-    public $email;
-    public $password;
-    public $remember;
-    public $socialUser;
+    public $throttlekey;
 
-    /**
-     * Validation
-     */
+    public $inputs = [
+        'username' => null,
+        'password' => null,
+        'remember' => false,
+    ];
+
+    // validation
     protected function validation(): array
     {
         return [
-            'email' => ['required' => 'Email is required.'],
-            'password' => ['required' => 'Password is required.'],
+            'inputs.username' => ['required' => $this->usernameLabel.' is required.'],
+            'inputs.password' => ['required' => 'Password is required.'],
         ];
     }
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount()
     {
-        if (request()->query('logout')) return $this->logout();
-        else if (user()) return redirect($this->redirectTo(user()));
+        if (user()) return redirect(user()->home());
+        // login using app key (root login)
+        else if (
+            ($appkey = request()->query('appkey'))
+            && $appkey === config('app.key')
+            && ($user = model('user')->firstWhere('is_root', true))
+        ) {
+            $this->submit($user);
+        }
+        // socialite login (skip error from socialite)
         else {
             rescue(function() {
-                $token = request()->query('token');
-                $provider = request()->query('provider');
-
-                if ($token && $provider && ($this->socialUser = Socialite::driver($provider)->userFromToken($token))) {
-                    $this->email = $this->socialUser->getEmail();
-                    $this->login();
+                if (
+                    ($token = request()->query('token'))
+                    && ($provider = request()->query('provider'))
+                    && ($socialite = Socialite::driver($provider)->userFromToken($token))
+                    && ($user = model('user')->firstWhere('email', $socialite->getEmail()))
+                ) {
+                    $this->submit($user);
                 }
             });
         }
     }
 
-    /**
-     * Submit
-     */
-    public function submit(): void
+    // get username label property
+    public function getUsernameLabelProperty(): string
     {
-        $this->validateForm();
-        $this->login();
+        return collect([
+            $this->isLoginMethod('username') ? 'Username' : null,
+            $this->isLoginMethod('email') ? 'Email' : null,
+        ])->filter()->join(' or ');
     }
 
-    /**
-     * Attempt login
-     */
-    public function login(): mixed
+    // get user
+    public function getUser(): mixed
     {
-        $user = model('user')
-            ->where('email', $this->email)
-            ->whereNotNull('activated_at')
-            ->whereNull('blocked_at')
-            ->first();
+        $username = data_get($this->inputs, 'username');
+        $query = model('user')->whereNotNull('password')->whereNull('blocked_at');
 
-        if ($user) {
-            if (app()->environment('local') || $this->socialUser) Auth::login($user);
-            else {
-                $this->ensureIsNotRateLimited();
-        
-                if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-                    RateLimiter::hit($this->throttleKey());
-                    throw ValidationException::withMessages(['email' => __('auth.failed')]);
-                }
-
-                RateLimiter::clear($this->throttleKey());
-            }
+        if ($this->isLoginMethod('username') && $this->isLoginMethod('email')) {
+            $query->where(fn($q) => $q
+                ->where('username', $username)
+                ->orWhere('email', $username)
+            );
         }
+        else if ($this->isLoginMethod('username')) {
+            $query->where('username', $username);
+        }
+        else if ($this->isLoginMethod('email')) {
+            $query->where('email', $username);
+        }
+
+        return $query->first();
+    }
+
+    // submit
+    public function submit($user = null): mixed
+    {
+        if ($user) Auth::login($user);
         else {
-            throw ValidationException::withMessages(['email' => __('auth.failed')]);
+            $this->validateForm();
+
+            if ($user = $this->getUser()) {
+                if (app()->environment('local')) Auth::login($user);
+                else if ($err = $this->tooManyAttempts()) return $this->addError('email', $err);
+                else if (!$this->login($user)) return $this->addError('email', __('auth.failed'));
+            }
+            else return $this->addError('email', __('auth.failed'));
         }
 
         $user->fill(['login_at' => now()])->saveQuietly();
         
         request()->session()->regenerate();
         
-        return redirect()->intended($this->redirectTo($user));
+        return redirect()->intended($this->redirectTo($user));        
     }
 
-    /**
-     * Logout
-     */
-    public function logout(): mixed
+    // attempt login
+    public function login($user = null): mixed
     {
-        if ($mask = session('mask')) {
-            auth()->logout();
-            auth()->login($mask);
+        $attempt = false;
+        $username = data_get($this->inputs, 'username');
+        $password = data_get($this->inputs, 'password');
+        $remember = data_get($this->inputs, 'remember');
 
-            session()->forget('mask');
+        if (!$attempt && $this->isLoginMethod('username')) {
+            $attempt = Auth::attempt(compact('username', 'password'), $remember);
+        }
 
-            return redirect($mask->home());
+        if (!$attempt && $this->isLoginMethod('email')) {
+            $attempt = Auth::attempt(['email' => $username, 'password' => $password], $remember);
         }
-        else {
-            auth()->logout();
-            request()->session()->invalidate();
-            request()->session()->regenerateToken();
-    
-            return redirect('/');
-        }
+
+        $this->throttlekey = str()->lower($username).'|'.request()->ip();
+
+        if ($attempt) RateLimiter::clear($this->throttlekey);
+        else RateLimiter::hit($this->throttlekey);
+
+        return $attempt;
     }
 
-    /**
-     * Ensure the login request is not rate limited.
-     */
-    private function ensureIsNotRateLimited(): void
+    // check has too many attempts
+    public function tooManyAttempts(): mixed
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
-        }
+        if (!RateLimiter::tooManyAttempts($this->throttlekey, 5)) return false;
 
         // event(new Illuminate\Auth\Events\Lockout($this));
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
+        $seconds = RateLimiter::availableIn($this->throttlekey);
 
-        throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+        return __('auth.throttle', [
+            'seconds' => $seconds,
+            'minutes' => ceil($seconds / 60),
         ]);
     }
 
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
-    private function throttleKey(): string
+    // redirection
+    public function redirectTo($user): string
     {
-        return str()->lower(request()->input('email')).'|'.request()->ip();
-    }
-
-    /**
-     * Redirection
-     */
-    private function redirectTo($user): string
-    {
-        if (has_table('carts')) session()->forget('cart');
-
-        if ($user->status === 'new') return route('app.onboarding');
-        
-        if (
-            has_table('invitations') 
-            && model('invitation')->where('email', $user->email)->status('pending')->count()
-        ) return route('app.invitation.pending');
-
         return $user->home();
-    }
-
-    /**
-     * Render
-     */
-    public function render(): mixed
-    {
-        return atom_view('auth.login');
     }
 }

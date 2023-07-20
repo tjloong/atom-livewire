@@ -2,9 +2,9 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Role;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class Form extends Component
 {
@@ -74,7 +74,6 @@ class Form extends Component
         }
     }
 
-
     // submit
     public function submit(): void
     {
@@ -85,11 +84,5 @@ class Form extends Component
         $this->role->save();
 
         $this->close();
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.settings.role.form');
     }
 }

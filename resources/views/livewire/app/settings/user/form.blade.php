@@ -12,10 +12,24 @@
         </x-slot:buttons>
 
         <x-form.group>
-            <x-form.text wire:model.defer="user.name" label="Login Name"/>
-            <x-form.email wire:model.defer="user.email" label="Login Email"/>
-            <x-form.select.role wire:model="user.role_id"/>
-            <x-form.select.team wire:model="inputs.teams" multiple/>
+            <x-form.text wire:model.defer="user.name"/>
+
+            @if ($this->isLoginMethod('username'))
+                <x-form.text wire:model.defer="user.username"/>
+            @endif
+
+            @if ($this->isLoginMethod('email'))
+                <x-form.email wire:model.defer="user.email" label="Login Email"/>
+            @endif
+
+            @if (tier('root') || role('admin'))
+                <x-form.password wire:model.defer="inputs.password"/>
+            @endif
+
+            @if (!$user->isTier('root'))
+                <x-form.select.role wire:model="user.role_id"/>
+                <x-form.select.team wire:model="inputs.teams" multiple/>
+            @endif
 
             <div>
                 <x-form.checkbox wire:model="inputs.is_blocked" label="Blocked"/>

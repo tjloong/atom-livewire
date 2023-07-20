@@ -1,3 +1,8 @@
+// document body scrolling
+window.documentBodyScrolling = (bool) => {
+    document.body.style.overflow = bool ? 'auto' : 'hidden'
+}
+
 // camelize
 window.camelize = (str) => {
     return str

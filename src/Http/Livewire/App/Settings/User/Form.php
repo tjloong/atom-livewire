@@ -2,13 +2,15 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\User;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class Form extends Component
 {
     use WithForm;
+    use WithLoginMethods;
     use WithPopupNotify;
 
     public $user;
@@ -21,33 +23,43 @@ class Form extends Component
     {
         return array_merge(
             [
+                'inputs.password' => array_merge(
+                    optional($this->user)->exists ? ['nullable'] : ['required' => 'Password is required.'],
+                    ['min:8' => 'Password must be at least 8 characters.'],
+                ),
                 'user.name' => [
                     'required' => 'Name is required.',
-                    'string' => 'Invalid name.',
                     'max:255' => 'Name is too long (Max 255 characters).',
                 ],
+                'user.is_root' => ['nullable'],
+            ],
+
+            $this->isLoginMethod('email') ? [
                 'user.email' => [
-                    'required' => 'Login email is required.',
-                    'email' => 'Invalid login email.',
+                    'required_without:user.username' => 'Login email is required.',
                     function ($attr, $value, $fail) {
-                        if (model('user')
-                            ->where('email', $value)
-                            ->where('id', '<>', $this->user->id)
-                            ->count()
-                        ) {
+                        if (model('user')->where('email', $value)->where('id', '<>', $this->user->id)->count()) {
                             $fail('Login email is taken.');
                         }
                     },
                 ],
-            ],
-
-            has_table('roles') ? [
-                'user.role_id' => ['required' => 'Role is required.'],
             ] : [],
 
-            [
-                'user.is_root' => ['nullable']
-            ],
+            $this->isLoginMethod('username') ? [
+                'user.username' => [
+                    'required_without:user.email' => 'Username is required.',
+                    'max:255' => 'Username is too long (Max 255 characters).',
+                    function ($attr, $value, $fail) {
+                        if (model('user')->where('username', $value)->where('id', '<>', $this->user->id)->count()) {
+                            $fail('Username is taken.');
+                        }
+                    }
+                ],
+            ] : [],
+
+            has_table('roles') && !optional($this->user)->isTier('root') ? [
+                'user.role_id' => ['required' => 'Role is required.'],
+            ] : [],
         );
     }
 
@@ -61,6 +73,7 @@ class Form extends Component
             : model('user')->fill(['is_root' => tier('root')]);
 
         $this->fill([
+            'inputs.password' => null,
             'inputs.is_blocked' => !empty($this->user->blocked_at),
         ]);
 
@@ -117,7 +130,13 @@ class Form extends Component
                 : null,
         ])->save();
 
-        if (has_table('teams')) $this->user->teams()->sync(data_get($this->inputs, 'teams'));
+        if ($password = data_get($this->inputs, 'password')) {
+            $this->user->forceFill(['password' => bcrypt($password)])->save();
+        }
+
+        if (has_table('teams')) {
+            $this->user->teams()->sync(data_get($this->inputs, 'teams'));
+        }
 
         $this->close();
     }
@@ -128,11 +147,5 @@ class Form extends Component
         $this->reset(['user', 'inputs']);
         $this->emit('refresh');
         $this->dispatchBrowserEvent('user-form-close');
-    }
-
-    // render
-    public function render()
-    {
-        return atom_view('app.settings.user.form');
     }
 }

@@ -23,9 +23,11 @@ return [
         'verify' => true,
         'register' => true,
         'login' => [
-            'google',
-            'facebook',
-            'linkedin',    
+            'email',
+            // 'username',
+            // 'google',
+            // 'facebook',
+            // 'linkedin', 
         ],
     ],
 

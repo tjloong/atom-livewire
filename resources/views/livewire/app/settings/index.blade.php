@@ -16,6 +16,10 @@
     </div>
 
     <div class="grow p-6">
-        @livewire($this->livewire, key($tab))
+        @livewire(
+            data_get($this->component, 'name'), 
+            ['params' => data_get($this->component, 'params')],
+            key($tab),
+        )
     </div>
 </div>

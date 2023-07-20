@@ -2,19 +2,19 @@
     {{-- mobile view --}}
     <div class="w-full bg-gray-100 p-4 rounded-md grid md:hidden">
         <div class="py-2 px-4 flex items-center justify-center gap-2 rounded-lg bg-slate-200 font-semibold">
-            <x-icon name="circle-user" size="18px" class="text-gray-500"/>
-            {{ str(user()->name)->limit(15) }}
+            <x-icon name="circle-user" class="text-gray-500"/>
+            {{ str(user('name'))->limit(15) }}
         </div>
 
         @if ($slot->isNotEmpty()) {{ $slot }}
-        @else <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
+        @else <x-navbar.dropdown.item :href="route('app.settings')" icon="gear" label="Settings"/>
         @endif
 
         @if ($canBackToApp)
-            <x-navbar.dropdown.item :href="auth()->user()->home()" icon="house" label="Back to App"/>
+            <x-navbar.dropdown.item :href="user()->home()" icon="house" label="Back to App"/>
         @endif
 
-        <x-navbar.dropdown.item :href="route('login', ['logout' => true])" label="Logout"/>
+        <x-navbar.dropdown.item :href="route('logout')" icon="logout" label="Logout"/>
 
         @isset($foot)
             {{ $foot }}
@@ -43,30 +43,27 @@
                     x-bind:class="classes" --}}
                     class="flex items-center justify-center gap-2 px-3 text-center font-medium"
                 >
-                    @if (
-                        $avatar = $attributes->get('avatar')
-                            ?? optional(auth()->user()->avatar)->url
-                    )
+                    @if ($avatar = $attributes->get('avatar') ?? user('avatar.url'))
                         <x-thumbnail :url="$avatar" size="24" circle/>
                     @else
-                        <x-icon name="circle-user" size="18" class="opacity-60"/> 
+                        <x-icon name="circle-user lg" class="opacity-60"/> 
                     @endif
 
-                    {{ str(auth()->user()->name)->limit(15) }}
+                    {{ str(user('name'))->limit(15) }}
                     <x-icon name="chevron-down" size="12"/>
                 </div>
             </x-slot:anchor>
     
             <div class="flex flex-col divide-y">
                 @if ($slot->isNotEmpty()) {{ $slot }}
-                @else <x-navbar.dropdown.item :href="route('app.settings')" label="Settings"/>
+                @else <x-navbar.dropdown.item :href="route('app.settings')" icon="gear" label="Settings"/>
                 @endif
                 
                 @if ($canBackToApp)
-                    <x-navbar.dropdown.item :href="auth()->user()->home()" label="Back to App"/>
+                    <x-navbar.dropdown.item :href="user()->home()" label="Back to App"/>
                 @endif
                     
-                <x-navbar.dropdown.item :href="route('login', ['logout' => true])" label="Logout"/>
+                <x-navbar.dropdown.item :href="route('logout')" icon="logout" label="Logout"/>
                         
                 @isset($foot)
                     {{ $foot }}

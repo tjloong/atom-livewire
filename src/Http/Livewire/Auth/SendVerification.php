@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
-use Livewire\Component;
+use Jiannius\Atom\Component;
 
 class SendVerification extends Component
 {
@@ -10,11 +10,5 @@ class SendVerification extends Component
     public function mount(): void
     {
         user()->sendEmailVerificationNotification();
-    }
-
-    // render
-    public function render()
-    {
-        return atom_view('auth.send-verification');
     }
 }

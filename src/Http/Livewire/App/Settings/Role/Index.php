@@ -2,8 +2,8 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Role;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithTable;
-use Livewire\Component;
 
 class Index extends Component
 {
@@ -30,12 +30,6 @@ class Index extends Component
     // update or create
     public function updateOrCreate($id = null): void
     {
-        $this->emitTo(atom_lw('app.role.form'), 'open', $id);
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.settings.role');
+        $this->emitTo('app.settings.role.form', 'open', $id);
     }
 }

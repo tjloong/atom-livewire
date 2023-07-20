@@ -42,7 +42,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.auth.forgot-password' => 'Auth\ForgotPassword',
 
             // dashboard
-            'atom.app.dashboard' => 'App\Dashboard',
+            'app.dashboard' => 'App\Dashboard',
 
             // onboarding
             'atom.app.onboarding' => 'App\Onboarding',
@@ -148,46 +148,46 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.ticket.comments' => 'App\Ticket\Comments',
 
             // settings
-            'atom.app.settings.index' => 'App\Settings\Index',
-            'atom.app.settings.login' => 'App\Settings\Login',
-            'atom.app.settings.password' => 'App\Settings\Password',
+            'app.settings.index' => 'App\Settings\Index',
+            'app.settings.login' => 'App\Settings\Login',
+            'app.settings.password' => 'App\Settings\Password',
 
             // settings > user
-            'atom.app.settings.user' => 'App\Settings\User\Index',
-            'atom.app.settings.user.form' => 'App\Settings\User\Form',
-            // 'atom.app.settings.user.permission' => 'App\Settings\User\Permission',
-            // 'atom.app.settings.user.visibility' => 'App\Settings\User\Visibility',
+            'app.settings.user' => 'App\Settings\User\Index',
+            'app.settings.user.form' => 'App\Settings\User\Form',
+            // 'app.settings.user.permission' => 'App\Settings\User\Permission',
+            // 'app.settings.user.visibility' => 'App\Settings\User\Visibility',
 
             // settings > role
-            'atom.app.settings.role' => 'App\Settings\Role\Index',
-            'atom.app.settings.role.form' => 'App\Settings\Role\Form',
+            'app.settings.role' => 'App\Settings\Role\Index',
+            'app.settings.role.form' => 'App\Settings\Role\Form',
 
             // settings > team
-            'atom.app.settings.team' => 'App\Settings\Team\Index',
-            'atom.app.settings.team.form' => 'App\Settings\Team\Form',
+            'app.settings.team' => 'App\Settings\Team\Index',
+            'app.settings.team.form' => 'App\Settings\Team\Form',
 
             // settings > file
-            'atom.app.settings.file' => 'App\Settings\File\Index',
-            'atom.app.settings.file.form' => 'App\Settings\File\Form',
+            'app.settings.file' => 'App\Settings\File\Index',
+            'app.settings.file.form' => 'App\Settings\File\Form',
 
             // settings > website
-            'atom.app.settings.website.profile' => 'App\Settings\Website\Profile',
-            'atom.app.settings.website.seo' => 'App\Settings\Website\Seo',
-            'atom.app.settings.website.analytics' => 'App\Settings\Website\Analytics',
-            'atom.app.settings.website.social-media' => 'App\Settings\Website\SocialMedia',
-            'atom.app.settings.website.announcement' => 'App\Settings\Website\Announcement',
-            'atom.app.settings.website.announcement-modal' => 'App\Settings\Website\AnnouncementModal',
-            'atom.app.settings.website.popup' => 'App\Settings\Website\Popup',
+            'app.settings.website.profile' => 'App\Settings\Website\Profile',
+            'app.settings.website.seo' => 'App\Settings\Website\Seo',
+            'app.settings.website.analytics' => 'App\Settings\Website\Analytics',
+            'app.settings.website.social-media' => 'App\Settings\Website\SocialMedia',
+            'app.settings.website.announcement' => 'App\Settings\Website\Announcement',
+            'app.settings.website.announcement-modal' => 'App\Settings\Website\AnnouncementModal',
+            'app.settings.website.popup' => 'App\Settings\Website\Popup',
 
             // settings > integration
-            'atom.app.settings.integration.email' => 'App\Settings\Integration\Email',
-            'atom.app.settings.integration.storage' => 'App\Settings\Integration\Storage',
-            'atom.app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',
-            'atom.app.settings.integration.payment' => 'App\Settings\Integration\Payment\Index',
-            'atom.app.settings.integration.payment.stripe' => 'App\Settings\Integration\Payment\Stripe',
-            'atom.app.settings.integration.payment.gkash' => 'App\Settings\Integration\Payment\Gkash',
-            'atom.app.settings.integration.payment.ozopay' => 'App\Settings\Integration\Payment\Ozopay',
-            'atom.app.settings.integration.payment.ipay' => 'App\Settings\Integration\Payment\Ipay',
+            'app.settings.integration.email' => 'App\Settings\Integration\Email',
+            'app.settings.integration.storage' => 'App\Settings\Integration\Storage',
+            'app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',
+            'app.settings.integration.payment' => 'App\Settings\Integration\Payment\Index',
+            'app.settings.integration.payment.stripe' => 'App\Settings\Integration\Payment\Stripe',
+            'app.settings.integration.payment.gkash' => 'App\Settings\Integration\Payment\Gkash',
+            'app.settings.integration.payment.ozopay' => 'App\Settings\Integration\Payment\Ozopay',
+            'app.settings.integration.payment.ipay' => 'App\Settings\Integration\Payment\Ipay',
         ];
 
         foreach ($components as $name => $class) {

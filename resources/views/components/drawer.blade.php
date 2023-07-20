@@ -6,8 +6,14 @@
     x-cloak
     x-data="{
         show: false,
-        open () { this.show = true },
-        close () { this.show = false },
+        open () { 
+            this.show = true
+            documentBodyScrolling(false)
+        },
+        close () { 
+            this.show = false
+            documentBodyScrolling(true)
+        },
     }"
     x-show="show"
     x-transition.opacity
@@ -24,7 +30,7 @@
 
     <div class="absolute top-0 bottom-0 right-0 left-0 py-1 pl-2 md:left-auto md:w-1/2 lg:w-4/12">
         <div {{ $attributes->class([
-            'shadow-lg rounded-l-lg border flex flex-col w-full h-full overflow-hidden',
+            'shadow-lg rounded-l-lg border flex flex-col w-full h-full',
             $attributes->get('class', 'bg-white'),
         ]) }}>
             <div class="shrink-0 bg-white py-3 px-6 flex items-center justify-between gap-3 border-b">
@@ -39,25 +45,27 @@
                 @endisset
             </div>
 
-            <div class="shrink-0">
-                @isset($header) {{ $header }}
-                @else
-                    <div class="flex items-center gap-2 text-xl p-6">
-                        @if ($icon = $attributes->get('icon'))
-                            <x-icon :name="$icon" class="text-gray-400"/>
-                        @endif
+            <div class="grow flex flex-col overflow-auto">
+                <div class="shrink-0">
+                    @isset($header) {{ $header }}
+                    @else
+                        <div class="flex items-center gap-2 text-xl px-6 py-3">
+                            @if ($icon = $attributes->get('icon'))
+                                <x-icon :name="$icon" class="text-gray-400"/>
+                            @endif
+    
+                            @if ($header = $attributes->get('header'))
+                                <div class="font-bold">
+                                    {{ __($header) }}
+                                </div>
+                            @endif
+                        </div>
+                    @endisset
+                </div>
 
-                        @if ($header = $attributes->get('header'))
-                            <div class="font-bold">
-                                {{ __($header) }}
-                            </div>
-                        @endif                        
-                    </div>
-                @endisset
-            </div>
-
-            <div class="grow overflow-auto">
-                {{ $slot }}
+                <div class="grow">
+                    {{ $slot }}
+                </div>
             </div>
 
             @isset($foot)
