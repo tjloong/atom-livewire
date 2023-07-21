@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('slug')->nullable();
+            $table->integer('seq')->nullable();
             $table->timestamps();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
         });
 
         Schema::table('users', function ($table) {
-            $table->foreignId('role_id')->nullable()->after('visibility')->constrained('roles')->onDelete('set null');
+            $table->foreignId('role_id')->nullable()->after('is_root')->constrained('roles')->onDelete('set null');
         });
     }
 

@@ -8,7 +8,10 @@
     <x-form.select :id="$id"
         :label="$label"
         :options="collect(
-            $options ?? model('role')->readable()->orderBy('name')->get()
+            $options ?? model('role')->readable()
+                ->orderBy('seq')
+                ->orderBy('name')
+                ->get()
         )->map(fn($role) => [
             'value' => $role->id,
             'label' => $role->name,
