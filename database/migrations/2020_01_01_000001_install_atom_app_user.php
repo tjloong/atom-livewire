@@ -24,12 +24,10 @@ return new class extends Migration
             $table->string('password')->nullable()->change();
             $table->timestamp('last_active_at')->nullable()->after('remember_token');
             $table->timestamp('login_at')->nullable()->after('remember_token');
-            $table->timestamp('activated_at')->nullable()->after('remember_token');
             $table->timestamp('onboarded_at')->nullable()->after('remember_token');
             $table->timestamp('signup_at')->nullable()->after('remember_token');
             $table->boolean('is_root')->nullable()->after('remember_token');
             $table->string('status')->nullable()->after('remember_token');
-            $table->string('visibility')->nullable()->after('remember_token');
             $table->json('data')->nullable()->after('remember_token');
             $table->timestamp('blocked_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
@@ -52,11 +50,9 @@ return new class extends Migration
                 'username' => $this->rootUsername,
                 'email' => $this->rootEmail,
                 'password' => bcrypt($this->rootPassword),
-                'visibility' => 'global',
                 'status' => 'active',
                 'is_root' => true,
                 'email_verified_at' => now(),
-                'activated_at' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
