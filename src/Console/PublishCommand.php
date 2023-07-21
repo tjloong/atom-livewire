@@ -10,10 +10,8 @@ use RecursiveIteratorIterator;
 class PublishCommand extends Command
 {
     protected $signature = 'atom:publish
-                            {module? : Component to be published.}
+                            {module? : Module to be published. Use "models.<model>" to publish model. User "routes.<route>" to publish route.}
                             {--force : Force overwrite if file exists.}
-                            {--routes : Publish routes only.}
-                            {--models : Publish models only.}
                             {--config : Show config for module.}';
 
     protected $description = 'Publish Atom\'s modules.';
@@ -21,7 +19,6 @@ class PublishCommand extends Command
     protected $modules = [
         'base' => [
             'models' => ['User'],
-            'livewire' => [],
             'routes' => [
                 'auth/socialite.php',
                 'auth/login.php',
@@ -45,13 +42,17 @@ class PublishCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle()
     {
         if ($module = $this->argument('module')) {
-            $config = $this->getModuleConfig($module);
+            if (str($module)->is('models.*')) return $this->publishModels($module);
+            else if (str($module)->is('routes.*')) return $this->publishRoutes($module);
+            else if (str($module)->is('enums.*')) return $this->publishEnums($module);
+            else if (str($module)->is('jobs.*')) return $this->publishJobs($module);
+            else if (str($module)->is('notifications.*')) return $this->publishNotifications($module);
+            else if ($config = $this->getModuleConfig($module)) {
+                if ($this->option('config')) return dump($config);
 
-            if ($this->option('config')) dump($config);
-            else if ($config) {
                 $confirm = $this->option('force') || $this->confirm(
                     $module === 'base'
                         ? 'This will publish Atom base. You should only do this once. Continue?'
@@ -59,26 +60,23 @@ class PublishCommand extends Command
                     , true
                 );
 
-                if (!$confirm) return;
+                if (!$confirm) return $this->line('Action Canceled.');
 
-                if ($this->option('routes')) $this->publishRoutes($config);
-                if ($this->option('models')) $this->publishModels($config);
-
-                if (!$this->option('routes') && !$this->option('models')) {
-                    // $this->publishLivewire($config);
-                    $this->publishModels($config);
-                    // $this->publishEnums($config);
-                    // $this->publishJobs($config);
-                    // $this->publishNotifications($config);
-                    $this->publishRoutes($config);
-                }
+                $this->publishLivewire($config);
+                $this->publishModels($config);
+                $this->publishEnums($config);
+                $this->publishJobs($config);
+                $this->publishNotifications($config);
+                $this->publishRoutes($config);
 
                 if ($module === 'base') {
                     // publish base stubs
                     $this->call('vendor:publish', ['--tag' => 'atom-base', '--force' => true]);
                 }
             }
-            else $this->error('Unable to find module '.$module);
+            else {
+                return $this->publishLivewire($module);
+            }
         }
         else {
             if ($module = $this->choice('Please choose a module', array_keys($this->modules))) {
@@ -97,23 +95,32 @@ class PublishCommand extends Command
     {
         if (!in_array($module, array_keys($this->modules))) return null;
 
-        $config = $this->modules[$module];
+        if ($config = $this->modules[$module]) {
+            return [
+                'module' => $module,
+                'models' => (array) data_get($config, 'models', str()->studly(str($module)->split('/\./')->last())),
+                'routes' => (array) data_get($config, 'routes', str(format_view_path($module))->finish('.php')->toString()),
+                'livewire' => (array) data_get($config, 'livewire', format_class_path($module)),
+                'enums' => (array) data_get($config, 'enums', []),
+                'jobs' => (array) data_get($config, 'jobs', []),
+                'notifications' => (array) data_get($config, 'notifications', []),
+            ];
+        }
+        else {
 
-        return [
-            'module' => $module,
-            'models' => (array) data_get($config, 'models', str()->studly(str($module)->split('/\./')->last())),
-            'routes' => (array) data_get($config, 'routes', str(format_view_path($module))->finish('.php')->toString()),
-            'livewire' => (array) data_get($config, 'livewire', format_class_path($module)),
-            'enums' => (array) data_get($config, 'enums', []),
-            'jobs' => (array) data_get($config, 'jobs', []),
-            'notifications' => (array) data_get($config, 'notifications', []),
-        ];
+        }
     }
 
     // publish routes
     public function publishRoutes($config): void
     {
-        foreach (data_get($config, 'routes') as $route) {
+        $this->info('Publishing routes...');
+
+        $routes = is_string($config)
+            ? (array) str(format_view_path($config))->finish('.php')->toString()
+            : data_get($config, 'routes');
+
+        foreach ($routes as $route) {
             $path = atom_path(str($route)->start('routes/')->toString());
 
             if (!file_exists($path)) $this->error('Unable to find route at '.$path);
@@ -139,7 +146,13 @@ class PublishCommand extends Command
     // publish models
     public function publishModels($config): void
     {
-        $models = collect(data_get($config, 'models'))
+        $this->info('Publishing models...');
+
+        $models = collect(
+            is_string($config)
+                ? str($config)->replace('models.', '')->studly()
+                : data_get($config, 'models')
+        )
             ->map(fn($s) => str($s)->finish('.php'))
             ->map(fn($s) => ['src/Models/'.$s, 'app/Models/'.$s]);
 
@@ -150,90 +163,91 @@ class PublishCommand extends Command
     }
 
     // publish livewire
-    public function publishLivewire($module): void
+    public function publishLivewire($config): void
     {
-        $path = $this->getConfig($module, 'livewire', $module);
+        $this->info('Publishing livewire components...');
 
-        $this->copy([
-            // for classes
-            [
-                format_class_path($path, 'src/Http/Livewire/'), 
-                format_class_path($path, 'app/Http/Livewire/'),
-            ],
-            // for views
-            [
-                format_view_path($path, 'resources/views/livewire/'), 
-                format_view_path($path, 'resources/views/livewire/'),
-            ],
-        ]);
+        $components = is_string($config)
+            ? (array) $config
+            : data_get($config, 'livewire');
 
+        $files = collect();
+
+        foreach ($components as $component) {
+            // class
+            $source = format_class_path($component, 'src/Http/Livewire/');
+            $target = format_class_path($component, 'app/Http/Livewire/');
+    
+            if (File::exists(atom_path($source))) $files->push([$source, $target]);
+            else {
+                $source = str($source)->finish('.php')->toString();
+                $target = str($target)->finish('.php')->toString();
+    
+                if (File::exists(atom_path($source))) $files->push([$source, $target]);
+            }
+
+            // view
+            $source = format_view_path($component, 'resources/views/livewire/');
+            $target = format_view_path($component, 'resources/views/livewire/');
+
+            if (File::exists(atom_path($source))) $files->push([$source, $target]);
+            else {
+                $source = str($source)->finish('.blade.php')->toString();
+                $target = str($target)->finish('.blade.php')->toString();
+    
+                if (File::exists(atom_path($source))) $files->push([$source, $target]);
+            }            
+        };
+
+        if ($files->count()) $this->copy($files->toArray());
+        else $this->line('Nothing to publish.');
+        
         $this->newLine();
     }
 
     // publish enums
-    public function publishEnums($module): void
+    public function publishEnums($config): void
     {
-        $enums = collect($this->getConfig($module, 'enums'))
-            ->map(fn($s) => ['src/Enums/'.$s, 'app/Enums/'.$s]);
+        $enums = collect(
+            is_string($config)
+                ? format_class_path(str($config)->replace('enums.', '')->finish('.php'))
+                : data_get($config, 'enums')
+        )->map(fn($s) => ['src/Enums/'.$s, 'app/Enums/'.$s]);
 
         if ($enums->count()) {
-            $this->copy($enums);
+            $this->copy($enums->toArray());
             $this->newLine();
         }
     }
 
     // publish jobs
-    public function publishJobs($module): void
+    public function publishJobs($config): void
     {
-        $jobs = collect($this->getConfig($module, 'jobs'))
-            ->map(fn($s) => ['src/Jobs/'.$s, 'app/Jobs/'.$s]);
+        $jobs = collect(
+            is_string($config)
+                ? format_class_path(str($config)->replace('jobs.', '')->finish('.php'))
+                : data_get($config, 'jobs')
+        )->map(fn($s) => ['src/Jobs/'.$s, 'app/Jobs/'.$s]);
 
         if ($jobs->count()) {
-            $this->copy($jobs);
+            $this->copy($jobs->toArray());
             $this->newLine();
         }
     }
 
     // publish notifications
-    public function publishNotifications($module): void
+    public function publishNotifications($config): void
     {
-        $notifications = collect($this->getConfig($module, 'notifications'))
-            ->map(fn($s) => ['src/Notifications/'.$s, 'app/Notifications/'.$s]);
+        $notifications = collect(
+            is_string($config)
+                ? format_class_path(str($config)->replace('notifications.', '')->finish('.php'))
+                : data_get($config, 'notifications')
+        )->map(fn($s) => ['src/Notifications/'.$s, 'app/Notifications/'.$s]);
 
         if ($notifications->count()) {
-            $this->copy($notifications);
+            $this->copy($notifications->toArray());
             $this->newLine();
         }
-    }
-
-    // get livewire components
-    public function getLivewireComponents(): array
-    {
-        $path = __DIR__.'/../Http/Livewire';
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
-
-        return collect($iterator)
-            ->map(fn($file) => $file->getPathname())
-            ->map(fn($val) => str($val)->replace($path.'/', '')->toString())
-            ->reject(fn($val) => in_array($val, ['.', '..']) || str($val)->endsWith('..'))
-            ->values()
-            ->map(function($val) {
-                $val = str()->replace('/.', '', $val);
-
-                if ($isRoot = str($val)->split('/\//')->count() === 1) return null;
-                else {
-                    $val = str()->replaceLast('.php', '', $val);
-                    $dot = str($val)->split('/\//')->map(fn($val) => str()->kebab($val))->join('.');
-
-                    if (str($dot)->split('/\./')->count() === 2) $this->newLine();
-
-                    return $dot;
-                }
-            })
-            ->filter()
-            ->sort()
-            ->values()
-            ->toArray();
     }
 
     // replace namespace
@@ -263,13 +277,21 @@ class PublishCommand extends Command
             if (File::exists($from)) {
                 if ($this->option('force') || !File::exists($to)) {
                     if (File::isDirectory($from)) File::copyDirectory($from, $to);
-                    else File::copy($from, $to);
+                    else {
+                        $segments = collect(explode('/', $to));
+                        $segments->pop();
+                        $directory = $segments->join('/');
+                        
+                        if (!File::exists($directory)) File::makeDirectory($directory, 0755, true, true);
+
+                        File::copy($from, $to);
+                    }
     
-                    $this->info("Copied $from to $to");
+                    $this->line("Copied $from to $to");
                     $this->replaceNamespace($to);
                 }
                 else {
-                    $this->warn("Destination $to exists.");
+                    $this->line("Destination $to exists.");
                 }
             }
         }

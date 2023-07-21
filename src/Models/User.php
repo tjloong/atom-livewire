@@ -140,6 +140,15 @@ class User extends Authenticatable implements MustVerifyEmail
         );
     }
 
+    // scope for readable
+    public function scopeReadable($query): void
+    {
+        $query->when(tier('root'),
+            fn($q) => $q,
+            fn($q) => $q->tier('system'),
+        );
+    }
+
     // scope for is role
     public function scopeIsRole($query, $name): void
     {

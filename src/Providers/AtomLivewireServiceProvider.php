@@ -191,8 +191,14 @@ class AtomLivewireServiceProvider extends ServiceProvider
         ];
 
         foreach ($components as $name => $class) {
-            $ns = 'Jiannius\\Atom\\Http\\Livewire\\'.$class;
-            if (class_exists($ns)) Livewire::component($name, $ns);
+            if (
+                $ns = collect([
+                    "App\Http\Livewire\\$class",
+                    "Jiannius\Atom\Http\Livewire\\$class",
+                ])->first(fn($s) => class_exists($s))
+            ) {
+                Livewire::component($name, $ns);
+            }
         }
     }
 }
