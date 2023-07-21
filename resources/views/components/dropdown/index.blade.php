@@ -1,6 +1,7 @@
 @props([
     'icon' => $attributes->get('icon'),
     'label' => $attributes->get('label'),
+    'placement' => $attributes->get('placement', 'bottom'),
 ])
 
 <div
@@ -9,7 +10,7 @@
         show: false,
         open () {
             this.show = true
-            this.$nextTick(() => floatDropdown(this.$refs.anchor, this.$refs.dd))
+            this.$nextTick(() => floatDropdown(this.$refs.anchor, this.$refs.dd, @js($placement)))
         },
         close () {
             this.show = false

@@ -179,11 +179,11 @@ window.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => 
 }
 
 // floating for dropdown
-window.floatDropdown = (anchor, dropdown) => {
+window.floatDropdown = (anchor, dropdown, placement = 'bottom') => {
     const { computePosition, flip, shift, offset } = window.FloatingUIDOM
     
     computePosition(anchor, dropdown, {
-        placement: 'bottom',
+        placement,
         middleware: [flip(), shift({ padding: 10 }), offset(4)],
     }).then(({x, y}) => {
         Object.assign(dropdown.style, { left: `${x}px`, top: `${y}px` })
