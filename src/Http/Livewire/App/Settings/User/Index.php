@@ -18,8 +18,8 @@ class Index extends Component
     public $filters = [
         'search' => null,
         'status' => null,
-        'is_role' => null,
-        'in_team' => null,
+        'role_id' => null,
+        'team_id' => null,
     ];
 
     protected $listeners = ['refresh' => '$refresh'];

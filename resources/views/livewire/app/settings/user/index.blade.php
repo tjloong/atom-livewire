@@ -14,11 +14,11 @@
                         enum="user.status"
                     />
 
-                    <x-form.select.role wire:model="filters.is_role" :label="false"
+                    <x-form.select.role wire:model="filters.role_id" :label="false"
                         placeholder="All Roles"
                     />
 
-                    <x-form.select.team wire:model="filters.is_team" :label="false"
+                    <x-form.select.team wire:model="filters.team_id" :label="false"
                         placeholder="All Teams"
                     />
                 </div>
@@ -38,8 +38,8 @@
         @foreach ($this->paginator->items() as $user)
             <x-table.tr>
                 <x-table.td :label="$user->name" wire:click="updateOrCreate({{ $user->id }})"/>
-                @if ($this->isLoginMethod('username')) <x-table.td :label="$user->username"/> @endif
-                @if ($this->isLoginMethod('email')) <x-table.td :label="$user->email"/> @endif
+                @if ($this->isLoginMethod('username')) <x-table.td :label="$user->username ?? '--'"/> @endif
+                @if ($this->isLoginMethod('email')) <x-table.td :label="$user->email ?? '--'"/> @endif
                 @if (has_table('roles')) <x-table.td :label="$user->role->name ?? '--'"/> @endif
                 <x-table.td :status="enum('user.status', $user->status)->value"/>
             </x-table.tr>
