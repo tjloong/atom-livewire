@@ -22,9 +22,7 @@
                 <x-form.email wire:model.defer="user.email" label="Login Email"/>
             @endif
 
-            @if (tier('root') || role('admin'))
-                <x-form.password wire:model.defer="inputs.password"/>
-            @endif
+            <x-form.password wire:model.defer="inputs.password"/>
 
             @if (!$user->isTier('root'))
                 <x-form.select.role wire:model="user.role_id"/>

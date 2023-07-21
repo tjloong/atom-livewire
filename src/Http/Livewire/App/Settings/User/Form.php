@@ -38,7 +38,11 @@ class Form extends Component
                 'user.email' => [
                     'required_without:user.username' => 'Login email is required.',
                     function ($attr, $value, $fail) {
-                        if (model('user')->where('email', $value)->where('id', '<>', $this->user->id)->count()) {
+                        if ($value && model('user')
+                            ->where('email', $value)
+                            ->where('id', '<>', $this->user->id)
+                            ->count()
+                        ) {
                             $fail('Login email is taken.');
                         }
                     },
@@ -50,7 +54,11 @@ class Form extends Component
                     'required_without:user.email' => 'Username is required.',
                     'max:255' => 'Username is too long (Max 255 characters).',
                     function ($attr, $value, $fail) {
-                        if (model('user')->where('username', $value)->where('id', '<>', $this->user->id)->count()) {
+                        if ($value && model('user')
+                            ->where('username', $value)
+                            ->where('id', '<>', $this->user->id)
+                            ->count()
+                        ) {
                             $fail('Username is taken.');
                         }
                     }

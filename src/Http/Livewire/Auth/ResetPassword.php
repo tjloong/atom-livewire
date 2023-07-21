@@ -64,7 +64,7 @@ class ResetPassword extends Component
                     'email_verified_at' => now(),
                 ])->setRememberToken(str()->random(60));
     
-                $user->saveQuietly();
+                $user->save();
             }
         );
 
