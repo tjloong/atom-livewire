@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Settings\Label;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class Form extends Component
 {
@@ -80,11 +80,5 @@ class Form extends Component
         ])->save();
 
         $this->close();
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.label.form');
     }
 }

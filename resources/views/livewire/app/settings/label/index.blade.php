@@ -1,4 +1,4 @@
-<div class="max-w-screen-lg mx-auto">
+<div class="max-w-screen-md">
     <x-page-header :title="$this->title">
         <x-button icon="add"
             label="Create New"
@@ -8,8 +8,7 @@
 
     <x-box>
         @if ($this->labels->count())
-            @livewire(atom_lw('app.label.listing'), ['labels' => $this->labels], key(uniqid()))
-            @livewire(atom_lw('app.label.form'), key(uniqid()))
+            @livewire('app.settings.label.listing', ['labels' => $this->labels], key(uniqid()))
         @else
             <x-empty-state
                 :title="'No '.str($this->title)->singular()->headline()"
@@ -17,4 +16,6 @@
             />
         @endif
     </x-box>
+
+    @livewire('app.settings.label.form', key(uniqid()))
 </div>

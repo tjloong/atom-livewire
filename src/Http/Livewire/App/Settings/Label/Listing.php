@@ -1,9 +1,9 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Settings\Label;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class Listing extends Component
 {
@@ -19,11 +19,5 @@ class Listing extends Component
         }
 
         $this->popup('Sorted Labels');
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.label.listing');
     }
 }

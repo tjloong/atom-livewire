@@ -10,19 +10,17 @@ class Index extends Component
     public $version;
     public $unverified;
 
-    /**
-     * Contructor
-     */
+    // contructor
     public function __construct() 
     {
         $this->flash = $this->getFlash();
         $this->version = $this->getVersion();
-        $this->unverified = config('atom.auth.verify') && !request()->user()->hasVerifiedEmail();
+        $this->unverified = config('atom.auth.verify')
+            && user('email')
+            && !user()->hasVerifiedEmail();
     }
 
-    /**
-     * Get flash message
-     */
+    // get flash message
     public function getFlash()
     {
         if (!session()->has('flash')) return null;
@@ -34,9 +32,7 @@ class Index extends Component
         return (object)compact('message', 'type');
     }
 
-    /**
-     * Get version number
-     */
+    // get version number
     public function getVersion()
     {
         $path = base_path('.git/refs/tags');
@@ -55,9 +51,7 @@ class Index extends Component
         return $version;    
     }
 
-    /**
-     * Render
-     */
+    // render
     public function render()
     {
         return view('atom::components.admin-panel.index');

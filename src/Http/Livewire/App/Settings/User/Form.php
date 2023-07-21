@@ -104,21 +104,6 @@ class Form extends Component
         }
     }
 
-    // block
-    public function block(): void
-    {
-        if ($this->user->id === user('id')) {
-            $this->popup([
-                'title' => 'Unable To Block User',
-                'message' => 'You cannot block yourself.',
-            ], 'alert', 'error');
-        }
-        else {
-            $this->user->block();
-            $this->close();
-        }
-    }
-
     // submit
     public function submit(): void
     {

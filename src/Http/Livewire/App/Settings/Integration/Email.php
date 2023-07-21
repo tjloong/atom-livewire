@@ -2,9 +2,9 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class Email extends Component
 {
@@ -56,11 +56,5 @@ class Email extends Component
         settings($this->settings);
         
         $this->popup('Email Configurations Updated.');
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.settings.integration.email');
     }
 }

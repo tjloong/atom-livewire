@@ -38,7 +38,7 @@ function enum($name, $value = null)
     if (is_null($value)) return collect($ns::cases());
     else {
         if ($ret = $ns::tryFrom($value)) return $ret;
-        if ($ret = $ns::$value) return $ret;
+        if ($ret = constant("$ns::$value")) return $ret;
     }
 }
 

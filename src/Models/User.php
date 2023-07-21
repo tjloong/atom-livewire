@@ -32,7 +32,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_root' => 'boolean',
         'signup_at' => 'datetime',
         'onboarded_at' => 'datetime',
-        'activated_at' => 'datetime',
         'login_at' => 'datetime',
         'last_active_at' => 'datetime',
         'email_verified_at' => 'datetime',
@@ -243,21 +242,11 @@ class User extends Authenticatable implements MustVerifyEmail
     // generate status
     public function generateStatus(): string
     {
-        if ($this->trashed()) return 'trashed';
-        if ($this->blocked()) return 'blocked';
+        if ($this->trashed()) $status = enum('user.status', 'TRASHED');
+        else if ($this->blocked()) $status = enum('user.status', 'BLOCKED');
+        else if ($this->password) $status = enum('user.status', 'ACTIVE');
+        else $status = enum('user.status', 'INACTIVE');
 
-        if ($this->isTier('signup')) {
-            if ($this->onboarded_at) return 'onboarded';
-            if ($this->signup_at) return 'new';
-        }
-        else if ($this->password) return 'active';
-
-        return 'inactive';
-    }
-
-    // check user can access portal
-    public function canAccessPortal($portal): bool
-    {
-        return true;
+        return $status->value;
     }
 }

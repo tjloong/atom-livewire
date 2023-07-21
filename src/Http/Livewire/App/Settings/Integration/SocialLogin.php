@@ -2,9 +2,9 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class SocialLogin extends Component
 {
@@ -25,6 +25,8 @@ class SocialLogin extends Component
     // mount
     public function mount(): void
     {
+        parent::mount();
+
         $this->settings = collect($this->platforms)
             ->mapWithKeys(fn($platform) => [
                 $platform.'_client_id' => settings($platform.'_client_id'),
@@ -36,7 +38,10 @@ class SocialLogin extends Component
     // get platforms property
     public function getPlatformsProperty(): array
     {
-        return config('atom.auth.login', []);
+        return collect(config('atom.auth.login', []))
+            ->reject('email')
+            ->reject('username')
+            ->toArray();
     }
 
     // get platform labels property
@@ -83,11 +88,5 @@ class SocialLogin extends Component
         settings($this->settings);
 
         $this->popup('Social Login Credentials Updated.');
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.settings.integration.social-login');
     }
 }

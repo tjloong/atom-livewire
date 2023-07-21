@@ -37,6 +37,10 @@ class Index extends Component
                 ['slug' => 'file', 'label' => 'Files and Media', 'icon' => 'images'],
             ]],
 
+            ['group' => 'Labels', 'tabs' => [
+                ['slug' => 'label/blog-category', 'label' => 'Blog Categories', 'icon' => 'tag'],
+            ]],
+
             ['group' => 'Website', 'tabs' => [
                 ['slug' => 'website/profile', 'label' => 'Profile', 'icon' => 'globe'],
                 ['slug' => 'website/seo', 'label' => 'SEO', 'icon' => 'search'],

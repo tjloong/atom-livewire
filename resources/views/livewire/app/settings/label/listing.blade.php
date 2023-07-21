@@ -33,7 +33,7 @@
                         class="border rounded"
                     >
                         @livewire(
-                            atom_lw('app.label.listing'), 
+                            'app.settings.label.listing',
                             ['labels' => $label->children->sortBy('seq')],
                             key('children-for-'.$label->id),
                         )

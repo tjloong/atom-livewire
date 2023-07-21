@@ -1,9 +1,6 @@
 <div class="max-w-screen-md">
     <x-page-header title="Login Information"/>
 
-    @json($currentRouteName)
-    @json($currentUrl)
-
     <x-form>
         @if ($this->isLoginMethod('username') && $this->isLoginMethod('email'))
             <x-form.group cols="2">

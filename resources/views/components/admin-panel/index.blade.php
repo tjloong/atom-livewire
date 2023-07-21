@@ -79,6 +79,12 @@
                     </div>
                 </div>
             @endisset
+
+            @if ($version && tier('root'))
+                <div class="shrink-0 text-sm uppercase text-white px-6 pb-2 font-medium">
+                    V{{ $version }}
+                </div>
+            @endif
         </div>
     </aside>
 
@@ -123,7 +129,7 @@
         </div>
 
         @if ($unverified)
-            <div x-data class="shrink-0 py-3 px-4 bg-yellow-100 print:hidden">
+            <div x-data class="shrink-0 py-3 px-4 bg-yellow-100 border-b border-yellow-200">
                 <div class="flex flex-wrap items-center gap-2">
                     <x-icon name="triangle-exclamation" class="shrink-0 text-yellow-400"/>
                     <div class="font-medium text-yellow-600">

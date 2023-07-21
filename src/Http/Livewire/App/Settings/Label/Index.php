@@ -1,25 +1,30 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Settings\Label;
 
 use Illuminate\Database\Eloquent\Collection;
-use Livewire\Component;
+use Jiannius\Atom\Component;
 
 class Index extends Component
 {
     public $type;
-    public $header;
 
     protected $listeners = [
         'updateOrCreate',
         'refresh' => '$refresh',
     ];
 
+    // mount
+    public function mount($params = []): void
+    {
+        parent::mount();
+
+        $this->type = $this->type ?? head($params);
+    }
+
     // get title property
     public function getTitleProperty(): string
     {
-        if ($this->header) return $this->header;
-
         return $this->type
             ? str($this->type)->headline()->plural()->toString()
             : 'Labels';
@@ -40,12 +45,6 @@ class Index extends Component
     // update or create
     public function updateOrCreate($data = null): void
     {
-        $this->emit('open', $data)->to(atom_lw('app.label.form'));
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.label');
+        $this->emit('open', $data)->to('app.settings.label.form');
     }
 }

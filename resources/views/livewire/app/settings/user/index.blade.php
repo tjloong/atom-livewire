@@ -41,7 +41,7 @@
                 @if ($this->isLoginMethod('username')) <x-table.td :label="$user->username"/> @endif
                 @if ($this->isLoginMethod('email')) <x-table.td :label="$user->email"/> @endif
                 @if (has_table('roles')) <x-table.td :label="$user->role->name ?? '--'"/> @endif
-                <x-table.td :status="$user->status"/>
+                <x-table.td :status="enum('user.status', $user->status)->value"/>
             </x-table.tr>
         @endforeach
 
