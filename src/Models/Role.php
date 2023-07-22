@@ -17,17 +17,13 @@ class Role extends Model
     
     protected $guarded = [];
 
-    /**
-     * Get users for role
-     */
+    // get users for role
     public function users(): HasMany
     {
         return $this->hasMany(model('user'));
     }
 
-    /**
-     * Attribute for is admin
-     */
+    // attribute for is admin
     protected function isAdmin(): Attribute
     {
         return Attribute::make(
@@ -35,17 +31,13 @@ class Role extends Model
         );
     }
 
-    /**
-     * Scope for fussy search
-     */
+    // scope for fussy search
     public function scopeSearch($query, $search): void
     {
         $query->where('name', 'like', "%$search%");
     }
 
-    /**
-     * Scope for is admin
-     */
+    // scope for is admin
     public function scopeIsAdmin($query): void
     {
         $query->whereIn('slug', ['admin', 'administrator']);

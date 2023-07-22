@@ -16,6 +16,14 @@ class UserSetting extends Model
         'user_id' => 'integer',
     ];
 
+    // booted
+    protected static function booted(): void
+    {
+        static::saved(function() {
+            cache()->forget('user_settings');
+        });
+    }
+
     // get user for settings
     public function user(): BelongsTo
     {

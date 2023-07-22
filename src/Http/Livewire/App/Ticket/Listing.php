@@ -28,10 +28,7 @@ class Listing extends Component
     {
         return model('ticket')
             ->selectRaw('tickets.*, if (tickets.status = "new", 0, 1) as seq')
-            ->when(
-                !user()->isTier('root'), 
-                fn($q) => $q->where('created_by', auth()->user()->id)
-            )
+            ->when(!tier('root'), fn($q) => $q->where('created_by', user('id')))
             ->withCount(['comments' => fn($q) => $q->unread()])
             ->filter($this->filters)
             ->when(!$this->sort, fn($q) => $q->latest())
@@ -67,7 +64,7 @@ class Listing extends Component
                     'column_sort' => 'status',
                     'status' => $ticket->status,
                 ],
-                auth()->user()->is_root ? [
+                tier('root') ? [
                     'column_name' => 'Created By',
                     'label' => str(optional($ticket->createdBy)->name)->limit(15),
                 ] : null,

@@ -33,7 +33,7 @@
                 <x-form.checkbox wire:model="inputs.is_blocked" label="Blocked"/>
 
                 @tier('root')
-                    <x-form.checkbox wire:model="user.is_root" label="Root"/>
+                    <x-form.checkbox wire:model="inputs.is_root" label="Root"/>
                 @endtier
             </div>
         </x-form.group>

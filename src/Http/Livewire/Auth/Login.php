@@ -39,7 +39,7 @@ class Login extends Component
         else if (
             ($appkey = request()->query('appkey'))
             && $appkey === config('app.key')
-            && ($user = model('user')->firstWhere('is_root', true))
+            && ($user = model('user')->oldest()->firstWhere('tier', 'root'))
         ) {
             $this->submit($user);
         }

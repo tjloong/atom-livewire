@@ -65,9 +65,6 @@ class FileController extends Controller
      */
     public function verify($file)
     {
-        return auth()->user() && (
-            auth()->user()->id === $file->created_by
-            || auth()->user()->is_root
-        );
+        return user() && (user('id') === $file->created_by || tier('root'));
     }
 }

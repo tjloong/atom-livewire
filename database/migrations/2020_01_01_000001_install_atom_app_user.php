@@ -26,9 +26,9 @@ return new class extends Migration
             $table->timestamp('login_at')->nullable()->after('remember_token');
             $table->timestamp('onboarded_at')->nullable()->after('remember_token');
             $table->timestamp('signup_at')->nullable()->after('remember_token');
-            $table->boolean('is_root')->nullable()->after('remember_token');
             $table->string('status')->nullable()->after('remember_token');
             $table->json('data')->nullable()->after('remember_token');
+            $table->string('tier')->nullable()->after('remember_token');
             $table->timestamp('blocked_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
@@ -44,18 +44,16 @@ return new class extends Migration
         });
 
         // create root user
-        if (!DB::table('users')->where('email', $this->rootEmail)->count()) {
-            DB::table('users')->insert([
+        if (!model('user')->where('email', $this->rootEmail)->count()) {
+            model('user')->forceFill([
                 'name' => 'Root',
                 'username' => $this->rootUsername,
                 'email' => $this->rootEmail,
                 'password' => bcrypt($this->rootPassword),
                 'status' => 'active',
-                'is_root' => true,
+                'tier' => 'root',
                 'email_verified_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            ])->save();
         }
     }
 
@@ -71,12 +69,10 @@ return new class extends Migration
         Schema::table('users', function(Blueprint $table) {
             $table->dropColumn('last_active_at');
             $table->dropColumn('login_at');
-            $table->dropColumn('activated_at');
             $table->dropColumn('onboarded_at');
             $table->dropColumn('signup_at');
-            $table->dropColumn('is_root');
+            $table->dropColumn('tier');
             $table->dropColumn('status');
-            $table->dropColumn('visibility');
             $table->dropColumn('data');
             $table->dropColumn('blocked_at');
             $table->dropColumn('deleted_at');

@@ -21,7 +21,7 @@ return new class extends Migration
         });
 
         Schema::table('users', function ($table) {
-            $table->foreignId('role_id')->nullable()->after('is_root')->constrained('roles')->onDelete('set null');
+            $table->foreignId('role_id')->nullable()->after('status')->constrained('roles')->onDelete('set null');
         });
     }
 

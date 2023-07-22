@@ -31,7 +31,6 @@ class Form extends Component
                     'required' => 'Name is required.',
                     'max:255' => 'Name is too long (Max 255 characters).',
                 ],
-                'user.is_root' => ['nullable'],
             ],
 
             $this->isLoginMethod('email') ? [
@@ -78,10 +77,11 @@ class Form extends Component
 
         $this->user = $id 
             ? model('user')->readable()->withTrashed()->findOrFail($id)
-            : model('user')->fill(['is_root' => tier('root')]);
+            : model('user');
 
         $this->fill([
             'inputs.password' => null,
+            'inputs.is_root' => $this->user->exists ? $this->user->isTier('root') : tier('root'),
             'inputs.is_blocked' => !empty($this->user->blocked_at),
         ]);
 
@@ -118,6 +118,7 @@ class Form extends Component
         $this->validateForm();
 
         $this->user->fill([
+            'tier' => data_get($this->inputs, 'is_root') ? 'root' : 'normal',
             'blocked_at' => data_get($this->inputs, 'is_blocked')
                 ? ($this->user->blocked_at ?? now())
                 : null,
