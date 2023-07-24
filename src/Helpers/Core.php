@@ -8,6 +8,19 @@ use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
 
+// explode if separator matched
+function explode_if($separator, $string)
+{
+    if (is_string($separator) && str($string)->is('*'.$separator.'*')) return explode($separator, $string);
+    else if (is_array($separator)) {
+        foreach ($separator as $sep) {
+            if (str($string)->is('*'.$sep.'*')) return explode($sep, $string);
+        }
+    }
+
+    return $string;
+}
+
 // check has command
 function has_command($name)
 {
@@ -217,16 +230,6 @@ function tabs($tabs, $slug = false)
 function breadcrumbs()
 {
     return app('breadcrumbs');
-}
-
-/**
- * Tenant
- */
-function tenant($attr = null, $default = null, $tenant = null)
-{
-    if (!has_table('tenants')) return;
-
-    return model('tenant')->retrieve($attr, $default, $tenant);
 }
 
 /**

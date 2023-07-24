@@ -31,7 +31,7 @@ class Update extends Component
      */
     public function mount($subscriptionId): void
     {
-        $this->authorize('tier:root');
+        $this->authorize('tier', 'root');
 
         $this->subscription = model('plan_subscription')->readable()->findOrFail($subscriptionId);
 

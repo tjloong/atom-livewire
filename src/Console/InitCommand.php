@@ -79,7 +79,7 @@ class InitCommand extends Command
         });
 
         $routes = base_path('routes/web.php');
-        file_put_contents($routes, "<?php\n");
+        file_put_contents($routes, "<?php\n\$route = app('route')\n");
     }
 
     // update package.json

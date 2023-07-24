@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('permission');
-            $table->boolean('is_granted')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permission');
+        Schema::dropIfExists('permissions');
     }
 };
