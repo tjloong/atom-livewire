@@ -39,6 +39,15 @@ class AtomServiceProvider extends ServiceProvider
         $router = app('router');
         $router->aliasMiddleware('track-ref', \Jiannius\Atom\Http\Middleware\TrackReferer::class);
 
+        // breadcrumbs service container
+        $this->app->singleton('breadcrumbs', fn() => new \Jiannius\Atom\Services\Breadcrumbs);
+        if (($breadcrumbs = base_path('routes/breadcrumbs.php')) && file_exists($breadcrumbs)) {
+            $this->loadRoutesFrom($breadcrumbs);
+        }
+
+        // route service container
+        $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
+
         // custom polymorphic types
         if ($morphMap = config('atom.morph_map')) {
             Relation::enforceMorphMap($morphMap);

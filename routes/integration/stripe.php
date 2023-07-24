@@ -1,7 +1,6 @@
 <?php
 
-define_route()->prefix('__stripe')->as('__stripe.')->group(function() {
-    define_route('success', 'StripeController@success')->name('success');
-    define_route('cancel', 'StripeController@cancel')->name('cancel');
-    define_route('webhook', 'StripeController@webhook', 'post')->name('webhook');
-});
+// stripe
+$route->get('__stripe/success', 'StripeController@success')->name('__stripe.success');
+$route->get('__stripe/cancel', 'StripeController@cancel')->name('__stripe.cancel');
+$route->get('__stripe/webhook', 'StripeController@webhook', 'post')->name('__stripe.webhook');

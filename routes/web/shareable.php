@@ -1,3 +1,3 @@
 <?php
 
-define_route('shareable/{id}', 'Shareable')->name('shareable');
+$route->get('shareable/{id}', 'Shareable')->name('shareable');

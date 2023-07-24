@@ -1,3 +1,3 @@
 <?php
 
-define_route('blog/{slug?}', 'Web\Blog')->name('web.blog');
+$route->get('blog/{slug?}', 'Web\Blog')->name('web.blog');
