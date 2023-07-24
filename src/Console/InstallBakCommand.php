@@ -163,48 +163,48 @@ class InstallBakCommand extends Command
     /**
      * Install tenants
      */
-    private function installTenants()
-    {
-        $this->newLine();
-        $this->info('Installing tenants table...');
+    // private function installTenants()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing tenants table...');
 
-        if (Schema::hasTable('tenants')) $this->warn('tenants table exists, skipped.');
-        else {
-            Schema::create('tenants', function(Blueprint $table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->string('email')->nullable();
-                $table->string('phone')->nullable();
-                $table->string('fax')->nullable();
-                $table->string('website')->nullable();
-                $table->string('brn')->nullable();
-                $table->text('address_1')->nullable();
-                $table->text('address_2')->nullable();
-                $table->string('city')->nullable();
-                $table->string('zip')->nullable();
-                $table->string('state')->nullable();
-                $table->string('country')->nullable();
-                $table->foreignId('avatar_id')->nullable()->constrained('files')->onDelete('set null');
-                $table->timestamps();
-            });
+    //     if (Schema::hasTable('tenants')) $this->warn('tenants table exists, skipped.');
+    //     else {
+    //         Schema::create('tenants', function(Blueprint $table) {
+    //             $table->id();
+    //             $table->string('name')->nullable();
+    //             $table->string('email')->nullable();
+    //             $table->string('phone')->nullable();
+    //             $table->string('fax')->nullable();
+    //             $table->string('website')->nullable();
+    //             $table->string('brn')->nullable();
+    //             $table->text('address_1')->nullable();
+    //             $table->text('address_2')->nullable();
+    //             $table->string('city')->nullable();
+    //             $table->string('zip')->nullable();
+    //             $table->string('state')->nullable();
+    //             $table->string('country')->nullable();
+    //             $table->foreignId('avatar_id')->nullable()->constrained('files')->onDelete('set null');
+    //             $table->timestamps();
+    //         });
 
-            Schema::create('tenant_settings', function (Blueprint $table) {
-                $table->id();
-                $table->string('key')->indexed();
-                $table->json('value')->nullable();
-                $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
-            });
+    //         Schema::create('tenant_settings', function (Blueprint $table) {
+    //             $table->id();
+    //             $table->string('key')->indexed();
+    //             $table->json('value')->nullable();
+    //             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+    //         });
 
-            Schema::create('user_tenants', function (Blueprint $table) {
-                $table->id();
-                $table->string('visibility')->nullable();
-                $table->boolean('is_owner')->nullable();
-                $table->boolean('is_preferred')->nullable();
-                $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
-                $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            });
-        }
-    }
+    //         Schema::create('user_tenants', function (Blueprint $table) {
+    //             $table->id();
+    //             $table->string('visibility')->nullable();
+    //             $table->boolean('is_owner')->nullable();
+    //             $table->boolean('is_preferred')->nullable();
+    //             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+    //             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    //         });
+    //     }
+    // }
 
     /**
      * Install shareables
@@ -301,98 +301,98 @@ class InstallBakCommand extends Command
     /**
      * Install plans
      */
-    private function installPlans()
-    {
-        $this->newLine();
-        $this->info('Installing plans module...');
+    // private function installPlans()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing plans module...');
+    // 
+    //     if (Schema::hasTable('plans')) $this->warn('plans table exists, skipped.');
+    //     else {
+    //         Schema::create('plans', function(Blueprint $table) {
+    //             $table->id();
+    //             $table->string('code')->unique();
+    //             $table->string('name')->nullable();
+    //             $table->text('description')->nullable();
+    //             $table->text('features')->nullable();
+    //             $table->string('country')->nullable();
+    //             $table->string('currency')->nullable();
+    //             $table->integer('trial')->nullable();
+    //             $table->boolean('is_unique_trial')->nullable();
+    //             $table->boolean('is_active')->nullable();
+    //             $table->timestamps();
+    //             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+    //         });
+    //         $this->line('plans table created successfully.');
+    //     }
 
-        if (Schema::hasTable('plans')) $this->warn('plans table exists, skipped.');
-        else {
-            Schema::create('plans', function(Blueprint $table) {
-                $table->id();
-                $table->string('code')->unique();
-                $table->string('name')->nullable();
-                $table->text('description')->nullable();
-                $table->text('features')->nullable();
-                $table->string('country')->nullable();
-                $table->string('currency')->nullable();
-                $table->integer('trial')->nullable();
-                $table->boolean('is_unique_trial')->nullable();
-                $table->boolean('is_active')->nullable();
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-            $this->line('plans table created successfully.');
-        }
+    //     if (Schema::hasTable('plan_prices')) $this->warn('plan_prices table exists, skipped.');
+    //     else {
+    //         Schema::create('plan_prices', function(Blueprint $table) {
+    //             $table->id();
+    //             $table->string('code')->unique();
+    //             $table->decimal('amount', 20, 2)->nullable();
+    //             $table->string('description')->nullable();
+    //             $table->json('valid')->nullable();
+    //             $table->boolean('is_recurring')->nullable();
+    //             $table->boolean('is_active')->nullable();
+    //             $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+    //             $table->timestamps();
+    //             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+    //         });
+    //         $this->line('plan_prices table created successfully');
+    //     }
 
-        if (Schema::hasTable('plan_prices')) $this->warn('plan_prices table exists, skipped.');
-        else {
-            Schema::create('plan_prices', function(Blueprint $table) {
-                $table->id();
-                $table->string('code')->unique();
-                $table->decimal('amount', 20, 2)->nullable();
-                $table->string('description')->nullable();
-                $table->json('valid')->nullable();
-                $table->boolean('is_recurring')->nullable();
-                $table->boolean('is_active')->nullable();
-                $table->foreignId('plan_id')->constrained()->onDelete('cascade');
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-            $this->line('plan_prices table created successfully');
-        }
+    //     if (Schema::hasTable('plan_upgrades')) $this->warn('plan_upgrades table exists, skipped.');
+    //     else {
+    //         Schema::create('plan_upgrades', function(Blueprint $table) {
+    //             $table->id();
+    //             $table->foreignId('plan_id')->nullable()->constrained()->onDelete('cascade');
+    //             $table->foreignId('upgrade_id')->nullable()->constrained('plans')->onDelete('cascade');
+    //         });
+    //         $this->line('plan_upgrades table created successfully');
+    //     }
 
-        if (Schema::hasTable('plan_upgrades')) $this->warn('plan_upgrades table exists, skipped.');
-        else {
-            Schema::create('plan_upgrades', function(Blueprint $table) {
-                $table->id();
-                $table->foreignId('plan_id')->nullable()->constrained()->onDelete('cascade');
-                $table->foreignId('upgrade_id')->nullable()->constrained('plans')->onDelete('cascade');
-            });
-            $this->line('plan_upgrades table created successfully');
-        }
+    //     if (Schema::hasTable('plan_payments')) $this->warn('plan_payments table exists, skipped.');
+    //     else {
+    //         Schema::create('plan_payments', function(Blueprint $table) {
+    //             $table->id();
+    //             $table->string('number')->nullable()->unique();
+    //             $table->string('currency')->nullable();
+    //             $table->decimal('amount', 20, 2)->nullable();
+    //             $table->string('mode')->nullable();
+    //             $table->string('description')->nullable();
+    //             $table->string('status')->nullable();
+    //             $table->json('data')->nullable();
+    //             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+    //             $table->timestamps();
+    //             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+    //         });
+    //         $this->line('plan_payments table created successfully.');
+    //     }
 
-        if (Schema::hasTable('plan_payments')) $this->warn('plan_payments table exists, skipped.');
-        else {
-            Schema::create('plan_payments', function(Blueprint $table) {
-                $table->id();
-                $table->string('number')->nullable()->unique();
-                $table->string('currency')->nullable();
-                $table->decimal('amount', 20, 2)->nullable();
-                $table->string('mode')->nullable();
-                $table->string('description')->nullable();
-                $table->string('status')->nullable();
-                $table->json('data')->nullable();
-                $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-            $this->line('plan_payments table created successfully.');
-        }
+    //     if (Schema::hasTable('plan_subscriptions')) $this->warn('plan_subscriptions table exists, skipped.');
+    //     else {
+    //         Schema::create('plan_subscriptions', function(Blueprint $table) {
+    //             $table->id();
+    //             $table->string('currency')->nullable();
+    //             $table->decimal('amount', 20, 2)->nullable();
+    //             $table->decimal('discounted_amount', 20, 2)->nullable();
+    //             $table->integer('extension')->nullable();
+    //             $table->json('data')->nullable();
+    //             $table->boolean('is_trial')->nullable();
+    //             $table->timestamp('start_at')->nullable();
+    //             $table->timestamp('end_at')->nullable();
+    //             $table->timestamp('terminated_at')->nullable();
+    //             $table->timestamp('provisioned_at')->nullable();
+    //             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+    //             $table->foreignId('price_id')->nullable()->constrained('plan_prices')->onDelete('set null');
+    //             $table->foreignId('payment_id')->nullable()->constrained('plan_payments')->onDelete('cascade');
+    //             $table->timestamps();
+    //         });
 
-        if (Schema::hasTable('plan_subscriptions')) $this->warn('plan_subscriptions table exists, skipped.');
-        else {
-            Schema::create('plan_subscriptions', function(Blueprint $table) {
-                $table->id();
-                $table->string('currency')->nullable();
-                $table->decimal('amount', 20, 2)->nullable();
-                $table->decimal('discounted_amount', 20, 2)->nullable();
-                $table->integer('extension')->nullable();
-                $table->json('data')->nullable();
-                $table->boolean('is_trial')->nullable();
-                $table->timestamp('start_at')->nullable();
-                $table->timestamp('end_at')->nullable();
-                $table->timestamp('terminated_at')->nullable();
-                $table->timestamp('provisioned_at')->nullable();
-                $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
-                $table->foreignId('price_id')->nullable()->constrained('plan_prices')->onDelete('set null');
-                $table->foreignId('payment_id')->nullable()->constrained('plan_payments')->onDelete('cascade');
-                $table->timestamps();
-            });
-
-            $this->line('plan_subscriptions table created successfully.');
-        }
-    }
+    //         $this->line('plan_subscriptions table created successfully.');
+    //     }
+    // }
 
     /**
      * Install tickets
@@ -507,33 +507,33 @@ class InstallBakCommand extends Command
     /**
      * Install teams
      */
-    private function installTeams()
-    {
-        $this->newLine();
-        $this->info('Installing teams...');
+    // private function installTeams()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing teams...');
 
-        if (Schema::hasTable('teams')) $this->warn('teams table exists, skipped.');
-        else {
-            Schema::create('teams', function ($table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->text('description')->nullable();
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-            $this->line('teams table created successfully.');
-        }
+    //     if (Schema::hasTable('teams')) $this->warn('teams table exists, skipped.');
+    //     else {
+    //         Schema::create('teams', function ($table) {
+    //             $table->id();
+    //             $table->string('name')->nullable();
+    //             $table->text('description')->nullable();
+    //             $table->timestamps();
+    //             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+    //         });
+    //         $this->line('teams table created successfully.');
+    //     }
 
-        if (Schema::hasTable('team_users')) $this->warn('team_users table exists, skipped.');
-        else {
-            Schema::create('team_users', function ($table) {
-                $table->id();
-                $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('cascade');
-                $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
-            });
-            $this->line('team_users table created successfully.');
-        }
-    }
+    //     if (Schema::hasTable('team_users')) $this->warn('team_users table exists, skipped.');
+    //     else {
+    //         Schema::create('team_users', function ($table) {
+    //             $table->id();
+    //             $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('cascade');
+    //             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+    //         });
+    //         $this->line('team_users table created successfully.');
+    //     }
+    // }
 
     /**
      * Install pages
@@ -577,28 +577,28 @@ class InstallBakCommand extends Command
     /**
      * Install taxes
      */
-    private function installTaxes()
-    {
-        $this->newLine();
-        $this->info('Installing taxes module...');
+    // private function installTaxes()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing taxes module...');
 
-        if (Schema::hasTable('taxes')) $this->warn('taxes table exists, skipped.');
-        else {
-            Schema::create('taxes', function($table) {
-                $table->id();
-                $table->string('name');
-                $table->decimal('rate', 20, 2)->nullable();
-                $table->string('country')->nullable();
-                $table->string('state')->nullable();
-                $table->boolean('is_active')->nullable();
-                $table->timestamps();
-                $table->softDeletes();
-                $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
-            });
+    //     if (Schema::hasTable('taxes')) $this->warn('taxes table exists, skipped.');
+    //     else {
+    //         Schema::create('taxes', function($table) {
+    //             $table->id();
+    //             $table->string('name');
+    //             $table->decimal('rate', 20, 2)->nullable();
+    //             $table->string('country')->nullable();
+    //             $table->string('state')->nullable();
+    //             $table->boolean('is_active')->nullable();
+    //             $table->timestamps();
+    //             $table->softDeletes();
+    //             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+    //         });
 
-            $this->line('taxes table created successfully.');
-        }
-    }
+    //         $this->line('taxes table created successfully.');
+    //     }
+    // }
 
     // /**
     //  * Install permissions
@@ -652,25 +652,25 @@ class InstallBakCommand extends Command
     /**
      * Install invitations
      */
-    private function installInvitations()
-    {
-        $this->newLine();
-        $this->info('Installing invitations module...');
+    // private function installInvitations()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing invitations module...');
 
-        if (Schema::hasTable('invitations')) $this->warn('invitations table exists, skipped.');
-        else {
-            Schema::create('invitations', function (Blueprint $table) {
-                $table->id();
-                $table->string('email')->nullable();
-                $table->json('data')->nullable();
-                $table->datetime('accepted_at')->nullable();
-                $table->datetime('declined_at')->nullable();
-                $table->datetime('expired_at')->nullable();
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
-            });
-        }
-    }
+    //     if (Schema::hasTable('invitations')) $this->warn('invitations table exists, skipped.');
+    //     else {
+    //         Schema::create('invitations', function (Blueprint $table) {
+    //             $table->id();
+    //             $table->string('email')->nullable();
+    //             $table->json('data')->nullable();
+    //             $table->datetime('accepted_at')->nullable();
+    //             $table->datetime('declined_at')->nullable();
+    //             $table->datetime('expired_at')->nullable();
+    //             $table->timestamps();
+    //             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
+    //         });
+    //     }
+    // }
 
     // /**
     //  * Install site settings
