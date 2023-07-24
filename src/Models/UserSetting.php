@@ -7,20 +7,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserSetting extends Model
 {
-    public $timestamps = false;
-
     protected $guarded = [];
 
-    protected $casts = [
-        'value' => 'array',
-        'user_id' => 'integer',
-    ];
+    public $timestamps = false;
 
     // booted
     protected static function booted(): void
     {
         static::saved(function() {
-            cache()->forget('user_settings');
+            session()->forget('user_settings');
         });
     }
 
@@ -43,6 +38,5 @@ class UserSetting extends Model
                 'user_id' => $userId,
             ]);
         }
-
     }
 }

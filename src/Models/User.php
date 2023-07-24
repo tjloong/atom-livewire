@@ -5,12 +5,10 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasTrace;
-use Jiannius\Atom\Traits\Models\User\HasSettings;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -18,7 +16,6 @@ class User extends Authenticatable
     use HasApiTokens;
     use HasFactory;
     use HasFilters;
-    use HasSettings;
     use HasTrace;
     use Notifiable;
     use SoftDeletes;
@@ -48,48 +45,7 @@ class User extends Authenticatable
             $user->status = $user->generateStatus();
         });
     }
-
-    // get permissions for user
-    public function permissions(): mixed
-    {
-        if (!has_table('permissions')) return null;
-
-        return $this->hasMany(model('permission'));
-    }
-    
-    // get subscriptions for user
-    public function subscriptions(): mixed
-    {
-        if (!has_table('plans')) return null;
-
-        return $this->hasMany(model('plan_subscription'));
-    }
-
-    // get tenants for user
-    public function tenants(): mixed
-    {
-        if (!has_table('tenants')) return null;
-
-        return $this->belongsToMany(model('tenant'), 'user_tenants')->withPivot([
-            'visibility',
-            'is_owner',
-            'is_preferred',
-        ]);
-    }
-
-    // attribute for visibility
-    protected function visibility(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                if (!has_table('tenants')) return null;
-                if (!tenant()) return null;
-
-                return tenant()->users->firstWhere('id', $this->id)->pivot->visibility;
-            },
-        );
-    }
-
+   
     // scope for fussy search
     public function scopeSearch($query, $search): void
     {
@@ -125,16 +81,6 @@ class User extends Authenticatable
     public function isTier($tiers): bool
     {
         return collect($tiers)->contains($this->tier);
-    }
-
-    // check user is tenant owner
-    public function isTenantOwner($tenant = null)
-    {
-        if (!has_table('tenants')) return false;
-        
-        if ($tenant = $tenant ?? tenant()) return !empty($tenant->owners->where('id', $this->id)->first());
-
-        return false;
     }
 
     // send password reset link
