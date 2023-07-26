@@ -37,6 +37,7 @@ class MigrateCommand extends Command
             ) {
                 foreach ([
                     'app.user',
+                    'app.signup',
                     'app.label',
                     'app.file',
                     'app.setting',

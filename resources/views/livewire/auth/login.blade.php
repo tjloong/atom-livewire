@@ -23,7 +23,7 @@
                 @endif
             </div>
         </x-form.group>
-        
+
         <x-slot:foot>
             <x-button.submit label="Login" icon="login" size="md" color="theme" block/>
             <x-button.social-login size="md" divider="OR LOGIN WITH"/>

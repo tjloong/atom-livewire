@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasTrace;
@@ -31,7 +32,6 @@ class User extends Authenticatable
 
     protected $casts = [
         'data' => 'array',
-        'signup_at' => 'datetime',
         'onboarded_at' => 'datetime',
         'login_at' => 'datetime',
         'last_active_at' => 'datetime',
@@ -45,14 +45,19 @@ class User extends Authenticatable
             $user->status = $user->generateStatus();
         });
     }
-   
+
+    // get signup for user
+    public function signup(): HasOne
+    {
+        return $this->hasOne(model('signup'));
+    }
+
     // scope for fussy search
     public function scopeSearch($query, $search): void
     {
         $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
-            ->orWhere('data->signup->channel', $search)
         );
     }
 

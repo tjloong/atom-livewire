@@ -1,3 +1,4 @@
 <?php
 
-define_route('onboarding/{tab?}', 'App\Onboarding')->name('onboarding');
+// app/onboarding
+$route->get('app/onboarding/{tab?}', 'App\Onboarding')->name('app.onboarding');

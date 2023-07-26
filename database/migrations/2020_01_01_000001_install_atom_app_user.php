@@ -25,7 +25,6 @@ return new class extends Migration
             $table->timestamp('last_active_at')->nullable()->after('remember_token');
             $table->timestamp('login_at')->nullable()->after('remember_token');
             $table->timestamp('onboarded_at')->nullable()->after('remember_token');
-            $table->timestamp('signup_at')->nullable()->after('remember_token');
             $table->string('status')->nullable()->after('remember_token');
             $table->json('data')->nullable()->after('remember_token');
             $table->string('tier')->nullable()->after('remember_token');
@@ -70,7 +69,6 @@ return new class extends Migration
             $table->dropColumn('last_active_at');
             $table->dropColumn('login_at');
             $table->dropColumn('onboarded_at');
-            $table->dropColumn('signup_at');
             $table->dropColumn('tier');
             $table->dropColumn('status');
             $table->dropColumn('data');

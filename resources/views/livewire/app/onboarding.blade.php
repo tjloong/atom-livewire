@@ -18,7 +18,7 @@
                 </div>
             
                 <div>
-                    <x-button wire:click="close" label="Back to Home" size="md" icon="house"/>
+                    <x-button wire:click="completed" label="Back to Home" size="md" icon="house"/>
                 </div>
             </div>
         @else
@@ -69,9 +69,9 @@
                 <div class="{{ count($this->tabs) > 1 ? 'md:w-3/4' : 'w-full' }}">
                     @if ($com = data_get(collect($this->tabs)->firstWhere('slug', $tab), 'livewire'))
                         @if (is_string($com)) 
-                            @livewire(atom_lw($com), ['onboarding' => true], key($tab))
+                            @livewire($com, ['onboarding' => true], key($tab))
                         @else 
-                            @livewire(atom_lw(data_get($com, 'name')), array_merge(
+                            @livewire(data_get($com, 'name'), array_merge(
                                 ['onboarding' => true],
                                 data_get($com, 'data'),
                             ),key($tab))

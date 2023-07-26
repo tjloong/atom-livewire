@@ -538,41 +538,41 @@ class InstallBakCommand extends Command
     /**
      * Install pages
      */
-    private function installPages()
-    {
-        $this->newLine();
-        $this->info('Installing pages...');
+    // private function installPages()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing pages...');
 
-        if (Schema::hasTable('pages')) $this->warn('pages table exists, skipped.');
-        else {
-            Schema::create('pages', function ($table) {
-                $table->id();
-                $table->string('name');
-                $table->string('title')->nullable();
-                $table->string('slug')->nullable();
-                $table->string('locale')->nullable();
-                $table->longText('content')->nullable();
-                $table->json('seo')->nullable();
-                $table->json('data')->nullable();
-                $table->timestamps();
-            });
-            $this->line('pages table created successfully.');
-        }
+    //     if (Schema::hasTable('pages')) $this->warn('pages table exists, skipped.');
+    //     else {
+    //         Schema::create('pages', function ($table) {
+    //             $table->id();
+    //             $table->string('name');
+    //             $table->string('title')->nullable();
+    //             $table->string('slug')->nullable();
+    //             $table->string('locale')->nullable();
+    //             $table->longText('content')->nullable();
+    //             $table->json('seo')->nullable();
+    //             $table->json('data')->nullable();
+    //             $table->timestamps();
+    //         });
+    //         $this->line('pages table created successfully.');
+    //     }
 
-        foreach ([
-            ['name' => 'Privacy', 'title' => 'Privacy Policy', 'slug' => 'privacy'],
-            ['name' => 'Terms', 'title' => 'Terms and Conditions', 'slug' => 'terms'],
-        ] as $page) {
-            if (DB::table('pages')->where('slug', $page['slug'])->count()) continue;
+    //     foreach ([
+    //         ['name' => 'Privacy', 'title' => 'Privacy Policy', 'slug' => 'privacy'],
+    //         ['name' => 'Terms', 'title' => 'Terms and Conditions', 'slug' => 'terms'],
+    //     ] as $page) {
+    //         if (DB::table('pages')->where('slug', $page['slug'])->count()) continue;
 
-            DB::table('pages')->insert(array_merge($page, [
-                'locale' => 'en',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]));
-        }
-        $this->line('Added default pages.');
-    }
+    //         DB::table('pages')->insert(array_merge($page, [
+    //             'locale' => 'en',
+    //             'created_at' => now(),
+    //             'updated_at' => now(),
+    //         ]));
+    //     }
+    //     $this->line('Added default pages.');
+    // }
 
     /**
      * Install taxes

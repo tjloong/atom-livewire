@@ -6,7 +6,7 @@
     />
 
     <div class="flex flex-col gap-4">
-        <x-form :alert="false">
+        <x-form>
             <x-form.group>
                 <div class="text-2xl font-bold text-gray-600">
                     {{ __('Create your account') }}
@@ -18,22 +18,17 @@
             
                 <div class="grid gap-2">
                     <x-form.checkbox.privacy wire:model="inputs.agree_tnc"/>
-                    <x-form.checkbox.marketing wire:model="inputs.agree_marketing"/>
+                    <x-form.checkbox.marketing wire:model="inputs.agree_promo"/>
                 </div>
             </x-form.group>
     
             <x-slot:foot>
                 <x-button.submit size="md" label="Create Account" block/>
             </x-slot:foot>
-
-            <x-slot:error-alert></x-slot:error-alert>
         </x-form>
         
         <div class="text-center">
-            {{ __('Have an account?') }}
-            <a href="{{ route('login') }}">
-                {{ __('Sign In') }}
-            </a>
+            {{ __('Have an account?') }} <x-link label="Sign In" :href="route('login')"/>
         </div>
     </div>
 </div>

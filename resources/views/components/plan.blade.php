@@ -31,11 +31,14 @@
             @if (count($prices) > 1)
                 <x-dropdown>
                     <x-slot:anchor class="text-lg">
-                        / <span x-text="price.valid_name"></span> <x-icon name="chevron-down" size="12"/>
+                        / <span x-text="price.validity"></span> <x-icon name="chevron-down xs"/>
                     </x-slot:anchor>
     
                     @foreach ($prices as $price)
-                        <x-dropdown.item :label="data_get($price, 'valid_name')" x-on:click="price = {{ json_encode($price) }}"/>
+                        <x-dropdown.item 
+                            :label="data_get($price, 'validity')" 
+                            x-on:click="price = {{ json_encode($price) }}"
+                        />
                     @endforeach
                 </x-dropdown>
             @endif

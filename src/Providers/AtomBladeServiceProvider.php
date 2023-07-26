@@ -9,27 +9,23 @@ class AtomBladeServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        Blade::if('route', function($value) {
-            return collect((array)$value)->contains(fn($name) => current_route($name));
+        Blade::if('route', function() {
+            return current_route(func_get_args());
         });
 
-        Blade::if('notroute', function($value) {
-            return !collect((array)$value)->contains(fn($name) => current_route($name));
+        Blade::if('notroute', function() {
+            return !current_route(func_get_args());
         });
 
         Blade::if('tier', function($value) {
@@ -41,11 +37,11 @@ class AtomBladeServiceProvider extends ServiceProvider
         });
 
         Blade::if('role', function($value) {
-            return tier('root') || user()->isRole($value);
+            return user()->can('role', $value);
         });
 
         Blade::if('notrole', function($value) {
-            return !user()->isRole($value);
+            return !user()->can('role', $value);
         });
     }
 }

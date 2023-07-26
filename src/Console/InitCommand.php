@@ -21,12 +21,13 @@ class InitCommand extends Command
             '@ryangjchandler/alpine-hooks' => '^1',
             'alpinejs' => '^3',
             'autoprefixer' => '^10',
+            'flatpickr' => '^4',
             'postcss' => '^8',
             'postcss-import' => '^14',
             'tailwindcss' => '^3',
         ],
         'dependencies' => [
-            'flatpickr' => '^4',
+            // 
         ],
     ];
 

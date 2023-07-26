@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App;
 
-use Livewire\Component;
+use Jiannius\Atom\Component;
 
 class Onboarding extends Component
 {
@@ -12,36 +12,25 @@ class Onboarding extends Component
     protected $listeners = ['next'];
     protected $queryString = ['redirect'];
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount()
     {
-        $this->tab = $this->tab ?? data_get(collect($this->tabs)
-            ->filter(fn($val) => !empty(data_get($val, 'slug')))
-            ->first()
-        , 'slug');
+        $this->tab = $this->tab ?? $this->getNextTab();
     }
 
-    /**
-     * Get tabs property
-     */
+    // get tabs property
     public function getTabsProperty(): array
     {
         return [];
     }
 
-    /**
-     * Get is onboarded property
-     */
+    // get is onboarded property
     public function getIsOnboardedProperty(): bool
     {
         return count(session('onboarding', [])) === count($this->tabs);
     }
 
-    /**
-     * Next
-     */
+    // next
     public function next(): mixed
     {
         session([
@@ -52,7 +41,7 @@ class Onboarding extends Component
         ]);
 
         if ($next = $this->getNextTab()) {
-            return redirect()->route('app.onboarding', [
+            return to_route('app.onboarding', [
                 'tab' => $next,
                 'redirect' => $this->redirect,
             ]);
@@ -61,38 +50,27 @@ class Onboarding extends Component
         return $this->completed();
     }
 
-    /**
-     * Completed
-     */
-    public function completed(): void
+    // completed
+    public function completed(): mixed
     {
         if (!user('onboarded_at')) user()->fill(['onboarded_at' => now()])->save();
+
+        return $this->close();
     }
 
-    /**
-     * Close
-     */
+    // close
     public function close(): mixed
     {
         session()->forget('onboarding');
+
         return redirect(user()->home());
     }
 
-    /**
-     * Get next tab
-     */
+    // get next tab
     public function getNextTab()
     {
         return collect($this->tabs)->pluck('slug')->filter()
             ->filter(fn($slug) => !in_array($slug, session('onboarding', [])))
             ->first();
-    }
-
-    /**
-     * Render
-     */
-    public function render(): mixed
-    {
-        return atom_view('app.onboarding');
     }
 }

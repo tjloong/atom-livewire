@@ -25,32 +25,18 @@ class AtomLivewireServiceProvider extends ServiceProvider
     public function boot()
     {
         $components = [
-            // web
-            'atom.web.home' => 'Web\Home',
-            'atom.web.blog' => 'Web\Blog',
-            'atom.web.contact-us' => 'Web\ContactUs',
-            'atom.web.thank' => 'Web\Thank\Index',
-            'atom.web.thank.enquiry' => 'Web\Thank\Enquiry',
-            'atom.web.thank.shop.payment' => 'Web\Thank\Shop\Payment',
-            'atom.web.thank.plan.payment' => 'Web\Thank\Plan\Payment',
-
             // auth
-            'atom.auth.login' => 'Auth\Login',
-            'atom.auth.register' => 'Auth\Register',
-            'atom.auth.register-form' => 'Auth\RegisterForm',
-            'atom.auth.reset-password' => 'Auth\ResetPassword',
-            'atom.auth.forgot-password' => 'Auth\ForgotPassword',
+            'auth.login' => 'Auth\Login',
+            'auth.register' => 'Auth\Register',
+            'auth.register-form' => 'Auth\RegisterForm',
+            'auth.reset-password' => 'Auth\ResetPassword',
+            'auth.forgot-password' => 'Auth\ForgotPassword',
 
             // dashboard
             'app.dashboard' => 'App\Dashboard',
 
             // onboarding
-            'atom.app.onboarding' => 'App\Onboarding',
-
-            // tenant
-            'atom.app.tenant.create' => 'App\Tenant\Create',
-            'atom.app.tenant.form' => 'App\Tenant\Form',
-            'atom.app.tenant.switcher' => 'App\Tenant\Switcher',
+            'app.onboarding' => 'App\Onboarding',
 
             // invitation
             'atom.app.invitation.create' => 'App\Invitation\Create',
@@ -59,82 +45,35 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'atom.app.invitation.listing' => 'App\Invitation\Listing',
 
             // signup
-            'atom.app.signup.listing' => 'App\Signup\Listing',
-            'atom.app.signup.update' => 'App\Signup\Update',
-            'atom.app.signup.info' => 'App\Signup\Info',
+            // 'atom.app.signup.listing' => 'App\Signup\Listing',
+            // 'atom.app.signup.update' => 'App\Signup\Update',
+            // 'atom.app.signup.info' => 'App\Signup\Info',
 
             // tax
-            'atom.app.tax.listing' => 'App\Tax\Listing',
-            'atom.app.tax.create' => 'App\Tax\Create',
-            'atom.app.tax.update' => 'App\Tax\Update',
-            'atom.app.tax.form' => 'App\Tax\Form',
+            // 'atom.app.tax.listing' => 'App\Tax\Listing',
+            // 'atom.app.tax.create' => 'App\Tax\Create',
+            // 'atom.app.tax.update' => 'App\Tax\Update',
+            // 'atom.app.tax.form' => 'App\Tax\Form',
 
             // blog
-            'atom.app.blog.listing' => 'App\Blog\Listing',
-            'atom.app.blog.create' => 'App\Blog\Create',
-            'atom.app.blog.update' => 'App\Blog\Update',
-            'atom.app.blog.form' => 'App\Blog\Form',
-            'atom.app.blog.setting' => 'App\Blog\Setting',
+            // 'atom.app.blog.listing' => 'App\Blog\Listing',
+            // 'atom.app.blog.create' => 'App\Blog\Create',
+            // 'atom.app.blog.update' => 'App\Blog\Update',
+            // 'atom.app.blog.form' => 'App\Blog\Form',
+            // 'atom.app.blog.setting' => 'App\Blog\Setting',
 
             // enquiry
-            'atom.app.enquiry.listing' => 'App\Enquiry\Listing',
-            'atom.app.enquiry.update' => 'App\Enquiry\Update',
+            // 'atom.app.enquiry.listing' => 'App\Enquiry\Listing',
+            // 'atom.app.enquiry.update' => 'App\Enquiry\Update',
 
             // banner
-            'atom.app.banner.listing' => 'App\Banner\Listing',
-            'atom.app.banner.create' => 'App\Banner\Create',
-            'atom.app.banner.update' => 'App\Banner\Update',
-            'atom.app.banner.form' => 'App\Banner\Form',
+            // 'atom.app.banner.listing' => 'App\Banner\Listing',
+            // 'atom.app.banner.create' => 'App\Banner\Create',
+            // 'atom.app.banner.update' => 'App\Banner\Update',
+            // 'atom.app.banner.form' => 'App\Banner\Form',
 
             // email
-            'atom.app.email.form-modal' => 'App\Email\FormModal',
-
-            // document
-            'atom.app.document.listing' => 'App\Document\Listing',
-            'atom.app.document.create' => 'App\Document\Create',
-            'atom.app.document.update' => 'App\Document\Update',
-            'atom.app.document.split' => 'App\Document\Split',
-            'atom.app.document.view' => 'App\Document\View\Index',
-            'atom.app.document.view.body' => 'App\Document\View\Body',
-            'atom.app.document.view.converted' => 'App\Document\View\Converted',
-            'atom.app.document.view.attachment' => 'App\Document\View\Attachment',
-            'atom.app.document.view.split' => 'App\Document\View\Split',
-            'atom.app.document.view.payment' => 'App\Document\View\Payment',
-            'atom.app.document.form' => 'App\Document\Form\Index',
-            'atom.app.document.form.item' => 'App\Document\Form\Item',
-            'atom.app.document.form.total' => 'App\Document\Form\Total',
-            'atom.app.document.form.product-modal' => 'App\Document\Form\ProductModal',
-            'atom.app.document.payment.create' => 'App\Document\Payment\Create',
-            'atom.app.document.payment.update' => 'App\Document\Payment\Update',
-            'atom.app.document.payment.form' => 'App\Document\Payment\Form',
-
-            // page
-            'atom.app.page.listing' => 'App\Page\Listing',
-            'atom.app.page.update' => 'App\Page\Update',
-            'atom.app.page.content' => 'App\Page\Content',
-
-            // plan
-            'atom.app.plan.listing' => 'App\Plan\Listing',
-            'atom.app.plan.create' => 'App\Plan\Create',
-            'atom.app.plan.update' => 'App\Plan\Update',
-            'atom.app.plan.form' => 'App\Plan\Form',
-            'atom.app.plan.price-modal' => 'App\Plan\PriceModal',
-
-            // plan subscription
-            'atom.app.plan.subscription.listing' => 'App\Plan\Subscription\Listing',
-            'atom.app.plan.subscription.create' => 'App\Plan\Subscription\Create',
-            'atom.app.plan.subscription.update' => 'App\Plan\Subscription\Update',
-            
-            // plan payment
-            'atom.app.plan.payment.listing' => 'App\Plan\Payment\Listing',
-            'atom.app.plan.payment.update' => 'App\Plan\Payment\Update',
-            
-            // billing
-            'atom.app.billing' => 'App\Billing\Index',
-            'atom.app.billing.order' => 'App\Billing\Order',
-            'atom.app.billing.checkout' => 'App\Billing\Checkout',
-            'atom.app.billing.receipt' => 'App\Billing\Receipt',
-            'atom.app.billing.subscription-modal' => 'App\Billing\SubscriptionModal',
+            // 'atom.app.email.form-modal' => 'App\Email\FormModal',
 
             // ticket
             'atom.app.ticket.listing' => 'App\Ticket\Listing',
@@ -157,10 +96,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.role' => 'App\Settings\Role\Index',
             'app.settings.role.form' => 'App\Settings\Role\Form',
 
-            // settings > team
-            'app.settings.team' => 'App\Settings\Team\Index',
-            'app.settings.team.form' => 'App\Settings\Team\Form',
-
             // settings > file
             'app.settings.file' => 'App\Settings\File\Index',
             'app.settings.file.form' => 'App\Settings\File\Form',
@@ -169,6 +104,10 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.label' => 'App\Settings\Label\Index',
             'app.settings.label.form' => 'App\Settings\Label\Form',
             'app.settings.label.listing' => 'App\Settings\Label\Listing',
+
+            // settings > page
+            'app.settings.page' => 'App\Settings\Page',
+            'app.settings.page.form' => 'App\Settings\Page\Form',
 
             // settings > website
             'app.settings.website.profile' => 'App\Settings\Website\Profile',

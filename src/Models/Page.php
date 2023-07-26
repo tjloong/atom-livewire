@@ -2,27 +2,26 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasFilters;
 
 class Page extends Model
 {
+    use HasFactory;
     use HasFilters;
     use HasSlug;
 
     protected $guarded = [];
 
     protected $casts = [
-        'seo' => 'object',
-        'data' => 'object',
+        'seo' => 'array',
+        'data' => 'array',
     ];
 
-    /**
-     * Scope for fussy search
-     */
+    // scope for search
     public function scopeSearch($query, $search): void
     {
         $query->where(fn($q) => $q
@@ -32,15 +31,13 @@ class Page extends Model
         );
     }
 
-    /**
-     * Get all slugs
-     */
+    // get all slugs
     public function getSlugs(): array
     {
         $slugs = [];
         $dir = resource_path('views/livewire/web/pages');
         
-        $pages = Schema::hasTable((new self)->getTable()) ? self::all() : [];
+        $pages = model('page')->get();
         $views = file_exists($dir) ? File::allFiles($dir) : [];
         
         foreach ($views as $view) {

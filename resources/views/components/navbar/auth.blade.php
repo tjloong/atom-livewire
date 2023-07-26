@@ -6,13 +6,7 @@
             {{ str(user('name'))->limit(15) }}
         </div>
 
-        @if ($slot->isNotEmpty()) {{ $slot }}
-        @else <x-navbar.dropdown.item :href="route('app.settings')" icon="gear" label="Settings"/>
-        @endif
-
-        @if ($canBackToApp)
-            <x-navbar.dropdown.item :href="user()->home()" icon="house" label="Back to App"/>
-        @endif
+        {{ $slot }}
 
         <x-navbar.dropdown.item :href="route('logout')" icon="logout" label="Logout"/>
 
@@ -55,13 +49,7 @@
             </x-slot:anchor>
     
             <div class="flex flex-col divide-y">
-                @if ($slot->isNotEmpty()) {{ $slot }}
-                @else <x-navbar.dropdown.item :href="route('app.settings')" icon="gear" label="Settings"/>
-                @endif
-                
-                @if ($canBackToApp)
-                    <x-navbar.dropdown.item :href="user()->home()" label="Back to App"/>
-                @endif
+                {{ $slot }}
                     
                 <x-navbar.dropdown.item :href="route('logout')" icon="logout" label="Logout"/>
                         

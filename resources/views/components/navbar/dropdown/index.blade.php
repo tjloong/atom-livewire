@@ -1,7 +1,7 @@
 <x-dropdown>
     <x-slot:anchor>
         <div 
-            x-data="{
+            {{-- x-data="{
                 classes: {},
                 init () {
                     if (this.config.scrollHide) this.toggleScroll(false)
@@ -15,7 +15,7 @@
             }"
             x-on:scroll-reveal.window="toggleScroll(true)"
             x-on:scroll-hide.window="toggleScroll(false)"
-            x-bind:class="classes"
+            x-bind:class="classes" --}}
             {{ $attributes->class([
                 'flex items-center justify-center gap-2 px-3 text-center font-medium',
                 $attributes->get('class'),

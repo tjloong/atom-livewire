@@ -13,7 +13,7 @@
     (isset($subitems) && $subitems->isNotEmpty())
     || (!isset($subitems))
 ))
-    @if ($href || ($route && Route::has($route)))
+    @if ($href || ($route && has_route($route)))
         <a href="{{ $href ?: route($route, $params) }}" class="pl-2" {{ $isActive ? 'data-active' : '' }}>
             <div
                 class="
@@ -24,7 +24,7 @@
                 @if ($logo)
                     <x-logo :src="$logo" class="brightness-0 invert opacity-70" style="width: 20px; height: 20px;"/>
                 @elseif ($icon !== false)
-                    <x-icon :name="$icon ?? $label" size="16" class="opacity-70"/>
+                    <x-icon :name="$icon ?? $label" class="opacity-70 w-4"/>
                 @endif
 
                 <div class="truncate">
@@ -47,7 +47,7 @@
                     @if ($logo)
                         <x-logo :src="$logo" size="16" class="brightness-0 invert opacity-70"/>
                     @elseif ($icon !== false)
-                        <x-icon :name="$icon ?? $label" size="16" class="opacity-70"/>
+                        <x-icon :name="$icon ?? $label" class="opacity-70 w-4"/>
                     @endif
 
                     <div class="grow truncate">

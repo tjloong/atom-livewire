@@ -35,10 +35,6 @@ class AtomServiceProvider extends ServiceProvider
         require_once __DIR__.'/../Helpers/Route.php';
         require_once __DIR__.'/../Helpers/PaymentGateway.php';
         
-        // middleware
-        $router = app('router');
-        $router->aliasMiddleware('track-ref', \Jiannius\Atom\Http\Middleware\TrackReferer::class);
-
         // breadcrumbs service container
         $this->app->singleton('breadcrumbs', fn() => new \Jiannius\Atom\Services\Breadcrumbs);
         if (($breadcrumbs = base_path('routes/breadcrumbs.php')) && file_exists($breadcrumbs)) {

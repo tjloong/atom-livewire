@@ -3,18 +3,15 @@
 use Illuminate\Support\Facades\Route;
 
 // get current route
-function current_route($name = null)
+function current_route()
 {
-    $route = request()->route()->getName();
+    $args = func_get_args();
+    $routes = count($args) > 1 ? $args : head($args);
+    $currentRoute = request()->route()->getName();
 
-    if (is_string($name)) return str($route)->is($name);
-    elseif (is_array($name)) {
-        return is_numeric(
-            collect($name)->search(fn($val) => str($route)->is($val))
-        );
-    }
-
-    return $route;
+    return $routes
+        ? collect($routes)->contains(fn($val) => str($currentRoute)->is($val))
+        : $currentRoute;
 }
 
 // get previous route

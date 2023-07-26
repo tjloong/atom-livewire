@@ -44,17 +44,13 @@ class Login extends Component
             $this->submit($user);
         }
         // socialite login (skip error from socialite)
-        else {
-            rescue(function() {
-                if (
-                    ($token = request()->query('token'))
-                    && ($provider = request()->query('provider'))
-                    && ($socialite = Socialite::driver($provider)->userFromToken($token))
-                    && ($user = model('user')->firstWhere('email', $socialite->getEmail()))
-                ) {
-                    $this->submit($user);
-                }
-            });
+        else if (
+            ($token = request()->query('token'))
+            && ($provider = request()->query('provider'))
+            && ($socialite = rescue(fn() => Socialite::driver($provider)->userFromToken($token)))
+            && ($user = model('user')->firstWhere('email', $socialite->getEmail()))
+        ) {
+            $this->submit($user);
         }
     }
 

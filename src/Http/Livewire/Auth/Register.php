@@ -2,10 +2,10 @@
 
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Auth\Events\Registered;
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Laravel\Socialite\Facades\Socialite;
-use Livewire\Component;
 
 class Register extends Component
 {
@@ -18,14 +18,12 @@ class Register extends Component
 
     public $inputs = [
         'agree_tnc' => false,
-        'agree_marketing' => true,
+        'agree_promo' => true,
     ];
 
     protected $queryString = ['ref', 'token', 'provider', 'plan'];
     
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -44,121 +42,91 @@ class Register extends Component
                 'min:8' => 'Login password must be at least 8 characters.',
             ],
             'inputs.agree_tnc' => ['accepted' => 'Please accept the terms and conditions to proceed.'],
-            'inputs.agree_marketing' => ['nullable'],
+            'inputs.agree_promo' => ['nullable'],
         ];
     }
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount()
     {
-        if (!$this->ref && !$this->token && !$this->provider) return redirect('/');
-        if ($this->token && $this->provider) return $this->socialLogin();
-    }
-
-    /**
-     * Social login
-     */
-    public function socialLogin(): mixed
-    {
-        rescue(function() use (&$user) {
-            $user = Socialite::driver($this->provider)->userFromToken($this->token);
-        });
-
-        if (!$user) return null;
-
-        if (model('user')->firstWhere('email', $user->getEmail())) {
-            return redirect()->route('login', array_merge([
-                'token' => $this->token,
-                'provider' => $this->provider,
-            ], request()->query()));
+        if (!$this->ref && !$this->token && !$this->provider) {
+            return redirect('/');
         }
-
-        return $this->createUser([
-            'name' => $user->getName(),
-            'email' => $user->getEmail(),
-            'password' => str()->snake($user->getName()).'_oauth',
-            'agree_tnc' => true,
-            'agree_marketing' => true,
-            'email_verified_at' => now(),
-            'data' => ['oauth' => [
-                'provider' => $this->provider,
-                'id' => $user->getId(),
-                'nickname' => $user->getNickname(),
-                'avatar' => $user->getAvatar(),
-                'token' => $user->token,
-                'token_secret' => $user->tokenSecret,
-                'refresh_token' => $user->refreshToken,
-                'expires_in' => $user->expiresIn,
-            ]],
-        ]);
+        else if (
+            $this->token && $this->provider
+            && ($socialite = rescue(fn() => Socialite::driver($this->provider)->userFromToken($this->token)))
+        ) {
+            if (model('user')->firstWhere('email', $socialite->getEmail())) {
+                return to_route('login', array_merge([
+                    'token' => $this->token,
+                    'provider' => $this->provider,
+                ], request()->query()));
+            }
+            else {
+                return $this->register([
+                    'name' => $socialite->getName(),
+                    'email' => $socialite->getEmail(),
+                    'password' => str()->snake($socialite->getName()).'_oauth',
+                    'email_verified_at' => now(),
+                    'agree_tnc' => true,
+                    'agree_promo' => true,
+                    'data' => ['oauth' => [
+                        'provider' => $this->provider,
+                        'id' => $socialite->getId(),
+                        'nickname' => $socialite->getNickname(),
+                        'avatar' => $socialite->getAvatar(),
+                        'token' => $socialite->token,
+                        'token_secret' => $socialite->tokenSecret,
+                        'refresh_token' => $socialite->refreshToken,
+                        'expires_in' => $socialite->expiresIn,
+                    ]],
+                ]);
+            }
+        }
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): mixed
     {
         $this->validateForm();
 
-        return $this->createUser($this->inputs);
+        return $this->register();
     }
 
-    /**
-     * Create user
-     */
-    public function createUser($inputs): mixed
+    // register
+    public function register($data = null): mixed
     {
+        $data = $data ?? $this->inputs;
+
         $user = model('user')->forceFill([
-            'name' => data_get($inputs, 'name'),
-            'email' => data_get($inputs, 'email'),
-            'password' => bcrypt(data_get($inputs, 'password')),
-            'data' => array_merge(data_get($inputs, 'data', []), [
-                'signup' => [
-                    'geo' => geoip()->getLocation()->toArray(),
-                    'channel' => $this->ref,
-                    'agree_tnc' => data_get($inputs, 'agree_tnc'),
-                    'agree_marketing' => data_get($inputs, 'agree_marketing'),
-                ],
-                'pref' => [
-                    'timezone' => config('atom.timezone'), 
-                    'locale' => head(config('atom.locales', [])) ?? null,
-                ],
-            ]),
-            'email_verified_at' => data_get($inputs, 'email_verified_at'),
-            'activated_at' => now(),
-            'signup_at' => now(),
+            'name' => data_get($data, 'name'),
+            'email' => data_get($data, 'email'),
+            'password' => bcrypt(data_get($data, 'password')),
+            'data' => data_get($data, 'data'),
+            'email_verified_at' => data_get($data, 'email_verified_at'),
             'login_at' => now(),
         ]);
 
         $user->save();
 
-        if (config('atom.auth.verify') && !data_get($inputs, 'email_verified_at')) {
-            $user->sendEmailVerificationNotification();
-        }
+        $user->signup()->create([
+            'channel' => $this->ref,
+            'geo' => geoip()->getLocation()->toArray(),
+            'agree_tnc' => data_get($data, 'agree_tnc'),
+            'agree_promo' => data_get($data, 'agree_promo'),
+        ]);
+
+        event(new Registered($user->fresh()));
 
         auth()->login($user);
-
-        // clear refcode
-        Cookie::forget('_ref');
+        cookie()->forget('_ref');
 
         return $this->registered($user->fresh());
     }
 
-    /**
-     * Post registration
-     */
+    // post registration
     public function registered($user): mixed
     {
-        return redirect()->route('app.onboarding');
-    }
-
-    /**
-     * Render
-     */
-    public function render(): mixed
-    {
-        return atom_view('auth.register');
+        return to_route($user->home());
     }
 }
