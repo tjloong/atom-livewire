@@ -12,22 +12,20 @@ enum Status: string
     public function option()
     {
         return match($this) {
-            static::ACTIVE => [
-                'value' => $this->value,
-                'label' => 'Active',
-            ],
-            static::INACTIVE => [
-                'value' => $this->value,
-                'label' => 'Inactive',
-            ],
-            static::BLOCKED => [
-                'value' => $this->value,
-                'label' => 'Blocked',
-            ],
-            static::TRASHED => [
-                'value' => $this->value,
-                'label' => 'Trashed',
-            ],
+            static::ACTIVE => ['value' => $this->value, 'label' => 'Active'],
+            static::INACTIVE => ['value' => $this->value, 'label' => 'Inactive'],
+            static::BLOCKED => ['value' => $this->value, 'label' => 'Blocked'],
+            static::TRASHED => ['value' => $this->value, 'label' => 'Trashed'],
+        };
+    }
+
+    public function color()
+    {
+        return match($this) {
+            static::ACTIVE => 'green',
+            static::INACTIVE => 'gray',
+            static::BLOCKED => 'black',
+            static::TRASHED => 'gray',
         };
     }
 }

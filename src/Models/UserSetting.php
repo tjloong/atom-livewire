@@ -9,6 +9,10 @@ class UserSetting extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'value' => 'array',
+    ];
+
     public $timestamps = false;
 
     // booted
@@ -26,7 +30,7 @@ class UserSetting extends Model
     }
 
     // initialize
-    public function initialize($userId): void
+    public function initialize($user): void
     {
         foreach ([
             'timezone' => config('atom.timezone'),
@@ -35,7 +39,7 @@ class UserSetting extends Model
             model('user_setting')->create([
                 'name' => $key,
                 'value' => $val,
-                'user_id' => $userId,
+                'user_id' => $user->id,
             ]);
         }
     }

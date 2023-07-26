@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Team;
+namespace Jiannius\Atom\Http\Livewire\App\Settings\Team;
 
 use Livewire\Component;
 

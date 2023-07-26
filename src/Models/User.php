@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -41,6 +42,10 @@ class User extends Authenticatable
     // booted
     protected static function booted(): void
     {
+        static::created(function($user) {
+            model('user_setting')->initialize($user);
+        });
+        
         static::saving(function($user) {
             $user->status = $user->generateStatus();
         });
@@ -50,6 +55,14 @@ class User extends Authenticatable
     public function signup(): HasOne
     {
         return $this->hasOne(model('signup'));
+    }
+
+    // attribute for status
+    public function status(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => enum('user.status', $value),
+        );
     }
 
     // scope for fussy search
@@ -73,13 +86,35 @@ class User extends Authenticatable
     // scope for status
     public function scopeStatus($query, $status): void
     {
-        $query->withTrashed()->whereIn('status', (array)$status);
+        $query->withTrashed()->whereIn('status', collect($status)->map(fn($val) => $val->value));
     }
 
     // get user home
     public function home(): string
     {
         return route('app.dashboard');
+    }
+
+    // get settings
+    public function settings($key = null, $default = null)
+    {
+        if (is_array($key)) {
+            foreach ($key as $name => $value) {
+                model('user_setting')
+                    ->firstOrNew(['user_id' => $this->id, 'name' => $name])
+                    ->fill(compact('value'))
+                    ->save();
+            }
+        }
+        else {
+            if (!session('user_settings')) {
+                session(['user_settings' => model('user_setting')->where('user_id', $this->id)
+                    ->get()
+                    ->mapWithKeys(fn($val) => [$val->name => $val->value])]);
+            }
+
+            return $key ? data_get(session('user_settings'), $key, $default) : session('user_settings');
+        }
     }
 
     // check user tier
@@ -100,11 +135,11 @@ class User extends Authenticatable
     // generate status
     public function generateStatus(): string
     {
-        if ($this->trashed()) $status = enum('user.status', 'TRASHED');
-        else if ($this->blocked()) $status = enum('user.status', 'BLOCKED');
-        else if ($this->password) $status = enum('user.status', 'ACTIVE');
-        else $status = enum('user.status', 'INACTIVE');
-
-        return $status->value;
+        return enum('user.status', collect([
+            'TRASHED' => $this->trashed(),
+            'BLOCKED' => $this->blocked(),
+            'ACTIVE' => !empty($this->password),
+            'INACTIVE' => empty($this->password),
+        ])->filter()->keys()->first())->value;
     }
 }
