@@ -137,7 +137,10 @@
                         </a>
                     @else
                         <div 
-                            class="{{ $tooltip ? '' : 'truncate' }}" 
+                            class="{{ collect([
+                                $tooltip ? null : 'truncate',
+                                $attributes->has('wire:click') || $attributes->has('x-on:click') ? 'cursor-pointer font-semibold text-blue-500' : null,
+                            ])->filter()->join(' ') }}"
                             @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
                         >
                             {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}

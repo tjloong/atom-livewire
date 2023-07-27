@@ -2,42 +2,95 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Banner;
 
-use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
+use Jiannius\Atom\Component;
+use Jiannius\Atom\Traits\Livewire\WithFile;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class Update extends Component
 {
-    use WithBreadcrumbs;
+    use WithFile;
+    use WithForm;
     use WithPopupNotify;
     
     public $banner;
 
-    protected $listeners = ['submitted'];
+    protected $listeners = ['open'];
 
-    // mount
-    public function mount($bannerId): void
+    // validation
+    protected function validation(): array
     {
-        $this->banner = model('banner')->findOrFail($bannerId);
+        return [
+            'banner.type' => ['required' => 'Banner type is required.'],
+            'banner.name' => ['required' => 'Banner name is required.'],
+            'banner.slug' => [
+                'nullable',
+                function ($attr, $value, $fail) {
+                    if (model('banner')->where('slug', $value)->where('id', '<>', $this->banner->id)->count()) {
+                        $fail('Banner slug is taken.');
+                    }
+                },
+            ],
+            'banner.url' => ['nullable'],
+            'banner.description' => ['nullable'],
+            'banner.placement' => ['nullable'],
+            'banner.is_active' => ['nullable'],
+            'banner.image_id' => ['required' => 'Image is required.'],
+            'banner.start_at' => ['nullable'],
+            'banner.end_at' => ['nullable'],
+        ];
+    }
+
+    // get options property
+    public function getOptionsProperty(): array
+    {
+        return [
+            'types' => collect([
+                'main-banner',
+            ])->map(fn($val) => [
+                'value' => $val,
+                'label' => str($val)->headline()->toString(),
+            ])->toArray(),
+
+            'placements' => collect([
+                'home',
+            ])->map(fn($val) => [
+                'value' => $val,
+                'label' => str($val)->headline()->toString(),
+            ])->toArray(),
+        ];
+    }
+
+    // open
+    public function open($id = null): void
+    {
+        $this->banner = $id
+            ? model('banner')->findOrFail($id)
+            : model('banner')->fill(['is_active' => true]);
+
+        $this->dispatchBrowserEvent('banner-update-open');
+    }
+
+    // close
+    public function close(): void
+    {
+        $this->emit('bannerUpdateClosed');
+        $this->dispatchBrowserEvent('banner-update-close');
     }
 
     // delete
-    public function delete(): mixed
+    public function delete(): void
     {
         $this->banner->delete();
-
-        return breadcrumbs()->back();
+        $this->close();
     }
 
-    // submitted
-    public function submitted()
+    // submit
+    public function submit(): void
     {
-        $this->popup('Banner Updated.');
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.banner.update');
+        $this->validateForm();
+        $this->banner->save();
+        $this->popup('Banner Saved.');
+        $this->close();
     }
 }
