@@ -2,40 +2,53 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
-use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
 class Update extends Component
 {
-    use WithBreadcrumbs;
     use WithForm;
     use WithPopupNotify;
 
     public $enquiry;
+    public $inputs;
+
+    protected $listeners = ['open'];
 
     // validation
     protected function validation(): array
     {
         return [
             'enquiry.remark' => ['nullable'],
-            'enquiry.status' => ['required' => 'Status is required.'],
+            'inputs.status' => ['required' => 'Status is required.'],
         ];
     }
 
-    // mount
-    public function mount($enquiryId): void
+    // open
+    public function open($id): void
     {
-        $this->enquiry = model('enquiry')->readable()->findOrFail($enquiryId);
+        $this->enquiry = model('enquiry')->readable()->findOrFail($id);
+
+        $this->fill([
+            'inputs.status' => $this->enquiry->status->value,
+        ]);
+
+        $this->dispatchBrowserEvent('enquiry-update-open');
+    }
+
+    // close
+    public function close(): void
+    {
+        $this->emit('enquiryUpdateClosed');
+        $this->dispatchBrowserEvent('enquiry-update-close');
     }
 
     // delete
-    public function delete(): mixed
+    public function delete(): void
     {
         $this->enquiry->delete();
-
-        return breadcrumbs()->back();
+        $this->close();
     }
 
     // submit
@@ -43,14 +56,10 @@ class Update extends Component
     {
         $this->validateForm();
 
-        $this->enquiry->save();
+        $this->enquiry->fill([
+            'status' => data_get($this->inputs, 'status'),
+        ])->save();
         
-        $this->popup('Enquiry Updated.');
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.enquiry.update');
+        $this->close();
     }
 }

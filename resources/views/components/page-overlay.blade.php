@@ -28,7 +28,7 @@
     x-bind:class="isAdminPanel
         ? 'top-0 bottom-0 right-0 left-0 lg:left-56'
         : 'inset-0'"
-    class="page-overlay fixed z-10 overflow-auto {{ $attributes->get('bg', 'bg-slate-50') }}"
+    class="page-overlay fixed z-40 overflow-auto {{ $attributes->get('bg', 'bg-slate-50') }}"
     id="{{ $id }}"
 >
     <div {{ $attributes->class([

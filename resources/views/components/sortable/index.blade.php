@@ -10,7 +10,7 @@
                 child.querySelectorAll('.handle').length > 0
             ))
 
-            this.sortable = new Sortable($el, { 
+            new Sortable(this.$el, { 
                 handle: hasHandle ? '.handle' : false,
                 ...this.config, 
                 onSort: () => {

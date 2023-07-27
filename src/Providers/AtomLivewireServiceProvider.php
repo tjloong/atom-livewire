@@ -63,8 +63,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // 'atom.app.blog.setting' => 'App\Blog\Setting',
 
             // enquiry
-            // 'atom.app.enquiry.listing' => 'App\Enquiry\Listing',
-            // 'atom.app.enquiry.update' => 'App\Enquiry\Update',
+            'app.enquiry' => 'App\Enquiry\Index',
+            'app.enquiry.update' => 'App\Enquiry\Update',
 
             // banner
             // 'atom.app.banner.listing' => 'App\Banner\Listing',

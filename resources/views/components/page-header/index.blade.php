@@ -6,15 +6,18 @@
 <div {{ $attributes->class([
     'w-full flex flex-wrap justify-between md:flex-nowrap',
     $size === 'sm' ? 'mb-4' : 'mb-6',
-])->only('class') }}>
+])->except('size', 'back', 'title', 'subtitle', 'status', 'tinylink') }}>
     <div class="grow flex my-1">
         <div class="shrink-0">
             @if ($href = request()->query('back'))
                 <x-page-header.back :size="$size" :href="$href"/>
-            @elseif ($back === true)
+            @elseif ($back === true || $attributes->wire('back')->value())
                 <div x-data="{
                     back () {
-                        if (this.$el.closest('.page-overlay')) this.$dispatch('close')
+                        if (this.$el.closest('.page-overlay')) {
+                            this.$dispatch('close')
+                            this.$dispatch('back')
+                        }
                         else {
                             const href = Array.from(document.querySelectorAll('#breadcrumbs li a'))
                                 .map(a => a.getAttribute('href'))

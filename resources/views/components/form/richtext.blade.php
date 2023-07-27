@@ -12,14 +12,14 @@
             loading: false,
             toolbar: @js($toolbar),
             placeholder: @js($attributes->get('placeholder') ?? __('Your content...')),
-
             init () {
-                ClassicEditor
-                .create(this.$refs.ckeditor, { 
+                this.startEditor()
+            },
+            startEditor () {
+                ClassicEditor.create(this.$refs.ckeditor, { 
                     placeholder: this.placeholder, 
                     toolbar: this.toolbar,
-                })
-                .then(editor => {
+                }).then(editor => {
                     // initial content
                     if (this.value) editor.setData(this.value)
 

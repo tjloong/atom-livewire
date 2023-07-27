@@ -206,10 +206,10 @@
                 @if ($foot->isNotEmpty())
                     {{ $foot }}
                 @else
-                    @php $icon = $foot->attributes->get('icon') @endphp
-                    @php $label = $foot->attributes->get('label') @endphp
-                    @php $href = $foot->attributes->get('href') @endphp
-                    <x-link :icon="$icon" :label="$label" :href="$href" class="p-4 flex items-center justify-center"/>
+                    <a class="p-4 flex items-center justify-center gap-2" {{ $foot->attributes->except('label', 'icon') }}>
+                        @if ($icon = $foot->attributes->get('icon')) <x-icon :name="$icon"/> @endif
+                        {{ __($foot->attributes->get('label', '')) }}
+                    </a>
                 @endif
             @endisset
         </div>
