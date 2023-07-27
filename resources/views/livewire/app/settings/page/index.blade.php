@@ -14,10 +14,12 @@
     
         @foreach ($this->pages as $page)
             <x-table.tr>
-                <x-table.td :label="$page->name" :href="route('app.page.update', [$page])"/>
+                <x-table.td :label="$page->name" wire:click="update({{ $page->id }})"/>
                 @if (count(config('atom.locales')) > 1) <x-table.td :status="$page->locale"/> @endif
-                <x-table.td :label="$page->title" :href="route('app.page.update', [$page])"/>
+                <x-table.td :label="$page->title"/>
             </x-table.tr>
         @endforeach
     </x-table>
+
+    @livewire('app.settings.page.update', key(uniqid()))
 </div>

@@ -1,13 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Page;
+namespace Jiannius\Atom\Http\Livewire\App\Settings\Page;
 
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
 
-class Update extends Component
+class Form extends Component
 {
     use WithForm;
     use WithFile;
@@ -30,18 +30,6 @@ class Update extends Component
             'page.content' => ['nullable'],
         ];
     }
-    
-    // mount
-    public function mount($pageId): void
-    {
-        $this->page = model('page')->readable()->findOrFail($pageId);
-    }
-
-    // get slug property
-    public function getSlugProperty(): string
-    {
-        return $this->page->slug ?? str($this->page->name)->slug();
-    }
 
     // update page content
     public function updatedPageContent(): void
@@ -54,15 +42,8 @@ class Update extends Component
     public function submit(): void
     {
         $this->validateForm();
-        
         $this->page->save();
-
         $this->popup('Page Updated.');
-    }
-
-    // render
-    public function render(): mixed
-    {
-        return atom_view('app.page.update');
+        $this->emit('pageSaved');
     }
 }

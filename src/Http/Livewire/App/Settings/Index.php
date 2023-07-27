@@ -33,7 +33,7 @@ class Index extends Component
                 ['slug' => 'invitation','label' => 'Invitations', 'icon' => 'invitation'],
                 ['slug' => 'role', 'label' => 'Roles', 'icon' => 'user-tag'],
                 ['slug' => 'team', 'label' => 'Teams', 'icon' => 'people-group'],
-                ['slug' => 'pages', 'label' => 'Pages', 'icon' => 'newspaper'],
+                ['slug' => 'page', 'label' => 'Pages', 'icon' => 'newspaper'],
                 ['slug' => 'file', 'label' => 'Files and Media', 'icon' => 'images'],
             ]],
 

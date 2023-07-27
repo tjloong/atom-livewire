@@ -32,7 +32,9 @@ function has_component($name)
 {
     return collect([
         format_class_path($name, 'App/Http/Livewire/'),
+        format_class_path($name, 'App/Http/Livewire/').'/Index',
         format_class_path($name, 'Jiannius/Atom/Http/Livewire/'),
+        format_class_path($name, 'Jiannius/Atom/Http/Livewire/').'/Index',
     ])->contains(fn($val) => file_exists(atom_ns_path($val)));
 }
 
