@@ -1,15 +1,11 @@
-<div class="max-w-screen-sm mx-auto px-4 grid gap-6">
+<div class="min-h-screen max-w-screen-sm mx-auto px-4 flex flex-col items-center justify-center gap-4">
     <div class="text-5xl font-bold">
         {{ __('Thank You') }}
     </div>
     
-    <div class="grid gap-4">
-        <x-alert type="success">
-            {{ __('Your enquiry has been submitted successfully.') }}
-        </x-alert>
+    <x-alert type="success">
+        {{ __('Your enquiry has been submitted successfully.') }}
+    </x-alert>
 
-        <div>
-            <x-button inverted href="/" label="Back to Home"/>
-        </div>
-    </div>
+    <x-button inverted href="/" label="Back to Home"/>
 </div>

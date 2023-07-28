@@ -2,8 +2,8 @@
 
 namespace Jiannius\Atom\Http\Livewire\Web;
 
-use Livewire\Component;
 use Illuminate\Support\Facades\Notification;
+use Jiannius\Atom\Component;
 use Jiannius\Atom\Notifications\EnquiryNotification;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
@@ -14,9 +14,7 @@ class ContactUs extends Component
     public $ref;
     public $enquiry;
 
-    /**
-     * Validation
-     */
+    // validation
     protected function validation(): array
     {
         return [
@@ -27,9 +25,7 @@ class ContactUs extends Component
         ];
     }
 
-    /**
-     * Mount
-     */
+    // mount
     public function mount(): void
     {
         $this->ref = request()->query('ref');
@@ -41,9 +37,7 @@ class ContactUs extends Component
         ];
     }
 
-    /**
-     * Get contact property
-     */
+    // get contact property
     public function getContactProperty(): array
     {
         $contact = config('atom.static_site')
@@ -58,9 +52,7 @@ class ContactUs extends Component
         return array_filter($contact);
     }
 
-    /**
-     * Submit
-     */
+    // submit
     public function submit(): mixed
     {
         $this->validateForm();
@@ -85,13 +77,5 @@ class ContactUs extends Component
         }
         
         return to_route('web.thank.enquiry');
-    }
-
-    /**
-     * Render
-     */
-    public function render(): mixed
-    {
-        return atom_view('web.contact-us');
     }
 }

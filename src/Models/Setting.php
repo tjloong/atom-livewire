@@ -55,7 +55,7 @@ class Setting extends Model
             else if ($name === 'google_tag_manager_id') $existingData = data_get($settings, 'analytics.gtm_id') ?? data_get($settings, 'gtm_id');
             else $existingData = data_get($settings, $name);
 
-            $value = $existingData ?? $value;
+            $value = empty($existingData) ? $value : $existingData;
 
             $inserts->push([
                 'name' => $name,

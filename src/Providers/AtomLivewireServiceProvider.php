@@ -25,6 +25,10 @@ class AtomLivewireServiceProvider extends ServiceProvider
     public function boot()
     {
         $components = [
+            // web
+            'web.contact-us' => 'Web\ContactUs',
+            'web.thank.enquiry' => 'Web\Thank\Enquiry',
+
             // auth
             'auth.login' => 'Auth\Login',
             'auth.register' => 'Auth\Register',
