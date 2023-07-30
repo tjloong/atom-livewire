@@ -7,20 +7,6 @@
 <form 
     x-data="{
         confirm: @js($confirm),
-        open () {
-            const modal = $el.querySelector('#modal')
-            const drawer = $el.querySelector('#drawer')
-            
-            if (modal) modal.dispatchEvent(new Event('open', { bubbles: true }))
-            if (drawer) drawer.dispatchEvent(new Event('open', { bubbles:true }))
-        },
-        close () {
-            const modal = $el.querySelector('#modal')
-            const drawer = $el.querySelector('#drawer')
-            
-            if (modal) modal.dispatchEvent(new Event('close', { bubbles: true }))
-            if (drawer) drawer.dispatchEvent(new Event('close', { bubbles:true }))
-        },
         submit () {
             if (this.confirm) {
                 $dispatch('confirm', {
@@ -33,12 +19,15 @@
         }
     }"
     x-on:submit.prevent="submit"
-    x-on:{{ $id }}-open.window="open"
-    x-on:{{ $id }}-close.window="close"
     id="{{ $id }}"
+    {{ $attributes->except('id', 'submit', 'confirm') }}
 >
     @if ($attributes->get('modal'))
-        <x-modal :header="$attributes->get('header')" :size="$attributes->get('size')">
+        <x-modal :id="$id" 
+            :header="$attributes->get('header')" 
+            :size="$attributes->get('size')"
+            :show="$attributes->get('show')"
+        >
             @isset($header)
                 <x-slot:header>{{ $header }}</x-slot:header>
             @endisset
@@ -54,7 +43,11 @@
             </x-slot:foot>
         </x-modal>
     @elseif ($attributes->get('drawer'))
-        <x-drawer {{ $attributes->except('submit', 'confirm') }}>
+        <x-drawer :id="$id" 
+            :header="$attributes->get('header')" 
+            :size="$attributes->get('size')"
+            :show="$attributes->get('show')"
+        >
             @isset($header)
                 <x-slot:header>{{ $header }}</x-slot:header>
             @endisset

@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Cookie;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Laravel\Socialite\Facades\Socialite;
@@ -12,6 +13,7 @@ class Register extends Component
     use WithForm;
 
     public $ref;
+    public $utm;
     public $plan;
     public $token;
     public $provider;
@@ -21,7 +23,7 @@ class Register extends Component
         'agree_promo' => true,
     ];
 
-    protected $queryString = ['ref', 'token', 'provider', 'plan'];
+    protected $queryString = ['ref', 'utm', 'token', 'provider', 'plan'];
     
     // validation
     protected function validation(): array
@@ -49,7 +51,7 @@ class Register extends Component
     // mount
     public function mount()
     {
-        if (!$this->ref && !$this->token && !$this->provider) {
+        if (!$this->ref && !$this->utm && !$this->token && !$this->provider) {
             return redirect('/');
         }
         else if (
@@ -110,16 +112,11 @@ class Register extends Component
         $user->save();
 
         $user->signup()->create([
-            'channel' => $this->ref,
+            'channel' => $this->utm ?? $this->ref ?? 'direct',
             'geo' => geoip()->getLocation()->toArray(),
             'agree_tnc' => data_get($data, 'agree_tnc'),
             'agree_promo' => data_get($data, 'agree_promo'),
         ]);
-
-        event(new Registered($user->fresh()));
-
-        auth()->login($user);
-        cookie()->forget('_ref');
 
         return $this->registered($user->fresh());
     }
@@ -127,6 +124,12 @@ class Register extends Component
     // post registration
     public function registered($user): mixed
     {
+        auth()->login($user);
+
+        Cookie::forget('_ref');
+
+        event(new Registered($user->fresh()));
+
         return to_route($user->home());
     }
 }

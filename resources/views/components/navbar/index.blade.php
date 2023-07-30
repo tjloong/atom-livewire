@@ -61,9 +61,9 @@
                                 @endif
 
                                 @if (has_route('register'))
-                                    <x-navbar.item href="/register?ref=navbar" label="Register" class="md:hidden"/>
+                                    <x-navbar.item href="/register?utm=navbar" label="Register" class="md:hidden"/>
                                     <div class="hidden md:block">
-                                        <x-button href="/register?ref=navbar" label="Register" color="theme"/>
+                                        <x-button href="/register?utm=navbar" label="Register" color="theme"/>
                                     </div>
                                 @endif
                             </div>

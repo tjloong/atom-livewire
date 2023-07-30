@@ -8,7 +8,7 @@ function component_id($attributes, $default = null)
     if ($attributes->get('uuid') === true) return str()->uuid();
     if ($attributes->get('ulid') === true) return str()->ulid();
 
-    if ($id = $attributes->get('id') ?? $attributes->get('uid') ?? null) {
+    if ($id = $attributes->get('id') ?? $attributes->get('uid') ?? $attributes->get('name') ?? null) {
         return $id;
     }
 

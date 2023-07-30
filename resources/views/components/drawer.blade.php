@@ -1,6 +1,7 @@
 @props([
     'id' => component_id($attributes, 'drawer'),
     'size' => $attributes->get('size', 'md'),
+    'show' => $attributes->get('show', false),
 ])
 
 <div
@@ -22,6 +23,7 @@
     x-on:{{ $id }}-close.window="close()"
     x-on:open="open()"
     x-on:close="close()"
+    @if ($show) x-init="open" @endif
     id="{{ $id }}"
     class="fixed inset-0 z-40"
 >
