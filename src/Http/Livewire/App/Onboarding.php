@@ -53,7 +53,9 @@ class Onboarding extends Component
     // completed
     public function completed(): mixed
     {
-        if (!user('onboarded_at')) user()->fill(['onboarded_at' => now()])->save();
+        if (!user()->signup->onboarded_at) {
+            user()->signup->fill(['onboarded_at' => now()])->save();
+        }
 
         return $this->close();
     }

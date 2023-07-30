@@ -118,18 +118,18 @@ class Register extends Component
             'agree_promo' => data_get($data, 'agree_promo'),
         ]);
 
-        return $this->registered($user->fresh());
-    }
-
-    // post registration
-    public function registered($user): mixed
-    {
         auth()->login($user);
 
         Cookie::forget('_ref');
 
         event(new Registered($user->fresh()));
 
+        return $this->registered($user->fresh());
+    }
+
+    // post registration
+    public function registered($user): mixed
+    {
         return to_route($user->home());
     }
 }

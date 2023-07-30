@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('channel')->nullable();
             $table->json('geo')->nullable();
+            $table->string('status')->nullable();
             $table->boolean('agree_tnc')->nullable();
             $table->boolean('agree_promo')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->timestamp('onboarded_at')->nullable();
             $table->timestamps();
         });
     }

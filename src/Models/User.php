@@ -33,7 +33,6 @@ class User extends Authenticatable
 
     protected $casts = [
         'data' => 'array',
-        'onboarded_at' => 'datetime',
         'login_at' => 'datetime',
         'last_active_at' => 'datetime',
         'email_verified_at' => 'datetime',
