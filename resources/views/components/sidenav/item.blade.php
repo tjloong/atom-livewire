@@ -70,6 +70,6 @@
             </div>
         @endif
 
-        <div x-show="active" class="w-2 h-4 bg-theme rounded"></div>
+        <div x-show="active" class="w-1 h-4 bg-theme rounded"></div>
     </div>
 @endif

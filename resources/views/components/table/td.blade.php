@@ -67,8 +67,8 @@
         @if ($status = $attributes->get('status'))
             @if (is_string($status))
                 <x-badge :label="$status"/>
-            @else
-                @foreach ($status as $key => $val)
+            @elseif (is_array($status))
+                @foreach (array_filter($status) as $key => $val)
                     <x-badge :label="$val" :color="is_string($key) ? $key : null"/>
                 @endforeach
             @endif
