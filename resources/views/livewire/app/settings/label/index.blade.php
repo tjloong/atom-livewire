@@ -2,7 +2,7 @@
     <x-page-header :title="$this->title">
         <x-button icon="add"
             label="Create New"
-            wire:click="$emit('updateOrCreate', { type: '{{ $type }}' })"
+            wire:click="update({ type: '{{ $type }}' })"
         />
     </x-page-header>
 
@@ -17,5 +17,5 @@
         @endif
     </x-box>
 
-    @livewire('app.settings.label.form', key(uniqid()))
+    @livewire('app.settings.label.update', key(uniqid()))
 </div>

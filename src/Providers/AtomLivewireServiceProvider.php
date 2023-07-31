@@ -91,7 +91,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // settings > label
             'app.settings.label' => 'App\Settings\Label\Index',
-            'app.settings.label.form' => 'App\Settings\Label\Form',
+            'app.settings.label.update' => 'App\Settings\Label\Update',
             'app.settings.label.listing' => 'App\Settings\Label\Listing',
 
             // settings > page

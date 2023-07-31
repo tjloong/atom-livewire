@@ -10,7 +10,7 @@
                 <div class="flex items-center gap-3">
                     <div class="grow flex items-center gap-3">
                         <x-link :label="$label->locale('name')" 
-                            wire:click.stop="$emit('updateOrCreate', {{ $label->id }})"
+                            wire:click.stop="$emit('update', {{ $label->id }})"
                             class="font-medium"
                         />
 

@@ -1,4 +1,4 @@
-<x-form id="label-form" :header="optional($label)->exists ? 'Update Label' : 'Create Label'" drawer>
+<x-form id="label-update" :header="optional($label)->exists ? 'Update Label' : 'Create Label'" drawer>
 @if ($label)
     <x-slot:buttons>
         <x-button.submit size="sm"/>
@@ -50,3 +50,4 @@
     </x-form.group>
 @endif
 </x-form>
+    

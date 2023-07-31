@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Label;
 
-use Illuminate\Database\Eloquent\Collection;
 use Jiannius\Atom\Component;
 
 class Index extends Component
@@ -10,15 +9,13 @@ class Index extends Component
     public $type;
 
     protected $listeners = [
-        'updateOrCreate',
-        'refresh' => '$refresh',
+        'update',
+        'labelSaved' => '$refresh',
     ];
 
     // mount
     public function mount($params = []): void
     {
-        parent::mount();
-
         $this->type = $this->type ?? head($params);
     }
 
@@ -31,7 +28,7 @@ class Index extends Component
     }
 
     // get labels property
-    public function getLabelsProperty(): Collection
+    public function getLabelsProperty(): mixed
     {
         return model('label')
             ->readable()
@@ -42,9 +39,9 @@ class Index extends Component
             ->get();
     }
 
-    // update or create
-    public function updateOrCreate($data = null): void
+    // update
+    public function update($data = null): void
     {
-        $this->emit('open', $data)->to('app.settings.label.form');
+        $this->emitTo('app.settings.label.update', 'open', $data);
     }
 }

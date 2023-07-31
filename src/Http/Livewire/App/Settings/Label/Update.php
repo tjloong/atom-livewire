@@ -1,12 +1,12 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\Label;
+namespace App\Http\Livewire\App\Settings\Label;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
-class Form extends Component
+class Update extends Component
 {
     use WithForm;
     use WithPopupNotify;
@@ -44,28 +44,28 @@ class Form extends Component
         $id = is_numeric($data) ? $data : data_get($data, 'id');
 
         $this->label = $id 
-            ? model('label')->readable()->findOrFail($id)
+            ? model('label')->findOrFail($id)
             : model('label')->fill($data);
 
         $this->fill([
             'inputs.name' => (array) $this->label->name,
         ]);
     
-        $this->dispatchBrowserEvent('label-form-open');
+        $this->dispatchBrowserEvent('label-update-open');
     }
 
     // close
     public function close(): void
     {
-        $this->emit('refresh');
         $this->reset('label', 'inputs');
-        $this->dispatchBrowserEvent('label-form-close');
+        $this->dispatchBrowserEvent('label-update-close');
     }
 
     // delete
     public function delete($id): void
     {
         $this->label->delete();
+        $this->emit('labelSaved');
         $this->close();
     }
 
@@ -79,6 +79,7 @@ class Form extends Component
             'slug' => null,
         ])->save();
 
+        $this->emit('labelSaved');
         $this->close();
     }
 }
