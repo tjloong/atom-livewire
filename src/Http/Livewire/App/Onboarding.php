@@ -47,17 +47,19 @@ class Onboarding extends Component
             ]);
         }
 
-        return $this->completed();
+        return $this->completed(false);
     }
 
     // completed
-    public function completed(): mixed
+    public function completed($close = true): mixed
     {
         if (!user()->signup->onboarded_at) {
             user()->signup->fill(['onboarded_at' => now()])->save();
         }
 
-        return $this->close();
+        if ($close) return $this->close();
+
+        return null;
     }
 
     // close

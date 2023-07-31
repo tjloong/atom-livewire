@@ -2,7 +2,9 @@
     <div class="w-full flex flex-col gap-10">
         <nav class="flex flex-wrap items-center justify-between gap-2">
             <x-logo class="w-40"/>
-            @if (!$this->isOnboarded) <x-button inverted icon="arrow-left" label="I'll do this later" wire:click="close"/> @endif
+            @if (!$this->isOnboarded)
+                <x-link icon="back" label="I'll do this later" wire:click="close"/>
+            @endif
         </nav>
 
         @if ($this->isOnboarded)
