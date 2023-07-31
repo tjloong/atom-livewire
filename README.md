@@ -153,6 +153,69 @@ php artisan atom:migrate app.label      // optionally, if you know the module na
 php artisan atom:publish app.label
 ```
 
+### Modify Livewire\App\Settings
+
+1. To modify the app settings, extend `Jiannius\Atom\Http\Livewire\App\Settings\Index.php`, and then change the `getTabsProperty()` method.
+
+```
+// app/Http/Livewire/App/Settings/Index.php
+
+<?php
+
+namespace App\Http\Livewire\App\Settings;
+
+class Index extends \Jiannius\Atom\Http\Livewire\App\Settings\Index
+{
+    public function getTabsProperty(): array
+    {
+
+        return [
+            ['group' => 'Account', 'tabs' => [
+                ['slug' => 'login', 'label' => 'Login Information', 'icon' => 'login',],
+                ['slug' => 'password', 'label' => 'Change Password', 'icon' => 'lock',],
+                ['slug' => 'billing', 'label' => 'Subscription', 'icon' => 'credit-card'],
+            ]],
+
+            ['group' => 'System', 'tabs' => [
+                ['slug' => 'user', 'label' => 'Users', 'icon' => 'users'],
+                ['slug' => 'invitation','label' => 'Invitations', 'icon' => 'invitation'],
+                ['slug' => 'role', 'label' => 'Roles', 'icon' => 'user-tag'],
+                ['slug' => 'team', 'label' => 'Teams', 'icon' => 'people-group'],
+                ['slug' => 'page', 'label' => 'Pages', 'icon' => 'newspaper'],
+                ['slug' => 'file', 'label' => 'Files and Media', 'icon' => 'images'],
+            ]],
+
+            ['group' => 'Labels', 'tabs' => [
+                ['slug' => 'label/blog-category', 'label' => 'Blog Categories', 'icon' => 'tag'],
+            ]],
+
+            ['group' => 'Website', 'tabs' => [
+                ['slug' => 'website/profile', 'label' => 'Profile', 'icon' => 'globe'],
+                ['slug' => 'website/seo', 'label' => 'SEO', 'icon' => 'search'],
+                ['slug' => 'website/analytics', 'label' => 'Analytics', 'icon' => 'chart-simple'],
+                ['slug' => 'website/social-media', 'label' => 'Social Media', 'icon' => 'share-nodes'],
+                ['slug' => 'website/announcement', 'label' => 'Announcement', 'icon' => 'bullhorn'],
+                ['slug' => 'website/popup', 'label' => 'Pop-Up', 'icon' => 'window-restore'],
+            ]],
+
+            ['group' => 'Integration', 'tabs' => [
+                ['slug' => 'integration/email', 'label' => 'Email', 'icon' => 'paper-plane'],
+                ['slug' => 'integration/storage', 'label' => 'Storage', 'icon' => 'hard-drive'],
+                ['slug' => 'integration/payment', 'label' => 'Payment', 'icon' => 'money-bill'],
+                ['slug' => 'integration/social-login', 'label' => 'Social Login', 'icon' => 'login'],
+            ]]
+        ];
+    }
+}
+
+```
+
+2. Alternatively, you can publish the whole app/settings to local.
+
+```
+php artisan atom:publish app.settings
+```
+
 ### Payment Gateway
 
 1. To enable payment gateway, add the provider in config/atom.php

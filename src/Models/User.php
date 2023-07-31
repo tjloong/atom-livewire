@@ -85,7 +85,7 @@ class User extends Authenticatable
     // scope for status
     public function scopeStatus($query, $status): void
     {
-        $query->withTrashed()->whereIn('status', collect($status)->map(fn($val) => $val->value));
+        $query->withTrashed()->whereIn('status', (array) $status);
     }
 
     // get user home

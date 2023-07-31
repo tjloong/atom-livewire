@@ -42,21 +42,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // onboarding
             'app.onboarding' => 'App\Onboarding',
 
-            // invitation
-            'atom.app.invitation.create' => 'App\Invitation\Create',
-            'atom.app.invitation.update' => 'App\Invitation\Update',
-            'atom.app.invitation.pending' => 'App\Invitation\Pending',
-            'atom.app.invitation.listing' => 'App\Invitation\Listing',
-
             // signup
             'app.signup' => 'App\Signup\Index',
             'app.signup.update' => 'App\Signup\Update',
-
-            // tax
-            // 'atom.app.tax.listing' => 'App\Tax\Listing',
-            // 'atom.app.tax.create' => 'App\Tax\Create',
-            // 'atom.app.tax.update' => 'App\Tax\Update',
-            // 'atom.app.tax.form' => 'App\Tax\Form',
 
             // blog
             // 'atom.app.blog.listing' => 'App\Blog\Listing',

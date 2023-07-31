@@ -14,7 +14,7 @@
 
 @section('content')
     {{-- Auth layout --}}
-    @route(['login', 'register', 'password.*', 'verification.*'])
+    @route('login', 'register', 'password.*', 'verification.*')
         <div class="min-h-screen relative bg-gray-100 px-4 py-12 md:py-20">
             <div class="max-w-md mx-auto grid gap-10">
                 <a class="mx-auto" href="/">
@@ -26,7 +26,7 @@
         </div>
 
     {{-- Shareable layout --}}
-    @elseroute(['shareable', 'shareable.*'])
+    @elseroute('shareable')
         <div class="min-h-screen relative bg-gray-100">
             <main class="max-w-screen-xl mx-auto px-4 py-12">
                 {{ $slot }}
@@ -34,7 +34,7 @@
         </div>
 
     {{-- Onboarding layout --}}
-    @elseroute(['app.onboarding', 'app.onboarding.*'])
+    @elseroute('app.onboarding')
         <div class="min-h-screen bg-gray-100 p-6">
             {{ $slot }}
         </div>
@@ -45,6 +45,12 @@
             <x-slot:links>
                 <x-link href="/" icon="globe" label="Go To Site" class="text-gray-800"/>
             </x-slot:links>
+
+            <x-slot:auth>
+                <x-navbar.auth>
+                    <x-navbar.dropdown.item label="Settings" :href="route('app.settings')"/>
+                </x-navbar.auth>
+            </x-slot:auth>
 
             <x-slot:aside>
                 <x-admin-panel.aside label="Dashboard" route="app.dashboard"/>                

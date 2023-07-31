@@ -26,7 +26,7 @@ class PublishCommand extends Command
                 'auth/verification.php',
                 'app/dashboard.php',
                 'app/settings.php',
-                'web/home.php',
+                'web.php',
             ],
         ],
     ];
