@@ -1,6 +1,7 @@
 <x-button 
-    color="red"
+    c="red"
     icon="trash-can"
+    :label="$attributes->get('label', 'Delete')"
     x-on:click="$dispatch('confirm', {
         title: '{{ __($attributes->get('title', 'Delete')) }}',
         message: '{{ __($attributes->get('message', 'Are you sure?')) }}',
@@ -11,6 +12,5 @@
                 .then(() => {{ json_encode($attributes->get('reload', false)) }} && location.reload())
         },
     })"
-    :label="$attributes->get('label', 'Delete')"
-    {{ $attributes->only(['inverted', 'size']) }}
+    {{ $attributes->except('c', 'icon', 'label', 'x-on:click') }}
 />

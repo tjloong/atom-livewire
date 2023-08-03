@@ -157,7 +157,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.file.preview',
 
             'form.select.index',
-            'form.select.tax',
             'form.select.enum',
             'form.select.role',
             'form.select.team',
@@ -182,10 +181,10 @@ class AtomComponentServiceProvider extends ServiceProvider
             'page-header.index',
             'page-header.back',
         
-            'tab.index',
-            'tab.item',
-            'tab.dropdown.index',
-            'tab.dropdown.item',
+            'tabs.index',
+            'tabs.tab',
+            'tabs.dropdown.index',
+            'tabs.dropdown.item',
 
             'blog.index',
             'blog.card',

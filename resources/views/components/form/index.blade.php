@@ -27,6 +27,7 @@
             :header="$attributes->get('header')" 
             :size="$attributes->get('size')"
             :show="$attributes->get('show')"
+            :bg-close="$attributes->get('bg-close')"
         >
             @isset($header)
                 <x-slot:header>{{ $header }}</x-slot:header>
@@ -47,6 +48,7 @@
             :header="$attributes->get('header')" 
             :size="$attributes->get('size')"
             :show="$attributes->get('show')"
+            :bg-close="$attributes->get('bg-close')"
         >
             @isset($header)
                 <x-slot:header>{{ $header }}</x-slot:header>

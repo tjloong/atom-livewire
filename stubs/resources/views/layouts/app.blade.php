@@ -67,7 +67,7 @@
             @route('app.settings')
                 {{ $slot }}
             @else
-                <div class="p-5 pb-10">
+                <div class="p-5 pb-10 bg-slate-50 w-full h-full">
                     {{ $slot }}
                 </div>
             @endroute

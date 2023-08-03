@@ -17,8 +17,8 @@ class InitCommand extends Command
     protected $node = [
         'devDependencies' => [
             "@alpinejs/collapse" => '^3',
-            '@tailwindcss/typography' => '^0.5',
             '@ryangjchandler/alpine-hooks' => '^1',
+            '@tailwindcss/typography' => '^0.5',
             'alpinejs' => '^3',
             'autoprefixer' => '^10',
             'flatpickr' => '^4',

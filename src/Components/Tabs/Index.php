@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Components\Button;
+namespace Jiannius\Atom\Components\Tabs;
 
 use Illuminate\View\Component;
 
@@ -8,6 +8,6 @@ class Index extends Component
 {
     public function render()
     {
-        return view('atom::components.button.index');
+        return view('atom::components.tabs.index');
     }
 }

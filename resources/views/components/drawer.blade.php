@@ -28,6 +28,7 @@
     class="fixed inset-0 z-40"
 >
     @if ($attributes->get('bg-close') === false) <x-modal.overlay/>
+    @elseif ($attributes->get('bg-close') === 'dblclick') <x-modal.overlay x-on:dblclick.stop="$dispatch('close')"/>
     @else <x-modal.overlay x-on:click.stop="$dispatch('close')"/>
     @endif
 
@@ -37,7 +38,7 @@
         'lg' => 'md:w-2/3 lg:w-1/2',
     ][$size] }}">
         <div {{ $attributes->class([
-            'shadow-lg rounded-l-lg border flex flex-col w-full h-full',
+            'shadow-lg rounded-l-lg border flex flex-col gap-4 w-full h-full',
             $attributes->get('class', 'bg-white'),
         ]) }}>
             <div class="shrink-0 bg-white py-3 px-6 flex items-center justify-between gap-3 border-b">
@@ -46,9 +47,7 @@
                 </div>
 
                 @isset($buttons)
-                    <div class="flex items-center gap-2">
-                        {{ $buttons }}
-                    </div>
+                    {{ $buttons }}
                 @endisset
             </div>
 

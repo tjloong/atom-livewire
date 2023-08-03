@@ -25,8 +25,8 @@
         </x-form.group>
 
         <x-slot:foot>
-            <x-button.submit label="Login" icon="login" size="md" color="theme" block/>
-            <x-button.social-login size="md" divider="OR LOGIN WITH"/>
+            <x-button.submit label="Login" icon="login" size="lg" color="theme" block/>
+            <x-button.social-login divider="OR LOGIN WITH"/>
         </x-slot:foot>
     </x-form>
 

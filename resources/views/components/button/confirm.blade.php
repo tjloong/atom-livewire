@@ -9,7 +9,6 @@
 ])
 
 <x-button
-    {{ $attributes->except(['title', 'message', 'buttons', 'callback', 'href', 'params']) }}
     x-on:click="$dispatch('confirm', {
         title: '{{ $title }}',
         message: '{{ $message }}',
@@ -20,4 +19,5 @@
             else if ({{ json_encode($callback ?? false) }}) $wire.call('{{ $callback }}', {{ json_encode($params) }});
         },
     })"
+    {{ $attributes->except('title', 'message', 'buttons', 'callback', 'href', 'params') }}
 />

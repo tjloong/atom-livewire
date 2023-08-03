@@ -134,31 +134,31 @@ class InstallBakCommand extends Command
     /**
      * Install banners
      */
-    private function installBanners()
-    {
-        $this->newLine();
-        $this->info('Installing banners table...');
+    // private function installBanners()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing banners table...');
 
-        if (Schema::hasTable('banners')) $this->warn('banners table exists, skipped.');
-        else {
-            Schema::create('banners', function (Blueprint $table) {
-                $table->id();
-                $table->string('type')->nullable();
-                $table->string('name')->nullable();
-                $table->string('slug')->nullable();
-                $table->text('description')->nullable();
-                $table->json('placement')->nullable();
-                $table->string('url')->nullable();
-                $table->integer('seq')->nullable();
-                $table->boolean('is_active')->nullable();
-                $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
-                $table->date('start_at')->nullable();
-                $table->date('end_at')->nullable();
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            });
-        }
-    }
+    //     if (Schema::hasTable('banners')) $this->warn('banners table exists, skipped.');
+    //     else {
+    //         Schema::create('banners', function (Blueprint $table) {
+    //             $table->id();
+    //             $table->string('type')->nullable();
+    //             $table->string('name')->nullable();
+    //             $table->string('slug')->nullable();
+    //             $table->text('description')->nullable();
+    //             $table->json('placement')->nullable();
+    //             $table->string('url')->nullable();
+    //             $table->integer('seq')->nullable();
+    //             $table->boolean('is_active')->nullable();
+    //             $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
+    //             $table->date('start_at')->nullable();
+    //             $table->date('end_at')->nullable();
+    //             $table->timestamps();
+    //             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+    //         });
+    //     }
+    // }
 
     /**
      * Install tenants
@@ -235,44 +235,44 @@ class InstallBakCommand extends Command
     /**
      * Install line items
      */
-    private function installLineItems()
-    {
-        $this->newLine();
-        $this->info('Installing line_items table...');
+    // private function installLineItems()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing line_items table...');
 
-        if (Schema::hasTable('line_items')) $this->warn('line_items table exists, skipped.');
-        else {
-            Schema::create('line_items', function (Blueprint $table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->string('variant_name')->nullable();
-                $table->text('description')->nullable();
-                $table->double('qty')->nullable();
-                $table->double('amount')->nullable();
-                $table->double('subtotal')->nullable();
-                $table->double('discount_amount')->nullable();
-                $table->double('tax_amount')->nullable();
-                $table->double('grand_total')->nullable();
-                $table->integer('seq')->nullable();
-                $table->json('data')->nullable();
-                $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
-                $table->timestamps();
-            });
+    //     if (Schema::hasTable('line_items')) $this->warn('line_items table exists, skipped.');
+    //     else {
+    //         Schema::create('line_items', function (Blueprint $table) {
+    //             $table->id();
+    //             $table->string('name')->nullable();
+    //             $table->string('variant_name')->nullable();
+    //             $table->text('description')->nullable();
+    //             $table->double('qty')->nullable();
+    //             $table->double('amount')->nullable();
+    //             $table->double('subtotal')->nullable();
+    //             $table->double('discount_amount')->nullable();
+    //             $table->double('tax_amount')->nullable();
+    //             $table->double('grand_total')->nullable();
+    //             $table->integer('seq')->nullable();
+    //             $table->json('data')->nullable();
+    //             $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
+    //             $table->timestamps();
+    //         });
 
-            $this->line('line_items table created successfully...');
-        }
+    //         $this->line('line_items table created successfully...');
+    //     }
 
-        if (Schema::hasTable('taxes')) {
-            Schema::create('line_item_taxes', function (Blueprint $table) {
-                $table->id();
-                $table->double('amount')->nullable();
-                $table->foreignId('line_item_id')->constrained()->onDelete('cascade');
-                $table->foreignId('tax_id')->constrained()->onDelete('cascade');
-            });
+    //     if (Schema::hasTable('taxes')) {
+    //         Schema::create('line_item_taxes', function (Blueprint $table) {
+    //             $table->id();
+    //             $table->double('amount')->nullable();
+    //             $table->foreignId('line_item_id')->constrained()->onDelete('cascade');
+    //             $table->foreignId('tax_id')->constrained()->onDelete('cascade');
+    //         });
 
-            $this->line('line_item_taxes table created successfully.');
-        }
-    }
+    //         $this->line('line_item_taxes table created successfully.');
+    //     }
+    // }
 
     /**
      * Install emails
@@ -442,28 +442,28 @@ class InstallBakCommand extends Command
     /**
      * Install enquiries
      */
-    private function installEnquiries()
-    {
-        $this->newLine();
-        $this->info('Installing enquiries...');
+    // private function installEnquiries()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing enquiries...');
 
-        if (Schema::hasTable('enquiries')) $this->warn('enquiries table exists, skipped.');
-        else {
-            Schema::create('enquiries', function ($table) {
-                $table->id();
-                $table->string('name');
-                $table->string('phone')->nullable();
-                $table->string('email')->nullable();
-                $table->longText('message')->nullable();
-                $table->longText('remark')->nullable();
-                $table->json('data')->nullable();
-                $table->string('status')->nullable();
-                $table->timestamps();
-            });
+    //     if (Schema::hasTable('enquiries')) $this->warn('enquiries table exists, skipped.');
+    //     else {
+    //         Schema::create('enquiries', function ($table) {
+    //             $table->id();
+    //             $table->string('name');
+    //             $table->string('phone')->nullable();
+    //             $table->string('email')->nullable();
+    //             $table->longText('message')->nullable();
+    //             $table->longText('remark')->nullable();
+    //             $table->json('data')->nullable();
+    //             $table->string('status')->nullable();
+    //             $table->timestamps();
+    //         });
 
-            $this->line('enquiries table created successfully.');
-        }
-    }
+    //         $this->line('enquiries table created successfully.');
+    //     }
+    // }
 
     /**
      * Install blogs
