@@ -9,17 +9,33 @@
     >
         {{ __(':count Trashed', ['count' => $count]) }}
 
-        <a x-show="clearable" x-on:click="$dispatch('confirm', {
-            title: '{{ __('Empty Trashed') }}',
-            message: '{{ __('This will empty all trashed records. Are you sure?') }}',
-            type: 'error',
-            onConfirmed: () => $wire.emptyTrashed(),
-        })">
+        <div 
+            x-show="clearable" 
+            x-on:click="$dispatch('confirm', {
+                title: '{{ __('Empty Trashed') }}',
+                message: '{{ __('This will empty all trashed records. Are you sure?') }}',
+                type: 'error',
+                onConfirmed: () => $wire.emptyTrashed(),
+            })"
+            class="text-blue-600 cursor-pointer"
+        >
             {{ __('Clear') }}
-        </a>
+        </div>
 
-        <a x-show="!clearable" wire:click="$set('filters.status', 'trashed')">
+        <div 
+            x-show="!clearable" 
+            wire:click="$set('filters.status', 'trashed')"
+            class="text-blue-600 cursor-pointer"
+        >
             {{ __('Show') }}
-        </a>
+        </div>
+
+        <div 
+            x-show="clearable" 
+            wire:click="$set('filters.status', null)"
+            class="text-blue-600 cursor-pointer"
+        >
+            {{ __('Cancel') }}
+        </div>
     </div>
 @endif

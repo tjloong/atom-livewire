@@ -160,7 +160,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.select.enum',
             'form.select.role',
             'form.select.team',
-            'form.select.user',
             'form.select.label',
             'form.select.state',
             'form.select.gender',

@@ -23,8 +23,8 @@
             >
                 @if ($logo)
                     <x-logo :src="$logo" class="brightness-0 invert opacity-70" style="width: 20px; height: 20px;"/>
-                @elseif ($icon !== false)
-                    <x-icon :name="$icon ?? $label" class="opacity-70 w-4"/>
+                @elseif ($icon)
+                    <x-icon :name="$icon" class="opacity-70 w-4"/>
                 @endif
 
                 <div class="truncate">
@@ -46,8 +46,8 @@
                 >
                     @if ($logo)
                         <x-logo :src="$logo" size="16" class="brightness-0 invert opacity-70"/>
-                    @elseif ($icon !== false)
-                        <x-icon :name="$icon ?? $label" class="opacity-70 w-4"/>
+                    @elseif ($icon)
+                        <x-icon :name="$icon" class="opacity-70 w-4"/>
                     @endif
 
                     <div class="grow truncate">

@@ -12,22 +12,7 @@ trait WithTable
     public $maxRows = 100;
     public $checkboxes = [];
 
-    /**
-     * Initialize the trait
-     */
-    protected function initializeWithTable(): void
-    {
-        $this->queryString = array_merge(
-            $this->queryString, 
-            ['page' => ['except' => 1]],
-            isset($this->sort) ? ['sort' => ['except' => $this->sort]] : [],
-            isset($this->filters) ? ['filters' => ['except' => $this->filters]] : [],
-        );
-    }
-
-    /**
-     * Get sort by property
-     */
+    // get sort by property
     public function getSortByProperty(): string
     {
         if (!$this->sort) return null;
@@ -37,9 +22,7 @@ trait WithTable
         return $split[0];
     }
 
-    /**
-     * Get sort order property
-     */
+    // get sort order property
     public function getSortOrderProperty(): string
     {
         if (!$this->sort) return null;
@@ -49,9 +32,7 @@ trait WithTable
         return $split[1] ?? 'asc';
     }
 
-    /**
-     * Get paginator property
-     */
+    // get paginator property
     public function getPaginatorProperty(): mixed
     {
         if (!$this->query) return null;
@@ -63,9 +44,7 @@ trait WithTable
         return $this->query->paginate($this->maxRows);
     }
 
-    /**
-     * Get table property
-     */
+    // get table property
     public function getTableProperty(): array
     {
         return $this->paginator
@@ -73,55 +52,26 @@ trait WithTable
             ->items();
     }
 
-    /**
-     * Updated filters
-     */
+    // updated filters
     public function updatedFilters(): void
     {
         $this->resetPage();
         $this->resetCheckboxes();
     }
 
-    /**
-     * Get table columns
-     */
+    // get table columns
     public function getTableColumns($query): array
     {
         return [];
     }
-    
-    /**
-     * Toggle checkbox
-     */
-    // public function toggleCheckbox($value): void
-    // {
-    //     $values = collect($this->checkboxes);
 
-    //     if (in_array($value, ['*', '**'])) {
-    //         if (in_array($values->first(), ['*', '**'])) $values = collect();
-    //         else $values = collect([$value]);
-    //     }
-    //     else {
-    //         $values = $values->reject('*')->reject('**');
-    //         $values = $values->contains($value)
-    //             ? $values->reject($value)
-    //             : $values->concat([$value]);
-    //     }
-
-    //     $this->fill(['checkboxes' => $values->values()->all()]);
-    // }
-
-    /**
-     * Reset table checkboxes
-     */
+    // reset table checkboxes
     public function resetCheckboxes(): void
     {
         $this->checkboxes = [];
     }
 
-    /**
-     * Reset sort
-     */
+    // reset sort
     public function resetSort(): void
     {
         $this->reset('sort');

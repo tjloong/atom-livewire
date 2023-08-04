@@ -87,7 +87,7 @@
                     @endforeach
 
                     @if (count($tags) > 2)
-                        <div class="text-sm font-medium bg-slate-100 rounded-md py-1 px-2 border">
+                        <div class="text-xs font-medium bg-slate-100 rounded-md py-1 px-2 border">
                             +{{ count($tags) -  2 }}
                         </div>
                     @endif

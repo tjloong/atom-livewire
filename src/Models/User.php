@@ -57,7 +57,7 @@ class User extends Authenticatable
     }
 
     // attribute for status
-    public function status(): Attribute
+    protected function status(): Attribute
     {
         return Attribute::make(
             get: fn($value) => enum('user.status', $value),

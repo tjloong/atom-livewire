@@ -9,6 +9,8 @@
     @endif
 
     <link rel="shortcut icon" href="/storage/img/favicon.png">
+    <link href="/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="/fontawesome/css/solid.css" rel="stylesheet">
 
     @vite('resources/css/app.css')
 </head>
@@ -37,12 +39,8 @@
                         {{ $message }}
                     </div>
                 </div>
-    
-                <div>
-                    <x-button href="/">
-                        Back to home
-                    </x-button>
-                </div>
+
+                <x-link label="Back to Home" icon="back" href="/"/>
             @endif
         </div>
     </div>
