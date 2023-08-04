@@ -55,8 +55,38 @@
             @endisset
 
             <x-slot:buttons>
-                @isset($buttons) {{ $buttons }}
-                @else <x-button.submit size="sm"/>
+                @isset($buttons) 
+                    @if ($buttons->isNotEmpty()) 
+                        {{ $buttons }}
+                    @else
+                        <div class="flex items-center gap-2">
+                            @if ($buttons->attributes->get('restore'))
+                                <x-button size="sm" icon="restore"
+                                    label="Restore"
+                                    wire:click="restore({{ json_encode($buttons->attributes->get('restore')) }})"/>
+                            @else
+                                <x-button.submit size="sm"/>
+                            @endif
+
+                            @if ($buttons->attributes->get('trash'))
+                                <x-button.delete size="sm" inverted
+                                    label="Trash"
+                                    title="Move to Trash"
+                                    message="Are you sure to move this record to trash? You can restore it later."
+                                    callback="trash"
+                                    :params="$buttons->attributes->get('trash')"/>
+                            @endif
+
+                            @if ($buttons->attributes->get('delete'))
+                                <x-button.delete size="sm" inverted
+                                    title="Permanently Delete Record"
+                                    message="Are you sure to DELETE this record? This action CANNOT BE UNDONE."
+                                    :params="$buttons->attributes->get('delete')"/>
+                            @endif
+                        </div>
+                    @endif
+                @else 
+                    <x-button.submit size="sm"/>
                 @endisset
             </x-slot:buttons>
 
