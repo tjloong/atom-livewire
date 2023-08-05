@@ -45,7 +45,9 @@
         </x-modal>
     @elseif ($attributes->get('drawer'))
         <x-drawer :id="$id" 
-            :header="$attributes->get('header')" 
+            :header="$attributes->get('header')"
+            :title="$attributes->get('title')"
+            :subtitle="$attributes->get('subtitle')"
             :size="$attributes->get('size')"
             :show="$attributes->get('show')"
             :bg-close="$attributes->get('bg-close')"

@@ -33,7 +33,7 @@
     @if (has_route('register'))
         <div class="inline-flex item-center gap-2 px-4">
             {{ __('Don\'t have an account?') }} 
-            <x-link label="Sign Up Now" :href="route('register', ['ref' => 'page-login'])"/>
+            <x-link label="Sign Up Now" :href="route('register', ['utm' => 'page-login'])"/>
         </div>
     @endif
 </div>

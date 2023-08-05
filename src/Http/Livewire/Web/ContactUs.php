@@ -12,6 +12,7 @@ class ContactUs extends Component
     use WithForm;
 
     public $ref;
+    public $utm;
     public $enquiry;
 
     // validation
@@ -29,6 +30,7 @@ class ContactUs extends Component
     public function mount(): void
     {
         $this->ref = request()->query('ref');
+        $this->utm = request()->query('utm');
         $this->enquiry = [
             'name' => null,
             'phone' => null,
@@ -62,7 +64,9 @@ class ContactUs extends Component
         if (has_table('enquiries')) {
             $enquiry = model('enquiry')->create($this->enquiry);
 
-            if ($this->ref) $enquiry->fill(['data' => ['ref' => $this->ref]])->save();
+            if ($ref = $this->ref ?? $this->utm) {
+                $enquiry->fill(['data' => ['ref' => $ref]])->save();
+            }
 
             $mail['to'] = settings('notify_to');
             $mail['params'] = $enquiry;

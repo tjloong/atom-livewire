@@ -1,7 +1,4 @@
-<x-drawer name="signup-update" 
-    header="Sign-Up"
-    :show="!empty($signup)"
->
+<x-drawer name="signup-update" :header="$signup->user->name ?? ''">
 @if ($signup)
     <div class="flex flex-col divide-y px-2">
         <x-field label="Name" :value="$signup->user->name"/>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\App\Settings\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Settings\Label;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;

@@ -54,15 +54,24 @@
             <div class="grow flex flex-col overflow-auto">
                 <div class="shrink-0">
                     @isset($header) {{ $header }}
+                    @elseisset($title) {{ $title }}
                     @else
                         <div class="flex items-center gap-2 text-xl px-6 py-3">
                             @if ($icon = $attributes->get('icon'))
                                 <x-icon :name="$icon" class="text-gray-400"/>
                             @endif
     
-                            @if ($header = $attributes->get('header'))
-                                <div class="font-bold">
-                                    {{ __($header) }}
+                            @if ($header = $attributes->get('header') ?? $attributes->get('title'))
+                                <div>
+                                    <div class="font-bold">
+                                        {{ __($header) }}
+                                    </div>
+                                    
+                                    @if ($subtitle = $attributes->get('subtitle'))
+                                        <div class="font-medium text-gray-500 text-sm">
+                                            {{ __($subtitle) }}
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
                         </div>

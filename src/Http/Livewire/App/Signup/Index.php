@@ -17,14 +17,6 @@ class Index extends Component
         'status' => null,
     ];
 
-    // get signup property
-    public function getSignupProperty(): mixed
-    {
-        return $this->signupId
-            ? model('signup')->find($this->signupId)
-            : null;
-    }
-
     // get query property
     public function getQueryProperty(): mixed
     {
@@ -33,10 +25,11 @@ class Index extends Component
             ->when(!$this->sort, fn($q) => $q->latest());
     }
 
-    // clear
-    public function clear(): void
+    // setSignupId
+    public function setSignupId($id = null): void
     {
-        $this->reset('signupId');
+        $this->fill(['signupId' => $id ?: null]);
+        if ($id) $this->emit('updateSignup', $id);
     }
 
     // export
