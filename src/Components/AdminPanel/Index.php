@@ -8,16 +8,12 @@ class Index extends Component
 {
     public $flash;
     public $version;
-    public $unverified;
 
     // contructor
     public function __construct() 
     {
         $this->flash = $this->getFlash();
         $this->version = $this->getVersion();
-        $this->unverified = config('atom.auth.verify')
-            && user('email')
-            && !user()->hasVerifiedEmail();
     }
 
     // get flash message
