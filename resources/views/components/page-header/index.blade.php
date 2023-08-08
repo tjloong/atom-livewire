@@ -6,7 +6,7 @@
 <div {{ $attributes->class([
     'w-full flex flex-wrap justify-between md:flex-nowrap',
     $size === 'sm' ? 'mb-4' : 'mb-6',
-])->except('size', 'back', 'title', 'subtitle', 'status', 'tinylink') }}>
+])->except(['size', 'back', 'title', 'subtitle', 'status', 'tinylink']) }}>
     <div class="grow flex my-1">
         <div class="shrink-0">
             @if ($href = request()->query('back'))

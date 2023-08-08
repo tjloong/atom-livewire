@@ -15,7 +15,7 @@ trait HasPermission
     {
         if (session('permissions')) $perms = session('permissions');
         else {
-            $perms = $this->permissions()->readable()->get()->pluck('name')->toArray();
+            $perms = $this->permissions()->readable()->get()->pluck('permission')->toArray();
             session(['permissions' => $perms]);
         }
 

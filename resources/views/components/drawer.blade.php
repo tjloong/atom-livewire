@@ -36,6 +36,7 @@
         'sm' => 'md:w-1/2 lg:w-2/12',
         'md' => 'md:w-1/2 lg:w-4/12',
         'lg' => 'md:w-2/3 lg:w-1/2',
+        'xl' => 'md:w-4/5',
     ][$size] }}">
         <div {{ $attributes->class([
             'shadow-lg rounded-l-lg border flex flex-col gap-4 w-full h-full',

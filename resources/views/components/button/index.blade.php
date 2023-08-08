@@ -13,6 +13,8 @@
                 'blue' => 'bg-blue-100 text-blue-500 hover:bg-blue-500 hover:text-white focus:ring-blue-500',
                 'yellow' => 'bg-amber-100 text-amber-400 hover:bg-amber-400 hover:text-white focus:ring-amber-400',
                 'gray' => 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-600 focus:ring-gray-200',
+                'google' => 'bg-rose-100 text-rose-500 hover:bg-rose-500 hover:text-white focus:ring-rose-500',
+                'facebook' => 'bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white focus:ring-blue-600',
                 'default' => 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-100 focus:bg-gray-100 focus:ring-gray-200',
             ][$color];
         }
@@ -25,6 +27,8 @@
                 'blue' => 'bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white focus:ring-blue-200',
                 'yellow' => 'bg-white text-amber-400 border-2 border-amber-400 hover:bg-amber-400 hover:text-white focus:ring-amber-200',
                 'gray' => 'bg-white text-gray-400 border-2 border-gray-200 hover:bg-gray-200 hover:text-gray-500 focus:ring-gray-100',
+                'google' => 'bg-white text-rose-500 border-2 border-rose-500 hover:bg-rose-600 hover:text-white focus:ring-rose-500',
+                'facebook' => 'bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-700 hover:text-white focus:ring-blue-600',
                 'default' => 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-100 focus:bg-gray-100 focus:ring-gray-200',
             ][$color];
         }
@@ -37,6 +41,8 @@
             'blue' => 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500',
             'yellow' => 'bg-amber-400 text-white hover:bg-amber-600 focus:ring-amber-400',
             'gray' => 'bg-gray-200 text-gray-600 hover:bg-gray-300 focus:ring-gray-200',
+            'google' => 'bg-rose-500 text-white hover:bg-rose-600 focus:ring-rose-500',
+            'facebook' => 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600',
             'default' => 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-100 focus:bg-gray-100 focus:ring-gray-200',
         ][$color];
     },
