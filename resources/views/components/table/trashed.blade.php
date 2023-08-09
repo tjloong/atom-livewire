@@ -1,4 +1,4 @@
-@if ($count = $attributes->get('count'))
+@if ($count = $attributes->get('count') ?? $this->query->onlyTrashed()->count())
     <div
         x-data="{
             get clearable () {

@@ -16,19 +16,18 @@
             this.show = false
         },
     }"
-    x-on:click.away="close()"
     {{ $attributes->class([
         $icon && !$label ? 'flex items-center justify-center' : null,
     ])->except(['icon', 'label']) }}
 >
     @isset($anchor)
-        <div x-ref="anchor" x-on:click="open()" {{ $anchor->attributes->class([
+        <div x-ref="anchor" x-on:click="open()" x-on:click.away="close()" {{ $anchor->attributes->class([
             'inline-flex items-center justify-center gap-2 cursor-pointer',
         ]) }}>
             {{ $anchor }}
         </div>
     @else
-        <div x-ref="anchor" x-on:click="open()" class="inline-flex items-center gap-2 cursor-pointer">
+        <div x-ref="anchor" x-on:click="open()" x-on:click.away="close()" class="inline-flex items-center gap-2 cursor-pointer">
             @if ($icon) <x-icon :name="$icon"/> @endif
             @if ($label) 
                 {!! __($label) !!} 

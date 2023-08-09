@@ -141,6 +141,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.picker',
             'form.search',
             'form.country',
+            'form.datetime',
             'form.password',
             'form.richtext',
             'form.sortable',

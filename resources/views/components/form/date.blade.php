@@ -10,7 +10,9 @@
         x-data="{
             focus: false,
             picker: null,
-            value: @entangle($attributes->wire('model')),
+            @if ($attributes->has('value')) value: @js($attributes->get('value')),
+            @else value: @entangle($attributes->wire('model')),
+            @endif
             config: @js($config),
             get placeholder () {
                 if (this.value) return formatDate(this.value)
@@ -42,7 +44,10 @@
                         inline: true,
                         dateFormat: 'Y-m-d',
                         onClose: () => this.setFocus(false),
-                        onChange: (selectedDate, dateStr) => this.value = dateStr,
+                        onChange: (selectedDate, dateStr) => {
+                            this.value = dateStr
+                            this.$dispatch('input', dateStr)
+                        },
                         ...this.config,
                     })
                 }
@@ -65,7 +70,9 @@
             }}"
         >
             <x-icon name="calendar" class="shrink-0 text-gray-400"/>
-            <div x-on:click="setFocus(true)" x-text="placeholder" x-bind:class="value ? 'grow' : 'grow text-gray-400'"></div>
+            <div x-on:click="setFocus(true)" 
+                x-text="placeholder" 
+                x-bind:class="value ? 'grow' : 'grow text-gray-400'"></div>
             <x-close x-show="value" x-on:click="clear()" class="shrink-0"/>
         </div>
 

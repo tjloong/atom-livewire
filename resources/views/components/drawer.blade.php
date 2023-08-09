@@ -37,12 +37,13 @@
         'md' => 'md:w-1/2 lg:w-4/12',
         'lg' => 'md:w-2/3 lg:w-1/2',
         'xl' => 'md:w-4/5',
+        'full' => 'md:w-11/12',
     ][$size] }}">
         <div {{ $attributes->class([
             'shadow-lg rounded-l-lg border flex flex-col gap-4 w-full h-full',
             $attributes->get('class', 'bg-white'),
         ]) }}>
-            <div class="shrink-0 bg-white py-3 px-6 flex items-center justify-between gap-3 border-b">
+            <div class="shrink-0 bg-white py-3 px-6 flex items-center justify-between gap-3 border-b rounded-t-lg">
                 <div class="cursor-pointer" x-on:click="$dispatch('close')">
                     <x-icon name="arrow-right-long" class="text-lg"/>
                 </div>
