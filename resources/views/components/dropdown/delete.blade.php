@@ -1,7 +1,6 @@
 <x-dropdown.item
     :label="$attributes->get('label', 'Delete')"
     :icon="$attributes->get('icon', 'delete')"
-    class="cursor-pointer"
     x-on:click="$dispatch('confirm', {
         title: '{{ __($attributes->get('title')) }}',
         message: '{{ __($attributes->get('message')) }}',

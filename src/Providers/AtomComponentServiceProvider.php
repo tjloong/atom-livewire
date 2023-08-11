@@ -82,6 +82,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             
             'box.index',
             'box.fieldset',
+            'box.trace',
             'box.row',
             
             'button.index',
@@ -192,7 +193,6 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'navbar.index',
             'navbar.auth',
-            'navbar.cart',
             'navbar.item',
             'navbar.locale',
             'navbar.dropdown.index',

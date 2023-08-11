@@ -2,26 +2,27 @@
 
 namespace Jiannius\Atom\Traits\Models;
 
-use Illuminate\Support\Facades\Schema;
-
 trait HasTrace
 {
     public $enabledHasTraceTrait = true;
 
-    /**
-     * Model boot method
-     * 
-     * @return void
-     */
+    // boot
     protected static function bootHasTrace()
     {
         static::creating(function ($model) {
             $table = $model->getTable();
 
             if ($id = auth()->user()->id ?? null) {
-                if (Schema::hasColumn($table, 'owned_by')) $model->owned_by = $id;
-                if (Schema::hasColumn($table, 'created_by')) $model->created_by = $id;
-                if (Schema::hasColumn($table, 'updated_by')) $model->updated_by = $id;
+                foreach ([
+                    'owned_by',
+                    'created_by',
+                    'updated_by',
+                    'requested_by',
+                ] as $col) {
+                    if (has_column($table, $col) && empty($model->$col)) {
+                        $model->fill([$col => $id]);
+                    }
+                }
             }
         });
 
@@ -29,30 +30,22 @@ trait HasTrace
             $table = $model->getTable();
 
             if ($id = auth()->user()->id ?? null) {
-                if (Schema::hasColumn($table, 'updated_by')) $model->updated_by = $id;
-                if (Schema::hasColumn($table, 'owned_by') && !$model->owned_by) {
-                    $model->owned_by = $model->created_by;
-                }
+                if (has_column($table, 'updated_by')) $model->updated_by = $id;
             }
         });
 
         static::deleted(function ($model) {
             $table = $model->getTable();
 
-            if (Schema::hasColumn($table, 'deleted_by') && $model->exists) {
+            if (has_column($table, 'deleted_by') && $model->exists) {
                 if ($id = auth()->user()->id ?? null) {
-                    $model->deleted_by = $id;
-                    $model->save();
+                    $model->fill(['deleted_by' => $id])->saveQuietly();
                 }
             }
         });
     }
 
-    /**
-     * Initialize the trait
-     * 
-     * @return void
-     */
+    // initialize
     protected function initializeHasTrace()
     {
         $this->casts['owned_by'] = 'integer';
@@ -62,94 +55,108 @@ trait HasTrace
         $this->casts['blocked_by'] = 'integer';
         $this->casts['closed_by'] = 'integer';
         $this->casts['refunded_by'] = 'integer';
+        $this->casts['requested_by'] = 'integer';
+        $this->casts['approved_by'] = 'integer';
+        $this->casts['rejected_by'] = 'integer';
         $this->casts['blocked_at'] = 'datetime';
         $this->casts['closed_at'] = 'datetime';
         $this->casts['refunded_at'] = 'datetime';
+        $this->casts['requested_at'] = 'datetime';
+        $this->casts['approved_at'] = 'datetime';
+        $this->casts['rejected_at'] = 'datetime';
     }
 
-    /**
-     * Get owned by user for model
-     */
+    // get owned by for model
     public function ownedBy()
     {
         return $this->belongsTo(model('user'), 'owned_by');
     }
 
-    /**
-     * Get created_by_user for model
-     */
+    // get created by for model
     public function createdBy()
     {
         return $this->belongsTo(model('user'), 'created_by');
     }
 
-    /**
-     * Get updated_by_user for model
-     */
+    // get updated by for model
     public function updatedBy()
     {
         return $this->belongsTo(model('user'), 'updated_by');
     }
 
-    /**
-     * Get deleted_by_user for model
-     */
+    // get deleted by for model
     public function deletedBy()
     {
         return $this->belongsTo(model('user'), 'deleted_by');
     }
 
-    /**
-     * Get blocked_by_user for model
-     */
+    // get blocked by for model
     public function blockedBy()
     {
         return $this->belongsTo(model('user'), 'blocked_by');
     }
 
-    /**
-     * Get closed_by_user for model
-     */
+    // get closed by for model
     public function closedBy()
     {
         return $this->belongsTo(model('user'), 'closed_by');
     }
 
-    /**
-     * Get refunded_by_user for model
-     */
+    // get refunded by for model
     public function refundedBy()
     {
         return $this->belongsTo(model('user'), 'refunded_by');
     }
 
-    /**
-     * Check model is blocked
-     */
+    // get requested by for model
+    public function requestedBy()
+    {
+        return $this->belongsTo(model('user'), 'requested_by');
+    }
+
+    // get approved by for model
+    public function approvedBy()
+    {
+        return $this->belongsTo(model('user'), 'approved_by');
+    }
+
+    // get rejected by for model
+    public function rejectedBy()
+    {
+        return $this->belongsTo(model('user'), 'rejected_by');
+    }
+
+    // check model is blocked
     public function blocked()
     {
         return $this->blocked_at && $this->blocked_at->lessThan(now());
     }
 
-    /**
-     * Check model is closed
-     */
+    // check model is closed
     public function closed()
     {
         return $this->closed_at && $this->closed_at->lessThan(now());
     }
 
-    /**
-     * Check model is refunded
-     */
+    // check model is refunded
     public function refunded()
     {
         return $this->refunded_at && $this->refunded_at->lessThan(now());
     }
 
-    /**
-     * Block the model
-     */
+    // check model is approved
+    public function approved()
+    {
+        return $this->approved_at && $this->approved_at->lessThan(now());
+    }
+
+    // check model is rejected
+    public function rejected()
+    {
+        return $this->rejected_at && $this->rejected_at->lessThan(now());
+    }
+
+    // block the model
     public function block()
     {
         $this->fill([
@@ -158,9 +165,7 @@ trait HasTrace
         ])->save();
     }
 
-    /**
-     * Unblock the model
-     */
+    // unblock the model
     public function unblock()
     {
         $this->fill([
@@ -169,47 +174,75 @@ trait HasTrace
         ])->save();
     }
 
-    /**
-     * Close the model
-     */
+    // close the model
     public function close()
     {
         $this->fill([
             'closed_at' => now(),
             'closed_by' => user('id'),
-        ]);
+        ])->save();
     }
 
-    /**
-     * Unclose the model
-     */
+    // unclose the model
     public function unclose()
     {
         $this->fill([
             'closed_at' => null,
             'closed_by' => null,
-        ]);
+        ])->save();
     }
 
-    /**
-     * Refund the model
-     */
+    // refund the model
     public function refund()
     {
         $this->fill([
             'refunded_at' => now(),
             'refunded_by' => user('id'),
-        ]);
+        ])->save();
     }
 
-    /**
-     * Unrefund the model
-     */
+    // unrefund the model
     public function unrefund()
     {
         $this->fill([
             'refunded_at' => null,
             'refunded_by' => null,
-        ]);
+        ])->save();
+    }
+
+    // approve the model
+    public function approve()
+    {
+        $this->fill([
+            'approved_at' => now(),
+            'approved_by' => user('id'),
+        ])->save();
+    }
+    
+    // unapprove the model
+    public function unapprove()
+    {
+        $this->fill([
+            'approved_at' => null,
+            'approved_by' => null,
+        ])->save();
+    }
+
+    // reject the model
+    public function reject()
+    {
+        $this->fill([
+            'rejected_at' => now(),
+            'rejected_by' => user('id'),
+        ])->save();
+    }
+    
+    // unreject the model
+    public function unreject()
+    {
+        $this->fill([
+            'rejected_at' => null,
+            'rejected_by' => null,
+        ])->save();
     }
 }

@@ -1,6 +1,8 @@
 @props([
     'icon' => $attributes->get('icon'),
     'label' => $attributes->get('label'),
+    'size' => $attributes->get('size'),
+    'button' => $attributes->get('button', true),
     'placement' => $attributes->get('placement', 'bottom'),
 ])
 
@@ -20,21 +22,25 @@
         $icon && !$label ? 'flex items-center justify-center' : null,
     ])->except(['icon', 'label']) }}
 >
-    @isset($anchor)
-        <div x-ref="anchor" x-on:click="open()" x-on:click.away="close()" {{ $anchor->attributes->class([
-            'inline-flex items-center justify-center gap-2 cursor-pointer',
-        ]) }}>
+    @if (isset($anchor))
+        <div x-ref="anchor" x-on:click="open()" x-on:click.away="close()">
             {{ $anchor }}
         </div>
+    @elseif ($button)
+        <x-button x-ref="anchor" x-on:click="open()" x-on:click.away="close()" :size="$size">
+            <div class="flex items-center gap-2">
+                @if ($icon) <x-icon :name="$icon"/> @endif
+                @if ($label) {!! __($label) !!} @endif
+                <x-icon name="chevron-down sm"/>
+            </div>
+        </x-button>
     @else
         <div x-ref="anchor" x-on:click="open()" x-on:click.away="close()" class="inline-flex items-center gap-2 cursor-pointer">
             @if ($icon) <x-icon :name="$icon"/> @endif
-            @if ($label) 
-                {!! __($label) !!} 
-                <x-icon name="chevron-down" size="12"/>
-            @endif
+            @if ($label) {!! __($label) !!} @endif
+            <x-icon name="chevron-down sm"/>
         </div>
-    @endisset
+    @endif
 
     @if ($slot->isNotEmpty())
         <div

@@ -20,7 +20,20 @@
     }"
     x-on:submit.prevent="submit"
     id="{{ $id }}"
-    {{ $attributes->except('id', 'submit', 'confirm') }}
+    {{ $attributes->except([
+        'id', 
+        'submit', 
+        'confirm', 
+        'status', 
+        'title', 
+        'subtitle',
+        'header', 
+        'modal', 
+        'drawer',
+        'size',
+        'show',
+        'bg-close',
+    ]) }}
 >
     @if ($attributes->get('modal'))
         <x-modal :id="$id" 
@@ -50,6 +63,7 @@
             :subtitle="$attributes->get('subtitle')"
             :size="$attributes->get('size')"
             :show="$attributes->get('show')"
+            :status="$attributes->get('status')"
             :bg-close="$attributes->get('bg-close')"
         >
             @isset($header)
@@ -57,11 +71,13 @@
             @endisset
 
             <x-slot:buttons>
-                @isset($buttons) 
-                    @if ($buttons->isNotEmpty()) 
-                        {{ $buttons }}
-                    @else
-                        <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2">
+                    @isset($buttons)
+                        @if (
+                            $buttons->attributes->get('restore')
+                            || $buttons->attributes->get('trash')
+                            || $buttons->attributes->get('delete')
+                        )
                             @if ($buttons->attributes->get('restore'))
                                 <x-button size="sm" icon="restore"
                                     label="Restore"
@@ -69,7 +85,7 @@
                             @else
                                 <x-button.submit size="sm"/>
                             @endif
-
+        
                             @if ($buttons->attributes->get('trash'))
                                 <x-button.delete size="sm" inverted
                                     label="Trash"
@@ -78,18 +94,56 @@
                                     callback="trash"
                                     :params="$buttons->attributes->get('trash')"/>
                             @endif
-
+        
                             @if ($buttons->attributes->get('delete'))
                                 <x-button.delete size="sm" inverted
                                     title="Permanently Delete Record"
                                     message="Are you sure to DELETE this record? This action CANNOT BE UNDONE."
                                     :params="$buttons->attributes->get('delete')"/>
                             @endif
-                        </div>
-                    @endif
-                @else 
-                    <x-button.submit size="sm"/>
-                @endisset
+                        @else
+                            {{ $buttons }}
+                        @endif
+                    @else
+                        <x-button.submit size="sm"/>
+                    @endisset
+
+                    @isset($dropdown)
+                        <x-dropdown placement="bottom-end" size="sm"
+                            :label="$dropdown->attributes->get('label', 'More')">
+                            {{ $dropdown }}
+
+                            @if (
+                                $dropdown->attributes->get('restore')
+                                || $dropdown->attributes->get('trash')
+                                || $dropdown->attributes->get('delete')
+                            )
+                                <div class="border-t">
+                                    @if ($dropdown->attributes->get('restore'))
+                                        <x-dropdown.item label="Restore" icon="restore"
+                                            wire:click="restore({{ json_encode($dropdown->attributes->get('restore')) }})"/>
+                                    @endif
+    
+                                    @if ($dropdown->attributes->get('trash'))
+                                        <x-dropdown.delete
+                                            label="Trash"
+                                            title="Move to Trash"
+                                            message="Are you sure to move this record to trash? You can restore it later."
+                                            callback="trash"
+                                            :params="$dropdown->attributes->get('trash')"/>
+                                    @endif
+    
+                                    @if ($dropdown->attributes->get('delete'))
+                                        <x-dropdown.delete
+                                            title="Permanently Delete Record"
+                                            message="Are you sure to DELETE this record? This action CANNOT BE UNDONE."
+                                            :params="$dropdown->attributes->get('delete')"/>
+                                    @endif
+                                </div>
+                            @endif
+                        </x-dropdown>
+                    @endisset
+                </div>
             </x-slot:buttons>
 
             <div class="px-2">

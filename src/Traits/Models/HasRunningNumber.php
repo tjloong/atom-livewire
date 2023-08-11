@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 trait HasRunningNumber
 {
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
+    // boot
     protected static function bootHasRunningNumber()
     {
         // listen to creating event
@@ -19,14 +15,14 @@ trait HasRunningNumber
                 $model->number = collect(['TEMP', str()->random(), time()])->join('-');
             }
             else if (!$model->number) {
-                $duplicated = true;
+                $dup = true;
                 $table = $model->getTable();
                 $prefix = $model->getPrefix();
 
                 $last = optional(
                     DB::table($table)
-                        ->when($model->usesHasTenant && tenant(), fn($q) => $q->where('tenant_id', tenant('id')))
                         ->where('number', 'not like', "TEMP-%")
+                        ->where('id', '<>', $model->id)
                         ->latest()
                         ->first()
                 )->number;
@@ -35,12 +31,11 @@ trait HasRunningNumber
                     ? (integer) str($last)->replaceFirst($prefix.'-', '')->toString()
                     : 0;
 
-                while ($duplicated) {
+                while ($dup) {
                     $n = $n + 1;
                     $postfix = str()->padLeft($n, 6, '0');
                     $number = collect([$prefix, $postfix])->filter()->join('-');
-                    $duplicated = DB::table($table)
-                        ->when($model->usesHasTenant && tenant(), fn($q) => $q->where('tenant_id', tenant('id')))
+                    $dup = DB::table($table)
                         ->where('number', $number)
                         ->count() > 0;
                 }
@@ -50,9 +45,7 @@ trait HasRunningNumber
         });
     }
 
-    /**
-     * Get prefix
-     */
+    // get prefix
     protected function getPrefix()
     {
         return $this->prefix ?? null;

@@ -42,7 +42,7 @@
         <div {{ $attributes->class([
             'shadow-lg rounded-l-lg border flex flex-col gap-4 w-full h-full',
             $attributes->get('class', 'bg-white'),
-        ]) }}>
+        ])->except(['id', 'size', 'show', 'status', 'header', 'title', 'subtitle', 'icon']) }}>
             <div class="shrink-0 bg-white py-3 px-6 flex items-center justify-between gap-3 border-b rounded-t-lg">
                 <div class="cursor-pointer" x-on:click="$dispatch('close')">
                     <x-icon name="arrow-right-long" class="text-lg"/>
@@ -58,23 +58,34 @@
                     @isset($header) {{ $header }}
                     @elseisset($title) {{ $title }}
                     @else
-                        <div class="flex items-center gap-2 text-xl px-6 py-3">
-                            @if ($icon = $attributes->get('icon'))
-                                <x-icon :name="$icon" class="text-gray-400"/>
-                            @endif
-    
-                            @if ($header = $attributes->get('header') ?? $attributes->get('title'))
-                                <div>
-                                    <div class="font-bold">
-                                        {{ __($header) }}
-                                    </div>
-                                    
-                                    @if ($subtitle = $attributes->get('subtitle'))
-                                        <div class="font-medium text-gray-500 text-sm">
-                                            {{ __($subtitle) }}
+                        <div class="flex items-center gap-4 px-6 py-3">
+                            <div class="flex items-center text-xl gap-2">
+                                @if ($icon = $attributes->get('icon'))
+                                    <x-icon :name="$icon" class="text-gray-400 shrink-0"/>
+                                @endif
+
+                                @if ($header = $attributes->get('header') ?? $attributes->get('title'))
+                                    <div>
+                                        <div class="font-bold">
+                                            {{ __($header) }}
                                         </div>
-                                    @endif
-                                </div>
+                                        
+                                        @if ($subtitle = $attributes->get('subtitle'))
+                                            <div class="font-medium text-gray-500 text-sm">
+                                                {{ __($subtitle) }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+
+                            @if ($status = $attributes->get('status'))
+                                @if (is_string($status)) <x-badge :label="$status"/>
+                                @elseif (is_array($status))
+                                    @foreach ($status as $key => $val)
+                                        <x-badge :label="$val" :color="$key" size="lg"/>
+                                    @endforeach
+                                @endif
                             @endif
                         </div>
                     @endisset

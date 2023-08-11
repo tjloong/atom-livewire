@@ -32,7 +32,13 @@ trait HasFilters
         if ($status === 'trashed') $query->onlyTrashed();
         else if ($status === 'active' && $this->hasColumn('is_active')) $query->where('is_active', true);
         else if ($status === 'inactive' && $this->hasColumn('is_active')) $query->where('is_active', false);
-        else $query->whereIn('status', (array)$status);
+        else {
+            $status = collect($status)
+                ->map(fn($val) => is_string($val) ? $val : $val->value)
+                ->toArray();
+
+            $query->whereIn('status', $status);
+        }
     }
 
     /**
