@@ -1,40 +1,55 @@
 @props([
-    'getValue' => function($key) use ($attributes) {
-        $val = $attributes->wire('model')->value()
-            ? data_get($this, $attributes->wire('model')->value())
-            : $attributes->get('value');
-
-        if ($val) {
-            $format = $attributes->get('format', 24);
-            [$hours, $minutes, $seconds] = explode(':', $val);
-
-            if ($format == 12) {
-                $am = $hours > 12 ? 'PM' : 'AM';
-                $hours = $hours > 12 ? $hours - 12 : $hours;
-            }
-            else $am = null;
-
-            $hours = str()->padLeft($hours, 2, '0');
-            $minutes = str()->padLeft($minutes, 2, '0');
-            $seconds = str()->padLeft($seconds, 2, '0');
-
-            return $$key;
-        }
-        
-        return null;
-    },
+    'format' => $attributes->get('format', 12),
 ])
 
 <x-form.field {{ $attributes }}>
     <div 
         x-data="{
+            format: @js($format),
+            value: @entangle($attributes->wire('model')), 
             focus: false,
-            input (hours, minutes, seconds, am = null) {
-                if (empty(hours) || empty(minutes)) this.$dispatch('input', null)
+            inputs: {
+                hour: null,
+                minute: null,
+                second: null,
+                am: null
+            },
+            init () {
+                this.setInputs()
+                this.$watch('inputs', (val) => this.setTime())
+            },
+            getTime (key = null) {
+                if (!this.value) return null
 
-                if (am === 'PM') hours = +hours + 12
+                const date = dayjs(this.value, 'YYYY-MM-DD HH:mm:ss')
 
-                this.$dispatch('input', `${hours}:${minutes}:${seconds}`)
+                if (!date.isValid()) return null
+                else if (key === 'hour' && this.format === 12 && date.get('hour') > 12) return date.get('hour') - 12
+                else if (key === 'hour') return date.get('hour') 
+                else if (key === 'minute') return date.get('minute') 
+                else if (key === 'second') return date.get('second') 
+                else if (key === 'am') return date.format('A')
+                else return date
+            },
+            setTime () {
+                let time = this.getTime() || dayjs()
+
+                const hour = this.format === 12 && this.inputs.am === 'PM'
+                    ? +this.inputs.hour + 12
+                    : this.inputs.hour
+
+                time = time
+                    .set('hour', hour)
+                    .set('minute', this.inputs.minute)
+                    .set('second', this.inputs.second)
+
+                this.value = time.utc().format('HH:mm:ss')
+            },
+            setInputs () {
+                this.inputs.hour = this.getTime('hour')
+                this.inputs.minute = this.getTime('minute')
+                this.inputs.second = this.getTime('second')
+                this.inputs.am = this.getTime('am')
             },
         }"
         x-on:click.stop="focus = true"
@@ -45,89 +60,37 @@
         <x-icon name="clock" class="text-gray-500 shrink-0"/>
 
         <div class="grow flex items-center justify-evenly gap-2">
-            <x-dropdown class="grow">
-                <x-slot:anchor class="text-center w-full {{ !$getValue('hours') ? 'text-gray-400' : '' }}">
-                    {{ $getValue('hours') ?? ($getValue('format') == 24 ? '24' : '12') }}
-                </x-slot:anchor>
-                
-                <x-slot:items class="max-h-[200px] overflow-auto">
-                    @foreach (collect(
-                        $getValue('format') === 24 ? range(0, 23) : range(1, 12)
-                    )->map(fn($n) => str()->padLeft($n, 2, '0')) as $val)
-                        <x-dropdown.item 
-                            x-on:click="input(
-                                '{{ $val }}',
-                                '{{ $getValue('minutes') ?? '00' }}',
-                                '{{ $getValue('seconds') ?? '00' }}',
-                                '{{ $getValue('am') }}',
-                            )"
-                            :label="$val"
-                        />
-                    @endforeach
-                </x-slot:items>
-            </x-dropdown>
+            <select x-model="inputs.hour" x-on:input.stop>
+                <option selected>--</option>
+                @foreach ($format === 24 ? range(0, 23) : range(1, 12) as $n)
+                    <option value="{{ $n }}">{{ str()->padLeft($n, 2, '0') }}</option>
+                @endforeach
+            </select>
 
             <span class="font-bold">:</span>
 
-            <x-dropdown class="grow">
-                <x-slot:anchor class="text-center w-full {{ !$getValue('minutes') ? 'text-gray-400' : '' }}">
-                    {{ $getValue('minutes') ?? '59' }}
-                </x-slot:anchor>
-                
-                <x-slot:items class="max-h-[200px] overflow-auto">
-                    @foreach (collect(range(0, 59))->map(fn($n) => str()->padLeft($n, 2, '0')) as $val)
-                        <x-dropdown.item 
-                            x-on:click.stop="input(
-                                '{{ $getValue('hours') ?? '00' }}',
-                                '{{ $val }}',
-                                '{{ $getValue('seconds') ?? '00' }}',
-                                '{{ $getValue('am') }}',
-                            )"
-                            :label="$val"
-                        />
-                    @endforeach
-                </x-slot:items>
-            </x-dropdown>
-            
-            @if ($getValue('format') == 12)
-                <span 
-                    x-ref="am"
-                    x-on:click.stop="input(
-                        '{{ $getValue('hours') ?? '00' }}',
-                        '{{ $getValue('minutes') ?? '00' }}',
-                        '{{ $getValue('seconds') ?? '00' }}',
-                        '{{ $getValue('am') === 'AM' ? 'PM' : 'AM' }}',
-                    )"
-                    class="h-full w-14 rounded font-medium text-center cursor-pointer text-sm hover:bg-gray-100"
-                >
-                    {{ $getValue('am') ?? 'AM' }}
-                </span>
-            @else
-                <span class="font-bold">:</span>
+            <select x-model="inputs.minute" x-on:input.stop>
+                <option selected>--</option>
+                @foreach (range(0, 59) as $n)
+                    <option value="{{ $n }}">{{ str()->padLeft($n, 2, '0') }}</option>
+                @endforeach
+            </select>
 
-                <x-dropdown>
-                    <x-slot:anchor>
-                        <input type="text" placeholder="59" readonly
-                            x-ref="seconds"
-                            value="{{ $getValue('seconds') }}"
-                            class="bg-transparent text-center w-20"
-                        >
-                    </x-slot:anchor>
-                    
-                    <x-slot:items class="max-h-[200px] overflow-auto">
-                        @foreach (collect(range(0, 59))->map(fn($n) => str()->padLeft($n, 2, '0')) as $val)
-                            <x-dropdown.item 
-                                x-on:click.stop="input(
-                                    '{{ $getValue('hours') ?? '00' }}',
-                                    '{{ $getValue('minutes') ?? '00' }}',
-                                    '{{ $val }}',
-                                    '{{ $getValue('am') }}',
-                                    )"
-                                :label="$val"
-                            />
-                        @endforeach
-                    </x-slot:items>
-                </x-dropdown>
+            <span class="font-bold">:</span>
+
+            @if ($format == 12)
+                <select x-model="inputs.am" x-on:input.stop>
+                    <option selected>--</option>
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                </select>
+            @else
+                <select x-model="inputs.second" x-on:input.stop>
+                    <option selected>--</option>
+                    @foreach (range(0, 59) as $n)
+                        <option value="{{ $n }}">{{ str()->padLeft($n, 2, '0') }}</option>
+                    @endforeach
+                </select>
             @endif
         </div>
     </div>

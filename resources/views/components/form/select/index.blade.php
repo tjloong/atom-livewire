@@ -53,7 +53,7 @@
                 'error' => component_error(optional($errors), $attributes),
             ])->only('class') }}
         >
-            <div class="flex items-center gap-2 w-full {{ empty($value) ? 'form-input-caret' : '' }}">
+            <div class="flex items-center gap-2 w-full {{ is_null($value) ? 'form-input-caret' : '' }}">
                 @if ($icon) <x-icon :name="$icon" class="text-gray-400"/> @endif
     
                 @if ($isAutocomplete)
@@ -65,7 +65,7 @@
                             placeholder="{{ $placeholder }}" 
                         />
                     </div>
-                @elseif ($value)
+                @elseif (!is_null($value))
                     @isset($selected) {{ $selected }}
                     @else
                         <div class="grow">
@@ -93,7 +93,7 @@
                     <input type="text" class="form-input transparent grow" placeholder="{{ $placeholder }}" readonly>
                 @endif
     
-                @if (!empty($value)) <x-close wire:click.stop="$set('{{ $model }}', null)"/> @endif
+                @if (!is_null($value)) <x-close wire:click.stop="$set('{{ $model }}', null)"/> @endif
             </div>
 
             @isset($button) 

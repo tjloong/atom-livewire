@@ -169,7 +169,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.select.state',
             'form.select.gender',
             'form.select.country',
-            'form.select.product',
             'form.select.currency',
 
             'form.checkbox.index',

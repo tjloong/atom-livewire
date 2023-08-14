@@ -75,7 +75,11 @@
                     :trash="$buttons->attributes->get('trash', false)"
                     :delete="$buttons->attributes->get('delete', false)"
                     :restore="$buttons->attributes->get('restore', false)">
-                    <x-button.submit size="sm"/>
+                    @if ($buttons->isNotEmpty())
+                        {{ $buttons }}
+                    @else
+                        <x-button.submit size="sm"/>
+                    @endif
                 </x-slot:buttons>
             @else
                 <x-slot:buttons>

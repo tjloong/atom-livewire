@@ -10,9 +10,7 @@
         x-data="{
             focus: false,
             picker: null,
-            @if ($attributes->has('value')) value: @js($attributes->get('value')),
-            @else value: @entangle($attributes->wire('model')),
-            @endif
+            value: @entangle($attributes->wire('model')),
             config: @js($config),
             get placeholder () {
                 if (this.value) return formatDate(this.value)
@@ -44,10 +42,7 @@
                         inline: true,
                         dateFormat: 'Y-m-d',
                         onClose: () => this.setFocus(false),
-                        onChange: (selectedDate, dateStr) => {
-                            this.value = dateStr
-                            this.$dispatch('input', dateStr)
-                        },
+                        onChange: (selectedDate, dateStr) => this.value = dateStr,
                         ...this.config,
                     })
                 }
@@ -57,6 +52,7 @@
         }"
         x-on:click.away="setFocus(false)"
         class="relative cursor-pointer"
+        {{ $attributes->class(['relative', 'cursor-pointer'])->except(['placeholder', 'config']) }}
     >
         <div
             x-ref="anchor" 
