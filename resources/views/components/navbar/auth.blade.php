@@ -19,7 +19,7 @@
     <div class="hidden md:block">
         <x-dropdown>
             <x-slot:anchor>
-                <div class="flex items-center justify-center gap-2 px-3 text-center font-medium">
+                <div class="flex items-center justify-center gap-2 px-3 text-center font-medium cursor-pointer">
                     <div class="shrink-0 flex items-center justify-center">
                         @if ($avatar = $attributes->get('avatar') ?? user('avatar.url'))
                             <x-thumbnail :url="$avatar" size="24" circle/>

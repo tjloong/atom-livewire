@@ -48,22 +48,17 @@ trait HasTrace
     // initialize
     protected function initializeHasTrace()
     {
-        $this->casts['owned_by'] = 'integer';
-        $this->casts['created_by'] = 'integer';
-        $this->casts['updated_by'] = 'integer';
-        $this->casts['deleted_by'] = 'integer';
-        $this->casts['blocked_by'] = 'integer';
-        $this->casts['closed_by'] = 'integer';
-        $this->casts['refunded_by'] = 'integer';
-        $this->casts['requested_by'] = 'integer';
-        $this->casts['approved_by'] = 'integer';
-        $this->casts['rejected_by'] = 'integer';
-        $this->casts['blocked_at'] = 'datetime';
-        $this->casts['closed_at'] = 'datetime';
-        $this->casts['refunded_at'] = 'datetime';
-        $this->casts['requested_at'] = 'datetime';
-        $this->casts['approved_at'] = 'datetime';
-        $this->casts['rejected_at'] = 'datetime';
+        foreach ([
+            'blocked_at',
+            'closed_at',
+            'refunded_at',
+            'requested_at',
+            'approved_at',
+            'rejected_at',
+            'email_sent_at',
+        ] as $col) {
+            $this->casts[$col] = 'datetime';
+        }
     }
 
     // get owned by for model
@@ -126,6 +121,12 @@ trait HasTrace
         return $this->belongsTo(model('user'), 'rejected_by');
     }
 
+    // get email sent by for model
+    public function emailSentBy()
+    {
+        return $this->belongsTo(model('user'), 'email_sent_by');
+    }
+
     // check model is blocked
     public function blocked()
     {
@@ -154,6 +155,12 @@ trait HasTrace
     public function rejected()
     {
         return $this->rejected_at && $this->rejected_at->lessThan(now());
+    }
+
+    // check model is email sent
+    public function emailSent()
+    {
+        return !empty($this->email_sent_at);
     }
 
     // block the model
@@ -244,5 +251,23 @@ trait HasTrace
             'rejected_at' => null,
             'rejected_by' => null,
         ])->save();
+    }
+
+    // mark email sent
+    public function markEmailSent()
+    {
+        $this->fill([
+            'email_sent_at' => now(),
+            'email_sent_by' => user('id'),
+        ]);
+    }
+
+    // mark email unsent
+    public function markEmailUnsent()
+    {
+        $this->fill([
+            'email_sent_at' => null,
+            'email_sent_by' => null,
+        ]);
     }
 }

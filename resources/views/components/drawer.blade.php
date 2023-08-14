@@ -26,6 +26,7 @@
     @if ($show) x-init="open" @endif
     id="{{ $id }}"
     class="fixed inset-0 z-40"
+    wire:close="{{ $attributes->get('wire:close') }}"
 >
     @if ($attributes->get('bg-close') === false) <x-modal.overlay/>
     @elseif ($attributes->get('bg-close') === 'dblclick') <x-modal.overlay x-on:dblclick.stop="$dispatch('close')"/>
@@ -48,9 +49,56 @@
                     <x-icon name="arrow-right-long" class="text-lg"/>
                 </div>
 
-                @isset($buttons)
-                    {{ $buttons }}
-                @endisset
+                <div class="flex items-center gap-2">
+                    @isset($buttons)
+                        {{ $buttons }}
+
+                        @if ($buttons->attributes->get('restore'))
+                            <x-button.restore size="sm"
+                                :params="$buttons->attributes->get('restore')"/>
+                        @endif
+
+                        @if ($buttons->attributes->get('trash'))
+                            <x-button.trash size="sm" inverted
+                                :params="$buttons->attributes->get('trash')"/>
+                        @endif
+
+                        @if ($buttons->attributes->get('delete'))
+                            <x-button.delete size="sm" inverted
+                                :params="$buttons->attributes->get('delete')"/>
+                        @endif
+                    @endisset
+
+                    @isset($dropdown)
+                        <x-dropdown placement="bottom-end" size="sm"
+                            :label="$dropdown->attributes->get('label', 'More')">
+                            {{ $dropdown }}
+
+                            @if (
+                                $dropdown->attributes->get('restore')
+                                || $dropdown->attributes->get('trash')
+                                || $dropdown->attributes->get('delete')
+                            )
+                                <div class="border-t">
+                                    @if ($dropdown->attributes->get('restore'))
+                                        <x-dropdown.restore
+                                            :params="$dropdown->attributes->get('restore')"/>
+                                    @endif
+    
+                                    @if ($dropdown->attributes->get('trash'))
+                                        <x-dropdown.trash
+                                            :params="$dropdown->attributes->get('trash')"/>
+                                    @endif
+    
+                                    @if ($dropdown->attributes->get('delete'))
+                                        <x-dropdown.delete
+                                            :params="$dropdown->attributes->get('delete')"/>
+                                    @endif
+                                </div>
+                            @endif
+                        </x-dropdown>
+                    @endisset
+                </div>
             </div>
 
             <div class="grow flex flex-col overflow-auto">

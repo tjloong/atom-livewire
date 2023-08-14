@@ -86,15 +86,18 @@ class AtomComponentServiceProvider extends ServiceProvider
             'box.row',
             
             'button.index',
+            'button.trash',
             'button.submit',
             'button.delete',
-            'button.trashed',
+            'button.restore',
             'button.confirm',
             'button.social-login',
             
             'dropdown.index',
             'dropdown.item',
+            'dropdown.trash',
             'dropdown.delete',
+            'dropdown.restore',
             
             'modal.index',
             'modal.row',
@@ -148,7 +151,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.sortable',
             'form.textarea',
             'form.recaptcha',
-            'form.line-item',
             'form.date-range',
             'form.checkbox-select',
 
