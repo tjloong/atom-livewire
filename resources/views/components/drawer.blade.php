@@ -107,34 +107,36 @@
                     @elseisset($title) {{ $title }}
                     @else
                         <div class="flex items-center gap-4 px-6 py-3">
-                            <div class="flex items-center text-xl gap-2">
+                            <div class="flex items-center gap-2">
                                 @if ($icon = $attributes->get('icon'))
-                                    <x-icon :name="$icon" class="text-gray-400 shrink-0"/>
+                                    <x-icon :name="$icon" class="text-gray-400 text-xl shrink-0"/>
                                 @endif
 
                                 @if ($header = $attributes->get('header') ?? $attributes->get('title'))
                                     <div>
-                                        <div class="font-bold">
-                                            {{ __($header) }}
+                                        <div class="flex items-center gap-2">
+                                            <div class="text-xl font-bold">
+                                                {{ __($header) }}
+                                            </div>
+
+                                            @if ($status = $attributes->get('status'))
+                                                @if (is_string($status)) <x-badge :label="$status"/>
+                                                @elseif (is_array($status))
+                                                    @foreach ($status as $key => $val)
+                                                        <x-badge :label="$val" :color="$key" size="lg"/>
+                                                    @endforeach
+                                                @endif
+                                            @endif
                                         </div>
                                         
                                         @if ($subtitle = $attributes->get('subtitle'))
-                                            <div class="font-medium text-gray-500 text-sm">
+                                            <div class="font-medium text-gray-500">
                                                 {{ __($subtitle) }}
                                             </div>
                                         @endif
                                     </div>
                                 @endif
                             </div>
-
-                            @if ($status = $attributes->get('status'))
-                                @if (is_string($status)) <x-badge :label="$status"/>
-                                @elseif (is_array($status))
-                                    @foreach ($status as $key => $val)
-                                        <x-badge :label="$val" :color="$key" size="lg"/>
-                                    @endforeach
-                                @endif
-                            @endif
                         </div>
                     @endisset
                 </div>

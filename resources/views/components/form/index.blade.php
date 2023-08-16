@@ -77,7 +77,7 @@
                     :restore="$buttons->attributes->get('restore', false)">
                     @if ($buttons->isNotEmpty())
                         {{ $buttons }}
-                    @else
+                    @elseif (!$buttons->attributes->get('blank'))
                         <x-button.submit size="sm"/>
                     @endif
                 </x-slot:buttons>

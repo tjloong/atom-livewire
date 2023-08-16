@@ -31,6 +31,7 @@ trait HasTrace
 
             if ($id = auth()->user()->id ?? null) {
                 if (has_column($table, 'updated_by')) $model->updated_by = $id;
+                if (has_column($table, 'deleted_by') && !$model->deleted_at) $model->deleted_by = null;
             }
         });
 

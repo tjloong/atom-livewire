@@ -9,9 +9,10 @@
     'callback' => $attributes->get('callback', 'trash'),
     'params' => $attributes->get('params'),
     'reload' => $attributes->get('reload', false),
+    'inverted' => $attributes->get('inverted', true),
 ])
 
-<x-button c="red" icon="trash-can" :label="$label" x-on:click="$dispatch('confirm', {
+<x-button c="red" icon="trash-can" :label="$label" :inverted="$inverted" x-on:click="$dispatch('confirm', {
     title: '{{ $title }}',
     message: '{{ $message }}',
     type: 'error',
