@@ -24,8 +24,8 @@ enum Status: string
         return match($this) {
             static::ACTIVE => 'green',
             static::INACTIVE => 'gray',
-            static::BLOCKED => 'black',
-            static::TRASHED => 'gray',
+            static::BLOCKED => 'gray',
+            static::TRASHED => 'black',
         };
     }
 }

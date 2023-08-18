@@ -15,7 +15,7 @@
                     <x-icon :name="$icon" class="text-gray-500"/>
                 @endif
 
-                <div class="font-bold">
+                <div class="font-semibold">
                     {{ __(str()->upper($header)) }}
                 </div>
             </div>

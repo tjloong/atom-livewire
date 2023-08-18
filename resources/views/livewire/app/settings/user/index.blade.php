@@ -1,6 +1,8 @@
-<div class="max-w-screen-lg">
+<div class="max-w-screen-md">
     <x-page-header title="Users">
-        <x-button icon="add" label="New User" wire:click="updateOrCreate"/>
+        <x-button icon="add" 
+            label="New User" 
+            wire:click="$emit('createUser')"/>
     </x-page-header>
 
     <x-table>
@@ -23,7 +25,7 @@
                     />
                 </div>
 
-                <x-table.trashed :count="$this->query->onlyTrashed()->count()"/>
+                <x-table.trashed/>
             </x-table.toolbar>
         </x-slot:header>
 
@@ -32,12 +34,12 @@
             @if ($this->isLoginMethod('username')) <x-table.th label="Username"/> @endif
             @if ($this->isLoginMethod('email')) <x-table.th label="Email"/> @endif
             @if (has_table('roles')) <x-table.th label="Role"/> @endif
-            <x-table.th label="Status"/>
+            <x-table.th/>
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $user)
             <x-table.tr>
-                <x-table.td :label="$user->name" wire:click="updateOrCreate({{ $user->id }})"/>
+                <x-table.td :label="$user->name" wire:click="$emit('updateUser', {{ $user->id }})"/>
                 @if ($this->isLoginMethod('username')) <x-table.td :label="$user->username ?? '--'"/> @endif
                 @if ($this->isLoginMethod('email')) <x-table.td :label="$user->email ?? '--'"/> @endif
                 @if (has_table('roles')) <x-table.td :label="$user->role->name ?? '--'"/> @endif
@@ -52,5 +54,5 @@
 
     {!! $this->paginator->links() !!}
 
-    @livewire('app.settings.user.form', key('create'))
+    @livewire('app.settings.user.update', key('user-update'))
 </div>

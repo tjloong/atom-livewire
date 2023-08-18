@@ -27,13 +27,16 @@ trait HasRole
     // check user is role
     public function isRole($slugs, $strict = false): bool
     {
+        if (tier('root')) return true;
+        
         $roles = collect($slugs)->mapWithKeys(function($slug) {
             $substr = str()->slug(str_replace('*', '', $slug));
+            $roleslug = optional($this->role)->slug;
 
-            if ($slug === 'admin') return ['admin' => in_array($this->role->slug, ['admin', 'administrator'])];
-            else if (str()->startsWith($slug, '*')) return [$slug => str()->endsWith($this->role->slug, $substr)];
-            else if (str()->endsWith($slug, '*')) return [$slug => str()->startsWith($this->role->slug, $substr)];
-            else return [$slug => $this->role->slug === $slug];
+            if ($slug === 'admin') return ['admin' => in_array($roleslug, ['admin', 'administrator'])];
+            else if (str()->startsWith($slug, '*')) return [$slug => str()->endsWith($roleslug, $substr)];
+            else if (str()->endsWith($slug, '*')) return [$slug => str()->startsWith($roleslug, $substr)];
+            else return [$slug => $roleslug === $slug];
         });
 
         if ($strict) return !$roles->some(fn($val) => !$val);

@@ -1,5 +1,5 @@
 <div {{ $attributes->class([
-    'flex flex-col gap-2 md:flex-row hover:bg-slate-100',
+    'flex flex-col gap-2 md:flex-row hover:bg-slate-50',
     $attributes->get('class', 'p-3'),
 ])->except('label') }}>
     <div class="md:w-2/5 font-medium text-gray-400 text-sm">

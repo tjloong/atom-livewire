@@ -22,7 +22,9 @@ class Index extends Component
         'team_id' => null,
     ];
 
-    protected $listeners = ['refresh' => '$refresh'];
+    protected $listeners = [
+        'userSaved' => '$refresh',
+    ];
 
     // get query property
     public function getQueryProperty(): mixed
@@ -33,19 +35,9 @@ class Index extends Component
             ->when(!$this->sort, fn($q) => $q->latest());
     }
 
-    // update or create
-    public function updateOrCreate($id = null): void
-    {
-        $this->emitTo('app.settings.user.form', 'open', $id);
-    }
-
     // empty trashed
     public function emptyTrashed(): void
     {
-        (clone $this->query)->onlyTrashed()->forceDelete();
-
-        $this->popup('Trash Cleared');
-        $this->reset('filters');
-        $this->emit('refresh');
+        $this->query->onlyTrashed()->forceDelete();
     }
 }

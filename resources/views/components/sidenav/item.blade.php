@@ -9,7 +9,7 @@
 ])
 
 @if ($disabled)
-    <div class="flex items-center gap-3 py-2 px-3 -mx-2 opacity-50 pointer-event-none">
+    <div class="flex items-center gap-3 py-1.5 px-3 -mx-2 opacity-50 pointer-event-none">
         @if ($icon)
             <div class="shrink-0 w-4 flex text-gray-400">
                 <x-icon :name="$icon" class="m-auto"/>
@@ -44,7 +44,7 @@
         x-init="input"
         x-on:click="select(@js($value))"
         x-bind:class="active ? 'active bg-slate-100' : 'cursor-pointer hover:bg-slate-100'"
-        class="sidenav-item flex items-center gap-3 py-2 px-3 -mx-2 rounded"
+        class="sidenav-item flex items-center gap-3 py-1.5 px-3 -mx-2 rounded"
     >
         @if ($icon)
             <div x-bind:class="active ? 'text-theme' : 'text-gray-400'" class="shrink-0 w-4 flex">

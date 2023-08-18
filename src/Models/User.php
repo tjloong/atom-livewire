@@ -45,8 +45,12 @@ class User extends Authenticatable
             model('user_setting')->initialize($user);
         });
         
-        static::saving(function($user) {
-            $user->status = $user->generateStatus();
+        static::saved(function($user) {
+            $user->setAttributes()->saveQuietly();
+        });
+
+        static::deleted(function($user) {
+            if ($user->exists) $user->setAttributes()->saveQuietly();
         });
     }
 
@@ -133,14 +137,18 @@ class User extends Authenticatable
         else return false;
     }
 
-    // generate status
-    public function generateStatus(): string
+    // set attributes
+    public function setAttributes(): mixed
     {
-        return enum('user.status', collect([
-            'TRASHED' => $this->trashed(),
-            'BLOCKED' => $this->blocked(),
-            'ACTIVE' => !empty($this->password),
-            'INACTIVE' => empty($this->password),
-        ])->filter()->keys()->first())->value;
+        $this->fill([
+            'status' => enum('user.status', collect([
+                'TRASHED' => $this->trashed(),
+                'BLOCKED' => $this->blocked(),
+                'ACTIVE' => !empty($this->password),
+                'INACTIVE' => empty($this->password),
+            ])->filter()->keys()->first())->value,
+        ]);
+
+        return $this;
     }
 }

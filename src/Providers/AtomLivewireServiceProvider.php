@@ -77,7 +77,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // settings > user
             'app.settings.user' => 'App\Settings\User\Index',
-            'app.settings.user.form' => 'App\Settings\User\Form',
+            'app.settings.user.update' => 'App\Settings\User\Update',
             // 'app.settings.user.permission' => 'App\Settings\User\Permission',
             // 'app.settings.user.visibility' => 'App\Settings\User\Visibility',
 

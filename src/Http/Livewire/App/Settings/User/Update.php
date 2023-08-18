@@ -7,7 +7,7 @@ use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
-class Form extends Component
+class Update extends Component
 {
     use WithForm;
     use WithLoginMethods;
@@ -16,7 +16,10 @@ class Form extends Component
     public $user;
     public $inputs;
 
-    protected $listeners = ['open'];
+    protected $listeners = [
+        'createUser' => 'open',
+        'updateUser' => 'open',
+    ];
 
     // validation
     protected function validation(): array
@@ -71,32 +74,38 @@ class Form extends Component
     }
 
     // open
-    public function open($data = null): void
+    public function open($id = null): void
     {
-        $id = is_numeric($data) ? $data : data_get($data, 'id');
-
-        $this->user = $id 
-            ? model('user')->readable()->withTrashed()->findOrFail($id)
-            : model('user');
-
-        $this->fill([
-            'inputs.password' => null,
-            'inputs.is_root' => $this->user->exists ? $this->user->isTier('root') : tier('root'),
-            'inputs.is_blocked' => !empty($this->user->blocked_at),
-        ]);
-
-        if (has_table('teams')) {
+        if ($this->user = $id
+            ? model('user')->readable()->withTrashed()->find($id)
+            : model('user')
+        ) {
             $this->fill([
-                'inputs.teams' => $this->user->teams->pluck('id')->toArray(),
+                'inputs.password' => null,
+                'inputs.is_root' => $this->user->exists ? $this->user->isTier('root') : tier('root'),
+                'inputs.is_blocked' => !empty($this->user->blocked_at),
             ]);
-        }
 
-        $this->resetValidation();
-        $this->dispatchBrowserEvent('user-form-open');
+            if (has_table('teams')) {
+                $this->fill([
+                    'inputs.teams' => $this->user->teams->pluck('id')->toArray(),
+                ]);
+            }
+
+            $this->resetValidation();
+            $this->dispatchBrowserEvent('user-update-open');
+        }
     }
 
-    // delete
-    public function delete(): void
+    // close
+    public function close(): void
+    {
+        $this->emit('userSaved');
+        $this->dispatchBrowserEvent('user-update-close');
+    }
+
+    // trash
+    public function trash(): void
     {
         if ($this->user->id === user('id')) {
             $this->popup([
@@ -105,11 +114,23 @@ class Form extends Component
             ], 'alert', 'error');
         }
         else {
-            if ($this->user->trashed()) $this->user->forceDelete();
-            else $this->user->delete();
-
+            $this->user->delete();
             $this->close();
         }
+    }
+
+    // delete
+    public function delete(): void
+    {
+        $this->user->forceDelete();
+        $this->close();
+    }
+
+    // restore
+    public function restore(): void
+    {
+        $this->user->restore();
+        $this->close();
     }
 
     // submit
@@ -133,13 +154,5 @@ class Form extends Component
         }
 
         $this->close();
-    }
-
-    // close
-    public function close(): void
-    {
-        $this->reset(['user', 'inputs']);
-        $this->emit('refresh');
-        $this->dispatchBrowserEvent('user-form-close');
     }
 }
