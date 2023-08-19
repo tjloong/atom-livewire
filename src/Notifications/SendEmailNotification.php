@@ -1,13 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Notifications\Email;
+namespace Jiannius\Atom\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SendNotification extends Notification implements ShouldQueue
+class SendEmailNotification extends Notification // implements ShouldQueue
 {
     use Queueable;
 
@@ -33,18 +33,27 @@ class SendNotification extends Notification implements ShouldQueue
      */
     public function toMail(mixed $notifiable): \Illuminate\Notifications\Messages\MailMessage
     {
-        $view = collect([
-            'email.email',
-            'atom::email.email',
-        ])->first(fn($name) => view()->exists($name));
-
-        return (new MailMessage)
+        $mail = (new MailMessage)
             ->from(data_get($this->email, 'from.email'), data_get($this->email, 'from.name'))
             ->replyTo(data_get($this->email, 'from.email'), data_get($this->email, 'from.name'))
-            ->cc($this->email->cc)
-            ->bcc($this->email->bcc)
-            ->subject($this->email->subject)
-            ->markdown($view, ['body' => $this->email->body]);
+            ->cc(data_get($this->email, 'cc'))
+            ->bcc(data_get($this->email, 'bcc'))
+            ->subject(data_get($this->email, 'subject'))
+            ->markdown(
+                collect([
+                    'email.email',
+                    'atom::email.email',
+                ])->first(fn($name) => view()->exists($name)), 
+                ['body' => data_get($this->email, 'body')],
+            );
+
+        if ($attach = data_get($this->email, 'attachment')) {
+            $mail->attach(data_get($attach, 'path'), [
+                'as' => data_get($attach, 'name', 'file'),
+            ]);
+        }
+
+        return $mail;
     }
 
     /**

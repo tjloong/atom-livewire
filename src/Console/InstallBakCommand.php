@@ -277,26 +277,26 @@ class InstallBakCommand extends Command
     /**
      * Install emails
      */
-    private function installEmails()
-    {
-        if (Schema::hasTable('emails')) $this->warn('emails table exists, skipped.');
-        else {
-            Schema::create('emails', function (Blueprint $table) {
-                $table->id();
-                $table->json('from')->nullable();
-                $table->json('to')->nullable();
-                $table->json('cc')->nullable();
-                $table->json('bcc')->nullable();
-                $table->string('subject')->nullable();
-                $table->longText('body')->nullable();
-                $table->json('data')->nullable();
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            });
+    // private function installEmails()
+    // {
+    //     if (Schema::hasTable('emails')) $this->warn('emails table exists, skipped.');
+    //     else {
+    //         Schema::create('emails', function (Blueprint $table) {
+    //             $table->id();
+    //             $table->json('from')->nullable();
+    //             $table->json('to')->nullable();
+    //             $table->json('cc')->nullable();
+    //             $table->json('bcc')->nullable();
+    //             $table->string('subject')->nullable();
+    //             $table->longText('body')->nullable();
+    //             $table->json('data')->nullable();
+    //             $table->timestamps();
+    //             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+    //         });
 
-            $this->line('emails table created successfully.');
-        }
-    }
+    //         $this->line('emails table created successfully.');
+    //     }
+    // }
 
     /**
      * Install plans
