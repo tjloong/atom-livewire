@@ -25,8 +25,8 @@
             </div>
         </div>
 
-    {{-- Shareable layout --}}
-    @elseroute('shareable')
+    {{-- Share layout --}}
+    @elseroute('share')
         <div class="min-h-screen relative bg-gray-100">
             <main class="max-w-screen-xl mx-auto px-4 py-12">
                 {{ $slot }}

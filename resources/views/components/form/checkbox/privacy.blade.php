@@ -1,10 +1,10 @@
 <x-form.field :label="false" {{ $attributes }}>
     <div class="{{ component_error(optional($errors), $attributes) ? 'p-2 rounded form-input-error' : null }}">
-        <x-form.checkbox {{ $attributes->except('label') }}>
-            <div class="flex flex-col py-0.5 gap-1 text-gray-500">
-                {{ __($attributes->get('label', 'I have read and agreed to the website\'s Terms of Use and Privacy Policy.')) }}
-        
-                @if (has_table('pages'))
+        <x-form.checkbox 
+            :label="$attributes->get('label', __('atom::form.checkbox.privacy'))"
+            {{ $attributes->except('label') }}>
+            @if (has_table('pages'))
+                <x-slot:small>
                     @if (
                         $links = model('page')->whereIn('name', ['Terms', 'Privacy'])->get()
                             ->mapWithKeys(fn($page) => [$page->title => '/'.$page->slug])
@@ -19,8 +19,8 @@
                             @endforeach
                         </div>
                     @endif
-                @endif 
-            </div>
+                </x-slot:small>
+            @endif 
         </x-form.checkbox>
     </div>
 </x-form.field>

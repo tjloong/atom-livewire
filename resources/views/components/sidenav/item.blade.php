@@ -1,6 +1,5 @@
 @props([
     'href' => $attributes->get('href'),
-    'icon' => $attributes->get('icon'),
     'label' => $attributes->get('label'),
     'badge' => $attributes->get('badge'),
     'count' => $attributes->get('count'),
@@ -46,11 +45,13 @@
         x-bind:class="active ? 'active bg-slate-100' : 'cursor-pointer hover:bg-slate-100'"
         class="sidenav-item flex items-center gap-3 py-1.5 px-3 -mx-2 rounded"
     >
-        @if ($icon)
+        @isset($icon)
+            {{ $icon }}
+        @elseif ($icon = $attributes->get('icon'))
             <div x-bind:class="active ? 'text-theme' : 'text-gray-400'" class="shrink-0 w-4 flex">
                 <x-icon :name="$icon" class="m-auto"/>
             </div>
-        @endif
+        @endisset
 
         <div x-bind:class="active ? 'text-theme-dark font-semibold' : 'text-gray-600 font-medium'" class="grow">
             {{ __($label) }}

@@ -34,7 +34,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'drawer',
             'spinner',
             'checkbox',
-            'shareable',
             'thumbnail',
             'plan-alert',
             'breadcrumbs',
@@ -86,6 +85,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'box.row',
             
             'button.index',
+            'button.group',
             'button.trash',
             'button.submit',
             'button.delete',

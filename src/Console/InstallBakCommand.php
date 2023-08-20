@@ -209,28 +209,28 @@ class InstallBakCommand extends Command
     /**
      * Install shareables
      */
-    private function installShareables()
-    {
-        $this->newLine();
-        $this->info('Installing shareables table...');
+    // private function installShareables()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing shareables table...');
 
-        if (Schema::hasTable('shareables')) $this->warn('shareables table exists, skipped.');
-        else {
-            Schema::create('shareables', function(Blueprint $table) {
-                $table->id();
-                $table->ulid();
-                $table->integer('valid_for')->nullable();
-                $table->json('data')->nullable();
-                $table->boolean('is_enabled')->nullable();
-                $table->string('parent_type')->nullable();
-                $table->unsignedBigInteger('parent_id')->nullable();
-                $table->timestamp('expired_at')->nullable();
-                $table->timestamps();
-            });
+    //     if (Schema::hasTable('shareables')) $this->warn('shareables table exists, skipped.');
+    //     else {
+    //         Schema::create('shareables', function(Blueprint $table) {
+    //             $table->id();
+    //             $table->ulid();
+    //             $table->integer('valid_for')->nullable();
+    //             $table->json('data')->nullable();
+    //             $table->boolean('is_enabled')->nullable();
+    //             $table->string('parent_type')->nullable();
+    //             $table->unsignedBigInteger('parent_id')->nullable();
+    //             $table->timestamp('expired_at')->nullable();
+    //             $table->timestamps();
+    //         });
 
-            $this->line('shareables table created successfully.');
-        }
-    }
+    //         $this->line('shareables table created successfully.');
+    //     }
+    // }
 
     /**
      * Install line items

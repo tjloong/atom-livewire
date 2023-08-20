@@ -5,10 +5,12 @@ namespace Jiannius\Atom\Http\Livewire\App;
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class SendEmail extends Component
 {
     use WithForm;
+    use WithPopupNotify;
 
     public $inputs;
     public $emails;
@@ -99,6 +101,7 @@ class SendEmail extends Component
         Notification::route('mail', data_get($this->inputs, 'to'))
             ->notify(new \Jiannius\Atom\Notifications\SendEmailNotification($this->inputs));
 
+        $this->popup('Email Sent.');
         $this->close();
     }
 }

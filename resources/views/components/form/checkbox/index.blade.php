@@ -4,7 +4,6 @@
     @props([
         'disabled' => $attributes->get('disabled', false),
         'label' => $attributes->get('label'),
-        'small' => $attributes->get('small') ?? $attributes->get('caption'),
         'id' => component_id($attributes, 'checkbox'),
     ])
 
@@ -41,11 +40,15 @@
                 @endif
             </div>
 
-            @if ($small)
+            @isset($small)
+                <div class="normal-case ml-8 px-1">
+                    {{ $small }}
+                </div>
+            @elseif ($small = $attributes->get('small') ?? $attributes->get('caption'))
                 <div class="text-sm text-gray-500 font-medium normal-case ml-8 px-1">
                     {!! __($small) !!}
                 </div>
-            @endif
+            @endisset
         </label>
     </div>
 @endif

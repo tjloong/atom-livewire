@@ -42,7 +42,7 @@
                                     <x-sidenav.group :label="$group"/>
                                 @else
                                     <x-sidenav.item 
-                                        :name="data_get($item, 'slug')"
+                                        :value="data_get($item, 'slug')"
                                         :label="data_get($item, 'label')"
                                         :count="data_get($item, 'count')"
                                         :href="route('app.onboarding', [
@@ -55,9 +55,9 @@
                                         <x-slot:icon>
                                             <div class="flex items-center justify-center">
                                                 @if (in_array(data_get($item, 'slug'), session('onboarding', []))) 
-                                                    <x-icon name="circle-check" class="text-green-500" size="18"/>
+                                                    <x-icon name="circle-check" class="text-green-500"/>
                                                 @else 
-                                                    <x-icon name="circle-dot" class="text-gray-400" size="18"/>
+                                                    <x-icon name="circle-dot" class="text-gray-400"/>
                                                 @endif
                                             </div>
                                         </x-slot:icon>

@@ -1,3 +1,13 @@
+@props([
+    'getAvatar' => function() use ($attributes) {
+        $file = $attributes->get('avatar') ?? $attributes->get('file') ?? $attributes->get('image');
+        $url = is_string($file) ? $file : optional($file)->url;
+        $placeholder = $attributes->get('placeholder');
+
+        return $url || $placeholder ? compact('url', 'placeholder') : null;
+    }
+])
+
 @if ($value = $attributes->get('checkbox'))
     <td class="align-top py-3 px-2 w-10">
         <div
@@ -60,6 +70,7 @@
     <td {{ $attributes
         ->class([
             'py-3 px-4 whitespace-nowrap',
+            $getAvatar() ? 'w-4' : '',
             $attributes->has('dropdown') ? 'w-4 align-middle' : 'align-top',
         ])
         ->except(['checkbox', 'status', 'active', 'tags', 'date', 'datetime', 'from-now', 'avatar'])
@@ -102,58 +113,13 @@
             <div class="text-sm text-gray-500">{{ format_date($datetime, 'time') }}</div>
         @elseif ($fromNow = $attributes->get('from-now'))
             {{ format_date($fromNow, 'human') }}
-        @elseif (
-            $attributes->get('avatar') 
-            || $attributes->get('avatar-placeholder')
-            || $attributes->get('file')
-            || $attributes->get('image')
-        )
-            <div class="flex items-center gap-3">
-                <div class="shrink-0 flex items-center justify-center">
-                    @if ($attributes->get('avatar') || $attributes->get('avatar-placeholder'))
-                        <x-thumbnail
-                            :url="$attributes->get('avatar')"
-                            :placeholder="$attributes->get('avatar-placeholder')"
-                            size="36"
-                            circle
-                            color="random"
-                        />
-                    @elseif ($attributes->get('image'))
-                        <x-thumbnail :url="$attributes->get('image')" size="36"/>
-                    @elseif ($attributes->get('file'))
-                        <x-thumbnail :file="$attributes->get('file')" size="36"/>
-                    @endif
-                </div>
-
-                <div class="grid">
-                    @if ($href = $attributes->get('href'))
-                        <a 
-                            href="{{ $href }}" 
-                            class="{{ $tooltip ? '' : 'truncate' }}" 
-                            target="{{ $attributes->get('target', '_self') }}"
-                            @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
-                        >
-                            {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
-                        </a>
-                    @else
-                        <div 
-                            class="{{ collect([
-                                $tooltip ? null : 'truncate',
-                                $attributes->has('wire:click') || $attributes->has('x-on:click') ? 'cursor-pointer font-semibold text-blue-500' : null,
-                            ])->filter()->join(' ') }}"
-                            @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
-                        >
-                            {{ $label ?? ($slot->isNotEmpty() ? $slot : null) ?? '--' }}
-                        </div>
-                    @endif
-        
-                    @if ($small = $attributes->get('small'))
-                        <div class="text-sm text-gray-500 truncate font-medium">
-                            {{ $small }}
-                        </div>
-                    @endif
-                </div>
-            </div>
+        @elseif ($avatar = $getAvatar())
+            <x-thumbnail 
+                :url="data_get($avatar, 'url')"
+                :placeholder="data_get($avatar, 'placeholder')"
+                size="36"
+                circle
+                color="random"/>
         @elseif ($attributes->get('dropdown'))
             <x-dropdown icon="ellipsis-vertical">
                 {{ $slot }}

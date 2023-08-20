@@ -45,6 +45,10 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // send email
             'app.send-email' => 'App\SendEmail',
 
+            // share
+            'app.share' => 'App\Share',
+            'app.share.update' => 'App\Share\Update',
+
             // signup
             'app.signup' => 'App\Signup\Index',
             'app.signup.update' => 'App\Signup\Update',
