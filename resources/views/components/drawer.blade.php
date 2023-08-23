@@ -51,21 +51,23 @@
 
                 <div class="flex items-center gap-2">
                     @isset($buttons)
-                        {{ $buttons }}
+                        @if (!$buttons->attributes->get('blank'))
+                            {{ $buttons }}
 
-                        @if ($buttons->attributes->get('restore'))
-                            <x-button.restore size="sm"
-                                :params="$buttons->attributes->get('restore')"/>
-                        @endif
+                            @if ($buttons->attributes->get('restore'))
+                                <x-button.restore size="sm"
+                                    :params="$buttons->attributes->get('restore')"/>
+                            @endif
 
-                        @if ($buttons->attributes->get('trash'))
-                            <x-button.trash size="sm" inverted
-                                :params="$buttons->attributes->get('trash')"/>
-                        @endif
+                            @if ($buttons->attributes->get('trash'))
+                                <x-button.trash size="sm" inverted
+                                    :params="$buttons->attributes->get('trash')"/>
+                            @endif
 
-                        @if ($buttons->attributes->get('delete'))
-                            <x-button.delete size="sm" inverted
-                                :params="$buttons->attributes->get('delete')"/>
+                            @if ($buttons->attributes->get('delete'))
+                                <x-button.delete size="sm" inverted
+                                    :params="$buttons->attributes->get('delete')"/>
+                            @endif
                         @endif
                     @endisset
 
