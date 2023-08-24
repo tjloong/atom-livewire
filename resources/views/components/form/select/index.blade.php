@@ -20,18 +20,23 @@
         x-data="{
             text: null,
             focus: false,
-            callback: @js($attributes->has('wire:search') && !$isAutocomplete),
             searchable: @js(!$isAutocomplete && count($options) > 15),
-            open () {
-                this.focus = true
-
-                this.$nextTick(() => {
-                    this.$refs.search?.focus()
-                    floatDropdown(this.$refs.anchor, this.$refs.dd)
-                })
+            open (bool = true) {
+                if (bool) {
+                    this.focus = true
+                    this.$nextTick(() => {
+                        this.$refs.search?.focus()
+                        floatDropdown(this.$refs.anchor, this.$refs.dd)
+                    })
+                }
+                else {
+                    this.$refs.search.value = null
+                    this.search(null)
+                    this.$nextTick(() => this.focus = false)
+                }
             },
             search (str) {
-                this.$wire.emit('setSelectInputSearch', { id: @js($id), search: str })
+                this.$wire.call('setSelectInputSearch', { id: @js($id), search: str })
 
                 const elems = this.$refs.dd?.querySelectorAll('[data-searchable]')
                 if (!elems) return
@@ -45,7 +50,6 @@
                 })
             },
         }"
-        x-on:click.away="focus = false" 
         class="relative"
         id="{{ $id }}"
     >
@@ -66,8 +70,7 @@
                             value="{{ $value }}"
                             x-on:input.debounce.400ms="search($event.target.value)"
                             class="form-input transparent w-full" 
-                            placeholder="{{ $placeholder }}" 
-                        />
+                            placeholder="{{ $placeholder }}">
                     </div>
                 @elseif (!$isEmpty($value))
                     @isset($selected) {{ $selected }}
@@ -125,13 +128,12 @@
             x-transition.opacity
             class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px] flex flex-col divide-y"
         >
-            <div x-show="searchable" class="p-3">
+            <div x-show="searchable" x-on:click.away="open(false)" class="p-3">
                 <input type="text" 
                     x-ref="search" 
                     x-on:input.debounce.300ms="search($event.target.value)"
                     class="form-input w-full" 
-                    placeholder="{{ __('Search') }}"
-                >
+                    placeholder="{{ __('Search') }}">
             </div>
 
             <div class="max-h-[250px] overflow-auto flex flex-col divide-y">
@@ -152,7 +154,6 @@
                                 @else
                                     wire:click="$set(@js($model), @js(data_get($opt, 'value')))"
                                 @endif
-                                x-on:click.debounce.100ms="focus = false"
                                 class="py-2 px-4 flex items-center gap-3 cursor-pointer {{ [
                                     'green' => 'bg-green-100 text-green-600 hover:bg-green-300 text-green-800',
                                     'blue' => 'bg-blue-100 text-blue-600 hover:bg-blue-300 text-blue-800',

@@ -118,7 +118,7 @@
                                     <div>
                                         <div class="flex items-center gap-2">
                                             <div class="text-xl font-bold">
-                                                {{ __($header) }}
+                                                {!! __($header) !!}
                                             </div>
 
                                             @if ($status = $attributes->get('status'))
@@ -133,7 +133,7 @@
                                         
                                         @if ($subtitle = $attributes->get('subtitle'))
                                             <div class="font-medium text-gray-500">
-                                                {{ __($subtitle) }}
+                                                {!! __($subtitle) !!}
                                             </div>
                                         @endif
                                     </div>

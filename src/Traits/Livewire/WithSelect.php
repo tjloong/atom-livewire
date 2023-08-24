@@ -6,14 +6,6 @@ trait WithSelect
 {
     public $selectInputSearch;
 
-    // initialize
-    public function initializeWithSelect()
-    {
-        $this->listeners = array_merge($this->listeners ?? [], [
-            'setSelectInputSearch',
-        ]);
-    }
-
     // Set select input search
     public function setSelectInputSearch($input)
     {
