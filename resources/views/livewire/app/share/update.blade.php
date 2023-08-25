@@ -1,5 +1,7 @@
-<x-modal id="share-update" icon="share" header="Share">
+<x-modal id="share-update">
 @if ($share)
+    <x-slot:heading title="Share" icon="share"></x-slot:heading>
+
     <div class="flex flex-col divide-y">
         <div x-data="{
             init () {

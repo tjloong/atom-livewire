@@ -4,28 +4,32 @@
         $exclude = (array) $attributes->get('exclude');
 
         return collect([
-            'Requested By' => [data_get($data, 'requestedBy.name'), format_date(data_get($data, 'requested_at'), 'datetime')],
-            'Approved By' => [data_get($data, 'approvedBy.name'), format_date(data_get($data, 'approved_at'), 'datetime')],
-            'Rejected By' => [data_get($data, 'rejectedBy.name'), format_date(data_get($data, 'rejected_at'), 'datetime')],
-            'Closed By' => [data_get($data, 'closedBy.name'), format_date(data_get($data, 'closed_at'), 'datetime')],
-            'Created By' => [data_get($data, 'createdBy.name'), format_date(data_get($data, 'created_at'), 'datetime')],
-            'Updated By' => [data_get($data, 'updatedBy.name'), format_date(data_get($data, 'updated_at'), 'datetime')],
-            'Deleted By' => [data_get($data, 'deletedBy.name'), format_date(data_get($data, 'deleted_at'), 'datetime')],
-            'Email Sent By' => [data_get($data, 'emailSentBy.name'), format_date(data_get($data, 'email_sent_at'), 'datetime')],
-        ])
-            ->filter(fn($val) => isset($val[0]))
-            ->filter(fn($val, $key) => !in_array(strtolower($key), $exclude))
-            ->toArray();
+            'requested',
+            'approved',
+            'rejected',
+            'closed',
+            'created',
+            'updated',
+            'deleted',
+            'email_sent',
+            'login',
+            'last_active'
+        ])->mapWithKeys(function($col) use ($data) {
+            $by = $data->trace($col.'_by.name');
+            $at = format_date(data_get($data, $col.'_at'), 'datetime');
+            $label = str()->headline(empty($by) ? $col : $col.'_by');
+
+            return [$label => compact('by', 'at')];
+        })->filter(fn($val) => !empty(array_filter($val)));
     },
 ])
 
-<x-box :header="$attributes->get('header')">
+<x-box :heading="$attributes->get('heading', 'Traces')">
     <div class="flex flex-col divide-y">
         @foreach ($getFields() as $label => $value)
-            <x-box.row :label="$label">
-                {{ $value[0] }}<br>
-                <span class="text-gray-500 text-sm">{{ $value[1] }}</span>
-            </x-box.row>
+            <x-field :label="$label"
+                :value="empty($value['by']) ? $value['at'] : $value['by']"
+                :small="empty($value['by']) ? null : $value['at']"/>
         @endforeach
     </div>
 </x-box>

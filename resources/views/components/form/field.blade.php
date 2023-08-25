@@ -1,8 +1,10 @@
 @props([
     'field' => $attributes->get('name') ?? $attributes->wire('model')->value() ?? null,
+    'wirekey' => $attributes->get('wire:key') ?? $attributes->wire('model')->value(),
 ])
 
-<div {{ $attributes->class(['flex flex-col gap-1'])->only('class') }}>
+<div wire:key="{{ $wirekey }}" 
+    {{ $attributes->class(['flex flex-col gap-1'])->only('class') }}>
     @if (isset($label) || component_label($attributes))
         <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
             <span>
@@ -60,7 +62,12 @@
     @endif
 
     @if ($error = $errors->first($field))
-        <div class="text-sm text-red-500 font-medium">
+        <div 
+            x-init="$el.parentNode
+                .querySelectorAll('.form-input:not(.transparent)')
+                .forEach(node => node.classList.add('error'))"
+            wire:key="{{ uniqid() }}"
+            class="text-sm text-red-500 font-medium">
             {{ __($error) }}
         </div>
     @endif

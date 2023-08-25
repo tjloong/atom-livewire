@@ -1,9 +1,8 @@
-<x-form id="user-update" drawer
-    :title="optional($user)->exists ? $user->name : 'Create User'"
-    :subtitle="optional($user)->exists ? $user->email : null"
-    wire:close="$emit('userSaved')">
+<x-form.drawer id="user-update" wire:close="$emit('userSaved')">
 @if ($user)
     @if ($user->exists)
+        <x-slot:heading title="{{ $user->name }}" subtitle="{{ $user->email }}"></x-slot:heading>
+
         <x-slot:buttons>
         @if ($user->trashed())
             <x-button.restore size="sm"/>
@@ -13,43 +12,41 @@
             <x-button.trash size="sm"/>
         @endif
         </x-slot:buttons>
+    @else
+        <x-slot:heading title="Create User"></x-slot:heading>
     @endif
 
-    <x-form.group>
-        <x-form.text wire:model.defer="user.name"/>
-
-        @if ($this->isLoginMethod('username'))
-            <x-form.text wire:model.defer="user.username"/>
-        @endif
-
-        @if ($this->isLoginMethod('email'))
-            <x-form.email wire:model.defer="user.email" label="Login Email"/>
-        @endif
-
-        <x-form.password wire:model.defer="inputs.password"/>
-
-        @if (!$user->isTier('root'))
-            <x-form.select.role wire:model="user.role_id"/>
-            <x-form.select.team wire:model="inputs.teams" multiple/>
-        @endif
-
-        <div>
-            <x-form.checkbox wire:model="inputs.is_blocked" label="Blocked"/>
-
-            @tier('root')
-                <x-form.checkbox wire:model="inputs.is_root" label="Root"/>
-            @endtier
-        </div>
-    </x-form.group>
-
-    @if ($user->exists)
-        <x-form.group label="Additional Information" cols="2">
-            <x-form.field label="Last Login" :value="format_date($user->login_at, 'datetime') ?? '--'"/>
-            <x-form.field label="Last Active" :value="format_date($user->last_active_at, 'datetime') ?? '--'"/>
-            @if ($user->blocked_at)
-                <x-form.field label="Blocked At" :value="format_date($user->blocked_at, 'datetime')"/>
+    <div class="flex flex-col gap-4">
+        <x-form.group>
+            <x-form.text wire:model.defer="user.name"/>
+    
+            @if ($this->isLoginMethod('username'))
+                <x-form.text wire:model.defer="user.username"/>
             @endif
+    
+            @if ($this->isLoginMethod('email'))
+                <x-form.email wire:model.defer="user.email" label="Login Email"/>
+            @endif
+    
+            <x-form.password wire:model.defer="inputs.password"/>
+    
+            @if (!$user->isTier('root'))
+                <x-form.select.role wire:model="user.role_id"/>
+                <x-form.select.team wire:model="inputs.teams" multiple/>
+            @endif
+    
+            <div>
+                <x-form.checkbox wire:model="inputs.is_blocked" label="Blocked"/>
+    
+                @tier('root')
+                    <x-form.checkbox wire:model="inputs.is_root" label="Root"/>
+                @endtier
+            </div>
         </x-form.group>
-    @endif
+
+        @if ($user->exists)
+            <x-box.trace :data="$user->fresh()"/>
+        @endif
+    </div>
 @endif
-</x-form>
+</x-form.drawer>

@@ -19,35 +19,29 @@
     @if ($show) x-init="open" @endif
     class="fixed inset-0 z-50 overflow-auto"
     id="{{ $id }}"
+    {{ $attributes->wire('open') }}
+    {{ $attributes->wire('close') }}
 >
     @if ($attributes->get('bg-close', true)) <x-modal.overlay x-on:click="close"/>
     @else <x-modal.overlay/>
     @endif
 
-    <div class="relative mx-auto py-10 px-4 {{ [
-        'sm' => 'max-w-screen-sm',
-        'md' => 'max-w-screen-md',
-        'lg' => 'max-w-screen-lg',
-    ][$attributes->get('size', 'sm')] }}">
+    <div class="relative mx-auto py-10 px-4">
         <div class="bg-white rounded-lg shadow-lg flex flex-col divide-y">
-            <div class="flex items-center justify-between p-4">
-                <div class="grow">
-                    @if ($header = $attributes->get('header'))
-                        <div class="text-lg font-bold flex items-center gap-3">
-                            @if ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/> @endif
-                            {!! __($header) !!}
-                        </div>
-                    @elseif (isset($header))
-                        {{ $header }}
-                    @endif
+            @if (isset($heading) && $heading->isNotEmpty())
+                {{ $heading }}
+            @elseif (isset($heading))
+                <div class="p-4">
+                    <x-heading 
+                        :icon="$heading->attributes->get('icon')"
+                        :title="$heading->attributes->get('title')"
+                        :subtitle="$heading->attributes->get('subtitle')">
+                        <x-close x-on:click.stop="close"/>
+                    </x-heading>
                 </div>
+            @endif
 
-                <div class="shrink-0">
-                    <x-close x-on:click.stop="close"/>
-                </div>
-            </div>
-
-            <div class="grow">
+            <div class="grow w-screen {{ $attributes->get('class', 'max-w-screen-sm') }}">
                 {{ $slot }}
             </div>
 

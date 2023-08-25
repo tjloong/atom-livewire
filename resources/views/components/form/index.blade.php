@@ -10,119 +10,37 @@
         submit () {
             if (this.confirm) {
                 $dispatch('confirm', {
-                    title: @js(__(data_get($confirm, 'title', 'Submit Form'))),
-                    message: @js(__(data_get($confirm, 'message', 'Are you sure to submit this form?'))),
+                    title: @js(__('atom::form.confirm.title')),
+                    message: @js(__('atom::form.confirm.message')),
                     onConfirmed: () => $wire.call(@js($submit)),
                 })
             }
             else $wire.call(@js($submit))
-        }
+        },
     }"
-    x-on:submit.prevent="submit"
-    id="{{ $id }}"
-    {{ $attributes->except([
-        'id', 
-        'submit', 
-        'confirm', 
-        'status', 
-        'title', 
-        'subtitle',
-        'header', 
-        'modal', 
-        'drawer',
-        'size',
-        'show',
-        'bg-close',
-    ]) }}
->
-    @if ($attributes->get('modal'))
-        <x-modal :id="$id" 
-            :header="$attributes->get('header')" 
-            :size="$attributes->get('size')"
-            :show="$attributes->get('show')"
-            :bg-close="$attributes->get('bg-close')"
-        >
-            @isset($header)
-                <x-slot:header>{{ $header }}</x-slot:header>
-            @endisset
+    x-on:submit.prevent="submit">
+    <x-box {{ $attributes->except('heading') }}>
+        @isset($heading)
+            <x-slot:heading
+                :icon="$heading->attributes->get('icon')"
+                :title="$heading->attributes->get('title')"
+                :subtitle="$heading->attributes->get('subtitle')">
+                {{ $heading }}
+            </x-slot:heading>
+        @endisset
 
-            {{ $slot }}
+        {{ $slot }}
 
-            <x-slot:foot>
-                @isset($foot)
-                    {{ $foot }}
-                @else
-                    <x-button.submit/>
-                @endif
-            </x-slot:foot>
-        </x-modal>
-    @elseif ($attributes->get('drawer'))
-        <x-drawer :id="$id" 
-            :header="$attributes->get('header')"
-            :title="$attributes->get('title')"
-            :subtitle="$attributes->get('subtitle')"
-            :size="$attributes->get('size')"
-            :show="$attributes->get('show')"
-            :status="$attributes->get('status')"
-            :bg-close="$attributes->get('bg-close')"
-        >
-            @isset($header)
-                <x-slot:header>{{ $header }}</x-slot:header>
-            @endisset
-
-            @isset($buttons)
-                <x-slot:buttons
-                    :trash="$buttons->attributes->get('trash', false)"
-                    :delete="$buttons->attributes->get('delete', false)"
-                    :restore="$buttons->attributes->get('restore', false)">
-                    @if ($buttons->isNotEmpty())
-                        {{ $buttons }}
-                    @elseif (!$buttons->attributes->get('blank'))
-                        <x-button.submit size="sm"/>
-                    @endif
-                </x-slot:buttons>
-            @else
-                <x-slot:buttons>
-                    <x-button.submit size="sm"/>
-                </x-slot:buttons>
-            @endif
-
-            @isset($dropdown)
-                <x-slot:dropdown
-                    :trash="$dropdown->attributes->get('trash', false)"
-                    :delete="$dropdown->attributes->get('delete', false)"
-                    :restore="$dropdown->attributes->get('restore', false)">
-                    {{ $dropdown }}
-                </x-slot:dropdown>
-            @endisset
-
-            <div class="px-2">
-                {{ $slot }}
-            </div>
-        </x-drawer>
-    @else
-        <x-box :header="$attributes->get('header')">
-            @isset($header)
-                <x-slot:header>{{ $header }}</x-slot:header>
-            @endisset
-
-            @isset($buttons)
-                <x-slot:buttons>{{ $buttons }}</x-slot:buttons>
-            @endisset
-
-            {{ $slot }}
-
-            @isset($foot)
-                @if ($foot->isNotEmpty())
-                    <x-slot:foot>
-                        {{ $foot }}
-                    </x-slot:foot>
-                @endif
-            @else
+        @isset($foot)
+            @if ($foot->isNotEmpty())
                 <x-slot:foot>
-                    <x-button.submit/>
+                    {{ $foot }}
                 </x-slot:foot>
             @endif
-        </x-box>
-    @endif
+        @else
+            <x-slot:foot>
+                <x-button.submit/>
+            </x-slot:foot>
+        @endif
+    </x-box>
 </form>

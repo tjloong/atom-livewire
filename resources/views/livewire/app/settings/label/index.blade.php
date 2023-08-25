@@ -1,10 +1,9 @@
 <div class="max-w-screen-md">
-    <x-page-header :title="$this->title">
+    <x-heading :title="$this->title" 2xl>
         <x-button icon="add"
             label="Create New"
-            wire:click="update({ type: '{{ $type }}' })"
-        />
-    </x-page-header>
+            wire:click="update({ type: '{{ $type }}' })"/>
+    </x-heading>
 
     <x-box>
         @if ($this->labels->count())
@@ -17,5 +16,5 @@
         @endif
     </x-box>
 
-    @livewire('app.settings.label.update', key(uniqid()))
+    @livewire('app.settings.label.update', key('update'))
 </div>

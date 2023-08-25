@@ -2,10 +2,7 @@
     <div 
         x-data="{ focus: false }"
         x-bind:class="focus && 'active'"
-        class="form-input w-full flex items-center gap-2 {{ 
-            component_error(optional($errors), $attributes) ? 'error' : ''
-        }}"
-    >
+        class="form-input w-full flex items-center gap-2">
         @isset($prefix) {{ $prefix }}
         @elseif ($prefix = $attributes->get('prefix'))
             @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>

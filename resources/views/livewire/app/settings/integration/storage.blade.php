@@ -1,23 +1,23 @@
 <div class="max-w-screen-md">
-    <x-page-header title="Storage Settings"/>
+    <x-heading title="Storage Settings" 2xl/>
     
-    <x-form>
+    <x-form class="p-5">
         <x-form.group cols="2">
             <x-form.select wire:model="settings.filesystem" label="Storage Provider" :options="[
                 ['value' => 'local', 'label' => 'Local'],
                 ['value' => 'do', 'label' => 'Digital Ocean Spaces'],
             ]"/>
-        </x-form.group>
-        
-        @if (data_get($settings, 'filesystem') === 'do')
-            <x-form.group cols="2">
+
+            <div></div>
+
+            @if (data_get($settings, 'filesystem') === 'do')
                 <x-form.text wire:model.defer="settings.do_spaces_key" label="DO Spaces Key"/>
                 <x-form.text wire:model.defer="settings.do_spaces_secret" label="DO Spaces Secret"/>
                 <x-form.text wire:model.defer="settings.do_spaces_region" label="DO Spaces Region"/>
                 <x-form.text wire:model.defer="settings.do_spaces_bucket" label="DO Spaces Bucket"/>
                 <x-form.text wire:model.defer="settings.do_spaces_endpoint" label="DO Spaces Endpoint"/>
                 <x-form.text wire:model.defer="settings.do_spaces_folder" label="DO Spaces Folder"/>
-            </x-form.group>
-        @endif
+            @endif
+        </x-form.group>        
     </x-form>
 </div>

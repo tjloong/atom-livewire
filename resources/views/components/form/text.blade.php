@@ -9,11 +9,7 @@
     <div 
         x-data="{ focus: false }"
         x-bind:class="focus && 'active'"
-        class="form-input w-full flex items-center gap-2 
-            {{ component_error(optional($errors), $attributes) ? 'error' : '' }}
-            {{ $attributes->get('readonly') ? 'readonly' : '' }}
-        "
-    >
+        class="form-input w-full flex items-center gap-2 {{ $attributes->get('readonly') ? 'readonly' : '' }}">
         @if (is_string($prefix))
             @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>
             @else <div class="shrink-0 text-gray-500 font-medium">{{ __($prefix) }}</div>

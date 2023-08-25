@@ -1,4 +1,6 @@
-@props([
+<x-form.datetime :time="false" {{ $attributes->except('time') }}/>
+
+{{-- @props([
     'placeholder' => $attributes->get('placeholder')
         ? __($attributes->get('placeholder'))
         : __('Select').' '.component_label($attributes, 'Date'),
@@ -77,4 +79,4 @@
         </div>
     </div>
 </x-form.field>
-
+ --}}

@@ -1,9 +1,9 @@
 <div class="max-w-screen-md">
-    <x-page-header title="Users">
+    <x-heading title="Users" 2xl>
         <x-button icon="add" 
             label="New User" 
             wire:click="$emit('createUser')"/>
-    </x-page-header>
+    </x-heading>
 
     <x-table>
         <x-slot:header>

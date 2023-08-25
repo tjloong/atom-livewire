@@ -31,7 +31,7 @@
                 }
                 else {
                     this.$refs.search.value = null
-                    this.search(null)
+                    if (this.searchable) this.search(null)
                     this.$nextTick(() => this.focus = false)
                 }
             },
@@ -54,13 +54,9 @@
         id="{{ $id }}"
     >
         <div x-ref="anchor"
-            x-on:click="open"
+            x-on:click="open(true)"
             x-bind:class="{ 'active': focus }"
-            {{ $attributes->class([
-                'form-input w-full flex items-center gap-2',
-                'error' => component_error(optional($errors), $attributes),
-            ])->only('class') }}
-        >
+            class="{{ $attributes->get('class', 'form-input w-full flex items-center gap-2') }}">
             <div class="flex items-center gap-2 w-full {{ $isEmpty($value) ? 'form-input-caret' : '' }}">
                 @if ($icon) <x-icon :name="$icon" class="text-gray-400"/> @endif
     
@@ -126,97 +122,100 @@
         <div x-ref="dd"
             x-show="focus"
             x-transition.opacity
-            class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px] flex flex-col divide-y"
-        >
-            <div x-show="searchable" x-on:click.away="open(false)" class="p-3">
-                <input type="text" 
-                    x-ref="search" 
-                    x-on:input.debounce.300ms="search($event.target.value)"
-                    class="form-input w-full" 
-                    placeholder="{{ __('Search') }}">
+            class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px]">
+            <div x-on:click.away="open(false)">
+                <div x-show="searchable" class="p-3 border-b">
+                    <input type="text" 
+                        x-ref="search" 
+                        x-on:input.debounce.300ms="search($event.target.value)"
+                        class="form-input w-full" 
+                        placeholder="{{ __('Search') }}">
+                </div>
             </div>
 
-            <div class="max-h-[250px] overflow-auto flex flex-col divide-y">
-                @if ($slot->isNotEmpty())
-                    {{ $slot }}
-                @else
-                    @forelse ($options as $opt)
-                        @if (data_get($opt, 'is_group'))
-                            <div class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
-                                @if ($icon = data_get($opt, 'icon')) <x-icon :name="$icon" class="shrink-0 text-gray-500"/> @endif
-                                <div class="grow font-semibold">{{ data_get($opt, 'label') }}</div>
-                                <x-icon name="chevron-down" class="shrink-0" size="12"/>
-                            </div>
-                        @else
-                            <div 
-                                @if ($multiple) 
-                                    wire:click="$set(@js($model), @js(collect($value)->push(data_get($opt, 'value'))->unique()->toArray()))"
-                                @else
-                                    wire:click="$set(@js($model), @js(data_get($opt, 'value')))"
-                                @endif
-                                class="py-2 px-4 flex items-center gap-3 cursor-pointer {{ [
-                                    'green' => 'bg-green-100 text-green-600 hover:bg-green-300 text-green-800',
-                                    'blue' => 'bg-blue-100 text-blue-600 hover:bg-blue-300 text-blue-800',
-                                    'orange' => 'bg-orange-100 text-orange-600 hover:bg-orange-300 text-orange-800',
-                                ][data_get($opt, 'color')] ?? 'hover:bg-slate-100' }}"
-                                id="{{ uniqid() }}"
-                            >
-                                @if (($avatar = data_get($opt, 'avatar')) || ($avatarPlaceholder = data_get($opt, 'avatar_placeholder')))
-                                    <div class="shrink-0">
-                                        <x-thumbnail :url="$avatar ?? null" :placeholder="$avatarPlaceholder" size="30" color="random" circle/>
-                                    </div>
-                                @elseif ($image = data_get($opt, 'image'))
-                                    <div class="shrink-0">
-                                        <x-thumbnail :url="$image" size="40"/>
-                                    </div>
-                                @elseif ($flag = data_get($opt, 'flag'))
-                                    <div class="shrink-0 w-4 h-4">
-                                        <img src="{{ $flag }}" class="w-full h-full object-contain object-center">
-                                    </div>
-                                @endif
-
-                                <div class="grow grid">
-                                    @if (($label = data_get($opt, 'label')) && ($small = data_get($opt, 'small'))) 
-                                        <div class="font-medium truncate">{{ $label }}</div> 
-                                        <div class="text-gray-500 text-sm truncate">{{ $small }}</div>
-                                    @else
-                                        <div class="truncate">{{ data_get($opt, 'label') }}</div>
-                                    @endif
+            <div class="flex flex-col divide-y">
+                <div class="max-h-[250px] overflow-auto flex flex-col divide-y">
+                    @if ($slot->isNotEmpty())
+                        {{ $slot }}
+                    @else
+                        @forelse ($options as $opt)
+                            @if (data_get($opt, 'is_group'))
+                                <div class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
+                                    @if ($icon = data_get($opt, 'icon')) <x-icon :name="$icon" class="shrink-0 text-gray-500"/> @endif
+                                    <div class="grow font-semibold">{{ data_get($opt, 'label') }}</div>
+                                    <x-icon name="chevron-down" class="shrink-0" size="12"/>
                                 </div>
-
-                                @if (($remark = data_get($opt, 'remark')) || ($status = data_get($opt, 'status')))
-                                    <div class="shrink-0 text-right">
-                                        @if (!empty($remark)) <div class="text-sm font-medium text-gray-500">{{ $remark }}</div> @endif
-                                        @if (!empty($status))
-                                            @if (is_array($status))
-                                                @foreach ($status as $key => $val)
-                                                    <x-badge :label="$val" :color="$key"/>
-                                                @endforeach
-                                            @else <x-badge :label="$status"/>
-                                            @endif
+                            @else
+                                <div 
+                                    @if ($multiple) 
+                                        wire:click="$set(@js($model), @js(collect($value)->push(data_get($opt, 'value'))->unique()->toArray()))"
+                                    @else
+                                        wire:click="$set(@js($model), @js(data_get($opt, 'value')))"
+                                    @endif
+                                    class="py-2 px-4 flex items-center gap-3 cursor-pointer {{ [
+                                        'green' => 'bg-green-100 text-green-600 hover:bg-green-300 text-green-800',
+                                        'blue' => 'bg-blue-100 text-blue-600 hover:bg-blue-300 text-blue-800',
+                                        'orange' => 'bg-orange-100 text-orange-600 hover:bg-orange-300 text-orange-800',
+                                    ][data_get($opt, 'color')] ?? 'hover:bg-slate-100' }}"
+                                    id="{{ uniqid() }}"
+                                >
+                                    @if (($avatar = data_get($opt, 'avatar')) || ($avatarPlaceholder = data_get($opt, 'avatar_placeholder')))
+                                        <div class="shrink-0">
+                                            <x-thumbnail :url="$avatar ?? null" :placeholder="$avatarPlaceholder" size="30" color="random" circle/>
+                                        </div>
+                                    @elseif ($image = data_get($opt, 'image'))
+                                        <div class="shrink-0">
+                                            <x-thumbnail :url="$image" size="40"/>
+                                        </div>
+                                    @elseif ($flag = data_get($opt, 'flag'))
+                                        <div class="shrink-0 w-4 h-4">
+                                            <img src="{{ $flag }}" class="w-full h-full object-contain object-center">
+                                        </div>
+                                    @endif
+    
+                                    <div class="grow grid">
+                                        @if (($label = data_get($opt, 'label')) && ($small = data_get($opt, 'small'))) 
+                                            <div class="font-medium truncate">{{ $label }}</div> 
+                                            <div class="text-gray-500 text-sm truncate">{{ $small }}</div>
+                                        @else
+                                            <div class="truncate">{{ data_get($opt, 'label') }}</div>
                                         @endif
                                     </div>
-                                @endif
-
-                                <div class="hidden" data-searchable="{{ data_get($opt, 'searchable') }}"></div>
-                            </div>
-                        @endif
-                    @empty
-                        <x-empty-state title="No options available" subtitle="" size="sm"/>
-                    @endforelse
-                @endif
+    
+                                    @if (($remark = data_get($opt, 'remark')) || ($status = data_get($opt, 'status')))
+                                        <div class="shrink-0 text-right">
+                                            @if (!empty($remark)) <div class="text-sm font-medium text-gray-500">{{ $remark }}</div> @endif
+                                            @if (!empty($status))
+                                                @if (is_array($status))
+                                                    @foreach ($status as $key => $val)
+                                                        <x-badge :label="$val" :color="$key"/>
+                                                    @endforeach
+                                                @else <x-badge :label="$status"/>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    @endif
+    
+                                    <div class="hidden" data-searchable="{{ data_get($opt, 'searchable') }}"></div>
+                                </div>
+                            @endif
+                        @empty
+                            <x-empty-state title="No options available" subtitle="" size="sm"/>
+                        @endforelse
+                    @endif
+                </div>
+    
+                @isset($foot)
+                    @if ($foot->isNotEmpty())
+                        {{ $foot }}
+                    @else
+                        <a class="p-4 flex items-center justify-center gap-2" {{ $foot->attributes->except('label', 'icon') }}>
+                            @if ($icon = $foot->attributes->get('icon')) <x-icon :name="$icon"/> @endif
+                            {{ __($foot->attributes->get('label', '')) }}
+                        </a>
+                    @endif
+                @endisset
             </div>
-
-            @isset($foot)
-                @if ($foot->isNotEmpty())
-                    {{ $foot }}
-                @else
-                    <a class="p-4 flex items-center justify-center gap-2" {{ $foot->attributes->except('label', 'icon') }}>
-                        @if ($icon = $foot->attributes->get('icon')) <x-icon :name="$icon"/> @endif
-                        {{ __($foot->attributes->get('label', '')) }}
-                    </a>
-                @endif
-            @endisset
         </div>
     </div>
 </x-form.field>

@@ -91,7 +91,6 @@
         x-on:click="focus = true"
         x-on:click.away="focus = false"
         wire:ignore
-        wire:key="{{ $attributes->get('wire:key') }}"
         class="flex items-center flex-wrap gap-2 w-full"
     >
         <div class="relative w-full">
@@ -102,10 +101,7 @@
                     'active': focus,
                     'select': !value,
                 }"
-                class="flex items-center gap-2 form-input w-full {{
-                    component_error(optional($errors), $attributes) ? 'error' : null
-                }}"
-            >
+                class="flex items-center gap-2 form-input w-full">
                 <x-icon name="calendar" class="shrink-0 text-gray-400"/>
                 <input type="text" placeholder="{{ __('Select Date') }}" readonly
                     x-bind:value="inputs.date ? formatDate(inputs.date) : null"
@@ -121,10 +117,7 @@
         <div 
             x-show="config.time"
             x-bind:class="{ 'active': focus }"
-            class="flex items-center gap-2 form-input w-full {{
-                component_error(optional($errors), $attributes) ? 'error' : null
-            }}"
-        >
+            class="flex items-center gap-2 form-input w-full">
             <x-icon name="clock" class="shrink-0 text-gray-400"/>
 
             <select x-model="inputs.hour" x-on:input.stop x-on:change="setValue" class="grow">

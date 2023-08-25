@@ -1,16 +1,11 @@
-<x-form id="label-update" :header="optional($label)->exists ? 'Update Label' : 'Create Label'" drawer>
+<x-form.drawer id="label-update">
 @if ($label)
-    <x-slot:buttons>
-        <div class="flex items-center gap-2">
-            <x-button.submit size="sm"/>
-            @if ($label->exists)
-                <x-button.delete inverted size="sm" :label="false"
-                    title="Delete Label"
-                    message="Are you sure to DELETE this label?"
-                />
-            @endif
-        </div>
-    </x-slot:buttons>
+    @if ($label->exists)
+        <x-slot:heading title="Update Label"></x-slot:heading>
+        <x-slot:buttons delete></x-slot:buttons>
+    @else
+        <x-slot:heading title="Create Label"></x-slot:heading>
+    @endif
 
     <x-form.group>
         @if ($type = $label->type)
@@ -50,5 +45,5 @@
         @endif
     </x-form.group>
 @endif
-</x-form>
+</x-form.drawer>
     

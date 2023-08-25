@@ -1,16 +1,16 @@
 <div class="max-w-screen-md">
-    <x-page-header title="Email Configurations"/>
+    <x-heading title="Email Configurations" 2xl/>
     
-    <x-form>
+    <x-form class="p-5">
         <x-form.group cols="2">
             <x-form.select wire:model="settings.mailer" label="Email Provider" :options="[
                 ['value' => 'smtp', 'label' => 'SMTP'],
                 ['value' => 'mailgun', 'label' => 'Mailgun'],
             ]"/>
-        </x-form.group>
+            
+            <div></div>
 
-        @if ($settings['mailer'] === 'smtp')
-            <x-form.group cols="2">
+            @if ($settings['mailer'] === 'smtp')
                 <x-form.text wire:model.defer="settings.smtp_host"/>
                 <x-form.text wire:model.defer="settings.smtp_port"/>
                 <x-form.text wire:model.defer="settings.smtp_username"/>
@@ -19,17 +19,13 @@
                     ['value' => 'ssl', 'label' => 'SSL'],
                     ['value' => 'tls', 'label' => 'TLS'],
                 ]"/>
-            </x-form.group>
-        @endif
-            
-        @if ($settings['mailer'] === 'mailgun')
-            <x-form.group cols="2">
+            @endif
+
+            @if ($settings['mailer'] === 'mailgun')
                 <x-form.text wire:model.defer="settings.mailgun_domain"/>
                 <x-form.text wire:model.defer="settings.mailgun_secret"/>
-            </x-form.group>
-        @endif
+            @endif
 
-        <x-form.group cols="2">
             <x-form.text wire:model.defer="settings.notify_from" label="Send Email Notification From"/>
             <x-form.text wire:model.defer="settings.notify_to" label="Send Email Notification To"/>
         </x-form.group>

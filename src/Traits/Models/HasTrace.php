@@ -62,70 +62,24 @@ trait HasTrace
         }
     }
 
-    // get owned by for model
-    public function ownedBy()
+    // trace
+    public function trace($key) : mixed
     {
-        return $this->belongsTo(model('user'), 'owned_by');
-    }
+        $table = $this->getTable();
+        $splits = collect(explode('.', $key));
+        $col = $splits->first();
 
-    // get created by for model
-    public function createdBy()
-    {
-        return $this->belongsTo(model('user'), 'created_by');
-    }
+        if (has_column($table, $col)) {
+            $trace = $this->belongsTo(model('user'), $col)->getResults();
+            $splits->shift();
+            $attr = $splits->join('.');
 
-    // get updated by for model
-    public function updatedBy()
-    {
-        return $this->belongsTo(model('user'), 'updated_by');
-    }
+            return $attr
+                ? data_get($trace, $splits->join('.'))
+                : $trace;
+        }
 
-    // get deleted by for model
-    public function deletedBy()
-    {
-        return $this->belongsTo(model('user'), 'deleted_by');
-    }
-
-    // get blocked by for model
-    public function blockedBy()
-    {
-        return $this->belongsTo(model('user'), 'blocked_by');
-    }
-
-    // get closed by for model
-    public function closedBy()
-    {
-        return $this->belongsTo(model('user'), 'closed_by');
-    }
-
-    // get refunded by for model
-    public function refundedBy()
-    {
-        return $this->belongsTo(model('user'), 'refunded_by');
-    }
-
-    // get requested by for model
-    public function requestedBy()
-    {
-        return $this->belongsTo(model('user'), 'requested_by');
-    }
-
-    // get approved by for model
-    public function approvedBy()
-    {
-        return $this->belongsTo(model('user'), 'approved_by');
-    }
-
-    // get rejected by for model
-    public function rejectedBy()
-    {
-        return $this->belongsTo(model('user'), 'rejected_by');
-    }
-
-    // get email sent by for model
-    public function emailSentBy()
-    {
-        return $this->belongsTo(model('user'), 'email_sent_by');
+        return null;
     }
 
     // check model is blocked
