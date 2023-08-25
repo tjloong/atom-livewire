@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4">
-    <x-form>
+    <x-form class="p-5">
         <x-form.group>
             <div class="text-2xl font-bold">
                 {{ __('Reset Password Request') }}
