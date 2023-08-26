@@ -26,19 +26,17 @@
     @else <x-modal.overlay/>
     @endif
 
-    <div class="relative mx-auto py-10 px-4">
+    <div class="relative mx-auto py-10 px-4 w-max">
         <div class="bg-white rounded-lg shadow-lg flex flex-col divide-y">
             @if (isset($heading) && $heading->isNotEmpty())
                 {{ $heading }}
             @elseif (isset($heading))
-                <div class="p-4">
-                    <x-heading 
-                        :icon="$heading->attributes->get('icon')"
-                        :title="$heading->attributes->get('title')"
-                        :subtitle="$heading->attributes->get('subtitle')">
-                        <x-close x-on:click.stop="close"/>
-                    </x-heading>
-                </div>
+                <x-heading class="p-4" lg
+                    :icon="$heading->attributes->get('icon')"
+                    :title="$heading->attributes->get('title')"
+                    :subtitle="$heading->attributes->get('subtitle')">
+                    <x-close x-on:click.stop="close"/>
+                </x-heading>
             @endif
 
             <div class="grow w-screen {{ $attributes->get('class', 'max-w-screen-sm') }}">
