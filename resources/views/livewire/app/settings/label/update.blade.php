@@ -7,7 +7,7 @@
         <x-slot:heading title="Create Label"></x-slot:heading>
     @endif
 
-    <x-form.group>
+    <x-form.group class="p-0">
         @if ($type = $label->type)
             <x-form.text :value="str()->headline($type)" label="Label Type" readonly/>
         @endif

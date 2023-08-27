@@ -5,7 +5,9 @@
         {{ $heading }}
     @elseif ($heading = $attributes->get('heading'))
         <x-heading class="py-2 px-4" sm
-            :title="$attributes->get('heading')"/>
+            :title="$attributes->get('heading')">
+            @isset($buttons) {{ $buttons }} @endisset
+        </x-heading>
     @endif
 
     <div {{ $attributes->merge([

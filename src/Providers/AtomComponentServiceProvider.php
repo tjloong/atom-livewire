@@ -109,7 +109,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'table.tr',
             'table.td',
             'table.export',
-            'table.header',
+            'table.heading',
             'table.filters',
             'table.toolbar',
             'table.trashed',

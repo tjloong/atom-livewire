@@ -4,8 +4,8 @@
 
 @if ($slot->isNotEmpty())
     <div {{ $attributes->class([
-        'flex flex-col gap-2',
-        $attributes->get('class')
+        'flex flex-col gap-2 border-t first:border-t-0',
+        $attributes->get('class', 'p-5')
     ])->except('cols') }}>
         @isset($heading)
             {{ $heading }}
