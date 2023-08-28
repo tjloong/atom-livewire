@@ -36,7 +36,9 @@
                 }
             },
             search (str) {
-                this.$wire.call('setSelectInputSearch', { id: @js($id), search: str })
+                if (@js(data_get($this, 'usesSelectInput'))) {
+                    this.$wire.call('setSelectInputSearch', { id: @js($id), search: str })
+                }
 
                 const elems = this.$refs.dd?.querySelectorAll('[data-searchable]')
                 if (!elems) return

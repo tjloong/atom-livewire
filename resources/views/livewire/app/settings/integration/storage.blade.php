@@ -1,7 +1,7 @@
 <div class="max-w-screen-md">
     <x-heading title="Storage Settings" 2xl/>
     
-    <x-form class="p-5">
+    <x-form>
         <x-form.group cols="2">
             <x-form.select wire:model="settings.filesystem" label="Storage Provider" :options="[
                 ['value' => 'local', 'label' => 'Local'],

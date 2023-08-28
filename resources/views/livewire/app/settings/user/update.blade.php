@@ -17,7 +17,7 @@
     @endif
 
     <div class="flex flex-col gap-4">
-        <x-form.group>
+        <x-form.group class="p-0">
             <x-form.text wire:model.defer="user.name"/>
     
             @if ($this->isLoginMethod('username'))

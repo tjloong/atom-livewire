@@ -6,7 +6,7 @@
     />
 
     <div class="flex flex-col gap-4">
-        <x-form class="p-5">
+        <x-form>
             <x-form.group>
                 <div class="text-2xl font-bold text-gray-600">
                     {{ __('Create your account') }}

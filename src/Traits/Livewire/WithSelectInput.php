@@ -2,8 +2,9 @@
 
 namespace Jiannius\Atom\Traits\Livewire;
 
-trait WithSelect
+trait WithSelectInput
 {
+    public $usesSelectInput = true;
     public $selectInputSearch;
 
     // Set select input search

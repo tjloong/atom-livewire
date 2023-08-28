@@ -1,7 +1,7 @@
 <div class="max-w-screen-md">
     <x-heading title="Email Configurations" 2xl/>
     
-    <x-form class="p-5">
+    <x-form>
         <x-form.group cols="2">
             <x-form.select wire:model="settings.mailer" label="Email Provider" :options="[
                 ['value' => 'smtp', 'label' => 'SMTP'],
