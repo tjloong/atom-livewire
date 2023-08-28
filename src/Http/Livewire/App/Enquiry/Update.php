@@ -4,20 +4,20 @@ namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Update extends Component
 {
     use WithForm;
-    use WithPopupNotify;
 
-    public $enquiry;
     public $inputs;
+    public $enquiry;
 
-    protected $listeners = ['open'];
+    protected $listeners = [
+        'updateEnquiry' => 'open',
+    ];
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return [
             'enquiry.remark' => ['nullable'],
@@ -26,33 +26,33 @@ class Update extends Component
     }
 
     // open
-    public function open($id): void
+    public function open($id) : void
     {
-        $this->enquiry = model('enquiry')->readable()->findOrFail($id);
-
-        $this->fill([
-            'inputs.status' => $this->enquiry->status->value,
-        ]);
-
-        $this->dispatchBrowserEvent('enquiry-update-open');
+        if ($this->enquiry = model('enquiry')->find($id)) {
+            $this->fill([
+                'inputs.status' => $this->enquiry->status->value,
+            ]);
+    
+            $this->dispatchBrowserEvent('enquiry-update-open');
+        }
     }
 
     // close
-    public function close(): void
+    public function close() : void
     {
-        $this->emit('enquiryUpdateClosed');
+        $this->emit('enquirySaved');
         $this->dispatchBrowserEvent('enquiry-update-close');
     }
 
     // delete
-    public function delete(): void
+    public function delete() : void
     {
         $this->enquiry->delete();
         $this->close();
     }
 
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
 

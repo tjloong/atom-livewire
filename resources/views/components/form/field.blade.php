@@ -52,6 +52,15 @@
                     <x-badge :label="$val" :color="$key"/>
                 @endforeach
             @endif
+        @elseif ($address = $attributes->get('address'))
+            @if (is_string($address)) {{ $address }}
+            @else
+                <div class="text-sm">
+                    @if ($name = data_get($address, 'name')) {{ $name }}<br> @endif
+                    @if ($company = data_get($address, 'company')) {{ $company }}<br> @endif
+                    @if ($address = data_get($address, 'address')) {{ $address }} @endif
+                </div>
+            @endif
         @endif
     </div>
 

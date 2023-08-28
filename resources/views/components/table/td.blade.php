@@ -20,8 +20,7 @@
             x-bind:class="checkboxes.includes(value) ? 'border-theme border-2' : 'bg-white border-gray-300'"
             class="mx-4 w-6 h-6 p-0.5 rounded shadow border cursor-pointer"
             data-table-checkbox="@js($value)"
-            id="{{ str()->slug('table-checkbox-'.$value) }}"
-        >
+            id="{{ str()->slug('table-checkbox-'.$value) }}">
             <div x-bind:class="checkboxes.includes(value) ? 'block' : 'hidden'" class="w-full h-full bg-theme"></div>
         </div>
     </td>

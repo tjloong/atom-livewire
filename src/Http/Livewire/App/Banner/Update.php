@@ -5,20 +5,21 @@ namespace Jiannius\Atom\Http\Livewire\App\Banner;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithFile;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Update extends Component
 {
     use WithFile;
     use WithForm;
-    use WithPopupNotify;
-    
+
     public $banner;
 
-    protected $listeners = ['open'];
+    protected $listeners = [
+        'createBanner' => 'open',
+        'updateBanner' => 'open',
+    ];
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return [
             'banner.type' => ['required' => 'Banner type is required.'],
@@ -42,7 +43,7 @@ class Update extends Component
     }
 
     // get options property
-    public function getOptionsProperty(): array
+    public function getOptionsProperty() : array
     {
         return [
             'types' => collect([
@@ -62,35 +63,35 @@ class Update extends Component
     }
 
     // open
-    public function open($id = null): void
+    public function open($id = null) : void
     {
-        $this->banner = $id
-            ? model('banner')->findOrFail($id)
-            : model('banner')->fill(['is_active' => true]);
-
-        $this->dispatchBrowserEvent('banner-update-open');
+        if ($this->banner = $id
+            ? model('banner')->find($id)
+            : model('banner')->fill(['is_active' => true])
+        ) {
+            $this->dispatchBrowserEvent('banner-update-open');
+        }
     }
 
     // close
-    public function close(): void
+    public function close() : void
     {
-        $this->emit('bannerUpdateClosed');
+        $this->emit('bannerSaved');
         $this->dispatchBrowserEvent('banner-update-close');
     }
 
     // delete
-    public function delete(): void
+    public function delete() : void
     {
         $this->banner->delete();
         $this->close();
     }
 
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
         $this->banner->save();
-        $this->popup('Banner Saved.');
         $this->close();
     }
 }

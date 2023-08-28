@@ -10,6 +10,7 @@ class Index extends Component
     use WithTable;
 
     public $sort;
+    public $enquiryId;
 
     public $filters = [
         'search' => null,
@@ -17,21 +18,22 @@ class Index extends Component
     ];
 
     protected $listeners = [
-        'enquiryUpdateClosed' => '$refresh',
+        'updateEnquiry' => 'setEnquiryId',
+        'enquirySaved' => 'setEnquiryId',
     ];
 
     // get query property
-    public function getQueryProperty(): mixed
+    public function getQueryProperty() : mixed
     {
         return model('enquiry')
             ->filter($this->filters)
             ->when(!$this->sort, fn($q) => $q->latest());
     }
 
-    // update
-    public function update($id): void
+    // set enquiry id
+    public function setEnquiryId($id = null) : void
     {
-        $this->emitTo('app.enquiry.update', 'open', $id);
+        $this->fill(['enquiryId' => $id ?: null]);
     }
 
     // export

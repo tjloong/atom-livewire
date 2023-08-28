@@ -1,5 +1,8 @@
-<div class="max-w-screen-xl mx-auto">
-    <x-page-header title="Enquiries"/>
+<div
+    x-data="{ enquiryId: @js($enquiryId) }"
+    x-init="enquiryId && $wire.emit('updateEnquiry', enquiryId)"
+    class="max-w-screen-xl mx-auto">
+    <x-heading title="Enquiries" 2xl/>
 
     <x-table>
         <x-slot:header>
@@ -11,8 +14,7 @@
                 <x-form.select.enum :label="false"
                     wire:model="filters.status" 
                     enum="enquiry.status"
-                    placeholder="All Status"
-                />
+                    placeholder="All Status"/>
             </x-table.toolbar>
         </x-slot:header>
 
@@ -27,7 +29,7 @@
         @foreach ($this->paginator->items() as $enquiry)
             <x-table.tr>
                 <x-table.td :date="$enquiry->created_at"/>
-                <x-table.td :label="$enquiry->name" wire:click="update({{ $enquiry->id }})"/>
+                <x-table.td :label="$enquiry->name" wire:click="$emit('updateEnquiry', {{ $enquiry->id }})"/>
                 <x-table.td :label="$enquiry->phone"/>
                 <x-table.td :label="$enquiry->email"/>
                 <x-table.td :status="[$enquiry->status->color() => $enquiry->status->value]"/>

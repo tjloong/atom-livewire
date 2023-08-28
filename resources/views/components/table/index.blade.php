@@ -14,7 +14,8 @@
         },
         init () {
             if (this.sortable) {
-                new Sortable(this.$el.querySelector('tbody'), { onSort: () => this.sort() })
+                const tbody = this.$el.querySelector('tbody') 
+                if (tbody) new Sortable(tbody, { onSort: () => this.sort() })
             }
         },
         sort () {

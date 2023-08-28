@@ -1,27 +1,25 @@
-<div class="max-w-screen-xl mx-auto">
-    <x-page-header title="Banners">
+<div 
+    x-data="{ bannerId: @js($bannerId) }"
+    x-init="bannerId && $wire.emit('updateBanner', bannerId)"
+    class="max-w-screen-xl mx-auto">
+    <x-heading title="Banners" 2xl>
         <x-button icon="add"
             label="New Banner" 
-            wire:click="update"
-        />
-    </x-page-header>
+            wire:click="$emit('createBanner')"/>
+    </x-heading>
 
     <x-table wire:sorted="sort">
         <x-slot:header>
             <x-table.searchbar :total="$this->paginator->total()"/>
+
             <x-table.toolbar>
                 @if ($count = count($checkboxes))
                     <x-table.checkboxes :count="$count"/>
-                    <x-button.delete :label="'Delete ('.$count.')'" inverted
-                        title="Delete Banners"
-                        message="Are you sure to DELETE the selected banners?"
-                    />
+                    <x-button.delete inverted :count="$count"/>
                 @else
-                    <x-form.select.enum :label="false"
+                    <x-form.select.enum enum="banner.status" :label="false"
                         wire:model="filters.status"
-                        enum="banner.status"
-                        placeholder="All Status"
-                    />
+                        placeholder="All Status"/>
                 @endif
             </x-table.toolbar>
         </x-slot:header>
@@ -49,5 +47,5 @@
 
     {!! $this->paginator->links() !!}
 
-    @livewire('app.banner.update', key(uniqid()))
+    @livewire('app.banner.update', key('update'))
 </div>

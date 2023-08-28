@@ -38,11 +38,15 @@
             @elseif ($value = $attributes->get('value'))
                 @if ($href = $attributes->get('href'))
                     <x-link :label="$value" :href="$href" :target="$attributes->get('target', '_self')"/>
+                @elseif ($attributes->hasLike('wire:*', 'x-on:*'))
+                    <x-link :label="$value" {{ $attributes->except(['label', 'value']) }}/>
                 @else
                     {!! $value !!}
                 @endif
             @elseif ($href = $attributes->get('href'))
                 <x-link :href="$href" :target="$attributes->get('target', '_self')"/>
+            @elseif ($attributes->hasLike('wire:*', 'x-on:*'))
+                <x-link :label="$value" {{ $attributes->except(['label', 'value']) }}/>
             @endif
 
             @if (isset($small))

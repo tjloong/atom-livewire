@@ -3,15 +3,14 @@
 namespace Jiannius\Atom\Http\Livewire\App\Banner;
 
 use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 
 class Index extends Component
 {
     use WithTable;
-    use WithPopupNotify;
 
     public $sort;
+    public $bannerId;
 
     public $filters = [
         'search' => null,
@@ -19,25 +18,26 @@ class Index extends Component
     ];
 
     protected $listeners = [
-        'bannerUpdateClosed' => '$refresh',
+        'updateBanner' => 'setBannerId',
+        'bannerSaved' => 'setBannerId',
     ];
 
     // get query property
-    public function getQueryProperty(): mixed
+    public function getQueryProperty() : mixed
     {
         return model('banner')
             ->filter($this->filters)
             ->when(!$this->sort, fn($q) => $q->oldest('seq')->latest('id'));
     }
 
-    // update
-    public function update($id = null): void
+    // set banner id
+    public function setBannerId($id = null) : void
     {
-        $this->emitTo('app.banner.update', 'open', $id);
+        $this->fill(['bannerId' => $id ?: null]);
     }
 
     // sort
-    public function sort($data): void
+    public function sort($data) : void
     {
         foreach ($data as $seq => $id) {
             model('banner')->find($id)->fill(['seq' => $seq])->save();
@@ -45,7 +45,7 @@ class Index extends Component
     }
 
     // delete
-    public function delete()
+    public function delete() : void
     {
         if ($this->checkboxes) {
             model('banner')->whereIn('id', $this->checkboxes)->delete();

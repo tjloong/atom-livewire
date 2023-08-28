@@ -4,6 +4,7 @@ namespace Jiannius\Atom\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\ComponentAttributeBag;
 
 class AtomComponentServiceProvider extends ServiceProvider
 {
@@ -225,5 +226,14 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             Blade::component($value, $classname);
         }
+
+        ComponentAttributeBag::macro('hasLike', function() {
+            $value = func_get_args();
+            $keys = collect($this->getAttributes())->keys();
+
+            return is_numeric(collect($value)->search(fn($val) => 
+                $keys->search(fn($key) => str($key)->is($val))
+            ));
+        });
     }
 }
