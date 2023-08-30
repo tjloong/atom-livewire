@@ -17,7 +17,7 @@
     </div>
 
     @isset ($foot)
-        <div class="py-3 px-4 bg-slate-100 rounded-b-lg">
+        <div {{ $foot->attributes->merge(['class' => 'py-3 px-4 bg-slate-100 rounded-b-lg']) }}>
             {{ $foot }}
         </div>
     @endisset

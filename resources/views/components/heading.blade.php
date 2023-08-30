@@ -10,7 +10,9 @@
     ])->filter()->keys()->first()),
 ])->only('class') }}>
     @isset($icon)
-        <div class="shrink-0">{{ $icon }}</div>
+        <div {{ $icon->attributes->merge(['class' => 'shrink-0']) }}>
+            {{ $icon }}
+        </div>
     @elseif ($icon = $attributes->get('icon'))
         <div class="shrink-0 text-gray-400 py-1">
             <x-icon :name="$icon" class="fa-lg"/>

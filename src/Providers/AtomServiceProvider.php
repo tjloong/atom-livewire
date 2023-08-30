@@ -24,9 +24,6 @@ class AtomServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'atom');
-        $this->loadTranslationsFrom(__DIR__.'/../../lang', 'atom');
-
         // helpers
         require_once __DIR__.'/../Helpers/Core.php';
         require_once __DIR__.'/../Helpers/Atom.php';
@@ -34,16 +31,11 @@ class AtomServiceProvider extends ServiceProvider
         require_once __DIR__.'/../Helpers/Database.php';
         require_once __DIR__.'/../Helpers/Route.php';
         require_once __DIR__.'/../Helpers/PaymentGateway.php';
+
+        $this->loadServiceContainers();
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'atom');
+        $this->loadTranslationsFrom(__DIR__.'/../../lang', 'atom');
         
-        // breadcrumbs service container
-        $this->app->singleton('breadcrumbs', fn() => new \Jiannius\Atom\Services\Breadcrumbs);
-        if (($breadcrumbs = base_path('routes/breadcrumbs.php')) && file_exists($breadcrumbs)) {
-            $this->loadRoutesFrom($breadcrumbs);
-        }
-
-        // route service container
-        $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
-
         // custom polymorphic types
         if ($morphMap = config('atom.morph_map')) {
             Relation::enforceMorphMap($morphMap);
@@ -54,6 +46,18 @@ class AtomServiceProvider extends ServiceProvider
             $this->registerStaticPublishing();
             $this->registerBasePublishing();
         }
+    }
+
+    // load service containers
+    public function loadServiceContainers() : void
+    {
+        $this->app->singleton('breadcrumbs', fn() => new \Jiannius\Atom\Services\Breadcrumbs);
+        if (($breadcrumbs = base_path('routes/breadcrumbs.php')) && file_exists($breadcrumbs)) {
+            $this->loadRoutesFrom($breadcrumbs);
+        }
+
+        $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
+        $this->app->bind('revenue_monster', fn() => new \Jiannius\Atom\Services\RevenueMonster);
     }
 
     /**
