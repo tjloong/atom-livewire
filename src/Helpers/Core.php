@@ -39,22 +39,31 @@ function has_component($name)
 }
 
 // enum
-function enum($name, $value = null)
+function enum()
 {
-    $name = collect(explode('.', $name))
+    $args = collect(func_get_args());
+
+    $name = collect(explode('.', $args->get(0)))
         ->map(fn($val) => str($val)->singular()->studly()->toString())
         ->join('\\');
-
+    
     $ns = collect([
         'App\\Enums\\'.$name,
         'Jiannius\\Atom\\Enums\\'.$name,
     ])->first(fn($val) => file_exists(atom_ns_path($val)));
 
-    if (is_null($value)) return collect($ns::cases());
-    else {
-        if ($ret = $ns::tryFrom($value)) return $ret;
-        if ($ret = constant("$ns::$value")) return $ret;
+    if ($args->has(1)) {
+        if (is_null($args->get(1))) {
+            return defined("$ns::__DEFAULT")
+                ? $ns::__DEFAULT
+                : null;
+        }
+        else {
+            if ($ret = $ns::tryFrom($args->get(1))) return $ret;
+            if ($ret = constant("$ns::{$args->get(1)}")) return $ret;
+        }
     }
+    else return collect($ns::cases());
 }
 
 /**
