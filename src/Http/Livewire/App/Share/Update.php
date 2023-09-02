@@ -32,8 +32,12 @@ class Update extends Component
     }
 
     // open
-    public function open() : void
+    public function open($model = null, $id = null) : void
     {
+        $this->parent = $model && $id
+            ? model($model)->find($id)
+            : $this->parent;
+
         $this->share = $this->parent->fresh()->share 
             ?? $this->parent->share()->create(['is_enabled' => true]);
 

@@ -3,24 +3,26 @@
         $data = $attributes->get('data');
         $exclude = (array) $attributes->get('exclude');
 
-        return collect([
-            'requested',
-            'approved',
-            'rejected',
-            'closed',
-            'created',
-            'updated',
-            'deleted',
-            'email_sent',
-            'login',
-            'last_active'
-        ])->mapWithKeys(function($col) use ($data) {
-            $by = $data->trace($col.'_by.name');
-            $at = format_date(data_get($data, $col.'_at'), 'datetime');
-            $label = str()->headline(empty($by) ? $col : $col.'_by');
+        return $data 
+            ? collect([
+                'requested',
+                'approved',
+                'rejected',
+                'closed',
+                'created',
+                'updated',
+                'deleted',
+                'email_sent',
+                'login',
+                'last_active'
+            ])->mapWithKeys(function($col) use ($data) {
+                $by = $data->trace($col.'_by.name');
+                $at = format_date(data_get($data, $col.'_at'), 'datetime');
+                $label = str()->headline(empty($by) ? $col : $col.'_by');
 
-            return [$label => compact('by', 'at')];
-        })->filter(fn($val) => !empty(array_filter($val)));
+                return [$label => compact('by', 'at')];
+            })->filter(fn($val) => !empty(array_filter($val)))
+            : [];
     },
 ])
 

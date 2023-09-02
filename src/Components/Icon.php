@@ -242,6 +242,7 @@ class Icon extends Component
         'share' => 'share-nodes',
         'show' => 'eye',
         'signup' => 'user-plus',
+        'split' => 'arrows-split-up-and-left',
         'submit' => 'check',
         'support' => 'life-ring',
         'tenant' => 'house-user',

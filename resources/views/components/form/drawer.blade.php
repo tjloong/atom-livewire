@@ -1,11 +1,13 @@
 <form wire:submit.prevent="submit">
     <x-drawer {{ $attributes }}>
         @isset($heading)
-            <x-slot:heading
-                :icon="$heading->attributes->get('icon')"
-                :title="$heading->attributes->get('title')"
-                :subtitle="$heading->attributes->get('subtitle')">
-                {{ $heading }}
+            <x-slot:heading>
+                <x-heading
+                    icon="{{ $heading->attributes->get('icon') }}"
+                    title="{!! $heading->attributes->get('title') !!}"
+                    subtitle="{!! $heading->attributes->get('subtitle') !!}">
+                    {{ $heading }}
+                </x-heading>
             </x-slot:heading>
         @endisset
     

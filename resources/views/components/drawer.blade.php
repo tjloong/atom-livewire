@@ -95,19 +95,22 @@
                 </div>
             </div>
 
-            @if (isset($heading) && $heading->isNotEmpty())
-                <div class="shrink-0 border-b">
-                    {{ $heading }}
+            @isset($heading)
+                <div {{ $heading->attributes->class([
+                    'shrink-0 border-b',
+                    $heading->attributes->get('class', 'px-5 pt-3'),
+                ])->except(['icon', 'title', 'subtitle', 'status']) }}>
+                    @if ($heading->isNotEmpty())
+                        {{ $heading }}
+                    @else
+                        <x-heading 
+                            :icon="$heading->attributes->get('icon')"
+                            :title="$heading->attributes->get('title')"
+                            :subtitle="$heading->attributes->get('subtitle')"
+                            :status="$heading->attributes->get('status')"/>
+                    @endif
                 </div>
-            @elseif (isset($heading))
-                <div class="shrink-0 border-b px-5 pt-3">
-                    <x-heading 
-                        :icon="$heading->attributes->get('icon')"
-                        :title="$heading->attributes->get('title')"
-                        :subtitle="$heading->attributes->get('subtitle')"
-                        :status="$heading->attributes->get('status')"/>
-                </div>
-            @endif
+            @endisset
 
             <div {{ $attributes->class([
                 'grow overflow-auto md:w-screen',
