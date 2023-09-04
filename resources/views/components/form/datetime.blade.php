@@ -109,7 +109,7 @@
                 <x-close x-show="inputs.date" x-on:click="clear" class="shrink-0"/>
             </div>
 
-            <div x-ref="dd" x-show="show" x-transition class="absolute z-20">
+            <div x-ref="dd" x-show="show" x-transition x-on:click.stop class="absolute z-20">
                 <div x-ref="datepicker"></div>
             </div>
         </div>
