@@ -1,9 +1,12 @@
 @props([
-    'id' => $attributes->get('id', 'enum'),
-    'options' => enum($attributes->get('enum'))->map(fn($val) => $val->option())->toArray(),
+    'getOptions' => function() use ($attributes) {
+        return enum($attributes->get('enum'))
+            ->when($attributes->get('exclude'), fn($enums, $exclude) => 
+                $enums->reject(fn($enum) => in_array($enum->name, (array) $exclude))->values()
+            )
+            ->map(fn($val) => $val->option())
+            ->toArray();
+    }
 ])
 
-<x-form.select :id="$id"
-    :options="$options"
-    {{ $attributes->except('id', 'options') }}
-/>
+<x-form.select :options="$getOptions()" {{ $attributes->except('options') }}/>
