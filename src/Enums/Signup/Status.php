@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Enums\Signup;
 
-enum Status: string
+enum Status : string
 {
     case TRASHED = 'trashed';
     case BLOCKED = 'blocked';
@@ -21,21 +21,16 @@ enum Status: string
 
     public function label()
     {
-        return match($this) {
-            static::TRASHED => 'Trashed',
-            static::BLOCKED => 'Blocked',
-            static::ONBOARDED => 'Onboarded',
-            static::NEW => 'New',
-        };
+        return str()->headline($this->value);
     }
 
     public function option()
     {
-        return match($this) {
-            static::TRASHED => ['value' => $this->value, 'label' => $this->label()],
-            static::BLOCKED => ['value' => $this->value, 'label' => $this->label()],
-            static::ONBOARDED => ['value' => $this->value, 'label' => $this->label()],
-            static::NEW => ['value' => $this->value, 'label' => $this->label()],
-        };
+        return ['value' => $this->value, 'label' => $this->label()];
+    }
+
+    public function badge()
+    {
+        return [$this->color() => $this->value];
     }
 }

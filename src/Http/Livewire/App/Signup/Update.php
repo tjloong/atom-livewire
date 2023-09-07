@@ -15,8 +15,9 @@ class Update extends Component
     // open
     public function open($id): void
     {
-        $this->signup = model('signup')->find($id);
-        $this->dispatchBrowserEvent('signup-update-open');
+        if ($this->signup = model('signup')->find($id)) {
+            $this->dispatchBrowserEvent('signup-update-open');
+        }
     }
 
     // close

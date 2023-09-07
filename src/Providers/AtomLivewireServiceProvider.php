@@ -51,6 +51,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // signup
             'app.signup' => 'App\Signup\Index',
+            'app.signup.listing' => 'App\Signup\Listing',
             'app.signup.update' => 'App\Signup\Update',
 
             // blog

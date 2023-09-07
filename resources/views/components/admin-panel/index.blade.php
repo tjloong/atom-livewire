@@ -10,24 +10,7 @@
         },
     }"
     class="min-h-screen h-px" 
-    id="admin-panel"
->
-    @if (session('mask'))
-        <div class="fixed top-0 right-0 left-0 h-4 bg-red-500 z-40"></div>
-        <div class="fixed top-0 bottom-0 left-0 w-4 bg-red-500 z-40"></div>
-        <div class="fixed top-0 bottom-0 right-0 w-4 bg-red-500 z-40"></div>
-        <div class="fixed bottom-0 left-0 right-0 h-4 bg-red-500 z-40"></div>
-        <div class="fixed top-0 right-0 bg-red-500 z-40 p-4 min-w-[200px] text-center">
-            <div class="text-xs text-gray-200 uppercase">Masked As</div>
-            <div class="text-sm font-medium text-white">
-                {{ user('name') }}<br>{{ user('email') }}
-            </div>
-            <a href="/login?logout=1" class="flex items-center justify-center gap-2 text-white text-sm">
-                <x-icon name="arrow-left" size="12"/> Back
-            </a>
-        </div>
-    @endif
-
+    id="admin-panel">
     <div
         x-ref="void"
         x-on:click="toggled = false"
