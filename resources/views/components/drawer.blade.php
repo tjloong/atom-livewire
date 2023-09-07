@@ -46,6 +46,11 @@
                         @if (!$buttons->attributes->get('blank'))
                             {{ $buttons }}
 
+                            @if ($buttons->attributes->get('archive'))
+                                <x-button.archive size="sm"
+                                    :params="$buttons->attributes->get('archive')"/>
+                            @endif
+
                             @if ($buttons->attributes->get('restore'))
                                 <x-button.restore size="sm"
                                     :params="$buttons->attributes->get('restore')"/>

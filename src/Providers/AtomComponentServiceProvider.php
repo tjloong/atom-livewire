@@ -92,6 +92,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'button.submit',
             'button.delete',
             'button.restore',
+            'button.archive',
             'button.confirm',
             'button.social-login',
             
@@ -114,8 +115,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'table.filters',
             'table.toolbar',
             'table.trashed',
+            'table.archived',
             'table.searchbar',
-            'table.checkboxes',
+            'table.checkbox-actions',
             
             'sidenav.index',
             'sidenav.group',

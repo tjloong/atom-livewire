@@ -7,7 +7,7 @@ trait HasTrace
     public $enabledHasTraceTrait = true;
 
     // boot
-    protected static function bootHasTrace()
+    protected static function bootHasTrace() : void
     {
         static::creating(function ($model) {
             $table = $model->getTable();
@@ -47,7 +47,7 @@ trait HasTrace
     }
 
     // initialize
-    protected function initializeHasTrace()
+    protected function initializeHasTrace() : void
     {
         foreach ([
             'blocked_at',
@@ -63,7 +63,7 @@ trait HasTrace
     }
 
     // trace
-    public function trace($key) : mixed
+    public function trace($key, $default = null) : mixed
     {
         $table = $this->getTable();
         $splits = collect(explode('.', $key));
@@ -75,7 +75,7 @@ trait HasTrace
             $attr = $splits->join('.');
 
             return $attr
-                ? data_get($trace, $splits->join('.'))
+                ? data_get($trace, $splits->join('.'), $default)
                 : $trace;
         }
 
@@ -83,146 +83,92 @@ trait HasTrace
     }
 
     // check model is blocked
-    public function blocked()
+    public function isBlocked() : bool
     {
         return $this->blocked_at && $this->blocked_at->lessThan(now());
     }
 
     // check model is closed
-    public function closed()
+    public function isClosed() : bool
     {
         return $this->closed_at && $this->closed_at->lessThan(now());
     }
 
     // check model is refunded
-    public function refunded()
+    public function isRefunded() : bool
     {
         return $this->refunded_at && $this->refunded_at->lessThan(now());
     }
 
     // check model is approved
-    public function approved()
+    public function isApproved() : bool
     {
         return $this->approved_at && $this->approved_at->lessThan(now());
     }
 
     // check model is rejected
-    public function rejected()
+    public function isRejected() : bool
     {
         return $this->rejected_at && $this->rejected_at->lessThan(now());
     }
 
     // check model is email sent
-    public function emailSent()
+    public function isEmailSent() : bool
     {
         return !empty($this->email_sent_at);
     }
 
-    // block the model
-    public function block()
+    // mark as blocked
+    public function markBlocked($bool = true) : void
     {
         $this->fill([
-            'blocked_at' => now(),
-            'blocked_by' => user('id'),
+            'blocked_at' => $bool === false ? null : now(),
+            'blocked_by' => $bool === false ? null : user('id'),
         ])->save();
     }
 
-    // unblock the model
-    public function unblock()
+    // mark as closed
+    public function markClosed($bool = true) : void
     {
         $this->fill([
-            'blocked_at' => null,
-            'blocked_by' => null,
+            'closed_at' => $bool === false ? null : now(),
+            'closed_by' => $bool === false ? null : user('id'),
         ])->save();
     }
 
-    // close the model
-    public function close()
+    // mark as refunded
+    public function markRefunded($bool = true) : void
     {
         $this->fill([
-            'closed_at' => now(),
-            'closed_by' => user('id'),
+            'refunded_at' => $bool === false ? null : now(),
+            'refunded_by' => $bool === false ? null : user('id'),
         ])->save();
     }
 
-    // unclose the model
-    public function unclose()
+    // mark as approved
+    public function markApproved($bool = true) : void
     {
         $this->fill([
-            'closed_at' => null,
-            'closed_by' => null,
-        ])->save();
-    }
-
-    // refund the model
-    public function refund()
-    {
-        $this->fill([
-            'refunded_at' => now(),
-            'refunded_by' => user('id'),
-        ])->save();
-    }
-
-    // unrefund the model
-    public function unrefund()
-    {
-        $this->fill([
-            'refunded_at' => null,
-            'refunded_by' => null,
-        ])->save();
-    }
-
-    // approve the model
-    public function approve()
-    {
-        $this->fill([
-            'approved_at' => now(),
-            'approved_by' => user('id'),
+            'approved_at' => $bool === false ? null : now(),
+            'approved_by' => $bool === false ? null : user('id'),
         ])->save();
     }
     
-    // unapprove the model
-    public function unapprove()
+    // mark as rejected
+    public function markRejected($bool = true) : void
     {
         $this->fill([
-            'approved_at' => null,
-            'approved_by' => null,
-        ])->save();
-    }
-
-    // reject the model
-    public function reject()
-    {
-        $this->fill([
-            'rejected_at' => now(),
-            'rejected_by' => user('id'),
+            'rejected_at' => $bool === false ? null : now(),
+            'rejected_by' => $bool === false ? null : user('id'),
         ])->save();
     }
     
-    // unreject the model
-    public function unreject()
-    {
-        $this->fill([
-            'rejected_at' => null,
-            'rejected_by' => null,
-        ])->save();
-    }
-
     // mark email sent
-    public function markEmailSent()
+    public function markEmailSent($bool = true) : void
     {
         $this->fill([
-            'email_sent_at' => now(),
-            'email_sent_by' => user('id'),
-        ]);
-    }
-
-    // mark email unsent
-    public function markEmailUnsent()
-    {
-        $this->fill([
-            'email_sent_at' => null,
-            'email_sent_by' => null,
-        ]);
+            'email_sent_at' => $bool === false ? null : now(),
+            'email_sent_by' => $bool === false ? null : user('id'),
+        ])->save();
     }
 }

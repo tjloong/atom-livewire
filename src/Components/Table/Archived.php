@@ -4,13 +4,10 @@ namespace Jiannius\Atom\Components\Table;
 
 use Illuminate\View\Component;
 
-class Checkboxes extends Component
+class Archived extends Component
 {
-    /**
-     * Render
-     */
     public function render()
     {
-        return view('atom::components.table.checkboxes');
+        return view('atom::components.table.archived');
     }
 }

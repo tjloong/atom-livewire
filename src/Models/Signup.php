@@ -62,7 +62,7 @@ class Signup extends Model
     {
         return enum('signup.status', collect([
             'TRASHED' => optional($this->user)->trashed(),
-            'BLOCKED' => optional($this->user)->blocked(),
+            'BLOCKED' => optional($this->user)->isBlocked(),
             'ONBOARDED' => !empty($this->onboarded_at),
             'NEW' => empty($this->onboarded_at),
         ])->filter()->keys()->first())->value;

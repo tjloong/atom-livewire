@@ -13,6 +13,7 @@
     
         @isset($buttons)
             <x-slot:buttons
+                :archive="$buttons->attributes->get('archive', false)"
                 :trash="$buttons->attributes->get('trash', false)"
                 :delete="$buttons->attributes->get('delete', false)"
                 :restore="$buttons->attributes->get('restore', false)">

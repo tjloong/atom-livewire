@@ -143,7 +143,7 @@ class User extends Authenticatable
         $this->fill([
             'status' => enum('user.status', collect([
                 'TRASHED' => $this->trashed(),
-                'BLOCKED' => $this->blocked(),
+                'BLOCKED' => $this->isBlocked(),
                 'ACTIVE' => !empty($this->password),
                 'INACTIVE' => empty($this->password),
             ])->filter()->keys()->first())->value,
