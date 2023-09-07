@@ -404,12 +404,12 @@ function currencies($country = false)
  *
  * @return string
  */
-function currency($num, $symbol = null, $rounded = true, $bracket = true)
+function currency($num, $symbol = null, $rounding = false, $bracket = true)
 {
     if (!is_numeric($num)) return $num;
 
     $num = (float)$num ?: 0;
-    $round = $rounded ? (round($num * 2, 1)/2) : $num;
+    $round = $rounding ? (round($num * 2, 1)/2) : $num;
     $currency = number_format($round, 2);
 
     if ($symbol) $currency = "$symbol $currency";

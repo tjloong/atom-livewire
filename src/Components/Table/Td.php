@@ -17,6 +17,7 @@ class Td extends Component
         $percentage = null,
         $amount = null,
         $currency = null,
+        $rounding = null,
         $count = null,
         $uom = null,
         $limit = null,
@@ -26,7 +27,7 @@ class Td extends Component
 
         if (!is_null($label)) $this->label = $label;
         else if (is_numeric($amount) || is_string($amount)) {
-            $this->label = is_numeric($amount)? currency($amount, $currency) : $amount;
+            $this->label = is_numeric($amount)? currency($amount, $currency, $rounding) : $amount;
         }
         else if (is_numeric($percentage) || is_string($percentage)) {
             $this->label = is_numeric($percentage) ? number_format($percentage, 2).'%' : $percentage;

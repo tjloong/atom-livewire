@@ -30,25 +30,28 @@
                     })
                 }
                 else {
-                    this.$refs.search.value = null
-                    if (this.searchable) this.search(null)
+                    this.text = null
+                    if (this.searchable) this.search()
                     this.$nextTick(() => this.focus = false)
                 }
             },
-            search (str) {
+            search () {
                 if (@js(data_get($this, 'usesSelectInput'))) {
-                    this.$wire.call('setSelectInputSearch', { id: @js($id), search: str })
+                    this.$wire.call('setSelectInputSearch', { id: @js($id), search: this.text })
                 }
 
                 const elems = this.$refs.dd?.querySelectorAll('[data-searchable]')
                 if (!elems) return
 
                 Array.from(elems).forEach((elem) => {
-                    const searchable = elem.getAttribute('data-searchable')
-                    if (!empty(searchable) && searchable.includes(str)) {
-                        elem.parentNode.classList.remove('hidden')
+                    if (empty(this.text)) elem.parentNode.classList.remove('hidden')
+                    else {
+                        const searchable = elem.getAttribute('data-searchable')
+                        if (!empty(searchable) && searchable.includes(this.text)) {
+                            elem.parentNode.classList.remove('hidden')
+                        }
+                        else elem.parentNode.classList.add('hidden')
                     }
-                    else elem.parentNode.classList.add('hidden')
                 })
             },
         }"
@@ -129,7 +132,8 @@
                 <div x-show="searchable" class="p-3 border-b">
                     <input type="text" 
                         x-ref="search" 
-                        x-on:input.debounce.300ms="search($event.target.value)"
+                        x-model="text"
+                        x-on:input.debounce.300ms="search"
                         class="form-input w-full" 
                         placeholder="{{ __('Search') }}">
                 </div>
