@@ -10,9 +10,7 @@
         </x-heading>
     @endif
 
-    <div {{ $attributes->merge([
-        'class' => 'p-1',
-    ])->only('class') }}>
+    <div {{ $attributes->merge(['class' => 'p-0.5'])->only('class') }}>
         {{ $slot }}
     </div>
 
