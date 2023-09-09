@@ -48,7 +48,7 @@
         @endforeach
 
         <x-slot:empty>
-            <x-empty-state title="No Users" subtitle="User list is empty"/>
+            <x-noresult title="No Users" subtitle="User list is empty"/>
         </x-slot:empty>
     </x-table>
 

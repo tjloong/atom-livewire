@@ -42,7 +42,7 @@
                                 />
                             @empty
                                 <div class="md:col-span-3">
-                                    <x-empty-state icon="news" title="No articles found" subtitle=""/>
+                                    <x-noresult icon="news" title="No articles found" subtitle=""/>
                                 </div>
                             @endforelse
                         </div>

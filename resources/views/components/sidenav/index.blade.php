@@ -11,23 +11,21 @@
         @endif
     }"
     x-on:input="label = $event.detail.label"
-    class="sidenav flex flex-col gap-4"
->
+    class="sidenav flex flex-col gap-4">
     {{-- mobile --}}
     <div x-on:click="show = !show" class="flex items-center gap-3 cursor-pointer md:cursor-auto md:hidden">
         <x-icon name="bars" class="text-gray-500"/>
 
-        @isset($header) {{ $header }}
-        @elseif($attributes->get('header')) <div class="text-xl font-bold">{{ __($attributes->get('header')) }}</div>
+        @isset($heading) {{ $heading }}
+        @elseif($attributes->get('title')) <div class="text-xl font-bold">{{ __($attributes->get('title')) }}</div>
         @else <div x-text="label" class="font-semibold"></div>
         @endisset
     </div>
 
     {{-- desktop --}}
     <div class="hidden md:block">
-        @isset($header) {{ $header }}
-        @elseif($attributes->get('header')) <div class="text-xl font-bold">{{ __($attributes->get('header')) }}</div>
-        @else <div class="font-medium text-gray-400 text-sm">{{ __($attributes->get('label', 'NAVIGATION')) }}</div>
+        @isset($heading) {{ $heading }}
+        @elseif($attributes->get('title')) <div class="text-xl font-bold">{{ __($attributes->get('title')) }}</div>
         @endisset
     </div>
 
