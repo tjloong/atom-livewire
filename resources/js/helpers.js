@@ -79,8 +79,8 @@ window.formatDate = (value, option) => {
     const date = dayjs(value, 'YYYY-MM-DD HH:mm:ss')
     const format = {
         time: 'h:mm A',
-        date: 'DD MMM, YYYY',
-        datetime: 'DD MMM, YYYY - h:mm A',
+        date: 'DD MMM YYYY',
+        datetime: 'DD MMM YYYY - h:mm A',
     }
 
     if (date.isValid()) {
