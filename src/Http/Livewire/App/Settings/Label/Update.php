@@ -4,20 +4,22 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings\Label;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Update extends Component
 {
     use WithForm;
-    use WithPopupNotify;
 
+    public $type;
     public $label;
     public $inputs;
 
-    protected $listeners = ['open'];
+    protected $listeners = [
+        'createLabel' => 'open',
+        'updateLabel' => 'open',
+    ];
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return array_merge(
             [
@@ -33,44 +35,44 @@ class Update extends Component
     }
 
     // get locales property
-    public function getLocalesProperty(): mixed
+    public function getLocalesProperty() : mixed
     {
         return collect(config('atom.locales'));
     }
 
     // open
-    public function open($data = null): void
+    public function open($id = null, $type = null) : void
     {
-        $id = is_numeric($data) ? $data : data_get($data, 'id');
+        $this->resetValidation();
 
-        $this->label = $id 
-            ? model('label')->findOrFail($id)
-            : model('label')->fill($data);
+        if ($this->label = $id 
+            ? model('label')->find($id)
+            : model('label')->fill(['type' => $type ?? $this->type])
+        ) {
+            $this->fill([
+                'inputs.name' => (array) $this->label->name,
+            ]);
 
-        $this->fill([
-            'inputs.name' => (array) $this->label->name,
-        ]);
-    
-        $this->dispatchBrowserEvent('label-update-open');
+            $this->dispatchBrowserEvent('label-update-open');
+        }
     }
 
     // close
-    public function close(): void
+    public function close() : void
     {
-        $this->reset('label', 'inputs');
         $this->dispatchBrowserEvent('label-update-close');
     }
 
     // delete
-    public function delete($id): void
+    public function delete() : void
     {
         $this->label->delete();
-        $this->emit('labelSaved');
+        $this->emit('labelDeleted');
         $this->close();
     }
 
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
 
@@ -79,7 +81,9 @@ class Update extends Component
             'slug' => null,
         ])->save();
 
-        $this->emit('labelSaved');
+        if ($this->label->wasRecentlyCreated) $this->emit('labelCreated');
+        else $this->emit('labelUpdated');
+        
         $this->close();
     }
 }

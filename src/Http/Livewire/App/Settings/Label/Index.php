@@ -9,8 +9,9 @@ class Index extends Component
     public $type;
 
     protected $listeners = [
-        'update',
-        'labelSaved' => '$refresh',
+        'labelCreated' => '$refresh',
+        'labelUpdated' => '$refresh',
+        'labelDeleted' => '$refresh',
     ];
 
     // mount
@@ -37,11 +38,5 @@ class Index extends Component
             ->oldest('seq')
             ->oldest('id')
             ->get();
-    }
-
-    // update
-    public function update($data = null): void
-    {
-        $this->emitTo('app.settings.label.update', 'open', $data);
     }
 }

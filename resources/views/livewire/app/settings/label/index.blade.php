@@ -1,8 +1,8 @@
 <div class="max-w-screen-md">
-    <x-heading :title="$this->title" 2xl>
+    <x-heading :title="$this->title">
         <x-button icon="add"
             label="Create New"
-            wire:click="update({ type: '{{ $type }}' })"/>
+            wire:click="$emit('createLabel')"/>
     </x-heading>
 
     <x-box>
@@ -16,5 +16,5 @@
         @endif
     </x-box>
 
-    @livewire('app.settings.label.update', key('update'))
+    @livewire('app.settings.label.update', compact('type'), key('update'))
 </div>

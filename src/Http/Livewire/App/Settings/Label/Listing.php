@@ -3,12 +3,9 @@
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Label;
 
 use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Listing extends Component
 {
-    use WithPopupNotify;
-
     public $labels;
 
     // sort
