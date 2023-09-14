@@ -8,6 +8,8 @@
 
         <div
             x-data="{
+                value: @entangle($attributes->wire('model')),
+                multiple: @js($attributes->get('multiple', false)),
                 isUrlMode: false,
                 openLibrary () {
                     $el.querySelector('#file-input-library').dispatchEvent(
@@ -15,14 +17,17 @@
                     )
                 },
                 input (files) {
-                    this.$dispatch('input', files.map(val => (val.id)))
+                    const value = files.map(val => (val.id))
+                    
+                    if (this.multiple) this.value = value
+                    else if (value.length) this.value = value[0]
+                    else this.value = null
                 },
             }"
             x-on:files-created="input($event.detail)"
             x-on:files-selected="input($event.detail)"
             x-on:files-uploaded="input($event.detail)"
             wire:ignore
-            {{ $attributes->wire('model') }}
             class="w-full bg-slate-100">
             <template x-if="isUrlMode">
                 <x-form.file.url 

@@ -75,7 +75,7 @@
                                         <x-icon name="circle-check"/>
                                     </div>
                                 @else
-                                    <div x-on:click.stop="remove(@js($file->id))" class="cursor-pointer text-white">
+                                    <div x-on:click.stop="remove()" class="cursor-pointer text-white">
                                         <x-icon name="remove"/>
                                     </div>
                                 @endif
@@ -108,15 +108,21 @@
                             wire:click="$emit('updateFile', {{ $file->id }})">
                             {{ $file->name }}
                         </div>
-                        
-                        <div class="shrink-0" x-on:click.stop="$dispatch('confirm', {
-                            title: '{{ __('atom::form.file.confirm.remove.title') }}',
-                            message: '{{ __('atom::form.file.confirm.remove.message') }}',
-                            type: 'error',
-                            onConfirmed: () => remove({{ $file->id }}),    
-                        })">
-                            <x-close color="red"/>
-                        </div>
+
+                        @if ($multiple)
+                            <div class="shrink-0" x-on:click.stop="$dispatch('confirm', {
+                                title: '{{ __('atom::form.file.confirm.remove.title') }}',
+                                message: '{{ __('atom::form.file.confirm.remove.message') }}',
+                                type: 'error',
+                                onConfirmed: () => remove({{ $file->id }}),    
+                            })">
+                                <x-close color="red"/>
+                            </div>
+                        @else
+                            <div class="shrink-0" x-on:click.stop="remove()">
+                                <x-close color="red"/>
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>

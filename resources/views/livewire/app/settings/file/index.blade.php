@@ -18,7 +18,7 @@
             <x-table.th checkbox/>
             <x-table.th label="File Name" sort="name"/>
             <x-table.th label="Size" sort="size" class="text-right"/>
-            <x-table.th label="Last Updated" sort="updated_at" class="text-right"/>
+            <x-table.th label="Created Date" sort="created_at" class="text-right"/>
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $file)
@@ -37,7 +37,7 @@
                     </div>
                 </x-table.td>
                 <x-table.td :label="$file->size ?? '--'" class="text-right"/>
-                <x-table.td :date="$file->updated_at" class="text-right"/>
+                <x-table.td :date="$file->created_at" class="text-right"/>
             </x-table.tr>
         @endforeach
     </x-table>

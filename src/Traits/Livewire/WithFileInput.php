@@ -13,7 +13,9 @@ trait WithFileInput
     // updated file input uploads
     public function updatedFileInputUploads($val, $attr) : void
     {
-        [$model, $attr] = explode('.', $attr);
+        $split = collect(explode('.', $attr));
+        $attr = $split->pop();
+        $model = $split->join('.');
 
         if ($attr === 'files') {
             $path = data_get($this->fileInputUploads, $model.'.path');

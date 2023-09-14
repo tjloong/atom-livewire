@@ -29,7 +29,7 @@ class Index extends Component
         return model('file')
             ->filter($this->filters)
             ->whereNull('parent_id')
-            ->when(!$this->sort, fn($q) => $q->latest('updated_at'));
+            ->when(!$this->sort, fn($q) => $q->latest());
     }
 
     // updated files
