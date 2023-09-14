@@ -19,11 +19,9 @@ trait WithFileInput
 
         if ($attr === 'files') {
             $path = data_get($this->fileInputUploads, $model.'.path');
-            $visibility = data_get($this->fileInputUploads, $model.'.visibility');
-
             $uploads = collect(data_get($this->fileInputUploads, $model.'.files'))
-                ->map(function($upload) use ($path, $visibility) {
-                    $file = model('file')->store($upload, $path, $visibility);
+                ->map(function($upload) use ($path) {
+                    $file = model('file')->store($upload, $path);
                     return $file->toArray();
                 })
                 ->toArray();

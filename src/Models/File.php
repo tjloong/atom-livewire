@@ -166,7 +166,7 @@ class File extends Model
     public function scopeMime($query, $mime) : void
     {
         $mime = explode(',', $mime);
-        
+
         $query->where(function($q) use ($mime) {
             foreach ($mime as $val) {
                 if ($val === 'file') {
@@ -185,10 +185,9 @@ class File extends Model
     }
 
     // store file content
-    public function store($content, $path = 'uploads', $visibility = 'public')
+    public function store($content, $path = 'uploads')
     {
         $file = model('file')->fill([
-            'visibility' => $visibility,
             'data' => ['env' => app()->environment()],
         ]);
 
@@ -231,28 +230,26 @@ class File extends Model
     // check is authorized to read file
     public function auth() : bool
     {
-        return $this->visibility === 'public' 
-            || tier('root') 
-            || user('id') === $this->created_by;
+        return tier('root') || user('id') === $this->created_by;
     }
 
     // response
     public function response() : mixed
     {
-        if ($this->storage_path) {
+        if ($this->storage_path && file_exists($this->storage_path)) {
             return $this->is_image
                 ? response()->file($this->storage_path)
                 : response()->download($this->storage_path);
         }
-        else {
-            $url = $this->visibility === 'public'
-                ? data_get($this->getAttributes(), 'url')
-                : $this->getStorage($this->disk)->temporaryUrl($this->path, now()->addDay(1));
-
-            return $this->is_image
-                ? redirect()->to($url)
-                : response()->download($url);
+        else if ($url = data_get($this->getAttributes(), 'url')) {
+            if ($this->disk) {
+                return $this->is_image
+                    ? response()->file($url)
+                    : response()->download($url);
+            }
+            else return redirect()->to($url);
         }
+        else return response('File not found', 404);
     }
 
     // put content

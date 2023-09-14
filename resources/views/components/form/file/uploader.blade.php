@@ -4,7 +4,6 @@
     $accept = $attributes->get('accept') ?? '';
     $multiple = $attributes->get('multiple', false);
     $path = $attributes->get('path', 'uploads');
-    $visibility = $attributes->get('visibility', 'public');
     $enableUrl = $attributes->get('enable-url', false);
     $enableLibrary = $attributes->get('enable-library', false);
 @endphp
@@ -19,10 +18,7 @@
         },
         upload (files) {
             this.validate(files)
-
             this.$wire.set('fileInputUploads.{{ $model }}.path', '{{ $path }}')
-            this.$wire.set('fileInputUploads.{{ $model }}.visibility', '{{ $visibility }}')
-
             this.$wire.uploadMultiple(
                 'fileInputUploads.{{ $model }}.files',
                 this.queue.map(q => q.file),
@@ -33,10 +29,7 @@
         },
         uploaded (data) {
             const files = data['{{ $model }}']
-
-            if (!empty(files)) {
-                this.$dispatch('files-uploaded', files)
-            }
+            if (!empty(files)) this.$dispatch('files-uploaded', files)
         },
         validate (files) {
             this.queue = []

@@ -33,7 +33,7 @@ class CreateThumbnails implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle() : void
     {
         if (in_array($this->file->extension, $this->extensions)) {
             foreach ([512, 1024] as $size) {
@@ -59,7 +59,7 @@ class CreateThumbnails implements ShouldQueue
                 $constraint->upsize();
             })->save($temp, 60);
 
-            $path = $storage->putFileAs($path, $temp, $filename, $this->file->visibility);
+            $path = $storage->putFileAs($path, $temp, $filename);
 
             $this->file->thumbnails()->create([
                 'name' => $name,
@@ -71,7 +71,6 @@ class CreateThumbnails implements ShouldQueue
                 'width' => $img->width(),
                 'height' => $img->height(),
                 'extension' => $this->file->extension,
-                'visibility' => $this->file->visibility,
                 'data' => $this->file->data,
                 'created_by' => $this->file->created_by,
             ]);

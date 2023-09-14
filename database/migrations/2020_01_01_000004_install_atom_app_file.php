@@ -23,7 +23,6 @@ return new class extends Migration
             $table->integer('width')->nullable();
             $table->integer('height')->nullable();
             $table->string('extension')->nullable();
-            $table->string('visibility')->nullable();
             $table->json('data')->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('files')->onDelete('cascade');
             $table->timestamps();
