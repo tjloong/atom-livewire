@@ -9,7 +9,7 @@
         @if ($this->labels->count())
             @livewire('app.settings.label.listing', ['labels' => $this->labels], key(uniqid()))
         @else
-            <x-noresult
+            <x-no-result
                 :title="'No '.str($this->title)->singular()->headline()"
                 :subtitle="'You do not have any '.str($this->title)->singular()->headline()->lower()"
             />

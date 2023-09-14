@@ -54,7 +54,7 @@
         || (!$attributes->has('data') && $slot->isEmpty())
     )
         @isset($empty) {{ $empty }}
-        @else <x-noresult/>
+        @else <x-no-result/>
         @endif
     @else
         <div 

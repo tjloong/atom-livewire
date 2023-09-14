@@ -41,7 +41,7 @@
                 @endforeach
             </x-form.sortable>
         @else
-            <x-noresult/>
+            <x-no-result/>
         @endif
     </x-box>
 

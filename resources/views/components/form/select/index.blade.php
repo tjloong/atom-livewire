@@ -206,7 +206,7 @@
                                 </div>
                             @endif
                         @empty
-                            <x-noresult title="No options available" subtitle="" size="sm"/>
+                            <x-no-result title="No options available" subtitle="" size="sm"/>
                         @endforelse
                     @endif
                 </div>

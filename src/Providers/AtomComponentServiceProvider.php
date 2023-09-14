@@ -36,7 +36,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'heading',
             'spinner',
             'checkbox',
-            'noresult',
+            'no-result',
             'thumbnail',
             'plan-alert',
             'breadcrumbs',
