@@ -3,12 +3,12 @@
 namespace Jiannius\Atom\Http\Livewire\App\Banner;
 
 use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithFile;
+use Jiannius\Atom\Traits\Livewire\WithFileInput;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
 class Update extends Component
 {
-    use WithFile;
+    use WithFileInput;
     use WithForm;
 
     public $banner;

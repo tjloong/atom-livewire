@@ -2,44 +2,35 @@
 
 namespace Jiannius\Atom\Http\Livewire\App;
 
-use Livewire\Component;
 use Illuminate\Support\Facades\DB;
+use Jiannius\Atom\Component;
 
 class Dashboard extends Component
 {
     public $filters = [
-        'date' => [],
-        'team' => null,
-    ];
-
-    protected $queryString = [
-        'filters' => ['except' => [
-            'date' => [],
-            'team' => null,    
-        ]],
+        'date_range' => [],
     ];
 
     // mount
     public function mount()
     {
-        if (!data_get($this->filters, 'date')) {
-            $this->fill([
-                'filters.date' => [
-                    format_date(today()->startOfDay()->subDays(30), 'carbon')->toDateString(),
-                    format_date(now(), 'carbon')->toDateString(),
-                ],
-            ]);
-        }
+        $this->filters = [
+            'date_range' => collect([
+                format_date(today()->startOfDay()->subDays(30), 'carbon')->toDateString(),
+                format_date(now(), 'carbon')->toDateString(),
+            ])->join(' to '),
+        ];
     }
 
     // get date range property
     public function getDateRangeProperty()
     {
-        $date = data_get($this->filters, 'date');
+        $daterange = data_get($this->filters, 'date_range');
+        $split = explode(' to ', $daterange);
 
         // range in utc
-        $from = format_date($date[0], 'carbon')->startOfDay()->setTimezone('utc');
-        $to = format_date($date[1], 'carbon')->endOfDay()->setTimezone('utc');
+        $from = format_date($split[0], 'carbon')->startOfDay()->setTimezone('utc');
+        $to = format_date($split[1], 'carbon')->endOfDay()->setTimezone('utc');
 
         return [
             'from' => $from,
@@ -51,17 +42,6 @@ class Dashboard extends Component
                 'years' => $from->copy()->diffInYears($to->copy()->endOfYear()),
             ],
         ];
-    }
-
-    // get teams property
-    public function getTeamsProperty()
-    {
-        if (!has_table('teams')) return collect();
-        
-        return model('team')
-            ->readable()
-            ->orderBy('name')
-            ->get();
     }
 
     // get sections property

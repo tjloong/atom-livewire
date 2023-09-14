@@ -27,8 +27,7 @@
     id="{{ $id }}"
     class="fixed inset-0 z-40"
     {{ $attributes->wire('open') }}
-    {{ $attributes->wire('close') }}
->
+    {{ $attributes->wire('close') }}>
     @if ($attributes->get('bg-close') === false) <x-modal.overlay/>
     @elseif ($attributes->get('bg-close') === 'dblclick') <x-modal.overlay x-on:dblclick.stop="$dispatch('close')"/>
     @else <x-modal.overlay x-on:click.stop="$dispatch('close')"/>

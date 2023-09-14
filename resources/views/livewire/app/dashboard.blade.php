@@ -1,33 +1,7 @@
 <div class="max-w-screen-xl mx-auto">
-    <x-page-header>
-        <x-slot:title>
-            <div class="flex items-center gap-2">
-                <div class="font-bold text-2xl">
-                    {{ __('Dashboard') }}
-                </div>
-
-                @if ($this->teams->count())
-                    <div class="flex items-center gap-2 font-light text-xl">
-                        for
-                        <x-dropdown :label="
-                            data_get($filters, 'team')
-                                ? $this->teams->firstWhere('id', data_get($filters, 'team'))->name
-                                : 'All Teams'
-                        ">
-                            @foreach ($this->teams as $team)
-                                <x-dropdown.item 
-                                    :label="$team->name"
-                                    wire:click="$set('filters.team', {{ $team->id }})"
-                                />
-                            @endforeach
-                        </x-dropdown>
-                    </div>
-                @endif
-            </div>
-        </x-slot:title>
-
-        <x-form.date-range wire:model="filters.date"/>
-    </x-page-header>
+    <x-heading title="Dashboard" 2xl>
+        <x-form.date-range wire:model="filters.date_range" :label="false"/>
+    </x-heading>
     
     <div class="flex flex-col gap-6">
         @foreach (collect($this->sections) as $widgets)

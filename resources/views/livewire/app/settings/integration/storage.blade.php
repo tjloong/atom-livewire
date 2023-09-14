@@ -1,5 +1,5 @@
 <div class="max-w-screen-md">
-    <x-heading title="Storage Settings" 2xl/>
+    <x-heading title="Storage Settings"/>
     
     <x-form>
         <x-form.group cols="2">

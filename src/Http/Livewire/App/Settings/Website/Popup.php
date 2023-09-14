@@ -2,14 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Website;
 
-use Jiannius\Atom\Traits\Livewire\WithFile;
+use Jiannius\Atom\Traits\Livewire\WithFileInput;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class Popup extends Component
 {
-    use WithFile;
+    use WithFileInput;
     use WithForm;
     use WithPopupNotify;
 

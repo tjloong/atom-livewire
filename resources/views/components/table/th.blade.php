@@ -7,20 +7,29 @@
 @if ($attributes->get('menu'))
     <th class="bg-slate-100 border-b border-gray-200 w-12"></th>
 @elseif ($checkbox)
-    <th class="py-1 px-2 bg-slate-100 border-b border-gray-200 w-10">
+    <th 
+        x-data="{
+            get checkboxes () {
+                return this.$el.closest('table').querySelectorAll('[data-checkbox-value]')
+            },
+            get isSelectedAll () {
+                return this.$wire.get('checkboxes').length >= this.checkboxes.length
+            },
+            selectAll () {
+                if (this.isSelectedAll) this.$wire.set('checkboxes', [])
+                else {
+                    const values = Array.from(this.checkboxes)
+                        .map((checkbox) => (checkbox.getAttribute('data-checkbox-value')))
+                    this.$wire.set('checkboxes', values)
+                }
+            },
+        }"
+        x-on:click="selectAll"
+        class="py-1 px-2 bg-slate-100 border-b border-gray-200 w-10">
         <div
-            x-data="{
-                get checked () {
-                    return checkboxes.length 
-                        && checkboxes.length >= this.$el.closest('table').querySelectorAll('[data-table-checkbox]').length
-                },
-            }"
-            x-on:click="toggleCheckbox('*')"
-            x-bind:class="checked ? 'border-theme border-2' : 'bg-white border-gray-300'"
-            class="mx-4 w-6 h-6 p-0.5 rounded shadow border cursor-pointer"
-            id="table-checkbox-all"
-        >
-            <div x-bind:class="checked ? 'block' : 'hidden'" class="bg-theme w-full h-full"></div>
+            x-bind:class="isSelectedAll ? 'border-theme border-2' : 'bg-white border-gray-300'" 
+            class="mx-4 w-6 h-6 p-0.5 rounded shadow border cursor-pointer">
+            <div x-show="isSelectedAll" class="bg-theme w-full h-full"></div>
         </div>
     </th>
 @else

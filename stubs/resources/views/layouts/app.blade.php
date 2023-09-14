@@ -26,7 +26,7 @@
         </div>
 
     {{-- Share layout --}}
-    @elseroute('share')
+    @elseroute('app.share')
         <div class="min-h-screen relative bg-gray-100">
             <main class="max-w-screen-xl mx-auto px-4 py-12">
                 {{ $slot }}
@@ -70,6 +70,9 @@
                 <div class="p-5 pb-10 bg-slate-50 w-full h-full">
                     {{ $slot }}
                 </div>
+
+                @livewire('app.settings.label.update', key('label-update'))
+                @livewire('app.settings.file.update', key('file-update'))
             @endroute
         </x-admin-panel>
 

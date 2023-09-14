@@ -1,5 +1,5 @@
 <div class="max-w-screen-md">
-    <x-heading title="Email Configurations" 2xl/>
+    <x-heading title="Email Configurations"/>
     
     <x-form>
         <x-form.group cols="2">

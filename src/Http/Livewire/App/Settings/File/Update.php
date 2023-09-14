@@ -4,16 +4,16 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings\File;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
-class Form extends Component
+class Update extends Component
 {
     use WithForm;
-    use WithPopupNotify;
 
     public $file;
 
-    protected $listeners = ['open'];
+    protected $listeners = [
+        'updateFile' => 'open',
+    ];
 
     // validation
     protected function validation(): array
@@ -26,35 +26,33 @@ class Form extends Component
     }
 
     // open
-    public function open($id): void
+    public function open($id) : void
     {
-        $this->file = model('file')->findOrFail($id);
-        $this->dispatchBrowserEvent('file-form-open');
+        if ($this->file = model('file')->find($id)) {
+            $this->dispatchBrowserEvent('file-update-open');
+        }
     }
 
     // close
-    public function close(): void
+    public function close() : void
     {
-        $this->emit('refresh');
-        $this->dispatchBrowserEvent('file-form-close');
+        $this->dispatchBrowserEvent('file-update-close');
     }
 
     // delete
-    public function delete($id): void
+    public function delete() : void
     {
-        if ($file = model('file')->find($id)) {
-            $file->delete();
-            $this->popup('File Deleted');
-        }
-
+        $this->file->delete();
+        $this->emit('fileDeleted');
         $this->close();
     }
 
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
         $this->file->save();
+        $this->emit('fileUpdated');
         $this->close();
     }
 }

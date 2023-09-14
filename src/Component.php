@@ -2,11 +2,13 @@
 
 namespace Jiannius\Atom;
 
+use Jiannius\Atom\Traits\Livewire\WithFileInput;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component as LivewireComponent;
 
 class Component extends LivewireComponent
 {
+    use WithFileInput;
     use WithPopupNotify;
     
     public $currentRouteName;

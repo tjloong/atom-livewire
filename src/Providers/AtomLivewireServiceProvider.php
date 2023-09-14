@@ -95,7 +95,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // settings > file
             'app.settings.file' => 'App\Settings\File\Index',
-            'app.settings.file.form' => 'App\Settings\File\Form',
+            'app.settings.file.update' => 'App\Settings\File\Update',
 
             // settings > label
             'app.settings.label' => 'App\Settings\Label\Index',

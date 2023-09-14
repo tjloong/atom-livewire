@@ -23,12 +23,11 @@ enum Type
 
     public function label()
     {
-        return match($this) {
-            static::IMAGE => 'Image',
-            static::VIDEO => 'Video',
-            static::AUDIO => 'Audio',
-            static::FILE => 'File',
-            static::YOUTUBE => 'Youtube',
-        };
+        return str()->title($this->name);
+    }
+
+    public function option()
+    {
+        return ['value' => $this->mime(), 'label' => $this->label()];
     }
 }

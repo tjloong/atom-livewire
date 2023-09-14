@@ -47,7 +47,16 @@
         ][$color];
     },
 
-    'getSize' => function($size) {
+    'getSize' => function() use ($attributes) {
+        $size = $attributes->get('size') ?? $attributes->get('s') ?? collect([
+            'xs' => $attributes->get('xs'),
+            'sm' => $attributes->get('sm'),
+            'md' => $attributes->get('md'),
+            'lg' => $attributes->get('lg'),
+            'xl' => $attributes->get('xl'),
+            '2xl' => $attributes->get('2xl'),
+        ])->filter()->keys()->first() ?? 'md';
+
         return [
             'xs' => 'text-xs px-3 py-1',
             'sm' => 'text-sm px-4 py-1.5',
@@ -75,7 +84,7 @@
                     $attributes->get('inverted', false),
                     $attributes->get('outlined', false),
                 ),
-                $getSize($attributes->get('size') ?? $attributes->get('s') ?? 'md'),
+                $getSize(),
             ])->except(['size', 'color', 'inverted', 'outlined', 'icon', 'label', 'block', 'href', 'target', 'c', 's'])
     }}
 >

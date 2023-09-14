@@ -1,5 +1,5 @@
 <div class="max-w-screen-md">
-    <x-heading title="Login Information" 2xl/>
+    <x-heading title="Login Information"/>
 
     <x-form>
         @if ($this->isLoginMethod('username') && $this->isLoginMethod('email'))

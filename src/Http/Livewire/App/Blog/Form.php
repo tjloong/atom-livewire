@@ -2,14 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Blog;
 
-use Jiannius\Atom\Traits\Livewire\WithFile;
+use Jiannius\Atom\Traits\Livewire\WithFileInput;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\Component;
 
 class Form extends Component
 {
     use WithForm;
-    use WithFile;
+    use WithFileInput;
 
     public $blog;
     public $autosavedAt;

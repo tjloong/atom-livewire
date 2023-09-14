@@ -60,8 +60,10 @@ trait WithTable
     // updated filters
     public function updatedFilters() : void
     {
-        $this->resetPage();
-        $this->resetCheckboxes();
+        $this->reset([
+            'page',
+            'checkboxes',
+        ]);
     }
 
     // get table columns
@@ -74,6 +76,17 @@ trait WithTable
     public function resetSort() : void
     {
         $this->reset('sort');
+    }
+
+    // select checkbox
+    public function selectCheckbox($val) : void
+    {
+        $checkboxes = collect($this->checkboxes);
+        
+        if ($checkboxes->contains($val)) $checkboxes = $checkboxes->reject($val);
+        else $checkboxes->push($val);
+
+        $this->checkboxes = $checkboxes->values()->all();
     }
 
     // restore

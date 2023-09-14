@@ -49,7 +49,7 @@ class Index extends Component
     {
         if ($this->checkboxes) {
             model('banner')->whereIn('id', $this->checkboxes)->delete();
-            $this->resetCheckboxes();
+            $this->reset('checkboxes');
         }
     }
 }

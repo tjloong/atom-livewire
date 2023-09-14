@@ -1,5 +1,5 @@
 <div class="max-w-screen-md">
-    <x-heading title="Change Password" 2xl/>
+    <x-heading title="Change Password"/>
     
     <x-form>
         <x-form.group cols="2" class="p-5">
