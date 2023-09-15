@@ -26,12 +26,14 @@
     },
 ])
 
-<x-box :heading="$attributes->get('heading', 'Traces')">
-    <div class="flex flex-col divide-y">
-        @foreach ($getFields() as $label => $value)
-            <x-field :label="$label"
-                :value="empty($value['by']) ? $value['at'] : $value['by']"
-                :small="empty($value['by']) ? null : $value['at']"/>
-        @endforeach
-    </div>
-</x-box>
+@if ($fields = $getFields())
+    <x-box :heading="$attributes->get('heading', 'Traces')">
+        <div class="flex flex-col divide-y">
+            @foreach ($fields as $label => $value)
+                <x-field :label="$label"
+                    :value="empty($value['by']) ? $value['at'] : $value['by']"
+                    :small="empty($value['by']) ? null : $value['at']"/>
+            @endforeach
+        </div>
+    </x-box>
+@endif

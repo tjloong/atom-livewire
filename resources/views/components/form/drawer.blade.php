@@ -5,7 +5,8 @@
                 <x-heading
                     icon="{{ $heading->attributes->get('icon') }}"
                     title="{!! $heading->attributes->get('title') !!}"
-                    subtitle="{!! $heading->attributes->get('subtitle') !!}">
+                    subtitle="{!! $heading->attributes->get('subtitle') !!}"
+                    :status="$heading->attributes->get('status')">
                     {{ $heading }}
                 </x-heading>
             </x-slot:heading>
