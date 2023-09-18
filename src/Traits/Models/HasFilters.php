@@ -112,22 +112,22 @@ trait HasFilters
             }
             else {
                 if ($this->isDateColumn($column) || $this->isDatetimeColumn($column)) {
-                    if (str($key)->is('from_*')) {
-                        $value = format_date($value, 'carbon')->startOfDay()->utc();
-
-                        // if (Carbon::hasFormat($value, 'Y-m-d')) $value = Carbon::createFromFormat('Y-m-d', $value)->startOfDay();
-                        // if (Carbon::hasFormat($value, 'Y-m-d H:i:s')) $value = Carbon::createFromFormat('Y-m-d H:i:s', $value);
-
-                        array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '>=']);
+                    if (str($value)->is('* to *')) {
+                        $from = head(explode(' to ', $value));
+                        $to = last(explode(' to ', $value));
+                        array_push($parsed, ['column' => $column, 'value' => $from, 'operator' => '>=']);
+                        array_push($parsed, ['column' => $column, 'value' => $to, 'operator' => '<=']);
                     }
-
-                    if (str($key)->is('to_*')) {
-                        $value = format_date($value, 'carbon')->endOfDay()->utc();
-
-                        // if (Carbon::hasFormat($value, 'Y-m-d')) $value = Carbon::createFromFormat('Y-m-d', $value)->endOfDay();
-                        // if (Carbon::hasFormat($value, 'Y-m-d H:i:s')) $value = Carbon::createFromFormat('Y-m-d H:i:s', $value);
-
-                        array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '<=']);
+                    else {
+                        if (str($key)->is('from_*')) {
+                            $value = format_date($value, 'carbon')->startOfDay()->utc();
+                            array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '>=']);
+                        }
+    
+                        if (str($key)->is('to_*')) {
+                            $value = format_date($value, 'carbon')->endOfDay()->utc();
+                            array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '<=']);
+                        }
                     }
                 }
                 else if ($this->hasColumn($column)) {
@@ -136,7 +136,9 @@ trait HasFilters
             }
         }
 
-        return $parsed;
+        return collect($parsed)->map(fn($val) => array_merge($val, [
+            'column' => $this->getTable().'.'.$column,
+        ]))->toArray();
     }
 
     /**
