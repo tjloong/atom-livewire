@@ -85,6 +85,14 @@ class File extends Model
         );
     }
 
+    // attribute for is file
+    protected function isFile() : Attribute
+    {
+        return Attribute::make(
+            get: fn() => !$this->is_image && !$this->is_video && !$this->is_audio,
+        );
+    }
+
     // attribute for size
     protected function size() : Attribute
     {

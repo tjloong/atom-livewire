@@ -30,7 +30,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'badge',
             'field',
             'image',
-            'avatar',
             'loader',
             'drawer',
             'heading',

@@ -1,10 +1,13 @@
 @props([
-    'getAvatar' => function() use ($attributes) {
-        $file = $attributes->get('avatar') ?? $attributes->get('file') ?? $attributes->get('image');
-        $url = is_string($file) ? $file : optional($file)->url;
+    'getImage' => function() use ($attributes) {
+        $src = $attributes->get('image') ?? $attributes->get('avatar');
         $placeholder = $attributes->get('placeholder');
 
-        return $url || $placeholder ? compact('url', 'placeholder') : null;
+        return $src || $placeholder ? [
+            'src' => $src,
+            'placeholder' => $placeholder,
+            'is_avatar' => $attributes->has('avatar'),
+        ] : null;
     }
 ])
 
@@ -21,56 +24,10 @@
             <div class="mx-4 w-6 h-6 p-0 5 rounded shadow border bg-white border-gray-300"></div>
         @endif
     </td>
-@elseif ($menu = $attributes->get('menu'))
-    <td class="py-3 align-top">
-        <x-dropdown>
-            <x-slot:anchor>
-                <div class="w-8 h-8 rounded-full hover:bg-white hover:shadow flex">
-                    <x-icon name="ellipsis-vertical" class="m-auto"/>
-                </div>
-            </x-slot:anchor>
-
-            @foreach ($menu as $menuitem)
-                <x-dropdown.item 
-                    :icon="data_get($menuitem, 'icon')" 
-                    :label="data_get($menuitem, 'label')"
-                    wire:click="{{ data_get($menuitem, 'wire:click') }}"
-                />
-            @endforeach
-        </x-dropdown>
-
-    </td>
-
-    {{-- @if ($actionbuttons = collect([
-        'edit' => data_get($actions, 'edit'),
-        'delete' => data_get($actions, 'delete'),
-    ])->filter()->toArray())
-        <td class="py-3 px-4">
-            <div class="flex items-center justify-end">
-                @foreach ($actionbuttons as $key => $val)
-                    @if ($key === 'delete')
-                        <div class="flex" x-tooltip="{{ data_get($val, 'tooltip') }}">
-                            <x-close.delete icon="circle-minus" class="m-auto"
-                                :title="data_get($val, 'title', 'Delete')"
-                                :message="data_get($val, 'message', 'Are you sure?')"
-                                :callback="data_get($val, 'callback', 'delete')"
-                                :params="data_get($val, 'params')"
-                            />
-                        </div>
-                    @endif
-                @endforeach
-            </div>
-        </td>
-    @endif --}}
 @else
-    <td {{ $attributes
-        ->class([
-            'py-3 px-4 whitespace-nowrap',
-            $getAvatar() ? 'w-4' : '',
-            $attributes->has('dropdown') ? 'w-4 align-middle' : 'align-top',
-        ])
-        ->except(['checkbox', 'status', 'active', 'tags', 'date', 'datetime', 'from-now', 'avatar'])
-    }}>
+    <td 
+        class="py-3 px-4 whitespace-nowrap {{ $attributes->get('class', 'align-top') }} {{ $getImage() ? 'w-4' : '' }}"
+        {{ $attributes->except(['checkbox', 'status', 'active', 'tags', 'date', 'datetime', 'from-now', 'avatar', 'image', 'class']) }}>
         @if ($status = $attributes->get('status'))
             @if (is_string($status))
                 <x-badge :label="$status"/>
@@ -109,12 +66,10 @@
             <div class="text-sm text-gray-500">{{ format_date($datetime, 'time') }}</div>
         @elseif ($fromNow = $attributes->get('from-now'))
             {{ format_date($fromNow, 'human') }}
-        @elseif ($avatar = $getAvatar())
-            <x-thumbnail 
-                :url="data_get($avatar, 'url')"
-                :placeholder="data_get($avatar, 'placeholder')"
-                size="36"
-                circle
+        @elseif ($image = $getImage())
+            <x-image :src="data_get($image, 'src')"
+                :avatar="data_get($image, 'is_avatar')"
+                :placeholder="data_get($image, 'placeholder')"
                 color="random"/>
         @elseif ($attributes->get('dropdown'))
             <x-dropdown icon="ellipsis-vertical">

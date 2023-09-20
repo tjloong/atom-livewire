@@ -163,15 +163,14 @@
                                         'blue' => 'bg-blue-100 text-blue-600 hover:bg-blue-300 text-blue-800',
                                         'orange' => 'bg-orange-100 text-orange-600 hover:bg-orange-300 text-orange-800',
                                     ][data_get($opt, 'color')] ?? 'hover:bg-slate-100' }}"
-                                    id="{{ uniqid() }}"
-                                >
-                                    @if (($avatar = data_get($opt, 'avatar')) || ($avatarPlaceholder = data_get($opt, 'avatar_placeholder')))
+                                    id="{{ uniqid() }}">
+                                    @if (data_get($opt, 'avatar'))
                                         <div class="shrink-0">
-                                            <x-thumbnail :url="$avatar ?? null" :placeholder="$avatarPlaceholder" size="30" color="random" circle/>
+                                            <x-image :src="data_get($opt, 'avatar')" avatar size="32x32"/>
                                         </div>
                                     @elseif ($image = data_get($opt, 'image'))
                                         <div class="shrink-0">
-                                            <x-thumbnail :url="$image" size="40"/>
+                                            <x-image :src="$image" size="32x32"/>
                                         </div>
                                     @elseif ($flag = data_get($opt, 'flag'))
                                         <div class="shrink-0 w-4 h-4">
