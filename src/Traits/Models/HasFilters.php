@@ -137,7 +137,7 @@ trait HasFilters
         }
 
         return collect($parsed)->map(fn($val) => array_merge($val, [
-            'column' => $this->getTable().'.'.$column,
+            'column' => $this->getTable().'.'.data_get($val, 'column'),
         ]))->toArray();
     }
 
