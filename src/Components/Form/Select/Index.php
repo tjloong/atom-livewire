@@ -6,13 +6,15 @@ use Illuminate\View\Component;
 
 class Index extends Component
 {
+    public $parsedOptions;
+
     /**
      * Constructor
      */
     public function __construct(
-        public mixed $options = []
+        $options = []
     ) {
-        $this->options = collect($options)->map(function($opt) {
+        $this->parsedOptions = collect($options)->map(function($opt) {
             if (is_string($opt)) return ['value' => $opt, 'label' => $opt];
             else {
                 $value = data_get($opt, 'value') ?? data_get($opt, 'id') ?? data_get($opt, 'code');
@@ -28,14 +30,16 @@ class Index extends Component
                     'status' => data_get($opt, 'status'),
                     'is_group' => data_get($opt, 'is_group'),
                     'avatar' => data_get($opt, 'avatar'),
-                    'avatar_placeholder' => data_get($opt, 'avatar_placeholder'),
                     'image' => data_get($opt, 'image'),
                     'flag' => data_get($opt, 'flag'),
-                    'color' => data_get($opt, 'color'),
-                    'searchable' => str()->slug(collect([$value, $label, $small, $remark])->filter()->join('-')),
+                    'color' => [
+                        'green' => 'bg-green-100 text-green-600 hover:bg-green-300 text-green-800',
+                        'blue' => 'bg-blue-100 text-blue-600 hover:bg-blue-300 text-blue-800',
+                        'orange' => 'bg-orange-100 text-orange-600 hover:bg-orange-300 text-orange-800',
+                    ][data_get($opt, 'color')] ?? 'hover:bg-slate-100',
                 ];
             }
-        })->toArray();
+        });
     }
 
     /**

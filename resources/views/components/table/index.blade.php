@@ -45,8 +45,7 @@
         },
     }"
     class="relative flex flex-col divide-y bg-white border shadow rounded-lg"
-    {{ $attributes->wire('sorted') }}
->
+    {{ $attributes->wire('sorted') }}>
     @isset($header) {{ $header }} @endif
 
     @if (
@@ -59,10 +58,9 @@
     @else
         <div 
             {{ $attributes->class([
-                'w-full overflow-auto rounded-b-lg',
+                'table-container w-full overflow-auto rounded-b-lg',
                 $attributes->get('class', 'max-h-screen'),
-            ])->only('class') }}
-        >
+            ])->only('class') }}>
             <table class="w-max min-w-full divide-y divide-gray-200">
                 @if ($data = $attributes->get('data'))
                     <thead>

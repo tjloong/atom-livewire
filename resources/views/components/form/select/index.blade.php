@@ -1,169 +1,146 @@
-@props([
-    'id' => component_id($attributes, 'select-input'),
-    'model' => $attributes->wire('model')->value(),
-    'value' => data_get($this, $attributes->wire('model')->value()),
-    'icon' => $attributes->get('icon'),
-    'multiple' => $attributes->get('multiple'),
-    'isAutocomplete' => $attributes->get('autocomplete', false),
-    'placeholder' => $attributes->get('placeholder')
-        ? __($attributes->get('placeholder'))
-        : (($val = component_label($attributes)) ? __('Select').' '.__($val) : __('Please Select')),
-    'isEmpty' => function($val) {
-        if (is_array($val)) return empty($val);
-        else return is_null($val);
-    },
-])
+@php
+    $multiple = $attributes->get('multiple', false);
+    $searchable = $attributes->get('searchable', true);
+    $value = data_get($this, $attributes->wire('model')->value());
+    $empty = (is_array($value) && empty($value)) || is_null($value);
+    $placeholder = $attributes->get('placeholder') ?? (
+        component_label($attributes) ? collect(['Select', component_label($attributes)])->join(' ') : 'Please Select'
+    );
+@endphp
 
 <x-form.field {{ $attributes }}>
     <div
-        x-cloak 
+        x-cloak
         x-data="{
-            text: null,
+            value: @entangle($attributes->wire('model')),
+            searchText: @entangle('selectInputSearchText'),
+            multiple: @js($attributes->get('multiple', false)),
             focus: false,
-            searchable: @js(!$isAutocomplete && count($options) > 15),
-            open (bool = true) {
-                if (bool) {
-                    this.focus = true
-                    this.$nextTick(() => {
-                        this.$refs.search?.focus()
-                        floatDropdown(this.$refs.anchor, this.$refs.dd)
-                    })
-                }
-                else {
-                    this.text = null
-                    if (this.searchable) this.search()
-                    this.$nextTick(() => this.focus = false)
-                }
+            init () {
+                this.$watch('focus', () => this.open())
             },
-            search () {
-                if (@js(data_get($this, 'usesSelectInput'))) {
-                    this.$wire.call('setSelectInputSearch', { id: @js($id), search: this.text })
-                }
-
-                const elems = this.$refs.dd?.querySelectorAll('[data-searchable]')
-                if (!elems) return
-
-                Array.from(elems).forEach((elem) => {
-                    if (empty(this.text)) elem.parentNode.classList.remove('hidden')
-                    else {
-                        const searchable = elem.getAttribute('data-searchable')
-                        if (!empty(searchable) && searchable.includes(this.text)) {
-                            elem.parentNode.classList.remove('hidden')
-                        }
-                        else elem.parentNode.classList.add('hidden')
+            open () {
+                this.$nextTick(() => {
+                    if (this.focus) {
+                        $el.querySelector('#select-input-search')?.focus()
+                        floatDropdown(this.$refs.anchor, this.$refs.dd)
                     }
+                    else this.searchText = null
                 })
             },
+            select (val) {
+                if (this.multiple) this.value.push(val)
+                else this.value = val
+
+                this.focus = false
+            },
+            remove (val = null) {
+                if (val === null) {
+                    this.value = this.multiple ? [] : null
+                }
+                else {
+                    const index = this.value.indexOf(val)
+                    this.value.splice(index, 1)
+                }
+            },
         }"
-        class="relative"
-        id="{{ $id }}"
-    >
+        x-on:click="focus = true"
+        x-on:click.away="focus = false"
+        class="relative">
         <div x-ref="anchor"
             x-on:click="open(true)"
-            x-bind:class="{ 'active': focus }"
-            class="{{ $attributes->get('class', 'form-input w-full flex items-center gap-2') }}">
-            <div class="flex items-center gap-2 w-full {{ $isEmpty($value) ? 'form-input-caret' : '' }}">
-                @if ($icon) <x-icon :name="$icon" class="text-gray-400"/> @endif
-    
-                @if ($isAutocomplete)
-                    <div class="grow" {{ $attributes->wire('model') }}>
-                        <input type="text"
-                            value="{{ $value }}"
-                            x-on:input.debounce.400ms="search($event.target.value)"
-                            class="form-input transparent w-full" 
-                            placeholder="{{ $placeholder }}">
-                    </div>
-                @elseif (!$isEmpty($value))
-                    @isset($selected) {{ $selected }}
-                    @else
-                        <div class="grow">
-                            @if ($multiple)
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach ($value as $val)
-                                        <div class="bg-slate-200 rounded-md px-2 text-sm font-medium border border-gray-200 flex items-center gap-2 max-w-[200px]">
-                                            <div class="grid">
-                                                <div class="truncate text-xs">
-                                                    {{ data_get(collect($options)->firstWhere('value', $val), 'label') }}                    
-                                                </div>
+            x-bind:class="focus && 'active'"
+            class="form-input w-full">
+            <div class="flex items-center gap-3 {{ $empty ? 'form-input-caret' : '' }}">
+                @if ($icon = $attributes->get('icon')) 
+                    <x-icon :name="$icon" class="text-gray-400"/> 
+                @endif
+
+                @if ($empty)
+                    <input type="text" class="form-input transparent grow" placeholder="{{ $placeholder }}" readonly>
+                @else
+                    <div class="grow">
+                        @if ($slot->isNotEmpty())
+                            {{ $slot }}
+                        @elseif ($multiple)
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($value as $val)
+                                    <div class="bg-slate-200 rounded-md px-2 border border-gray-200">
+                                        <div class="flex items-center gap-2 max-w-[200px]">
+                                            <div class="truncate text-xs font-medium">
+                                                {{ data_get($parsedOptions->firstWhere('value', $val), 'label') }}
                                             </div>
-                                            <div class="flex" wire:click.stop="$set(@js($model), @js(collect($value)->reject($val)->toArray()))">
-                                                <x-close size="12"/>
+                                            <div class="shrink-0 text-sm flex items-center justify-center">
+                                                <x-close x-on:click.stop="remove(@json($val))"/>
                                             </div>
                                         </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                {{ data_get(collect($options)->firstWhere('value', $value), 'label') }}
-                            @endif
-                        </div>
-                    @endif
-                @else
-                    <input type="text" class="form-input transparent grow" placeholder="{{ $placeholder }}" readonly>
-                @endif
-    
-                @if (!$isEmpty($value)) <x-close wire:click.stop="$set('{{ $model }}', null)"/> @endif
-            </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            {{ data_get($parsedOptions->firstWhere('value', $value), 'label') }}
+                        @endif
+                    </div>
 
-            @isset($button) 
-                <div class="shrink-0">
-                    @if ($button->isNotEmpty()) {{ $button }}
-                    @else
-                        @php $buttonlabel = $button->attributes->get('label') @endphp
-                        @php $buttonicon = $button->attributes->get('icon') @endphp
-                        <a {{ $button->attributes->class([
-                            'flex items-center justify-center gap-1 rounded-full -mr-1 text-sm',
-                            $buttonlabel ? 'px-2 py-0.5' : null,
-                            !$buttonlabel && $buttonicon ? 'p-1' : null,
-                            $button->attributes->get('class', 'text-gray-800 bg-gray-200'),
-                        ]) }}>
-                            @if ($buttonicon) <x-icon :name="$buttonicon" size="12"/> @endif
-                            {{ __($buttonlabel) }}
-                        </a>
-                    @endif
-                </div>
-            @endisset
+                    <div class="shrink-0">
+                        <x-close x-on:click.stop="remove()"/>
+                    </div>
+                @endif
+            </div>
         </div>
 
         <div x-ref="dd"
             x-show="focus"
             x-transition.opacity
             class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px]">
-            <div x-on:click.away="open(false)">
-                <div x-show="searchable" class="p-3 border-b">
-                    <input type="text" 
-                        x-ref="search" 
-                        x-model="text"
-                        x-on:input.debounce.300ms="search"
-                        class="form-input w-full" 
-                        placeholder="{{ __('Search') }}">
+            @if ($searchable)
+                <div class="p-3 border-b">
+                    <div
+                        x-data="{ focus: false }"
+                        x-on:clear="clear"
+                        x-bind:class="focus && 'active'"
+                        class="form-input flex items-center gap-3 w-full">
+                        <div class="shrink-0 text-gray-400">
+                            <x-icon name="search"/>
+                        </div>
+
+                        <input type="text" id="select-input-search"
+                            x-on:focus="focus = true"
+                            x-on:blur="focus = false"
+                            x-model.debounce.300ms="searchText"
+                            class="form-input transparent grow" 
+                            placeholder="{{ __('Search') }}">
+
+                        <div x-show="!empty(searchText)" class="shrink-0">
+                            <x-close x-on:click.stop="searchText = null"/>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            @endif
 
             <div class="flex flex-col divide-y">
                 <div class="max-h-[250px] overflow-auto flex flex-col divide-y">
-                    @if ($slot->isNotEmpty())
-                        {{ $slot }}
+                    @isset($options)
+                        {{ $options }}
                     @else
-                        @forelse ($options as $opt)
+                        @forelse ($parsedOptions->filter(function($opt) {
+                            return str(data_get($opt, 'label'))->lower()->is("*{$this->selectInputSearchText}*")
+                                || str(data_get($opt, 'small'))->lower()->is("*{$this->selectInputSearchText}*")
+                                || str(data_get($opt, 'remark'))->lower()->is("*{$this->selectInputSearchText}*");
+                        })->values() as $opt)
                             @if (data_get($opt, 'is_group'))
                                 <div class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
-                                    @if ($icon = data_get($opt, 'icon')) <x-icon :name="$icon" class="shrink-0 text-gray-500"/> @endif
+                                    @if ($icon = data_get($opt, 'icon'))
+                                        <x-icon :name="$icon" class="shrink-0 text-gray-500"/>
+                                    @endif
                                     <div class="grow font-semibold">{{ data_get($opt, 'label') }}</div>
                                     <x-icon name="chevron-down" class="shrink-0" size="12"/>
                                 </div>
                             @else
                                 <div 
-                                    @if ($multiple) 
-                                        wire:click="$set(@js($model), @js(collect($value)->push(data_get($opt, 'value'))->unique()->toArray()))"
-                                    @else
-                                        wire:click="$set(@js($model), @js(data_get($opt, 'value')))"
-                                    @endif
-                                    class="py-2 px-4 flex items-center gap-3 cursor-pointer {{ [
-                                        'green' => 'bg-green-100 text-green-600 hover:bg-green-300 text-green-800',
-                                        'blue' => 'bg-blue-100 text-blue-600 hover:bg-blue-300 text-blue-800',
-                                        'orange' => 'bg-orange-100 text-orange-600 hover:bg-orange-300 text-orange-800',
-                                    ][data_get($opt, 'color')] ?? 'hover:bg-slate-100' }}"
-                                    id="{{ uniqid() }}">
+                                    x-on:click.stop="select(@js(data_get($opt, 'value')))"
+                                    wire:key="select-input-option-{{ data_get($opt, 'value') }}"
+                                    class="py-2 px-4 flex items-center gap-3 cursor-pointer {{ data_get($opt, 'color') }}">
                                     @if (data_get($opt, 'avatar'))
                                         <div class="shrink-0">
                                             <x-image :src="data_get($opt, 'avatar')" avatar size="32x32"/>
@@ -189,7 +166,10 @@
     
                                     @if (($remark = data_get($opt, 'remark')) || ($status = data_get($opt, 'status')))
                                         <div class="shrink-0 text-right">
-                                            @if (!empty($remark)) <div class="text-sm font-medium text-gray-500">{{ $remark }}</div> @endif
+                                            @if (!empty($remark))
+                                                <div class="text-sm font-medium text-gray-500">{{ $remark }}</div>
+                                            @endif
+                                            
                                             @if (!empty($status))
                                                 @if (is_array($status))
                                                     @foreach ($status as $key => $val)
@@ -200,16 +180,14 @@
                                             @endif
                                         </div>
                                     @endif
-    
-                                    <div class="hidden" data-searchable="{{ data_get($opt, 'searchable') }}"></div>
                                 </div>
                             @endif
                         @empty
                             <x-no-result title="No options available" subtitle="" size="sm"/>
                         @endforelse
-                    @endif
+                    @endisset
                 </div>
-    
+
                 @isset($foot)
                     @if ($foot->isNotEmpty())
                         {{ $foot }}

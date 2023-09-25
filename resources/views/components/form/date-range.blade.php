@@ -64,10 +64,10 @@
                 </div>
 
                 <div x-show="from && to" class="grow flex items-center gap-3">
-                    <div x-text="formatDate(from)"></div>
-                    <x-icon name="arrow-right"/>
-                    <div x-text="formatDate(to)"></div>
-                    <x-close x-on:click.stop="value = null"/>
+                    <div x-text="formatDate(from)" class="grow text-center"></div>
+                    <x-icon name="arrow-right" class="shrink-0"/>
+                    <div x-text="formatDate(to)" class="grow text-center"></div>
+                    <x-close x-on:click.stop="value = null" class="shrink-0"/>
                 </div>
 
                 <div x-show="!from || !to" class="grow flex items-center gap-3">

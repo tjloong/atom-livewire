@@ -78,6 +78,12 @@ trait WithTable
         $this->reset('sort');
     }
 
+    // reset filters
+    public function resetFilters() : void
+    {
+        $this->reset('filters');
+    }
+
     // select checkbox
     public function selectCheckbox($val) : void
     {
