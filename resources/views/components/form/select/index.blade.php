@@ -15,24 +15,23 @@
             value: @entangle($attributes->wire('model')),
             searchText: @entangle('selectInputSearchText'),
             multiple: @js($attributes->get('multiple', false)),
-            focus: false,
-            init () {
-                this.$watch('focus', () => this.open())
-            },
+            show: false,
             open () {
+                this.show = true
                 this.$nextTick(() => {
-                    if (this.focus) {
-                        $el.querySelector('#select-input-search')?.focus()
-                        floatDropdown(this.$refs.anchor, this.$refs.dd)
-                    }
-                    else this.searchText = null
+                    $el.querySelector('#select-input-search')?.focus()
+                    floatDropdown(this.$refs.anchor, this.$refs.dd)
                 })
+            },
+            close () {
+                this.show = false
+                this.searchText = null
             },
             select (val) {
                 if (this.multiple) this.value.push(val)
                 else this.value = val
 
-                this.focus = false
+                this.close()
             },
             remove (val = null) {
                 if (val === null) {
@@ -44,12 +43,11 @@
                 }
             },
         }"
-        x-on:click="focus = true"
-        x-on:click.away="focus = false"
+        x-on:click="open"
+        x-on:click.away="close"
         class="relative">
         <div x-ref="anchor"
-            x-on:click="open(true)"
-            x-bind:class="focus && 'active'"
+            x-bind:class="show && 'active'"
             class="form-input w-full">
             <div class="flex items-center gap-3 {{ $empty ? 'form-input-caret' : '' }}">
                 @if ($icon = $attributes->get('icon')) 
@@ -90,14 +88,13 @@
         </div>
 
         <div x-ref="dd"
-            x-show="focus"
+            x-show="show"
             x-transition.opacity
             class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px]">
             @if ($searchable)
-                <div class="p-3 border-b">
+                <div wire:ignore class="p-3 border-b">
                     <div
                         x-data="{ focus: false }"
-                        x-on:clear="clear"
                         x-bind:class="focus && 'active'"
                         class="form-input flex items-center gap-3 w-full">
                         <div class="shrink-0 text-gray-400">
@@ -107,12 +104,12 @@
                         <input type="text" id="select-input-search"
                             x-on:focus="focus = true"
                             x-on:blur="focus = false"
-                            x-model.debounce.300ms="searchText"
+                            wire:model.debounce.300ms="selectInputSearchText"
                             class="form-input transparent grow" 
                             placeholder="{{ __('Search') }}">
 
-                        <div x-show="!empty(searchText)" class="shrink-0">
-                            <x-close x-on:click.stop="searchText = null"/>
+                        <div x-show="!empty($wire.get('selectInputSearchText'))" class="shrink-0">
+                            <x-close wire:click="$set('selectInputSearchText', null)"/>
                         </div>
                     </div>
                 </div>
@@ -129,7 +126,8 @@
                                 || str(data_get($opt, 'remark'))->lower()->is("*{$this->selectInputSearchText}*");
                         })->values() as $opt)
                             @if (data_get($opt, 'is_group'))
-                                <div class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
+                                <div wire:key="{{ uniqid() }}" 
+                                    class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
                                     @if ($icon = data_get($opt, 'icon'))
                                         <x-icon :name="$icon" class="shrink-0 text-gray-500"/>
                                     @endif
@@ -137,9 +135,8 @@
                                     <x-icon name="chevron-down" class="shrink-0" size="12"/>
                                 </div>
                             @else
-                                <div 
+                                <div wire:key="{{ uniqid() }}" 
                                     x-on:click.stop="select(@js(data_get($opt, 'value')))"
-                                    wire:key="select-input-option-{{ data_get($opt, 'value') }}"
                                     class="py-2 px-4 flex items-center gap-3 cursor-pointer {{ data_get($opt, 'color') }}">
                                     @if (data_get($opt, 'avatar'))
                                         <div class="shrink-0">
@@ -183,7 +180,9 @@
                                 </div>
                             @endif
                         @empty
-                            <x-no-result title="No options available" subtitle="" size="sm"/>
+                            <div wire:key="{{ uniqid() }}">
+                                <x-no-result title="No options available" subtitle="" size="sm"/>
+                            </div>
                         @endforelse
                     @endisset
                 </div>
