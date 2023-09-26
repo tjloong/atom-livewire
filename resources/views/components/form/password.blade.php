@@ -1,18 +1,24 @@
 <x-form.field {{ $attributes }}>
-    <div class="relative w-full" x-data="{ show: false }">
+    <div
+        x-cloak
+        x-data="{
+            show: false,
+            focus: false,
+        }"
+        x-bind:class="focus && 'active'"
+        class="form-input w-full flex items-center gap-3">
         <input
             x-bind:type="show ? 'text' : 'password'"
-            {{ $attributes->class([
-                'form-input w-full pr-12',
-                'error' => component_error(optional($errors), $attributes),
-            ]) }}
-        >
-        <a
-            class="absolute top-0 right-0 bottom-0 px-4 flex items-center justify-center text-gray-900"
-            x-on:click="show = !show"
-        >
-            <x-icon x-show="!show" name="show"/>
+            x-on:focus="focus = true"
+            x-on:blur="focus = false"
+            class="grow form-input transparent"
+            {{ $attributes->wire('model') }}>
+
+        <div
+            x-on:click.stop="show = !show" 
+            class="shrink-0 flex items-center justify-center cursor-pointer">
             <x-icon x-show="show" name="hide"/>
-        </a>
+            <x-icon x-show="!show" name="show"/>
+        </div>
     </div>
 </x-form.field>
