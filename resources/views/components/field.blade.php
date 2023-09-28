@@ -1,5 +1,5 @@
 <div {{ $attributes->merge([
-    'class' => 'py-2 px-4 flex flex-col gap-2 md:flex-row md:items-center print:flex-row print:items-center hover:bg-slate-100',
+    'class' => 'py-2 px-4 flex flex-col gap-2 md:flex-row md:items-center print:flex-row print:items-center hover:bg-slate-50',
 ])->only('class') }}>
     <div class="md:w-2/5 print:w-2/5">
         @isset($label) {{ $label }}
@@ -27,11 +27,16 @@
                     </div>
                 @endif
             @elseif ($tags = $attributes->get('tags') ?? $attributes->get('tag'))
-                @if (is_string($tags)) <span class="text-sm bg-gray-100 border rounded px-2 flex items-center gap-2">{{ $tags }}</span>
+                @if (is_string($tags)) 
+                    <span class="text-sm bg-gray-100 border rounded px-2 flex items-center gap-2">
+                        <x-icon name="tag" class="text-xs text-gray-400"/> {{ $tags }}
+                    </span>
                 @elseif (is_array($tags))
                     <div class="inline-flex flex-wrap items-center justify-end gap-2">
                         @foreach ($tags as $tag)
-                            <span class="shrink-0 text-sm bg-gray-100 border rounded px-2 flex items-center gap-2">{{ $tag }}</span>
+                            <span class="shrink-0 text-sm bg-gray-100 border rounded px-2 flex items-center gap-2">
+                                <x-icon name="tag" class="text-xs text-gray-400"/> {{ $tag }}
+                            </span>
                         @endforeach
                     </div>
                 @endif

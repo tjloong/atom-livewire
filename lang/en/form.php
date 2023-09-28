@@ -20,4 +20,7 @@ return [
             ],
         ],
     ],
+    'tags' => [
+        'press-enter' => 'Press enter to add tag',
+    ],
 ];

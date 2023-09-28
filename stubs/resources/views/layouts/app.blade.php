@@ -43,12 +43,12 @@
     @elseroute('app.*')
         <x-admin-panel>
             <x-slot:links>
-                <x-link href="/" icon="globe" label="Go To Site" class="text-gray-800"/>
+                <x-link href="/" icon="globe" label="atom::layout.go_to_site" class="text-gray-800"/>
             </x-slot:links>
 
             <x-slot:auth>
                 <x-navbar.auth>
-                    <x-navbar.dropdown.item label="Settings" :href="route('app.settings')"/>
+                    <x-navbar.dropdown.item label="atom::layout.settings" :href="route('app.settings')"/>
                 </x-navbar.auth>
             </x-slot:auth>
 
@@ -61,7 +61,7 @@
             </x-slot:aside>
 
             <x-slot:asidefoot>
-                <x-admin-panel.aside label="Settings" route="app.settings"/>
+                <x-admin-panel.aside label="atom::layout.settings" route="app.settings"/>
             </x-slot:asidefoot>
 
             @route('app.settings')

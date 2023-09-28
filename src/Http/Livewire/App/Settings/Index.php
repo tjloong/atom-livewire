@@ -22,39 +22,36 @@ class Index extends Component
     public function getTabsProperty(): array
     {
         return [
-            ['group' => 'Account', 'tabs' => [
+            ['group' => 'atom::settings.sidenav.group.account', 'tabs' => [
                 ['slug' => 'login', 'label' => 'Login Information', 'icon' => 'login',],
                 ['slug' => 'password', 'label' => 'Change Password', 'icon' => 'lock',],
-                ['slug' => 'billing', 'label' => 'Subscription', 'icon' => 'credit-card'],
             ]],
 
-            ['group' => 'System', 'tabs' => [
-                ['slug' => 'user', 'label' => 'Users', 'icon' => 'users'],
-                ['slug' => 'invitation','label' => 'Invitations', 'icon' => 'invitation'],
-                ['slug' => 'role', 'label' => 'Roles', 'icon' => 'user-tag'],
-                ['slug' => 'team', 'label' => 'Teams', 'icon' => 'people-group'],
-                ['slug' => 'page', 'label' => 'Pages', 'icon' => 'newspaper'],
-                ['slug' => 'file', 'label' => 'Files and Media', 'icon' => 'images'],
+            ['group' => 'atom::settings.sidenav.group.system', 'tabs' => [
+                ['slug' => 'user', 'label' => 'atom::settings.sidenav.tab.user', 'icon' => 'users'],
+                ['slug' => 'role', 'label' => 'atom::settings.sidenav.tab.role', 'icon' => 'user-tag'],
+                ['slug' => 'page', 'label' => 'atom::settings.sidenav.tab.page', 'icon' => 'newspaper'],
+                ['slug' => 'file', 'label' => 'atom::settings.sidenav.tab.file', 'icon' => 'images'],
             ]],
 
-            ['group' => 'Labels', 'tabs' => [
-                ['slug' => 'label/blog-category', 'label' => 'Blog Categories', 'icon' => 'tag'],
+            ['group' => 'atom::settings.sidenav.group.labels', 'tabs' => [
+                ['slug' => 'label/blog-category', 'label' => 'atom::settings.sidenav.tab.blog', 'icon' => 'tag'],
             ]],
 
-            ['group' => 'Website', 'tabs' => [
-                ['slug' => 'website/profile', 'label' => 'Profile', 'icon' => 'globe'],
-                ['slug' => 'website/seo', 'label' => 'SEO', 'icon' => 'search'],
-                ['slug' => 'website/analytics', 'label' => 'Analytics', 'icon' => 'chart-simple'],
-                ['slug' => 'website/social-media', 'label' => 'Social Media', 'icon' => 'share-nodes'],
-                ['slug' => 'website/announcement', 'label' => 'Announcement', 'icon' => 'bullhorn'],
-                ['slug' => 'website/popup', 'label' => 'Pop-Up', 'icon' => 'window-restore'],
+            ['group' => 'atom::settings.sidenav.group.website', 'tabs' => [
+                ['slug' => 'website/profile', 'label' => 'atom::settings.sidenav.tab.profile', 'icon' => 'globe'],
+                ['slug' => 'website/seo', 'label' => 'atom::settings.sidenav.tab.seo', 'icon' => 'search'],
+                ['slug' => 'website/analytics', 'label' => 'atom::settings.sidenav.tab.analytics', 'icon' => 'chart-simple'],
+                ['slug' => 'website/social-media', 'label' => 'atom::settings.sidenav.tab.social-media', 'icon' => 'share-nodes'],
+                ['slug' => 'website/announcement', 'label' => 'atom::settings.sidenav.tab.announcement', 'icon' => 'bullhorn'],
+                ['slug' => 'website/popup', 'label' => 'atom::settings.sidenav.tab.popup', 'icon' => 'window-restore'],
             ]],
 
-            ['group' => 'Integration', 'tabs' => [
-                ['slug' => 'integration/email', 'label' => 'Email', 'icon' => 'paper-plane'],
-                ['slug' => 'integration/storage', 'label' => 'Storage', 'icon' => 'hard-drive'],
-                ['slug' => 'integration/payment', 'label' => 'Payment', 'icon' => 'money-bill'],
-                ['slug' => 'integration/social-login', 'label' => 'Social Login', 'icon' => 'login'],
+            ['group' => 'atom::settings.sidenav.group.integration', 'tabs' => [
+                ['slug' => 'integration/email', 'label' => 'atom::settings.sidenav.tab.email', 'icon' => 'paper-plane'],
+                ['slug' => 'integration/storage', 'label' => 'atom::settings.sidenav.tab.storage', 'icon' => 'hard-drive'],
+                ['slug' => 'integration/payment', 'label' => 'atom::settings.sidenav.tab.payment', 'icon' => 'money-bill'],
+                ['slug' => 'integration/social-login', 'label' => 'atom::settings.sidenav.tab.social-login', 'icon' => 'login'],
             ]]
         ];
     }
