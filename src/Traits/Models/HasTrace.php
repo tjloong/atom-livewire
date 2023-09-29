@@ -56,6 +56,7 @@ trait HasTrace
             'requested_at',
             'approved_at',
             'rejected_at',
+            'archived_at',
             'email_sent_at',
         ] as $col) {
             $this->casts[$col] = 'datetime';
@@ -118,6 +119,12 @@ trait HasTrace
         return !empty($this->email_sent_at);
     }
 
+    // check model is archived
+    public function isArchived() : bool
+    {
+        return !empty($this->archived_at);
+    }
+
     // mark as blocked
     public function markBlocked($bool = true) : void
     {
@@ -169,6 +176,15 @@ trait HasTrace
         $this->fill([
             'email_sent_at' => $bool === false ? null : now(),
             'email_sent_by' => $bool === false ? null : user('id'),
+        ])->save();
+    }
+
+    // mark as archived
+    public function markArchived($bool = true) : void
+    {
+        $this->fill([
+            'archived_at' => $bool === false ? null : now(),
+            'archived_by' => $bool === false ? null : user('id'),
         ])->save();
     }
 }
