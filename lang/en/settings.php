@@ -32,4 +32,21 @@ return [
             'social-login' => 'Social Login',
         ],
     ],
+
+    'user' => [
+        'listing' => [
+            'empty' => [
+                'title' => 'No Users',
+                'subtitle' => 'No users found.',
+            ],
+        ],
+        'delete' => [
+            'failed' => [
+                'self' => [
+                    'title' => 'Unable To Delete User',
+                    'message' => 'You cannot delete yourself.',
+                ],
+            ],
+        ],
+    ],
 ];

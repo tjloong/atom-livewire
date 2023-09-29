@@ -9,14 +9,14 @@ enum Status: string
     case BLOCKED = 'blocked';
     case TRASHED = 'trashed';
 
+    public function label()
+    {
+        return str()->title($this->value);
+    }
+
     public function option()
     {
-        return match($this) {
-            static::ACTIVE => ['value' => $this->value, 'label' => 'Active'],
-            static::INACTIVE => ['value' => $this->value, 'label' => 'Inactive'],
-            static::BLOCKED => ['value' => $this->value, 'label' => 'Blocked'],
-            static::TRASHED => ['value' => $this->value, 'label' => 'Trashed'],
-        };
+        return ['value' => $this->value, 'label' => $this->label()];
     }
 
     public function color()
@@ -27,5 +27,10 @@ enum Status: string
             static::BLOCKED => 'gray',
             static::TRASHED => 'black',
         };
+    }
+
+    public function badge()
+    {
+        return [$this->color() => $this->value];
     }
 }

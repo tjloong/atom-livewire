@@ -3,9 +3,9 @@
     $searchable = $attributes->get('searchable', true);
     $value = data_get($this, $attributes->wire('model')->value());
     $empty = (is_array($value) && empty($value)) || is_null($value);
-    $placeholder = $attributes->get('placeholder') ?? (
+    $placeholder = __($attributes->get('placeholder') ?? (
         component_label($attributes) ? collect(['Select', component_label($attributes)])->join(' ') : 'Please Select'
-    );
+    ));
 @endphp
 
 <x-form.field {{ $attributes }}>

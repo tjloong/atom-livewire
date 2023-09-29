@@ -15,13 +15,14 @@
                     {{ __('total rows') }}
                 </div>
                 
-                @isset($maxRows) {{ $maxRows }}
+                @isset($tableMaxRows) 
+                    {{ $tableMaxRows }}
                 @else
                     <x-dropdown>
                         <x-slot:anchor>
-                            <div class="bg-gray-200 rounded-full text-sm font-medium leading-6 px-2 flex items-center gap-2">
+                            <div class="bg-gray-200 rounded-full text-sm font-medium leading-6 px-2 flex items-center gap-2 cursor-pointer">
                                 <div>
-                                    <span x-data x-text="$wire.get('maxRows')"></span> / {{ __('page') }}
+                                    <span x-data x-text="$wire.get('tableMaxRows')"></span> / {{ __('page') }}
                                 </div>
                                 <x-icon name="chevron-down" size="10"/>
                             </div>
@@ -31,7 +32,7 @@
                             @foreach ([50, 100, 150, 200, 500] as $n)
                                 <x-dropdown.item 
                                     :label="$n.' / page'"
-                                    x-on:click="$wire.set('maxRows', {{ $n }}); close()"/>
+                                    x-on:click="$wire.set('tableMaxRows', {{ $n }}); close()"/>
                             @endforeach
                         </div>
                     </x-dropdown>

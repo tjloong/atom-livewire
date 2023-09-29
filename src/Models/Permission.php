@@ -27,13 +27,13 @@ class Permission extends Model
     }
 
     // get user for permission
-    public function user(): BelongsTo
+    public function user() : BelongsTo
     {
         return $this->belongsTo(model('user'));
     }
 
     // get permission list
-    public function getPermissionList(): array
+    public function getPermissionList() : array
     {
         return $this->permissions;
     }

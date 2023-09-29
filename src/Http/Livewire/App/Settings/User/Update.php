@@ -5,13 +5,11 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings\User;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Update extends Component
 {
     use WithForm;
     use WithLoginMethods;
-    use WithPopupNotify;
 
     public $user;
     public $inputs;
@@ -22,7 +20,7 @@ class Update extends Component
     ];
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return array_merge(
             [
@@ -73,9 +71,25 @@ class Update extends Component
         );
     }
 
-    // open
-    public function open($id = null): void
+    // get permissions property
+    public function getPermissionsProperty() : mixed
     {
+        if (!has_table('permissions')) return null;
+
+        return collect(model('permission')->getPermissionList())->mapWithKeys(fn($actions, $module) => [
+            $module => collect($actions)->mapWithKeys(fn($action) => [
+                $action => tier('root') || $this->user->permissions()
+                    ->where('permission', $module.'.'.$action)
+                    ->count(),
+            ])
+        ]);
+    }
+
+    // open
+    public function open($id = null) : void
+    {
+        $this->resetValidation();
+
         if ($this->user = $id
             ? model('user')->readable()->withTrashed()->find($id)
             : model('user')
@@ -86,31 +100,23 @@ class Update extends Component
                 'inputs.is_blocked' => !empty($this->user->blocked_at),
             ]);
 
-            if (has_table('teams')) {
-                $this->fill([
-                    'inputs.teams' => $this->user->teams->pluck('id')->toArray(),
-                ]);
-            }
-
-            $this->resetValidation();
             $this->dispatchBrowserEvent('user-update-open');
         }
     }
 
     // close
-    public function close(): void
+    public function close() : void
     {
-        $this->emit('userSaved');
         $this->dispatchBrowserEvent('user-update-close');
     }
 
     // trash
-    public function trash(): void
+    public function trash() : void
     {
         if ($this->user->id === user('id')) {
             $this->popup([
-                'title' => 'Unable To Delete User',
-                'message' => 'You cannot delete yourself.',
+                'title' => 'atom::settings.user.delete.failed.self.title',
+                'message' => 'atom::settings.user.delete.failed.self.message',
             ], 'alert', 'error');
         }
         else {
@@ -120,21 +126,34 @@ class Update extends Component
     }
 
     // delete
-    public function delete(): void
+    public function delete() : void
     {
         $this->user->forceDelete();
         $this->close();
     }
 
     // restore
-    public function restore(): void
+    public function restore() : void
     {
         $this->user->restore();
         $this->close();
     }
 
+    // toggle permission
+    public function togglePermission($module, $action) : void
+    {
+        $key = $module.'.'.$action;
+
+        if ($permission = $this->user->permissions->firstWhere('permission', $key)) {
+            $permission->delete();
+        }
+        else {
+            $this->user->permissions()->create(['permission' => $key]);
+        }
+    }
+
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
 
@@ -147,10 +166,6 @@ class Update extends Component
 
         if ($password = data_get($this->inputs, 'password')) {
             $this->user->forceFill(['password' => bcrypt($password)])->save();
-        }
-
-        if (has_table('teams')) {
-            $this->user->teams()->sync(data_get($this->inputs, 'teams'));
         }
 
         $this->close();

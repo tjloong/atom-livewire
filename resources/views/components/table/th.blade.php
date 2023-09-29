@@ -38,8 +38,8 @@
             x-data="{
                 sortBy: @js($sortBy),
                 get current () {
-                    const sort = this.$wire.get('sort')
-                    const split = sort?.split(',')
+                    const order = this.$wire.get('tableSortOrder')
+                    const split = order?.split(',')
 
                     return {
                         sortBy: split ? split[0] : null,
@@ -53,10 +53,10 @@
                     if (!this.sortBy) return
 
                     if (this.isSorted) {
-                        if (this.current.sortOrder === 'asc') this.$wire.set('sort', this.sortBy+',desc')
-                        else if (this.current.sortOrder === 'desc') this.$wire.call('resetSort')
+                        if (this.current.sortOrder === 'asc') this.$wire.set('tableSortOrder', this.sortBy+',desc')
+                        else if (this.current.sortOrder === 'desc') this.$wire.call('resetTableSortOrder')
                     }
-                    else this.$wire.set('sort', this.sortBy+',asc')
+                    else this.$wire.set('tableSortOrder', this.sortBy+',asc')
                 },
             }"
             x-on:click="sort"

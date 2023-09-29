@@ -7,33 +7,13 @@ use Livewire\WithPagination;
 
 trait WithTable
 {
-    use WithPopupNotify;
     use WithPagination;
-    
-    public $maxRows = 100;
+
+    public $tableSortOrder;
+    public $tableMaxRows = 100;
     public $checkboxes = [];
     public $showTrashed = false;
     public $showArchived = false;
-
-    // get sort by property
-    public function getSortByProperty() : string
-    {
-        if (!$this->sort) return null;
-
-        $split = explode(',', $this->sort);
-
-        return $split[0];
-    }
-
-    // get sort order property
-    public function getSortOrderProperty() : string
-    {
-        if (!$this->sort) return null;
-
-        $split = explode(',', $this->sort);
-
-        return $split[1] ?? 'asc';
-    }
 
     // get paginator property
     public function getPaginatorProperty() : mixed
@@ -42,11 +22,15 @@ trait WithTable
 
         if ($this->query instanceof LengthAwarePaginator) return $this->query;
 
-        if (!empty($this->sort)) $this->query->orderBy($this->sortBy, $this->sortOrder);
+        if ($this->tableSortOrder) {
+            $order = explode(',', $this->tableSortOrder);
+            $this->query->orderBy($order[0], $order[1] ?? 'asc');
+        }
+
         if ($this->showArchived) $this->query->onlyArchived();
         if ($this->showTrashed) $this->query->onlyTrashed();
 
-        return $this->query->paginate($this->maxRows);
+        return $this->query->paginate($this->tableMaxRows);
     }
 
     // get table property
@@ -72,10 +56,10 @@ trait WithTable
         return [];
     }
 
-    // reset sort
-    public function resetSort() : void
+    // reset table sort order
+    public function resetTableSortOrder() : void
     {
-        $this->reset('sort');
+        $this->reset('tableSortOrder');
     }
 
     // reset filters
