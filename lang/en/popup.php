@@ -10,10 +10,6 @@ return [
             'title' => 'Clear All Trashed',
             'message' => 'This will PERMANENTLY DELETE ALL THE SELECTED RECORDS! Are you sure?',
         ],
-        'delete' => [
-            'title' => 'Permanently Delete Record',
-            'message' => 'Are you sure to DELETE this record? This action CANNOT BE UNDONE.',
-        ],
     ],
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',

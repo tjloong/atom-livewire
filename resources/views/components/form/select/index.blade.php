@@ -69,7 +69,7 @@
                                                 {{ data_get($parsedOptions->firstWhere('value', $val), 'label') }}
                                             </div>
                                             <div class="shrink-0 text-sm flex items-center justify-center">
-                                                <x-close x-on:click.stop="remove(@json($val))"/>
+                                                <x-close x-on:click.stop="remove({{ json_encode($val) }})"/>
                                             </div>
                                         </div>
                                     </div>
@@ -138,13 +138,17 @@
                                 <div wire:key="{{ uniqid() }}" 
                                     x-on:click.stop="select(@js(data_get($opt, 'value')))"
                                     class="py-2 px-4 flex items-center gap-3 cursor-pointer {{ data_get($opt, 'color') }}">
-                                    @if (data_get($opt, 'avatar'))
+                                    @if ($avatar = data_get($opt, 'avatar'))
                                         <div class="shrink-0">
-                                            <x-image :src="data_get($opt, 'avatar')" avatar size="32x32"/>
+                                            <x-image avatar size="32x32" color="random"
+                                                :src="is_string($avatar) ? $avatar : data_get($avatar, 'url')"
+                                                :placeholder="data_get($avatar, 'placeholder')"/>
                                         </div>
                                     @elseif ($image = data_get($opt, 'image'))
                                         <div class="shrink-0">
-                                            <x-image :src="$image" size="32x32"/>
+                                            <x-image size="32x32"
+                                                :src="is_string($image) ? $image : data_get($image, 'url')"
+                                                :placeholder="data_get($image, 'placeholder')"/>
                                         </div>
                                     @elseif ($flag = data_get($opt, 'flag'))
                                         <div class="shrink-0 w-4 h-4">

@@ -18,19 +18,25 @@
         }
     },
     'getColor' => function() use ($attributes) {
-        if ($color = $attributes->get('color')) {
-            return $color === 'random' ? collect([
-                'bg-pink-400',
-                'bg-rose-400',
-                'bg-violet-400',
-                'bg-indigo-400',
-                'bg-sky-400',
-                'bg-teal-400',
-                'bg-amber-400',
-                'bg-orange-400',
-            ])->random() : $color;
+        $color = $attributes->get('color');
+        $colors = [
+            'pink' => '#ff7675',
+            'red' => '#d63031',
+            'orange' => '#e17055',
+            'yellow' => '#fdcb6e',
+            'green' => '#00b894',
+            'blue' => '#0984e3',
+            'purple' => '#6c5ce7',
+            'gray' => '#636e72',
+        ];
+
+        if ($color === 'random' || (!$color && $attributes->get('avatar', false))) {
+            return collect($colors)->values()->random();
         }
-        else return 'bg-white';
+        else if ($color) {
+            return $colors[$color];
+        }
+        else return '#ffffff';
     },
     'getSize' => function($name) use ($attributes) {
         $width = $attributes->get('width');
@@ -62,12 +68,7 @@
         ->only(['class', 'style']) }}
     {{ $attributes->except(['src', 'alt', 'icon', 'size', 'width', 'height', 'color', 'class', 'avatar', 'placeholder']) }}>
     @if ($placeholder && !$getUrl() && !$getFile())
-        <div
-            x-init="$nextTick(() => $el.style.fontSize = ($el.parentNode.offsetWidth * 0.35)+'px')"
-            class="w-full h-full flex items-center justify-center text-white font-bold {{ $getColor() }}"
-            style="font-size: 200%;">
-            {{ strtoupper(substr($placeholder, 0, 2)) }}
-        </div>
+        <img src="https://placehold.co/300x300/{{ str($getColor())->replace('#', '')->toString() }}/ffffff?text={{ strtoupper(substr($placeholder, 0, 2)) }}" class="w-full h-full"/>
     @elseif ($url = $getUrl())
         <img src="{{ $url }}" class="w-full h-full object-cover"
             width="{{ is_numeric($getSize('width')) ? $getSize('width') : null }}"

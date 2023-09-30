@@ -1,5 +1,5 @@
 @props([
-    'label' => $attributes->get('label', 'Delete'),
+    'label' => $attributes->get('label', 'atom::button.delete.label'),
     'callback' => $attributes->get('callback', 'delete'),
     'params' => $attributes->get('params'),
     'reload' => $attributes->get('reload', false),
@@ -10,8 +10,8 @@
     :label="$label"
     :inverted="$inverted" 
     x-on:click="$dispatch('confirm', {
-        title: '{{ __($attributes->get('title', 'atom::button.confirm.delete.title')) }}',
-        message: '{{ __($attributes->get('message', 'atom::button.confirm.delete.message')) }}',
+        title: '{{ __($attributes->get('title', 'atom::button.delete.confirm.title')) }}',
+        message: '{{ __($attributes->get('message', 'atom::button.delete.confirm.message')) }}',
         type: 'error',
         onConfirmed: () => {
             $wire.call('{{ $callback }}', {{ json_encode($params) }})

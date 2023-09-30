@@ -23,4 +23,9 @@ return [
     'tags' => [
         'press-enter' => 'Press enter to add tag',
     ],
+    'select' => [
+        'placeholder' => [
+            'date-range' => 'Select Date Range',
+        ],
+    ],
 ];

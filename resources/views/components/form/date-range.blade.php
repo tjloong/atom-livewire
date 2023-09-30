@@ -1,5 +1,5 @@
 @props([
-    'placeholder' => $attributes->get('placeholder', 'Select Date Range'),
+    'placeholder' => __($attributes->get('placeholder', 'atom::form.select.placeholder.date-range')),
 ])
 
 <x-form.field {{ $attributes }}>
