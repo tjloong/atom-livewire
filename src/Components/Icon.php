@@ -206,6 +206,7 @@ class Icon extends Component
         'download' => 'circle-down',
         'duplicate' => 'copy',
         'edit' => 'pen-to-square',
+        'email' => 'envelope',
         'enquiries' => 'clipboard-question',
         'enquiry' => 'clipboard-question',
         'excel' => 'file-excel',

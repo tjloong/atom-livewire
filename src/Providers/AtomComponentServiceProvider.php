@@ -38,6 +38,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'no-result',
             'thumbnail',
             'plan-alert',
+            'user-card',
             'breadcrumbs',
             'cdn-scripts',
             'alpine-data',
