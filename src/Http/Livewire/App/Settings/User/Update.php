@@ -121,6 +121,7 @@ class Update extends Component
         }
         else {
             $this->user->delete();
+            $this->emit('userDeleted');
             $this->close();
         }
     }
@@ -129,6 +130,7 @@ class Update extends Component
     public function delete() : void
     {
         $this->user->forceDelete();
+        $this->emit('userDeleted');
         $this->close();
     }
 
@@ -136,6 +138,7 @@ class Update extends Component
     public function restore() : void
     {
         $this->user->restore();
+        $this->emit('userUpdated');
         $this->close();
     }
 
@@ -162,11 +165,16 @@ class Update extends Component
             'blocked_at' => data_get($this->inputs, 'is_blocked')
                 ? ($this->user->blocked_at ?? now())
                 : null,
-        ])->save();
+        ]);
 
         if ($password = data_get($this->inputs, 'password')) {
-            $this->user->forceFill(['password' => bcrypt($password)])->save();
+            $this->user->forceFill(['password' => bcrypt($password)]);
         }
+        
+        $this->user->save();
+
+        if ($this->user->wasRecentlyCreated) $this->emit('userCreated');
+        else $this->emit('userUpdated');
 
         $this->close();
     }
