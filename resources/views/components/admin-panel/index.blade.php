@@ -45,15 +45,17 @@
                 @endisset
             </div>
 
-            <div class="grow overflow-y-auto overflow-x-hidden">
-                <div class="text-sm text-gray-500 py-2 px-6">
-                    NAVIGATION
-                </div>
+            @if ($aside->isNotEmpty())
+                <div class="grow overflow-y-auto overflow-x-hidden">
+                    <div class="text-sm text-gray-500 py-2 px-6">
+                        NAVIGATION
+                    </div>
 
-                <div class="grid pb-10">
-                    {{ $aside }}
+                    <div class="grid pb-10">
+                        {{ $aside }}
+                    </div>
                 </div>
-            </div>
+            @endif
 
             @isset($asidefoot)
                 <div class="shrink-0">
