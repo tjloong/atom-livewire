@@ -1,4 +1,4 @@
-@if ($count = $attributes->get('count') ?? (clone $this->query)->onlyArchived()->count())
+@if ($count = $attributes->get('count') ?? (clone $this->query)->whereNotNull('archived_at')->count())
     <div class="bg-gray-100 rounded-full font-medium text-sm py-1 px-3 flex items-center gap-2">
         <div class="shrink-0 text-gray-400">
             <x-icon name="box-archive"/>

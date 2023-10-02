@@ -27,7 +27,7 @@ trait WithTable
             $this->query->orderBy($order[0], $order[1] ?? 'asc');
         }
 
-        if ($this->showArchived) $this->query->onlyArchived();
+        if ($this->showArchived) $this->query->whereNotNull('archived_at');
         if ($this->showTrashed) $this->query->onlyTrashed();
 
         return $this->query->paginate($this->tableMaxRows);
@@ -84,8 +84,12 @@ trait WithTable
     {
         $query = (clone $this->query)->whereIn($this->query->getModel()->getTable().'.id', $id);
 
-        if ($this->showArchived) $query->onlyArchived()->get()->each(fn($row) => $row->markArchived(false));
-        elseif ($this->showTrashed) $query->onlyTrashed()->restore();
+        if ($this->showArchived) {
+            $query->whereNotNull('archived_at')->get()->each(fn($row) => $row->markArchived(false));
+        }
+        elseif ($this->showTrashed) {
+            $query->onlyTrashed()->restore();
+        }
 
         $this->reset([
             'showArchived',
@@ -126,17 +130,5 @@ trait WithTable
 
         $this->reset('checkboxes');
         $this->popup('Moved to Archived.');
-    }
-
-    // restore archived
-    public function restoreArchived($id = []) : void
-    {
-        (clone $this->query)->onlyArchived()
-            ->when($id, fn($q) => $q->whereIn($this->query->getModel()->getTable().'.id', $id))
-            ->get()
-            ->each(fn($row) => $row->markArchived(false));
-
-        $this->fill(['showArchived' => false]);
-        $this->popup('Archived Restored.');
     }
 }
