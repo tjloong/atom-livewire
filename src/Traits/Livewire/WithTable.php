@@ -138,4 +138,13 @@ trait WithTable
         $this->reset('checkboxes');
         $this->popup('Moved to Archived.');
     }
+
+    // restore all archived
+    public function restoreArchived() : void
+    {
+        (clone $this->query)->whereNotNull('archived_at')->update([
+            'archived_at' => null,
+            'archived_by' => null,
+        ]);
+    }
 }
