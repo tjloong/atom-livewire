@@ -250,11 +250,7 @@ class File extends Model
                 : response()->download($this->storage_path);
         }
         else if ($url = data_get($this->getAttributes(), 'url')) {
-            if ($this->disk) {
-                return $this->is_image
-                    ? response()->file($url)
-                    : response()->download($url);
-            }
+            if ($this->disk && $this->is_file) return response()->download($url);
             else return redirect()->to($url);
         }
         else return response('File not found', 404);
