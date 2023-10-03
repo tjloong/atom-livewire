@@ -6,17 +6,20 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Cookie;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
 use Laravel\Socialite\Facades\Socialite;
 
 class Register extends Component
 {
     use WithForm;
+    use WithLoginMethods;
 
     public $ref;
     public $utm;
     public $plan;
     public $token;
     public $provider;
+    public $verification;
 
     public $inputs = [
         'agree_tnc' => false,
@@ -26,7 +29,7 @@ class Register extends Component
     protected $queryString = ['ref', 'utm', 'token', 'provider', 'plan'];
     
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return [
             'inputs.name' => [
@@ -88,15 +91,70 @@ class Register extends Component
     }
 
     // submit
-    public function submit(): mixed
+    public function submit() : mixed
     {
         $this->validateForm();
 
-        return $this->register();
+        if ($this->verify()) {
+            return $this->register();
+        }
+
+        return null;
+    }
+
+    // verified
+    public function verify() : bool
+    {
+        if (!$this->isLoginMethod('email-verified')) return true;
+
+        if ($this->verification = model('verification_code')
+            ->where('email', data_get($this->inputs, 'email'))
+            ->where(fn($q) => $q
+                ->whereNull('expired_at')
+                ->orWhere('expired_at', '<=', now())
+            )
+            ->first()
+        ) {
+            if ($this->verification->code === data_get($this->inputs, 'verification_code')) {
+                $this->fill(['inputs.email_verified_at' => now()]);
+                $this->clearVerificationCode();
+                return true;
+            }
+
+            $this->popup(__('atom::auth.popup.verification'), 'alert', 'error');
+        }
+        else {
+            $this->sendVerificationCode();
+        }
+
+        return false;
+    }
+
+    // send verification code
+    public function sendVerificationCode() : void
+    {
+        if ($this->isLoginMethod('email-verified')) {
+            $this->clearVerificationCode();
+            $this->verification = model('verification_code')->create([
+                'email' => data_get($this->inputs, 'email'),
+                'expired_at' => now()->addDay(),
+            ]);
+        }
+        else if ($this->isLoginMethod('phone-verified')) {
+            //
+        }
+    }
+
+    // clear verification code
+    public function clearVerificationCode() : void
+    {
+        model('verification_code')
+            ->where('email', data_get($this->inputs, 'email'))
+            ->delete();
     }
 
     // register
-    public function register($data = null): mixed
+    public function register($data = null) : mixed
     {
         $data = $data ?? $this->inputs;
 
@@ -128,7 +186,7 @@ class Register extends Component
     }
 
     // post registration
-    public function registered($user): mixed
+    public function registered($user) : mixed
     {
         return to_route($user->home());
     }

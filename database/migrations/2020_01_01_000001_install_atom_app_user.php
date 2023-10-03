@@ -41,6 +41,15 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
         });
 
+        Schema::create('verification_codes', function (Blueprint $table) {
+            $table->id();
+            $table->string('code')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->timestamp('expired_at')->nullable();
+            $table->timestamps();
+        });
+
         // create root user
         if (!model('user')->where('email', $this->rootEmail)->count()) {
             model('user')->forceFill([

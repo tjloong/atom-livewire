@@ -17,6 +17,7 @@ return [
         'register' => true,
         'login' => [
             'email',
+            // 'email-verified',
             // 'username',
             // 'google',
             // 'facebook',

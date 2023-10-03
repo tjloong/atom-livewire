@@ -4,13 +4,13 @@ namespace Jiannius\Atom\Traits\Livewire;
 
 trait WithLoginMethods
 {
-    public function isLoginMethod($methods, $strict = false): bool
+    public function isLoginMethod($methods, $operator = 'or'): bool
     {
-        if ($strict) {
+        if ($operator === 'and') {
             return !collect((array) $methods)
                 ->contains(fn($method) => !in_array($method, config('atom.auth.login')));
         }
-        else {
+        elseif ($operator === 'or') {
             return collect((array) $methods)
                 ->contains(fn($method) => in_array($method, config('atom.auth.login')));
         }
