@@ -59,7 +59,7 @@ class Login extends Component
     {
         return collect([
             $this->isLoginMethod('username') ? 'Username' : null,
-            $this->isLoginMethod('email') ? 'Email' : null,
+            $this->isLoginMethod(['email', 'email-verified']) ? 'Email' : null,
         ])->filter()->join(' or ');
     }
 
@@ -69,7 +69,7 @@ class Login extends Component
         $username = data_get($this->inputs, 'username');
         $query = model('user')->whereNotNull('password')->whereNull('blocked_at');
 
-        if ($this->isLoginMethod('username') && $this->isLoginMethod('email')) {
+        if ($this->isLoginMethod('username') && $this->isLoginMethod(['email', 'email-verified'])) {
             $query->where(fn($q) => $q
                 ->where('username', $username)
                 ->orWhere('email', $username)
@@ -78,7 +78,7 @@ class Login extends Component
         else if ($this->isLoginMethod('username')) {
             $query->where('username', $username);
         }
-        else if ($this->isLoginMethod('email')) {
+        else if ($this->isLoginMethod(['email', 'email-verified'])) {
             $query->where('email', $username);
         }
 
@@ -119,7 +119,7 @@ class Login extends Component
             $attempt = Auth::attempt(compact('username', 'password'), $remember);
         }
 
-        if (!$attempt && $this->isLoginMethod('email')) {
+        if (!$attempt && $this->isLoginMethod(['email', 'email-verified'])) {
             $attempt = Auth::attempt(['email' => $username, 'password' => $password], $remember);
         }
 

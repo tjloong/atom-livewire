@@ -38,7 +38,7 @@ class Login extends Component
                 ],
             ] : [],
 
-            $this->isLoginMethod('email') ? [
+            $this->isLoginMethod(['email', 'email-verified']) ? [
                 'user.email' => [
                     'required' => 'Login email is required.', 
                     'email' => 'Invalid login email', 

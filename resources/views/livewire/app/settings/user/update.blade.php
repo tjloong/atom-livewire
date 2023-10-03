@@ -21,7 +21,7 @@
                 <x-form.text wire:model.defer="user.username"/>
             @endif
     
-            @if ($this->isLoginMethod('email'))
+            @if ($this->isLoginMethod(['email', 'email-verified']))
                 <x-form.email wire:model.defer="user.email" label="Login Email"/>
             @endif
     

@@ -18,13 +18,10 @@ class Register extends Component
     public $utm;
     public $plan;
     public $token;
+    public $inputs;
     public $provider;
     public $verification;
-
-    public $inputs = [
-        'agree_tnc' => false,
-        'agree_promo' => true,
-    ];
+    public $hasValidSignature;
 
     protected $queryString = ['ref', 'utm', 'token', 'provider', 'plan'];
     
@@ -88,6 +85,15 @@ class Register extends Component
                 ]);
             }
         }
+        else {
+            $this->hasValidSignature = request()->hasValidSignature();
+
+            $this->fill(['inputs' => [
+                'email' => request()->query('email'),
+                'agree_tnc' => false,
+                'agree_promo' => true,        
+            ]]);
+        }
     }
 
     // submit
@@ -106,6 +112,7 @@ class Register extends Component
     public function verify() : bool
     {
         if (!$this->isLoginMethod('email-verified')) return true;
+        if ($this->hasValidSignature) return true;
 
         if ($this->verification = model('verification_code')
             ->where('email', data_get($this->inputs, 'email'))
@@ -116,7 +123,6 @@ class Register extends Component
             ->first()
         ) {
             if ($this->verification->code === data_get($this->inputs, 'verification_code')) {
-                $this->fill(['inputs.email_verified_at' => now()]);
                 $this->clearVerificationCode();
                 return true;
             }
@@ -163,7 +169,7 @@ class Register extends Component
             'email' => data_get($data, 'email'),
             'password' => bcrypt(data_get($data, 'password')),
             'data' => data_get($data, 'data'),
-            'email_verified_at' => data_get($data, 'email_verified_at'),
+            'email_verified_at' => now(),
             'login_at' => now(),
         ]);
 

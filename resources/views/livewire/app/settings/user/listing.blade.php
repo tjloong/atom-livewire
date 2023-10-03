@@ -16,7 +16,7 @@
         <x-slot:thead>
             <x-table.th label="Name" sort="name"/>
             @if ($this->isLoginMethod('username')) <x-table.th label="Username"/> @endif
-            @if ($this->isLoginMethod('email')) <x-table.th label="Email"/> @endif
+            @if ($this->isLoginMethod(['email', 'email-verified'])) <x-table.th label="Email"/> @endif
             @if (has_table('roles')) <x-table.th label="Role"/> @endif
             <x-table.th/>
         </x-slot:thead>
@@ -25,7 +25,7 @@
             <x-table.tr>
                 <x-table.td :label="$user->name" wire:click="$emit('updateUser', {{ $user->id }})"/>
                 @if ($this->isLoginMethod('username')) <x-table.td :label="$user->username ?? '--'"/> @endif
-                @if ($this->isLoginMethod('email')) <x-table.td :label="$user->email ?? '--'"/> @endif
+                @if ($this->isLoginMethod(['email', 'email-verified'])) <x-table.td :label="$user->email ?? '--'"/> @endif
                 @if (has_table('roles')) <x-table.td :label="$user->role->name ?? '--'"/> @endif
                 <x-table.td :status="$user->status->badge()"/>
             </x-table.tr>

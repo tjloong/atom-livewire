@@ -12,7 +12,15 @@
                 </div>
             
                 <x-form.text wire:model.defer="inputs.name" label="atom::auth.label.your-name" autofocus/>
-                <x-form.email wire:model.defer="inputs.email" label="atom::auth.label.login-email"/>
+
+                @if ($utm === 'invitation')
+                    <x-form.field label="atom::auth.label.login-email">
+                        {{ data_get($inputs, 'email') }}
+                    </x-form.field>
+                @else
+                    <x-form.email wire:model.defer="inputs.email" label="atom::auth.label.login-email"/>
+                @endif
+                
                 <x-form.password wire:model.defer="inputs.password" label="atom::auth.label.login-password"/>
             
                 <div class="grid gap-2">

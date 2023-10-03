@@ -34,7 +34,7 @@ class Update extends Component
                 ],
             ],
 
-            $this->isLoginMethod('email') ? [
+            $this->isLoginMethod(['email', 'email-verified']) ? [
                 'user.email' => [
                     'required_without:user.username' => 'Login email is required.',
                     function ($attr, $value, $fail) {
