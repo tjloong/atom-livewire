@@ -19,18 +19,25 @@ trait WithTable
     public function getPaginatorProperty() : mixed
     {
         if (!$this->query) return null;
-
         if ($this->query instanceof LengthAwarePaginator) return $this->query;
+
+        $query = (clone $this->query);
 
         if ($this->tableSortOrder) {
             $order = explode(',', $this->tableSortOrder);
-            $this->query->orderBy($order[0], $order[1] ?? 'asc');
+            $query->orderBy($order[0], $order[1] ?? 'asc');
         }
 
-        if ($this->showArchived) $this->query->whereNotNull('archived_at');
-        if ($this->showTrashed) $this->query->onlyTrashed();
+        if (has_column($query->getModel()->getTable(), 'archived_at')) {
+            if ($this->showArchived) $query->whereNotNull('archived_at');
+            else $query->whereNull('archived_at');
+        }
 
-        return $this->query->paginate($this->tableMaxRows);
+        if (has_column($query->getModel()->getTable(), 'deleted_at')) {
+            if ($this->showTrashed) $query->onlyTrashed();
+        }
+
+        return $query->paginate($this->tableMaxRows);
     }
 
     // get table property
