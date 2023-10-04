@@ -118,7 +118,7 @@ class Register extends Component
             ->where('email', data_get($this->inputs, 'email'))
             ->where(fn($q) => $q
                 ->whereNull('expired_at')
-                ->orWhere('expired_at', '<=', now())
+                ->orWhere('expired_at', '>', now())
             )
             ->first()
         ) {
