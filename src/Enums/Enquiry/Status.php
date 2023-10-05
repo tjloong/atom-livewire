@@ -2,8 +2,12 @@
 
 namespace Jiannius\Atom\Enums\Enquiry;
 
-enum Status: string
+use Jiannius\Atom\Traits\Enum;
+
+enum Status : string
 {
+    use Enum;
+
     case PENDING = 'pending';
     case CLOSED = 'closed';
 
@@ -12,14 +16,6 @@ enum Status: string
         return match($this) {
             static::PENDING => 'blue',
             static::CLOSED => 'gray',
-        };
-    }
-
-    public function option()
-    {
-        return match($this) {
-            static::PENDING => ['value' => $this->value, 'label' => str()->headline($this->value)],
-            static::CLOSED => ['value' => $this->value, 'label' => str()->headline($this->value)],
         };
     }
 }

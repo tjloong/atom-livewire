@@ -13,22 +13,22 @@
             <div class="flex items-center gap-2">
                 @if ($attributes->get('archive'))
                     @if ($this->showArchived)
-                        <x-button.restore size="sm" :count="$count" :params="$this->checkboxes"/>
+                        <x-button.restore :count="$count" :params="$this->checkboxes" sm/>
                     @elseif (!$this->showTrashed)
-                        <x-button.archive size="sm" :count="$count" :params="$this->checkboxes"/>
+                        <x-button.archive :count="$count" :params="$this->checkboxes" sm/>
                     @endif
                 @endif
             
                 @if ($attributes->get('trash'))
                     @if ($this->showTrashed)
-                        <x-button.restore size="sm" :count="$count" :params="$this->checkboxes"/>
+                        <x-button.restore :count="$count" :params="$this->checkboxes" sm/>
                     @elseif (!$this->showArchived)
-                        <x-button.trash size="sm" :count="$count" :params="$this->checkboxes"/>
+                        <x-button.trash :count="$count" :params="$this->checkboxes" sm/>
                     @endif
                 @endif
 
                 @if ($attributes->get('delete'))
-                    <x-button.delete size="sm" :count="$count" :params="$this->checkboxes"/>
+                    <x-button.delete :count="$count" :params="$this->checkboxes" sm/>
                 @endif
             </div>
         </div>

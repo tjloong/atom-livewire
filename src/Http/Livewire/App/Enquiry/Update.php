@@ -40,7 +40,6 @@ class Update extends Component
     // close
     public function close() : void
     {
-        $this->emit('enquirySaved');
         $this->dispatchBrowserEvent('enquiry-update-close');
     }
 
@@ -48,6 +47,7 @@ class Update extends Component
     public function delete() : void
     {
         $this->enquiry->delete();
+        $this->emit('enquiryDeleted');
         $this->close();
     }
 
@@ -59,6 +59,9 @@ class Update extends Component
         $this->enquiry->fill([
             'status' => data_get($this->inputs, 'status'),
         ])->save();
+
+        if ($this->enquiry->wasRecentlyCreated) $this->emit('enquiryCreated');
+        else $this->emit('enquiryUpdated');
         
         $this->close();
     }

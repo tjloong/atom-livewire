@@ -3,12 +3,10 @@
 namespace Jiannius\Atom\Http\Livewire\App\Banner;
 
 use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithFileInput;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
 class Update extends Component
 {
-    use WithFileInput;
     use WithForm;
 
     public $banner;
@@ -42,26 +40,6 @@ class Update extends Component
         ];
     }
 
-    // get options property
-    public function getOptionsProperty() : array
-    {
-        return [
-            'types' => collect([
-                'main-banner',
-            ])->map(fn($val) => [
-                'value' => $val,
-                'label' => str($val)->headline()->toString(),
-            ])->toArray(),
-
-            'placements' => collect([
-                'home',
-            ])->map(fn($val) => [
-                'value' => $val,
-                'label' => str($val)->headline()->toString(),
-            ])->toArray(),
-        ];
-    }
-
     // open
     public function open($id = null) : void
     {
@@ -76,7 +54,6 @@ class Update extends Component
     // close
     public function close() : void
     {
-        $this->emit('bannerSaved');
         $this->dispatchBrowserEvent('banner-update-close');
     }
 
@@ -84,6 +61,7 @@ class Update extends Component
     public function delete() : void
     {
         $this->banner->delete();
+        $this->emit('bannerDeleted');
         $this->close();
     }
 
@@ -91,7 +69,12 @@ class Update extends Component
     public function submit() : void
     {
         $this->validateForm();
+
         $this->banner->save();
+
+        if ($this->banner->wasRecentlyCreated) $this->emit('bannerCreated');
+        else $this->emit('bannerUpdated');
+
         $this->close();
     }
 }

@@ -64,13 +64,12 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // enquiry
             'app.enquiry' => 'App\Enquiry\Index',
             'app.enquiry.update' => 'App\Enquiry\Update',
+            'app.enquiry.listing' => 'App\Enquiry\Listing',
 
             // banner
             'app.banner' => 'App\Banner\Index',
             'app.banner.update' => 'App\Banner\Update',
-
-            // email
-            // 'atom.app.email.form-modal' => 'App\Email\FormModal',
+            'app.banner.listing' => 'App\Banner\Listing',
 
             // ticket
             'atom.app.ticket.listing' => 'App\Ticket\Listing',
@@ -103,8 +102,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // settings > page
             'app.settings.page' => 'App\Settings\Page\Index',
-            'app.settings.page.form' => 'App\Settings\Page\Form',
             'app.settings.page.update' => 'App\Settings\Page\Update',
+            'app.settings.page.listing' => 'App\Settings\Page\Listing',
 
             // settings > website
             'app.settings.website.profile' => 'App\Settings\Website\Profile',
