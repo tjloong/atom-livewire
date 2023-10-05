@@ -114,7 +114,7 @@ class Register extends Component
         if (!$this->isLoginMethod('email-verified')) return true;
         if ($this->hasValidSignature) return true;
 
-        if ($this->verification = model('verification_code')
+        if ($this->verification = model('verification')
             ->where('email', data_get($this->inputs, 'email'))
             ->where(fn($q) => $q
                 ->whereNull('expired_at')
@@ -122,7 +122,7 @@ class Register extends Component
             )
             ->first()
         ) {
-            if ($this->verification->code === data_get($this->inputs, 'verification_code')) {
+            if ($this->verification->code === data_get($this->inputs, 'verification')) {
                 $this->clearVerificationCode();
                 return true;
             }
@@ -141,7 +141,7 @@ class Register extends Component
     {
         if ($this->isLoginMethod('email-verified')) {
             $this->clearVerificationCode();
-            $this->verification = model('verification_code')->create([
+            $this->verification = model('verification')->create([
                 'email' => data_get($this->inputs, 'email'),
                 'expired_at' => now()->addDay(),
             ]);
@@ -154,7 +154,7 @@ class Register extends Component
     // clear verification code
     public function clearVerificationCode() : void
     {
-        model('verification_code')
+        model('verification')
             ->where('email', data_get($this->inputs, 'email'))
             ->delete();
     }

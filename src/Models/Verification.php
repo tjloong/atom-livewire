@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Notifications\VerificationCode\Send;
 
-class VerificationCode extends Model
+class Verification extends Model
 {
     use HasFactory;
 

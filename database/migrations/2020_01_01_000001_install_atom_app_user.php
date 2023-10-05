@@ -41,7 +41,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
         });
 
-        Schema::create('verification_codes', function (Blueprint $table) {
+        Schema::create('verifications', function (Blueprint $table) {
             $table->id();
             $table->string('code')->nullable();
             $table->string('email')->nullable();
@@ -71,6 +71,7 @@ return new class extends Migration
     {
         DB::table('users')->where('email', $this->rootEmail)->delete();
 
+        Schema::dropIfExists('verifications');
         Schema::dropIfExists('user_settings');
 
         Schema::table('users', function(Blueprint $table) {

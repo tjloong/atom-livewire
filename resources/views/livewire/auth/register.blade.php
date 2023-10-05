@@ -34,7 +34,7 @@
                     <div class="flex flex-col gap-4">
                         <div class="flex flex-col gap-1">
                             <x-form.text caption="atom::auth.caption.email-verification-code"
-                                wire:model.defer="inputs.verification_code"/>
+                                wire:model.defer="inputs.verification"/>
     
                             <div x-data="{
                                 show: true,
