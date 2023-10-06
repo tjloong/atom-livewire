@@ -16,7 +16,7 @@
     {{ $attributes->get('box') ? 'bg-white rounded-lg border shadow' : '' }}">
     @isset($icon) {{ $icon }}
     @elseif ($icon = $attributes->get('icon', 'folder-open'))
-        <div class="rounded-full bg-white shadow flex border {{ [
+        <div class="shrink-0 rounded-full bg-white shadow flex border {{ [
             'xs' => 'w-8 h-8 text-sm',
             'sm' => 'w-12 h-12',
             'md' => 'w-20 h-20 text-3xl',

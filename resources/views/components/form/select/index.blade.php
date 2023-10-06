@@ -17,6 +17,8 @@
             multiple: @js($attributes->get('multiple', false)),
             show: false,
             open () {
+                if (this.multiple && !this.value) this.value = []
+                
                 this.show = true
                 this.$nextTick(() => {
                     $el.querySelector('#select-input-search')?.focus()

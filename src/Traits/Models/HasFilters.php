@@ -9,7 +9,7 @@ trait HasFilters
     /**
      * Model boot
      */
-    protected static function bootHasFilters(): void
+    protected static function bootHasFilters() : void
     {
         static::saving(function ($model) {
             $model->sanitizeNumericColumns();
@@ -19,7 +19,7 @@ trait HasFilters
     /**
      * Scope for readable
      */
-    public function scopeReadable($query, $data = null): void
+    public function scopeReadable($query, $data = null) : void
     {
         if ($this->usesHasTenant) $query->forTenant();
     }
@@ -27,12 +27,12 @@ trait HasFilters
     /**
      * Scope for status
      */
-    public function scopeStatus($query, $status): void
+    public function scopeStatus($query, $status) : void
     {
         if ($status === 'trashed') $query->onlyTrashed();
         else if ($status === 'active' && $this->hasColumn('is_active')) $query->where('is_active', true);
         else if ($status === 'inactive' && $this->hasColumn('is_active')) $query->where('is_active', false);
-        else {
+        else if ($status) {
             $status = collect($status)
                 ->map(fn($val) => is_string($val) ? $val : $val->value)
                 ->toArray();
@@ -44,7 +44,7 @@ trait HasFilters
     /**
      * Apply scope from filters
      */
-    public function scopeFilter($query, $filters): void
+    public function scopeFilter($query, $filters) : void
     {
         foreach ($this->parseFilters($filters) as $filter) {
             $column = $filter['column'];
@@ -54,7 +54,9 @@ trait HasFilters
 
             if ($scope) $query->$scope($value);
             else if ($operator) $query->where($column, $operator, $value);
-            else if (is_array($value)) $query->whereIn($column, $value);
+            else if (is_array($value)) {
+                if ($value) $query->whereIn($column, $value);
+            }
             else $query->where($column, $value);
         }
     }
@@ -62,7 +64,7 @@ trait HasFilters
     /**
      * Scope for paginateToPage
      */
-    public function scopeToPage($query, $page = 1, $rows = 50): LengthAwarePaginator
+    public function scopeToPage($query, $page = 1, $rows = 50) : LengthAwarePaginator
     {
         return $query->paginate($rows, ['*'], 'page', $page);
     }
@@ -70,7 +72,7 @@ trait HasFilters
     /**
      * Check model has a specific column
      */
-    public function hasColumn($column): bool
+    public function hasColumn($column) : bool
     {
         return has_column($this->getTable(), $column);
     }
@@ -78,7 +80,7 @@ trait HasFilters
     /**
      * Check model column is a date type
      */
-    public function isDateColumn($column): bool
+    public function isDateColumn($column) : bool
     {
         return get_column_type($this->getTable(), $column) === 'date';
     }
@@ -86,7 +88,7 @@ trait HasFilters
     /**
      * Check model column is a datetime type
      */
-    public function isDatetimeColumn($column): bool
+    public function isDatetimeColumn($column) : bool
     {
         return in_array(
             get_column_type($this->getTable(), $column),
@@ -97,7 +99,7 @@ trait HasFilters
     /**
      * Parse filters array
      */
-    public function parseFilters($filters): array
+    public function parseFilters($filters) : array
     {
         $parsed = [];
 
