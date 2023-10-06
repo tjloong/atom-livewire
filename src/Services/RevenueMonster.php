@@ -61,21 +61,25 @@ class RevenueMonster
     // create web payment
     public function createWebPayment($req) : mixed
     {
+        $wp = new WebPayment;
+        $wp->order->id = data_get($req, 'order.id');
+        $wp->order->title = data_get($req, 'order.title');
+        $wp->order->currencyType = data_get($req, 'order.currencyType');
+        $wp->order->amount = data_get($req, 'order.amount');
+        $wp->order->detail = data_get($req, 'order.detail') ?? '';
+        $wp->order->additionalData = data_get($req, 'order.additionalData') ?? '';
+        $wp->customer->email = data_get($req, 'customer.email') ?? '';
+        $wp->customer->phoneNumber = data_get($req, 'customer.phoneNumber') ?? '';
+        $wp->customer->countryCode = data_get($req, 'customer.countryCode') ?? '';
+        $wp->storeId = data_get($req, 'storeId', $this->storeId);
+        $wp->redirectUrl = data_get($req, 'redirectUrl', route('__revenue-monster.redirect'));
+        $wp->notifyUrl = data_get($req, 'notifyUrl', route('__revenue-monster.webhook'));
+        $wp->layoutVersion = 'v3';
+
         try {
-            $wp = new WebPayment;
-            $wp->order->id = data_get($req, 'id');
-            $wp->order->title = data_get($req, 'title');
-            $wp->order->currencyType = data_get($req, 'currencyType');
-            $wp->order->amount = data_get($req, 'amount');
-            $wp->order->detail = data_get($req, 'detail');
-            $wp->order->additionalData = data_get($req, 'additionalData');
-            $wp->storeId = data_get($req, 'storeId', $this->storeId);
-            $wp->redirectUrl = data_get($req, 'redirectUrl', route('__revenue-monster.redirect'));
-            $wp->notifyUrl = data_get($req, 'notifyUrl', route('__revenue-monster.webhook'));
-            $wp->layoutVersion = 'v3';
-    
             return $this->rm->payment->createWebPayment($wp);
         } catch(ApiException $e) {
+            dump($wp);
             dd("statusCode : {$e->getCode()}, errorCode : {$e->getErrorCode()}, errorMessage : {$e->getMessage()}");
         } catch(ValidationException $e) {
             dd($e->getMessage());
