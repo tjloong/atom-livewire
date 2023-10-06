@@ -5,12 +5,10 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 use Illuminate\Support\Facades\Storage;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class RevenueMonster extends Component
 {
     use WithForm;
-    use WithPopupNotify;
     
     public $settings;
 
@@ -46,14 +44,14 @@ class RevenueMonster extends Component
 
         if ($profile->id) {
             $this->popup([
-                'title' => __('atom::popup.revmon.test-success.title'),
-                'message' => __('atom::popup.revmon.test-success.message', ['profile' => $profile->companyName]),
+                'title' => __('atom::revenue-monster.alert.test-success.title'),
+                'message' => __('atom::revenue-monster.alert.test-success.message', ['company' => $profile->companyName]),
             ], 'alert', 'success');
         }
         else {
             $this->popup([
-                'title' => __('atom::popup.revmon.test-failed.title'),
-                'message' => __('atom::popup.revmon.test-failed.message'),
+                'title' => __('atom::revenue-monster.alert.test-failed.title'),
+                'message' => __('atom::revenue-monster.alert.test-failed.message'),
             ], 'alert', 'error');
         }
     }
@@ -61,7 +59,7 @@ class RevenueMonster extends Component
     // submit
     public function submit() : void
     {
-        $this->validate();
+        $this->validateForm();
 
         settings($this->settings);
 
@@ -71,6 +69,6 @@ class RevenueMonster extends Component
             Storage::append($filename, $key);
         }
 
-        $this->popup(__('atom::popup.revmon.updated'));
+        $this->popup(__('atom::revenue-monster.alert.settings-updated'));
     }
 }
