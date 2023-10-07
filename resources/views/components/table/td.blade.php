@@ -44,8 +44,7 @@
                     @foreach (collect($tags)->filter()->take(2) as $tag)
                         <div 
                             @if (strlen($tag) > 20) x-tooltip="{{ $tag }}" @endif
-                            class="text-xs font-medium bg-slate-100 rounded-md py-0.5 px-2 border"
-                        >
+                            class="text-xs font-medium bg-slate-100 rounded-md py-0.5 px-2 border">
                             {{ str($tag)->limit(20) }}
                         </div>
                     @endforeach

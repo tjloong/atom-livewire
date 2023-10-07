@@ -9,7 +9,7 @@
         <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
             <span>
                 @if (isset($label)) {{ $label }}
-                @else {{ str(__(component_label($attributes)))->upper() }}
+                @else {{ str(__(component_label($attributes, '', false)))->upper() }}
                 @endif
             </span>
 
