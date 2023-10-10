@@ -91,8 +91,7 @@
         x-on:click="focus = true"
         x-on:click.away="focus = false"
         wire:ignore
-        class="flex items-center flex-wrap gap-2 w-full"
-    >
+        class="flex items-center flex-wrap gap-2 w-full">
         <div class="relative w-full">
             <div x-ref="anchor"
                 x-on:click="show = true"

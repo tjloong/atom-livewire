@@ -194,6 +194,6 @@ class Register extends Component
     // post registration
     public function registered($user) : mixed
     {
-        return to_route($user->home());
+        return redirect($user->home());
     }
 }
