@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -18,7 +17,10 @@ return new class extends Migration
             $table->string('slug')->nullable();
             $table->string('type')->nullable();
             $table->integer('seq')->nullable();
+            $table->string('color')->nullable();
             $table->json('data')->nullable();
+            $table->boolean('is_locked')->nullable();
+            $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
             $table->foreignId('parent_id')->nullable()->constrained('labels')->onDelete('cascade');
             $table->timestamps();
         });

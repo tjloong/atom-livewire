@@ -1,8 +1,8 @@
 <div class="max-w-screen-md">
     <x-heading :title="$this->title">
         <x-button icon="add"
-            label="Create New"
-            wire:click="$emit('createLabel')"/>
+            label="atom::label.button.new"
+            wire:click="$emit('createLabel', {{ json_encode(compact('type')) }})"/>
     </x-heading>
 
     <x-box>
@@ -10,11 +10,10 @@
             @livewire('app.settings.label.listing', ['labels' => $this->labels], key(uniqid()))
         @else
             <x-no-result
-                :title="'No '.str($this->title)->singular()->headline()"
-                :subtitle="'You do not have any '.str($this->title)->singular()->headline()->lower()"
-            />
+                title="atom::common.empty.result.title"
+                subtitle="atom::common.empty.result.subtitle"/>
         @endif
     </x-box>
 
-    @livewire('app.settings.label.update', compact('type'), key('update'))
+    @livewire('app.settings.label.update', key('update'))
 </div>

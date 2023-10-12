@@ -19,9 +19,11 @@
             'red' => 'bg-red-100 text-red-600 border border-red-200',
             'blue' => 'bg-blue-100 text-blue-600 border border-blue-200',
             'yellow' => 'bg-yellow-100 text-yellow-600 border border-yellow-200',
-            'indigo' => 'bg-indigo-100 text-indigo-600 border border-indigo-200',
+            'purple' => 'bg-purple-100 text-purple-600 border border-purple-200',
+            'cyan' => 'bg-cyan-100 text-cyan-600 border border-cyan-200',
             'orange' => 'bg-orange-100 text-orange-600 border border-orange-200',
             'black' => 'bg-black text-white',
+            'white' => 'bg-white border border-gray-300',
             'gray' => 'bg-gray-100 text-gray-800 border',
         ][$attributes->get('color') ?? 'gray'];
     },

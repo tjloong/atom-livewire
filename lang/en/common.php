@@ -2,6 +2,7 @@
 
 return [
     'button' => [
+        'new' => 'Add New',
         'back' => 'Back',
         'edit' => 'Edit',
         'save' => 'Save',
@@ -38,6 +39,17 @@ return [
         'clear-trashed' => [
             'title' => 'Clear All Trashed',
             'message' => 'This will PERMANENTLY DELETE ALL THE SELECTED RECORDS! Are you sure?',
+        ],
+    ],
+
+    'empty' => [
+        'result' => [
+            'title' => 'No Results',
+            'subtitle' => 'We could not find anything.',
+        ],
+        'option' => [
+            'title' => 'No Options',
+            'subtitle' => 'Options list is empty.',
         ],
     ],
 ];

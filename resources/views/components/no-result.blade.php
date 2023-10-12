@@ -36,10 +36,10 @@
                 'sm' => '',
                 'md' => 'text-lg',
             ][$getSize()] }}">
-                {!! __($attributes->get('title', 'No Results')) !!}
+                {!! __($attributes->get('title', 'atom::common.empty.result.title')) !!}
             </div>
 
-            @if ($subtitle = $attributes->get('subtitle', 'There is nothing returned from the search.'))
+            @if ($subtitle = $attributes->get('subtitle', 'atom::common.empty.result.subtitle'))
                 <div class="text-gray-400 font-medium {{ [
                     'xs' => 'text-sm',
                     'sm' => 'text-sm',

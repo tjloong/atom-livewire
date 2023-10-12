@@ -187,7 +187,9 @@
                             @endif
                         @empty
                             <div wire:key="{{ uniqid() }}">
-                                <x-no-result title="No options available" subtitle="" size="sm"/>
+                                <x-no-result xs
+                                    title="atom::common.empty.option.title"
+                                    subtitle="atom::common.empty.option.subtitle"/>
                             </div>
                         @endforelse
                     @endisset
@@ -197,7 +199,7 @@
                     @if ($foot->isNotEmpty())
                         {{ $foot }}
                     @else
-                        <a class="p-4 flex items-center justify-center gap-2" {{ $foot->attributes->except('label', 'icon') }}>
+                        <a class="py-2 px-4 flex items-center justify-center gap-2" {{ $foot->attributes->except('label', 'icon') }}>
                             @if ($icon = $foot->attributes->get('icon')) <x-icon :name="$icon"/> @endif
                             {{ __($foot->attributes->get('label', '')) }}
                         </a>

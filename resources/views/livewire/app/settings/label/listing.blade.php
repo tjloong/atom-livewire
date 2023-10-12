@@ -7,6 +7,16 @@
                 x-on:click="show = !show"
                 class="flex flex-col gap-2 {{ $count ? 'cursor-pointer' : null }}">
                 <div class="flex items-center gap-3">
+                    @if ($label->color)
+                        <div class="shrink-0">
+                            @if ($label->color_class)
+                                <div class="w-5 h-5 rounded-full border shadow {{ $label->color_class }}"></div>
+                            @else
+                                <div class="w-5 h-5 rounded-full border shadow" style="background-color: {{ $label->color }}"></div>
+                            @endif
+                        </div>
+                    @endif
+
                     <div class="grow flex items-center gap-3">
                         <x-link :label="$label->locale('name')" 
                             wire:click.stop="$emit('updateLabel', {{ $label->id }})"

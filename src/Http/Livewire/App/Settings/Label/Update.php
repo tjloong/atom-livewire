@@ -14,8 +14,8 @@ class Update extends Component
     public $inputs;
 
     protected $listeners = [
-        'createLabel' => 'open',
-        'updateLabel' => 'open',
+        'createLabel' => 'create',
+        'updateLabel' => 'update',
     ];
 
     // validation
@@ -25,6 +25,8 @@ class Update extends Component
             [
                 'label.type' => ['nullable'],
                 'label.slug' => ['nullable'],
+                'label.color' => ['nullable'],
+                'label.image_id' => ['nullable'],
                 'label.parent_id' => ['nullable'],
             ],
 
@@ -40,19 +42,30 @@ class Update extends Component
         return collect(config('atom.locales'));
     }
 
-    // open
-    public function open($id = null, $type = null) : void
+    // create
+    public function create($data = []) : void
     {
-        $this->resetValidation();
+        $this->label = model('label')->fill($data);
+        $this->open();
+    }
 
-        if ($this->label = $id 
-            ? model('label')->find($id)
-            : model('label')->fill(['type' => $type ?? $this->type])
-        ) {
+    // update
+    public function update($id) : void
+    {
+        $this->label = model('label')->find($id);
+        $this->open();
+    }
+
+    // open
+    public function open() : void
+    {
+        if ($this->label) {
+            $this->resetValidation();
+
             $this->fill([
                 'inputs.name' => (array) $this->label->name,
             ]);
-
+    
             $this->dispatchBrowserEvent('label-update-open');
         }
     }

@@ -1,6 +1,10 @@
-<div class="box bg-white border shadow flex flex-col divide-y rounded-lg" {{
-    $attributes->except(['heading', 'class'])
-}}>
+<div 
+    class="box flex flex-col divide-y rounded-lg {{ 
+        $attributes->get('flat')
+            ? 'bg-slate-100'
+            : 'bg-white border shadow'
+    }}"
+    {{ $attributes->except(['heading', 'class']) }}>
     @isset($heading)
         {{ $heading }}
     @elseif ($heading = $attributes->get('heading'))

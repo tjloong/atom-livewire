@@ -1,15 +1,16 @@
-<x-form.drawer id="label-update">
+<x-form.drawer id="label-update" class="max-w-screen-sm p-5">
 @if ($label)
     @if ($label->exists)
-        <x-slot:heading title="Update Label"></x-slot:heading>
+        <x-slot:heading title="atom::label.heading.update"></x-slot:heading>
         <x-slot:buttons delete></x-slot:buttons>
     @else
-        <x-slot:heading title="Create Label"></x-slot:heading>
+        <x-slot:heading title="atom::label.heading.create"></x-slot:heading>
     @endif
 
     <x-form.group class="p-0">
         @if ($type = $label->type)
-            <x-form.text :value="str()->headline($type)" label="Label Type" readonly/>
+            <x-form.text label="atom::label.label.type" readonly
+                :value="str()->headline($type)"/>
         @endif
 
         @if (data_get($label->data, 'is_locked'))
@@ -30,18 +31,29 @@
                     ->join(' / ')"/>
             @endif
         @else
-            <x-form.field label="Label Name" required>
+            <x-form.field label="atom::label.label.name" required>
                 <div class="flex flex-col gap-2">
                     @foreach ($this->locales->sort() as $locale)
-                        <x-form.text wire:model.defer="inputs.name.{{ $locale }}" :prefix="$this->locales->count() > 1 ? $locale : null" :label="false"/>
+                        <x-form.text :label="false"
+                            wire:model.defer="inputs.name.{{ $locale }}"
+                            :prefix="$this->locales->count() > 1 ? $locale : null"/>
                     @endforeach
                 </div>
             </x-form.field>
 
-            <x-form.text wire:model.defer="label.slug" prefix="/" placeholder="autogen"/>
-            <x-form.select.label wire:model="label.parent_id" :type="$type" children>
+            <x-form.text label="atom::label.label.slug" placeholder="autogen"
+                wire:model.defer="label.slug" prefix="/"/>
+
+            <x-form.select.label label="atom::label.label.parent" :type="$type" children
+                wire:model="label.parent_id">
                 <x-slot:foot></x-slot:foot>
             </x-form.select.label>
+
+            <x-form.color label="atom::label.label.color"
+                wire:model="label.color"/>
+
+            <x-form.file label="atom::label.label.image"
+                wire:model="label.image_id"/>
         @endif
     </x-form.group>
 @endif

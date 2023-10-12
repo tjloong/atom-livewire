@@ -25,7 +25,7 @@ class Index extends Component
     {
         return $this->type
             ? str($this->type)->headline()->plural()->toString()
-            : 'Labels';
+            : __('atom::label.heading.label');
     }
 
     // get labels property

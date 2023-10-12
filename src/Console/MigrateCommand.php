@@ -38,8 +38,8 @@ class MigrateCommand extends Command
                 foreach ([
                     'app.user',
                     'app.signup',
-                    'app.label',
                     'app.file',
+                    'app.label',
                     'app.setting',
                 ] as $module) {
                     $this->call('atom:migrate', ['module' => $module]);
