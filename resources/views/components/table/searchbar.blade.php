@@ -83,7 +83,7 @@
                                 x-model="text"
                                 x-on:keydown.enter.stop="search"
                                 class="grow transparent"
-                                placeholder="{{ __('atom::table.search.placeholder') }}">
+                                placeholder="{{ __('atom::common.label.search') }}">
 
                             <div class="shrink-0">
                                 <x-close x-show="!empty(text)" x-on:click.stop="text = null; search()"/>

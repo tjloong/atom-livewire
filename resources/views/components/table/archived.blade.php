@@ -6,18 +6,18 @@
 
         <div class="grow flex items-center gap-3">
             @if ($this->showArchived)
-                {{ __('atom::table.archived.showing', ['count' => $count]) }}
+                {{ __('atom::common.label.showing-archived', ['count' => $count]) }}
                 
-                <x-link label="atom::table.archived.restore"
+                <x-link label="atom::common.button.restore"
                     wire:click="restoreArchived"
                     wire:key="table-restore-archived"/>
 
-                <x-link label="atom::table.archived.cancel"
+                <x-link label="atom::common.button.cancel"
                     wire:click="$set('showArchived', false)"
                     wire:key="table-cancel-show-archived"/>
             @else
-                {{ __('atom::table.archived.count', ['count' => $count]) }}
-                <x-link label="atom::table.archived.show" 
+                {{ __('atom::common.label.archived-count', ['count' => $count]) }}
+                <x-link label="atom::common.button.show" 
                     x-on:click="
                         $wire.set('showArchived', true);
                         $wire.set('showTrashed', false)

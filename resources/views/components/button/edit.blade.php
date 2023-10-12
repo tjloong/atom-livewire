@@ -1,3 +1,3 @@
 <x-button icon="edit"
-    label="atom::button.edit"
+    label="atom::common.button.edit"
     {{ $attributes }}/>

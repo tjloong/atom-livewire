@@ -11,12 +11,12 @@
         <div
             x-on:click.prevent="open" 
             class="cursor-pointer text-xs bg-red-500 text-white font-medium rounded-full px-2 py-0.5 flex items-center justify-center gap-3">
-            {{ trans_choice('atom::table.filters.count', $count) }}
+            {{ trans_choice('atom::common.label.filter-count', $count) }}
             <x-icon name="xmark" x-on:click.stop="$wire.resetFilters()"/>
         </div>
     @else
         <div
-            x-tooltip="Filters"
+            x-tooltip="{{ __('atom::common.label.filter') }}"
             x-on:click.prevent="open"
             class="cursor-pointer p-2 rounded-full flex text-gray-500 hover:text-gray-800 hover:bg-gray-200">
             <x-icon name="sliders" class="m-auto"/>

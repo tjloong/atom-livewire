@@ -4,7 +4,7 @@
             <div class="shrink-0 text-xs">
                 <x-icon name="check-double"/>
             </div>
-            {{ __('atom::table.checkbox-actions', ['count' => $count]) }}
+            {{ __('atom::common.label.selected-count', ['count' => $count]) }}
         </div>
 
         <div class="grow flex items-center justify-between gap-3 flex-wrap">
