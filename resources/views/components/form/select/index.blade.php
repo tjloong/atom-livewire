@@ -57,7 +57,7 @@
                 @endif
 
                 @if ($empty)
-                    <input type="text" class="form-input transparent grow" placeholder="{{ $placeholder }}" readonly>
+                    <input type="text" class="transparent grow" placeholder="{{ $placeholder }}" readonly>
                 @else
                     <div class="grow">
                         @if ($slot->isNotEmpty())
@@ -107,7 +107,7 @@
                             x-on:focus="focus = true"
                             x-on:blur="focus = false"
                             wire:model.debounce.300ms="selectInputSearchText"
-                            class="form-input transparent grow" 
+                            class="transparent grow" 
                             placeholder="{{ __('Search') }}">
 
                         <div x-show="!empty($wire.get('selectInputSearchText'))" class="shrink-0">

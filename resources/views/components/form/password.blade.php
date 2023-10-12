@@ -11,7 +11,7 @@
             x-bind:type="show ? 'text' : 'password'"
             x-on:focus="focus = true"
             x-on:blur="focus = false"
-            class="grow form-input transparent"
+            class="grow transparent"
             {{ $attributes->wire('model') }}>
 
         <div

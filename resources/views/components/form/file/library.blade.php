@@ -82,7 +82,7 @@
                         x-on:input.debounce.400ms="search()"
                         x-on:input.stop
                         type="text" 
-                        class="form-input transparent grow" 
+                        class="transparent grow" 
                         placeholder="{{ __('Search') }}">
                     <x-close x-show="!empty(text)" x-on:click="text = null; search()"/>
                 </div>

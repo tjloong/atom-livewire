@@ -23,7 +23,7 @@
                 x-on:focus="focus = true"
                 x-on:blur="focus = false"
                 {{ $attributes
-                    ->class(['form-input transparent w-full'])
+                    ->class(['transparent w-full'])
                     ->merge([
                         'placeholder' => $placeholder === 'autogen'
                             ? 'Leave empty to auto generate'

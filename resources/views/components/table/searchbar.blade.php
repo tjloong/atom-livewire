@@ -45,24 +45,23 @@
                 <div 
                     x-data="{
                         show: false,
-                        focus: false,
                         text: null,
                         value: @entangle(($attributes->wire('model')->value() ?: 'filters.search')),
                         init () {
                             this.text = this.value
                             this.show = !empty(this.value)
-                            this.$watch('text', () => this.value = this.text)
                         },
                         open () {
                             this.show = true
-                            this.focus = true
                             this.$nextTick(() => this.$refs.text.focus())
                         },
                         close () {
                             if (empty(this.text)) {
                                 this.show = false
-                                this.focus = false
                             }
+                        },
+                        search () {
+                            this.value = this.text
                         },
                     }"
                     x-on:click="open"
@@ -70,26 +69,36 @@
                     <div
                         x-show="!show"
                         x-tooltip="Search"
-                        class="cursor-pointer flex p-2 rounded-full flex text-gray-500 hover:text-gray-800 hover:bg-gray-200">
+                        class="cursor-pointer flex divide-x p-2 rounded-full flex text-gray-500 hover:text-gray-800 hover:bg-gray-200">
                         <x-icon name="search"/>
                     </div>
 
                     <div 
                         x-show="show" 
-                        x-on:click.away="focus = false"
-                        x-bind:class="focus && 'active'"
-                        class="form-input flex items-center gap-3">
-                        <div class="shrink-0">
-                            <x-icon name="search" class="text-gray-400"/>
+                        x-on:click.away="show = false"
+                        class="flex items-center divide-x divide-gray-300 border border-gray-300 rounded-md">
+                        <div class="grow py-1.5 px-3 flex items-center gap-3">
+                            <input type="text"
+                                x-ref="text"
+                                x-model="text"
+                                x-on:keydown.enter.stop="search"
+                                class="grow transparent"
+                                placeholder="{{ __('atom::table.search.placeholder') }}">
+
+                            <div class="shrink-0">
+                                <x-close x-show="!empty(text)" x-on:click.stop="text = null; search()"/>
+                            </div>
                         </div>
 
-                        <input type="text"
-                            x-ref="text"
-                            x-model.debounce.400ms="text"
-                            class="form-input transparent grow"
-                            placeholder="{{ __('atom::table.search.placeholder') }}">
-
-                        <x-close x-show="!empty(text)" x-on:click.stop="text = null"/>
+                        <div class="shrink-0 flex flex-col">
+                            <div class="grow py-1.5 px-3">
+                                <button type="button" 
+                                    x-on:click.stop="search"
+                                    class="flex items-center justify-center text-gray-500">
+                                    <x-icon name="search"/>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             @endif

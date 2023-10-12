@@ -64,6 +64,7 @@ window.empty = (value) => {
 
     return (Array.isArray(value) && !value.length)
         || (typeof value === 'object' && !Object.keys(value).length && Object.getPrototypeOf(value) === Object.prototype)
+        || (typeof value === 'string' && value.trim() === '')
 }
 
 // short number

@@ -104,7 +104,7 @@
                 <x-icon name="calendar" class="shrink-0 text-gray-400"/>
                 <input type="text" placeholder="{{ __('Select Date') }}" readonly
                     x-bind:value="inputs.date ? formatDate(inputs.date) : null"
-                    class="form-input transparent grow">
+                    class="transparent grow">
                 <x-close x-show="inputs.date" x-on:click="clear" class="shrink-0"/>
             </div>
 

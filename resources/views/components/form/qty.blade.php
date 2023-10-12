@@ -48,7 +48,7 @@
             x-on:focus="focus = true"
             x-on:blur="focus = false"
             x-on:input.stop="format($event.target.value)"
-            class="form-input transparent text-center w-full grow"
+            class="transparent text-center w-full grow"
         >
 
         <div x-on:click="increase" class="shrink-0 flex items-center justify-center cursor-pointer">

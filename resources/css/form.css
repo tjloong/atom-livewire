@@ -47,7 +47,7 @@ select.form-input,
     @apply border border-red-500 ring-2 ring-red-200;
 }
 
-.form-input.transparent {
+input.transparent {
     @apply bg-transparent appearance-none p-0 border-0 focus:ring-0 hover:ring-0;
 }
 .form-input.readonly {
