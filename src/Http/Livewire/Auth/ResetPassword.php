@@ -10,28 +10,26 @@ class ResetPassword extends Component
 {
     use WithForm;
 
-    public $email;
     public $token;
-    public $password;
-    public $passwordConfirm;
+    public $inputs;
 
     // validations
-    protected function validations(): array
+    protected function validation(): array
     {
         return [
             'token' => [
                 'required' => 'Token is missing.',
             ],
-            'email' => [
+            'inputs.email' => [
                 'required' => 'Email is required.',
                 'email' => 'Invalid email.',
             ],
-            'password' => [
+            'inputs.password' => [
                 'required' => 'Password is required.',
                 'min:8' => 'Password must be at least 8 characters.',
-                'confirmed' => 'Please confirm your password.',
+                'confirmed' => 'Password confirmation mismatched.',
             ],
-            'password_confirmation' => [
+            'inputs.password_confirmation' => [
                 'required' => 'Confirm password is required.',
             ],
         ];
@@ -40,10 +38,12 @@ class ResetPassword extends Component
     // mount
     public function mount()
     {
-        parent::mount();
-
-        $this->email = request()->query('email');
-        $this->token = request()->query('token');
+        $this->fill([
+            'token' => request()->query('token'),
+            'inputs.email' => request()->query('email'),
+            'inputs.password' => null,
+            'inputs.password_confirmation' => null,
+        ]);
     }
 
     // submit
@@ -54,9 +54,9 @@ class ResetPassword extends Component
         $status = Password::reset(
             [
                 'token' => $this->token,
-                'email' => $this->email,
-                'password' => $this->password,
-                'password_confirmation' => $this->passwordConfirm,
+                'email' => data_get($this->inputs, 'email'),
+                'password' => data_get($this->inputs, 'password'),
+                'password_confirmation' => data_get($this->inputs, 'password_confirmation'),
             ],
             function ($user, $password) {
                 $user->forceFill([

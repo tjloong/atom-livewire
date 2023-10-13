@@ -1,35 +1,23 @@
 <div class="flex flex-col gap-4">
     <x-form>
         <x-form.group>
-            <div class="text-2xl font-bold">
-                {{ __('Reset Password') }}
-            </div>
+            <x-heading title="atom::auth.heading.reset-password" 2xl/>
     
-            <x-form.field label="Email" :value="$email"/>
+            <x-form.field label="atom::auth.label.email" :value="data_get($inputs, 'email')"/>
     
-            <x-form.password
-                label="New Password"
-                wire:model.defer="password"
-                required
-                autofocus
-            />
+            <x-form.password label="atom::auth.label.password" autofocus
+                wire:model.defer="inputs.password"/>
     
-            <x-form.password
-                label="Confirm Password"
-                wire:model.defer="passwordConfirm"
-                required
-                autofocus
-            />
+            <x-form.password label="atom::auth.label.password-confirm"
+                wire:model.defer="inputs.password_confirmation"/>
         </x-form.group>
 
         <x-slot:foot>
-            <x-button.submit size="md" block
-                label="Reset Password"
-            />
+            <x-button.submit block label="atom::auth.button.reset-password"/>
         </x-slot:foot>
     </x-form>
 
     <a href="{{ route('login') }}" class="flex items-center gap-2">
-        <x-icon name="arrow-left"></x-icon> {{ __('Back to login') }}
+        <x-icon name="arrow-left"></x-icon> {{ __('atom::auth.button.back-login') }}
     </a>
 </div>
