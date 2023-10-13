@@ -4,17 +4,15 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Email extends Component
 {
     use WithForm;
-    use WithPopupNotify;
     
     public $settings;
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return [
             'settings.notify_from' => ['required' => 'Notification from email address is required.'],
@@ -30,7 +28,7 @@ class Email extends Component
     }
 
     // mount
-    public function mount(): void
+    public function mount() : void
     {
         foreach ([
             'notify_from',
@@ -49,12 +47,12 @@ class Email extends Component
     }
 
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
 
         settings($this->settings);
         
-        $this->popup('Email Configurations Updated.');
+        $this->popup(__('atom::settings.alert.email-updated'));
     }
 }
