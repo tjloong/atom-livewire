@@ -76,8 +76,14 @@
                                 $dropdown->attributes->get('restore')
                                 || $dropdown->attributes->get('trash')
                                 || $dropdown->attributes->get('delete')
+                                || $dropdown->attributes->get('archive')
                             )
                                 <div class="border-t">
+                                    @if ($dropdown->attributes->get('archive'))
+                                        <x-dropdown.archive
+                                            :params="$dropdown->attributes->get('archive')"/>
+                                    @endif
+
                                     @if ($dropdown->attributes->get('restore'))
                                         <x-dropdown.restore
                                             :params="$dropdown->attributes->get('restore')"/>

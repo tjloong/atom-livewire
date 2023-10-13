@@ -32,6 +32,7 @@
     
         @isset($dropdown)
             <x-slot:dropdown
+                :archive="$dropdown->attributes->get('archive', false)"
                 :trash="$dropdown->attributes->get('trash', false)"
                 :delete="$dropdown->attributes->get('delete', false)"
                 :restore="$dropdown->attributes->get('restore', false)">

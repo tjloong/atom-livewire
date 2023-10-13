@@ -12,6 +12,7 @@ return [
         'delete' => 'Delete',
         'remove' => 'Remove',
         'cancel' => 'Cancel',
+        'archive' => 'Archive',
         'restore' => 'Restore',
         'restore-all' => 'Restore All',
     ],
