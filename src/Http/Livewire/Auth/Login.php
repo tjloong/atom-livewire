@@ -34,23 +34,31 @@ class Login extends Component
     // mount
     public function mount()
     {
-        if (user()) return redirect(user()->home());
-        // login using app key (root login)
-        else if (
-            ($appkey = request()->query('appkey'))
-            && $appkey === config('app.key')
-            && ($user = model('user')->oldest()->firstWhere('tier', 'root'))
-        ) {
-            $this->submit($user);
+        if (user()) {
+            return redirect(user()->home());
         }
-        // socialite login (skip error from socialite)
-        else if (
-            ($token = request()->query('token'))
-            && ($provider = request()->query('provider'))
-            && ($socialite = rescue(fn() => Socialite::driver($provider)->userFromToken($token)))
-            && ($user = model('user')->firstWhere('email', $socialite->getEmail()))
-        ) {
-            $this->submit($user);
+        else {
+            auth()->logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+    
+            // login using app key (root login)
+            if (
+                ($appkey = request()->query('appkey'))
+                && $appkey === config('app.key')
+                && ($user = model('user')->oldest()->firstWhere('tier', 'root'))
+            ) {
+                $this->submit($user);
+            }
+            // socialite login (skip error from socialite)
+            else if (
+                ($token = request()->query('token'))
+                && ($provider = request()->query('provider'))
+                && ($socialite = rescue(fn() => Socialite::driver($provider)->userFromToken($token)))
+                && ($user = model('user')->firstWhere('email', $socialite->getEmail()))
+            ) {
+                $this->submit($user);
+            }
         }
     }
 
