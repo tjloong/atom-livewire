@@ -93,29 +93,6 @@ function verify_recaptcha($token, $secret = null)
 }
 
 /**
- * Metadata
- */
-function metadata($method = null, $args = null)
-{
-    $classes = [
-        'try' => 'App\\Services\\Metadata',
-        'use' => 'Jiannius\\Atom\\Services\\Metadata',
-    ];
-
-    $class = class_exists($classes['try'])
-        ? $classes['try']
-        : $classes['use'];
-
-    $instance = app($class);
-
-    if ($method) {
-        $methodName = str()->camel($method);
-        return $instance->$methodName($args);
-    }
-    else return $instance;
-}
-
-/**
  * Flatten tabs array
  */
 function tabs($tabs, $value = false)
@@ -397,6 +374,18 @@ function currencies($country = false)
     }
 
     return $currencies;
+}
+
+// short currency
+function short_currency($num, $symbol = null, $bracket = true)
+{
+    $num = (float) $num ?: 0;
+    $short = short_number($num);
+    $currency = $symbol ? "$symbol $short" : $short;
+
+    if ($bracket && $num < 0) $currency = '('.str_replace('-', '', $currency).')';
+
+    return $currency;
 }
 
 /**

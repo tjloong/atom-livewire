@@ -4,10 +4,10 @@ namespace Jiannius\Atom\Components;
 
 use Illuminate\View\Component;
 
-class UserCard extends Component
+class ContactCard extends Component
 {
     public function render()
     {
-        return view('atom::components.user-card');
+        return view('atom::components.contact-card');
     }
 }

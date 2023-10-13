@@ -2,7 +2,7 @@
 @if ($label)
     @if ($label->exists)
         <x-slot:heading title="atom::label.heading.update"></x-slot:heading>
-        <x-slot:buttons delete></x-slot:buttons>
+        <x-slot:buttons :delete="!$label->is_locked"></x-slot:buttons>
     @else
         <x-slot:heading title="atom::label.heading.create"></x-slot:heading>
     @endif
@@ -13,7 +13,7 @@
                 :value="str()->headline($type)"/>
         @endif
 
-        @if (data_get($label->data, 'is_locked'))
+        @if ($label->is_locked)
             <x-form.field label="Label Name">
                 <div class="flex flex-col gap-2">
                     @foreach ($this->locales->sort() as $locale)
