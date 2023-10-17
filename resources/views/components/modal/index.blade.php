@@ -14,8 +14,8 @@
     x-transition.opacity
     x-on:{{ $id }}-open.window="open"
     x-on:{{ $id }}-close.window="close"
-    x-on:open="open"
-    x-on:close="close"
+    x-on:open.stop="open"
+    x-on:close.stop="close"
     @if ($show) x-init="open" @endif
     class="fixed inset-0 z-50 overflow-auto"
     id="{{ $id }}"

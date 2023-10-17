@@ -7,7 +7,7 @@
             focus: false,
             tel: null,
             value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
-            countries: @js(metadata()->countries()),
+            countries: @js(countries()),
             get flag () {
                 return this.countries.find(cn => (cn.dial_code === this.code))?.flag
             },

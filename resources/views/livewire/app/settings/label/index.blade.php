@@ -14,6 +14,4 @@
                 subtitle="atom::common.empty.result.subtitle"/>
         @endif
     </x-box>
-
-    @livewire('app.settings.label.update', key('update'))
 </div>

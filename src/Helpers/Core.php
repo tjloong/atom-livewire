@@ -493,7 +493,7 @@ function format_address($value)
     $l3 = collect([data_get($value, 'zip'), data_get($value, 'postcode'), data_get($value, 'city')])->filter()->join(' ');
     $l4 = collect([
         data_get($value, 'state'), 
-        data_get(metadata()->countries(data_get($value, 'country')), 'name'),
+        data_get(countries(data_get($value, 'country')), 'name'),
     ])->filter()->join(' ');
 
     $address = collect([$l1, $l2, $l3, $l4])->filter()->join(', ');

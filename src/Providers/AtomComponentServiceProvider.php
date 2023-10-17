@@ -81,9 +81,11 @@ class AtomComponentServiceProvider extends ServiceProvider
             'popup.confirm',
             
             'box.index',
+            'box.flat',
             'box.fieldset',
             'box.trace',
             'box.row',
+            'box.stat',
             
             'button.index',
             'button.edit',

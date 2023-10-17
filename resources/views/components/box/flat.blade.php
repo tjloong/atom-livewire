@@ -1,5 +1,5 @@
 <div 
-    class="box flex flex-col divide-y rounded-lg bg-white border shadow"
+    class="flex flex-col divide-y rounded-lg bg-slate-100"
     {{ $attributes->except(['heading', 'class']) }}>
     @isset($heading)
         {{ $heading }}
@@ -15,7 +15,7 @@
     </div>
 
     @isset ($foot)
-        <div {{ $foot->attributes->merge(['class' => 'py-3 px-4 bg-slate-100 rounded-b-lg']) }}>
+        <div {{ $foot->attributes->merge(['class' => 'py-3 px-4 rounded-b-lg']) }}>
             {{ $foot }}
         </div>
     @endisset

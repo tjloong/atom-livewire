@@ -51,37 +51,41 @@
         <div x-ref="anchor"
             x-bind:class="show && 'active'"
             class="form-input w-full">
-            <div class="flex items-center gap-3 {{ $empty ? 'form-input-caret' : '' }}">
-                @if ($icon = $attributes->get('icon')) 
-                    <x-icon :name="$icon" class="text-gray-400"/> 
-                @endif
+            <div class="flex gap-3 {{ $empty ? 'form-input-caret' : '' }}">
+                <div class="grow flex items-center gap-3">
+                    @if ($icon = $attributes->get('icon')) 
+                        <x-icon :name="$icon" class="text-gray-400"/> 
+                    @endif
 
-                @if ($empty)
-                    <input type="text" class="transparent grow" placeholder="{{ $placeholder }}" readonly>
-                @else
-                    <div class="grow">
-                        @if ($slot->isNotEmpty())
-                            {{ $slot }}
-                        @elseif ($multiple)
-                            <div class="flex flex-wrap gap-2">
-                                @foreach ($value as $val)
-                                    <div class="bg-slate-200 rounded-md px-2 border border-gray-200">
-                                        <div class="flex items-center gap-2 max-w-[200px]">
-                                            <div class="truncate text-xs font-medium">
-                                                {{ data_get($parsedOptions->firstWhere('value', $val), 'label') }}
-                                            </div>
-                                            <div class="shrink-0 text-sm flex items-center justify-center">
-                                                <x-close x-on:click.stop="remove({{ json_encode($val) }})"/>
+                    @if ($empty)
+                        <input type="text" class="transparent grow" placeholder="{{ $placeholder }}" readonly>
+                    @else
+                        <div class="grow">
+                            @if ($slot->isNotEmpty())
+                                {{ $slot }}
+                            @elseif ($multiple)
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach ($value as $val)
+                                        <div class="bg-slate-200 rounded-md px-2 border border-gray-200">
+                                            <div class="flex items-center gap-2 max-w-[200px]">
+                                                <div class="truncate text-xs font-medium">
+                                                    {{ data_get($parsedOptions->firstWhere('value', $val), 'label') }}
+                                                </div>
+                                                <div class="shrink-0 text-sm flex items-center justify-center">
+                                                    <x-close x-on:click.stop="remove({{ json_encode($val) }})"/>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            {{ data_get($parsedOptions->firstWhere('value', $value), 'label') }}
-                        @endif
-                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                {{ data_get($parsedOptions->firstWhere('value', $value), 'label') }}
+                            @endif
+                        </div>
+                    @endif
+                </div>
 
+                @if (!$empty)
                     <div class="shrink-0">
                         <x-close x-on:click.stop="remove()"/>
                     </div>
@@ -123,9 +127,10 @@
                         {{ $options }}
                     @else
                         @forelse ($parsedOptions->filter(function($opt) {
-                            return str(data_get($opt, 'label'))->lower()->is("*{$this->selectInputSearchText}*")
-                                || str(data_get($opt, 'small'))->lower()->is("*{$this->selectInputSearchText}*")
-                                || str(data_get($opt, 'remark'))->lower()->is("*{$this->selectInputSearchText}*");
+                            $search = str()->lower($this->selectInputSearchText);
+                            return str(data_get($opt, 'label'))->lower()->is("*{$search}*")
+                                || str(data_get($opt, 'small'))->lower()->is("*{$search}*")
+                                || str(data_get($opt, 'remark'))->lower()->is("*{$search}*");
                         })->values() as $opt)
                             @if (data_get($opt, 'is_group'))
                                 <div wire:key="{{ uniqid() }}" 

@@ -1,4 +1,5 @@
 @php
+    $href = $attributes->get('href');
     $contact = $attributes->get('contact');
     $getSize = function() use ($attributes) {
         return collect([
@@ -11,7 +12,19 @@
     };
 @endphp
 
-<div {{ $attributes->except(['contact', 'sm', 'md', 'lg', 'xl', 'avatar', 'name', 'email']) }}>
+<div 
+    @if ($href)
+        x-data
+        x-on:click="window.location = @js($href)"
+    @endif
+    {{ $attributes
+        ->class([
+            $attributes->get('class') ?? (
+                $getSize() === 'xs' ? 'border border-gray-300 rounded-full p-0.5 pr-2' : ''
+            ),
+            $attributes->hasLike('href', '*click*') ? 'cursor-pointer' : '',
+        ])
+        ->except(['contact', 'sm', 'md', 'lg', 'xl', 'avatar', 'name', 'email']) }}>
     <div class="flex items-center gap-2 w-full">
         <div class="shrink-0">
             <x-image avatar 

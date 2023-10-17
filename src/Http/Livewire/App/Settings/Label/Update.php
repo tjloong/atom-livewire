@@ -66,14 +66,14 @@ class Update extends Component
                 'inputs.name' => (array) $this->label->name,
             ]);
     
-            $this->dispatchBrowserEvent('label-update-open');
+            $this->openDrawer('label-update');
         }
     }
 
     // close
     public function close() : void
     {
-        $this->dispatchBrowserEvent('label-update-close');
+        $this->closeDrawer('label-update');
     }
 
     // delete

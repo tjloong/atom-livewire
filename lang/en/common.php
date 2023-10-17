@@ -26,6 +26,7 @@ return [
         'archived-count' => ':count Archived',
         'showing-trashed' => 'Showing :count trashed',
         'trashed-count' => ':count Trashed',
+        'active' => 'Active',
     ],
 
     'alert' => [
