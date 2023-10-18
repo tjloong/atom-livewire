@@ -30,7 +30,9 @@
                 this.searchText = null
             },
             select (val) {
-                if (this.multiple) this.value.push(val)
+                if (this.multiple) {
+                    if (this.value.indexOf(val) === -1) this.value.push(val)
+                }
                 else this.value = val
 
                 this.close()
