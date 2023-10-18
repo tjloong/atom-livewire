@@ -14,7 +14,7 @@ class Index extends Component
     ];
 
     // setSignupId
-    public function setSignupId($id = null): void
+    public function setSignupId($id = null) : void
     {
         $this->fill(['signupId' => $id ?: null]);
     }

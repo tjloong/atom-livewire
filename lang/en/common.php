@@ -18,15 +18,24 @@ return [
     ],
 
     'label' => [
-        'search' => 'Search',
-        'filter' => 'Filters',
+        'active' => 'Active',
+        'active-date' => 'Active Date',
+        'archived-count' => ':count Archived',
+        'date' => 'Date',
+        'email' => 'Email',
         'filter-count' => ':count Filter|:count Filters',
+        'filter' => 'Filters',
+        'join-date' => 'Joined Date',
+        'login-date' => 'Login Date',
+        'login-email' => 'Login Email',
+        'name' => 'Name',
+        'phone' => 'Phone',
+        'search' => 'Search',
         'selected-count' => ':count Selected',
         'showing-archived' => 'Showing :count archived',
-        'archived-count' => ':count Archived',
         'showing-trashed' => 'Showing :count trashed',
+        'status' => 'Status',
         'trashed-count' => ':count Trashed',
-        'active' => 'Active',
     ],
 
     'alert' => [

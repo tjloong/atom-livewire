@@ -9,8 +9,6 @@ class Listing extends Component
 {
     use WithTable;
 
-    public $sort;
-
     public $filters = [
         'search' => null,
         'status' => null,
@@ -22,15 +20,15 @@ class Listing extends Component
     ];
 
     // get query property
-    public function getQueryProperty(): mixed
+    public function getQueryProperty() : mixed
     {
         return model('signup')
             ->filter($this->filters)
-            ->when(!$this->sort, fn($q) => $q->latest());
+            ->when(!$this->tableSortOrder, fn($q) => $q->latest());
     }
 
     // export
-    public function export(): mixed
+    public function export() : mixed
     {
         $path = storage_path('signups-'.time().'.xlsx');
 

@@ -2,23 +2,22 @@
     <x-table>
         <x-slot:header>
             <x-table.searchbar :total="$this->paginator->total()">
+                <x-table.filters>
+                    <x-form.group>
+                        <x-form.select.enum label="atom::common.label.status" enum="signup.status"
+                            wire:model="filters.status"/>
+                    </x-form.group>
+                </x-table.filters>
+
                 <x-table.export/>
             </x-table.searchbar>
-
-            <x-table.toolbar>
-                <x-form.select.enum :label="false"
-                    wire:model="filters.status"
-                    enum="signup.status"
-                    placeholder="All Status"
-                />
-            </x-table.toolbar>
         </x-slot:header>
 
         <x-slot:thead>
-            <x-table.th label="Name"/>
-            <x-table.th label="Email"/>
-            <x-table.th label="Status" class="text-right"/>
-            <x-table.th label="Date" class="text-right"/>
+            <x-table.th label="atom::common.label.name"/>
+            <x-table.th label="atom::common.label.email"/>
+            <x-table.th label="atom::common.label.status" class="text-right"/>
+            <x-table.th label="atom::common.label.date" class="text-right"/>
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $row)

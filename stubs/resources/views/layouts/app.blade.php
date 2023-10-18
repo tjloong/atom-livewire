@@ -67,10 +67,8 @@
             @route('app.settings')
                 {{ $slot }}
             @else
-                <div class="p-5 pb-10 bg-slate-50 w-full h-full">
-                    {{ $slot }}
-                </div>
-
+                <main class="p-6">{{ $slot }}</main>
+                @livewire('app.signup.update', key('signup-update'))
                 @livewire('app.settings.label.update', key('label-update'))
                 @livewire('app.settings.file.update', key('file-update'))
             @endroute

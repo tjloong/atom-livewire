@@ -13,16 +13,16 @@ class Update extends Component
     ];
 
     // open
-    public function open($id): void
+    public function open($id) : void
     {
         if ($this->signup = model('signup')->find($id)) {
-            $this->dispatchBrowserEvent('signup-update-open');
+            $this->openDrawer('signup-update');
         }
     }
 
     // close
-    public function close(): void
+    public function close() : void
     {
-        $this->dispatchBrowserEvent('signup-update-close');
+        $this->closeDrawer('signup-update');
     }
 }
