@@ -41,6 +41,9 @@
                                 timer: null,
                                 minutes: null,
                                 seconds: null,
+                                init () {
+                                    this.$el.scrollIntoView()
+                                },
                                 resend () {
                                     this.show = false
                                     this.$wire.sendVerificationCode().then(() => {
