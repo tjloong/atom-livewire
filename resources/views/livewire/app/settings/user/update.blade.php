@@ -72,7 +72,9 @@
         @endif
 
         @if ($user->exists)
-            <x-box.trace :data="$user->fresh()"/>
+            <x-form.group>
+                <x-box.trace :data="$user->fresh()"/>
+            </x-form.group>
         @endif
     </div>
 @endif

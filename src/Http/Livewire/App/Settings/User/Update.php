@@ -15,8 +15,8 @@ class Update extends Component
     public $inputs;
 
     protected $listeners = [
-        'createUser' => 'open',
-        'updateUser' => 'open',
+        'createUser' => 'create',
+        'updateUser' => 'update',
     ];
 
     // validation
@@ -85,29 +85,42 @@ class Update extends Component
         ]);
     }
 
-    // open
-    public function open($id = null) : void
-    {
-        $this->resetValidation();
 
-        if ($this->user = $id
-            ? model('user')->readable()->withTrashed()->find($id)
-            : model('user')
-        ) {
+    // create
+    public function create() : void
+    {
+        $this->user = model('user');
+        $this->open();
+    }
+
+    // update
+    public function update($id) : void
+    {
+        $this->user = model('user')->readable()->withTrashed()->find($id);
+        $this->open();
+    }
+
+
+    // open
+    public function open() : void
+    {
+        if ($this->user) {
+            $this->resetValidation();
+
             $this->fill([
                 'inputs.password' => null,
                 'inputs.is_root' => $this->user->exists ? $this->user->isTier('root') : tier('root'),
                 'inputs.is_blocked' => !empty($this->user->blocked_at),
             ]);
 
-            $this->dispatchBrowserEvent('user-update-open');
+            $this->openDrawer('user-update');
         }
     }
 
     // close
     public function close() : void
     {
-        $this->dispatchBrowserEvent('user-update-close');
+        $this->closeDrawer('user-update');
     }
 
     // trash
