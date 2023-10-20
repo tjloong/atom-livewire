@@ -2,21 +2,23 @@
 
 return [
     'heading' => [
-        'login' => 'Sign in to your account',
         'create-account' => 'Create your account',
+        'email-verification' => 'Email Verification',
+        'login' => 'Sign in to your account',
         'reset-password' => 'Reset Password',
     ],
     'label' => [
-        'your-name' => 'Your Name',
+        'dont-have-account' => 'Don\'t have an account?',
+        'email' => 'Email',
         'login-email' => 'Login Email',
         'login-password' => 'Login Password',
-        'email' => 'Email',
-        'password' => 'Password',
-        'password-confirm' => 'Confirm Password',
-        'signin' => 'Sign In',
-        'resend' => 'Resend',
         'or-login-with' => 'Or Login With',
-        'dont-have-account' => 'Don\'t have an account?',
+        'password-confirm' => 'Confirm Password',
+        'password' => 'Password',
+        'resend' => 'Resend',
+        'signin' => 'Sign In',
+        'verification-code' => 'Verification Code',
+        'your-name' => 'Your Name',
     ],
     'button' => [
         'login' => 'Login',
