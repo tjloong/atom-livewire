@@ -7,22 +7,14 @@ use Illuminate\Support\ServiceProvider;
 
 class AtomServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+    // register
+    public function register() : void
     {        
         $this->mergeConfigFrom(__DIR__.'/../../stubs/config/atom.php', 'atom');
     }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    // boot
+    public function boot() : void
     {
         // helpers
         require_once __DIR__.'/../Helpers/Core.php';
@@ -30,7 +22,6 @@ class AtomServiceProvider extends ServiceProvider
         require_once __DIR__.'/../Helpers/Component.php';
         require_once __DIR__.'/../Helpers/Database.php';
         require_once __DIR__.'/../Helpers/Route.php';
-        require_once __DIR__.'/../Helpers/PaymentGateway.php';
 
         $this->loadServiceContainers();
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'atom');
@@ -57,15 +48,12 @@ class AtomServiceProvider extends ServiceProvider
         }
 
         $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
+        $this->app->bind('stripe', fn() => new \Jiannius\Atom\Services\Stripe);
         $this->app->bind('revenue_monster', fn() => new \Jiannius\Atom\Services\RevenueMonster);
     }
 
-    /**
-     * Register publishing for static site
-     * 
-     * @return void
-     */
-    public function registerStaticPublishing()
+    // register publishing for static site
+    public function registerStaticPublishing() : void
     {
         $this->publishes([
             __DIR__.'/../../stubs-static/config' => base_path('config'),
@@ -80,12 +68,8 @@ class AtomServiceProvider extends ServiceProvider
         ], 'atom-install-static');
     }
 
-    /**
-     * Register base publishing
-     * 
-     * @return void
-     */
-    public function registerBasePublishing()
+    // register base publishing
+    public function registerBasePublishing() : void
     {
         $this->publishes([
             __DIR__.'/../../stubs/config' => base_path('config'),

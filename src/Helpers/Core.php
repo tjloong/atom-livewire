@@ -623,3 +623,9 @@ function html_excerpt($html)
     if ($length > 100) return str()->limit($content, 100);
     else return $content;
 }
+
+// translate
+function tr($key, $count = 1, $params = [])
+{
+    return trans_choice($key, $count, $params);
+}

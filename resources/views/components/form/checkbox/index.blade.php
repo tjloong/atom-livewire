@@ -16,7 +16,7 @@
             },
         }"
         id="{{ $id }}"
-        class="{{ $disabled ? 'opacity-30' : null }}"
+        class="{{ $disabled ? 'opacity-30 pointer-events-none' : null }}"
     >
         <label @disabled($disabled)>
             <input x-ref="checkbox" type="checkbox" class="hidden" {{ $attributes }}>

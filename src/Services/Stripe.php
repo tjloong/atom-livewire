@@ -7,76 +7,42 @@ class Stripe
     public $client;
     public $credentials;
 
-    /**
-     * Constructor
-     */
-    public function __construct($data = null)
+    // constructor
+    public function __construct()
     {
-        $this->credentials = $this->getCredentials($data);
-        $this->client = $this->getClient();
+        $this->setCredentials();
+        $this->setClient();
     }
 
-    /**
-     * Get credentials
-     */
-    public function getCredentials($data = null)
+    // set credentials
+    public function setCredentials($credentials = null) : void
     {
-        $tenant = data_get($data, 'tenant_id') ? model('tenant')->find(data_get($data, 'tenant_id')) : tenant();
-
-        $pk = data_get($data, 'pk') ?? ($tenant 
-            ? (tenant('settings.stripe_public_key', null, $tenant) ?? tenant('settings.stripe.public_key', null, $tenant))
-            : settings('stripe_public_key') ?? settings('stripe.public_key') ?? env('STRIPE_PUBLIC_KEY')
-        );
-
-        $sk = data_get($data, 'sk') ?? ($tenant
-            ? (tenant('settings.stripe_secret_key', null, $tenant) ?? tenant('settings.stripe.secret_key', null, $tenant))
-            : settings('stripe_secret_key') ?? settings('stripe.secret_key') ?? env('STRIPE_SECRET_KEY')
-        );
-
-        $whse = data_get($data, 'whse') ?? ($tenant
-            ? (tenant('settings.stripe_webhook_signing_secret', null, $tenant) ?? tenant('settings.stripe.webhook_signing_secret', null, $tenant))
-            : settings('stripe_webhook_signing_secret') ?? settings('stripe.webhook_signing_secret') ?? env('STRIPE_WEBHOOK_SIGNING_SECRET')
-        );
-
-        return compact('pk', 'sk', 'whse');
+        $this->credentials = collect($credentials ?? [
+            'public_key' => settings('stripe_public_key'),
+            'secret_key' => settings('stripe_secret_key'),
+            'webhook_signing_secret' => settings('stripe_webhook_signing_secret'),
+        ]);
     }
 
-    /**
-     * Get client
-     */
-    public function getClient()
+    // set client
+    public function setClient() : void
     {
-        $sk = data_get($this->credentials, 'sk');
-
-        return new \Stripe\StripeClient($sk);
+        $this->client = new \Stripe\StripeClient($this->credentials->get('secret_key'));
     }
 
-    /**
-     * Handle webhook request
-     */
-    public function getWebhookRequest()
+    // get job handler
+    public function getJobHandler($payload = null) : mixed
     {
-        $input = @file_get_contents('php://input');
-        $payload = json_decode($input, true);
-        $metadata = $this->parsePayload($payload);
-
-        // validate the payload signature
-        $credentials = $this->getCredentials($metadata);
-        $whse = data_get($credentials, 'whse');
-        $event = $this->validateWebhookInput($input, $whse);
-
-        if (!$event) logger('Unable to validate signature with the webhook signing secret.');
-        else if (!data_get($metadata, 'status')) info('Event '.$event->type.' was not listened.');
-        else if (!data_get($metadata, 'job')) info('No job was defined for event '.$event->type.'.');
-        else return compact('metadata', 'event', 'payload');
-    }
-
-    /**
-     * Get job handler
-     */
-    public function getJobHandler($metadata = null)
-    {
-        $jobname = data_get($metadata, 'job') ?? request()->query('job') ?? 'StripeProvision';
+        // if payload is from webhook renewal
+        if (in_array(data_get($payload, 'type'), ['invoice.paid', 'invoice.payment_failed'])) {
+            $jobname = data_get($payload, 'data.object.lines.data.0.metadata.job');
+        }
+        else {
+            $jobname = data_get($payload, 'data.object.metadata.job')
+                ?? data_get($payload, 'job')
+                ?? request()->query('job')
+                ?? 'StripeProvision';
+        }
 
         $jobhandler = collect([
             'App\\Jobs\\'.$jobname,
@@ -86,63 +52,39 @@ class Stripe
         return $jobhandler;
     }
 
-    /**
-     * Parse payload
-     */
-    public function parsePayload($payload)
+    // parse webhook payload
+    public function parseWebhookPayload() : mixed
     {
-        $event = data_get($payload, 'type');
-        $body = data_get($payload, 'data.object');
-
-        $status = [
-            'checkout.session.completed' => data_get($body, 'payment_status') === 'paid' 
-                ? 'success' 
-                : 'processing',
-            'checkout.session.async_payment_succeeded' => 'success',
-            'checkout.session.expired' => 'failed',
-            'checkout.session.async_payment_failed' => 'failed',
-            'invoice.paid' => 'renew',
-            'invoice.payment_failed' => 'renew-failed',
-        ][$event] ?? null;
-
-        if (!$status) return null;
-
-        if (in_array($event, ['invoice.paid', 'invoice.payment_failed'])) {
-            $lines = (array)data_get($body, 'lines.data');
-            $metadata = (array)collect($lines)->pluck('metadata')->first();
+        $input = @file_get_contents('php://input');
+        
+        if ($this->validateWebhookInput($input)) {
+            return json_decode($input, true);
         }
-        else $metadata = (array)data_get($body, 'metadata');
 
-        $customerId = data_get($body, 'customer');
-        $subscriptionId = data_get($body, 'subscription');
-
-        return array_merge($metadata, [
-            'job' => $this->getJobHandler($metadata),
-            'status' => $status,
-            'stripe_customer_id' => $customerId,
-            'stripe_subscription_id' => $subscriptionId,
-        ]);
+        return null;
     }
 
-    /**
-     * Validation webhook input
-     */
-    public function validateWebhookInput($input, $whse)
+    // validate webhook input
+    public function validateWebhookInput($input) : bool
     {
+        $key = $this->credentials->get('webhook_signing_secret');
         $sigheader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
         
         try {
-            $event = \Stripe\Webhook::constructEvent($input, $sigheader, $whse);
+            $event = \Stripe\Webhook::constructEvent($input, $sigheader, $key);
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
             $event = false;
         }
 
-        return $event;
+        if (!$event) {
+            logger('Unable to validate signature with the webhook signing secret.');
+            return false;
+        }
+
+        return true;
     }
 
-    /**
-     * Sample params
-     */
+    // sample params
     public function sample()
     {
         return [
@@ -150,9 +92,8 @@ class Stripe
             'customer_email' => 'test@sign.up',
             'mode' => 'subscription',
             'metadata' => [
-                'job' => 'PlanSubscriptionProvision',
+                'job' => 'Subscription\Provision',
                 'payment_id' => 1,
-                'tenant_id' => null,
             ],
             'line_items' => [
                 [
@@ -172,9 +113,8 @@ class Stripe
             ],
             'subscription_data' => [
                 'metadata' => [
-                    'job' => 'PlanSubscriptionProvision',
+                    'job' => 'Subscription\Provision',
                     'payment_id' => 1,
-                    'tenant_id' => null,
                 ],
             ],
             'success_url' => route('__stripe.success'),
@@ -182,9 +122,7 @@ class Stripe
         ];
     }
 
-    /**
-     * Checkout
-     */
+    // checkout
     public function checkout($params)
     {
         // change product amount to proper format (eg. 25.00 -> 2500)
@@ -205,9 +143,7 @@ class Stripe
         return redirect($session->url);
     }
 
-    /**
-     * Cancel subscription
-     */
+    // cancel
     public function cancelSubscription($id)
     {
         $this->client->subscriptions->cancel($id);
