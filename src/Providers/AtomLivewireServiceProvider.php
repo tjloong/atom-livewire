@@ -26,6 +26,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
     {
         $components = [
             // web
+            'web.page' => 'Web\Page',
             'web.contact-us' => 'Web\ContactUs',
             'web.thank.enquiry' => 'Web\Thank\Enquiry',
 

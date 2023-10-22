@@ -13,7 +13,7 @@ class Update extends Component
     public $autosavedAt;
 
     protected $listeners = [
-        'updatePage' => 'open',
+        'updatePage' => 'update',
     ];
 
     // validation
@@ -45,18 +45,25 @@ class Update extends Component
         $this->autosavedAt = now();
     }
 
-    // open
-    public function open($id) : void
+    // update
+    public function update($id) : void
     {
-        if ($this->page = model('page')->find($id)) {
-            $this->dispatchBrowserEvent('page-update-open');
+        $this->page = model('page')->find($id);
+        $this->open();
+    }
+
+    // open
+    public function open() : void
+    {
+        if ($this->page) {
+            $this->openDrawer('page-update');
         }
     }
 
     // close
     public function close(): void
     {
-        $this->dispatchBrowserEvent('page-update-close');
+        $this->closeDrawer('page-update');
     }
 
     // submit

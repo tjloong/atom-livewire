@@ -4,11 +4,7 @@
         'chartjs', 
         'clipboard',
         'swiper',
-        current_route([
-            'app.blog.*', 
-            'app.page.*', 
-            'app.settings',
-        ]) ? 'ckeditor' : null,
+        current_route('app.settings') ? 'ckeditor' : null,
     ],
 ])
 
