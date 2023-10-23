@@ -5,12 +5,10 @@ namespace Jiannius\Atom\Http\Livewire\App;
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class SendEmail extends Component
 {
     use WithForm;
-    use WithPopupNotify;
 
     public $inputs;
     public $emails;
@@ -20,7 +18,7 @@ class SendEmail extends Component
     ];
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return [
             'inputs.from.name' => ['required' => 'Sender name is required.'],
@@ -46,7 +44,7 @@ class SendEmail extends Component
     }
 
     // open
-    public function open($settings = null): void
+    public function open($settings = null) : void
     {
         $this->emails = data_get($settings, 'emails', []);
 
@@ -69,14 +67,13 @@ class SendEmail extends Component
             'attachment' => data_get($settings, 'attachment'),
         ];
 
-        $this->dispatchBrowserEvent('send-email-open');
+        $this->openDrawer('send-email');
     }
 
     // close
     public function close() : void
     {
-        $this->emit('emailSent');
-        $this->dispatchBrowserEvent('send-email-close');
+        $this->closeDrawer('send-email');
     }
 
     // set placeholders
@@ -94,14 +91,15 @@ class SendEmail extends Component
     }
 
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
 
         Notification::route('mail', data_get($this->inputs, 'to'))
             ->notify(new \Jiannius\Atom\Notifications\SendEmailNotification($this->inputs));
 
-        $this->popup('Email Sent.');
+        $this->popup(tr('atom::common.alert.email-sent'));
+        $this->emit('emailSent');
         $this->close();
     }
 }

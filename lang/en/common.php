@@ -53,6 +53,7 @@ return [
             'title' => 'Clear All Trashed',
             'message' => 'This will PERMANENTLY DELETE ALL THE SELECTED RECORDS! Are you sure?',
         ],
+        'email-sent' => 'Email Sent.',
     ],
 
     'empty' => [
