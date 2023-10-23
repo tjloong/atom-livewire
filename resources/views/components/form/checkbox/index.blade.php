@@ -1,32 +1,21 @@
 @if ($attributes->has('options') && ($options = $attributes->get('options', [])))
     <x-form.checkbox.multiple {{ $attributes }}/>
 @else
-    @props([
-        'disabled' => $attributes->get('disabled', false),
-        'label' => $attributes->get('label'),
-        'id' => component_id($attributes, 'checkbox'),
-    ])
+    @php
+        $label = $attributes->get('label');
+        $disabled = $attributes->get('disabled', false);
+    @endphp
 
-    <div
-        x-cloak
-        x-data="{
-            disabled: @js($disabled),
-            get active () {
-                return this.$refs.checkbox?.checked
-            },
-        }"
-        id="{{ $id }}"
-        class="{{ $disabled ? 'opacity-30 pointer-events-none' : null }}"
-    >
+    <div x-cloak
+        x-data="{ disabled: @js($disabled) }"
+        x-bind:class="disabled && 'opacity-30 pointer-events-none'">
         <label @disabled($disabled)>
-            <input x-ref="checkbox" type="checkbox" class="hidden" {{ $attributes }}>
-
-            <div class="flex gap-2 items-center">
-                <div x-ref="box"
-                    x-bind:class="active ? 'border-blue-700' : 'border-gray-300'"
-                    class="shrink-0 w-5 h-5 bg-white m-1 border-2 flex-shrink-0 flex items-center justify-center rounded"
-                >
-                    <div class="w-3 h-3 shadow bg-blue-700" x-show="active"></div>
+            <div class="flex items-center gap-3">
+                <div class="shrink-0">
+                    <input type="checkbox" class="hidden peer" {{ $attributes }}>
+                    <div class="w-4 h-4 bg-white text-white ring-1 ring-gray-300 ring-offset-2 rounded flex peer-checked:bg-theme peer-checked:ring-theme peer-checked:ring-1">
+                        <x-icon name="check" class="m-auto text-xs"/>
+                    </div>
                 </div>
 
                 @if ($slot->isNotEmpty())
@@ -35,7 +24,7 @@
                     </div>
                 @elseif ($label)
                     <div class="py-0.5 text-base font-normal normal-case text-gray-800 {{ $attributes->get('class') }}">
-                        {!! __($label) !!}
+                        {!! tr($label) !!}
                     </div>
                 @endif
             </div>

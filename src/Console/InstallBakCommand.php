@@ -468,41 +468,41 @@ class InstallBakCommand extends Command
     /**
      * Install blogs
      */
-    private function installBlogs()
-    {
-        $this->newLine();
-        $this->info('Installing blogs...');
+    // private function installBlogs()
+    // {
+    //     $this->newLine();
+    //     $this->info('Installing blogs...');
 
-        if (Schema::hasTable('blogs')) $this->warn('blogs table exists, skipped.');
-        else {
-            Schema::create('blogs', function ($table) {
-                $table->id();
-                $table->string('title');
-                $table->string('slug')->nullable();
-                $table->string('redirect_slug')->nullable();
-                $table->text('excerpt')->nullable();
-                $table->longText('content')->nullable();
-                $table->json('seo')->nullable();
-                $table->foreignId('cover_id')->nullable()->constrained('files')->onDelete('set null');
-                $table->timestamp('published_at')->nullable();
-                $table->timestamps();
-                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            });
+    //     if (Schema::hasTable('blogs')) $this->warn('blogs table exists, skipped.');
+    //     else {
+    //         Schema::create('blogs', function ($table) {
+    //             $table->id();
+    //             $table->string('title');
+    //             $table->string('slug')->nullable();
+    //             $table->string('redirect_slug')->nullable();
+    //             $table->text('excerpt')->nullable();
+    //             $table->longText('content')->nullable();
+    //             $table->json('seo')->nullable();
+    //             $table->foreignId('cover_id')->nullable()->constrained('files')->onDelete('set null');
+    //             $table->timestamp('published_at')->nullable();
+    //             $table->timestamps();
+    //             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+    //         });
 
-            $this->line('blogs table created successfully.');
-        }
+    //         $this->line('blogs table created successfully.');
+    //     }
 
-        if (Schema::hasTable('blog_labels')) $this->warn('blog_labels table exists, skipped.');
-        else {
-            Schema::create('blog_labels', function ($table) {
-                $table->id();
-                $table->foreignId('blog_id')->constrained('blogs')->onDelete('cascade');
-                $table->foreignId('label_id')->constrained('labels')->onDelete('cascade');
-            });
+    //     if (Schema::hasTable('blog_labels')) $this->warn('blog_labels table exists, skipped.');
+    //     else {
+    //         Schema::create('blog_labels', function ($table) {
+    //             $table->id();
+    //             $table->foreignId('blog_id')->constrained('blogs')->onDelete('cascade');
+    //             $table->foreignId('label_id')->constrained('labels')->onDelete('cascade');
+    //         });
 
-            $this->line('blog_labels table created successfully.');
-        }
-    }
+    //         $this->line('blog_labels table created successfully.');
+    //     }
+    // }
 
     /**
      * Install teams

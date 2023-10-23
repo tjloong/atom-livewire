@@ -39,7 +39,7 @@ select.form-input,
 .form-input:focus,
 .form-input:active,
 .form-input.active {
-    @apply outline-none ring-2 ring-theme;
+    @apply outline-none ring-1 ring-theme;
 }
 
 .form-input.error,

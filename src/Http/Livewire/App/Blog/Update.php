@@ -2,42 +2,106 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Blog;
 
-use Jiannius\Atom\Traits\Livewire\WithBreadcrumbs;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component;
+use Jiannius\Atom\Component;
+use Jiannius\Atom\Traits\Livewire\WithForm;
 
 class Update extends Component
 {
-    use WithBreadcrumbs;
-    use WithPopupNotify;
-    
+    use WithForm;
+
     public $blog;
+    public $inputs;
 
-    protected $listeners = ['submitted'];
+    protected $listeners = [
+        'createBlog' => 'create',
+        'updateBlog' => 'update',
+    ];
 
-    // mount
-    public function mount($id): void
+    // validation
+    protected function validation() : array
     {
-        $this->blog = model('blog')->findOrFail($id);
+        return [
+            'blog.name' => [
+                'required' => 'Blog title is required.',
+                'string' => 'Blog title must be string.',
+                'max:255' => 'Blog title too long (Max 255 characters).',
+            ],
+            'blog.description' => ['nullable'],
+            'blog.redirect_to' => ['nullable'],
+            'blog.content' => ['nullable'],
+            'blog.seo' => ['nullable'],
+            'blog.published_at' => ['nullable'],
+            'blog.cover_id' => ['nullable'],
+        ];
+    }
+
+    // create
+    public function create() : void
+    {
+        $this->blog = model('blog')->fill(['content' => '<p>Hello there!</p>']);
+        $this->open();
+    }
+
+    // update
+    public function update($id) : void
+    {
+        $this->blog = model('blog')->withTrashed()->find($id);
+        $this->open();
+    }
+
+    // open
+    public function open() : void
+    {
+        if ($this->blog) {
+            $this->fill([
+                'inputs.labels' => $this->blog->labels->pluck('id')->toArray(),
+            ]);
+
+            $this->openDrawer('blog-update');
+        }
+    }
+
+    // close
+    public function close() : void
+    {
+        $this->closeDrawer('blog-update');
+    }
+
+    // trash
+    public function trash() : void
+    {
+        $this->blog->delete();
+        $this->emit('blogDeleted');
+        $this->close();
     }
 
     // delete
-    public function delete(): mixed
+    public function delete() : void
     {
-        $this->blog->delete();
-
-        return to_route('app.blog.listing');
+        $this->blog->forceDelete();
+        $this->emit('blogDeleted');
+        $this->close();
     }
 
-    // submitted
-    public function submitted(): mixed
+    // restore
+    public function restore() : void
     {
-        return $this->popup('Blog Updated.');
+        $this->blog->restore();
+        $this->emit('blogUpdated');
+        $this->close();
     }
 
-    // render
-    public function render(): mixed
+    // submit
+    public function submit() : void
     {
-        return atom_view('app.blog.update');
+        $this->validateForm();
+
+        $this->blog->save();
+        $this->blog->labels()->sync(data_get($this->inputs, 'labels'));
+
+        if ($this->blog->wasRecentlyCreated) $this->emit('blogCreated');
+        else $this->emit('blogUpdated');
+
+        $this->close();
     }
 }

@@ -1,18 +1,68 @@
-<div class="max-w-screen-lg mx-auto">
-    <x-page-header title="Update Blog" back>
-        <x-button icon="show" target="_blank" 
-            label="Preview"
-            href="/blog/{{ $blog->slug }}?preview=1"
-        />
+<x-form.drawer id="blog-update" class="max-w-screen-xl p-5" wire:close="$emit('setBlogId')">
+@if ($blog)
+    <x-slot:buttons :delete="$blog->exists">
+        <x-button.submit sm/>
 
-        <x-button.delete inverted
-            title="Delete Blog"
-            message="Are you sure to delete this blog?"
-        />
-    </x-page-header>
+        @if ($blog->status === enum('blog.status', 'DRAFT'))
+            <x-button icon="upload" label="atom::blog.button.publish" sm
+                wire:click="publish(true)"/>
+        @else
+            <x-button icon="undo" label="atom::blog.button.unpublish" sm
+                wire:click="publish(false)"/>
+        @endif
 
-    <div class="flex flex-col gap-6">
-        @livewire(atom_lw('app.blog.form'), compact('blog'), key('form'))
-        @livewire(atom_lw('app.blog.setting'), compact('blog'), key('setting'))
+        @if ($blog->exists)
+            <x-button icon="eye" label="atom::blog.button.preview" sm
+                href="{{ route('web.blog', $blog->slug) }}"
+                target="_blank"/>
+        @endif
+    </x-slot:buttons>
+
+    <div class="flex flex-col md:flex-row gap-4">
+        <div class="md:w-8/12">
+            <x-box>
+                <x-form.group>
+                    <input type="text" placeholder="{{ __('atom::blog.label.title') }}"
+                        wire:model.defer="blog.name"
+                        class="transparent text-2xl font-bold">
+                </x-form.group>
+
+                <x-form.group>
+                    <x-form.text label="atom::blog.label.excerpt"
+                        wire:model.defer="blog.description"/>
+
+                    <x-form.editor label="atom::blog.label.content"
+                        wire:model="blog.content"/>
+                </x-form.group>
+
+                <div class="editor-content">
+                    {!! $blog->content !!}
+                </div>
+
+                <div>
+                    {{ $blog->content }}
+                </div>
+            </x-box>
+        </div>
+
+        <div class="md:w-4/12">
+            <x-box>
+                <x-form.group>
+                    @if ($blog->status === enum('blog.status', 'PUBLISHED'))
+                        <x-form.date label="atom::blog.label.publish-date" 
+                            wire:model="blog.published_at"/>
+                    @endif
+        
+                    <x-form.select.label type="blog-category" multiple
+                        label="atom::common.label.category"
+                        placeholder="atom::common.label.select-category"
+                        wire:model="inputs.labels"/>
+
+                    <x-form.file label="atom::blog.label.cover" accept="image/*"
+                        wire:model="blog.cover_id"/>
+                </x-form.group>
+            </x-box>
+        </div>
     </div>
-</div>
+@endif
+</x-form.drawer>

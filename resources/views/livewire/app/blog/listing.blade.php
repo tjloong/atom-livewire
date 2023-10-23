@@ -1,25 +1,36 @@
-<div class="max-w-screen-xl mx-auto">
-    <x-page-header :title="$this->title">
-        <x-button icon="add"
-            label="New Article"
-            :href="route('app.blog.create')"
-        />
-    </x-page-header>
-
+<div>
     <x-table :data="$this->table">
         <x-slot:header>
-            <x-table.searchbar :total="$this->paginator->total()"/>
-
-            <x-table.toolbar>
-                <x-form.select :label="false"
-                    wire:model="filters.status"
-                    :options="collect(['published', 'draft'])
-                        ->map(fn($val) => ['value' => $val, 'label' => str()->title($val)])"
-                    placeholder="All Status"
-                />
-            </x-table.toolbar>
+            <x-table.searchbar :total="$this->paginator->total()">
+                <x-table.filters>
+                    <x-form.group>
+                        <x-form.select.enum label="atom::common.label.status" enum="blog.status"
+                            wire:model="filters.status"/>
+                    </x-form.group>
+                </x-table.filters>
+            </x-table.searchbar>
         </x-slot:header>
-    </x-table>
+
+        <x-slot:thead>
+            <x-table.th label="atom::common.label.title" sort="name"/>
+            <x-table.th label="atom::common.label.category"/>
+            <x-table.th label="atom::common.label.status" class="text-right"/>
+        </x-slot:thead>
+
+        @foreach ($this->paginator->items() as $row)
+            <x-table.tr>
+                <x-table.td :label="$row->name"/>
+                <x-table.td :tags="$row->labels->pluck('name.'.app()->currentLocale())->toArray()"/>
+                <x-table.td :status="$row->status->badge()" class="text-right"/>
+            </x-table.tr>
+        @endforeach
+
+        <x-slot:empty>
+            <x-no-result
+                title="atom::blog.empty.title"
+                subtitle="atom::blog.empty.subtitle"/>
+        </x-slot:empty>
+    </x-table.tr>
 
     {!! $this->paginator->links() !!}
 </div>

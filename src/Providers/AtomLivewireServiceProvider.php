@@ -56,11 +56,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.signup.update' => 'App\Signup\Update',
 
             // blog
-            // 'atom.app.blog.listing' => 'App\Blog\Listing',
-            // 'atom.app.blog.create' => 'App\Blog\Create',
-            // 'atom.app.blog.update' => 'App\Blog\Update',
-            // 'atom.app.blog.form' => 'App\Blog\Form',
-            // 'atom.app.blog.setting' => 'App\Blog\Setting',
+            'app.blog' => 'App\Blog\Index',
+            'app.blog.update' => 'App\Blog\Update',
+            'app.blog.listing' => 'App\Blog\Listing',
 
             // enquiry
             'app.enquiry' => 'App\Enquiry\Index',

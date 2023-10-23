@@ -3,7 +3,7 @@
         {{ $this->page->title }}
     </div>
 
-    <div class="prose max-w-none md:prose-lg">
+    <div class="editor">
         {!! $this->page->content !!}
     </div>
 </div>
