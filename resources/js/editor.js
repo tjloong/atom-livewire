@@ -1,5 +1,7 @@
 import { Editor } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
+import { Color } from '@tiptap/extension-color'
+import TextStyle from '@tiptap/extension-text-style'
 
 window.setupEditor = function (content) {
     let editor
@@ -20,7 +22,9 @@ window.setupEditor = function (content) {
             editor = new Editor({
                 element: element,
                 extensions: [
+                    Color,
                     StarterKit,
+                    TextStyle,
                 ],
                 editorProps: {
                     attributes: {
@@ -66,6 +70,14 @@ window.setupEditor = function (content) {
 
         setParagraph() {
             editor.chain().setParagraph().focus().run()
+        },
+
+        setColor (color) {
+            editor.chain().setColor(color).run()
+        },
+
+        unsetColor () {
+            editor.chain().unsetColor().run()
         },
         
         toggleHeading(opts) {

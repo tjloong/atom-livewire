@@ -3,7 +3,7 @@ export default ('tooltip', (el, { value, expression }) => {
 
     // create the tooltip
     const tooltipEl = document.createElement('div')
-    tooltipEl.setAttribute('class', 'absolute bg-black opacity-80 text-white text-xs rounded p-1.5 hidden')
+    tooltipEl.setAttribute('class', 'absolute bg-black opacity-80 text-white text-xs rounded p-1.5 w-max hidden')
     tooltipEl.innerHTML = expression
 
     el.classList.add('relative')

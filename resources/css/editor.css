@@ -1,4 +1,11 @@
 .editor {
+    button,
+    .button {
+        @apply flex p-2;
+        i.fa {
+            @apply m-auto;
+        }
+    }
 }
 
 .editor-content {
@@ -12,7 +19,7 @@
         @apply text-lg font-semibold mb-2;
     }
     blockquote {
-        @apply text-gray-500 italic;
+        @apply text-gray-500 italic p-2;
     }
     ul {
         @apply list-disc list-outside px-4;
