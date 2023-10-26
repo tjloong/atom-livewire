@@ -34,14 +34,6 @@
                     <x-form.editor label="atom::blog.label.content"
                         wire:model="blog.content"/>
                 </x-form.group>
-
-                <div class="editor-content">
-                    {!! $blog->content !!}
-                </div>
-
-                <div>
-                    {{ $blog->content }}
-                </div>
             </x-box>
         </div>
 

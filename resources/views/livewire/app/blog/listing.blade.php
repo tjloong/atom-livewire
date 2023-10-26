@@ -1,5 +1,5 @@
 <div>
-    <x-table :data="$this->table">
+    <x-table>
         <x-slot:header>
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
@@ -19,7 +19,7 @@
 
         @foreach ($this->paginator->items() as $row)
             <x-table.tr>
-                <x-table.td :label="$row->name"/>
+                <x-table.td :label="$row->name" wire:click="$emit('updateBlog', {{ $row->id }})"/>
                 <x-table.td :tags="$row->labels->pluck('name.'.app()->currentLocale())->toArray()"/>
                 <x-table.td :status="$row->status->badge()" class="text-right"/>
             </x-table.tr>

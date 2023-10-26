@@ -38,7 +38,7 @@ class Update extends Component
     // create
     public function create() : void
     {
-        $this->blog = model('blog')->fill(['content' => '<p>Hello there!</p>']);
+        $this->blog = model('blog');
         $this->open();
     }
 

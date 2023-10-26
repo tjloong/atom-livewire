@@ -1,14 +1,36 @@
 .editor {
-    button,
-    .button {
+    p.is-editor-empty:first-child::before {
+        color: #adb5bd;
+        content: attr(data-placeholder);
+        float: left;
+        height: 0;
+        pointer-events: none;
+    }
+
+    button, .button {
         @apply flex p-2;
         i.fa {
             @apply m-auto;
         }
     }
+
+    .dropdown {
+        @apply absolute z-10 left-0 bg-white border rounded-md shadow;
+
+        .dropdown-item {
+            @apply py-1.5 px-3 cursor-pointer flex items-center gap-2 hover:bg-slate-100 text-sm;
+        }
+    }
+
+    .group {
+        @apply flex items-center flex-wrap gap-0.5 p-1;
+    }
 }
 
 .editor-content {
+    p {
+        @apply py-2;
+    }
     h1 {
         @apply text-3xl font-bold mb-2;
     }
@@ -18,6 +40,9 @@
     h3 {
         @apply text-lg font-semibold mb-2;
     }
+    h4 {
+        @apply text-base font-semibold mb-2;
+    }
     blockquote {
         @apply text-gray-500 italic p-2;
     }
@@ -26,5 +51,47 @@
     }
     ol {
         @apply list-decimal list-outside px-4;
+    }
+    hr {
+        @apply border-t border-gray-400 my-4;
+    }
+    img {
+        @apply max-w-full h-auto
+    }    
+    img.ProseMirror-selectednode {
+        @apply ring-4 ring-blue-400 ring-offset-1;
+    }
+
+    .table-wrapper, .tableWrapper {
+        @apply py-1 overflow-x-auto flex justify-center;
+
+        table {
+            @apply border-collapse table-fixed m-0 overflow-hidden;
+
+            td, th {
+                @apply border border-gray-300 py-1.5 px-3 align-top relative;
+                > * { @apply mb-0; }
+            }
+
+            th {
+                @apply font-semibold text-left bg-slate-100;
+            }
+
+            .selectedCell:after {
+                @apply absolute z-[2] inset-0 bg-slate-300 opacity-50 pointer-events-none content-[""];
+            }
+        
+            .column-resize-handle {
+                @apply absolute right-0 top-0 bottom-0 w-1 bg-blue-400 pointer-events-none;
+            }
+        
+            p {
+                @apply m-0;
+            }
+        }
+    }
+
+    [data-youtube-video] {
+        @apply flex justify-center;
     }
 }

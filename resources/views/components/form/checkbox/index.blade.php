@@ -13,7 +13,10 @@
             <div class="flex items-center gap-3">
                 <div class="shrink-0">
                     <input type="checkbox" class="hidden peer" {{ $attributes }}>
-                    <div class="w-4 h-4 bg-white text-white ring-1 ring-gray-300 ring-offset-2 rounded flex peer-checked:bg-theme peer-checked:ring-theme peer-checked:ring-1">
+                    <div class="
+                        bg-white text-white border border-gray-300 rounded flex 
+                        peer-checked:bg-theme peer-checked:border-0 peer-checked:ring-theme peer-checked:ring-1 peer-checked:ring-offset-1
+                        {{ $attributes->get('sm') ? 'w-4 h-4' : 'w-5 h-5' }}">
                         <x-icon name="check" class="m-auto text-xs"/>
                     </div>
                 </div>

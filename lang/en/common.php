@@ -37,6 +37,7 @@ return [
         'showing-archived' => 'Showing :count archived',
         'showing-trashed' => 'Showing :count trashed',
         'status' => 'Status',
+        'title' => 'Title',
         'trashed-count' => ':count Trashed',
     ],
 
