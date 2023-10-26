@@ -23,8 +23,8 @@
             </x-form.group>
 
             <x-form.group>
-                <x-form.richtext label="atom::page.label.content"
-                    wire:model.defer="page.content"/>
+                <x-form.editor label="atom::page.label.content"
+                    wire:model="page.content"/>
             </x-form.group>
         </div>
     @endif
