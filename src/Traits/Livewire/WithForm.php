@@ -2,16 +2,18 @@
 
 namespace Jiannius\Atom\Traits\Livewire;
 
+use Illuminate\Support\Facades\Http;
+use RuntimeException;
+
 trait WithForm
 {
     public $form = [
         'required' => [],
+        'recaptcha_token' => null,
     ];
 
-    /**
-     * Validation rules
-     */
-    protected function rules()
+    // validation rules
+    protected function rules() : array
     {
         return collect($this->validation())->mapWithKeys(fn($props, $field) => [
             $field => collect($props)
@@ -21,10 +23,8 @@ trait WithForm
         ])->toArray();
     }
 
-    /**
-     * Validation messages
-     */
-    protected function messages()
+    // validation messages
+    protected function messages() : array
     {
         $messages = [];
 
@@ -35,15 +35,13 @@ trait WithForm
                     $messages[$field.'.'.$rule] = $message;
                 }
             }
-        });
+        })->toArray();
 
         return $messages;
     }
 
-    /**
-     * Mount
-     */
-    public function mountWithForm()
+    // mount
+    public function mountWithForm() : void
     {
         $this->fill([
             'form.required' => collect($this->rules())
@@ -57,11 +55,41 @@ trait WithForm
         ]);
     }
 
-    /**
-     * Validate form
-     */
-    public function validateForm($config = [])
+    // perform form validation
+    public function validateForm($config = []) : void
     {
+        if (data_get($this->form, 'recaptcha_token')) {
+            $this->validate([
+                'form.recaptcha_token' => function($attr, $value, $fail) {
+                    try {
+                        $api = env('RECAPTCHA_API_ENDPOINT');
+                        $min = env('RECAPTCHA_MIN_SCORE');
+
+                        $res = Http::asForm()->post(
+                            empty($api) ? 'https://www.google.com/recaptcha/api/siteverify' : $api,
+                            [
+                                'secret' => settings('recaptcha_secret_key'),
+                                'response' => $value,
+                                'remoteip' => request()->ip(),
+                            ],
+                        )->throw()->json();
+
+                        $this->resetRecaptchaToken();
+
+                        throw_if(
+                            !data_get($res, 'success')
+                            || data_get($res, 'score') < (empty($min) ? 0.5 : $min)
+                        );
+                    }
+                    catch (RuntimeException $e) {
+                        $e = tr('common.alert.recaptcha');
+                        $this->popup($e, 'alert', 'error');
+                        $fail($e);
+                    }
+                },
+            ]);
+        }
+
         $this->resetValidation();
         $this->validate();
 
@@ -74,5 +102,11 @@ trait WithForm
                 $value = data_get($this, $key);
                 if (is_string($value)) data_set($this, $key, trim($value));
             });
+    }
+
+    // reset recaptcha token
+    public function resetRecaptchaToken() : void
+    {
+        $this->fill(['form.recaptcha_token' => null]);
     }
 }

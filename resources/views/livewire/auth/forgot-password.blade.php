@@ -1,26 +1,20 @@
 <div class="flex flex-col gap-4">
-    <x-form>
+    <x-form recaptcha="forgot_password">
         <x-form.group>
             <div class="text-2xl font-bold">
-                {{ __('Reset Password Request') }}
+                {{ tr('auth.heading.forgot-password') }}
             </div>
     
-            <x-form.email 
-                label="Your registered email"
-                wire:model.defer="email"
-                required
-                autofocus
-            />
+            <x-form.email label="auth.label.login-email"
+                wire:model.defer="email"/>
         </x-form.group>
 
         <x-slot:foot>
-            <x-button.submit size="md" block
-                label="Send Request"
-            />
+            <x-button.submit block
+                label="auth.button.send-request"/>
         </x-slot:foot>
     </x-form>
     
-    <a href="{{ route('login') }}" class="flex items-center gap-2">
-        <x-icon name="arrow-left"></x-icon> {{ __('Back to login') }}
-    </a>
+    <x-link icon="back" label="common.label.back-to-login"
+        :href="route('login')"/>
 </div>

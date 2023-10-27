@@ -126,8 +126,9 @@ class Register extends Component
                 $this->clearVerificationCode();
                 return true;
             }
-
-            $this->popup('auth.popup.verification', 'alert', 'error');
+            else if (data_get($this->inputs, 'verification')) {
+                $this->popup('auth.alert.verification', 'alert', 'error');
+            }
         }
         else {
             $this->sendVerificationCode();
@@ -141,6 +142,7 @@ class Register extends Component
     {
         if ($this->isLoginMethod('email-verified')) {
             $this->clearVerificationCode();
+
             $this->verification = model('verification')->create([
                 'email' => data_get($this->inputs, 'email'),
                 'expired_at' => now()->addDay(),

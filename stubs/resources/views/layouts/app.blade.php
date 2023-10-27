@@ -5,6 +5,12 @@
         'clipboard',
         'swiper',
         current_route('app.settings') ? 'ckeditor' : null,
+        current_route(
+            'web.contact-us',
+            'login',
+            'register',
+            'password.forgot',
+        ) ? 'recaptcha' : null,
     ],
 ])
 

@@ -7,9 +7,9 @@
                 </div>
 
                 @foreach (collect([
-                    ['icon' => 'location', 'value' => settings('site_contact_address')],
-                    ['icon' => 'phone', 'value' => settings('site_contact_phone')],
-                    ['icon' => 'envelope', 'value' => settings('site_contact_email')],
+                    ['icon' => 'location', 'value' => settings('contact_address')],
+                    ['icon' => 'phone', 'value' => settings('contact_phone')],
+                    ['icon' => 'envelope', 'value' => settings('contact_email')],
                 ])->filter(fn($val) => !empty(data_get($val, 'value'))) as $item)
                     <div class="flex gap-2">
                         <div class="shrink-0 text-gray-400 py-0.5">
@@ -25,7 +25,7 @@
                     {{ tr('web.contact.heading.message') }}
                 </div>
 
-                <x-form>
+                <x-form recaptcha="contact_us">
                     <x-form.group>
                         <x-form.text label="web.contact.label.name"
                             wire:model.defer="enquiry.name"/>
@@ -41,8 +41,6 @@
                         <x-button.submit color="theme" md block
                             label="web.contact.button.send"/>
                     </x-slot:foot>
-
-                    <x-slot:error-alert></x-slot:error-alert>
                 </x-form>
             </div>
         </div>

@@ -5,4 +5,3 @@ if (window.dayjs) {
 }
 
 import './helpers.js'
-

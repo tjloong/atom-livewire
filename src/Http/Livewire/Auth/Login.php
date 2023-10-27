@@ -37,11 +37,7 @@ class Login extends Component
         if (user()) {
             return redirect(user()->home());
         }
-        else {
-            auth()->logout();
-            request()->session()->invalidate();
-            request()->session()->regenerateToken();
-    
+        else {    
             // login using app key (root login)
             if (
                 ($appkey = request()->query('appkey'))
@@ -103,13 +99,13 @@ class Login extends Component
             if ($user = $this->getUser()) {
                 if (app()->environment('local')) Auth::login($user);
                 else if ($err = $this->tooManyAttempts()) return $this->addError('email', $err);
-                else if (!$this->login($user)) return $this->addError('email', __('auth.failed'));
+                else if (!$this->login($user)) return $this->addError('email', tr('auth.alert.failed'));
             }
-            else return $this->addError('email', __('auth.failed'));
+            else return $this->addError('email', tr('auth.alert.failed'));
         }
 
         $user->fill(['login_at' => now()])->saveQuietly();
-        
+
         request()->session()->regenerate();
         
         return redirect()->intended($this->redirectTo($user));        
@@ -148,7 +144,7 @@ class Login extends Component
 
         $seconds = RateLimiter::availableIn($this->throttlekey);
 
-        return __('auth.throttle', [
+        return tr('auth.alert.throttle', [
             'seconds' => $seconds,
             'minutes' => ceil($seconds / 60),
         ]);

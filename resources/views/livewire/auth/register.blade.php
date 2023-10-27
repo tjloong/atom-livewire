@@ -5,14 +5,14 @@
         divider-position="bottom"/>
 
     <div class="flex flex-col gap-4">
-        <x-form>
+        <x-form recaptcha="register">
             <x-form.group>
             @if (!$errors->any() && $this->verification)
-                <x-heading title="atom::auth.heading.email-verification" 2xl/>
+                <x-heading title="auth.heading.email-verification" 2xl/>
 
                 <div class="flex flex-col gap-1">
-                    <x-form.text label="atom::auth.label.verification-code"
-                        caption="atom::auth.caption.email-verification-code"
+                    <x-form.text label="auth.label.verification-code"
+                        caption="auth.alert.email-verification"
                         wire:model.defer="inputs.verification"/>
 
                     <div x-data="{
@@ -44,7 +44,7 @@
                             }, 1000)
                         }
                     }">
-                        <x-link label="atom::auth.label.resend" class="text-sm"
+                        <x-link label="auth.label.resend" class="text-sm"
                             x-show="show"
                             x-on:click.stop="resend()"/>
 
@@ -55,19 +55,19 @@
                     </div>
                 </div>
             @else
-                <x-heading title="atom::auth.heading.create-account" 2xl/>
+                <x-heading title="auth.heading.create-account" 2xl/>
 
-                <x-form.text wire:model.defer="inputs.name" label="atom::auth.label.your-name" autofocus/>
+                <x-form.text wire:model.defer="inputs.name" label="auth.label.your-name" autofocus/>
 
                 @if ($utm === 'invitation')
-                    <x-form.field label="atom::auth.label.login-email">
+                    <x-form.field label="auth.label.login-email">
                         {{ data_get($inputs, 'email') }}
                     </x-form.field>
                 @else
-                    <x-form.email wire:model.defer="inputs.email" label="atom::auth.label.login-email"/>
+                    <x-form.email wire:model.defer="inputs.email" label="auth.label.login-email"/>
                 @endif
                 
-                <x-form.password wire:model.defer="inputs.password" label="atom::auth.label.login-password"/>
+                <x-form.password wire:model.defer="inputs.password" label="auth.label.login-password"/>
             
                 <div class="grid gap-2">
                     <x-form.checkbox.privacy wire:model="inputs.agree_tnc"/>
@@ -78,12 +78,12 @@
 
             <x-slot:foot>
                 <x-button.submit md block
-                    label="atom::auth.button.create-account"/>
+                    label="auth.button.create-account"/>
             </x-slot:foot>
         </x-form>
         
         <div class="text-center">
-            {{ __('atom::auth.caption.have-account') }} <x-link label="atom::auth.label.signin" :href="route('login')"/>
+            {{ tr('auth.label.have-account') }} <x-link label="auth.label.signin" :href="route('login')"/>
         </div>
     </div>
 </div>

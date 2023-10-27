@@ -43,6 +43,11 @@
             'https://cdn.jsdelivr.net/npm/@pqina/flip@1.7.7/dist/flip.min.js',
             'https://cdn.jsdelivr.net/npm/@pqina/flip@1.7.7/dist/flip.min.css',
         ],
+        'recaptcha' => [
+            ($sitekey = settings('recaptcha_site_key'))
+            ? 'https://www.google.com/recaptcha/api.js?render='.$sitekey
+            : null,
+        ],
         'ckeditor' => [
             '/ckeditor/ckeditor.js',
         ],

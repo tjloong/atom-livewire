@@ -13,6 +13,7 @@ return [
         'archived-count' => ':count Archived',
         'avatar' => 'Avatar',
         'back' => 'Back',
+        'back-to-login' => 'Back to Login',
         'cancel' => 'Cancel',
         'category' => 'Category',
         'clear' => 'Clear',
@@ -78,6 +79,11 @@ return [
             'title' => 'Clear All Trashed',
             'message' => 'This will PERMANENTLY DELETE ALL THE SELECTED RECORDS! Are you sure?',
         ],
+        'submit' => [
+            'title' => 'Submit Form',
+            'message' => 'Are you sure to submit?',    
+        ],
+        'recaptcha' => 'Google think you are a bot. Please refresh and try again.',
         'email-sent' => 'Email Sent.',
     ],
 
