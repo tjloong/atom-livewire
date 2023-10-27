@@ -1,12 +1,12 @@
 @php
-    $label = $attributes->get('label') ?? 'atom::common.button.trash';
+    $label = $attributes->get('label') ?? 'common.label.trash';
     $callback = $attributes->get('callback', 'trash');
     $count = $attributes->get('count', 1);
     $params = $attributes->get('params');
     $reload = $attributes->get('reload', false);
     $inverted = $attributes->get('inverted', true);
-    $title = $attributes->get('title') ?? 'atom::common.alert.trash.title';
-    $message = $attributes->get('message') ?? 'atom::common.alert.trash.message';
+    $title = $attributes->get('title') ?? 'common.alert.trash.title';
+    $message = $attributes->get('message') ?? 'common.alert.trash.message';
 @endphp
 
 <x-button c="red" icon="trash-can" 

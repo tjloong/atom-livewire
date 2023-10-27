@@ -69,6 +69,6 @@ class RevenueMonster extends Component
             Storage::append($filename, $key);
         }
 
-        $this->popup(__('atom::revenue-monster.alert.settings-updated'));
+        $this->popup('revenue-monster.alert.settings-updated');
     }
 }

@@ -9,11 +9,11 @@ trait WithPopupNotify
         $body = [
             'title' => is_string($body)
                 ? null
-                : __(data_get($body, 'title')),
+                : tr(data_get($body, 'title')),
             
             'message' => is_string($body)
-                ? $body
-                : __(data_get($body, 'message')),
+                ? tr($body)
+                : tr(data_get($body, 'message')),
 
             'type' => $alert,
             'reload' => is_string($body) ? false : data_get($body, 'reload'),

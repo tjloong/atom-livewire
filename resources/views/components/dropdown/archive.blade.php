@@ -1,5 +1,5 @@
 @php
-    $label = $attributes->get('label', 'atom::common.button.archive');
+    $label = $attributes->get('label', 'common.label.archive');
     $callback = $attributes->get('callback', 'archive');
     $params = $attributes->get('params');
 @endphp

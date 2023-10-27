@@ -127,7 +127,7 @@ class Register extends Component
                 return true;
             }
 
-            $this->popup(__('atom::auth.popup.verification'), 'alert', 'error');
+            $this->popup('auth.popup.verification', 'alert', 'error');
         }
         else {
             $this->sendVerificationCode();

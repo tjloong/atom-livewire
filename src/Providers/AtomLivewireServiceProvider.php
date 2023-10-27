@@ -78,6 +78,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // settings
             'app.settings.index' => 'App\Settings\Index',
+            'app.settings.site' => 'App\Settings\Site',
             'app.settings.login' => 'App\Settings\Login',
             'app.settings.password' => 'App\Settings\Password',
 
@@ -85,10 +86,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.user' => 'App\Settings\User\Index',
             'app.settings.user.update' => 'App\Settings\User\Update',
             'app.settings.user.listing' => 'App\Settings\User\Listing',
-
-            // settings > role
-            'app.settings.role' => 'App\Settings\Role\Index',
-            'app.settings.role.form' => 'App\Settings\Role\Form',
 
             // settings > file
             'app.settings.file' => 'App\Settings\File\Index',
@@ -105,13 +102,13 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.page.listing' => 'App\Settings\Page\Listing',
 
             // settings > website
-            'app.settings.website.profile' => 'App\Settings\Website\Profile',
-            'app.settings.website.seo' => 'App\Settings\Website\Seo',
-            'app.settings.website.analytics' => 'App\Settings\Website\Analytics',
-            'app.settings.website.social-media' => 'App\Settings\Website\SocialMedia',
-            'app.settings.website.announcement' => 'App\Settings\Website\Announcement',
-            'app.settings.website.announcement-modal' => 'App\Settings\Website\AnnouncementModal',
-            'app.settings.website.popup' => 'App\Settings\Website\Popup',
+            // 'app.settings.website.profile' => 'App\Settings\Website\Profile',
+            // 'app.settings.website.seo' => 'App\Settings\Website\Seo',
+            // 'app.settings.website.analytics' => 'App\Settings\Website\Analytics',
+            // 'app.settings.website.social-media' => 'App\Settings\Website\SocialMedia',
+            // 'app.settings.website.announcement' => 'App\Settings\Website\Announcement',
+            // 'app.settings.website.announcement-modal' => 'App\Settings\Website\AnnouncementModal',
+            // 'app.settings.website.popup' => 'App\Settings\Website\Popup',
 
             // settings > integration
             'app.settings.integration.email' => 'App\Settings\Integration\Email',

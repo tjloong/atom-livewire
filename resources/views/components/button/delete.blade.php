@@ -1,5 +1,5 @@
 @php
-    $label = $attributes->get('label') ?? 'atom::common.button.delete';
+    $label = $attributes->get('label') ?? 'common.label.delete';
     $params = $attributes->get('params');
     $reload = $attributes->get('reload', false);
     $inverted = $attributes->get('inverted', true);

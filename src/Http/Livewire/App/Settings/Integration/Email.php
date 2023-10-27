@@ -53,6 +53,6 @@ class Email extends Component
 
         settings($this->settings);
         
-        $this->popup(__('atom::settings.alert.email-updated'));
+        $this->popup('settings.alert.email-updated');
     }
 }

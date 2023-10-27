@@ -6,24 +6,24 @@
 
         <div class="grow flex items-center gap-3">
             @if ($this->showTrashed)
-                {{ __('atom::common.label.showing-trashed', ['count' => $count]) }}
+                {{ tr('common.label.showing-trashed', ['count' => $count]) }}
                 
-                <x-link label="atom::common.button.clear"
+                <x-link label="common.label.clear"
                     wire:key="table-clear-trashed"
                     x-on:click="$dispatch('confirm', {
-                        title: '{{ __('atom::common.alert.clear-trashed.title') }}',
-                        message: '{{ __('atom::common.alert.clear-trashed.message') }}',
+                        title: '{{ tr('common.alert.clear-trashed.title') }}',
+                        message: '{{ tr('common.alert.clear-trashed.message') }}',
                         type: 'error',
                         onConfirmed: () => $wire.emptyTrashed(),
                     })"/>
 
-                <x-link label="atom::common.button.cancel"
+                <x-link label="common.label.cancel"
                     wire:click="$set('showTrashed', false)"
                     wire:key="table-cancel-show-trashed"/>
             @else
-                {{ __('atom::common.label.trashed-count', ['count' => $count]) }}
+                {{ tr('common.label.trashed-count', ['count' => $count]) }}
 
-                <x-link label="atom::common.button.show" 
+                <x-link label="common.label.show" 
                     wire:key="table-show-trashed"
                     x-on:click="
                         $wire.set('showTrashed', true);
