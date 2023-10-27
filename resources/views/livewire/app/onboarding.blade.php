@@ -11,7 +11,7 @@
             <div class="max-w-screen-lg mx-auto flex flex-col gap-10">
                 <div class="flex flex-col gap-1">
                     <div class="text-3xl font-bold">
-                        {{ __('You account setup is completed. Thank you for signing up with us.') }}
+                        {{ __('Your account setup is completed. Thank you for signing up with us.') }}
                     </div>
                 
                     <div class="text-gray-500 text-lg font-medium">
