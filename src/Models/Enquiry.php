@@ -19,7 +19,7 @@ class Enquiry extends Model
     ];
 
     // booted
-    protected static function booted(): void
+    protected static function booted() : void
     {
         static::saving(function ($enquiry) {
             $enquiry->status = $enquiry->status ?? enum('enquiry.status', 'PENDING');
@@ -27,7 +27,7 @@ class Enquiry extends Model
     }
 
     // attribute for status
-    protected function status(): Attribute
+    protected function status() : Attribute
     {
         return Attribute::make(
             get: fn($value) => $value
@@ -40,12 +40,14 @@ class Enquiry extends Model
     }
 
     // scope for search
-    public function scopeSearch($query, $search): void
+    public function scopeSearch($query, $search) : void
     {
         $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
             ->orWhere('phone', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%")
+            ->orWhere('ref', $search)
+            ->orWhere('utm', $search)
         );
     }
 }

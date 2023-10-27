@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->longText('message')->nullable();
-            $table->longText('remark')->nullable();
+            $table->longText('notes')->nullable();
+            $table->string('ref')->nullable();
+            $table->string('utm')->nullable();
             $table->json('data')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();

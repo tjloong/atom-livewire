@@ -1,4 +1,21 @@
 <main class="min-h-screen">
+@if ($thank)
+    <div class="max-w-screen-sm mx-auto py-20 flex flex-col gap-6">
+        <div class="text-5xl font-bold">
+            {{ __('Thank You') }}
+        </div>
+        
+        <x-alert type="success">
+            {{ __('Your enquiry has been submitted successfully.') }}
+        </x-alert>
+    
+        <div>
+            <x-button icon="back" color="theme" 
+                href="/" 
+                label="common.label.back"/>
+        </div>
+    </div>
+@else
     <div class="max-w-screen-lg mx-auto py-10 px-4 w-full">
         <div class="flex flex-col md:flex-row gap-10 ">
             <div class="md:w-1/3 flex flex-col gap-4">
@@ -44,15 +61,16 @@
                 </x-form>
             </div>
         </div>
-    </div>
 
-    @if ($url = settings('site_contact_map'))
-        <iframe
-            class="w-full bg-gray-200"
-            height="450"
-            loading="lazy"
-            allowfullscreen
-            src="{{ $url }}">
-        </iframe>
-    @endif
+        @if ($url = settings('site_contact_map'))
+            <iframe
+                class="w-full bg-gray-200"
+                height="450"
+                loading="lazy"
+                allowfullscreen
+                src="{{ $url }}">
+            </iframe>
+        @endif
+    </div>
+@endif
 </main>

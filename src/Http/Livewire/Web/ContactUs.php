@@ -13,10 +13,11 @@ class ContactUs extends Component
 
     public $ref;
     public $utm;
+    public $thank;
     public $enquiry;
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return [
             'enquiry.name' => ['required' => 'Your name is required.'],
@@ -27,10 +28,11 @@ class ContactUs extends Component
     }
 
     // mount
-    public function mount(): void
+    public function mount($slug = null) : void
     {
         $this->ref = request()->query('ref');
         $this->utm = request()->query('utm');
+        $this->thank = $slug === 'thank';
         $this->enquiry = [
             'name' => null,
             'phone' => null,
@@ -39,47 +41,21 @@ class ContactUs extends Component
         ];
     }
 
-    // get contact property
-    public function getContactProperty(): array
-    {
-        $contact = config('atom.static_site')
-            ? config('atom.contact')
-            : [
-                'phone' => settings('phone'),
-                'email' => settings('email'),
-                'address' => settings('address'),
-                'gmap_url' => settings('gmap_url'),
-            ];
-
-        return array_filter($contact);
-    }
-
     // submit
-    public function submit(): mixed
+    public function submit() : mixed
     {
         $this->validateForm();
 
-        $mail = ['to' => null, 'params' => null];
+        $enquiry = model('enquiry')->create(array_merge($this->enquiry, [
+            'ref' => $this->ref,
+            'utm' => $this->utm,
+        ]));
 
-        if (has_table('enquiries')) {
-            $enquiry = model('enquiry')->create($this->enquiry);
-
-            if ($ref = $this->ref ?? $this->utm) {
-                $enquiry->fill(['data' => ['ref' => $ref]])->save();
-            }
-
-            $mail['to'] = settings('notify_to');
-            $mail['params'] = $enquiry;
-        }
-        else {
-            $mail['to'] = env('NOTIFY_TO');
-            $mail['params'] = $this->enquiry;
-        }
-
-        if ($mail['to']) {
-            Notification::route('mail', $mail['to'])->notify(new EnquiryNotification($mail['params']));
+        if ($to = settings('notify_to')) {
+            Notification::route('mail', $to)
+                ->notify(new EnquiryNotification($enquiry));
         }
         
-        return to_route('web.thank.enquiry');
+        return to_route('web.contact-us', 'thank');
     }
 }

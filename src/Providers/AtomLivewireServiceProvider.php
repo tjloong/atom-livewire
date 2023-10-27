@@ -28,7 +28,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // web
             'web.page' => 'Web\Page',
             'web.contact-us' => 'Web\ContactUs',
-            'web.thank.enquiry' => 'Web\Thank\Enquiry',
 
             // auth
             'auth.login' => 'Auth\Login',

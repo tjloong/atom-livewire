@@ -33,14 +33,14 @@ class Update extends Component
                 'inputs.status' => $this->enquiry->status->value,
             ]);
     
-            $this->dispatchBrowserEvent('enquiry-update-open');
+            $this->openDrawer('enquiry-update');
         }
     }
 
     // close
     public function close() : void
     {
-        $this->dispatchBrowserEvent('enquiry-update-close');
+        $this->closeDrawer('enquiry-update');
     }
 
     // delete
