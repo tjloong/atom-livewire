@@ -25,16 +25,18 @@
             class="absolute inset-0 bg-black/20 rounded-lg"></div>
             
         <div x-on:click.away="show = false" 
-            class="absolute top-0 right-0 min-h-full max-w-md w-full bg-white rounded-lg shadow">
-            <div class="flex flex-col divide-y">
-                <div class="shrink-0 p-4">
-                    <x-heading title="atom::common.label.filter" sm>
-                        <x-close x-on:click="show = false"/>
-                    </x-heading>
-                </div>
-
-                <div class="grow">
-                    {{ $slot }}
+            class="absolute top-0 right-0 max-w-md w-full p-2">
+            <div class="bg-white rounded-lg shadow">
+                <div class="flex flex-col divide-y">
+                    <div class="shrink-0 p-4">
+                        <x-heading title="atom::common.label.filter" sm>
+                            <x-close x-on:click="show = false"/>
+                        </x-heading>
+                    </div>
+    
+                    <div class="grow">
+                        {{ $slot }}
+                    </div>
                 </div>
             </div>
         </div>

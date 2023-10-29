@@ -121,7 +121,7 @@ class File extends Model
     protected function url() : Attribute
     {
         return Attribute::make(
-            get: fn($url) => route('__file', $this->ulid),
+            get: fn($url) => route('__file.get', $this->ulid),
         );
     }
 
@@ -193,7 +193,7 @@ class File extends Model
     }
 
     // store file content
-    public function store($content, $path = 'uploads')
+    public function store($content, $path = 'uploads', $visibility = 'private')
     {
         $file = model('file')->fill([
             'data' => ['env' => app()->environment()],
@@ -229,7 +229,7 @@ class File extends Model
                 'disk' => settings('filesystem', 'local'),
             ]);
 
-            $file->putContent($content, $path);
+            $file->putContent($content, $path, $visibility);
         }
 
         return $file;
@@ -250,19 +250,20 @@ class File extends Model
                 : response()->download($this->storage_path);
         }
         else if ($url = data_get($this->getAttributes(), 'url')) {
-            if ($this->disk && $this->is_file) return response()->download($url);
+            if (in_array($this->disk, ['do', 's3'])) return $this->getStorage()->response($this->path);
+            else if ($this->is_file) return response()->download($url);
             else return redirect()->to($url);
         }
         else return response('File not found', 404);
     }
 
     // put content
-    public function putContent($content, $path) : mixed
+    public function putContent($content, $path, $visibility) : mixed
     {
         $storage = $this->getStorage();
         $config = $storage->getConfig();
         $dest = collect([data_get($config, 'folder'), $path])->filter()->join('/');
-        $path = $storage->putFile($dest, $content->path());
+        $path = $storage->putFile($dest, $content->path(), $visibility);
         $url = $this->disk !== 'local' ? $storage->url($path) : null;
         $img = str($this->mime)->is('image/*')
             ? rescue(fn() => Image::make($content->path()), null)

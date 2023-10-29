@@ -100,7 +100,7 @@
         @endif
     </a>
 @else
-    <button class="{{ $class }}" {{ $attributes->except($except) }}>
+    <button class="{{ $class }}" {{ $attributes->merge(['type' => 'button'])->except($except) }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
             @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif

@@ -8,7 +8,6 @@
 @endphp
 
 <form 
-    x-cloak
     x-data="{
         disabled: false,
         confirm: @js($confirm),

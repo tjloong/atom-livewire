@@ -2,16 +2,12 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Website;
 
-use Jiannius\Atom\Traits\Livewire\WithFileInput;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component;
 
 class AnnouncementModal extends Component
 {
     use WithForm;
-    use WithFileInput;
-    use WithPopupNotify;
 
     public $inputs;
 

@@ -72,6 +72,7 @@
                 <main class="p-6">{{ $slot }}</main>
                 @livewire('app.signup.update', key('signup-update'))
                 @livewire('app.settings.label.update', key('label-update'))
+                @livewire('app.settings.file.library', key('file-library'))
                 @livewire('app.settings.file.update', key('file-update'))
             @endroute
         </x-admin-panel>

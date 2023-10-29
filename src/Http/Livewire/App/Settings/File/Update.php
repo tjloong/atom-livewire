@@ -29,14 +29,14 @@ class Update extends Component
     public function open($id) : void
     {
         if ($this->file = model('file')->find($id)) {
-            $this->dispatchBrowserEvent('file-update-open');
+            $this->openDrawer('file-update');
         }
     }
 
     // close
     public function close() : void
     {
-        $this->dispatchBrowserEvent('file-update-close');
+        $this->closeDrawer('file-update');
     }
 
     // delete
