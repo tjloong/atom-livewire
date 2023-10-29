@@ -45,6 +45,7 @@ return [
         'load-more' => 'Load more',
         'login-date' => 'Login Date',
         'login-email' => 'Login Email',
+        'message' => 'Message',
         'name' => 'Name',
         'new' => 'New',
         'phone' => 'Phone',

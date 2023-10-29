@@ -7,17 +7,17 @@
         <x-form.group>
             <x-box>
                 <div class="flex flex-col divide-y">
-                    <x-field label="atom::enquiry.label.name"
+                    <x-field label="common.label.name"
                         :value="$enquiry->name"/>
 
-                    <x-field label="atom::enquiry.label.phone"
+                    <x-field label="common.label.phone"
                         :value="$enquiry->phone"/>
 
-                    <x-field label="atom::enquiry.label.email"
+                    <x-field label="common.label.email"
                         :value="$enquiry->email"/>
             
                     <div class="p-4">
-                        <x-form.field label="atom::enquiry.label.message">
+                        <x-form.field label="common.label.message">
                             {!! nl2br($enquiry->message) !!}
                         </x-form.field>
                     </div>
@@ -26,10 +26,10 @@
         </x-form.group>
 
         <x-form.group>
-            <x-form.textarea label="atom::enquiry.label.remark"
-                wire:model.defer="enquiry.remark"/>
+            <x-form.textarea label="common.label.remark"
+                wire:model.defer="enquiry.notes"/>
 
-            <x-form.select.enum label="atom::enquiry.label.status" enum="enquiry.status"
+            <x-form.select.enum label="common.label.status" enum="enquiry.status"
                 wire:model="inputs.status"/>
         </x-form.group>
     </div>

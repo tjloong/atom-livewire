@@ -20,7 +20,7 @@ class Update extends Component
     protected function validation() : array
     {
         return [
-            'enquiry.remark' => ['nullable'],
+            'enquiry.notes' => ['nullable'],
             'inputs.status' => ['required' => 'Status is required.'],
         ];
     }

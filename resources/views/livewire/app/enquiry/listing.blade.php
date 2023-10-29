@@ -4,7 +4,7 @@
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
                     <x-form.group>
-                        <x-form.select.enum label="atom::enquiry.label.status" enum="enquiry.status"
+                        <x-form.select.enum label="common.label.status" enum="enquiry.status"
                             wire:model="filters.status"/>
                     </x-form.group>
                 </x-table.filters>
@@ -14,11 +14,11 @@
         </x-slot:header>
 
         <x-slot:thead>
-            <x-table.th label="atom::enquiry.label.date" sort="created_at"/>
-            <x-table.th label="atom::enquiry.label.name" sort="name"/>
-            <x-table.th label="atom::enquiry.label.phone"/>
-            <x-table.th label="atom::enquiry.label.email"/>
-            <x-table.th label="atom::enquiry.label.status"/>
+            <x-table.th label="common.label.date" sort="created_at"/>
+            <x-table.th label="common.label.name" sort="name"/>
+            <x-table.th label="common.label.phone"/>
+            <x-table.th label="common.label.email"/>
+            <x-table.th label="common.label.status"/>
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $enquiry)
@@ -34,8 +34,8 @@
 
         <x-slot:empty>
             <x-no-result
-                title="atom::enquiry.empty.title"
-                subtitle="atom::enquiry.empty.subtitle"/>
+                title="enquiry.empty.title"
+                subtitle="enquiry.empty.subtitle"/>
         </x-slot:empty>
     </x-table>
 
