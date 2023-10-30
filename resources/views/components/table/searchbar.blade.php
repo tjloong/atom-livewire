@@ -5,7 +5,7 @@
 
 <div class="py-3 px-4">
     <div class="flex flex-wrap justify-between items-center gap-2">
-        <div class="grow text-gray-800 flex items-end gap-1.5">
+        <div class="shrink-0 text-gray-800 flex items-end gap-1.5">
             @if (is_numeric($total))
                 <div class="text-lg font-medium leading-snug">
                     {{ short_number($total) }}
@@ -40,7 +40,7 @@
             @endif
         </div>
 
-        <div class="shrink-0 flex items-center gap-2">
+        <div class="grow flex items-center gap-2">
             @if ($search)
                 <div 
                     x-data="{
@@ -65,10 +65,11 @@
                         },
                     }"
                     x-on:click="open"
-                    x-on:click.away="close">
+                    x-on:click.away="close"
+                    class="md:grow md:flex md:items-center md:justify-end cursor-pointer">
                     <div
                         x-show="!show"
-                        x-tooltip="Search"
+                        x-tooltip="{{ tr('common.label.search') }}"
                         class="cursor-pointer flex divide-x p-2 rounded-full flex text-gray-500 hover:text-gray-800 hover:bg-gray-200">
                         <x-icon name="search"/>
                     </div>

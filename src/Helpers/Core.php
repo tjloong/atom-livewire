@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
+use OpenSpout\Common\Entity\Style\Style;
 
 // explode if separator matched
 function explode_if($separator, $string)
@@ -210,7 +211,8 @@ function word($pages, $config = [])
  */
 function excel($collection)
 {
-    return (new FastExcel($collection));
+    $style = (new Style())->setShouldWrapText(false);
+    return (new FastExcel($collection))->rowsStyle($style);
 }
 
 /**
