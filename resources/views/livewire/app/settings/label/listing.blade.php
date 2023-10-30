@@ -1,11 +1,8 @@
 <x-sortable wire:ignore wire:sorted="sort" class="flex flex-col divide-y">
     @foreach ($labels as $label)
-        <x-sortable.item :id="$label->id" class="p-2 flex items-center gap-3 hover:bg-slate-50" handle>
+        <x-sortable.item :id="$label->id" class="p-2 flex items-center gap-3" handle>
             @php $count = $label->children->count() @endphp
-            <div 
-                x-data="{ show: false }"
-                x-on:click="show = !show"
-                class="flex flex-col gap-2 {{ $count ? 'cursor-pointer' : null }}">
+            <div x-data="{ show: false }" class="flex flex-col gap-2">
                 <div class="flex items-center gap-3">
                     @if ($label->color)
                         <div class="shrink-0">
@@ -17,33 +14,34 @@
                         </div>
                     @endif
 
-                    <div class="grow flex items-center gap-3">
-                        <x-link :label="$label->locale('name')" 
-                            wire:click.stop="$emit('updateLabel', {{ $label->id }})"
-                            class="font-medium"/>
-
-                        @if ($count) <x-badge :label="$count" color="blue"/> @endif
-                    </div>
-
                     @if ($count)
-                        <div class="shrink-0">
-                            <x-icon x-show="show" name="chevron-down" size="12"/>
-                            <x-icon x-show="!show" name="chevron-right" size="12"/>
+                        <div x-on:click="show = !show" class="grow flex items-center cursor-pointer">
+                            <div class="grow flex items-center gap-3">
+                                <x-link :label="$label->locale('name')" 
+                                    wire:click.stop="$emit('updateLabel', {{ $label->id }})"/>
+                                <x-badge :label="$count" color="blue"/>
+                            </div>
+
+                            <div class="shrink-0 px-2">
+                                <x-icon x-show="show" name="chevron-down"/>
+                                <x-icon x-show="!show" name="chevron-right"/>
+                            </div>
                         </div>
+                    @else
+                        <x-link :label="$label->locale('name')" class="grow cursor-pointer"
+                            wire:click.stop="$emit('updateLabel', {{ $label->id }})"/>
                     @endif
                 </div>
 
                 @if ($count)
-                    <div 
-                        x-show="show" 
-                        x-on:click.stop 
-                        x-on:sorted.stop
-                        class="border rounded">
-                        @livewire(
-                            'app.settings.label.listing',
-                            ['labels' => $label->children->sortBy('seq')],
-                            key('children-for-'.$label->id),
-                        )
+                    <div x-show="show" x-on:click.stop x-on:sorted.stop>
+                        <x-box.flat>
+                            @livewire(
+                                'app.settings.label.listing',
+                                ['labels' => $label->children->sortBy('seq')],
+                                key('children-for-'.$label->id),
+                            )
+                        </x-box.flat>
                     </div>
                 @endif
             </div>
