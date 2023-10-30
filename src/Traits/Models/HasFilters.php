@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Traits\Models;
 
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 trait HasFilters
 {
@@ -51,13 +52,20 @@ trait HasFilters
             $value = $filter['value'];
             $scope = $filter['scope'] ?? null;
             $operator = $filter['operator'] ?? null;
+            $function = $filter['function'] ?? null;
 
             if ($scope) $query->$scope($value);
-            else if ($operator) $query->where($column, $operator, $value);
-            else if (is_array($value)) {
-                if ($value) $query->whereIn($column, $value);
+            else {
+                $column = $function
+                    ? DB::raw($function.'('.$column.')')
+                    : $column;
+
+                if ($operator) $query->where($column, $operator, $value);
+                else if (is_array($value)) {
+                    if ($value) $query->whereIn($column, $value);
+                }
+                else $query->where($column, $value);
             }
-            else $query->where($column, $value);
         }
     }
 
@@ -117,8 +125,8 @@ trait HasFilters
                     if (str($value)->is('* to *')) {
                         $from = head(explode(' to ', $value));
                         $to = last(explode(' to ', $value));
-                        array_push($parsed, ['column' => $column, 'value' => $from, 'operator' => '>=']);
-                        array_push($parsed, ['column' => $column, 'value' => $to, 'operator' => '<=']);
+                        array_push($parsed, ['column' => $column, 'value' => $from, 'operator' => '>=', 'function' => 'date']);
+                        array_push($parsed, ['column' => $column, 'value' => $to, 'operator' => '<=', 'function' => 'date']);
                     }
                     else {
                         if (str($key)->is('from_*')) {
