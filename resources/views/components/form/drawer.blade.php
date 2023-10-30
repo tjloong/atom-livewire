@@ -2,13 +2,17 @@
     <x-drawer {{ $attributes }}>
         @isset($heading)
             <x-slot:heading>
-                <x-heading
-                    icon="{{ $heading->attributes->get('icon') }}"
-                    title="{!! $heading->attributes->get('title') !!}"
-                    subtitle="{!! $heading->attributes->get('subtitle') !!}"
-                    :status="$heading->attributes->get('status')">
+                @if ($heading->attributes->get('title'))
+                    <x-heading
+                        icon="{{ $heading->attributes->get('icon') }}"
+                        title="{!! $heading->attributes->get('title') !!}"
+                        subtitle="{!! $heading->attributes->get('subtitle') !!}"
+                        :status="$heading->attributes->get('status')">
+                        {{ $heading }}
+                    </x-heading>
+                @else
                     {{ $heading }}
-                </x-heading>
+                @endif
             </x-slot:heading>
         @endisset
     

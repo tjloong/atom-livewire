@@ -32,7 +32,7 @@
                     'text-4xl font-bold' => $attributes->get('4xl'),
                     'text-xl font-semibold' => true,
                 ])->filter()->keys()->first() }}">
-                    {!! __($attributes->get('title')) !!}
+                    {!! tr($attributes->get('title')) !!}
                 </div>
             @endisset
 
@@ -52,7 +52,7 @@
             {{ $subtitle }}
         @elseif ($subtitle = $attributes->get('subtitle'))
             <div class="font-medium text-gray-500 truncate">
-                {!! __($subtitle) !!}
+                {!! tr($subtitle) !!}
             </div>
         @endif
     </div>
