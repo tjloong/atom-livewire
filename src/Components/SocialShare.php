@@ -9,13 +9,9 @@ class SocialShare extends Component
     public $uid;
     public $sites;
     public $icons;
-    public $title;
+    public $titles;
 
-    /**
-     * Contructor
-     * 
-     * @return void
-     */
+    // contructor
     public function __construct($sites = null)
     {
         // refer https://ellisonleao.github.io/sharer.js for available sites
@@ -29,11 +25,11 @@ class SocialShare extends Component
         ];
 
         $this->icons = [
-            'facebook' => ['name' => 'facebook', 'color' => 'text-blue-500'],
-            'twitter' => ['name' => 'twitter', 'color' => 'text-blue-400'],
-            'linkedin' => ['name' => 'linkedin', 'color' => 'text-blue-400'],
-            'whatsapp' => ['name' => 'whatsapp', 'color' => 'text-green-500'],
-            'telegram' => ['name' => 'telegram', 'color' => 'text-blue-500'],
+            'facebook' => ['name' => 'brands facebook', 'color' => 'text-blue-500'],
+            'twitter' => ['name' => 'brands twitter', 'color' => 'text-blue-400'],
+            'linkedin' => ['name' => 'brands linkedin', 'color' => 'text-blue-400'],
+            'whatsapp' => ['name' => 'brands whatsapp', 'color' => 'text-green-500'],
+            'telegram' => ['name' => 'brands telegram', 'color' => 'text-blue-500'],
             'email' => ['name' => 'envelope', 'type' => 'regular'],
         ];
 
@@ -42,11 +38,7 @@ class SocialShare extends Component
         ];
     }
 
-    /**
-     * Render component
-     * 
-     * @return Response
-     */
+    // render component
     public function render()
     {
         return view('atom::components.social-share');

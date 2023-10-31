@@ -18,8 +18,8 @@
             <x-dropdown.item
                 :label="$titles[$site] ?? str()->headline($site)"
                 :icon="$icons[$site]['name'] ?? $site"
-                :icon-type="$icons[$site]['type'] ?? 'logo'"
-                :icon-color="$icons[$site]['color'] ?? 'text-gray-400'"
+                {{-- :icon-type="$icons[$site]['type'] ?? 'logo'"
+                :icon-color="$icons[$site]['color'] ?? 'text-gray-400'" --}}
                 href="#"
                 data-sharer="{{ $site }}"
                 data-url="{{ $attributes->get('url') }}"

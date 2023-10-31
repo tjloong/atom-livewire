@@ -64,7 +64,7 @@ class Blog extends Model
     public function scopeSearch($query, $search) : void
     {
         $query->where(fn($q) => $q
-            ->where('title', 'like', "%$search%")
+            ->where('name', 'like', "%$search%")
             ->orWhere('description', 'like', "%$search%")
             ->orWhere('content', 'like', "%$search%")
             ->orWhere('slug', 'like', "%$search%")

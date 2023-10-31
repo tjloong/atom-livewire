@@ -15,6 +15,7 @@ class Update extends Component
     protected $listeners = [
         'createBlog' => 'create',
         'updateBlog' => 'update',
+        'labelCreated' => '$refresh',
     ];
 
     // validation
@@ -89,6 +90,16 @@ class Update extends Component
         $this->blog->restore();
         $this->emit('blogUpdated');
         $this->close();
+    }
+
+    // publish
+    public function publish($bool) : void
+    {
+        $this->blog->fill([
+            'published_at' => $bool ? now() : null,
+        ])->save();
+
+        $this->emit('blogUpdated');
     }
 
     // submit

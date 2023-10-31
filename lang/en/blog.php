@@ -3,6 +3,7 @@
 return [
     'heading' => [
         'blog' => 'Blogs',
+        'settings' => 'Blog Settings',
     ],
 
     'button' => [
