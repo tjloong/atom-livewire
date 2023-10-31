@@ -49,7 +49,7 @@
             this.checkboxes = []
             this.loading = true
 
-            axios.get(@js(route('__file.list')), { page: this.page, filters: this.filters })
+            axios.post(@js(route('__file.list')), { page: this.page, filters: this.filters })
                 .then(res => {
                     this.page = res.data.length ? (this.page + 1) : -1
                     this.files = this.files.concat(res.data)
@@ -71,15 +71,15 @@
     class="fixed inset-0"
     style="z-index: 999;">
     <x-modal.overlay x-on:click="close()"/>
-    <div class="absolute inset-0 py-1 pl-2">
-        <div class="bg-white border shadow-lg rounded-l-lg max-w-screen-lg h-full ml-auto flex flex-col">
+    <div class="absolute top-0 bottom-0 right-0 left-0 py-1 md:left-auto">
+        <div class="bg-white border shadow-lg rounded-l-lg h-full ml-auto flex flex-col">
             <div class="shrink-0 py-3 px-6 cursor-pointer border-b" x-on:click="close()">
                 <x-icon name="arrow-left-long"/>
             </div>
 
             <x-heading title="file.heading.library" class="shrink-0 px-6 py-3 border-b"/>
 
-            <div class="grow p-4 overflow-auto">
+            <div class="grow p-4 overflow-auto max-w-screen-xl md:w-screen">
                 <x-box>
                     <div class="flex flex-col">
                         <div x-show="checkboxes.length" class="py-2 px-4 flex items-center gap-3 justify-between border-b">
@@ -111,7 +111,7 @@
                                 </div>
 
                                 <div class="shrink-0 px-4">
-                                    <x-form.file.uploader :dropzone="false">
+                                    <x-form.file.uploader :dropzone="false" :accept="$accept" multiple>
                                         <div class="flex items-center gap-2">
                                             <x-icon name="upload"/> {{ tr('common.label.upload') }}
                                         </div>

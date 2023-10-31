@@ -5,6 +5,7 @@
                 url: null,
                 alt: null,
                 exists: false,
+                showLibrary: false,
                 init () {
                     this.$watch('show', (show) => show && this.start())
                 },
@@ -14,12 +15,18 @@
                     this.alt = editor().getAttributes('image').alt
                     this.exists = editor().isActive('image')
                 },
+                select (files) {
+                    this.url = files[0].url
+                    this.alt = files[0].data?.alt
+                    this.save()
+                },
                 save () {
                     if (!this.url) return
                     commands().setImage({ src: this.url, alt: this.alt })
                     close()
                 },
-            }">
+            }"
+            x-on:files-selected.stop="select($event.detail)">
             <div x-show="exists" class="flex flex-col divide-y w-max p-1">
                 <div class="flex items-center gap-2">
                     <button type="button" x-tooltip="Align Image Left" 
@@ -77,10 +84,13 @@
                             x-on:click="save()"/>
 
                         <x-button icon="search" sm block
-                            label="Browse"/>
+                            label="Browse"
+                            x-on:click="showLibrary = true"/>
                     </div>
                 </x-form.group>
             </div>
+
+            <x-form.file.library accept="image/*"/>
         </div>
     </x-form.editor.dropdown>
 
