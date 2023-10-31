@@ -31,15 +31,6 @@
         'items-center justify-center gap-1.5 font-medium tracking-wide rounded-md',
         'transition-colors duration-200 focus:ring-2 focus:ring-offset-2',
 
-        $label ? [
-            'xs' => 'text-xs px-3 py-1',
-            'sm' => 'text-sm px-4 py-1.5',
-            'md' => 'text-base px-4 py-2',
-            'lg' => 'text-lg px-4 py-2',
-            'xl' => 'text-xl px-5 py-3',
-            '2xl' => 'text-2xl px-5 py-3',
-        ][$size] : null,
-
         $icon && !$label ? [
             'xs' => 'text-xs p-[0.55em]',
             'sm' => 'text-sm p-[0.65em]',
@@ -47,7 +38,14 @@
             'lg' => 'text-lg p-[0.7em]',
             'xl' => 'text-xl p-[0.85em]',
             '2xl' => 'text-2xl p-[0.75em]',
-        ][$size] : null,
+        ][$size] : [
+            'xs' => 'text-xs px-3 py-1',
+            'sm' => 'text-sm px-4 py-1.5',
+            'md' => 'text-base px-4 py-2',
+            'lg' => 'text-lg px-4 py-2',
+            'xl' => 'text-xl px-5 py-3',
+            '2xl' => 'text-2xl px-5 py-3',
+        ][$size],
 
         $inverted ? [
             'black' => 'bg-gray-200 text-gray-600 hover:text-white hover:bg-black focus:ring-black',
