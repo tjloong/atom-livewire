@@ -63,6 +63,33 @@ trait HasTrace
         }
     }
 
+    // scope for trace
+    public function scopeWhereTrace($query, $key, $search) : void
+    {
+        if ($search) {
+            $table = $this->getTable();
+            $splits = collect(explode('.', $key));
+            $col = $splits->shift();
+            $attrs = $splits;
+            $user = model('user')->whereRaw("`users`.`id` = `$table`.`$col`");
+
+            if ($attrs->count()) {
+                foreach ($attrs as $attr) {
+                    $user->where('users.'.$attr, $search);
+                }
+            }
+            else $user->search($search);
+
+            $query->whereExists($user);
+        }
+    }
+
+    // scope for or where trace
+    public function scopeOrWhereTrace($query, $key, $search) : void
+    {
+        $query->orWhere(fn($q) => $q->whereTrace($key, $search));
+    }
+
     // trace
     public function trace($key, $default = null) : mixed
     {
@@ -71,13 +98,18 @@ trait HasTrace
         $col = $splits->first();
 
         if (has_column($table, $col)) {
-            $trace = $this->belongsTo(model('user'), $col)->getResults();
-            $splits->shift();
-            $attr = $splits->join('.');
+            $relationship = $this->belongsTo(model('user'), $col);
+            $results = $relationship->getResults();
 
-            return $attr
-                ? data_get($trace, $splits->join('.'), $default)
-                : $trace;
+            if ($key === $col) return $results;
+            else {
+                $splits->shift();
+                $attr = $splits->join('.');
+    
+                return $attr
+                    ? data_get($results, $splits->join('.'), $default)
+                    : $results;
+            }
         }
 
         return null;
