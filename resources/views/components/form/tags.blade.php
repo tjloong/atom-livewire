@@ -102,7 +102,7 @@
             <div
                 x-show="!filteredOptions.length && text && text.length" 
                 class="bg-white shadow-lg rounded-lg border py-2 px-4 text-sm text-gray-500 font-medium text-center">
-                {{ __('atom::form.tags.press-enter') }}
+                {{ tr('common.label.enter-add-tag') }}
             </div>
 
             <div x-show="filteredOptions.length" class="bg-white shadow-lg rounded-lg border flex flex-col divide-y">

@@ -4,7 +4,7 @@
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
                     <x-form.group>
-                        <x-form.select.enum label="atom::common.label.status" enum="signup.status"
+                        <x-form.select.enum label="common.label.status" enum="signup.status"
                             wire:model="filters.status"/>
                     </x-form.group>
                 </x-table.filters>
@@ -14,10 +14,10 @@
         </x-slot:header>
 
         <x-slot:thead>
-            <x-table.th label="atom::common.label.name"/>
-            <x-table.th label="atom::common.label.email"/>
-            <x-table.th label="atom::common.label.status" class="text-right"/>
-            <x-table.th label="atom::common.label.date" class="text-right"/>
+            <x-table.th label="common.label.name"/>
+            <x-table.th label="common.label.email"/>
+            <x-table.th label="common.label.status" class="text-right"/>
+            <x-table.th label="common.label.date" class="text-right"/>
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $row)

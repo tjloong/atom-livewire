@@ -212,7 +212,9 @@ function word($pages, $config = [])
 function excel($collection)
 {
     $style = (new Style())->setShouldWrapText(false);
-    return (new FastExcel($collection))->rowsStyle($style);
+    return (new FastExcel($collection))
+        ->headerStyle($style)
+        ->rowsStyle($style);
 }
 
 /**

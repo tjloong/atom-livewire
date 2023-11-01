@@ -16,6 +16,6 @@ class Page extends Component
 
         $this->page = $pages->count() > 1
             ? $pages->where('locale', app()->currentLocale())->first()
-            : $pages->first();
+            : $pages->firstOrFail();
     }
 }

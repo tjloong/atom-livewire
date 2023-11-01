@@ -6,6 +6,7 @@ return [
         'email-verification' => 'Email Verification',
         'login' => 'Sign in to your account',
         'forgot-password' => 'Send Reset Password Request',
+        'reset-password' => 'Reset Password',
     ],
     
     'label' => [
