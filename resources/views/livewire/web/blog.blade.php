@@ -24,7 +24,7 @@
             <div class="{{ $this->sidebar ? 'md:w-9/12' : 'w-full' }}">
                 @if ($this->blog)
                     <x-blog
-                        :title="$this->blog->title"
+                        :title="$this->blog->name"
                         :posted-at="$this->blog->published_at"
                         :cover="$this->blog->cover"
                     >
@@ -37,7 +37,7 @@
                                 <x-blog.card
                                     :href="route('web.blog', [$blog->slug])"
                                     :cover="optional($blog->cover)->url"
-                                    :title="$blog->title"
+                                    :title="$blog->name"
                                     :excerpt="html_excerpt($blog->excerpt ?? $blog->content)"
                                 />
                             @empty
@@ -94,7 +94,7 @@
                             @foreach ($related as $val)
                                 <x-blog.card size="sm"
                                     :href="route('web.blog', [$val->slug])"
-                                    :title="$val->title"
+                                    :title="$val->name"
                                     :excerpt="html_excerpt($val->excerpt ?? $val->content)"
                                     :date="$val->published_at"
                                 />
@@ -111,7 +111,7 @@
                             @foreach ($recents as $val)
                                 <x-blog.card size="sm"
                                     :href="route('web.blog', [$val->slug])"
-                                    :title="$val->title"
+                                    :title="$val->name"
                                     :excerpt="html_excerpt($val->excerpt ?? $val->content)"
                                     :date="$val->published_at"
                                 />

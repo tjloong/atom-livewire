@@ -1,4 +1,4 @@
-@if ($id = config('atom.analytics.fbp_id') ?? settings('analytics.fbp_id'))
+@if ($id = config('atom.fbp_id') ?? settings('fbp_id'))
 @if ($attributes->get('noscript'))
 @foreach ((array)$id as $id)
 <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $id }}&ev=PageView&noscript=1" />

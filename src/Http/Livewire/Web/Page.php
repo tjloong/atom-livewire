@@ -12,7 +12,7 @@ class Page extends Component
     // mount
     public function mount()
     {
-        $pages = model('page')->where('slug', $this->slug)->get();
+        $pages = model('page')->where('slug', $this->slug);
 
         $this->page = $pages->count() > 1
             ? $pages->where('locale', app()->currentLocale())->first()

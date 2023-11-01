@@ -1,4 +1,4 @@
-@if ($id = config('atom.analytics.gtm_id') ?? settings('analytics.gtm_id'))
+@if ($id = config('atom.gtm_id') ?? settings('gtm_id'))
 @if ($attributes->get('noscript'))
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $id }}"
