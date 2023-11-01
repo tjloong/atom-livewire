@@ -10,6 +10,6 @@ class Index extends Component
     public function getStorageUsedProperty() : string
     {
         $sum = model('file')->sum('size');
-        return format_filesize($sum, 'MB');
+        return format_filesize($sum, 'KB');
     }
 }
