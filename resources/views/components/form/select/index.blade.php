@@ -1,217 +1,265 @@
 @php
+    $icon = $attributes->get('icon');
     $multiple = $attributes->get('multiple', false);
-    $searchable = $attributes->get('searchable', true);
-    $value = data_get($this, $attributes->wire('model')->value());
-    $empty = (is_array($value) && empty($value)) || is_null($value);
-    $placeholder = __($attributes->get('placeholder') ?? (
-        component_label($attributes) ? collect(['Select', component_label($attributes)])->join(' ') : 'Please Select'
-    ));
+    $callback = $attributes->get('callback');
+    $params = $attributes->get('params');
+    $wire = $attributes->wire('model')->value();
+    $search = $attributes->get('search', 'lazy');
+    $placeholder = tr($attributes->get('placeholder', 'common.label.select-option'));
 @endphp
 
 <x-form.field {{ $attributes }}>
-    <div
-        x-cloak
-        x-data="{
-            value: @entangle($attributes->wire('model')),
-            searchText: @entangle('selectInputSearchText'),
-            multiple: @js($attributes->get('multiple', false)),
-            show: false,
-            open () {
-                if (this.multiple && !this.value) this.value = []
-                
-                this.show = true
-                this.$nextTick(() => {
-                    $el.querySelector('#select-input-search')?.focus()
-                    floatDropdown(this.$refs.anchor, this.$refs.dd)
-                })
-            },
-            close () {
-                this.show = false
-                this.searchText = null
-            },
-            select (val) {
-                if (this.multiple) {
-                    if (this.value.indexOf(val) === -1) this.value.push(val)
-                }
-                else this.value = val
+    <div {{ $attributes->except(['icon', 'multiple', 'callback', 'params', 'search', 'placeholder'])}}>
+        <div
+            x-cloak
+            x-data="{
+                value: @if ($wire) @entangle($wire) @else @js($attributes->get('value')) @endif,
+                search: @js($search),
+                searchText: null,
+                multiple: @js($multiple),
+                options: [],
+                show: false,
+                focus: false,
+                loading: false,
+                get selected () {
+                    return this.multiple
+                        ? this.options.filter(opt => (this.value.includes(opt.value)))
+                        : this.options.find(opt => (opt.value === this.value))
+                },
+                get filtered () {
+                    return this.options.filter(opt => (!opt.hidden))
+                },
+                get isEmpty () {
+                    return this.multiple
+                        ? (!this.value || !this.value.length)
+                        : (this.value === null || this.value === undefined)
+                },
+                fetch (callback, params) {
+                    this.loading = true
+                    axios.post(@js(route('__select.get')), { callback, params, value: this.value })
+                        .then(res => this.options = res.data)
+                        .finally(() => this.loading = false)
+                },
+                filter (text, callback, params) {
+                    if (this.search === 'lazy') {
+                        this.options = this.options.map(opt => ({
+                            ...opt,
+                            hidden: !empty(text) && (
+                                !opt.label.toLowerCase().includes(text.toLowerCase())
+                                && !opt.small?.toLowerCase().includes(text.toLowerCase())
+                            ),
+                        }))
+                    }
+                    else this.fetch(callback, { ...params, search: text })
+                },
+                open (callback, params) {
+                    if (this.show) this.close()
+                    else {
+                        if (this.multiple && !this.value) this.value = []
+                        if (callback) this.fetch(callback, params)
+    
+                        this.show = true
+                        this.$nextTick(() => {
+                            this.$refs.search?.focus()
+                            floatDropdown(this.$refs.anchor, this.$refs.dd)
+                        })
+                    }
+                },
+                close () {
+                    this.$refs.search.value = ''
+                    this.show = false
+                    this.focus = false
+                },
+                select (opt) {
+                    if (this.multiple) {
+                        const index = this.value.indexOf(opt.value)
+                        if (index === -1) this.value.push(opt.value)
+                        else this.value.splice(index, 1)
+                    }
+                    else if (this.value === opt.value) this.value = null
+                    else this.value = opt.value
 
-                this.close()
-            },
-            remove (val = null) {
-                if (val === null) {
-                    this.value = this.multiple ? [] : null
-                }
-                else {
-                    const index = this.value.indexOf(val)
-                    this.value.splice(index, 1)
-                }
-            },
-        }"
-        x-on:click="open"
-        x-on:click.away="close"
-        class="relative">
-        <div x-ref="anchor"
-            x-bind:class="show && 'active'"
-            class="form-input w-full">
-            <div class="flex gap-3 {{ $empty ? 'form-input-caret' : '' }}">
-                <div class="grow flex items-center gap-3">
-                    @if ($icon = $attributes->get('icon')) 
-                        <x-icon :name="$icon" class="text-gray-400"/> 
-                    @endif
+                    if (!@js($wire)) this.$dispatch('input', this.value)
 
-                    @if ($empty)
-                        <input type="text" class="transparent grow" placeholder="{{ $placeholder }}" readonly>
-                    @else
+                    this.close()
+                },
+                remove (opt = null) {
+                    if (opt === null) {
+                        this.value = this.multiple ? [] : null
+                    }
+                    else {
+                        const index = this.value.indexOf(opt.value)
+                        this.value.splice(index, 1)
+                    }
+
+                    if (!@js($wire)) this.$dispatch('input', this.value)
+                },
+                isSelected (opt) {
+                    return this.multiple && this.value && this.value.includes(opt.value)
+                        || !this.multiple && this.value === opt.value
+                },
+            }"
+            x-init="() => {
+                $watch('value', () => value && !selected && fetch(@js($callback), @js($params)))
+
+                @if ($attributes->has('x-model')) value = {{ $attributes->get('x-model') }} @endif
+
+                if (!isEmpty) fetch(@js($callback), @js($params))
+            }"
+            x-on:click.away="close()"
+            class="relative">
+            <button type="button" 
+                x-ref="anchor"
+                x-on:click.prevent="open(@js($callback), @js($params))"
+                x-bind:class="show && 'active'"
+                class="form-input w-full">
+                <template x-if="isEmpty">
+                    <div class="flex items-center gap-3">
+                        @if ($icon) <div class="shrink-0"><x-icon :name="$icon" class="text-gray-400"/></div> @endif
+                        <input type="text" class="grow tranparent cursor-pointer" placeholder="{{ $placeholder }}" readonly>
+                        <div class="shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="w-5 h-5 text-gray-400"><path fill-rule="evenodd" d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z" clip-rule="evenodd"></path></svg>
+                        </div>
+                    </div>
+                </template>
+        
+                <template x-if="!isEmpty">
+                    <div class="flex gap-2 cursor-pointer">
                         <div class="grow">
-                            @if ($slot->isNotEmpty())
-                                {{ $slot }}
-                            @elseif ($multiple)
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach ($value as $val)
-                                        <div class="bg-slate-200 rounded-md px-2 border border-gray-200">
-                                            <div class="flex items-center gap-2 max-w-[200px]">
-                                                <div class="truncate text-xs font-medium">
-                                                    {{ data_get($parsedOptions->firstWhere('value', $val), 'label') }}
-                                                </div>
-                                                <div class="shrink-0 text-sm flex items-center justify-center">
-                                                    <x-close x-on:click.stop="remove({{ json_encode($val) }})"/>
+                            @if ($slot->isNotEmpty()) {{ $slot }}
+                            @else
+                                <template x-if="multiple">
+                                    <div class="flex items-center gap-2 flex-wrap pr-4">
+                                        <template x-for="item in selected" x-bind:key="item.value">
+                                            <div class="bg-slate-200 rounded-md px-2 border border-gray-200">
+                                                <div class="flex items-center gap-2 max-w-[200px]">
+                                                    <div x-text="item.label" class="truncate text-xs font-medium"></div>
+                                                    <div class="shrink-0 text-sm flex items-center justify-center">
+                                                        <x-close x-on:click.stop="remove(item)"/>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                {{ data_get($parsedOptions->firstWhere('value', $value), 'label') }}
+                                        </template>
+                                    </div>
+                                </template>
+    
+                                <template x-if="!multiple">
+                                    <div class="text-left" x-text="selected?.label"></div>
+                                </template>
                             @endif
                         </div>
-                    @endif
-                </div>
-
-                @if (!$empty)
-                    <div class="shrink-0">
-                        <x-close x-on:click.stop="remove()"/>
+    
+                        <div class="shrink-0">
+                            <x-close x-on:click.stop="remove()"/>
+                        </div>
                     </div>
-                @endif
-            </div>
-        </div>
-
-        <div x-ref="dd"
-            x-show="show"
-            x-transition.opacity
-            class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px]">
-            @if ($searchable)
-                <div wire:ignore class="p-3 border-b">
-                    <div
-                        x-data="{ focus: false }"
-                        x-bind:class="focus && 'active'"
-                        class="form-input flex items-center gap-3 w-full">
+                </template>
+            </button>
+    
+            <div x-ref="dd"
+                x-show="show"
+                x-transition.opacity
+                class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px]">
+                <div x-show="search" x-on:click="$refs.search.focus()" class="p-3 border-b">
+                    <div x-bind:class="focus && 'active'" class="form-input flex items-center gap-3 w-full">
                         <div class="shrink-0 text-gray-400">
                             <x-icon name="search"/>
                         </div>
 
-                        <input type="text" id="select-input-search"
+                        <input type="text"
+                            x-ref="search"
                             x-on:focus="focus = true"
                             x-on:blur="focus = false"
-                            wire:model.debounce.300ms="selectInputSearchText"
+                            x-on:input.debounce.500ms.stop="filter($event.target.value, @js($callback), @js($params))"
+                            x-on:keydown.enter.prevent="filtered.length && select(filtered[0])"
                             class="transparent grow" 
-                            placeholder="{{ __('Search') }}">
+                            placeholder="{{ tr('common.label.search') }}">
 
-                        <div x-show="!empty($wire.get('selectInputSearchText'))" class="shrink-0">
-                            <x-close wire:click="$set('selectInputSearchText', null)"/>
+                        <div
+                            x-show="!loading" 
+                            x-on:click="$refs.search.value = '' && filter(null, @js($callback), @js($params))"
+                            class="shrink-0 text-sm text-gray-500 cursor-pointer">
+                            <x-icon name="arrow-left"/>
+                        </div>
+
+                        <div x-show="loading" class="shrink-0 flex items-center justify-center text-theme">
+                            <x-spinner size="20"/>
                         </div>
                     </div>
                 </div>
-            @endif
 
-            <div class="flex flex-col divide-y">
-                <div class="max-h-[250px] overflow-auto flex flex-col divide-y">
-                    @isset($options)
-                        {{ $options }}
-                    @else
-                        @forelse ($parsedOptions->filter(function($opt) {
-                            $search = str()->lower($this->selectInputSearchText);
-                            return str(data_get($opt, 'label'))->lower()->is("*{$search}*")
-                                || str(data_get($opt, 'small'))->lower()->is("*{$search}*")
-                                || str(data_get($opt, 'remark'))->lower()->is("*{$search}*");
-                        })->values() as $opt)
-                            @if (data_get($opt, 'is_group'))
-                                <div wire:key="{{ uniqid() }}" 
-                                    class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
-                                    @if ($icon = data_get($opt, 'icon'))
-                                        <x-icon :name="$icon" class="shrink-0 text-gray-500"/>
-                                    @endif
-                                    <div class="grow font-semibold">{{ data_get($opt, 'label') }}</div>
-                                    <x-icon name="chevron-down" class="shrink-0" size="12"/>
+                <div class="flex flex-col divide-y">
+                    <ul class="max-h-[250px] overflow-auto flex flex-col divide-y">
+                        <template x-for="opt in filtered" x-bind:key="opt.value">
+                            <li x-on:click="select(opt)" class="cursor-pointer">
+                                <div x-show="opt.is_group" class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
+                                    <template x-if="opt.icon">
+                                        <i x-bind:class="opt.icon.split(' ').map(val => `fa-${val}`)"></i>
+                                    </template>
+                                    <div class="grow font-semibold" x-text="opt.label"></div>
+                                    <x-icon name="chevron-down" class="shrink-0"/>
                                 </div>
-                            @else
-                                <div wire:key="{{ uniqid() }}" 
-                                    x-on:click.stop="select(@js(data_get($opt, 'value')))"
-                                    class="py-2 px-4 flex items-center gap-3 cursor-pointer {{ data_get($opt, 'color') }}">
-                                    @if ($avatar = data_get($opt, 'avatar'))
-                                        <div class="shrink-0">
-                                            <x-image avatar size="32x32" color="random"
-                                                :src="is_string($avatar) ? $avatar : data_get($avatar, 'url')"
-                                                :placeholder="data_get($avatar, 'placeholder')"/>
-                                        </div>
-                                    @elseif ($image = data_get($opt, 'image'))
-                                        <div class="shrink-0">
-                                            <x-image size="32x32"
-                                                :src="is_string($image) ? $image : data_get($image, 'url')"
-                                                :placeholder="data_get($image, 'placeholder')"/>
-                                        </div>
-                                    @elseif ($flag = data_get($opt, 'flag'))
-                                        <div class="shrink-0 w-4 h-4">
-                                            <img src="{{ $flag }}" class="w-full h-full object-contain object-center">
-                                        </div>
-                                    @endif
     
-                                    <div class="grow grid">
-                                        @if (($label = data_get($opt, 'label')) && ($small = data_get($opt, 'small'))) 
-                                            <div class="font-medium truncate">{{ $label }}</div> 
-                                            <div class="text-gray-500 text-sm truncate">{{ $small }}</div>
-                                        @else
-                                            <div class="truncate">{{ data_get($opt, 'label') }}</div>
-                                        @endif
+                                <div 
+                                    x-show="!opt.is_group"
+                                    x-bind:class="isSelected(opt) 
+                                        ? 'border-l-4 border-green-500 bg-slate-100 pl-3 pr-4'
+                                        : 'px-4 hover:bg-slate-50'"
+                                    class="py-2 flex items-center gap-3 cursor-pointer">
+                                    <template x-if="opt.avatar?.url || typeof opt.avatar === 'string'">
+                                        <div class="shrink-0 w-10 h-10 rounded-full border shadow">
+                                            <img x-bind:src="opt.avatar?.url || opt.avatar" class="w-full h-full object-cover">
+                                        </div>
+                                    </template>
+    
+                                    <template x-if="typeof opt.avatar === 'object' && !opt.avatar?.url && opt.avatar?.placeholder">
+                                        <div class="shrink-0 w-10 h-10 rounded-full bg-gray-500 text-gray-100 shadow flex items-center justify-center">
+                                            <div class="font-bold" x-text="opt.avatar?.placeholder.substring(0, 2).toUpperCase()"></div>
+                                        </div>
+                                    </template>
+
+                                    <template x-if="opt.hasOwnProperty('flag')">
+                                        <div class="shrink-0 w-5 h-5 flex">
+                                            <img x-show="opt.flag" x-bind:src="opt.flag" class="w-full object-contain m-auto">
+                                            <div x-show="!opt.flag" class="w-full h-full border rounded bg-gray-100"></div>
+                                        </div>
+                                    </template>
+    
+                                    <div class="grow">
+                                        <div class="flex items-center gap-3">
+                                            <div class="grow grid">
+                                                <div x-text="opt.label" class="truncate"></div>
+                                            </div>
+                                            <div x-text="opt.remark" class="shrink-0 text-right text-sm text-gray-500 font-medium"></div>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="grow grid">
+                                                <div class="text-sm text-gray-500 truncate" x-text="opt.small"></div>
+                                            </div>
+                                        </div>
                                     </div>
-    
-                                    @if (($remark = data_get($opt, 'remark')) || ($status = data_get($opt, 'status')))
-                                        <div class="shrink-0 text-right">
-                                            @if (!empty($remark))
-                                                <div class="text-sm font-medium text-gray-500">{{ $remark }}</div>
-                                            @endif
-                                            
-                                            @if (!empty($status))
-                                                @if (is_array($status))
-                                                    @foreach ($status as $key => $val)
-                                                        <x-badge :label="$val" :color="$key"/>
-                                                    @endforeach
-                                                @else <x-badge :label="$status"/>
-                                                @endif
-                                            @endif
-                                        </div>
-                                    @endif
                                 </div>
-                            @endif
-                        @empty
-                            <div wire:key="{{ uniqid() }}">
-                                <x-no-result xs
-                                    title="atom::common.empty.option.title"
-                                    subtitle="atom::common.empty.option.subtitle"/>
-                            </div>
-                        @endforelse
+                            </li>
+                        </template>
+    
+                        <template x-if="!loading && !filtered.length">
+                            <x-no-result xs
+                                title="common.empty.option.title"
+                                subtitle="common.empty.option.subtitle"/>
+                        </template>
+                    </ul>
+    
+                    @isset($foot)
+                        @if ($foot->isNotEmpty())
+                            {{ $foot }}
+                        @else
+                            <a class="py-3 px-4 flex items-center justify-center gap-2" {{ $foot->attributes->except('label', 'icon') }}>
+                                @if ($icon = $foot->attributes->get('icon')) <x-icon :name="$icon"/> @endif
+                                {{ tr($foot->attributes->get('label', '')) }}
+                            </a>
+                        @endif
                     @endisset
                 </div>
-
-                @isset($foot)
-                    @if ($foot->isNotEmpty())
-                        {{ $foot }}
-                    @else
-                        <a class="py-2 px-4 flex items-center justify-center gap-2" {{ $foot->attributes->except('label', 'icon') }}>
-                            @if ($icon = $foot->attributes->get('icon')) <x-icon :name="$icon"/> @endif
-                            {{ __($foot->attributes->get('label', '')) }}
-                        </a>
-                    @endif
-                @endisset
             </div>
         </div>
     </div>

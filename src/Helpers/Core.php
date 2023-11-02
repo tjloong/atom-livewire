@@ -260,12 +260,14 @@ function model($name)
 {
     $name = str($name)->singular()->studly()->toString();
 
-    $class = collect([
-        'App\\Models\\'.$name,
-        'Jiannius\\Atom\\Models\\'.$name,
-    ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
-
-    return app($class);
+    if (
+        $class = collect([
+            'App\\Models\\'.$name,
+            'Jiannius\\Atom\\Models\\'.$name,
+        ])->first(fn($ns) => file_exists(atom_ns_path($ns)))
+    ) {
+        return app($class);
+    }
 }
 
 /**

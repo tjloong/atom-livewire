@@ -65,7 +65,7 @@ class Label extends Model
     }
 
     // attribute for parents
-    protected function parents(): Attribute
+    protected function parents() : Attribute
     {
         return Attribute::make(
             get: function () {
@@ -83,11 +83,11 @@ class Label extends Model
     }
 
     // scope for fussy search
-    public function scopeSearch($query, $search)
+    public function scopeSearch($query, $search) : void
     {
-        return $query->where(fn($q) => $q
-            ->where('name', 'like', "%$search%")
-            ->orWhere('slug', 'like', "%$search%")
+        $query->where(fn($q) => $q
+            ->whereRaw('lower(`name`) like ?', ['%'.str()->lower($search).'%'])
+            ->orWhereRaw('`slug` like ?', ['%'.str()->lower($search).'%'])
         );
     }
 }

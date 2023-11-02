@@ -111,13 +111,18 @@
                 </div>
 
                 <div x-show="from && to" class="grow flex items-center gap-3">
-                    <div x-text="formatDate(from)" class="grow text-center"></div>
+                    <div x-text="formatDate(from)" class="grow text-center truncate"></div>
                     <x-icon name="arrow-right" class="shrink-0"/>
-                    <div x-text="formatDate(to)" class="grow text-center"></div>
-                    @if ($clearable) <x-close x-on:click.stop="value = null" class="shrink-0"/> @endif
+                    <div x-text="formatDate(to)" class="grow text-center truncate"></div>
                 </div>
+                
+                @if ($clearable) 
+                    <div x-show="from && to" class="shrink-0">
+                        <x-close x-on:click.stop="value = null" class="shrink-0"/>
+                    </div>
+                @endif
 
-                <div x-show="!from || !to" class="grow flex items-center gap-3">
+                <div x-show="!from || !to" class="shrink-0 flex items-center gap-3">
                     <div class="grow text-gray-400">{{ tr($placeholder) }}</div>
                     <x-icon name="chevron-down"/>
                 </div>

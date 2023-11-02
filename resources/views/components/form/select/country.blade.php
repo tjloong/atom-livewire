@@ -1,5 +1,5 @@
-<x-form.select 
-    :label="$attributes->get('label', 'Country')"
-    :options="countries()"
-    {{ $attributes->except('label', 'options') }}
-/>
+@php
+    $label = $attributes->get('label', 'common.label.country');
+@endphp
+
+<x-form.select :label="$label" callback="countries" {{ $attributes->except('label') }}/>

@@ -29,8 +29,8 @@
                 grecaptcha.ready(() => {
                     grecaptcha.execute(this.recaptcha.sitekey, { action: this.recaptcha.action })
                         .then(token => (this.$wire.set('form.recaptcha_token', token)))
-                        .then(() => this.disabled = false)
-                        .then(() => this.$wire.call(@js($submit)))
+                        .then(() => (this.$wire.call(@js($submit))))
+                        .finally(() => this.disabled = false)
                 })        
             }
             else this.$wire.call(@js($submit))

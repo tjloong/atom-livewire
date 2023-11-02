@@ -1,19 +1,11 @@
-@props([
-    'country' => $attributes->get('country'),
-])
+@php
+    $label = $attributes->get('label', 'common.label.state');
+    $placeholder = $attributes->get('placeholder', 'common.label.select-state');
+    $country = $attributes->get('country');
+@endphp
 
-<x-form.select
-    :label="$attributes->get('label', 'State')"
-    :options="
-        $country
-            ? collect(countries($country.'.states'))
-                ->map(fn($val) => [
-                    'value' => data_get($val, 'name'),
-                    'label' => data_get($val, 'name')
-                ])
-                ->sort()
-                ->toArray()
-            : []
-    "
-    {{ $attributes->except(['label', 'options']) }}
-/>
+<x-form.select callback="states"
+    :label="$label"
+    :params="compact('country')"
+    :placeholder="$placeholder"
+    {{ $attributes->except(['label', 'options']) }}/>
