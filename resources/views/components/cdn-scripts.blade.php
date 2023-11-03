@@ -48,6 +48,9 @@
             ? 'https://www.google.com/recaptcha/api.js?render='.$sitekey
             : null,
         ],
+        'signature-pad' => [
+            'https://cdn.jsdelivr.net/npm/signature_pad@4.1.6/dist/signature_pad.umd.min.js',
+        ],
         'ckeditor' => [
             '/ckeditor/ckeditor.js',
         ],

@@ -70,6 +70,7 @@ return [
         'reference' => 'Reference',
         'remark' => 'Remarks',
         'remove' => 'Remove',
+        'reset' => 'Reset',
         'restore-all' => 'Restore All',
         'restore' => 'Restore',
         'save' => 'Save',
