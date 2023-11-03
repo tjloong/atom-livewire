@@ -1,5 +1,5 @@
 @php
-    $label = $attributes->get('label') ?? 'common.label.trash';
+    $label = $attributes->get('label', 'common.label.trash');
     $callback = $attributes->get('callback', 'trash');
     $count = $attributes->get('count', 1);
     $params = $attributes->get('params');
@@ -10,7 +10,7 @@
 @endphp
 
 <x-button c="red" icon="trash-can" 
-    :label="$label.($count > 1 ? ' ('.$count.')' : '')"
+    :label="tr($label).($count > 1 ? ' ('.$count.')' : '')"
     :inverted="$inverted" 
     x-on:click="$dispatch('confirm', {
         title: '{{ __($title) }}',

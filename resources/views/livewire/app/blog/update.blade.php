@@ -3,15 +3,15 @@
     <x-slot:buttons :delete="$blog->exists">
         <x-button.submit sm/>
 
-        @if ($blog->status === enum('blog.status', 'DRAFT'))
-            <x-button icon="upload" label="blog.button.publish" sm
-                wire:click="publish(true)"/>
-        @else
-            <x-button icon="undo" label="blog.button.unpublish" sm
-                wire:click="publish(false)"/>
-        @endif
-
         @if ($blog->exists)
+            @if ($blog->status === enum('blog.status', 'DRAFT'))
+                <x-button icon="upload" label="blog.button.publish" sm
+                    wire:click="publish(true)"/>
+            @else
+                <x-button icon="undo" label="blog.button.unpublish" sm
+                    wire:click="publish(false)"/>
+            @endif
+
             <x-button icon="eye" label="blog.button.preview" sm
                 href="{{ route('web.blog', $blog->slug) }}"
                 target="_blank"/>
