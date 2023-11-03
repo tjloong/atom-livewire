@@ -18,6 +18,7 @@
             init () {
                 this.setInputs(this.value)
                 this.$watch('show', (val) => this.setDatePicker())
+                this.$watch('value', () => this.setInputs(this.value))
             },
             clear () {
                 this.setInputs(false)
