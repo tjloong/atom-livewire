@@ -96,7 +96,7 @@ window.formatDate = (value, option) => {
 }
 
 // format currency
-window.currency = (val, symbol = null, round = true) => {
+window.currency = (val, symbol = null, round = false) => {
     const config = { minimumFractionDigits: 2 }
 
     if (symbol) {

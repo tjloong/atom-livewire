@@ -30,15 +30,15 @@
                     grecaptcha.execute(this.recaptcha.sitekey, { action: this.recaptcha.action })
                         .then(token => (this.$wire.set('form.recaptcha_token', token)))
                         .then(() => (this.$wire.call(@js($submit))))
-                        .finally(() => this.disabled = false)
-                })        
+                        .then(() => this.disabled = false)
+                })
             }
             else this.$wire.call(@js($submit))
         },
     }"
     x-on:submit.prevent="submit"
     class="relative">
-    <div x-show="disabled" class="absolute inset-0 bg-white opacity-50"></div>
+    <div x-show="disabled" class="absolute inset-0"></div>
     <x-box {{ $attributes->except('heading') }}>
         @isset($heading)
             <x-slot:heading

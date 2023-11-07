@@ -92,6 +92,7 @@ return [
         'showing-trashed' => 'Showing :count trashed',
         'signup' => 'Sign-Up',
         'size' => 'Size',
+        'sort' => 'Sort',
         'state' => 'State',
         'status' => 'Status',
         'subtotal' => 'Subtotal',

@@ -1,86 +1,57 @@
-@props([
-    'prefix' => $prefix ?? $attributes->get('prefix'),
-    'postfix' => $postfix ?? $attributes->get('postfix'),
-    'uid' => make_component_uid([
-        $attributes->wire('model')->value(),
-        $attributes->get('label'),
-        'amount-input',
-    ]),
-])
+@php
+    $min = $attributes->get('min');
+    $max = $attributes->get('max');
+    $currency = $attributes->get('currency');
+    $placeholder = $attributes->get('placeholder', 'Amount');
+@endphp
 
 <x-form.field {{ $attributes }}>
     <div
         x-data="{
+            amount: null,
             focus: false,
-            value: @js($attributes->get('value')),
-            wire: @js($attributes->wire('model')->value()),
+            min: @js($min),
+            max: @js($max),
             get formatted () {
-                if (!this.value) return null
-
-                const split = `${this.value}`.split('.')
-
-                if (split.length === 2 && split[1].length > 2) {
-                    split[1] = split[1].substring(0, 2)
-                    return split.join('.')
+                return this.amount?.toLocaleString()
+            },
+            validate (e) {
+                if (
+                    !['Home', 'End', 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', '.', '-'].includes(e.key)
+                    && isNaN(+e.key)
+                ) {
+                    e.preventDefault()
                 }
-
-                return this.value
             },
-            init () {
-                if (this.wire) this.value = this.$wire.get(this.wire)
+            format (val) {
+                if (empty(val)) this.amount = null
+                else {
+                    val = val.replace(/,/g, '')
 
-                this.$watch('formatted', (val) => {
-                    this.$dispatch(@js($uid.'-updated'), val)
-                })
-            },
-            setFocus (bool) {
-                this.focus = bool
+                    if (!empty(this.min) && +val < +this.min) val = +this.min 
+                    if (!empty(this.max) && +val > +this.max) val = +this.max 
+    
+                    this.amount = isNaN(+val) ? null : +val
+                }
             },
         }"
+        x-modelable="amount"
+        x-on:click="focus = true"
+        x-on:click.away="focus = false"
+        x-init="$watch('amount', amount => $dispatch('input', amount))"
         x-bind:class="focus && 'active'"
-        {{ $attributes
-            ->merge(['id' => $uid])
-            ->class([
-                'form-input w-full flex items-center gap-2',
-                $attributes->get('class'),
-                !empty($attributes->get('error')) ? 'error' : null,
-            ])
-            ->only(['id', 'class']) }}
-    >
-        @if (is_string($prefix))
-            @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>
-            @else <div class="shrink-0 text-gray-500 font-medium">{{ __($prefix) }}</div>
-            @endif
-        @else {{ $prefix }}
+        class="form-input flex items-center gap-2"
+        {{ $attributes->except(['class', 'min', 'max', 'currency', 'placeholder']) }}>
+        {{-- // TODO amount currency --}}
+        @if (is_array($currency))
+        @elseif ($currency)
         @endif
 
-        {{-- must use number input to have numpad in mobile --}}
-        <div class="grow">
-            <input type="number"
-                x-bind:value="formatted"
-                x-on:focus="setFocus(true)"
-                x-on:blur="setFocus(false)"
-                x-on:input="value = $event.target.value"
-                step=".01"
-                class="w-full"
-                {{ $attributes
-                    ->filter(fn($val, $key) => !str($key)->is('wire:*'))
-                    ->except(['error', 'required', 'caption', 'label', 'id', 'class']) }}
-            >
-
-            <div
-                x-ref="input"
-                x-on:{{ $uid }}-updated.window="$dispatch('input', $event.detail)"
-                class="hidden"
-                {{ $attributes->whereStartsWith('wire:') }}
-            ></div>
-        </div>
-
-        @if (is_string($postfix))
-            @if (str($postfix)->is('icon:*')) <x-icon :name="str($postfix)->replace('icon:', '')->toString()" class="text-gray-400"/>
-            @else <div class="shrink-0 text-gray-500 font-medium">{{ __($postfix) }}</div>
-            @endif
-        @else {{ $postfix }}
-        @endif
+        <input type="text" class="grow transparent w-full {{ $attributes->get('class') }}"
+            x-ref="input"
+            x-bind:value="formatted"
+            x-on:keydown="validate"
+            x-on:input.stop="format($event.target.value)"
+            placeholder="{{ tr($placeholder) }}">
     </div>
 </x-form.field>

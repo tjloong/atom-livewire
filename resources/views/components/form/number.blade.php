@@ -1,41 +1,42 @@
 <x-form.field {{ $attributes }}>
     <div 
         x-data="{ focus: false }"
+        x-on:click="focus = true"
+        x-on:click.away="focus = false"
         x-bind:class="focus && 'active'"
-        class="form-input w-full flex items-center gap-2">
-        @isset($prefix) {{ $prefix }}
-        @elseif ($prefix = $attributes->get('prefix'))
-            @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>
-            @else <div class="shrink-0 text-gray-500 font-medium">{{ __($prefix) }}</div>
+        class="form-input w-full p-0 flex items-center divide-x divide-gray-300">
+        <div class="flex items-center gap-2 grow py-1.5 px-3">
+            @if (isset($prefix)) {{ $prefix }}
+            @elseif ($prefix = $attributes->get('prefix')) <div class="shrink-0 text-gray-500 font-medium">{{ tr($prefix) }}</div>
+            @elseif ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/>
             @endif
-        @endif
-
-        <input type="number"
-            x-on:focus="focus = true"
-            x-on:blur="focus = false"
-            class="appearance-none bg-transaprent border-0 p-0 focus:ring-0 w-full"
-            {{ $attributes->except(['error', 'caption']) }}
-        >
-
-        @isset($postfix) {{ $postfix }}
-        @elseif ($postfix = $attributes->get('postfix') ?? $attributes->get('unit'))
-            @if (str($postfix)->is('icon:*')) <x-icon :name="str($postfix)->replace('icon:', '')->toString()" class="text-gray-400"/>
-            @else <div class="shrink-0 text-gray-500 font-medium">{{ __($postfix) }}</div>
+    
+            <input type="number"
+                class="transparent w-full grow"
+                {{ $attributes->except(['prefix', 'icon', 'postfix', 'unit']) }}>
+    
+            @if (isset($postfix)) {{ $postfix }}
+            @elseif ($postfix = $attributes->get('postfix') ?? $attributes->get('unit'))
+                <div class="shrink-0 text-gray-500 font-medium">{{ tr($postfix) }}</div>
             @endif
-        @endif
+        </div>
 
         @isset($button)
-            @php $label = $button->attributes->get('label') @endphp 
-            @php $icon = $button->attributes->get('icon') @endphp 
-            <a {{ $button->attributes->class([
-                'flex items-center justify-center gap-1 rounded-full -mr-1 text-sm',
-                $label ? 'px-2 py-0.5' : null,
-                !$label && $icon ? 'p-1' : null,
-                $button->attributes->get('class', 'text-gray-800 bg-gray-200'),
-            ]) }}">
-                @if ($icon) <x-icon :name="$icon" size="12"/> @endif
-                {{ __($label) }}
-            </a>
+            @php
+                $label = $button->attributes->get('label');
+                $icon = $button->attributes->get('icon');
+            @endphp
+
+            @if ($label || $icon)
+                <button type="button" {{ $button->attributes->class([
+                    'py-1.5 px-2 flex items-center justify-center gap-2 text-sm text-gray-500',
+                ]) }}>
+                    @if ($icon) <x-icon :name="$icon"/> @endif
+                    @if ($label) {{ tr($label )}} @endif
+                </button>
+            @else
+                {{ $button }}
+            @endif
         @endisset
     </div>
 </x-form.field>

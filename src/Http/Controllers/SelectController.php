@@ -67,17 +67,6 @@ class SelectController extends Controller
             ->each(fn($opt) => $this->setOption($opt));
     }
 
-    // enums
-    public function enums($params) : void
-    {
-        $name = data_get($params, 'name');
-        $exclude = data_get($params, 'exclude');
-
-        enum($name)->when($exclude, fn($enums) => 
-            $enums->reject(fn($enum) => in_array($enum->name, (array) $exclude))->values()
-        )->map(fn($val) => $val->option())->values()->map(fn($opt) => $this->setOption($opt));
-    }
-
     // labels
     public function labels($params, $value) : void
     {
