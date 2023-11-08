@@ -33,9 +33,7 @@ class Enquiry extends Model
             get: fn($value) => $value
                 ? enum('enquiry.status', $value)
                 : enum('enquiry.status', 'PENDING'),
-            set: fn($status) => is_string($status)
-                ? $status
-                : $status->value,
+            set: fn($status) => is_string($status) ? $status : optional($status)->value,
         );
     }
 
