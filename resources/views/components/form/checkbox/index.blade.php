@@ -9,7 +9,7 @@
     <div x-cloak
         x-data="{ disabled: @js($disabled) }"
         x-bind:class="disabled && 'opacity-30 pointer-events-none'">
-        <label @disabled($disabled)>
+        <label class="normal-case font-normal text-base text-gray-800" @disabled($disabled)>
             <div class="flex items-center gap-3">
                 <div class="shrink-0">
                     <input type="checkbox" class="hidden peer" {{ $attributes }}>
@@ -22,7 +22,7 @@
                 </div>
 
                 @if ($slot->isNotEmpty())
-                    <div {{ $attributes->class(['font-normal'])->only('class') }}>
+                    <div {{ $attributes->only('class') }}>
                         {{ $slot }}
                     </div>
                 @elseif ($label)
