@@ -48,10 +48,10 @@
 
     <x-cdn-scripts :libs="array_filter($cdn ?? [])"/>
 
-    @vite(array_merge(
-        ['resources/css/app.css'],
-        $vite ?? ['resources/js/app.js'],
-    ))
+    @vite($vite ?? [
+        'resources/css/app.css',
+        'resources/js/app.js',
+    ])
 
     @stack('styles')
 </head>
