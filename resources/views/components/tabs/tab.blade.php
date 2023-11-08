@@ -27,13 +27,13 @@
 
             @if ($label)
                 <div class="grow font-medium whitespace-nowrap">
-                    {!! __($label) !!}
+                    {!! tr($label) !!}
                 </div>
             @endif
 
             @if ($count)
                 <div class="shrink-0 flex items-center justify-center">
-                    <x-badge :label="$count" color="blue" size="xs"/>
+                    <x-badge :label="short_number($count)" color="blue" size="xs"/>
                 </div>
             @endif
         </div>

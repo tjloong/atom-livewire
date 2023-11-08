@@ -12,7 +12,7 @@
             <x-form.file.listing {{ $attributes }}/>
         @endif
 
-        <div
+        <div wire:ignore x-cloak
             x-data="{
                 value: @entangle($attributes->wire('model')),
                 multiple: @js($multiple),
@@ -32,7 +32,6 @@
             x-on:files-created="input($event.detail)"
             x-on:files-selected="input($event.detail)"
             x-on:files-uploaded="input($event.detail)"
-            wire:ignore
             class="w-full bg-slate-100">
             @if ($enabledUrl)
                 <div x-show="isUrlMode" class="p-4 flex flex-col gap-4">
@@ -63,7 +62,7 @@
             </div>
 
             @if ($enabledLibrary)
-                <x-form.file.library/>
+                <x-form.file.library {{ $attributes }}/>
             @endif
         </div>
     </div>

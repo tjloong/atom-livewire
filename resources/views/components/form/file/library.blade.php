@@ -77,7 +77,7 @@
                 <x-icon name="arrow-left-long"/>
             </div>
 
-            <x-heading title="file.heading.library" class="shrink-0 px-6 py-3 border-b"/>
+            <x-heading title="{{ tr('file.heading.library') }}" class="shrink-0 px-6 py-3 border-b"/>
 
             <div class="grow p-4 overflow-auto max-w-screen-xl md:w-screen">
                 <x-box>

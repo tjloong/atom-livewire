@@ -69,6 +69,8 @@
             <x-image :src="data_get($image, 'src')"
                 :avatar="data_get($image, 'is_avatar')"
                 :placeholder="data_get($image, 'placeholder')"
+                width="40"
+                height="36"
                 color="random"/>
         @elseif ($attributes->get('dropdown'))
             <x-dropdown icon="ellipsis-vertical">

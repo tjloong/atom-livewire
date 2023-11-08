@@ -10,7 +10,9 @@
         @isset($heading)
             {{ $heading }}
         @elseif ($heading = $attributes->get('heading'))
-            <x-heading :title="$heading" class="mb-4" sm/>
+            <x-heading :title="$heading" class="mb-4" sm>
+                @isset($buttons) {{ $buttons }} @endisset
+            </x-heading>
         @endif
 
         <div class="grid gap-5 grid-cols-1 {{

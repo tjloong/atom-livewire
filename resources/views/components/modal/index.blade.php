@@ -37,6 +37,10 @@
                     :subtitle="$heading->attributes->get('subtitle')">
                     <x-close x-on:click.stop="close"/>
                 </x-heading>
+            @elseif ($heading = $attributes->get('heading'))
+                <x-heading class="p-4" lg :title="$heading">
+                    <x-close x-on:click.stop="close"/>
+                </x-heading>
             @endif
 
             <div class="grow w-screen {{ $attributes->get('class', 'max-w-screen-sm') }}">

@@ -1,9 +1,11 @@
-<div class="{{ $attributes->get('class', 'flex gap-2') }}" data-sortable-id="{{ $attributes->get('id') }}">
+<div class="{{ $attributes->get('class', 'flex items-center gap-2') }}" data-sortable-id="{{ $attributes->get('id') }}">
     @if ($hasHandle = $attributes->get('handle'))
         @isset($handle) {{ $handle }}
         @else 
-            <div class="handle shrink-0 cursor-move mb-auto p-2 bg-gray-100 rounded-md flex items-center justify-center">
-                <x-icon name="sort" class="text-gray-400 text-sm"/>
+            <div class="handle shrink-0 cursor-move mb-auto p-2">
+                <div class="bg-gray-100 rounded-md flex items-center justify-center p-2">
+                    <x-icon name="sort" class="text-gray-400 text-sm"/>
+                </div>
             </div>
         @endisset
     @endif
@@ -17,7 +19,7 @@
                 @else 
                     <div class="font-medium" 
                         {{ $attributes->except('id', 'handle', 'label', 'href', 'badge', 'small') }}>
-                        {{ __($label) }}
+                        {{ tr($label) }}
                     </div>
                 @endif
 
@@ -30,7 +32,7 @@
             </div>
 
             @if ($small = $attributes->get('small'))
-                <div class="text-gray-500">{{ __($small) }}</div>
+                <div class="text-gray-500">{{ tr($small) }}</div>
             @endif
         </div>
     @else
