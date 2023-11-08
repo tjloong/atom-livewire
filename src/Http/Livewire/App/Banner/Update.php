@@ -12,8 +12,8 @@ class Update extends Component
     public $banner;
 
     protected $listeners = [
-        'createBanner' => 'open',
-        'updateBanner' => 'open',
+        'createBanner' => 'create',
+        'updateBanner' => 'update',
     ];
 
     // validation
@@ -40,21 +40,32 @@ class Update extends Component
         ];
     }
 
-    // open
-    public function open($id = null) : void
+    // create
+    public function create() : void
     {
-        if ($this->banner = $id
-            ? model('banner')->find($id)
-            : model('banner')->fill(['is_active' => true])
-        ) {
-            $this->dispatchBrowserEvent('banner-update-open');
+        $this->banner = model('banner')->fill(['is_active' => true]);
+        $this->open();
+    }
+
+    // update
+    public function update($id) : void
+    {
+        $this->banner = model('banner')->find($id);
+        $this->open();
+    }
+
+    // open
+    public function open() : void
+    {
+        if ($this->banner) {
+            $this->openDrawer('banner-update');
         }
     }
 
     // close
     public function close() : void
     {
-        $this->dispatchBrowserEvent('banner-update-close');
+        $this->closeDrawer('banner-update');
     }
 
     // delete

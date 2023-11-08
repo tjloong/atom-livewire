@@ -35,7 +35,7 @@ class Listing extends Component
             model('banner')->find($id)->fill(['seq' => $seq])->save();
         }
 
-        $this->popup('atom::banner.alert.sorted');
+        $this->popup('common.alert.sorted');
     }
 
     // delete
