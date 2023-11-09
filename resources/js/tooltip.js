@@ -1,9 +1,9 @@
-export default ('tooltip', (el, { value, expression }) => {
+export default ('tooltip', (el, { value, expression }, { cleanup }) => {
     if (!expression) return
 
     // create the tooltip
     const tooltipEl = document.createElement('div')
-    tooltipEl.setAttribute('class', 'absolute bg-gray-700 text-white text-xs rounded py-1 px-2 w-max hidden')
+    tooltipEl.setAttribute('class', 'absolute tooltip hidden')
     tooltipEl.innerHTML = expression
 
     el.classList.add('relative')
@@ -25,6 +25,11 @@ export default ('tooltip', (el, { value, expression }) => {
         tooltipEl.classList.add('hidden')
     }
 
-    el.addEventListener('mouseover', () => showTooltip())
-    el.addEventListener('mouseout', () => hideTooltip())
+    el.addEventListener('mouseenter', showTooltip)
+    el.addEventListener('mouseleave', hideTooltip)
+
+    cleanup(() => {
+        el.removeEventListener('mouseenter', showTooltip);
+        el.removeEventListener('mouseleave', hideTooltip);
+    })
 })
