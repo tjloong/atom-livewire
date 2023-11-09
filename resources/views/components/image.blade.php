@@ -68,7 +68,10 @@
         ->only(['class', 'style']) }}
     {{ $attributes->except(['src', 'alt', 'icon', 'size', 'width', 'height', 'color', 'class', 'avatar', 'placeholder']) }}>
     @if ($placeholder && !$getUrl() && !$getFile())
-        <img src="https://placehold.co/300x300/{{ str($getColor())->replace('#', '')->toString() }}/ffffff?text={{ strtoupper(substr($placeholder, 0, 2)) }}" class="w-full h-full"/>
+        <div class="flex items-center justify-center w-full h-full font-bold text-gray-100" 
+            style="background-color: {{ $getColor() }};">
+            {!! strtoupper(substr($placeholder, 0, 2)) !!}
+        </div>
     @elseif ($url = $getUrl())
         <img src="{{ $url }}" class="w-full h-full object-cover"
             width="{{ is_numeric($getSize('width')) ? $getSize('width') : null }}"
