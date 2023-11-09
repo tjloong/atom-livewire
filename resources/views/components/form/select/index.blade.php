@@ -9,9 +9,10 @@
 @endphp
 
 <x-form.field {{ $attributes }}>
-    <div wire:ignore x-cloak
+    <div 
+        x-cloak
         x-data="{
-            value: null,
+            value: @entangle($attributes->wire('model')),
             search: @js($search),
             multiple: @js($multiple),
             options: @js($options),
@@ -86,12 +87,7 @@
                         this.value = []
                         this.$dispatch('input', [])
                     }
-                    else {
-                        this.value = null
-                        @if ($wire = $attributes->wire('model')->value())
-                            this.$wire.set(@js($wire), null)
-                        @endif
-                    }
+                    else this.value = null
                 }
                 else {
                     const index = this.value.indexOf(opt.value)
@@ -148,7 +144,9 @@
                             </template>
 
                             <template x-if="!multiple">
-                                <div class="text-left" x-text="selected?.label"></div>
+                                <div class="grid">
+                                    <div class="text-left truncate" x-text="selected?.label"></div>
+                                </div>
                             </template>
                         @endif
                     </div>
@@ -194,7 +192,7 @@
 
             <div class="flex flex-col divide-y">
                 <ul class="max-h-[250px] overflow-auto flex flex-col divide-y">
-                    <template x-for="opt in filtered" x-bind:key="opt.value">
+                    <template x-for="opt in filtered">
                         <li x-on:click="select(opt)" class="cursor-pointer">
                             <div x-show="opt.is_group" class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
                                 <template x-if="opt.icon">

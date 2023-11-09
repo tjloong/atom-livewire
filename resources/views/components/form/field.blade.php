@@ -19,17 +19,12 @@
                 </span>
             @endif
 
-            @if ($attributes->has('required'))
-                @if ($attributes->get('required')) <x-icon name="asterisk" size="10" class="text-red-400"/> @endif
-            @elseif ($field)
-                <div 
-                    x-data="{ required: false }" 
-                    x-init="required = ($wire.get('form.required') || [])[@js($field)]"
-                    x-show="required" 
-                    class="flex"
-                >
-                    <x-icon name="asterisk" size="10" class="text-red-400 m-auto"/>
-                </div>
+            @if ($attributes->get('required') || (
+                $field
+                && ($requiredFields = data_get($this, 'form.required'))
+                && ($requiredFields[$field] ?? null)
+            ))
+                <x-icon name="asterisk" class="text-red-400 text-sm"/>
             @endif
         </label>
     @endif

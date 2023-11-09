@@ -1,37 +1,26 @@
-@props([
-    'uid' => component_id($attributes, 'richtext'),
-])
-
 <x-form.field {{ $attributes }}>
     <div 
         wire:ignore 
         x-data="{
-            uid: @js($uid),
-            file: false,
-            value: @js($attributes->get('value')) || @entangle($attributes->wire('model')),
+            content: @entangle($attributes->wire('model')),
             loading: false,
+            showLibrary: false,
             toolbar: @js($toolbar),
-            placeholder: @js($attributes->get('placeholder') ?? __('Your content...')),
-            init () {
-                this.startEditor()
-            },
+            placeholder: @js(tr($attributes->get('placeholder', 'Your content...'))),
             startEditor () {
                 ClassicEditor.create(this.$refs.ckeditor, { 
                     placeholder: this.placeholder, 
                     toolbar: this.toolbar,
                 }).then(editor => {
                     // initial content
-                    if (this.value) editor.setData(this.value)
+                    if (this.content) editor.setData(this.content)
 
                     // onchange update
-                    editor.model.document.on('change:data', () => {
-                        this.value = editor.getData()
-                        this.$nextTick(() => this.$refs.input.dispatchEvent(new Event('input', { bubble: true })))
-                    })
+                    editor.model.document.on('change:data', () => this.content = editor.getData())
                     
                     // insert media
                     editor.ui.view.toolbar.on('insert-media:click', () => {
-                        this.$el.querySelector('#file-library')?.dispatchEvent(new Event('open'))
+                        this.showLibrary = true
 
                         const insert = (event) => {
                             const files = [event.detail].flat()
@@ -70,10 +59,10 @@
                 })
             },
         }"
-        class="{{ $attributes->get('class') }}"
-    >
+        x-init="startEditor()"
+        class="{{ $attributes->get('class') }}">
         <div x-ref="ckeditor" x-show="!loading"></div>
-        <div x-on:input="$dispatch('media', $event.detail)">
+        <div x-on:files-selected.stop="$dispatch('media', $event.detail)">
             <x-form.file.library accept="image/*"/>
         </div>
     </div>

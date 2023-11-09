@@ -7,7 +7,8 @@
     ];
 @endphp
 
-<form 
+<form
+    x-cloak
     x-data="{
         disabled: false,
         confirm: @js($confirm),
@@ -39,12 +40,9 @@
     x-on:submit.prevent="submit"
     class="relative">
     <div x-show="disabled" class="absolute inset-0"></div>
-    <x-box {{ $attributes->except('heading') }}>
+    <x-box :heading="$attributes->get('heading')">
         @isset($heading)
-            <x-slot:heading
-                :icon="$heading->attributes->get('icon')"
-                :title="$heading->attributes->get('title')"
-                :subtitle="$heading->attributes->get('subtitle')">
+            <x-slot:heading>
                 {{ $heading }}
             </x-slot:heading>
         @endisset

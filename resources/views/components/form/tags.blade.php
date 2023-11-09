@@ -58,6 +58,7 @@
                 floatDropdown(this.$refs.anchor, this.$refs.dd)
             },
         }"
+        x-modelable="value"
         x-on:click="open"
         x-on:click.away="close"
         class="relative">

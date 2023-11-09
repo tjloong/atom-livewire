@@ -8,7 +8,7 @@
 <x-form.field {{ $attributes }}>
     <div
         x-data="{
-            amount: null,
+            amount: @entangle($attributes->wire('model')),
             focus: false,
             min: @js($min),
             max: @js($max),

@@ -1,3 +1,7 @@
+@php
+    $step = $attributes->get('step', 'any');
+@endphp
+
 <x-form.field {{ $attributes }}>
     <div 
         x-data="{ focus: false }"
@@ -11,9 +15,9 @@
             @elseif ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/>
             @endif
     
-            <input type="number"
-                class="transparent w-full grow"
-                {{ $attributes->except(['prefix', 'icon', 'postfix', 'unit']) }}>
+            <input type="number" class="transparent w-full grow"
+                step="{{ $step }}"
+                {{ $attributes->except(['prefix', 'icon', 'postfix', 'unit', 'step']) }}>
     
             @if (isset($postfix)) {{ $postfix }}
             @elseif ($postfix = $attributes->get('postfix') ?? $attributes->get('unit'))
