@@ -71,7 +71,8 @@
             </template>
     
             <div class="shrink-0">
-                <x-icon name="dropdown-caret"/>
+                <x-close x-show="range" x-on:click="range = null"/>
+                <x-icon x-show="!range" name="dropdown-caret"/>
             </div>
         </button>
 
@@ -79,7 +80,7 @@
             x-ref="dd"
             x-show="show"
             x-transition
-            class="absolute left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
+            class="absolute left-0 top-full mt-px z-20 w-max bg-white rounded-md shadow-lg border">
             <div class="flex flex-col divide-y">
                 @foreach ([
                     'today',
