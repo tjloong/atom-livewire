@@ -1,7 +1,7 @@
-@props([
-    'total' => $attributes->get('total'),
-    'search' => $attributes->get('search', true),
-])
+@php
+    $total = $attributes->get('total');
+    $search = $attributes->get('search', true);
+@endphp
 
 <div class="py-3 px-4">
     <div class="flex flex-wrap justify-between items-center gap-2">
@@ -12,7 +12,7 @@
                 </div>
 
                 <div class="text-gray-500">
-                    {{ __('total rows') }}
+                    {{ tr('common.label.row', $total) }}
                 </div>
                 
                 @isset($tableMaxRows) 
@@ -22,7 +22,7 @@
                         <x-slot:anchor>
                             <div class="bg-gray-200 rounded-full text-sm font-medium leading-6 px-2 flex items-center gap-2 cursor-pointer">
                                 <div>
-                                    <span x-data x-text="$wire.get('tableMaxRows')"></span> / {{ __('page') }}
+                                    <span x-data x-text="$wire.get('tableMaxRows')"></span> / {{ tr('common.label.page') }}
                                 </div>
                                 <x-icon name="chevron-down" size="10"/>
                             </div>
@@ -31,7 +31,7 @@
                         <div class="flex flex-col divide-y">
                             @foreach ([50, 100, 150, 200, 500] as $n)
                                 <x-dropdown.item 
-                                    :label="$n.' / page'"
+                                    :label="$n.' / '.tr('common.label.page')"
                                     x-on:click="$wire.set('tableMaxRows', {{ $n }}); close()"/>
                             @endforeach
                         </div>
@@ -84,7 +84,7 @@
                                 x-model="text"
                                 x-on:keydown.enter.stop="search"
                                 class="grow transparent"
-                                placeholder="{{ __('atom::common.label.search') }}">
+                                placeholder="{{ tr('common.label.search') }}">
 
                             <div class="shrink-0">
                                 <x-close x-show="!empty(text)" x-on:click.stop="text = null; search()"/>

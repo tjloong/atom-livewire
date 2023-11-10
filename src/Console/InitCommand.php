@@ -45,6 +45,7 @@ class InitCommand extends Command
             'postcss' => '^8',
             'postcss-import' => '^14',
             'tailwindcss' => '^3',
+            'ulid' => '^2',
         ],
         'dependencies' => [
             // 

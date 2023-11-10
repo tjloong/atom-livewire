@@ -633,6 +633,9 @@ function html_excerpt($html)
 // translate
 function tr($key, $count = 1, $params = [])
 {
-    if (is_array($count)) return __($key, $count);
-    else return trans_choice($key, $count, $params);
+    if (count(explode('.', $key)) > 1 || ctype_lower($key)) {
+        if (is_array($count)) return __($key, $count);
+        else return trans_choice($key, $count, $params);
+    }
+    else return $key;
 }
