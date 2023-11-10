@@ -8,6 +8,7 @@
         config: @js($config),
     }"
     x-modelable="value"
+    x-init="$watch('value', () => $dispatch('input', value))"
     {{ $attributes->except('config') }}>
     <div 
         x-data="{ calendar: null }" 

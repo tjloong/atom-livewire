@@ -3,7 +3,7 @@
     $range = $attributes->get('range', false);
     $placeholder = $attributes->get('placeholder', collect([
         'common.label.select-date' => !$time && !$range,
-        'common.label.select-time' => $time && !$range,
+        'common.label.select-datetime' => $time && !$range,
         'common.label.select-date-range' => $range,
     ])->filter()->keys()->first());
 @endphp
@@ -106,6 +106,72 @@
         </div>
     </div>
 @elseif ($time)
+    <div wire:ignore x-cloak
+        x-data="{
+            show: false,
+            datetime: @entangle($attributes->wire('model')),
+            get formatted () {
+                if (!this.datetime) return ''
+                return dayjs(this.datetime).format('DD MMM YYYY h:mm A')
+            },
+        }"
+        x-modelable="datetime"
+        x-on:click.away="show = false"
+        x-on:datetime-updated="(e) => {
+            let dt = dayjs(`${e.detail.date} ${e.detail.time}`)
+            
+            if (!dt.isValid() || dt.isSame(dayjs(datetime))) return
+
+            datetime = dt.utc().toISOString()
+        }"
+        x-bind:class="show && 'active'"
+        {{ $attributes->merge(['class' => 'form-input w-full relative']) }}>
+        <button type="button" class="flex items-center gap-3 w-full"
+            x-on:click.stop="show = true">
+            <div class="shrink-0 text-gray-400">
+                <x-icon name="calendar"/>
+            </div>
+    
+            <input type="text" placeholder="{{ tr($placeholder) }}" readonly
+                x-bind:value="formatted"
+                class="transparent grow cursor-pointer">
+    
+            <div class="shrink-0">
+                <x-icon name="dropdown-caret"/>
+            </div>
+        </button>
+
+        <div 
+            x-ref="dd"
+            x-show="show"
+            x-transition
+            class="absolute left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
+            <div
+                x-data="{
+                    inputs: {
+                        date: null,
+                        time: null,
+                    },
+                }"
+                x-init="() => {
+                    let dt = dayjs(datetime)
+                    if (dt.isValid()) {
+                        inputs.date = dt.format('YYYY-MM-DD')
+                        inputs.time = dt.format('HH:mm:ss')
+                    }
+                }"
+                x-on:input.stop="$dispatch('datetime-updated', inputs)"
+                class="flex flex-col divide-y">
+                <div class="py-2">
+                    <x-form.date.picker x-model="inputs.date"/>
+                </div>
+
+                <div class="p-3">
+                    <x-form.date.time x-model="inputs.time"/>
+                </div>
+            </div>
+        </div>
+    </div>
 @else
     <div wire:ignore x-cloak
         x-data="{
@@ -141,158 +207,4 @@
         </div>
     </div>
 @endif
-
-    {{-- <div wire:ignore 
-        x-cloak
-        x-data="{
-            value: null,
-            show: false,
-            focus: false,
-            inputs: null,
-            datepicker: null,
-            config: {
-                time: @js($time),
-                format: @js($format),
-            },
-            clear () {
-                this.setInputs(false)
-                this.setValue()
-            },
-            setInputs (val) {
-                const datetimeobject = val ? dayjs(val, 'YYYY-MM-DD HH:mm:ss') : null
-
-                this.inputs = { 
-                    date: datetimeobject?.format('YYYY-MM-DD') || null,
-                    datetimeobject,
-                }
-
-                if (this.config.time) {
-                    this.inputs = {
-                        ...this.inputs,
-                        hour: datetimeobject ? (
-                            this.config.format === 12
-                                ? datetimeobject.format('h')
-                                : datetimeobject.format('H')
-                        ) : null,
-                        minute: datetimeobject?.get('minute').toString() || null,
-                        second: datetimeobject?.get('second').toString() || null,
-                        am: datetimeobject?.format('A') || null,
-                    }
-                }
-            },
-            setValue () {
-                if (this.inputs.date) {
-                    let datetimeobject = this.inputs.datetimeobject
-
-                    if (this.config.time) {
-                        const hour = this.config.format === 12 && this.inputs.am === 'PM'
-                            ? +this.inputs.hour + 12
-                            : this.inputs.hour
-
-                        datetimeobject = datetimeobject
-                            .set('hour', hour)
-                            .set('minute', this.inputs.minute)
-                            .set('second', this.inputs.second)
-
-                        this.value = datetimeobject.utc().toISOString()
-                    }
-                    else this.value = datetimeobject.format('YYYY-MM-DD')
-                }
-                else this.value = null
-            },
-            setDatePicker () {
-                this.$nextTick(() => {
-                    if (this.show) {
-                        floatDropdown(this.$refs.anchor, this.$refs.dd)
-
-                        this.datepicker = flatpickr(this.$refs.datepicker, {
-                            inline: true,
-                            dateFormat: 'Y-m-d',
-                            defaultDate: this.inputs.date,
-                            onClose: () => this.show = false,
-                            onChange: (selectedDate, dateStr) => {
-                                this.setInputs(dateStr)
-                                this.setValue()
-                            },
-                        })
-                    }
-                    else {
-                        this.datepicker.destroy()
-                        this.datepicker = null
-                    }
-                })
-            },
-        }"
-        x-init="() => {
-            if (@js($wire)) setInputs($wire.get(@js($wire)))
-            else setInputs(value)
-            $watch('show', () => setDatePicker())
-            $watch('value', () => setInputs(value))
-        }"
-        x-modelable="value"
-        x-on:click="focus = true"
-        x-on:click.away="focus = false"
-        class="flex items-center flex-wrap gap-2 w-full"
-        {{ $attributes->except(['format', 'time']) }}>
-        <div class="relative w-full">
-            <div x-ref="anchor"
-                x-on:click="show = true"
-                x-on:click.away="show = false"
-                x-bind:class="{
-                    'active': focus,
-                    'select': !value,
-                }"
-                class="flex items-center gap-2 form-input w-full">
-                <x-icon name="calendar" class="shrink-0 text-gray-400"/>
-                <input type="text" placeholder="{{ __('Select Date') }}" readonly
-                    x-bind:value="inputs.date ? formatDate(inputs.date) : null"
-                    class="transparent grow">
-                <x-close x-show="inputs.date" x-on:click="clear" class="shrink-0"/>
-            </div>
-
-            <div x-ref="dd" x-show="show" x-transition x-on:click.stop class="absolute z-20">
-                <div x-ref="datepicker"></div>
-            </div>
-        </div>
-
-        <div 
-            x-show="config.time"
-            x-bind:class="{ 'active': focus }"
-            class="flex items-center gap-2 form-input w-full">
-            <x-icon name="clock" class="shrink-0 text-gray-400"/>
-
-            <select x-model="inputs.hour" x-on:input.stop x-on:change="setValue" class="grow">
-                <option selected>--</option>
-                @foreach ($format === 24 ? range(0, 23) : range(1, 12) as $n)
-                    <option value="{{ $n }}">{{ str()->padLeft($n, 2, '0') }}</option>
-                @endforeach
-            </select>
-
-            <span class="font-bold">:</span>
-
-            <select x-model="inputs.minute" x-on:input.stop x-on:change="setValue" class="grow">
-                <option selected>--</option>
-                @foreach (range(0, 59) as $n)
-                    <option value="{{ $n }}">{{ str()->padLeft($n, 2, '0') }}</option>
-                @endforeach
-            </select>
-
-            <span class="font-bold">:</span>
-
-            @if ($format == 12)
-                <select x-model="inputs.am" x-on:input.stop x-on:change="setValue" class="grow">
-                    <option selected>--</option>
-                    <option value="AM">AM</option>
-                    <option value="PM">PM</option>
-                </select>
-            @else
-                <select x-model="inputs.second" x-on:input.stop x-on:change="setValue" class="grow">
-                    <option selected>--</option>
-                    @foreach (range(0, 59) as $n)
-                        <option value="{{ $n }}">{{ str()->padLeft($n, 2, '0') }}</option>
-                    @endforeach
-                </select>
-            @endif
-        </div>
-    </div> --}}
 </x-form.field>

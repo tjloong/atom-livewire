@@ -1,11 +1,7 @@
-@php
-    $wire = $attributes->wire('model')->value();
-@endphp
-
 <x-form.field {{ $attributes }}>
     <div 
         x-data="{
-            time: null, 
+            time: @entangle($attributes->wire('model')),
             focus: false,
             hour: null,
             minute: null,
@@ -30,14 +26,10 @@
             },
         }"
         x-init="() => {
-            if (@js($wire)) time = $wire.get(@js($wire))
-            
             parseTime()
-            
             $watch('time', () => {
                 parseTime()
                 $dispatch('input', time)
-                if (!time && @js($wire)) $wire.set(@js($wire), null)
             })
         }"
         x-modelable="time"
