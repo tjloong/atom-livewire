@@ -66,15 +66,14 @@
                 <x-admin-panel.aside label="atom::layout.settings" route="app.settings"/>
             </x-slot:asidefoot>
 
-            @route('app.settings')
-                {{ $slot }}
-            @else
-                <main class="p-6">{{ $slot }}</main>
-                @livewire('app.signup.update', key('signup-update'))
-                @livewire('app.settings.label.update', key('label-update'))
-                @livewire('app.settings.file.library', key('file-library'))
-                @livewire('app.settings.file.update', key('file-update'))
+            @route('app.settings') {{ $slot }}
+            @else <main class="p-6">{{ $slot }}</main>
             @endroute
+
+            @livewire('app.signup.update', key('signup-update'))
+            @livewire('app.settings.file.update', key('file-update'))
+            @livewire('app.settings.page.update', key('page-update'))
+            @livewire('app.settings.label.update', key('label-update'))
         </x-admin-panel>
 
     {{-- Web layout --}}
