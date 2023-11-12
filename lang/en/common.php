@@ -72,6 +72,8 @@ return [
         'owner' => 'Owner',
         'page' => 'Page',
         'parent' => 'Parent',
+        'payment-date' => 'Payment Date',
+        'payment-method' => 'Payment Method',
         'phone' => 'Phone',
         'price' => 'Price',
         'rate' => 'Rate',
