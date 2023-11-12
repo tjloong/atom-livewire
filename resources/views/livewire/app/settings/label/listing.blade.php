@@ -1,8 +1,8 @@
 <x-sortable wire:ignore wire:sorted="sort" class="flex flex-col divide-y">
     @foreach ($labels as $label)
-        <x-sortable.item :id="$label->id" class="p-2 flex items-center gap-3" handle>
+        <x-sortable.item :id="$label->id" handle>
             @php $count = $label->children->count() @endphp
-            <div x-data="{ show: false }" class="flex flex-col gap-2">
+            <div x-data="{ show: false }" class="p-2 flex flex-col gap-2">
                 <div class="flex items-center gap-3">
                     @if ($label->color)
                         <div class="shrink-0">

@@ -20,7 +20,7 @@ label {
 }
 
 .sortable-ghost {
-    @apply ring ring-offset-2 ring-theme ring-offset-theme-light;
+    @apply ring-1 ring-offset-2 ring-theme rounded;
 }
 
 @media print {

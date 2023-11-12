@@ -14,6 +14,7 @@ return [
     ],
 
     'label' => [
+        'category' => 'Blog Category',
         'content' => 'Blog Content',
         'cover' => 'Cover Image',
         'excerpt' => 'Blog Excerpt',
