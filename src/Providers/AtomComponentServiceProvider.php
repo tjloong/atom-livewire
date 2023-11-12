@@ -22,7 +22,6 @@ class AtomComponentServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $components = [
-            'seo',
             'icon',
             'link',
             'logo',
@@ -36,6 +35,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'spinner',
             'checkbox',
             'no-result',
+            'html-meta',
             'thumbnail',
             'breadcrumbs',
             'cdn-scripts',

@@ -1,3 +1,23 @@
+@php
+    $noindex = $attributes->get('noindex');
+
+    $title = collect([
+        !app()->environment('production') ? '['.app()->environment().']' : null,
+        config('atom.meta_title') ?? settings('meta_title') ?? config('app.name') ?? '',
+    ])->filter()->join(' ');
+    
+    $description = config('atom.meta_description') ?? settings('meta_description') ?? '';
+    $image = config('atom.meta_image') ?? settings('meta_image') ?? '';
+    $hreflang = config('atom.hreflang');
+    $canonical = config('atom.canonical');
+    $jsonld = config('atom.jsonld') ?? [
+        '@context' => 'http://schema.org',
+        '@type' => 'Website',
+        'url' => url()->current(),
+        'name' => $title,
+    ];
+@endphp
+
 <title>{{ $title }}</title>
 <meta name="description" content="{{ strip_tags($description) }}">
 
