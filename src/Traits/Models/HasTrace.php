@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Traits\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 trait HasTrace
 {
     public $enabledHasTraceTrait = true;
@@ -61,6 +63,93 @@ trait HasTrace
         ] as $col) {
             $this->casts[$col] = 'datetime';
         }
+
+        $this->with = array_merge($this->with, [
+            'trace_created_by',
+            'trace_updated_by',
+            'trace_owned_by',
+            'trace_deleted_by',
+            'trace_blocked_by',
+            'trace_closed_by',
+            'trace_refunded_by',
+            'trace_requested_by',
+            'trace_approved_by',
+            'trace_rejected_by',
+            'trace_archived_by',
+            'trace_email_sent_by',
+        ]);
+    }
+
+    // get created_by for model
+    public function trace_created_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'created_by');
+    }
+
+    // get updated_by for model
+    public function trace_updated_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'updated_by');
+    }
+
+    // get owned_by for model
+    public function trace_owned_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'owned_by');
+    }
+
+    // get deleted_by for model
+    public function trace_deleted_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'deleted_by');
+    }
+
+    // get blocked_by for model
+    public function trace_blocked_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'blocked_by');
+    }
+
+    // get closed_by for model
+    public function trace_closed_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'closed_by');
+    }
+
+    // get refunded_by for model
+    public function trace_refunded_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'refunded_by');
+    }
+
+    // get requested_ for model
+    public function trace_requested_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'requested_');
+    }
+
+    // get approved_by for model
+    public function trace_approved_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'approved_by');
+    }
+
+    // get rejected_by for model
+    public function trace_rejected_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'rejected_by');
+    }
+
+    // get archived_by for model
+    public function trace_archived_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'archived_by');
+    }
+
+    // get email_sent for model
+    public function trace_email_sent_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'email_sent');
     }
 
     // scope for trace
@@ -93,24 +182,12 @@ trait HasTrace
     // trace
     public function trace($key, $default = null) : mixed
     {
-        $table = $this->getTable();
         $splits = collect(explode('.', $key));
-        $col = $splits->first();
+        $col = $splits->shift();
+        $attr = $splits->join('.');
 
-        if (has_column($table, $col)) {
-            $relationship = $this->belongsTo(model('user'), $col);
-            $results = $relationship->getResults();
-
-            if ($key === $col) return $results;
-            else {
-                $splits->shift();
-                $attr = $splits->join('.');
-    
-                return $attr
-                    ? data_get($results, $splits->join('.'), $default)
-                    : $results;
-            }
-        }
+        if ($key === $col) return $this->{'trace_'.$col};
+        else return data_get($this->{'trace_'.$col}, $attr, $default);
 
         return null;
     }
