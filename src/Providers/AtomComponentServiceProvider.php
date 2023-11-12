@@ -243,9 +243,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             $value = func_get_args();
             $keys = collect($this->getAttributes())->keys();
 
-            return is_numeric(collect($value)->search(fn($val) => 
-                $keys->search(fn($key) => str($key)->is($val))
-            ));
+            return !empty(
+                $keys->first(fn($key) => str($key)->is($value))
+            );
         });
     }
 }

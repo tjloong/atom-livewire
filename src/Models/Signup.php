@@ -12,7 +12,7 @@ class Signup extends Model
 {
     use HasFactory;
     use HasFilters;
-    
+
     protected $guarded = [];
 
     protected $casts = [
@@ -23,48 +23,54 @@ class Signup extends Model
     ];
 
     // booted
-    protected static function booted(): void
+    protected static function booted() : void
     {
-        static::saving(function($signup) {
-            $signup->status = $signup->generateStatus();
+        static::saved(function($signup) {
+            $signup->setAttributes()->saveQuietly();
         });
     }
 
     // get user for signup
-    public function user(): BelongsTo
+    public function user() : BelongsTo
     {
         return $this->belongsTo(model('user'));
     }
 
     // attribute for status
-    protected function status(): Attribute
+    protected function status() : Attribute
     {
         return Attribute::make(
             get: fn($value) => enum('signup.status', $value),
-            set: fn($status) => is_string($status) ? $status : $status->value,
+            set: fn($status) => is_string($status) ? $status : optional($status)->value,
         );
     }
 
     // scope for search
-    public function scopeSearch($query, $search): void
+    public function scopeSearch($query, $search) : void
     {
         $query->whereHas('user', fn($q) => $q->where('name', 'like', "%$search%"));
     }
 
     // scope for status
-    public function scopeStatus($query, $status): void
+    public function scopeStatus($query, $status) : void
     {
-        $query->whereIn('status', (array) $status);
+        if ($status) {
+            $query->whereIn('status', (array) $status);
+        }
     }
 
-    // generate status
-    public function generateStatus(): mixed
+    // set attributes
+    public function setAttributes() : mixed
     {
-        return enum('signup.status', collect([
-            'TRASHED' => optional($this->user)->trashed(),
-            'BLOCKED' => optional($this->user)->isBlocked(),
-            'ONBOARDED' => !empty($this->onboarded_at),
-            'NEW' => empty($this->onboarded_at),
-        ])->filter()->keys()->first())->value;
+        $this->fill([
+            'status' => enum('signup.status', collect([
+                'TRASHED' => optional($this->user)->trashed(),
+                'BLOCKED' => optional($this->user)->isBlocked(),
+                'ONBOARDED' => !empty($this->onboarded_at),
+                'NEW' => empty($this->onboarded_at),
+            ])->filter()->keys()->first())->value,
+        ]);
+
+        return $this;
     }
 }

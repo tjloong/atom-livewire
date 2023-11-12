@@ -70,7 +70,7 @@
     @if ($placeholder && !$getUrl() && !$getFile())
         <div class="flex items-center justify-center w-full h-full font-bold text-gray-100" 
             style="background-color: {{ $getColor() }};">
-            {!! strtoupper(substr($placeholder, 0, 2)) !!}
+            {!! str($placeholder)->substr(0, 2)->upper() !!}
         </div>
     @elseif ($url = $getUrl())
         <img src="{{ $url }}" class="w-full h-full object-cover"
