@@ -3,7 +3,9 @@
     $placeholder = $attributes->get('placeholder', 'common.label.select-gender');
 @endphp
 
-<x-form.select callback="gender"
-    :label="$label"
-    :placeholder="$placeholder"
-    {{ $attributes->except(['label', 'placeholder']) }}/>
+<x-form.select :label="$label" :placeholder="$placeholder" :search="false"
+    :options="collect(['male', 'female'])->map(fn($val) => [
+        'value' => $val, 
+        'label' => tr('common.label.'.$val),
+    ])->toArray()"
+    {{ $attributes->except(['options', 'label', 'placeholder']) }}/>

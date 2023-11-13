@@ -84,15 +84,6 @@ class SelectController extends Controller
         }
     }
 
-    // gender
-    public function gender() : void
-    {
-        collect(['male', 'female'])->each(fn($val) => $this->setOption([
-            'value' => $val, 
-            'label' => tr('common.label.'.$val),
-        ]));
-    }
-
     // months
     public function months() : void
     {

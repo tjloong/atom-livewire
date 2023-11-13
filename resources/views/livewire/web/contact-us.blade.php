@@ -33,7 +33,7 @@
                             <x-icon :name="data_get($item, 'icon')"/>
                         </div>
                         {{ data_get($item, 'value') }}
-                    </div>                    
+                    </div>
                 @endforeach
             </div>
 
