@@ -52,13 +52,12 @@
     },
 ])
 
-<div @if ($getFile('is_file')) onClick="window.open(@js($getFile('url')), '_blank')" @endif
+<div
     {{ $attributes
         ->class([
             'relative overflow-hidden',
             'rounded-full border' => $isAvatar,
             'rounded-lg' => !$isAvatar,
-            'cursor-pointer' => $getFile('is_file'),
             $attributes->get('class', ''),
         ])
         ->merge(['style' => collect([
@@ -86,8 +85,7 @@
                     alt="{{ $attributes->get('alt') }}">
             </div>
         @else
-            <div x-data x-cloak x-init="$nextTick(() => $el.style.fontSize = ($el.parentNode.offsetWidth * 0.35)+'px')"
-                class="w-full h-full flex items-center justify-center text-gray-500">
+            <div class="w-full h-full flex items-center justify-center text-gray-500">
                 <x-icon :name="$file->icon"/>
             </div>
         @endif
