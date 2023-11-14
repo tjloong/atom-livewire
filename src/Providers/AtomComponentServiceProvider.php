@@ -45,6 +45,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'contact-card',
             'flip-countdown',
             'payment-gateway',
+            'whatsapp-bubble',
             'placeholder-bar',
             'email-verification',
 
