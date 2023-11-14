@@ -70,12 +70,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.banner.update' => 'App\Banner\Update',
             'app.banner.listing' => 'App\Banner\Listing',
 
-            // ticket
-            'atom.app.ticket.listing' => 'App\Ticket\Listing',
-            'atom.app.ticket.create' => 'App\Ticket\Create',
-            'atom.app.ticket.update' => 'App\Ticket\Update',
-            'atom.app.ticket.comments' => 'App\Ticket\Comments',
-
             // settings
             'app.settings.index' => 'App\Settings\Index',
             'app.settings.site' => 'App\Settings\Site',
