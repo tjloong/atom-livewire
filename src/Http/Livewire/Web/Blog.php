@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\Web;
 
-use Livewire\Component;
+use Jiannius\Atom\Component;
 use Livewire\WithPagination;
 
 class Blog extends Component
@@ -19,10 +19,8 @@ class Blog extends Component
 
     protected $listeners = ['refresh' => '$refresh'];
 
-    /**
-     * Mount
-     */
-    public function mount(): void
+    // mount
+    public function mount() : void
     {
         $this->preview = user() && request()->query('preview');
 
@@ -36,10 +34,8 @@ class Blog extends Component
         }
     }
 
-    /**
-     * Get blog property
-     */
-    public function getBlogProperty(): mixed
+    // get blog property
+    public function getBlogProperty() : mixed
     {
         if (!$this->slug) return null;
         if (data_get($this->filters, 'search')) return null;
@@ -55,10 +51,8 @@ class Blog extends Component
         else return $blogs->first();
     }
 
-    /**
-     * Get blogs property
-     */
-    public function getBlogsProperty(): mixed
+    // get blogs property
+    public function getBlogsProperty() : mixed
     {
         if ($this->blog) return null;
 
@@ -73,10 +67,8 @@ class Blog extends Component
             ->paginate(50);
     }
 
-    /**
-     * Get recents property
-     */
-    public function getRecentsProperty(): mixed
+    // get recents property
+    public function getRecentsProperty() : mixed
     {
         $recents = model('blog')
             ->status('published')
@@ -91,10 +83,8 @@ class Blog extends Component
         return $recents;
     }
 
-    /**
-     * Get related property
-     */
-    public function getRelatedProperty(): mixed
+    // get related property
+    public function getRelatedProperty() : mixed
     {
         if (!$this->blog) return null;
 
@@ -113,10 +103,8 @@ class Blog extends Component
         return $related;
     }
 
-    /**
-     * Get topics property
-     */
-    public function getTopicsProperty(): mixed
+    // get topics property
+    public function getTopicsProperty() : mixed
     {
         $topics = model('label')
             ->readable()
@@ -130,23 +118,13 @@ class Blog extends Component
         return $topics;
     }
 
-    /**
-     * Get sidebar property
-     */
-    public function getSidebarProperty(): array
+    // get sidebar property
+    public function getSidebarProperty() : array
     {
         return array_filter([
             'topics' => $this->topics,
             'recents' => $this->recents,
             'related' => $this->related,
         ]);
-    }
-
-    /**
-     * Render
-     */
-    public function render(): mixed
-    {
-        return atom_view('web.blog');
     }
 }

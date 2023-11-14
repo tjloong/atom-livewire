@@ -26,8 +26,7 @@
                     <x-blog
                         :title="$this->blog->name"
                         :posted-at="$this->blog->published_at"
-                        :cover="$this->blog->cover"
-                    >
+                        :cover="$this->blog->cover">
                         {!! $this->blog->content !!}
                     </x-blog>
                 @else
@@ -38,8 +37,7 @@
                                     :href="route('web.blog', [$blog->slug])"
                                     :cover="optional($blog->cover)->url"
                                     :title="$blog->name"
-                                    :excerpt="html_excerpt($blog->excerpt ?? $blog->content)"
-                                />
+                                    :excerpt="html_excerpt($blog->excerpt ?? $blog->content)"/>
                             @empty
                                 <div class="md:col-span-3">
                                     <x-no-result icon="news" title="No articles found" subtitle=""/>
