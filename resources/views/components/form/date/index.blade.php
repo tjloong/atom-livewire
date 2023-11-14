@@ -118,7 +118,9 @@
         x-modelable="datetime"
         x-on:click.away="show = false"
         x-on:datetime-updated="(e) => {
-            let dt = dayjs(`${e.detail.date} ${e.detail.time}`)
+            let date = e.detail.date
+            let time = e.detail.time || (date ? dayjs().format('HH:mm:ss') : null)
+            let dt = dayjs(`${date} ${time}`)
             
             if (!dt.isValid() || dt.isSame(dayjs(datetime))) return
 
