@@ -34,8 +34,8 @@
             <x-form.text wire:model.defer="file.name" :label="$file->type === 'youtube' ? 'Video Name' : 'File Name'"/>
                 
             @if ($file->is_image)
-                <x-form.text wire:model.defer="file.data.alt" label="Alt Text" placeholder="Insert Alt Text"/>
-                <x-form.text wire:model.defer="file.data.description" placeholder="Insert Image Description"/>
+                <x-form.text wire:model.defer="inputs.alt" label="Alt Text" placeholder="Insert Alt Text"/>
+                <x-form.text wire:model.defer="inputs.description" placeholder="Insert Image Description"/>
             @endif
         </x-form.group>
     </div>

@@ -121,9 +121,10 @@ class File extends Model
     protected function url() : Attribute
     {
         return Attribute::make(
-            get: fn($url) => $this->mime === 'youtube'
-                ? $url
-                : route('__file.get', $this->ulid),
+            get: function($url) {
+                if ($this->mime === 'youtube') return $url;
+                if ($this->ulid) return route('__file.get', $this->ulid);
+            },
         );
     }
 

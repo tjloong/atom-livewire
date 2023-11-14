@@ -10,6 +10,7 @@ class Update extends Component
     use WithForm;
 
     public $file;
+    public $inputs;
 
     protected $listeners = [
         'updateFile' => 'open',
@@ -20,8 +21,6 @@ class Update extends Component
     {
         return [
             'file.name' => ['required' => 'File name is required.'],
-            'file.data.alt' => ['nullable'],
-            'file.data.description' => ['nullable'],
         ];
     }
 
@@ -29,6 +28,11 @@ class Update extends Component
     public function open($id) : void
     {
         if ($this->file = model('file')->find($id)) {
+            $this->fill([
+                'inputs.alt' => data_get($this->file->data, 'alt'),
+                'inputs.description' => data_get($this->file->data, 'description'),
+            ]);
+
             $this->openDrawer('file-update');
         }
     }
@@ -51,7 +55,11 @@ class Update extends Component
     public function submit() : void
     {
         $this->validateForm();
-        $this->file->save();
+        
+        $this->file->fill([
+            'data' => array_merge((array) $this->file->data, $this->inputs),
+        ])->save();
+
         $this->emit('fileUpdated');
         $this->close();
     }
