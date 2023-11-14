@@ -41,7 +41,7 @@ return [
         'contact-phone' => 'Contact Phone',
         'contact-email' => 'Contact Email',
         'contact-address' => 'Contact Address',
-        'contact-map' => 'Google Map URL',
+        'contact-map' => 'Google Map Embed',
         'meta-title' => 'Meta Title',
         'meta-description' => 'Meta Description',
         'meta-image' => 'Meta Image',

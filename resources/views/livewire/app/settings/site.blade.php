@@ -23,8 +23,10 @@
             <x-form.text label="settings.label.contact-address"
                 wire:model.defer="settings.contact_address"/>
 
-            <x-form.text label="settings.label.contact-map"
-                wire:model.defer="settings.contact_map"/>
+            <div class="col-span-2">
+                <x-form.textarea label="settings.label.contact-map"
+                    wire:model.defer="settings.contact_map"/>
+            </div>
         </x-form.group>
 
         <x-form.group cols="2" heading="settings.heading.site-whatsapp">

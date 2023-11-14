@@ -16,7 +16,7 @@
         </div>
     </div>
 @else
-    <div class="max-w-screen-lg mx-auto py-10 px-4 w-full">
+    <div class="max-w-screen-lg mx-auto py-20 px-4 w-full">
         <div class="flex flex-col md:flex-row gap-10 ">
             <div class="md:w-1/3 flex flex-col gap-4">
                 <div class="text-xl font-bold">
@@ -61,16 +61,10 @@
                 </x-form>
             </div>
         </div>
-
-        @if ($url = settings('site_contact_map'))
-            <iframe
-                class="w-full bg-gray-200"
-                height="450"
-                loading="lazy"
-                allowfullscreen
-                src="{{ $url }}">
-            </iframe>
-        @endif
     </div>
+
+    @if ($map = settings('contact_map'))
+        {!! $map !!}
+    @endif
 @endif
 </main>
