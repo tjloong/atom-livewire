@@ -100,6 +100,7 @@ return [
         'selected-count' => ':count Selected',
         'select-date-range' => 'Select Date Range',
         'select-gender' => 'Select Gender',
+        'select-none' => 'Select None',
         'select-option' => 'Select an option',
         'select-user' => 'Select User',
         'select-state' => 'Select State',

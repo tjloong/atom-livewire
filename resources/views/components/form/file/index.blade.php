@@ -21,7 +21,12 @@
                 input (files) {
                     const value = files.map(val => (val.id))
                     
-                    if (this.multiple) this.value = value
+                    if (this.multiple) {
+                        value.forEach(val => {
+                            const index = this.value.indexOf(val)
+                            if (index === -1) this.value.push(val)
+                        })
+                    }
                     else if (value.length) this.value = value[0]
                     else this.value = null
 

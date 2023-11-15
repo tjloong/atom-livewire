@@ -44,7 +44,7 @@
             <div class="grow flex items-center gap-2">
                 <x-button label="common.label.select-all" icon="check-double" sm
                     x-on:click="checkboxes = {{ $files->pluck('id')->toJson() }}"/>
-                <x-button label="common.label.clear" icon="xmark" sm
+                <x-button label="common.label.select-none" icon="xmark" sm
                     x-on:click="checkboxes = []"/>
             </div>
 
