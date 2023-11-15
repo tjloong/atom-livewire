@@ -20,8 +20,7 @@
     class="fixed inset-0 z-50 overflow-auto"
     id="{{ $id }}"
     {{ $attributes->wire('open') }}
-    {{ $attributes->wire('close') }}
->
+    {{ $attributes->wire('close') }}>
     @if ($attributes->get('bg-close', true)) <x-modal.overlay x-on:click="close"/>
     @else <x-modal.overlay/>
     @endif

@@ -3,7 +3,7 @@
         @isset($label) {{ $label }}
         @elseif ($label = $attributes->get('label'))
             <div class="font-medium text-gray-500">
-                {{ __($label) }}
+                {{ tr($label) }}
             </div>
         @endisset
 
@@ -12,7 +12,7 @@
             @php $value = $attributes->get('value'); @endphp
             @if (!empty($value) || is_numeric($value))
                 <div class="text-3xl font-bold">
-                    {{ __($value) }}
+                    {{ tr($value) }}
                 </div>
             @endif
         @endif
