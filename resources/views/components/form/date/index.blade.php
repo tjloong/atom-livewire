@@ -195,7 +195,8 @@
                 class="transparent grow cursor-pointer">
     
             <div class="shrink-0">
-                <x-icon name="dropdown-caret"/>
+                <x-close x-show="date" x-on:click="date = null"/>
+                <x-icon x-show="!date" name="dropdown-caret"/>
             </div>
         </button>
 
