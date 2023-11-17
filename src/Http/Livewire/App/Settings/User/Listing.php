@@ -11,17 +11,23 @@ class Listing extends Component
     use WithLoginMethods;
     use WithTable;
 
-    public $filters = [
-        'search' => null,
-        'status' => null,
-        'role_id' => null,
-    ];
+    public $filters;
 
     protected $listeners = [
         'userCreated' => '$refresh',
         'userUpdated' => '$refresh',
         'userDeleted' => '$refresh',
     ];
+
+    // mount
+    public function mount() : void
+    {
+        $this->fill(['filters' => [
+            'search' => null,
+            'status' => enum('user.status', 'ACTIVE')->value,
+            'role_id' => null,
+        ]]);
+    }
 
     // get query property
     public function getQueryProperty() : mixed
