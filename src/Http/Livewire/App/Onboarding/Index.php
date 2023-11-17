@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App;
+namespace Jiannius\Atom\Http\Livewire\App\Onboarding;
 
 use Jiannius\Atom\Component;
 
-class Onboarding extends Component
+class Index extends Component
 {
     public $tab;
     public $redirect;
@@ -13,25 +13,25 @@ class Onboarding extends Component
     protected $queryString = ['redirect'];
 
     // mount
-    public function mount()
+    public function mount() : void
     {
         $this->tab = $this->tab ?? $this->getNextTab();
     }
 
     // get tabs property
-    public function getTabsProperty(): array
+    public function getTabsProperty() : array
     {
         return [];
     }
 
-    // get is onboarded property
-    public function getIsOnboardedProperty(): bool
+    // get is completed property
+    public function getisCompletedProperty() : bool
     {
         return count(session('onboarding', [])) === count($this->tabs);
     }
 
     // next
-    public function next(): mixed
+    public function next() : mixed
     {
         session([
             'onboarding' => collect(session('onboarding'))
@@ -46,24 +46,17 @@ class Onboarding extends Component
                 'redirect' => $this->redirect,
             ]);
         }
+        else if ($this->isCompleted) {
+            if (!user()->signup->onboarded_at) {
+                user()->signup->fill(['onboarded_at' => now()])->save();
+            }
 
-        return $this->completed(false);
-    }
-
-    // completed
-    public function completed($close = true): mixed
-    {
-        if (!user()->signup->onboarded_at) {
-            user()->signup->fill(['onboarded_at' => now()])->save();
+            return to_route('app.onboarding.completed');
         }
-
-        if ($close) return $this->close();
-
-        return null;
     }
 
     // close
-    public function close(): mixed
+    public function close() : mixed
     {
         session()->forget('onboarding');
 

@@ -16,6 +16,7 @@ return [
         'attachment' => 'Attachment',
         'avatar' => 'Avatar',
         'back' => 'Back',
+        'back-to-home' => 'Back to Home',
         'back-to-login' => 'Back to Login',
         'browse-library' => 'Browse Library',
         'cancel' => 'Cancel',

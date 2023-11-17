@@ -1,4 +1,6 @@
 @extends('atom::layout', [
+    'indexing' => current_route('web.*', 'register'),
+    'analytics' => current_route('web.*', 'register', 'app.onboarding.completed'),
     'cdn' => [
         'sortable', 
         'chartjs', 
@@ -36,7 +38,7 @@
         </div>
 
     {{-- Onboarding layout --}}
-    @elseroute('app.onboarding')
+    @elseroute('app.onboarding', 'app.onboarding.completed')
         <div class="min-h-screen bg-gray-100 p-6">
             {{ $slot }}
         </div>

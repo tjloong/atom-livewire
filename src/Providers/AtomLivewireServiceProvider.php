@@ -41,7 +41,8 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.dashboard' => 'App\Dashboard',
 
             // onboarding
-            'app.onboarding' => 'App\Onboarding',
+            'app.onboarding' => 'App\Onboarding\Index',
+            'app.onboarding.completed' => 'App\Onboarding\Completed',
 
             // send email
             'app.send-email' => 'App\SendEmail',
@@ -96,15 +97,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.page' => 'App\Settings\Page\Index',
             'app.settings.page.update' => 'App\Settings\Page\Update',
             'app.settings.page.listing' => 'App\Settings\Page\Listing',
-
-            // settings > website
-            // 'app.settings.website.profile' => 'App\Settings\Website\Profile',
-            // 'app.settings.website.seo' => 'App\Settings\Website\Seo',
-            // 'app.settings.website.analytics' => 'App\Settings\Website\Analytics',
-            // 'app.settings.website.social-media' => 'App\Settings\Website\SocialMedia',
-            // 'app.settings.website.announcement' => 'App\Settings\Website\Announcement',
-            // 'app.settings.website.announcement-modal' => 'App\Settings\Website\AnnouncementModal',
-            // 'app.settings.website.popup' => 'App\Settings\Website\Popup',
 
             // settings > integration
             'app.settings.integration.email' => 'App\Settings\Integration\Email',
