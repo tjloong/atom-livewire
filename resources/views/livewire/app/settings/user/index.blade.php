@@ -4,7 +4,5 @@
             label="New User" 
             wire:click="$emit('createUser')"/>
     </x-heading>
-
     @livewire('app.settings.user.listing', key('listing'))
-    @livewire('app.settings.user.update', key('update'))
 </div>
