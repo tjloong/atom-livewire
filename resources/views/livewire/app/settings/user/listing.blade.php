@@ -4,10 +4,8 @@
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
                     <x-form.group>
-                        <x-form.select.enum enum="user.status"
-                            wire:model="filters.status"/>
-                        <x-form.select.role 
-                            wire:model="filters.role_id"/>
+                        <x-form.select.enum enum="user.status" wire:model="filters.status"/>
+                        @if (has_table('roles')) <x-form.select.role wire:model="filters.role_id"/> @endif
                     </x-form.group>
                 </x-table.filters>
             </x-table.searchbar>
@@ -32,7 +30,9 @@
         @endforeach
 
         <x-slot:empty>
-            <x-no-result title="No Users" subtitle="User list is empty"/>
+            <x-no-result 
+                title="user.empty.title"
+                subtitle="user.empty.subtitle"/>
         </x-slot:empty>
     </x-table>
 

@@ -11,6 +11,8 @@ return [
         'site-recaptcha' => 'reCAPTCHA',
         'email' => 'Email Settings',
         'storage' => 'Storage Settings',
+        'ipay' => 'iPay88 Settings',
+        'stripe' => 'Stripe Settings',
     ],
 
     'nav' => [

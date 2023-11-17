@@ -15,7 +15,6 @@ class Update extends Component
     protected $listeners = [
         'createBlog' => 'create',
         'updateBlog' => 'update',
-        'labelCreated' => '$refresh',
     ];
 
     // validation

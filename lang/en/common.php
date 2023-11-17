@@ -114,6 +114,7 @@ return [
         'showing-trashed' => 'Showing :count trashed',
         'signup' => 'Sign-Up',
         'size' => 'Size',
+        'slug' => 'Slug',
         'sort' => 'Sort',
         'sorted' => 'Sorted',
         'state' => 'State',
@@ -157,7 +158,10 @@ return [
         ],
         'recaptcha' => 'Google think you are a bot. Please refresh and try again.',
         'email-sent' => 'Email Sent.',
-        'sorted' => 'Records Sorted.',
+        'sorted' => 'Data Sorted.',
+        'created' => 'Data Created',
+        'updated' => 'Data Updated',
+        'deleted' => 'Data Deleted',
     ],
 
     'empty' => [

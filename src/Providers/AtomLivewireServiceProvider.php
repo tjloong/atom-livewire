@@ -112,9 +112,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',
             'app.settings.integration.revenue-monster' => 'App\Settings\Integration\RevenueMonster',
             'app.settings.integration.stripe' => 'App\Settings\Integration\Stripe',
+            'app.settings.integration.ipay' => 'App\Settings\Integration\Ipay',
             // 'app.settings.integration.payment.gkash' => 'App\Settings\Integration\Payment\Gkash',
             // 'app.settings.integration.payment.ozopay' => 'App\Settings\Integration\Payment\Ozopay',
-            // 'app.settings.integration.payment.ipay' => 'App\Settings\Integration\Payment\Ipay',
         ];
 
         foreach ($components as $name => $class) {

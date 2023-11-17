@@ -8,6 +8,12 @@ class Listing extends Component
 {
     public $labels;
 
+    protected $listeners = [
+        'labelCreated' => '$refresh',
+        'labelUpdated' => '$refresh',
+        'labelDeleted' => '$refresh',
+    ];
+
     // sort
     public function sort($data): void
     {
@@ -15,6 +21,6 @@ class Listing extends Component
             model('label')->where('id', $id)->update(['seq' => $index + 1]);
         }
 
-        $this->popup('Sorted Labels');
+        $this->popup('common.alert.sorted');
     }
 }

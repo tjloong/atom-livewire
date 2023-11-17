@@ -8,12 +8,6 @@ class Index extends Component
 {
     public $type;
 
-    protected $listeners = [
-        'labelCreated' => '$refresh',
-        'labelUpdated' => '$refresh',
-        'labelDeleted' => '$refresh',
-    ];
-
     // mount
     public function mount($params = []): void
     {
@@ -25,7 +19,7 @@ class Index extends Component
     {
         return $this->type
             ? str($this->type)->headline()->plural()->toString()
-            : __('atom::label.heading.label');
+            : tr('label.heading.label');
     }
 
     // get labels property
