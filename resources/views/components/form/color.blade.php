@@ -57,6 +57,7 @@
                 return !empty(val) && val.charAt(0) === '#'
             },
         }"
+        x-modelable="value"
         x-on:click="show = true"
         x-on:click.away="show = false"
         class="relative">
@@ -95,7 +96,7 @@
         <div x-ref="dd"
             x-show="show"
             x-transition.opacity
-            class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden mt-px">
+            class="absolute z-40 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden mt-px">
             <template x-if="fullmode">
                 <div class="flex flex-col divide-y">
                     <div class="grow grid grid-cols-11 gap-1 p-1 max-h-[300px] overflow-auto">

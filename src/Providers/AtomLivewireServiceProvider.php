@@ -66,6 +66,11 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.enquiry.update' => 'App\Enquiry\Update',
             'app.enquiry.listing' => 'App\Enquiry\Listing',
 
+            // announcement
+            'app.announcement' => 'App\Announcement\Index',
+            'app.announcement.update' => 'App\Announcement\Update',
+            'app.announcement.listing' => 'App\Announcement\Listing',
+
             // banner
             'app.banner' => 'App\Banner\Index',
             'app.banner.update' => 'App\Banner\Update',

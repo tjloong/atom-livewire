@@ -161,7 +161,7 @@
         <div x-ref="dd"
             x-show="show"
             x-transition.opacity
-            class="absolute z-20 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px]">
+            class="absolute z-40 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden w-full mt-px min-w-[300px]">
             <div x-show="search" x-on:click="$refs.search.focus()" class="p-3 border-b">
                 <div x-bind:class="focus && 'active'" class="form-input flex items-center gap-3 w-full">
                     <div class="shrink-0 text-gray-400">

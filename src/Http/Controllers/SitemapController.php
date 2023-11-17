@@ -11,40 +11,44 @@ class SitemapController extends Controller
      */
     public function index()
     {
-        $sitemap = $this->getSitemap();
-
-        foreach ($sitemap as $url => $changefreq) {
+        $sitemaps = $this->getUrls()->map(function($freq, $url) {
             $path = parse_url($url, PHP_URL_PATH);
             $priority = 1 - (substr_count($path, '/')/10);
-            $sitemap[$url] = [
+            
+            return [
+                'url' => $url,
                 'added' => time(),
                 'lastmod' => now()->toAtomString(),
                 'priority' => $priority,
-                'changefreq' => $changefreq,
+                'changefreq' => $freq,
             ];
-        }
+        })->values()->all();
 
         return response()
-            ->view('atom::sitemap', compact('sitemap'))
+            ->view('atom::sitemap', compact('sitemaps'))
             ->header('Content-Type', 'application/xml');
     }
 
-    /**
-     * Get sitemap
-     */
-    public function getSitemap()
+    // get urls
+    public function getUrls() : mixed
     {
-        $sitemap = ['/' => 'monthly'];
+        $sitemap = collect([url('/') => 'monthly']);
 
         if (has_table('blogs')) {
             foreach (model('blog')->status('published')->latest()->take(500)->get() as $blog) {
-                $sitemap['/blog/'.$blog->slug] = 'monthly';
+                $sitemap->put(route('web.blog', $blog->slug), 'monthly');
+            }
+        }
+
+        if (has_table('announcements')) {
+            foreach (model('announcement')->status('PUBLISHED')->get() as $announcement) {
+                $sitemap->put(route('web.announcement', $announcement->slug), 'monthly');
             }
         }
         
         if (has_table('pages')) {
-            foreach (model('page')->getSlugs() as $slug) {
-                $sitemap['/'.$slug] = 'monthly';
+            foreach (model('page')->get() as $page) {
+                $sitemap->put(route('web.page', $page->slug), 'monthly');
             }
         }
 

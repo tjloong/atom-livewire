@@ -80,7 +80,7 @@
             x-ref="dd"
             x-show="show"
             x-transition
-            class="absolute left-0 top-full mt-px z-20 w-max bg-white rounded-md shadow-lg border">
+            class="absolute z-40 left-0 top-full mt-px z-20 w-max bg-white rounded-md shadow-lg border">
             <div class="flex flex-col divide-y">
                 @foreach ([
                     'today',
@@ -147,7 +147,7 @@
             x-ref="dd"
             x-show="show"
             x-transition
-            class="absolute left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
+            class="absolute z-40 left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
             <div
                 x-data="{
                     inputs: {
@@ -205,7 +205,7 @@
             x-show="show"
             x-on:input.stop="show = false"
             x-transition
-            class="absolute left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
+            class="absolute z-40 left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
             <x-form.date.picker x-model="date"/>
         </div>
     </div>

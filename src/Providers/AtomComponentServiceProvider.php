@@ -40,6 +40,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'breadcrumbs',
             'cdn-scripts',
             'alpine-data',
+            'announcement',
             'page-overlay',
             'social-share',
             'contact-card',
@@ -60,7 +61,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'dashboard.statbox',
 
             'landing.popup',
-            'landing.announcement',
             
             'lightbox.index',
             'lightbox.slide',

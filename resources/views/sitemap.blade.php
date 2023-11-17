@@ -2,12 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-    @foreach($sitemap as $url => $params)
+    @foreach($sitemaps as $sitemap)
     <url>
-        <loc>{{ url($url) }}</loc>
-        <lastmod>{{ $params['lastmod'] }}</lastmod>
-        <changefreq>{{ $params['changefreq'] }}</changefreq>
-        <priority>{{ $params['priority'] }}</priority>
+        <loc>{{ data_get($sitemap, 'url') }}</loc>
+        <lastmod>{{ data_get($sitemap, 'lastmod') }}</lastmod>
+        <changefreq>{{ data_get($sitemap, 'freq') }}</changefreq>
+        <priority>{{ data_get($sitemap, 'priority') }}</priority>
     </url>
     @endforeach
 </urlset>
