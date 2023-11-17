@@ -13,6 +13,7 @@ return [
         'storage' => 'Storage Settings',
         'ipay' => 'iPay88 Settings',
         'stripe' => 'Stripe Settings',
+        'social' => 'Social Login Settings',
     ],
 
     'nav' => [

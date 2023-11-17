@@ -1,9 +1,9 @@
 <div class="max-w-screen-md">
-    <x-page-header title="Social Login"/>
+    <x-heading title="settings.heading.social"/>
     
     <x-form>
         @foreach ($this->platforms as $item)
-            <x-form.group cols="2" :label="data_get($this->platformLabels, $item)">
+            <x-form.group cols="2" :heading="data_get($this->platformLabels, $item)">
                 <x-form.text wire:model.defer="settings.{{ $item }}_client_id" 
                     :label="data_get($this->clientIdLabels, $item)"/>
 

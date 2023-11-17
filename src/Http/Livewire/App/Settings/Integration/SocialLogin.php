@@ -4,17 +4,15 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class SocialLogin extends Component
 {
     use WithForm;
-    use WithPopupNotify;
     
     public $settings;
 
     // validation
-    public function validation(): array
+    public function validation() : array
     {
         return collect($this->platforms)->mapWithKeys(fn($platform) => [
             'settings.'.$platform.'_client_id' => ['nullable'],
@@ -23,10 +21,8 @@ class SocialLogin extends Component
     }
 
     // mount
-    public function mount(): void
+    public function mount() : void
     {
-        parent::mount();
-
         $this->settings = collect($this->platforms)
             ->mapWithKeys(fn($platform) => [
                 $platform.'_client_id' => settings($platform.'_client_id'),
@@ -36,16 +32,17 @@ class SocialLogin extends Component
     }
 
     // get platforms property
-    public function getPlatformsProperty(): array
+    public function getPlatformsProperty() : array
     {
         return collect(config('atom.auth.login', []))
             ->reject('email')
             ->reject('username')
+            ->reject('email-verified')
             ->toArray();
     }
 
     // get platform labels property
-    public function getPlatformLabelsProperty(): array
+    public function getPlatformLabelsProperty() : array
     {
         return [
             'google' => 'Google',
@@ -57,7 +54,7 @@ class SocialLogin extends Component
     }
 
     // get client id label property
-    public function getClientIdLabelsProperty(): array
+    public function getClientIdLabelsProperty() : array
     {
         return [
             'google' => 'Client ID',
@@ -69,7 +66,7 @@ class SocialLogin extends Component
     }
 
     // get client secret label property
-    public function getClientSecretLabelsProperty(): array
+    public function getClientSecretLabelsProperty() : array
     {
         return [
             'google' => 'Client Secret',
@@ -81,12 +78,12 @@ class SocialLogin extends Component
     }
 
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
 
         settings($this->settings);
 
-        $this->popup('Social Login Credentials Updated.');
+        $this->popup('common.alert.updated');
     }
 }
