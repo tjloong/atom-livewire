@@ -7,4 +7,4 @@
 @endphp
 
 <x-form.select :options="$options" :search="false"
-    {{ $attributes->except('options') }}/>
+    {{ $attributes->except(['exclude', 'enum', 'options']) }}/>
