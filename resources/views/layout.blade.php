@@ -62,7 +62,9 @@
         <x-analytics.fbpixel noscript/>
     @endif
 
-    <x-popup/>
+    <x-notify.alert/>
+    <x-notify.confirm/>
+    <x-notify.toast/>
     <x-loader/>
 
     @yield('content')

@@ -29,6 +29,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'badge',
             'field',
             'image',
+            'popup',
             'loader',
             'drawer',
             'heading',
@@ -60,8 +61,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'dashboard.listing',
             'dashboard.statbox',
 
-            'landing.popup',
-            
             'lightbox.index',
             'lightbox.slide',
 
@@ -76,10 +75,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'analytics.ga',
             'analytics.gtm',
 
-            'popup.index',
-            'popup.alert',
-            'popup.toast',
-            'popup.confirm',
+            'notify.alert',
+            'notify.toast',
+            'notify.confirm',
             
             'box.index',
             'box.flat',

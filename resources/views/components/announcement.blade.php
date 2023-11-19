@@ -1,6 +1,6 @@
 @php
     $delay = 5000;
-    $announcements = model('announcements')->status('PUBLISHED')->get();
+    $announcements = model('announcement')->status('PUBLISHED')->get();
     $count = $announcements->count();
 @endphp
 
