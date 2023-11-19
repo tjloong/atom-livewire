@@ -65,7 +65,7 @@
             'pl-0 lg:pl-60': !aside || aside === 'lg',
         }" 
         class="w-full h-full flex flex-col transition-all duration-200">
-        <header class="shrink-0 bg-white sticky top-0 z-10 border-b flex items-center">
+        <header class="shrink-0 bg-white sticky top-0 z-20 border-b flex items-center">
             <div x-on:click="() => {
                 if (aside === 'hidden') aside = null
                 else aside = 'hidden'

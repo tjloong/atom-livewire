@@ -48,7 +48,7 @@
                 open: false,
                 active: false,
             }"
-            x-init="active = $refs.subitems.querySelectorAll('.active').length > 0">
+            x-init="active = $refs.subitems?.querySelectorAll('.active')?.length > 0">
             <div x-on:click="open = !open" class="pl-2">
                 <div
                     x-bind:class="active || open ? 'font-semibold bg-white/20' : 'hover:bg-white/10'"

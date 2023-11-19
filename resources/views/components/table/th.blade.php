@@ -1,8 +1,8 @@
-@props([
-    'label' => $attributes->get('label'),
-    'checkbox' => $attributes->get('checkbox', false),
-    'sortBy' => $attributes->get('sort'),
-])
+@php
+    $label = $attributes->get('label');
+    $sortBy = $attributes->get('sort');
+    $checkbox = $attributes->get('checkbox', false);
+@endphp
 
 @if ($attributes->get('menu'))
     <th class="bg-slate-100 border-b border-gray-200 w-12"></th>
@@ -24,8 +24,8 @@
                 }
             },
         }"
-        x-on:click="selectAll"
-        class="py-1 px-2 bg-slate-100 border-b border-gray-200 w-10">
+        x-on:click.stop="selectAll"
+        class="py-1 px-2 bg-slate-100 border-b border-gray-200 w-10 sticky top-0 z-10">
         <div
             x-bind:class="isSelectedAll ? 'border-theme border-2' : 'bg-white border-gray-300'" 
             class="mx-4 w-6 h-6 p-0.5 rounded shadow border cursor-pointer">
@@ -33,7 +33,7 @@
         </div>
     </th>
 @else
-    <th class="py-1 px-2 bg-slate-100 font-medium text-sm border-b border-gray-200 leading-6 tracking-wider">
+    <th class="py-1 px-2 bg-slate-100 font-medium text-sm border-b border-gray-200 leading-6 tracking-wider sticky top-0 z-10">
         <div 
             x-data="{
                 sortBy: @js($sortBy),

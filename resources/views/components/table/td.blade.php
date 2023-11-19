@@ -13,7 +13,7 @@
 
 @if ($value = $attributes->get('checkbox'))
     <td 
-        wire:click="selectCheckbox(@js($value))"
+        wire:click.stop="selectCheckbox(@js($value))"
         data-checkbox-value="{{ $value }}"
         class="align-top py-3 px-2 w-10 cursor-pointer">
         @if (in_array($value, $this->checkboxes))
