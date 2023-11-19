@@ -1,62 +1,73 @@
-@props([
-    'icon' => $attributes->get('icon'),
-    'logo' => $attributes->get('logo'),
-    'label' => $attributes->get('label'),
-    'permitted' => !$attributes->has('can') || (
-        $attributes->has('can') 
-        && auth()->user() 
-        && auth()->user()->can($attributes->get('can'))
-    ),
-])
+@php
+    $icon = $attributes->get('icon');
+    $label = $attributes->get('label');
+    $route = $attributes->get('route');
+    $params = $attributes->get('params');
+    $href = $attributes->get('href') ?? ($route ? route($route, $params ?? []) : null);
+    $permitted = !$attributes->has('can') || ($attributes->has('can') && user() && user()->can($attributes->get('can')));
+    $active = $attributes->has('active') ? $attributes->get('active') : (
+        collect([
+            $href && url()->current() === $href,
+            $route && current_route($route),
+        ])->filter()->count() > 0
+    );
+@endphp
 
-@if ($permitted && (
+@if (isset($group) && $group->isNotEmpty())
+    <label class="text-sm text-gray-500 py-2 px-6">{{ tr($label) }}</label>
+    {{ $group }}
+@elseif ($permitted && (
     (isset($subitems) && $subitems->isNotEmpty())
     || (!isset($subitems))
 ))
-    @if ($href || ($route && has_route($route)))
-        <a href="{{ $href ?: route($route, $params) }}" class="pl-2" {{ $isActive ? 'data-active' : '' }}>
-            <div
-                class="
-                    flex items-center gap-3 rounded-l-md px-4 py-2.5 text-white
-                    {{ $isActive ? 'font-semibold bg-white/20 border-r-8 border-theme' : 'font-medium hover:bg-white/10' }}
-                "
-            >
-                @if ($logo)
-                    <x-logo :src="$logo" class="brightness-0 invert opacity-70" style="width: 20px; height: 20px;"/>
-                @elseif ($icon)
-                    <x-icon :name="$icon" class="opacity-70 w-4"/>
-                @endif
-
-                <div class="truncate">
-                    @if ($label) {{ __($label) }}
-                    @else {{ $slot }}
+    @if ($href)
+        <a href="{{ $href }}" class="block pl-2">
+            <div class="flex items-center text-white rounded-l-md {{ $active ? 'active font-semibold bg-white/20' : 'hover:bg-white/10' }}">
+                <div class="grow flex items-center gap-2 py-2.5 px-4">
+                    @if ($icon)
+                        <div x-bind:class="aside === 'sm' && 'text-xl'" class="shrink-0 w-5 h-5 flex">
+                            <x-icon :name="$icon" class="m-auto"/>
+                        </div>
                     @endif
+
+                    <div x-show="aside === 'lg' || !aside" class="grow leading-none">
+                        {{ tr($label) }}
+                    </div>
                 </div>
+
+                @if ($active)
+                    <div x-show="aside === 'lg' || !aside" class="shrink-0 p-1 px-2">
+                        <div class="w-2 h-5 bg-theme rounded-full"></div>
+                    </div>
+                @endif
             </div>
         </a>
-    @elseif (!$href && !$route)
+    @else
         <div
-            x-data="{ active: false, open: false }"
-            x-init="active = $refs.subitems.querySelectorAll('[data-active]').length > 0"
-        >
-            <div x-on:click="open = true" class="cursor-pointer pl-2">
+            x-data="{
+                open: false,
+                active: false,
+            }"
+            x-init="active = $refs.subitems.querySelectorAll('.active').length > 0">
+            <div x-on:click="open = !open" class="pl-2">
                 <div
-                    x-bind:class="active && 'bg-white/10'"
-                    class="flex items-center gap-3 rounded-l-md px-4 py-2.5 font-medium text-white"
-                >
-                    @if ($logo)
-                        <x-logo :src="$logo" size="16" class="brightness-0 invert opacity-70"/>
-                    @elseif ($icon)
-                        <x-icon :name="$icon" class="opacity-70 w-4"/>
-                    @endif
-
-                    <div class="grow truncate">
-                        @if ($label) {{ __($label) }}
-                        @else {{ $slot }}
-                        @endif
+                    x-bind:class="active || open ? 'font-semibold bg-white/20' : 'hover:bg-white/10'"
+                    class="flex items-center gap-2 text-white rounded-l-md py-2.5 px-4 cursor-pointer">
+                    <div x-bind:class="aside === 'sm' && 'text-xl'" class="shrink-0 w-5 h-5 flex">
+                        <x-icon :name="$icon" class="m-auto"/>
                     </div>
-                    
-                    <x-icon name="chevron-down" size="12px"/>
+
+                    <div x-show="aside === 'lg' || !aside" class="grow leading-none">
+                        {{ tr($label) }}
+                    </div>
+
+                    @if (isset($subitems) && $subitems->isNotEmpty())
+                        <div class="shrink-0 text-xs">
+                            <x-icon name="chevron-right"
+                                x-bind:class="(active || open) && 'rotate-90'"
+                                class="transition-transform"/>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -65,8 +76,8 @@
                     x-ref="subitems"
                     x-show="active || open"
                     x-on:click.away="open = false" 
-                    class="bg-gray-900 text-gray-300 grid py-1.5 pl-4"
-                >
+                    x-collapse
+                    class="bg-gray-900 text-gray-300 py-1.5 pl-4 flex flex-col gap-1">
                     {{ $subitems }}
                 </div>
             @endif

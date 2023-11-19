@@ -1,120 +1,114 @@
-<div 
+@php
+    $flash = collect([
+        'info' => session('flash') ?? session('flash-info'),
+        'error' => session('flash-error'),
+        'warning' => session('flash-warning'),
+        'success' => session('flash-success'),
+    ])->filter();
+@endphp
+
+<div
     x-cloak
-    x-data="{ 
-        toggled: false, 
-        animate: false,
-        flash: @js($flash),
-        init () {
-            if (this.flash) this.$dispatch('toast', this.flash)
-            document.querySelector('html').style.fontSize = '14px'
-        },
-    }"
-    class="min-h-screen h-px" 
-    id="admin-panel">
+    x-data="{ aside: null }"
+    class="min-h-screen h-px">
+    @if ($flash->count())
+        <div class="fixed top-0 left-1/2 -translate-x-1/2 z-50 max-w-screen-md w-full flex flex-col gap-3 p-4">
+            @foreach ($flash as $type => $item)
+                <x-alert close
+                    :type="$type"
+                    :title="data_get($item, 'title')"
+                    :message="is_string($item) ? $item : data_get($item, 'message')"/>
+            @endforeach
+        </div>
+    @endif
+
     <div
-        x-ref="void"
-        x-on:click="toggled = false"
-        x-bind:class="{
-            'transition-0 duration-100 ease-in-out': animate,
-            'fixed inset-0 z-20 bg-black opacity-80 lg:hidden': toggled,
-        }"
-        class="opacity-0"
-    ></div>
+        x-show="aside === 'lg'"
+        x-transition.opacity.duration.500ms
+        x-on:click="aside = null"
+        class="fixed inset-0 z-40 bg-gray-900 bg-opacity-50 backdrop-blur-sm lg:hidden"></div>
 
     <aside 
-        x-ref="aside"
-        class="fixed left-0 top-0 bottom-0 z-20 overflow-hidden bg-gray-800 print:hidden"
-        :class="{
-            'transition-0 duration-100 ease-in-out': animate,
-            'w-56 lg:w-0': toggled,
-            'w-0 lg:w-56': !toggled,
+        x-ref="aside" 
+        x-bind:class="{
+            'w-80 lg:w-60': aside === 'lg',
+            {{-- 'w-0 lg:w-[64px]': aside === 'sm', --}}
+            'w-0 lg:w-0': aside === 'hidden',
+            'w-0 lg:w-60': !aside,
         }"
-    >
+        class="fixed top-0 bottom-0 left-0 z-40 bg-gray-800 overflow-hidden transition-all duration-200">
         <div class="flex flex-col h-full">
-            <div class="shrink-0 py-3 px-5">
+            <div class="shrink-0 py-3 px-4">
                 @isset($brand)
                     {{ $brand }}
-                @else    
-                    <a href="{{ route('app.dashboard') }}" class="shrink-0 flex items-center gap-2">
-                        <x-logo class="w-8 h-8" small/>
+                @else
+                    <a href="{{ user()->home() }}" class="flex items-center gap-2">
+                        <div class="shrink-0">
+                            <x-logo class="w-10 h-10" small/>
+                        </div>
                         
-                        <div class="text-white text-lg tracking-wider">
-                            <span class="font-bold">Atom</span><span class="font-light">CMS</span>
+                        <div x-show="aside === 'lg' || !aside" class="text-white text-xl tracking-wider">
+                            <span class="font-bold">ATOM</span><span class="font-light">CMS</span>
                         </div>
                     </a>
                 @endisset
             </div>
 
-            @if ($aside->isNotEmpty())
-                <div class="grow overflow-y-auto overflow-x-hidden">
-                    <div class="text-sm text-gray-500 py-2 px-6">
-                        NAVIGATION
-                    </div>
-
-                    <div class="grid pb-10">
-                        {{ $aside }}
-                    </div>
-                </div>
-            @endif
-
-            @isset($asidefoot)
-                <div class="shrink-0">
-                    <div class="grid pb-2">
-                        {{ $asidefoot }}
-                    </div>
-                </div>
-            @endisset
-
-            @if ($version && tier('root'))
-                <div class="shrink-0 text-sm uppercase text-white px-6 pb-2 font-medium">
-                    V{{ $version }}
-                </div>
-            @endif
+            {{ $aside }}
         </div>
     </aside>
 
-    <main
+    <div
         x-bind:class="{
-            'transition-0 duration-100 ease-in-out': animate,
-            'lg:pl-0': toggled,
-            'lg:pl-56': !toggled,
-        }"
-        class="w-full h-full flex flex-col"
-    >
-        <div class="shrink-0 bg-white sticky top-0 z-10 py-1 px-4 border-b">
-            <x-navbar>
-                <x-slot:logo>
-                    <div class="flex items-center gap-4 md:hidden">
-                        <div x-on:click="toggled = !toggled" class="shrink-0 border rounded-lg p-2 flex cursor-pointer">
-                            <x-icon name="table-list" class="m-auto"/>
-                        </div>
+            'pl-0 lg:pl-0': aside === 'hidden',
+            {{-- 'pl-0 lg:pl-[64px]': aside === 'sm', --}}
+            'pl-0 lg:pl-60': !aside || aside === 'lg',
+        }" 
+        class="w-full h-full flex flex-col transition-all duration-200">
+        <header class="shrink-0 bg-white sticky top-0 z-10 border-b flex items-center">
+            <div x-on:click="() => {
+                if (aside === 'hidden') aside = null
+                else aside = 'hidden'
+            }" class="shrink-0 p-4 flex cursor-pointer hidden lg:block">
+                <x-icon name="table-list" class="m-auto"/>
+            </div>
 
-                        @isset($logo) {{ $logo }}
-                        @else <x-logo class="h-[30px]" small/>
+            <div x-on:click="() => {
+                if (aside === 'hidden' || !aside) aside = 'lg'
+            }" class="shrink-0 p-4 flex cursor-pointer lg:hidden">
+                <x-icon name="table-list" class="m-auto"/>
+            </div>
+
+            <div class="grow">
+                @isset($links) {{ $links }} @endisset
+            </div>
+
+            @auth
+                <div class="shrink-0 p-4">
+                    <x-dropdown>
+                        <x-slot:anchor>
+                            <div class="flex items-center gap-2 justify-end cursor-pointer font-medium w-24 lg:w-40">
+                                <x-icon name="circle-user" class="text-lg"/>
+                                <span class="truncate">{!! user('name') !!}</span>
+                                <x-icon name="dropdown-caret" class="hidden lg:block"/>
+                            </div>
+                        </x-slot:anchor>
+
+                        @isset($auth) {{ $auth }}
+                        @else
+                            <div class="flex flex-col divide-y">
+                                @if (!current_route('app.*')) <x-dropdown.item label="layout.nav.back-to-app" icon="back" :href="user()->home()"/> @endif
+                                <x-dropdown.item label="layout.nav.settings" icon="gear" :href="route('app.settings')"/>
+                                <x-dropdown.item label="layout.nav.logout" icon="logout" :href="route('logout')"/>
+                            </div>
                         @endisset
-                    </div>
-                </x-slot:logo>
-    
-                @isset($links)
-                    <x-slot:body>
-                        {{ $links }}
-                    </x-slot:body>
-                @endisset
-    
-                <x-slot:auth>
-                    @isset($auth) {{ $auth }}
-                    @else <x-navbar.auth/>
-                    @endif
-                </x-slot:auth>
-            </x-navbar>
-        </div>
-
-        <div class="shrink-0 bg-white px-4 border-b">
-            <x-breadcrumbs class="max-w-screen-xl mx-auto"/>
-        </div>
+                    </x-dropdown>
+                </div>
+            @endauth
+        </header>
 
         <div class="grow bg-slate-50">
             {{ $slot }}
         </div>
-    </main>
+    </div>
 </div>

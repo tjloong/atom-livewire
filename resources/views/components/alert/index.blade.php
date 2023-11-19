@@ -1,82 +1,53 @@
-@props([
-    'type' => $attributes->get('type', 'info'),
-    'title' => $attributes->get('title'),
-    'errors' => $attributes->get('errors'),
-    'err' => $attributes->get('err'),
+@php
+    $type = $attributes->get('type', 'default');
+    $close = $attributes->get('close', false);
+    $title = $attributes->get('title');
+    $message = $attributes->get('message');
+@endphp
 
-    'icon' => [
-        'neutral' => 'circle-info',
-        'info' => 'circle-info',
-        'error' => 'circle-xmark',
-        'success' => 'circle-check',
-        'warning' => 'circle-exclamation',
-    ],
+<div 
+    x-data="{ show: true }" 
+    x-show="show"
+    class="relative w-full rounded-lg border flex gap-3 {{[
+        'default' => 'border-gray-200 bg-gray-100 text-gray-600',
+        'info' => 'border-blue-200 bg-blue-100 text-blue-600',
+        'error' => 'border-red-200 bg-red-100 text-red-600',
+        'warning' => 'border-yellow-200 bg-yellow-100 text-yellow-600',
+        'success' => 'border-green-200 bg-green-100 text-green-600',
+    ][$type] }}">
+    <div class="grow flex gap-3 p-4">
+        <x-icon :name="[
+            'default' => 'circle-info',
+            'info' => 'circle-info',
+            'error' => 'circle-xmark',
+            'warning' => 'triangle-exclamation',
+            'success' => 'circle-check',
+        ][$type]" class="shrink-0 mt-0.5"/>
     
-    'color' => [
-        'bg' => [
-            'neutral' => 'bg-gray-100',
-            'info' => 'bg-blue-100',
-            'error' => 'bg-red-100',
-            'success' => 'bg-green-100',
-            'warning' => 'bg-yellow-100',
-        ],
-        'title' => [
-            'neutral' => 'text-gray-500',
-            'info' => 'text-blue-800',
-            'error' => 'text-red-600',
-            'success' => 'text-green-800',
-            'warning' => 'text-yellow-800',
-        ],
-        'icon' => [
-            'neutral' => 'text-gray-400',
-            'info' => 'text-blue-400',
-            'error' => 'text-red-400',
-            'success' => 'text-green-400',
-            'warning' => 'text-orange-500',            
-        ],
-        'text' => [
-            'neutral' => 'text-gray-400',
-            'info' => 'text-blue-600',
-            'error' => 'text-red-600',
-            'success' => 'text-green-600',
-            'warning' => 'text-orange-700',
-        ],
-        'border' => [
-            'neutral' => 'border border-gray-300',
-            'info' => 'border border-blue-300',
-            'error' => 'border border-red-300',
-            'success' => 'border border-green-300',
-            'warning' => 'border border-orange-300',
-        ],
-    ],
-])
-
-<div class="p-4 rounded-md {{ data_get($color, 'bg.'.$type) }} {{ data_get($color, 'border.'.$type) }}">
-    <div class="flex gap-3 flex-wrap md:flex-nowrap">
-        <x-icon 
-            :name="data_get($icon, $type)" 
-            class="{{ data_get($color, 'icon.'.$type) }} shrink-0" 
-            size="20"
-        />
-
-        <div class="grow grid gap-2">
-            @if ($title)
-                <div class="{{ data_get($color, 'title.'.$type) }} font-semibold text-lg leading-none">
-                    {{ __($title) }}
-                </div>
-            @endif
-
-            @if ($slot->isNotEmpty())
-                <div class="{{ data_get($color, 'text.'.$type) }} font-medium leading-tight">
-                    {{ $slot }}
-                </div>
-            @endif
-        </div>
-
-        @isset($buttons)
-            <div class="shrink-0">
-                {{ $buttons }}
+        @if ($slot->isNotEmpty()) {{ $slot }}
+        @else
+            <div class="grow flex flex-col">
+                @if ($title) <h5 class="my-0.5 font-medium leading-none tracking-tight">{!! tr($title) !!}</h5> @endif
+                @if ($message) <div class="mt-0.5 leading-none text-sm opacity-80">{!! tr($message) !!}</div> @endif
             </div>
-        @endisset
+        @endif
     </div>
+
+    @if ($close)
+        <div class="shrink-0 p-2">
+            <div class="w-6 h-6 rounded-full flex cursor-pointer {{ [
+                'default' => 'hover:bg-gray-200',
+                'info' => 'hover:bg-blue-200',
+                'error' => 'hover:bg-red-200',
+                'warning' => 'hover:bg-yellow-200',
+                'success' => 'hover:bg-green-200',
+            ][$type] }}" x-on:click="show = false">
+                <x-icon name="xmark" class="m-auto"/>
+            </div>
+        </div>
+    @elseif (isset($buttons))
+        <div class="shrink-0 p-2">
+            {{ $buttons }}
+        </div>
+    @endisset
 </div>

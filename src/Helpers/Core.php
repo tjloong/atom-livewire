@@ -9,6 +9,20 @@ use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
 use OpenSpout\Common\Entity\Style\Style;
 
+// get app version
+function version()
+{
+    $path = base_path('.git/refs/tags');
+
+    if (
+        is_dir($path) 
+        && ($files = collect(scandir($path))->filter(fn($file) => !in_array($file, ['.', '..']))->values()->all())
+        && ($versions = usort($files, 'version_compare'))
+    ) {
+        return collect($versions)->last();
+    }
+}
+
 // explode if separator matched
 function explode_if($separator, $string)
 {
