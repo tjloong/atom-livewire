@@ -1,5 +1,5 @@
 @php
-    $delay = 1000;
+    $delay = 6000;
     $popups = model('popup')->status('PUBLISHED')->get();
     $count = $popups->count();
 @endphp

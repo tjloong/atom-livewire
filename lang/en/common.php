@@ -141,6 +141,7 @@ return [
         'view' => 'View',
         'view-all' => 'View All',
         'website' => 'Website',
+        'whatsapp-us' => 'Whatsapp Us',
         'yesterday' => 'Yesterday',
         'youtube-url' => 'Youtube URL',
     ],
