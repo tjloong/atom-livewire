@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('slug')->nullable()->unique();
             $table->string('href')->nullable();
             $table->longText('content')->nullable();
+            $table->string('bg_color')->nullable();
+            $table->string('text_color')->nullable();
             $table->json('seo')->nullable();
-            $table->json('data')->nullable();
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->timestamps();

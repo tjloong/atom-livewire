@@ -16,12 +16,12 @@
             <x-form.slug label="common.label.slug" wire:model.defer="announcement.slug"/>
             <x-form.date time label="common.label.start-date" wire:model.defer="announcement.start_at"/>
             <x-form.date time label="common.label.end-date" wire:model.defer="announcement.end_at"/>
-            <x-form.color full label="common.label.bg-color" wire:model.defer="inputs.data.bg_color"/>
-            <x-form.color full label="common.label.text-color" wire:model.defer="inputs.data.text_color"/>
+            <x-form.color full label="common.label.bg-color" wire:model.defer="announcement.bg_color"/>
+            <x-form.color full label="common.label.text-color" wire:model.defer="announcement.text_color"/>
         </x-form.group>
 
         <x-form.group>
-            <x-form.text label="announcement.label.href" wire:model.defer="announcement.href"/>
+            <x-form.text label="common.label.href" wire:model.defer="announcement.href"/>
             <x-form.editor label="common.label.content" wire:model.defer="announcement.content"/>
         </x-form.group>
 

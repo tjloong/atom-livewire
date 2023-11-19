@@ -32,6 +32,8 @@ class Update extends Component
             ],
             'announcement.href' => ['nullable'],
             'announcement.content' => ['nullable'],
+            'announcement.bg_color' => ['nullable'],
+            'announcement.text_color' => ['nullable'],
             'announcement.seo' => ['nullable'],
             'announcement.start_at' => ['nullable'],
             'announcement.end_at' => ['nullable'],
@@ -59,17 +61,11 @@ class Update extends Component
         if ($this->announcement) {
             $this->resetValidation();
     
-            $this->fill([
-                'inputs.seo' => [
-                    'title' => data_get($this->announcement->seo, 'title'),
-                    'description' => data_get($this->announcement->seo, 'description'),
-                    'image' => data_get($this->announcement->seo, 'image'),
-                ],
-                'inputs.data' => [
-                    'bg_color' => data_get($this->announcement->data, 'bg_color'),
-                    'text_color' => data_get($this->announcement->data, 'text_color'),
-                ],
-            ]);
+            $this->fill(['inputs.seo' => [
+                'title' => data_get($this->announcement->seo, 'title'),
+                'description' => data_get($this->announcement->seo, 'description'),
+                'image' => data_get($this->announcement->seo, 'image'),
+            ]]);
     
             $this->openDrawer('announcement-update');
         }
@@ -89,6 +85,8 @@ class Update extends Component
             'name' => $this->announcement->name.' Copy',
             'href' => $this->announcement->href,
             'content' => $this->announcement->content,
+            'bg_color' => $this->announcement->bg_color,
+            'text_color' => $this->announcement->text_color,
             'seo' => $this->announcement->seo,
         ]);
 
@@ -109,10 +107,7 @@ class Update extends Component
     {
         $this->validateForm();
 
-        $this->announcement->fill([
-            'seo' => data_get($this->inputs, 'seo'),
-            'data' => data_get($this->inputs, 'data'),
-        ])->save();
+        $this->announcement->fill(['seo' => data_get($this->inputs, 'seo')])->save();
 
         if ($this->announcement->wasRecentlyCreated) $this->emit('announcementCreated');
         else $this->emit('announcementUpdated');

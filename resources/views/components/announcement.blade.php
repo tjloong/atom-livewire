@@ -23,18 +23,17 @@
                 x-show="index === @js($i)"
                 x-transition:enter.duration.1000ms
                 class="py-3 px-4" 
-                style="background-color: {{ data_get($row->data, 'bg_color') }};">
+                @if ($row->bg_color) style="background-color: {{ $row->bg_color }};"> @endif
                 <div class="max-w-screen-xl mx-auto text-center">
-                    @if ($href = $row->href)
-                        <a href="{{ $href }}" target="_blank" style="color: {{ data_get($row->data, 'text_color') }}">
-                            {!! $row->name !!}
-                        </a>
-                    @elseif ($row->content)
-                        <a href="{{ route('web.announcement', $row->slug) }}" style="color: {{ data_get($row->data, 'text_color') }}">
+                    @if ($row->href || $row->content)
+                        <a 
+                            href="{{ $row->content ? route('web.announcement', $row->slug) : $row->href }}" 
+                            target="_blank"
+                            @if ($row->text_color) style="color: {{ $row->text_color }}" @endif>
                             {!! $row->name !!}
                         </a>
                     @else
-                        <div style="color: {{ data_get($row->data, 'text_color') }}">
+                        <div @if ($row->text_color) style="color: {{ $row->text_color }}" @endif>
                             {!! $row->name !!}
                         </div>
                     @endif

@@ -18,7 +18,6 @@ class Announcement extends Model
 
     protected $casts = [
         'seo' => 'array',
-        'data' => 'array',
         'start_at' => 'datetime',
         'end_at' => 'datetime',
     ];
@@ -46,10 +45,6 @@ class Announcement extends Model
                 'EXPIRED' => $this->end_at && $this->end_at->isPast(),
                 'UPCOMING' => $this->start_at && $this->start_at->isFuture(),
                 'PUBLISHED' => true,
-                // 'PUBLISHED' => (!$this->start_at && !$this->end_at)
-                //     || ($this->start_at && !$this->end_at && $this->start_at->lte(now()))
-                //     || (!$this->start_at && $this->end_at && $this->end_at->gt(now()))
-                //     || ($this->start_at && $this->end_at && now()->betweenIncluded($this->start_at, $this->end_at)),
             ])->filter()->keys()->first()),
         );
     }
