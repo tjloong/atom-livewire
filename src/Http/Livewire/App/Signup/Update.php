@@ -23,6 +23,7 @@ class Update extends Component
     // close
     public function close() : void
     {
+        $this->emit('setSignupId');
         $this->closeDrawer('signup-update');
     }
 }

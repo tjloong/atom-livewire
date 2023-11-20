@@ -1,6 +1,8 @@
-<x-drawer name="signup-update">
+<x-drawer name="signup-update" wire:close="close()">
 @if ($signup)
-    <x-slot:heading title="{!! $signup->user->name !!}"></x-slot:heading>
+    <x-slot:heading>
+        <x-contact-card :contact="$signup->user" class="mb-4"/>
+    </x-slot:heading>
 
     <x-box>
         <div class="flex flex-col divide-y">

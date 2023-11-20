@@ -23,7 +23,7 @@
     <div
         x-show="show"
         x-transition.opacity
-        class="absolute inset-0 z-10">
+        class="absolute inset-0 z-20">
         <div x-on:click.away="show = false" 
             class="absolute top-0 right-0 max-w-md w-full p-2">
             <div class="bg-white rounded-lg shadow-lg border">

@@ -51,7 +51,7 @@
             x-init="active = $refs.subitems?.querySelectorAll('.active')?.length > 0">
             <div x-on:click="open = !open" class="pl-2">
                 <div
-                    x-bind:class="active || open ? 'font-semibold bg-white/20' : 'hover:bg-white/10'"
+                    x-bind:class="active || open ? 'font-semibold bg-white/20' : 'font-medium hover:bg-white/10'"
                     class="flex items-center gap-2 text-white rounded-l-md py-2.5 px-4 cursor-pointer">
                     <div x-bind:class="aside === 'sm' && 'text-xl'" class="shrink-0 w-5 h-5 flex">
                         <x-icon :name="$icon" class="m-auto"/>

@@ -4,7 +4,7 @@
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
                     <x-form.group>
-                        <x-form.select.enum label="common.label.status" enum="signup.status"
+                        <x-form.select.enum label="common.label.status" enum="signup.status" multiple
                             wire:model="filters.status"/>
                     </x-form.group>
                 </x-table.filters>
@@ -21,8 +21,8 @@
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $row)
-            <x-table.tr>
-                <x-table.td :label="$row->user->name" wire:click="$emit('updateSignup', {{ $row->id }})"/>
+            <x-table.tr wire:click="$emit('updateSignup', {{ $row->id }})">
+                <x-table.td :label="$row->user->name" class="font-medium"/>
                 <x-table.td :label="$row->user->email"/>
                 <x-table.td :status="$row->status->badge()" class="text-right"/>
                 <x-table.td :date="$row->created_at" class="text-right"/>
