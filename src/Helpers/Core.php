@@ -647,9 +647,21 @@ function html_excerpt($html)
 // translate
 function tr($key, $count = 1, $params = [])
 {
-    if (count(explode('.', $key)) > 1 || ctype_lower($key)) {
+    $split = collect(explode('.', $key));
+    $file = $split->shift();
+    $dot = $split->join('.');
+
+    try {
+        $baselang = data_get(include base_path('lang/en/'.$file.'.php'), $dot);
+        $atomlang = data_get(include atom_path('lang/en/'.$file.'.php'), $dot);
+
+        if (!$baselang && !$atomlang) return $key;
+        else if (!$baselang && $atomlang) $key = 'atom::'.$key;
+
         if (is_array($count)) return __($key, $count);
         else return trans_choice($key, $count, $params);
     }
-    else return $key;
+    catch (Exception $e) {
+        return $key;
+    }
 }

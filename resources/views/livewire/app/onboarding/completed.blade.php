@@ -1,5 +1,5 @@
 <div class="max-w-screen-lg mx-auto flex flex-col gap-10">
-    <x-logo class="w-40"/>
+    <x-logo class="w-32 h-20"/>
 
     <div class="flex flex-col gap-1">
         <div class="text-3xl font-bold">

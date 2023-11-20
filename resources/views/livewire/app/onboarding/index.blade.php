@@ -1,7 +1,7 @@
 <main class="{{ count($this->tabs) > 1 ? 'max-w-screen-xl' : 'max-w-screen-lg' }} mx-auto">
     <div class="w-full flex flex-col gap-10">
         <nav class="flex flex-wrap items-center justify-between gap-2">
-            <x-logo class="w-40"/>
+            <x-logo class="w-32 h-20"/>
             <x-link icon="back" label="I'll do this later" wire:click="close"/>
         </nav>
 
