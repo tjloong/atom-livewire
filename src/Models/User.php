@@ -97,6 +97,8 @@ class User extends Authenticatable
     // get user home
     public function home(): string
     {
+        if (session('onboarding') !== 'onhold' && optional($this->signup)->status === enum('signup.status', 'NEW')) return route('app.onboarding');
+
         return route('app.dashboard');
     }
 

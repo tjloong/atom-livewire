@@ -16,6 +16,7 @@ class Index extends Component
     public function mount() : void
     {
         $this->tab = $this->tab ?? $this->getNextTab();
+        session(['onboarding' => []]);
     }
 
     // get tabs property
@@ -51,6 +52,8 @@ class Index extends Component
                 user()->signup->fill(['onboarded_at' => now()])->save();
             }
 
+            session(['onboarding' => []]);
+
             return to_route('app.onboarding.completed');
         }
     }
@@ -58,7 +61,7 @@ class Index extends Component
     // close
     public function close() : mixed
     {
-        session()->forget('onboarding');
+        session(['onboarding' => 'onhold']);
 
         return redirect(user()->home());
     }
@@ -66,8 +69,10 @@ class Index extends Component
     // get next tab
     public function getNextTab()
     {
+        $session = is_array(session('onboarding')) ? session('onboarding') : [];
+
         return collect($this->tabs)->pluck('slug')->filter()
-            ->filter(fn($slug) => !in_array($slug, session('onboarding', [])))
+            ->filter(fn($slug) => !in_array($slug, $session))
             ->first();
     }
 }
