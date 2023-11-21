@@ -4,10 +4,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
-use Rap2hpoutre\FastExcel\FastExcel;
-use Rap2hpoutre\FastExcel\SheetCollection;
-use OpenSpout\Common\Entity\Style\Style;
 
 // get app version
 function version()
@@ -167,9 +163,7 @@ function pdf($view, $data)
     return Pdf::loadView($view, $data);
 }
 
-/**
- * Export to word
- */
+// export word
 function word($pages, $config = [])
 {
     $phpword = new \PhpOffice\PhpWord\PhpWord();
@@ -205,53 +199,31 @@ function word($pages, $config = [])
         }
     }
 
-    $dir = storage_path('export');
-    if (!File::exists($dir)) File::makeDirectory($dir);
-
-    $filename = str()->finish(
-        data_get($config, 'filename', 'word-export-'.time()),
-        '.docx'
-    );
-
-    $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpword, 'Word2007');
-    $writer->save($dir.'/'.$filename);
-
-    return redirect()->route('__export', [$filename]);
-
+    return \PhpOffice\PhpWord\IOFactory::createWriter($phpword, 'Word2007');
 }
 
-/**
- * Export collection to excel
- */
+// excel
 function excel($collection)
 {
-    $style = (new Style())->setShouldWrapText(false);
-    return (new FastExcel($collection))
+    $style = (new \OpenSpout\Common\Entity\Style\Style())->setShouldWrapText(false);
+
+    return (new \Rap2hpoutre\FastExcel\FastExcel($collection))
         ->headerStyle($style)
         ->rowsStyle($style);
 }
 
-/**
- * Export to excel sheets
- */
-function excelsheets($sheets, $config = [], $iterator = null)
+// excel sheets
+function excelsheets($sheets, $config = [])
 {
-    $dir = storage_path('export');
-    if (!File::exists($dir)) File::makeDirectory($dir);
-
-    $sheets = new SheetCollection($sheets);
-    $filename = str()->finish(
-        data_get($config, 'filename', 'sheets-export-'.time()),
-        '.xlsx'
-    );
-
-    $fastexcel = (new FastExcel($sheets));
+    $style = (new \OpenSpout\Common\Entity\Style\Style())->setShouldWrapText(false);
+    $sheets = new \Rap2hpoutre\FastExcel\SheetCollection($sheets);
+    $fastexcel = (new \Rap2hpoutre\FastExcel\FastExcel($sheets))
+        ->headerStyle($style)
+        ->rowsStyle($style);
 
     if (!data_get($config, 'header', true)) $fastexcel->withoutHeaders();
-    
-    $fastexcel->export($dir.'/'.$filename, $iterator);
 
-    return redirect()->route('__export', [$filename]);
+    return $fastexcel;
 }
 
 /**

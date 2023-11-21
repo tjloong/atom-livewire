@@ -20,7 +20,7 @@
         <div x-ref="dd"
             x-show="show"
             x-transition
-            class="absolute right-0 z-10 bg-white border rounded-lg shadow w-max">
+            class="absolute right-0 z-20 bg-white border rounded-lg shadow w-max">
             {{ $slot }}
         </div>
     </div>

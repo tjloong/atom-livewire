@@ -74,6 +74,8 @@ class Blog extends Model
     // scope for status
     public function scopeStatus($query, $status) : void
     {
+        if (is_string($status)) $status = enum('blog.status', $status);
+        
         $query
             ->when($status === enum('blog.status', 'DRAFT'), fn($q) => $q->whereNull('published_at'))
             ->when($status === enum('blog.status', 'PUBLISHED'), fn($q) => $q->whereNotNull('published_at'));

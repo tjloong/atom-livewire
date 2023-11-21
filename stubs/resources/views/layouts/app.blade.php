@@ -1,18 +1,13 @@
 @extends('atom::layout', [
     'indexing' => current_route('web.*', 'register'),
     'analytics' => current_route('web.*', 'register', 'app.onboarding.completed'),
-    'cdn' => [
-        'sortable', 
-        'chartjs', 
+    'cdn' => current_route('app.*') ? [
+        'ckeditor', 
+        'sortable',
+    ] : [
         'clipboard',
         'swiper',
-        current_route('app.settings') ? 'ckeditor' : null,
-        current_route(
-            'web.contact-us',
-            'login',
-            'register',
-            'password.forgot',
-        ) ? 'recaptcha' : null,
+        'recaptcha',
     ],
 ])
 
@@ -47,26 +42,21 @@
     @elseroute('app.*')
         <x-admin-panel>
             <x-slot:links>
-                <x-link href="/" icon="globe" label="atom::layout.go_to_site" class="text-gray-800"/>
+                <x-button icon="globe" label="layout.nav.go-to-site" href="/"/>
             </x-slot:links>
 
-            <x-slot:auth>
-                <x-navbar.auth>
-                    <x-navbar.dropdown.item label="atom::layout.settings" :href="route('app.settings')"/>
-                </x-navbar.auth>
-            </x-slot:auth>
-
             <x-slot:aside>
-                <x-admin-panel.aside label="Dashboard" route="app.dashboard"/>                
-                <x-admin-panel.aside label="Blogs" route="app.blog.listing"/>
-                <x-admin-panel.aside label="Enquiries" route="app.enquiry.listing"/>
-                <x-admin-panel.aside label="Sign-Ups" route="app.signup.listing"/>
-                <x-admin-panel.aside label="Support Tickets" route="app.ticket.listing"/>
-            </x-slot:aside>
+                <div class="grow overflow-y-auto overflow-x-hidden pt-5">
+                    <x-admin-panel.aside label="layout.nav.dashboard" route="app.dashboard"/>                
+                    <x-admin-panel.aside label="layout.nav.blog" route="app.blog.listing"/>
+                    <x-admin-panel.aside label="layout.nav.enquiry" route="app.enquiry.listing"/>
+                    <x-admin-panel.aside label="layout.nav.signup" route="app.signup.listing"/>
+                </div>
 
-            <x-slot:asidefoot>
-                <x-admin-panel.aside label="atom::layout.settings" route="app.settings"/>
-            </x-slot:asidefoot>
+                <div class="shrink-0 py-3">
+                    <x-admin-panel.aside label="layout.nav.settings" route="app.settings"/>
+                </div>
+            </x-slot:aside>
 
             @route('app.settings') {{ $slot }}
             @else <main class="p-6">{{ $slot }}</main>

@@ -1,5 +1,8 @@
 @props([
     'cdns' => [
+        'animate' => [
+            'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css',
+        ],
         'floating-ui' => [
             'https://cdn.jsdelivr.net/npm/@floating-ui/core@1.0.0/dist/floating-ui.core.umd.min.js',
             'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.0.0/dist/floating-ui.dom.umd.min.js',
