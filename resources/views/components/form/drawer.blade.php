@@ -25,12 +25,12 @@
                 @if ($buttons->isNotEmpty())
                     {{ $buttons }}
                 @elseif (!$buttons->attributes->get('blank'))
-                    <x-button.submit size="sm"/>
+                    <x-button.submit sm/>
                 @endif
             </x-slot:buttons>
         @else
             <x-slot:buttons>
-                <x-button.submit size="sm"/>
+                <x-button.submit sm/>
             </x-slot:buttons>
         @endif
     

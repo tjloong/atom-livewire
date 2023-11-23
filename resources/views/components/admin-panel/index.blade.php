@@ -10,7 +10,7 @@
 <div
     x-cloak
     x-data="{ aside: null }"
-    class="min-h-screen h-px">
+    class="admin-panel min-h-screen h-px">
     @if ($flash->count())
         <div class="fixed top-0 left-1/2 -translate-x-1/2 z-50 max-w-screen-md w-full flex flex-col gap-3 p-4">
             @foreach ($flash as $type => $item)

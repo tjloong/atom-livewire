@@ -596,12 +596,8 @@ function replace_in_file($search, $replace, $path)
     file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
 }
 
-/**
- * Get excerpt from html
- * 
- * @return string
- */
-function html_excerpt($html)
+// get excerpt from html
+function html_excerpt($html, $len = 100)
 {
     $content = $html;
     $content = strip_tags($content);
@@ -610,10 +606,10 @@ function html_excerpt($html)
     $content = preg_replace('/[^A-Za-z0-9\,\.\’\‘\";?]/', ' ', $content);
     $content = preg_replace('/ +/', ' ', $content);
     $content = trim($content);
-    $length = str()->length($content);
 
-    if ($length > 100) return str()->limit($content, 100);
-    else return $content;
+    return str()->length($content) > $len
+        ? str()->limit($content, $len)
+        : $content;
 }
 
 // translate
@@ -622,18 +618,15 @@ function tr($key, $count = 1, $params = [])
     $split = collect(explode('.', $key));
     $file = $split->shift();
     $dot = $split->join('.');
+    $baselangpath = base_path('lang/en/'.$file.'.php');
+    $atomlangpath = atom_path('lang/en/'.$file.'.php');
 
-    try {
-        $baselang = data_get(include base_path('lang/en/'.$file.'.php'), $dot);
-        $atomlang = data_get(include atom_path('lang/en/'.$file.'.php'), $dot);
+    $baselang = file_exists($baselangpath) ? data_get(include $baselangpath, $dot) : null;
+    $atomlang = file_exists($atomlangpath) ? data_get(include $atomlangpath, $dot) : null;
 
-        if (!$baselang && !$atomlang) return $key;
-        else if (!$baselang && $atomlang) $key = 'atom::'.$key;
+    if (!$baselang && !$atomlang) return $key;
+    else if (!$baselang && $atomlang) $key = 'atom::'.$key;
 
-        if (is_array($count)) return __($key, $count);
-        else return trans_choice($key, $count, $params);
-    }
-    catch (Exception $e) {
-        return $key;
-    }
+    if (is_array($count)) return __($key, $count);
+    else return trans_choice($key, $count, $params);
 }
