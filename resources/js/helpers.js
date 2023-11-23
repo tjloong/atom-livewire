@@ -1,3 +1,9 @@
+// check page is reloaded
+window.isPageReloaded = () => {
+    return (window.performance.navigation && window.performance.navigation.type === 1)
+        || window.performance.getEntriesByType('navigation').map((nav) => nav.type).includes('reload')
+}
+
 // document body scrolling
 window.documentBodyScrolling = (bool) => {
     document.body.style.overflow = bool ? 'auto' : 'hidden'

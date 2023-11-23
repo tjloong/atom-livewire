@@ -14,30 +14,36 @@
             delay: @js($delay),
             timout: null,
             interval: null,
-            roll () {
+            open () {
+                if (document.referrer.indexOf(location.protocol + '//' + location.host) === 0) return
+                if (isPageReloaded()) return
+                this.show = true
+                this.roll()
+            },
+            roll() {
                 this.interval = setInterval(() => this.next(), this.delay)
+            },
+            close () {
+                this.show = false
             },
             next (index) {
                 if (this.count <= 1) return
                 clearTimeout(this.timout)
-                this.hide()
-                this.timout = setTimeout(() => this.reveal(index), 500)
+                this.fadeOut()
+                this.timout = setTimeout(() => this.fadeIn(index), 500)
             },
-            hide () {
+            fadeOut () {
                 this.$refs.slides.classList.add('opacity-0')
                 this.$refs.slides.classList.add('duration-500')
             },
-            reveal (index) {
+            fadeIn (index) {
                 this.index = index || (this.index >= this.count -1 ? 0 : this.index + 1)
                 this.$refs.slides.classList.remove('opacity-0')
             },
         }"
-        x-init="setTimeout(() => {
-            show = true
-            roll()
-        }, delay)"
+        x-init="setTimeout(() => open(), delay)"
         x-show="show"
-        x-on:click="show = false"
+        x-on:click="close()"
         x-transition.opacity.duration.500ms
         class="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm flex items-center justify-center overflow-auto py-20 px-5"
         style="z-index: 999;">
@@ -45,10 +51,11 @@
             x-on:click.stop
             x-on:mouseenter="clearInterval(interval)"
             x-on:mouseleave="roll()"
-            class="max-w-screen-lg bg-white rounded-lg shadow overflow-hidden relative">
+            class="max-w-screen-lg min-w-[450px] bg-white rounded-lg shadow overflow-hidden relative">
             <div
-                x-on:click="show = false"
-                class="absolute top-2 right-3 text-xl text-gray-400 cursor-pointer w-8 h-8 rounded-full flex hover:bg-black hover:text-white">
+                x-on:click="close()"
+                class="absolute top-3 right-3 text-gray-400 cursor-pointer rounded-md border border-gray-400 flex hover:bg-black hover:text-white"
+                style="width: 20px; height: 20px;">
                 <x-icon name="xmark" class="m-auto"/>
             </div>
 
