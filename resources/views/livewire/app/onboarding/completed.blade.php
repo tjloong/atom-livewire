@@ -12,6 +12,6 @@
     </div>
 
     <div>
-        <x-button icon="house" label="common.label.back-to-home" md :href="user()->home()"/>
+        <x-button icon="house" label="common.label.back-to-home" md :href="$redirect ?? user()->home()"/>
     </div>
 </div>

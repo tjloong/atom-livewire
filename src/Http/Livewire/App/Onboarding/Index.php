@@ -13,10 +13,12 @@ class Index extends Component
     protected $queryString = ['redirect'];
 
     // mount
-    public function mount() : void
+    public function mount()
     {
-        $this->tab = $this->tab ?? $this->getNextTab();
-        session(['onboarding' => []]);
+        if (!$this->tabs) return $this->reload();
+        if (!session()->has('onboarding')) session(['onboarding' => 0]);
+
+        $this->tab = collect($this->tabs)->pluck('slug')->filter()->values()->get(session('onboarding'));
     }
 
     // get tabs property
@@ -25,54 +27,41 @@ class Index extends Component
         return [];
     }
 
-    // get is completed property
-    public function getisCompletedProperty() : bool
+    // get selected tab property
+    public function getSelectedTabProperty() : array
     {
-        return count(session('onboarding', [])) === count($this->tabs);
+        return $this->tab
+            ? collect($this->tabs)->firstWhere('slug', $this->tab)
+            : null;
+    }
+
+    // get is completed property
+    public function getIsCompletedProperty() : bool
+    {
+        return !$this->tabs || session('onboarding') >= count($this->tabs);
+    }
+
+    // updated tab
+    public function updatedTab($val) : mixed
+    {
+        session(['onboarding' => collect($this->tabs)->where('slug', $val)->keys()->first()]);
+
+        return $this->reload();
     }
 
     // next
     public function next() : mixed
     {
-        session([
-            'onboarding' => collect(session('onboarding'))
-                ->push($this->tab)
-                ->unique()
-                ->toArray(),
-        ]);
+        session()->increment('onboarding');
 
-        if ($next = $this->getNextTab()) {
-            return to_route('app.onboarding', [
-                'tab' => $next,
-                'redirect' => $this->redirect,
-            ]);
-        }
-        else if ($this->isCompleted) {
-            if (!user()->signup->onboarded_at) {
-                user()->signup->fill(['onboarded_at' => now()])->save();
-            }
-
-            session(['onboarding' => []]);
-
-            return to_route('app.onboarding.completed');
-        }
+        return $this->reload();
     }
 
-    // close
-    public function close() : mixed
+    // reload
+    public function reload() : mixed
     {
-        session(['onboarding' => 'onhold']);
-
-        return redirect(user()->home());
-    }
-
-    // get next tab
-    public function getNextTab()
-    {
-        $session = is_array(session('onboarding')) ? session('onboarding') : [];
-
-        return collect($this->tabs)->pluck('slug')->filter()
-            ->filter(fn($slug) => !in_array($slug, $session))
-            ->first();
+        return $this->isCompleted
+            ? to_route('app.onboarding.completed', ['redirect' => $this->redirect])
+            : to_route('app.onboarding', ['redirect' => $this->redirect]);
     }
 }

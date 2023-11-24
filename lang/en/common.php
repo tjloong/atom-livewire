@@ -165,10 +165,10 @@ return [
         ],
         'recaptcha' => 'Google think you are a bot. Please refresh and try again.',
         'email-sent' => 'Email Sent.',
-        'sorted' => 'Data Sorted.',
-        'created' => 'Data Created',
-        'updated' => 'Data Updated',
-        'deleted' => 'Data Deleted',
+        'sorted' => 'Record Sorted.',
+        'created' => 'Record Created',
+        'updated' => 'Record Updated',
+        'deleted' => 'Record Deleted',
     ],
 
     'empty' => [

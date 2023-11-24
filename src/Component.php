@@ -10,16 +10,6 @@ class Component extends LivewireComponent
 {
     use WithDrawer;
     use WithPopupNotify;
-    
-    public $currentRouteName;
-    public $currentUrl;
-
-    // mount
-    public function mount()
-    {
-        $this->currentRouteName = request()->route()->getName();
-        $this->currentUrl = url()->current();
-    }
 
     // render
     public function render()

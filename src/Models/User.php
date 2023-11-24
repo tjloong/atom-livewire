@@ -97,9 +97,10 @@ class User extends Authenticatable
     // get user home
     public function home(): string
     {
-        if (session('onboarding') !== 'onhold' && optional($this->signup)->status === enum('signup.status', 'NEW')) return route('app.onboarding');
-
-        return route('app.dashboard');
+        return collect([
+            route('app.onboarding') => optional($this->signup)->status === enum('signup.status', 'NEW') && !session()->has('onboarding'),
+            route('app.dashboard') => true,
+        ])->filter()->keys()->first();
     }
 
     // get settings
