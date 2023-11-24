@@ -12,7 +12,13 @@ class UserLastActive
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        optional($request->user())->update(['last_active_at' => now()]);
+        if (!$request->user()) return $next($request);
+
+        $lastActiveAt = $request->user()->last_active_at;
+
+        if (!$lastActiveAt || $lastActiveAt->diffInMinutes(now()) >= 5) {
+            $request->user()->update(['last_active_at' => now()]);
+        }
 
         return $next($request);
     }
