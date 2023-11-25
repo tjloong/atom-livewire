@@ -26,6 +26,7 @@ return [
         'clear' => 'Clear',
         'completion-date' => 'Completion Date',
         'content' => 'Content',
+        'continue-with-social-login' => 'Continue with :provider',
         'country' => 'Country',
         'created-date' => 'Created Date',
         'dashboard' => 'Dashboard',

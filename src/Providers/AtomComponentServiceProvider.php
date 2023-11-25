@@ -32,6 +32,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'popup',
             'loader',
             'drawer',
+            'divider',
             'heading',
             'spinner',
             'checkbox',

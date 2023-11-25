@@ -7,35 +7,38 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
 {
-    /**
-     * Redirect
-     */
-    public function redirect()
-    {
-        if (request()->query()) {
-            session(['socialite-query' => request()->query()]);
-        }
+    // redirect
+    public function redirect() : mixed
+    {        
+        $provider = request()->provider;
+        $query = request()->query();
 
-        return Socialite::driver(request()->provider)->with(request()->query())->redirect();
+        if (!$this->isProviderEnabled($provider)) abort(404);
+        if ($query) session(['socialite-query' => $query]);
+
+        return Socialite::driver($provider)->with($query)->redirect();
     }
 
-    /**
-     * Callback
-     */
-    public function callback()
+    // callback
+    public function callback() : mixed
     {
         $provider = request()->provider;
         $user = Socialite::driver($provider)->user();
-        $route = model('user')->firstWhere('email', $user->getEmail())
-            ? 'login'
-            : 'register';
-
+        $token = $user->token;
+        $route = model('user')->where('email', $user->getEmail())->count() ? 'login' : 'register';
         $query = session('socialite-query', []);
+
         session()->forget('socialite-query');
 
-        return redirect()->route($route, array_merge([
-            'token' => $user->token,
-            'provider' => $provider,
-        ], $query));
+        return to_route($route, array_merge(compact('token', 'provider'), $query));
+    }
+
+    // check is provider enabled
+    public function isProviderEnabled($provider) : bool
+    {
+        $id = settings($provider.'_client_id');
+        $secret = settings($provider.'_client_secret');
+
+        return $id && $secret;
     }
 }
