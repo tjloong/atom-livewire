@@ -27,8 +27,8 @@
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
             <div class="grow flex flex-col">
-                @if ($title) <h5 class="my-0.5 font-medium leading-none tracking-tight">{!! tr($title) !!}</h5> @endif
-                @if ($message) <div class="mt-0.5 leading-none text-sm opacity-80">{!! tr($message) !!}</div> @endif
+                @if ($title) <h5 class="pb-1 font-medium leading-none tracking-tight text-lg">{!! tr($title) !!}</h5> @endif
+                @if ($message) <div class="-mt-px leading-tight opacity-80">{!! tr($message) !!}</div> @endif
             </div>
         @endif
     </div>
