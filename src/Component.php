@@ -11,6 +11,12 @@ class Component extends LivewireComponent
     use WithDrawer;
     use WithPopupNotify;
 
+    // mount
+    public function mount()
+    {
+        //
+    }
+
     // render
     public function render()
     {
