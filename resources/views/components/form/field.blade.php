@@ -9,13 +9,13 @@
         <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
             <span>
                 @if (isset($label)) {{ $label }}
-                @else {{ str(__(component_label($attributes, '', false)))->upper() }}
+                @else {{ str(tr(component_label($attributes, '', false)))->upper() }}
                 @endif
             </span>
 
             @if ($tag = $attributes->get('tag'))
                 <span class="bg-blue-100 text-blue-500 font-medium text-xs px-1 rounded-md">
-                    {{ __($tag) }}
+                    {{ tr($tag) }}
                 </span>
             @endif
 
@@ -61,7 +61,7 @@
 
     @if ($caption = $attributes->get('caption'))
         <div class="text-sm text-gray-700">
-            {{ __($caption) }}
+            {{ tr($caption) }}
         </div>
     @endif
 
@@ -72,7 +72,7 @@
                 .forEach(node => node.classList.add('error'))"
             wire:key="{{ uniqid() }}"
             class="text-sm text-red-500 font-medium">
-            {{ __($error) }}
+            {{ tr($error) }}
         </div>
     @endif
 </div>

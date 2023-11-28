@@ -22,7 +22,7 @@
 ))
     @if ($href)
         <a href="{{ $href }}" class="block pl-2">
-            <div class="flex items-center text-white rounded-l-md {{ $active ? 'active font-semibold bg-white/20' : 'hover:bg-white/10' }}">
+            <div class="flex items-center text-white rounded-l-md {{ $active ? 'active font-semibold bg-white/20' : 'font-medium hover:bg-white/10' }}">
                 <div class="grow flex items-center gap-2 py-2.5 px-4">
                     @if ($icon)
                         <div x-bind:class="aside === 'sm' && 'text-xl'" class="shrink-0 w-5 h-5 flex">

@@ -38,7 +38,7 @@
                 </div>
             @elseif ($small = $attributes->get('small') ?? $attributes->get('caption'))
                 <div class="text-sm text-gray-500 font-medium normal-case ml-8 px-1">
-                    {!! __($small) !!}
+                    {!! tr($small) !!}
                 </div>
             @endisset
         </label>
