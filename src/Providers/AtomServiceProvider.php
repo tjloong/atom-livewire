@@ -48,6 +48,7 @@ class AtomServiceProvider extends ServiceProvider
         }
 
         $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
+        $this->app->bind('ipay', fn() => new \Jiannius\Atom\Services\Ipay);
         $this->app->bind('stripe', fn() => new \Jiannius\Atom\Services\Stripe);
         $this->app->bind('revenue_monster', fn() => new \Jiannius\Atom\Services\RevenueMonster);
     }
