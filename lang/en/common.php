@@ -2,6 +2,7 @@
 
 return [
     'label' => [
+        'account' => 'Account',
         'active-date' => 'Active Date',
         'active' => 'Active',
         'add' => 'Add',
@@ -26,6 +27,7 @@ return [
         'category' => 'Category',
         'clear' => 'Clear',
         'client' => 'Client',
+        'code' => 'Code',
         'completion-date' => 'Completion Date',
         'content' => 'Content',
         'continue' => 'Continue',
@@ -65,6 +67,7 @@ return [
         'gender' => 'Gender',
         'get-from-url' => 'Get from URL',
         'grand-total' => 'Grand Total',
+        'group' => 'Group',
         'href' => 'Link to URL',
         'image-url' => 'Image URL',
         'issued-date' => 'Issued Date',
@@ -112,8 +115,8 @@ return [
         'save' => 'Save',
         'save-and-continue' => 'Save and Continue',
         'search' => 'Search',
-        'share' => 'Share',
         'select' => 'Select',
+        'select-account' => 'Select Account',
         'select-all' => 'Select All',
         'select-address' => 'Select Address',
         'select-date' => 'Select Date',
@@ -128,6 +131,7 @@ return [
         'select-user' => 'Select User',
         'select-state' => 'Select State',
         'select-time' => 'Select Time',
+        'share' => 'Share',
         'send-email' => 'Send Email',
         'show' => 'Show',
         'showing-archived' => 'Showing :count archived',

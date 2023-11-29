@@ -3,6 +3,10 @@ label {
     font-size: 12px;
 }
 
+a {
+    @apply cursor-pointer font-medium;
+}
+
 [x-cloak] { 
     display: none !important;
 }

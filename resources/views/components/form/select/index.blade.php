@@ -255,7 +255,8 @@
                     @if ($foot->isNotEmpty())
                         {{ $foot }}
                     @else
-                        <a class="py-3 px-4 flex items-center justify-center gap-2" {{ $foot->attributes->except('label', 'icon') }}>
+                        <a class="py-3 px-4 flex items-center justify-center gap-2 text-blue-700" 
+                            {{ $foot->attributes->except('label', 'icon') }}>
                             @if ($icon = $foot->attributes->get('icon')) <x-icon :name="$icon"/> @endif
                             {{ tr($foot->attributes->get('label', '')) }}
                         </a>
