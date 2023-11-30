@@ -12,6 +12,8 @@ class StripeController extends Controller
         if ($job = app('stripe')->getJobHandler()) {
             return ($job)::dispatchSync('success', request()->query(), 'stripe');
         }
+
+        return abort(404);
     }
 
     // cancel
@@ -20,6 +22,8 @@ class StripeController extends Controller
         if ($job = app('stripe')->getJobHandler()) {
             return ($job)::dispatchSync('cancel', request()->query(), 'stripe');
         }
+
+        return abort(404);
     }
 
     // webhook
