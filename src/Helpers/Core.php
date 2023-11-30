@@ -615,6 +615,11 @@ function html_excerpt($html, $len = 100)
 // translate
 function tr($key, $count = 1, $params = [])
 {
+    if (str($key)->isMatch('/(.*):\d$/')) {
+        $count = (int) last(explode(':', $key));
+        $key = head(explode(':', $key));
+    }
+
     $split = collect(explode('.', $key));
     $file = $split->shift();
     $dot = $split->join('.');
