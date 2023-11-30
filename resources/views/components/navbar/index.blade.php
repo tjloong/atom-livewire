@@ -1,29 +1,16 @@
-<nav
-    x-cloak
-    x-data="{ show: false }"
->
+<nav x-cloak x-data="{ show: false }">
     <div class="flex items-center py-2 md:py-0">
         <div class="shrink-0">
-            @if (isset($logo))
-                {{ $logo }}
-            @elseif (isset($head))
-                {{ $head }}
+            @if (isset($logo)) {{ $logo }}
             @else
                 <a href="/" class="block w-[100px] h-[50px] md:w-[150px] md:h-[75px]">
-                    @if ($attributes->get('logo'))
-                        <img src="{{ $attributes->get('logo') }}" width="300" height="150" alt="{{ config('app.name') }}" class="w-full h-full object-contain object-left">
-                    @else
-                        <x-logo class="w-full h-full"/>
-                    @endif
+                    <x-logo class="w-full h-full"/>
                 </a>
             @endif
         </div>
 
-        <div class="grow flex items-center justify-end gap-3">
-            <div 
-                x-bind:class="show ? 'fixed inset-0 z-40' : 'hidden'"
-                class="md:grow md:static md:block"
-            >
+        <div class="grow flex items-center justify-end">
+            <div x-bind:class="show ? 'fixed inset-0 z-40' : 'hidden'" class="md:grow md:static md:block">
                 <div x-on:click="show = false" class="absolute inset-0 bg-black/50 md:hidden"></div>
 
                 <div class="
@@ -49,28 +36,28 @@
                             {{ $end }}
                         </div>
                     @endisset
-
-                    @isset($auth) {{ $auth }}
-                    @else
-                        @auth 
-                            <x-navbar.auth/>
-                        @else
-                            <div class="w-full flex flex-col items-center bg-white shadow rounded-lg p-2 md:flex-row md:gap-3 md:bg-transparent md:shadow-none md:w-auto md:shrink-0">
-                                @if (has_route('login'))
-                                    <x-navbar.item href="/login" label="Login"/>
-                                @endif
-
-                                @if (has_route('register'))
-                                    <x-navbar.item href="/register?utm=navbar" label="Register" class="md:hidden"/>
-                                    <div class="hidden md:block">
-                                        <x-button href="/register?utm=navbar" label="Register" color="theme"/>
-                                    </div>
-                                @endif
-                            </div>
-                        @endauth
-                    @endisset
                 </div>
             </div>
+
+            @isset($auth) {{ $auth }}
+            @else
+                @auth 
+                    <x-navbar.auth/>
+                @else
+                    <div class="w-full flex flex-col items-center bg-white shadow rounded-lg p-2 md:flex-row md:gap-3 md:bg-transparent md:shadow-none md:w-auto md:shrink-0">
+                        @if (has_route('login'))
+                            <x-navbar.item href="/login" label="Login"/>
+                        @endif
+
+                        @if (has_route('register'))
+                            <x-navbar.item href="/register?utm=navbar" label="Register" class="md:hidden"/>
+                            <div class="hidden md:block">
+                                <x-button href="/register?utm=navbar" label="Register" color="theme"/>
+                            </div>
+                        @endif
+                    </div>
+                @endauth
+            @endisset
 
             <div x-on:click="show = !show" id="navbar-burger" class="shrink-0 flex cursor-pointer border rounded-lg p-2 md:hidden">
                 @isset($menu) {{ $menu }}

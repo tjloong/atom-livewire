@@ -1,8 +1,8 @@
-@props([
-    'href' => $attributes->get('href'),
-    'icon' => $attributes->get('icon'),
-    'label' => $attributes->get('label'),
-])
+@php
+    $href = $attributes->get('href');
+    $icon = $attributes->get('icon');
+    $label = $attributes->get('label');
+@endphp
 
 @if ($slot->isNotEmpty())
     <div {{ $attributes }}>

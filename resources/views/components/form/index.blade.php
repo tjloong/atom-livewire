@@ -13,6 +13,9 @@
         disabled: false,
         confirm: @js($confirm),
         recaptcha: @js($recaptcha),
+        autofocus () {
+            this.$nextTick(() => this.$el.querySelector('input[autofocus]')?.focus())
+        },
         submit () {
             if (this.confirm) {
                 $dispatch('confirm', {
@@ -37,6 +40,7 @@
             else this.$wire.call(@js($submit))
         },
     }"
+    x-init="autofocus"
     x-on:submit.prevent="submit"
     class="relative">
     <div x-show="disabled" class="absolute inset-0"></div>

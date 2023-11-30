@@ -1,50 +1,30 @@
+@php
+    $avatar = $attributes->get('avatar') ?? user('avatar.url');
+@endphp
+
 @auth
-    {{-- mobile view --}}
-    <div class="w-full bg-gray-100 p-4 rounded-md grid md:hidden">
-        <div class="py-2 px-4 flex items-center justify-center gap-2 rounded-lg bg-slate-200 font-semibold">
-            <x-icon name="circle-user lg" class="text-gray-500"/>
-            {{ str(user('name'))->limit(15) }}
-        </div>
-
-        {{ $slot }}
-
-        <x-navbar.dropdown.item :href="route('logout')" icon="logout" label="Logout"/>
-
-        @isset($foot)
-            {{ $foot }}
-        @endisset
-    </div>
-
-    {{-- desktop view --}}
-    <div class="hidden md:block">
-        <x-dropdown>
-            <x-slot:anchor>
-                <div class="flex items-center justify-center gap-2 px-3 text-center font-medium cursor-pointer">
-                    <div class="shrink-0 flex items-center justify-center">
-                        @if ($avatar = $attributes->get('avatar') ?? user('avatar.url'))
-                            <x-thumbnail :url="$avatar" size="24" circle/>
-                        @else
-                            <x-icon name="circle-user lg" class="opacity-60"/> 
-                        @endif
-                    </div>
-
-                    {{ str(user('name'))->limit(15) }}
-
-                    <div class="shrink-0 flex items-center justify-center">
-                        <x-icon name="chevron-down xs"/>
-                    </div>
+    <x-dropdown placement="bottom-end">
+        <x-slot:anchor>
+            <div class="flex items-center gap-2 px-3 font-medium cursor-pointer max-w-[150px] w-max md:max-w-[250px]">
+                <div class="shrink-0 flex items-center justify-center">
+                    @if ($avatar) <x-image :src="$avatar" avatar/>
+                    @else <x-icon name="circle-user" class="text-lg md:text-xl opacity-60"/> 
+                    @endif
                 </div>
-            </x-slot:anchor>
-    
-            <div class="flex flex-col divide-y">
-                {{ $slot }}
-                    
-                <x-navbar.dropdown.item :href="route('logout')" icon="logout" label="Logout"/>
-                        
-                @isset($foot)
-                    {{ $foot }}
-                @endisset
+
+                <div class="grow truncate text-sm md:text-base">
+                    {!! user('name') !!}
+                </div>
+
+                <div class="shrink-0 flex items-center justify-center text-xs">
+                    <x-icon name="chevron-down"/>
+                </div> 
             </div>
-        </x-dropdown>
-    </div>
+        </x-slot:anchor>
+
+        <div class="flex flex-col divide-y">
+            {{ $slot }}
+            <x-dropdown.item :href="route('logout')" icon="logout" label="common.label.logout"/>
+        </div>
+    </x-dropdown>
 @endauth

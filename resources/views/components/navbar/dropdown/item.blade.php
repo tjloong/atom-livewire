@@ -1,7 +1,7 @@
-@props([
-    'icon' => $attributes->get('icon'),
-    'label' => $attributes->get('label'),
-])
+@php
+    $icon = $attributes->get('icon');
+    $label = $attributes->get('label');
+@endphp
 
 <a {{ $attributes->merge([
     'class' => '
