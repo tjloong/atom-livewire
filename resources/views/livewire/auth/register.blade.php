@@ -40,15 +40,13 @@
                                 }
                             }, 1000)
                         }
-                    }">
-                        <x-link label="auth.label.resend" class="text-sm"
-                            x-show="show"
-                            x-on:click.stop="resend()"/>
+                    }" class="text-sm">
+                        <x-link label="auth.label.resend" x-show="show" x-on:click.stop="resend()"/>
 
                         <span 
                             x-show="!show && (minutes || seconds)"
                             x-text="`${minutes}:${seconds}`"
-                            class="text-sm text-gray-500 font-medium"></span>
+                            class="text-gray-500 font-medium"></span>
                     </div>
                 </div>
             @else
