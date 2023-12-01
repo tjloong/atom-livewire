@@ -13,6 +13,7 @@ class ContactUs extends Component
 
     public $ref;
     public $utm;
+    public $slug;
     public $thank;
     public $enquiry;
 
@@ -28,11 +29,11 @@ class ContactUs extends Component
     }
 
     // mount
-    public function mount($slug = null) : void
+    public function mount()
     {
         $this->ref = request()->query('ref');
         $this->utm = request()->query('utm');
-        $this->thank = $slug === 'thank';
+        $this->thank = $this->slug === 'thank';
         $this->enquiry = [
             'name' => null,
             'phone' => null,

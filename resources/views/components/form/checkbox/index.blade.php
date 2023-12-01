@@ -10,8 +10,8 @@
         x-data="{ disabled: @js($disabled) }"
         x-bind:class="disabled && 'opacity-30 pointer-events-none'">
         <label class="normal-case font-normal text-base text-gray-800" @disabled($disabled)>
-            <div class="flex items-center gap-3">
-                <div class="shrink-0">
+            <div class="flex gap-3">
+                <div class="shrink-0 py-0.5">
                     <input type="checkbox" class="hidden peer" {{ $attributes }}>
                     <div class="
                         bg-white text-white border border-gray-300 rounded flex 
@@ -32,13 +32,13 @@
                 @endif
             </div>
 
-            @isset($small)
-                <div class="normal-case ml-8 px-1">
-                    {{ $small }}
+            @isset($caption)
+                <div class="normal-case px-1" style="margin-left: 1.75rem">
+                    {{ $caption }}
                 </div>
-            @elseif ($small = $attributes->get('small') ?? $attributes->get('caption'))
-                <div class="text-sm text-gray-500 font-medium normal-case ml-8 px-1">
-                    {!! tr($small) !!}
+            @elseif ($caption = $attributes->get('small') ?? $attributes->get('caption'))
+                <div class="text-sm text-gray-500 font-medium normal-case px-1" style="margin-left: 1.75rem">
+                    {!! tr($caption) !!}
                 </div>
             @endisset
         </label>

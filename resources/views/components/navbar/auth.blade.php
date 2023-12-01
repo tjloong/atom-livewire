@@ -7,7 +7,7 @@
         <x-slot:anchor>
             <div class="flex items-center gap-2 px-3 font-medium cursor-pointer max-w-[150px] w-max md:max-w-[250px]">
                 <div class="shrink-0 flex items-center justify-center">
-                    @if ($avatar) <x-image :src="$avatar" avatar/>
+                    @if ($avatar) <x-image :src="$avatar" avatar size="30x30"/>
                     @else <x-icon name="circle-user" class="text-lg md:text-xl opacity-60"/> 
                     @endif
                 </div>
