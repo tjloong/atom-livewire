@@ -2,23 +2,10 @@
 
 return [
     'heading' => [
-        'blog' => 'Blogs',
         'settings' => 'Blog Settings',
     ],
 
-    'button' => [
-        'new' => 'New Article',
-        'preview' => 'Preview',
-        'publish' => 'Publish',
-        'unpublish' => 'Unpublish',
-    ],
-
     'label' => [
-        'category' => 'Blog Category',
-        'content' => 'Blog Content',
-        'cover' => 'Cover Image',
-        'excerpt' => 'Blog Excerpt',
-        'publish-date' => 'Publish Date',
         'title' => 'Blog Title',
     ],
 
