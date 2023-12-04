@@ -6,6 +6,7 @@ return [
     ],
 
     'label' => [
+        'new-article' => 'New Article',
         'title' => 'Blog Title',
     ],
 
