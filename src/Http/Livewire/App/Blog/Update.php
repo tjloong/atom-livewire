@@ -55,6 +55,11 @@ class Update extends Component
         if ($this->blog) {
             $this->fill([
                 'inputs.labels' => $this->blog->labels->pluck('id')->toArray(),
+                'inputs.seo' => [
+                    'title' => data_get($this->blog->seo, 'title'),
+                    'description' => data_get($this->blog->seo, 'description'),
+                    'image' => data_get($this->blog->seo, 'image'),
+                ],
             ]);
 
             $this->openDrawer('blog-update');
@@ -64,6 +69,7 @@ class Update extends Component
     // close
     public function close() : void
     {
+        $this->emit('setBlogId');
         $this->closeDrawer('blog-update');
     }
 
@@ -106,7 +112,10 @@ class Update extends Component
     {
         $this->validateForm();
 
-        $this->blog->save();
+        $this->blog->fill([
+            'seo' => data_get($this->inputs, 'seo'),
+        ])->save();
+        
         $this->blog->labels()->sync(data_get($this->inputs, 'labels'));
 
         if ($this->blog->wasRecentlyCreated) $this->emit('blogCreated');

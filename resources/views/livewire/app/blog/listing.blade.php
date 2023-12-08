@@ -18,8 +18,8 @@
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $row)
-            <x-table.tr>
-                <x-table.td :label="$row->name" wire:click="$emit('updateBlog', {{ $row->id }})"/>
+            <x-table.tr wire:click="$emit('updateBlog', {{ $row->id }})">
+                <x-table.td :label="$row->name" limit="50" class="font-medium"/>
                 <x-table.td :tags="$row->labels->pluck('name.'.app()->currentLocale())->toArray()"/>
                 <x-table.td :status="$row->status->badge()" class="text-right"/>
             </x-table.tr>

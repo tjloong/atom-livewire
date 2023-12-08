@@ -1,18 +1,18 @@
-<x-form.drawer id="blog-update" class="max-w-screen-xl p-5" wire:close="$emit('setBlogId')">
+<x-form.drawer id="blog-update" class="max-w-screen-xl p-5" wire:close="close()">
 @if ($blog)
     <x-slot:buttons :delete="$blog->exists">
         <x-button.submit sm/>
 
         @if ($blog->exists)
             @if ($blog->status === enum('blog.status', 'DRAFT'))
-                <x-button icon="upload" label="blog.button.publish" sm
+                <x-button icon="upload" label="common.label.publish" sm
                     wire:click="publish(true)"/>
             @else
-                <x-button icon="undo" label="blog.button.unpublish" sm
+                <x-button icon="undo" label="common.label.unpublish" sm
                     wire:click="publish(false)"/>
             @endif
 
-            <x-button icon="eye" label="blog.button.preview" sm
+            <x-button icon="eye" label="common.label.preview" sm
                 href="{{ route('web.blog', $blog->slug) }}"
                 target="_blank"/>
         @endif
@@ -22,7 +22,7 @@
         <div class="md:w-8/12">
             <x-box>
                 <x-form.group>
-                    <input type="text" placeholder="{{ __('blog.label.title') }}"
+                    <input type="text" placeholder="{{ tr('blog.label.title') }}"
                         wire:model.defer="blog.name"
                         class="transparent text-2xl font-bold">
                 </x-form.group>
@@ -52,6 +52,10 @@
 
                     <x-form.file label="blog.label.cover" accept="image/*"
                         wire:model="blog.cover_id"/>
+                </x-form.group>
+
+                <x-form.group heading="SEO">
+                    <x-form.seo wire:model.defer="inputs.seo"/>
                 </x-form.group>
             </x-box>
         </div>
