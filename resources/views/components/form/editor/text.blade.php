@@ -1,7 +1,3 @@
-@php
-    $colors = json_decode(file_get_contents(atom_path('resources/json/colors.json')), true);
-@endphp
-
 <div class="group">
     <button type="button" x-tooltip="Bold" x-on:click="commands().toggleBold()">
         <x-icon name="bold"/>
@@ -77,7 +73,7 @@
 
     <x-form.editor.dropdown icon="droplet" tooltip="Text Color">
         <div class="grid grid-cols-11 w-max p-1">
-            @foreach ($colors['full'] as $color)
+            @foreach (colors() as $color)
                 <div x-on:click="commands().setColor(@js($color)); close()"
                     class="w-5 h-5 hover:border-2 hover:border-gray-400"
                     style="background-color: {{ $color }};"></div>
@@ -92,7 +88,7 @@
 
     <x-form.editor.dropdown icon="highlighter" tooltip="Highlight">
         <div class="grid grid-cols-11 w-max p-1">
-            @foreach ($colors['full'] as $color)
+            @foreach (colors() as $color)
                 <div x-on:click="commands().setHighlight(@js($color)); close()"
                     class="w-5 h-5 hover:border-2 hover:border-gray-400"
                     style="background-color: {{ $color }};"></div>

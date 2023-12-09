@@ -208,6 +208,11 @@
                                     ? 'border-l-4 border-green-500 bg-slate-100 pl-3 pr-4'
                                     : 'px-4 hover:bg-slate-50'"
                                 class="py-2 flex items-center gap-3 cursor-pointer">
+                                <template x-if="opt.color">
+                                    <div class="shrink-0 w-4 h-4 rounded-full shadow"
+                                        x-bind:style="{ backgroundColor: opt.color }"></div>
+                                </template>
+
                                 <template x-if="opt.avatar?.url || typeof opt.avatar === 'string'">
                                     <div class="shrink-0 w-10 h-10 rounded-full border shadow">
                                         <img x-bind:src="opt.avatar?.url || opt.avatar" class="w-full h-full object-cover">

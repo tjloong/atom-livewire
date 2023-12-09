@@ -59,6 +59,7 @@ trait HasTrace
             'approved_at',
             'rejected_at',
             'archived_at',
+            'completed_at',
             'email_sent_at',
         ] as $col) {
             $this->casts[$col] = 'datetime';
@@ -76,6 +77,7 @@ trait HasTrace
             'trace_approved_by',
             'trace_rejected_by',
             'trace_archived_by',
+            'trace_completed_by',
             'trace_email_sent_by',
         ]);
     }
@@ -144,6 +146,12 @@ trait HasTrace
     public function trace_archived_by() : BelongsTo
     {
         return $this->belongsTo(model('user'), 'archived_by');
+    }
+
+    // get completed_by for model
+    public function trace_completed_by() : BelongsTo
+    {
+        return $this->belongsTo(model('user'), 'completed_by');
     }
 
     // get email_sent for model
@@ -234,6 +242,12 @@ trait HasTrace
         return !empty($this->archived_at);
     }
 
+    // check model is completed
+    public function isCompleted() : bool
+    {
+        return !empty($this->completed_at);
+    }
+
     // mark as blocked
     public function markBlocked($bool = true) : void
     {
@@ -294,6 +308,15 @@ trait HasTrace
         $this->fill([
             'archived_at' => $bool === false ? null : now(),
             'archived_by' => $bool === false ? null : user('id'),
+        ])->save();
+    }
+
+    // mark as completed
+    public function markCompleted($bool = true) : void
+    {
+        $this->fill([
+            'completed_at' => $bool === false ? null : now(),
+            'completed_by' => $bool === false ? null : user('id'),
         ])->save();
     }
 }

@@ -1,47 +1,48 @@
-@props([
-    'sizes' => [
-        'text' => [
-            'xs' => 'text-xs px-1.5',
-            'sm' => 'text-sm px-2',
-            'md' => 'text-base px-3',
-        ],
-        'icon' => [
-            'xs' => '10',
-            'sm' => '12',
-            'md' => '14',
-        ],
-    ],
-    'label' => $attributes->get('label'),
-    'icon' => $attributes->get('icon'),
-    'getColor' => function() use ($attributes) {
-        return [
-            'green' => 'bg-green-100 text-green-600 border border-green-200',
-            'red' => 'bg-red-100 text-red-600 border border-red-200',
-            'blue' => 'bg-blue-100 text-blue-600 border border-blue-200',
-            'yellow' => 'bg-yellow-100 text-yellow-600 border border-yellow-200',
-            'purple' => 'bg-purple-100 text-purple-600 border border-purple-200',
-            'cyan' => 'bg-cyan-100 text-cyan-600 border border-cyan-200',
-            'orange' => 'bg-orange-100 text-orange-600 border border-orange-200',
-            'black' => 'bg-black text-white',
-            'white' => 'bg-white border border-gray-300',
-            'gray' => 'bg-gray-100 text-gray-800 border',
-        ][$attributes->get('color') ?? 'gray'];
-    },
-])
+@php
+    $icon = $attributes->get('icon');
+    $label = tr($attributes->get('label'));
+    $color = $attributes->get('color', 'gray');
 
-<span {{ $attributes->class([
-    'px-2 inline-flex items-center gap-2 font-semibold rounded-full',    
-    data_get($sizes, 'text.'.$attributes->get('size', 'sm')),
-    $getColor(),
-]) }}>
-    @if ($icon) 
-        <x-icon 
-            :name="$icon" 
-            :size="data_get($sizes, 'icon.'.$attributes->get('size', 'sm'))"
-        /> 
-    @endif
+    $size = collect([
+        'xs' => $attributes->get('xs'),
+        'md' => $attributes->get('md'),
+        'lg' => $attributes->get('lg'),
+        'sm' => true,
+    ])->filter()->keys()->first();
 
-    @if ($label) {!! __($label) !!}
-    @else {{ $slot }}
+    $icondim = [
+        'xs' => 15,
+        'sm' => 18,
+        'md' => 20,
+        'lg' => 24,
+    ][$size];
+@endphp
+
+<span style="
+    background-color: {{ colors("$color.inverted") }}; 
+    color: {{ colors($color) }};
+    border: 1px solid {{ colors("$color.light") }};"
+    {{ $attributes->class([
+        'px-2 inline-block font-semibold rounded-md',   
+        [
+            'xs' => 'text-xs',
+            'sm' => 'text-sm',
+            'md' => 'text-base',
+            'lg' => 'text-lg',
+        ][$size],
+    ]) }}>
+    @if ($slot->isNotEmpty()) {{ $slot }}
+    @elseif ($icon)
+        <div class="-mx-2 leading-none flex items-center">
+            <div class="shrink-0 flex py-1.5 px-2">
+                <x-icon :name="$icon" class="m-auto"/>
+            </div>
+
+            <div class="pr-2" x-tooltip="{!! strlen($label) > 25 ? $label : null !!}">
+                {!! str($label)->limit(25) !!}
+            </div>
+        </div>
+    @else
+        {!! $label !!}
     @endif
 </span>

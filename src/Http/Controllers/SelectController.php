@@ -76,6 +76,7 @@ class SelectController extends Controller
             $this->setOption([
                 'value' => $label->id,
                 'label' => collect([$path, $label->locale('name')])->filter()->join(' / '),
+                'color' => $label->color,
             ]);
 
             if ($loadChildren && $label->children->count()) {

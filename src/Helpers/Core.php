@@ -19,6 +19,48 @@ function version()
     }
 }
 
+// colors
+function colors($name = null)
+{
+    $colors = collect(json_decode(file_get_contents(atom_path('resources/json/colors.json')), true));
+
+    if ($name) {
+        $hex = str($name)->is('*.*') ? head(explode('.', $name)) : $name;
+        $var = str($name)->is('*.*') ? last(explode('.', $name)) : null;
+
+        if (str($hex)->is('#*')) {
+            $group = $colors->where(fn($val) => in_array($hex, $val))->first();
+            $len = count($group);
+            $pos = collect($group)->search($hex);
+
+            if ($var === 'inverted') {
+                if ($pos <= 3) return '#ffffff';
+
+                $pos = $pos - 4;
+                if ($pos < 0) $pos = 0;
+
+                return $group[$pos];
+            }
+            elseif ($var === 'light') {
+                if ($pos <= 3) return $hex;
+                return $group[$pos - 2];
+            }
+            elseif ($var === 'dark') {
+                $pos = $pos + 4;
+                if ($pos > $len - 1) $pos = $len - 1;
+                return $group[$pos];
+            }
+            else return $hex;
+        }
+        else if ($hex === 'white' && $var === 'inverted') return '#000000';
+        else if ($hex === 'black' && $var === 'inverted') return '#ffffff';
+        else if (in_array($hex, ['gray', 'zinc', 'neutral'])) return colors(collect(['slate', $var])->filter()->join('.'));
+        else if ($color = data_get($colors, "$hex.4")) return colors(collect([$color, $var])->filter()->join('.'));
+    }
+
+    return $colors->collapse()->values()->all();
+}
+
 // explode if separator matched
 function explode_if($separator, $string)
 {
@@ -615,6 +657,8 @@ function html_excerpt($html, $len = 100)
 // translate
 function tr($key, $count = 1, $params = [])
 {
+    if (empty($key)) return '';
+
     if (str($key)->isMatch('/(.*):\d$/')) {
         $count = (int) last(explode(':', $key));
         $key = head(explode(':', $key));
