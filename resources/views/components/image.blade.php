@@ -1,93 +1,48 @@
-@props([
-    'icon' => $attributes->get('icon'),
-    'placeholder' => $attributes->get('placeholder'),
-    'isAvatar' => $attributes->get('avatar', false),
-    'getUrl' => function() use ($attributes) {
-        return is_string($attributes->get('src'))
-            ? $attributes->get('src')
-            : null;
-    },
-    'getFile' => function($attr = null) use ($attributes) {
-        $src = $attributes->get('src');
+@php
+    $alt = $attributes->get('alt');
+    $color = $attributes->get('color', '#64748b');
+    $fit = $attributes->get('fit', 'cover');
+    $isAvatar = $attributes->get('avatar', false);
+    $size = explode('x', $attributes->get('size'));
+    $width = $attributes->get('width') ?? (data_get($size, 0) ?: ($isAvatar ? 40 : '100%'));
+    $height = $attributes->get('height') ?? (data_get($size, 1) ?: ($isAvatar ? 40 : '100%'));
 
-        if ($file = is_numeric($src) 
-            ? model('file')->find($src)
-            : (optional($src)->id ? $src : null)
-        ) {
-            return $attr ? data_get($file, $attr) : $file;
-        }
-    },
-    'getColor' => function() use ($attributes) {
-        $color = $attributes->get('color');
-        $colors = [
-            'pink' => '#ff7675',
-            'red' => '#d63031',
-            'orange' => '#e17055',
-            'yellow' => '#fdcb6e',
-            'green' => '#00b894',
-            'blue' => '#0984e3',
-            'purple' => '#6c5ce7',
-            'gray' => '#636e72',
-        ];
+    if (!str($width)->endsWith('%') && !str($width)->endsWith('px')) $width = $width.'px';
+    if (!str($height)->endsWith('%') && !str($height)->endsWith('px')) $height = $height.'px';
 
-        if ($color === 'random' || (!$color && $attributes->get('avatar', false))) {
-            return collect($colors)->values()->random();
-        }
-        else if ($color) {
-            return $colors[$color];
-        }
-        else return '#ffffff';
-    },
-    'getSize' => function($name) use ($attributes) {
-        $width = $attributes->get('width');
-        $height = $attributes->get('height');
-        $size = explode('x', $attributes->get('size'));
+    $placeholder = $attributes->get('placeholder');
+    $abbr = $placeholder
+        ? str($placeholder)->slug()->split('/-/')->take(2)->map(fn($val) => str($val)->upper()->charAt(0))->join('')
+        : null;
 
-        $width = $width ?? head($size) ?? null;
-        $height = $height ?? last($size) ?? null;
+    $src = $attributes->get('src') ?? $attributes->get('url');
+    $file = is_string($src) ? null : $src;
+    $url = optional($file)->type === 'youtube' ? data_get($file->data, 'thumbnail') : (optional($file)->url ?? $src);
+    $isImage = !$file || $file->isImage || $file->type === 'youtube';
+    $icon = $attributes->get('icon') ?? optional($file)->icon;
 
-        return empty($$name)
-            ? ($attributes->get('avatar') ? 40 : '100%')
-            : $$name;
-    },
-])
+    $except = ['src', 'alt', 'icon', 'size', 'width', 'height', 'color', 'class', 'style', 'avatar', 'placeholder']
+@endphp
 
 <div
-    {{ $attributes
-        ->class([
-            'relative overflow-hidden',
-            'rounded-full border' => $isAvatar,
-            'rounded-lg' => !$isAvatar,
-            $attributes->get('class', ''),
-        ])
-        ->merge(['style' => collect([
-            'width: '.(is_numeric($getSize('width')) ? ($getSize('width').'px') : $getSize('width')),
-            'height: '.(is_numeric($getSize('height')) ? ($getSize('height').'px') : $getSize('height')),
-        ])->join('; ')])
-        ->only(['class', 'style']) }}
-    {{ $attributes->except(['src', 'alt', 'icon', 'size', 'width', 'height', 'color', 'class', 'avatar', 'placeholder']) }}>
-    @if ($placeholder && !$getUrl() && !$getFile())
-        <div class="flex items-center justify-center w-full h-full font-bold text-gray-100" 
-            style="background-color: {{ $getColor() }};">
-            {!! str($placeholder)->substr(0, 2)->upper() !!}
+    class="relative overflow-hidden bg-gray-100 shadow {{ $isAvatar ? 'rounded-full border' : 'rounded-md' }}"
+    style="width: {{ $width }}; height: {{ $height }}"
+    {{ $attributes->except($except) }}>
+    @if ($abbr && !$url && !$file)
+        <div class="flex items-center justify-center w-full h-full font-bold text-gray-100" style="background-color: {{ $color }};">
+            {!! $abbr !!}
         </div>
-    @elseif ($url = $getUrl())
-        <img src="{{ $url }}" class="w-full h-full object-cover"
-            width="{{ is_numeric($getSize('width')) ? $getSize('width') : null }}"
-            height="{{ is_numeric($getSize('height')) ? $getSize('height') : null }}"
-            alt="{{ $attributes->get('alt') }}">
-    @elseif ($file = $getFile())
-        @if ($file->is_image)
-            <div class="w-full h-full bg-white">
-                <img src="{{ $file->url }}" class="w-full h-full object-cover"
-                    width="{{ is_numeric($getSize('width')) ? $getSize('width') : null }}"
-                    height="{{ is_numeric($getSize('height')) ? $getSize('height') : null }}"
-                    alt="{{ $attributes->get('alt') }}">
-            </div>
-        @else
-            <div class="w-full h-full flex items-center justify-center text-gray-500">
-                <x-icon :name="$file->icon"/>
-            </div>
-        @endif
+    @elseif ($isImage)
+        <img src="{{ $url }}" alt="{{ $alt }}" class="w-full h-full {{ [
+            'cover' => 'object-cover',
+            'contain' => 'object-contain',
+            'fill' => 'object-fill',
+            'none' => 'object-none',
+            'scale-down' => 'object-scale-down',
+        ][$fit] }}">
+    @elseif ($icon)
+        <div class="w-full h-full flex items-center justify-center text-gray-500">
+            <x-icon :name="$file->icon"/>
+        </div>
     @endif
 </div>

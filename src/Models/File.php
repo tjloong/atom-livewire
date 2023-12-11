@@ -165,6 +165,19 @@ class File extends Model
         );
     }
 
+    // attribute for embed
+    protected function embed() : Attribute
+    {
+        return Attribute::make(
+            get: function() {
+                if ($this->type === 'youtube' && ($vid = data_get($this->data, 'vid') ?? youtube_vid($this->url))) {
+                    $url = 'https://www.youtube.com/embed/'.$vid;
+                    return '<iframe class="w-full h-full" src="'.$url.'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+                }
+            },
+        );
+    }
+
     // scope for fussy search
     public function scopeSearch($query, $search) : void
     {
@@ -205,11 +218,16 @@ class File extends Model
         // url
         if (is_string($content)) {
             if ($vid = youtube_vid($content)) {
+                $info = json_decode(file_get_contents('https://noembed.com/embed?dataType=json&url='.$content), true);
+
                 $file->fill([
-                    'name' => $vid,
+                    'name' => data_get($info, 'title') ?? $vid,
                     'mime' => 'youtube',
-                    'url' => 'https://www.youtube.com/embed/'.$vid,
-                    'data' => array_merge($file->data, ['vid' => $vid]),
+                    'url' => $content,
+                    'data' => array_merge($file->data, [
+                        'vid' => $vid,
+                        'thumbnail' => data_get($info, 'thumbnail_url'),
+                    ]),
                 ])->save();
             }
             else if ($img = rescue(fn() => Image::make($content), null)) {

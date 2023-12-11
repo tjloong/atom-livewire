@@ -41,11 +41,21 @@
         }"
         class="flex flex-col">
         <div x-show="checkboxes.length" class="p-3 flex items-center gap-2 flex-wrap border-b">
-            <div class="grow flex items-center gap-2">
-                <x-button label="common.label.select-all" icon="check-double" sm
-                    x-on:click="checkboxes = {{ $files->pluck('id')->toJson() }}"/>
-                <x-button label="common.label.select-none" icon="xmark" sm
-                    x-on:click="checkboxes = []"/>
+            <div class="grow">
+                <div class="bg-gray-200 rounded-md inline-flex items-center text-sm">
+                    <div class="flex items-center gap-2 px-2 py-1">
+                        <x-icon name="check" class="text-gray-400 text-xs"/>
+                        <span x-text="checkboxes.length" class="font-medium"></span>
+                    </div>
+
+                    <div class="shrink-0 px-2">
+                        <x-link label="app.label.select-all" x-on:click="checkboxes = {{ $files->pluck('id')->toJson() }}"/>
+                    </div>
+
+                    <div class="shrink-0 px-2">
+                        <x-link label="app.label.select-none" x-on:click="checkboxes = []"/>
+                    </div>
+                </div>
             </div>
 
             <div class="shrink-0">
@@ -60,25 +70,25 @@
         </div>
 
         @if ($accept === 'image/*')
-            <div x-ref="sortable" class="flex items-center gap-4 flex-wrap p-4 bg-white max-h-[400px] overflow-auto">
+            <div x-ref="sortable" class="p-4 grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-6 bg-white max-h-[500px] overflow-auto">
                 @foreach ($files as $file)
-                    <div class="rounded-lg" data-sortable-id="{{ $file->id }}">
-                        <x-thumbnail :file="$file" wire:click="$emit('updateFile', {{ $file->id }})">
-                            <x-slot:buttons>
-                                @if ($multiple)
-                                    <div 
-                                        x-on:click.stop="select(@js($file->id))"
-                                        x-bind:class="checkboxes.includes(@js($file->id)) ? 'text-green-500' : 'text-white'" 
-                                        class="cursor-pointer">
-                                        <x-icon name="circle-check"/>
-                                    </div>
-                                @else
-                                    <div x-on:click.stop="remove()" class="cursor-pointer text-white">
-                                        <x-icon name="remove"/>
-                                    </div>
-                                @endif
-                            </x-slot:buttons>
-                        </x-thumbnail>
+                    <div class="w-full bg-gray-100 rounded-md overflow-hidden relative" style="padding-top: 100%;">
+                        <div class="absolute inset-0 cursor-pointer" x-on:click="() => {
+                            checkboxes.length ? select(@js($file->id)) : $wire.emit('updateFile', @js($file->id))
+                        }">
+                            <img src="{{ $file->url }}" class="w-full h-full object-cover">
+                        </div>
+
+                        <div
+                            x-on:click.stop="select(@js($file->id))"
+                            x-bind:class="checkboxes.includes(@js($file->id)) ? 'inset-0 bg-black/50' : 'top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-black to-transparent'"
+                            class="absolute py-1 px-2 cursor-pointer">
+                            @if ($multiple)
+                                <div x-bind:class="checkboxes.includes(@js($file->id)) ? 'text-green-500' : 'text-white'">
+                                    <x-icon name="circle-check"/>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 @endforeach
             </div>

@@ -8,10 +8,7 @@
             <div class="rounded-lg bg-slate-100 flex flex-col overflow-hidden shadow">
                 @if ($file->is_video || $file->is_image || $file->type === 'youtube')
                     <a href="{{ $file->url }}" target="_blank">
-                        <x-thumbnail 
-                            :file="$file" 
-                            :square="false" 
-                            class="rounded-b-none w-full h-60"/>
+                        <x-image :src="$file" class="rounded-b-none" height="300"/>
                     </a>
                 @endif
         
