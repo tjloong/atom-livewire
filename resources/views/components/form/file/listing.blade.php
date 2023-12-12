@@ -70,28 +70,44 @@
         </div>
 
         @if ($accept === 'image/*')
-            <div x-ref="sortable" class="p-4 grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-6 bg-white max-h-[500px] overflow-auto">
-                @foreach ($files as $file)
-                    <div class="w-full bg-gray-100 rounded-md overflow-hidden relative" style="padding-top: 100%;">
-                        <div class="absolute inset-0 cursor-pointer" x-on:click="() => {
-                            checkboxes.length ? select(@js($file->id)) : $wire.emit('updateFile', @js($file->id))
-                        }">
-                            <img src="{{ $file->url }}" class="w-full h-full object-cover">
-                        </div>
+            @if ($multiple)
+                <div x-ref="sortable" class="p-4 grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-6 bg-white max-h-[500px] overflow-auto">
+                    @foreach ($files as $file)
+                        <div class="w-full bg-gray-100 rounded-md overflow-hidden relative" style="padding-top: 100%;">
+                            <div class="absolute inset-0 cursor-pointer" x-on:click="() => {
+                                checkboxes.length ? select(@js($file->id)) : $wire.emit('updateFile', @js($file->id))
+                            }">
+                                <img src="{{ $file->url }}" class="w-full h-full object-cover">
+                            </div>
 
-                        <div
-                            x-on:click.stop="select(@js($file->id))"
-                            x-bind:class="checkboxes.includes(@js($file->id)) ? 'inset-0 bg-black/50' : 'top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-black to-transparent'"
-                            class="absolute py-1 px-2 cursor-pointer">
-                            @if ($multiple)
+                            <div
+                                x-on:click.stop="select(@js($file->id))"
+                                x-bind:class="checkboxes.includes(@js($file->id)) ? 'inset-0 bg-black/50' : 'top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-black to-transparent'"
+                                class="absolute py-1 px-2 cursor-pointer">
                                 <div x-bind:class="checkboxes.includes(@js($file->id)) ? 'text-green-500' : 'text-white'">
                                     <x-icon name="circle-check"/>
                                 </div>
-                            @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="p-4 bg-white">
+                    <div
+                        x-on:click.stop="$wire.emit('updateFile', @js($files->first()->id))"
+                        class="relative w-28 h-28 rounded-md bg-gray-100 shadow overflow-hidden">
+                        <img src="{{ $files->first()->url }}" class="w-full h-full object-cover">
+
+                        <div
+                            x-on:click.stop="remove()"
+                            class="absolute p-2 cursor-pointer top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-black to-transparent">
+                            <div class="w-5 h-5 rounded-full bg-red-500 text-white flex">
+                                <x-icon name="xmark" class="m-auto"/>
+                            </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @endif
         @else
             <div x-ref="sortable" class="flex flex-col divide-y bg-white max-h-[400px] overflow-auto">
                 @foreach ($files as $file)
