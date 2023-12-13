@@ -191,7 +191,7 @@ function settings($attr = null, $default = null)
     }
     else if (is_array($attr)) {
         foreach ($attr as $key => $val) {
-            $setting = model('setting')->where('name', $key)->first();
+            $setting = model('setting')->firstOrNew(['name' => $key]);
             $setting->fill(['value' => $val])->save();
         }
     }
