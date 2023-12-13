@@ -215,6 +215,12 @@ return [
         'created' => 'Record Created',
         'updated' => 'Record Updated',
         'deleted' => 'Record Deleted',
+        'user' => [
+            'self-delete-failed' => [
+                'title' => 'Unable To Delete User',
+                'message' => 'You cannot delete yourself.',
+            ],
+        ],
     ],
 
     'empty' => [
