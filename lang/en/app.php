@@ -59,6 +59,7 @@ return [
         'duplicate' => 'Duplicate',
         'edit' => 'Edit',
         'email' => 'Email',
+        'email-verification' => 'Email Verification',
         'empty-autogen' => 'Leave empty to auto generate',
         'enabled' => 'Enabled',
         'end-date' => 'End Date',

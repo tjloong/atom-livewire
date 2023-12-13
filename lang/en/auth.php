@@ -5,7 +5,6 @@ return [
         'send-reset-password-request' => 'Send Reset Password Request',
         'sign-in-to-account' => 'Sign in to your account',
         'create-your-account' => 'Create your account',
-        'email-verification' => 'Email Verification',
         'dont-have-account' => 'Don\'t have an account?',
         'have-account' => 'Have an account?',
         'or-login-with' => 'Or Login With',
