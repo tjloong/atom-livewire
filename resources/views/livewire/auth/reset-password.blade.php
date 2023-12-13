@@ -1,23 +1,21 @@
 <div class="flex flex-col gap-4">
     <x-form>
         <x-form.group>
-            <x-heading title="auth.heading.reset-password" 2xl/>
+            <x-heading title="app.label.reset-password" 2xl/>
     
-            <x-form.field label="auth.label.email" :value="data_get($inputs, 'email')"/>
+            <x-form.field label="app.label.email" :value="data_get($inputs, 'email')"/>
     
-            <x-form.password label="auth.label.password" autofocus
+            <x-form.password label="app.label.password" autofocus
                 wire:model.defer="inputs.password"/>
     
-            <x-form.password label="auth.label.password-confirm"
+            <x-form.password label="app.label.confirm-password"
                 wire:model.defer="inputs.password_confirmation"/>
         </x-form.group>
 
         <x-slot:foot>
-            <x-button.submit block label="auth.button.reset-password"/>
+            <x-button.submit block label="app.label.reset-password"/>
         </x-slot:foot>
     </x-form>
 
-    <a href="{{ route('login') }}" class="flex items-center gap-2">
-        <x-icon name="arrow-left"></x-icon> {{ tr('common.label.back-to-login') }}
-    </a>
+    <x-link label="app.label.back-to-login" icon="back" href="/login"/>
 </div>

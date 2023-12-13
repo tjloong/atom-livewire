@@ -1,39 +1,16 @@
 <?php
 
 return [
-    'heading' => [
-        'create-account' => 'Create your account',
-        'email-verification' => 'Email Verification',
-        'login' => 'Sign in to your account',
-        'forgot-password' => 'Send Reset Password Request',
-        'reset-password' => 'Reset Password',
-    ],
-    
     'label' => [
+        'send-reset-password-request' => 'Send Reset Password Request',
+        'sign-in-to-account' => 'Sign in to your account',
+        'create-your-account' => 'Create your account',
+        'email-verification' => 'Email Verification',
         'dont-have-account' => 'Don\'t have an account?',
-        'email' => 'Email',
         'have-account' => 'Have an account?',
-        'login-email' => 'Login Email',
-        'login-password' => 'Login Password',
         'or-login-with' => 'Or Login With',
-        'password-confirm' => 'Confirm Password',
-        'password' => 'Password',
-        'resend' => 'Resend',
-        'signin' => 'Sign In',
-        'verification-code' => 'Verification Code',
-        'your-name' => 'Your Name',
     ],
 
-    'button' => [
-        'login' => 'Login',
-        'create-account' => 'Create Account',
-        'reset-password' => 'Reset Password',
-        'forgot-password' => 'Forgot Password',
-        'back-login' => 'Back to Login',
-        'signup-now' => 'Sign Up Now',
-        'send-request' => 'Send Request',
-    ],
-    
     'alert' => [
         'failed' => 'These credentials do not match our records.',
         'password' => 'The provided password is incorrect.',

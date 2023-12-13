@@ -69,11 +69,11 @@ class ResetPassword extends Component
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return to_route('login')->with('flash', __($status));
+            return to_route('login')->with('flash', tr($status));
         }
         else {
             $this->resetValidation();
-            $this->addError('email', __($status));
+            $this->addError('email', tr($status));
         }
     }
 }
