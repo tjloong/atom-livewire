@@ -8,6 +8,12 @@ class Index extends Component
 {
     public $type;
 
+    protected $listeners = [
+        'labelCreated' => '$refresh',
+        'labelUpdated' => '$refresh',
+        'labelDeleted' => '$refresh',
+    ];
+
     // mount
     public function mount($params = []): void
     {
