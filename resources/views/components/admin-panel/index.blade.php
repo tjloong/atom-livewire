@@ -87,7 +87,7 @@
                 <div class="shrink-0 p-4">
                     <x-dropdown>
                         <x-slot:anchor>
-                            <div class="flex items-center gap-2 justify-end cursor-pointer font-medium w-24 lg:w-40">
+                            <div class="flex items-center gap-2 justify-end cursor-pointer font-medium w-max max-w-[100px] lg:max-w-[200px]">
                                 <x-icon name="circle-user" class="text-lg"/>
                                 <span class="truncate">{!! user('name') !!}</span>
                                 <x-icon name="dropdown-caret" class="hidden lg:block"/>

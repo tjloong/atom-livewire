@@ -52,8 +52,8 @@ function colors($name = null)
             }
             else return $hex;
         }
-        else if ($hex === 'white' && $var === 'inverted') return '#000000';
-        else if ($hex === 'black' && $var === 'inverted') return '#ffffff';
+        else if ($hex === 'white') return $var === 'inverted' ? '#000000' : '#ffffff';
+        else if ($hex === 'black') return $var === 'inverted' ? '#ffffff' : '#000000';
         else if (in_array($hex, ['gray', 'zinc', 'neutral'])) return colors(collect(['slate', $var])->filter()->join('.'));
         else if ($color = data_get($colors, "$hex.4")) return colors(collect([$color, $var])->filter()->join('.'));
     }

@@ -19,9 +19,9 @@
 @endphp
 
 <span style="
-    background-color: {{ colors("$color.inverted") }}; 
-    color: {{ colors($color) }};
-    border: 1px solid {{ colors("$color.light") }};"
+    background-color: {{ in_array($color, ['white', 'black']) ? $color : colors("$color.inverted") }}; 
+    color: {{ in_array($color, ['white', 'black']) ? colors("$color.inverted") : colors($color) }};
+    border: 1px solid {{ in_array($color, ['white', 'black']) ? $color : colors("$color.light") }};"
     {{ $attributes->class([
         'px-2 inline-block font-semibold rounded-md',   
         [
