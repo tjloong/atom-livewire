@@ -59,7 +59,7 @@ class SelectController extends Controller
             ->whereNotIn('id', (array) $value)
             ->when($type, fn($q) => $q->where('type', $type))
             ->when($parentId, 
-                fn($q) => $q->where('parent_id', $parentId),
+                fn($q) => $q->whereIn('parent_id', (array) $parentId),
                 fn($q) => $q->whereNull('parent_id'),
             )
             ->when($search, fn($q) => $q->search($search))
