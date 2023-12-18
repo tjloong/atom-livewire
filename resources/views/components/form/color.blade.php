@@ -7,7 +7,8 @@
         x-modelable="value"
         x-on:click="show = true"
         x-on:click.away="show = false"
-        class="relative">
+        class="relative"
+        {{ $attributes }}>
         <div x-ref="anchor" class="form-input w-full">
             <div
                 x-bind:class="!value && 'form-input-caret'" 

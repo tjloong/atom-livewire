@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\Page;
+namespace Jiannius\Atom\Http\Livewire\App\Page;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithTable;

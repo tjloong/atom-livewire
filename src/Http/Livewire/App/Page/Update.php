@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\Page;
+namespace Jiannius\Atom\Http\Livewire\App\Page;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
@@ -34,8 +34,7 @@ class Update extends Component
     // get slug property
     public function getSlugProperty() : string
     {
-        return $this->page->slug 
-            ?? str($this->page->name)->slug();
+        return $this->page->slug ?? str($this->page->name)->slug();
     }
 
     // update page content
@@ -63,6 +62,7 @@ class Update extends Component
     // close
     public function close(): void
     {
+        $this->emit('setPageId');
         $this->closeDrawer('page-update');
     }
 

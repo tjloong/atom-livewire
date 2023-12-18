@@ -1,6 +1,7 @@
 @php
     $label = $attributes->get('label');
     $icon = $attributes->get('icon');
+    $position = $attributes->get('position', 'start');
     $href = $attributes->get('href');
     $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
     $target = $attributes->get('target', '_self');
@@ -93,16 +94,18 @@
         {{ $attributes->except($except) }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
-            @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
+            @if ($icon && $position === 'start') <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
             {{ tr($label) }}
+            @if ($icon && $position === 'end') <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
         @endif
     </a>
 @else
     <button class="{{ $class }}" {{ $attributes->merge(['type' => 'button'])->except($except) }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
-            @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
+            @if ($icon && $position === 'start') <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
             {{ tr($label) }}
+            @if ($icon && $position === 'end') <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
         @endif
     </button>
 @endif

@@ -5,9 +5,9 @@
         </x-slot:header>
     
         <x-slot:thead>
-            <x-table.th label="page.label.name" sort="name"/>
+            <x-table.th label="app.label.page" sort="name"/>
             @if (count(config('atom.locales')) > 1) <x-table.th class="text-right"/> @endif
-            <x-table.th label="page.label.title" sort="title"/>
+            <x-table.th label="app.label.title" sort="title"/>
         </x-slot:thead>
     
         @foreach ($this->paginator->items() as $page)

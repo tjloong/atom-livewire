@@ -2,6 +2,9 @@
 
 return [
     'label' => [
+        'signin' => 'Sign-In',
+        'signup-now' => 'Sign Up Now',
+        'forgot-password' => 'Forgot Password',
         'send-reset-password-request' => 'Send Reset Password Request',
         'sign-in-to-account' => 'Sign in to your account',
         'create-your-account' => 'Create your account',

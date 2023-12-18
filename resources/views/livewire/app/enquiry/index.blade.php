@@ -1,4 +1,4 @@
-<div x-init="$wire.emit('updateEnquiry', @js($enquiryId))" class="max-w-screen-xl mx-auto">
-    <x-heading title="enquiry.heading.enquiry" 2xl/>
+<div x-init="@js($enquiryId) && $wire.emit('updateEnquiry', @js($enquiryId))" class="max-w-screen-xl mx-auto">
+    <x-heading title="app.label.enquiry:2" 2xl/>
     @livewire('app.enquiry.listing', key('listing'))
 </div>

@@ -66,6 +66,11 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.enquiry.update' => 'App\Enquiry\Update',
             'app.enquiry.listing' => 'App\Enquiry\Listing',
 
+            // page
+            'app.page' => 'App\Page\Index',
+            'app.page.update' => 'App\Page\Update',
+            'app.page.listing' => 'App\Page\Listing',
+
             // announcement
             'app.announcement' => 'App\Announcement\Index',
             'app.announcement.update' => 'App\Announcement\Update',
@@ -102,11 +107,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.label' => 'App\Settings\Label\Index',
             'app.settings.label.update' => 'App\Settings\Label\Update',
             'app.settings.label.listing' => 'App\Settings\Label\Listing',
-
-            // settings > page
-            'app.settings.page' => 'App\Settings\Page\Index',
-            'app.settings.page.update' => 'App\Settings\Page\Update',
-            'app.settings.page.listing' => 'App\Settings\Page\Listing',
 
             // settings > integration
             'app.settings.integration.email' => 'App\Settings\Integration\Email',
