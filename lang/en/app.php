@@ -90,6 +90,7 @@ return [
         'forever' => 'Forever',
         'forgot-password' => 'Forgot Password',
         'free' => 'Free',
+        'general' => 'General',
         'gender' => 'Gender',
         'get-from-url' => 'Get from URL',
         'go-to-site' => 'Go to Site',
