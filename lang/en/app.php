@@ -153,6 +153,7 @@ return [
         'recommended-meta-description-length' => 'Recommended description length is 155 ~ 160 characters',
         'recommended-meta-title-length' => 'Recommended title length is 50 ~ 60 characters',
         'reference' => 'Reference',
+        'register' => 'Register',
         'registered-from-country' => 'Registered from country',
         'remark' => 'Remarks',
         'remove' => 'Remove',
