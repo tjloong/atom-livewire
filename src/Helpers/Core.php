@@ -61,6 +61,13 @@ function colors($name = null)
     return $colors->collapse()->values()->all();
 }
 
+// get name abbreviation
+function name_abbr($name, $len = 2)
+{
+    $abbr = str($name)->slug()->split('/-/')->map(fn($val) => str($val)->upper()->charAt(0))->join('');
+    return $len ? str($abbr)->substr(0, $len) : $abbr;
+}
+
 // explode if separator matched
 function explode_if($separator, $string)
 {

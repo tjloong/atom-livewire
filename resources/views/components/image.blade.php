@@ -11,10 +11,7 @@
     if (!str($height)->endsWith('%') && !str($height)->endsWith('px')) $height = $height.'px';
 
     $placeholder = $attributes->get('placeholder');
-    $abbr = $placeholder
-        ? str($placeholder)->slug()->split('/-/')->take(2)->map(fn($val) => str($val)->upper()->charAt(0))->join('')
-        : null;
-
+    $abbr = $placeholder ? name_abbr($placeholder) : null;
     $src = $attributes->get('src') ?? $attributes->get('url');
     $file = is_string($src) ? null : $src;
     $url = optional($file)->type === 'youtube' ? data_get($file->data, 'thumbnail') : (optional($file)->url ?? $src);

@@ -1,16 +1,13 @@
-@props([
-    'cols' => $attributes->get('cols'),
-])
+@php
+    $cols = $attributes->get('cols');
+@endphp
 
 @if ($slot->isNotEmpty())
-    <div {{ $attributes->class([
-        'flex flex-col gap-2 border-t first:border-t-0',
-        $attributes->get('class', 'p-5')
-    ])->except('cols') }}>
+    <div class="flex flex-col gap-2 {{ $attributes->get('class', 'p-5 border-t first:border-t-0') }}" {{ $attributes->except('cols') }}>
         @isset($heading)
             {{ $heading }}
         @elseif ($heading = $attributes->get('heading'))
-            <x-heading :title="$heading" class="mb-4" sm>
+            <x-heading :title="$heading" class="mb-3" sm>
                 @isset($buttons) {{ $buttons }} @endisset
             </x-heading>
         @endif
