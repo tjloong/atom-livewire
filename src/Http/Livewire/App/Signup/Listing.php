@@ -12,6 +12,7 @@ class Listing extends Component
     public $filters = [
         'search' => null,
         'status' => [],
+        'created_at' => null,
     ];
 
     protected $listeners = [
