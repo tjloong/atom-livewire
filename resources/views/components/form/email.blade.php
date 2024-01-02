@@ -18,6 +18,7 @@
             get options () {
                 return @js($options)
                     .map(opt => (typeof opt === 'string' ? { name: opt, email: opt } : opt))
+                    .filter(opt => !empty(opt.email))
                     .filter(opt => {
                         let search = this.text
                             ? (opt.email.includes(this.text) || opt.name.includes(this.text))
