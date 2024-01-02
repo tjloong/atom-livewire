@@ -45,13 +45,19 @@
             }
         }"
         x-modelable="range"
-        x-init="$watch('range', () => show = false)"
+        x-init="() => {
+            $watch('range', () => show = false)
+            $watch('show', () => {
+                if (show) $nextTick(() => floatDropdown($refs.anchor, $refs.dropdown))
+            })
+        }"
         x-on:click.away="show = false"
         x-bind:class="show && 'active'"
         {{ $attributes
             ->merge(['class' => 'form-input w-full relative'])
             ->except(['time', 'range', 'placeholder']) }}>
         <button type="button" class="flex items-center gap-3 w-full"
+            x-ref="anchor"
             x-on:click.stop="show = true">
             <div class="shrink-0 text-gray-400">
                 <x-icon name="calendar"/>
@@ -77,7 +83,7 @@
         </button>
 
         <div 
-            x-ref="dd"
+            x-ref="dropdown"
             x-show="show"
             x-transition
             class="absolute z-40 left-0 top-full mt-px z-20 w-max bg-white rounded-md shadow-lg border">
@@ -116,6 +122,9 @@
             },
         }"
         x-modelable="datetime"
+        x-init="$watch('show', () => {
+            if (show) $nextTick(() => floatDropdown($refs.anchor, $refs.dropdown))
+        })"
         x-on:click.away="show = false"
         x-on:datetime-updated="(e) => {
             let date = e.detail.date
@@ -129,6 +138,7 @@
         x-bind:class="show && 'active'"
         {{ $attributes->merge(['class' => 'form-input w-full relative']) }}>
         <button type="button" class="flex items-center gap-3 w-full"
+            x-ref="anchor"
             x-on:click.stop="show = true">
             <div class="shrink-0 text-gray-400">
                 <x-icon name="calendar"/>
@@ -144,7 +154,7 @@
         </button>
 
         <div 
-            x-ref="dd"
+            x-ref="dropdown"
             x-show="show"
             x-transition
             class="absolute z-40 left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
@@ -181,10 +191,14 @@
             show: false,
         }"
         x-modelable="date"
+        x-init="$watch('show', () => {
+            if (show) $nextTick(() => floatDropdown($refs.anchor, $refs.dropdown))
+        })"
         x-on:click.away="show = false"
         x-bind:class="show && 'active'"
         {{ $attributes->merge(['class' => 'form-input w-full relative']) }}>
         <button type="button" class="flex items-center gap-3 w-full"
+            x-ref="anchor"
             x-on:click.stop="show = true">
             <div class="shrink-0 text-gray-400">
                 <x-icon name="calendar"/>
@@ -201,7 +215,7 @@
         </button>
 
         <div 
-            x-ref="dd"
+            x-ref="dropdown"
             x-show="show"
             x-on:input.stop="show = false"
             x-transition
