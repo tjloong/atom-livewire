@@ -14,7 +14,7 @@
 @endphp
 
 @if (isset($group) && $group->isNotEmpty())
-    <label class="text-sm text-gray-500 py-2 px-6">{{ tr($label) }}</label>
+    <label class="text-sm normal-case text-gray-500 py-2 px-6">{{ tr($label) }}</label>
     {{ $group }}
 @elseif ($permitted && (
     (isset($subitems) && $subitems->isNotEmpty())

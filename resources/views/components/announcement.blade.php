@@ -22,8 +22,8 @@
             <div
                 x-show="index === @js($i)"
                 x-transition:enter.duration.1000ms
-                class="py-3 px-4" 
-                @if ($row->bg_color) style="background-color: {{ $row->bg_color }};"> @endif
+                style="background-color: {{ $row->bg_color ?? 'white' }};"
+                class="py-3 px-4">
                 <div class="max-w-screen-xl mx-auto text-center">
                     @if ($row->href || $row->content)
                         <a 
