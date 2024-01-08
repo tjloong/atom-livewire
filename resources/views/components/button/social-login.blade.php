@@ -16,7 +16,7 @@
     <div class="flex flex-col gap-2">
         @foreach ($providers as $key => $value)
             <x-button
-                :label="tr('common.label.continue-with-social-login', ['provider' => $value])"
+                :label="tr('app.label.continue-with-social-login', ['provider' => $value])"
                 :icon="$key.' brands'"
                 :color="$key"
                 :href="route('socialite.redirect', array_merge(
