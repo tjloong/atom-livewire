@@ -6,11 +6,7 @@
                 <div class="flex items-center gap-3">
                     @if ($label->color)
                         <div class="shrink-0">
-                            @if ($label->color_class)
-                                <div class="w-5 h-5 rounded-full border shadow {{ $label->color_class }}"></div>
-                            @else
-                                <div class="w-5 h-5 rounded-full border shadow" style="background-color: {{ $label->color }}"></div>
-                            @endif
+                            <div class="w-5 h-5 rounded-full border shadow" style="background-color: {{ colors($label->color) }}"></div>
                         </div>
                     @endif
 

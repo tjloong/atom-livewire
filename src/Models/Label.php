@@ -25,6 +25,8 @@ class Label extends Model
         'is_locked' => 'boolean',
     ];
 
+    protected $appends = ['name_locale'];
+
     protected $slugify = ['name.en' => 'slug'];
 
     // get image for label
@@ -45,22 +47,11 @@ class Label extends Model
         return $this->hasMany(model('label'), 'parent_id');
     }
 
-    // attribute for color class
-    protected function colorClass() : Attribute
+    // attribute for name locale
+    protected function nameLocale() : Attribute
     {
         return Attribute::make(
-            get: fn() => [
-                'gray' => 'bg-gray-500',
-                'red' => 'bg-red-500',
-                'orange' => 'bg-orange-500',
-                'yellow' => 'bg-yellow-500',
-                'green' => 'bg-green-500',
-                'cyan' => 'bg-cyan-500',
-                'blue' => 'bg-blue-500',
-                'purple' => 'bg-purple-500',
-                'black' => 'bg-black',
-                'white' => 'bg-white',
-            ][$this->color] ?? null,
+            get: fn() => $this->locale('name'),
         );
     }
 
