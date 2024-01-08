@@ -278,6 +278,20 @@ class File extends Model
         else return response('File not found', 404);
     }
 
+    // response in base 64
+    public function responseInBase64() : mixed
+    {
+        if ($this->storage_path && file_exists($this->storage_path)) $url = $this->storage_path;
+        elseif (in_array($this->disk, ['do', 's3'])) $url = $this->getStorage()->temporaryUrl($this->path, now()->addHour());
+        else $url = data_get($this->getAttributes(), 'url');
+
+        $mime = pathinfo($this->path, PATHINFO_EXTENSION);
+        $content = file_get_contents($url);
+        $b64 = 'data:image/'.$mime.';base64,'.base64_encode($content);
+
+        return $b64;
+    }
+
     // put content
     public function putContent($content, $path, $visibility) : mixed
     {
