@@ -105,7 +105,7 @@
                     </div>
                 @endforeach
 
-                <div class="py-2">
+                <div class="py-2" x-on:input.stop>
                     <x-form.date.picker x-model="range" :config="['mode' => 'range']"/>
                 </div>
             </div>
