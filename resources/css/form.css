@@ -81,7 +81,7 @@ label.radio.active .radio-box {
 label.radio.active .radio-container {
     @apply border-theme;
 }
-
+/* 
 .ck.ck-balloon-panel {
     z-index: 10 !important;
-}
+} */

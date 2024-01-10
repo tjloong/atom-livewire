@@ -22,6 +22,23 @@
     --ck-todo-list-checkmark-size: 16px;
 }
 
+.ck-content h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 2;
+}
+
+.ck-content h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 2;
+}
+
+.ck-content h4 {
+    font-weight: 600;
+    line-height: 2;
+}
+
 .ck-content p {
     margin-bottom: 1rem;
 }
