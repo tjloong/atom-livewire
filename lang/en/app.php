@@ -37,6 +37,7 @@ return [
         'client' => 'Client',
         'code' => 'Code',
         'color' => 'Color',
+        'completed-date' => 'Completed Date',
         'completion-date' => 'Completion Date',
         'confirm-password' => 'Confirm Password',
         'contact-number' => 'Contact Number',

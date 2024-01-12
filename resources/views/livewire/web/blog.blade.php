@@ -37,7 +37,7 @@
                                     :href="route('web.blog', [$blog->slug])"
                                     :cover="optional($blog->cover)->url"
                                     :title="$blog->name"
-                                    :excerpt="html_excerpt($blog->excerpt ?? $blog->content)"/>
+                                    :excerpt="format($blog->excerpt ?? $blog->content)"/>
                             @empty
                                 <div class="md:col-span-3">
                                     <x-no-result icon="news" title="No articles found" subtitle=""/>
@@ -93,7 +93,7 @@
                                 <x-blog.card size="sm"
                                     :href="route('web.blog', [$val->slug])"
                                     :title="$val->name"
-                                    :excerpt="html_excerpt($val->excerpt ?? $val->content)"
+                                    :excerpt="format($val->excerpt ?? $val->content)"
                                     :date="$val->published_at"
                                 />
                             @endforeach
@@ -110,7 +110,7 @@
                                 <x-blog.card size="sm"
                                     :href="route('web.blog', [$val->slug])"
                                     :title="$val->name"
-                                    :excerpt="html_excerpt($val->excerpt ?? $val->content)"
+                                    :excerpt="format($val->excerpt ?? $val->content)"
                                     :date="$val->published_at"
                                 />
                             @endforeach

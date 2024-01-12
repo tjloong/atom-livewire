@@ -645,20 +645,10 @@ function replace_in_file($search, $replace, $path)
     file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
 }
 
-// get excerpt from html
-function html_excerpt($html, $len = 100)
+// format
+function format($value, $options = null)
 {
-    $content = $html;
-    $content = strip_tags($content);
-    $content = html_entity_decode($content);
-    $content = urldecode($content);
-    $content = preg_replace('/[^A-Za-z0-9\,\.\’\‘\";?]/', ' ', $content);
-    $content = preg_replace('/ +/', ' ', $content);
-    $content = trim($content);
-
-    return str()->length($content) > $len
-        ? str()->limit($content, $len)
-        : $content;
+    return new \Jiannius\Atom\Services\Format($value, $options);
 }
 
 // translate
