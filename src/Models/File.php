@@ -32,6 +32,7 @@ class File extends Model
         'is_image',
         'is_video',
         'is_audio',
+        'is_file',
     ];
 
     // booted
