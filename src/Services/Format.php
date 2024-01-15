@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Services;
 
+use Illuminate\Support\Number;
+
 class Format
 {
     // constructor
@@ -28,6 +30,7 @@ class Format
     public function value($default = null) : mixed
     {
         return $this->date()
+            ?? $this->currency()
             ?? $this->excerpt()
             ?? $this->value
             ?? $default;
@@ -61,6 +64,20 @@ class Format
         if ($tz = user('pref.timezone') ?? config('atom.timezone')) $carbon->timezone($tz);
 
         return $carbon;
+    }
+
+    // currency
+    public function currency() : mixed
+    {
+        if (!is_numeric($this->value)) return $this->value;
+
+        $symbol = is_string($this->options) ? $this->options : data_get($this->options, 'symbol');
+        $rounding = data_get($this->options, 'rounding', false);
+        $bracket = data_get($this->options, 'bracket', false);
+        $amount = $rounding ? (round((float) $this->value * 2, 1)/2) : $this->value;
+        $value = $symbol ? Number::currency($amount, $symbol) : Number::format($amount, 2);
+
+        return ($bracket && $this->value < 0) ? '('.str($value)->replaceFirst('-', '').')' : $value;
     }
 
     // excerpt
