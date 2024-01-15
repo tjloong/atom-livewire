@@ -5,18 +5,16 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Login extends Component
 {
     use WithForm;
     use WithLoginMethods;
-    use WithPopupNotify;
 
     public $user;
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return array_merge(
             [
@@ -53,18 +51,18 @@ class Login extends Component
     }
 
     // mount
-    public function mount(): void
+    public function mount() : void
     {
-        parent::mount();
-
         $this->user = user();
     }
 
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
+
         $this->user->save();
-        $this->popup('Login Updated.');
+        
+        $this->popup('app.alert.updated');
     }
 }

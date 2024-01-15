@@ -5,12 +5,10 @@ namespace Jiannius\Atom\Http\Livewire\App\Settings;
 use Illuminate\Auth\Events\PasswordReset;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Password extends Component
 {
     use WithForm;
-    use WithPopupNotify;
 
     public $password = [
         'current' => null,
@@ -19,7 +17,7 @@ class Password extends Component
     ];
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return [
             'password.current' => [
@@ -36,7 +34,7 @@ class Password extends Component
     }
 
     // submit
-    public function submit(): void
+    public function submit() : void
     {
         $this->validateForm();
 
@@ -47,6 +45,6 @@ class Password extends Component
         event(new PasswordReset(user()));
 
         $this->reset('password');
-        $this->popup('Password Updated.');
+        $this->popup('app.alert.updated');
     }
 }
