@@ -43,8 +43,6 @@
         }"
         x-bind:class="active ? 'active bg-slate-100' : 'cursor-pointer hover:bg-slate-100'"
         class="sidenav-item flex items-center gap-3 py-1.5 px-3 -mx-2 rounded">
-        <div x-show="active" class="w-1 h-4 bg-theme rounded"></div>
-
         @isset($icon)
             {{ $icon }}
         @elseif ($icon = $attributes->get('icon'))
