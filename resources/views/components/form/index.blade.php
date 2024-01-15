@@ -27,7 +27,7 @@
             else this.verify()
         },
         verify () {
-            if (this.recaptcha.sitekey && !this.$wire.get('form.recaptcha_token') && grecaptcha !== undefined) {
+            if (this.recaptcha.sitekey && !this.$wire.get('form.recaptcha_token') && window.grecaptcha !== undefined) {
                 this.disabled = true
 
                 grecaptcha.ready(() => {
