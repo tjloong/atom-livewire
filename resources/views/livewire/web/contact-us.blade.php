@@ -53,7 +53,7 @@
                         <x-form.textarea label="web.contact.label.message"
                             wire:model.defer="enquiry.message"/>
                     </x-form.group>
-                    
+
                     <x-slot:foot>
                         <x-button.submit color="theme" md block
                             label="web.contact.button.send"/>

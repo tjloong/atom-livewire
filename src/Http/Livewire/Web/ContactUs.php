@@ -5,6 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\Web;
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Notifications\EnquiryNotification;
+use Jiannius\Atom\Rules\Profanity;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
 class ContactUs extends Component
@@ -24,7 +25,10 @@ class ContactUs extends Component
             'enquiry.name' => ['required' => 'Your name is required.'],
             'enquiry.phone' => ['required' => 'Phone number is required.'],
             'enquiry.email' => ['required' => 'Email is required.'],
-            'enquiry.message' => ['required' => 'Message is required.'],
+            'enquiry.message' => [
+                'required' => 'Message is required.',
+                new Profanity,
+            ],
         ];
     }
 

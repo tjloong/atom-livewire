@@ -21,7 +21,8 @@
         "symfony/mailgun-mailer": "^6.0",
         "laravel/sanctum": "^3.2",
         "laravel/pail": "^1.0",
-        "phpoffice/phpword": "^1.1"
+        "phpoffice/phpword": "^1.1",
+        "consoletvs/profanity": "^3.3"
     },
     "license": "MIT",
     "autoload": {
