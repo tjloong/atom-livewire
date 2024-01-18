@@ -11,6 +11,20 @@
     }
 ])
 
+@php
+    $date = $attributes->get('date');
+    $datetime = $attributes->get('datetime');
+    $timestamp = $attributes->get('timestamp');
+
+    $tags = $attributes->get('tags') ?? $attributes->get('tag');
+    $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->map(fn($val) => trim($val))->filter();
+
+    $badges = is_bool($attributes->get('active'))
+        ? ($attributes->get('active') ? ['green' => 'active'] : ['gray' => 'inactive'])
+        : ($attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status'));
+    $badges = collect(is_string($badges) ? explode(',', $badges) : $badges)->map(fn($val) => trim($val))->filter();
+@endphp
+
 @if ($value = $attributes->get('checkbox'))
     <td 
         wire:click.stop="selectCheckbox(@js($value))"
@@ -27,44 +41,32 @@
 @else
     <td 
         class="py-3 px-4 whitespace-nowrap {{ $attributes->get('class', 'align-top') }} {{ $getImage() ? 'w-4' : '' }}"
-        {{ $attributes->except(['checkbox', 'status', 'active', 'tags', 'date', 'datetime', 'from-now', 'avatar', 'image', 'class']) }}>
-        @if ($status = $attributes->get('status'))
-            @if (is_string($status))
-                <x-badge :label="$status"/>
-            @elseif (is_array($status))
-                @foreach (array_filter($status) as $key => $val)
-                    <x-badge :label="$val" :color="is_string($key) ? $key : null"/>
+        {{ $attributes->except(['checkbox', 'status', 'active', 'tags', 'badges', 'date', 'datetime', 'from-now', 'avatar', 'image', 'class']) }}>
+        @if ($badges->count())
+            <div class="inline-flex flex-wrap gap-1 items-center">
+                @foreach ($badges as $key => $badge)
+                    <x-badge :label="$badge" :color="is_string($key) ? $key : null"/>
                 @endforeach
-            @endif
-        @elseif (is_bool($attributes->get('active')))
-            <x-badge :label="$attributes->get('active') ? 'active' : 'inactive'"/>
-        @elseif ($tags = $attributes->get('tags'))
-            @if (count(array_filter($tags)))
-                <div class="inline-flex items-center gap-2">
-                    @foreach (collect($tags)->filter()->take(2) as $tag)
-                        <div 
-                            @if (strlen($tag) > 15) x-tooltip="{{ $tag }}" @endif
-                            class="text-xs font-medium bg-slate-100 rounded-md py-0.5 px-2 border">
-                            {{ str($tag)->limit(15) }}
-                        </div>
-                    @endforeach
+            </div>
+        @elseif ($tags->count())
+            <div class="inline-flex flex-wrap gap-1 items-center">
+                @foreach ($tags->take(2) as $tag)
+                    <x-badge :label="$tag"/>
+                @endforeach
 
-                    @if (count($tags) > 2)
-                        <div class="text-xs font-medium bg-slate-100 rounded-md py-1 px-2 border">
-                            +{{ count($tags) -  2 }}
-                        </div>
-                    @endif
-                </div>
-            @else
-                --
+                @if ($tags->count() > 2)
+                    <x-badge :label="'+'.($tags->count() - 2)"/>
+                @endif
+            </div>
+        @elseif ($date)
+            @if ($attributes->get('human')) {{ format($date, 'human') }}
+            @else {{ format($date) }}
             @endif
-        @elseif ($date = $attributes->get('date'))
-            {{ format_date($date) }}
-        @elseif ($datetime = $attributes->get('datetime'))
-            <div>{{ format_date($datetime) }}</div>
-            <div class="text-sm text-gray-500">{{ format_date($datetime, 'time') }}</div>
-        @elseif ($fromNow = $attributes->get('from-now'))
-            {{ format_date($fromNow, 'human') }}
+        @elseif ($datetime)
+            <div>{{ format($datetime) }}</div>
+            <div class="text-sm text-gray-500">{{ format($datetime, 'time') }}</div>
+        @elseif ($timestamp)
+            {{ format($timestamp, 'datetime') }}
         @elseif ($image = $getImage())
             <x-image :src="data_get($image, 'src')"
                 :avatar="data_get($image, 'is_avatar')"

@@ -170,4 +170,10 @@ trait HasFilters
             if (empty($this->$col)) $this->$col = null;
         }
     }
+
+    // get value in json column
+    public function getJson($key) : mixed
+    {
+        return data_get($this, $key);
+    }
 }

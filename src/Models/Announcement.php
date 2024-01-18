@@ -29,7 +29,7 @@ class Announcement extends Model
             get: fn($seo) => [
                 'title' => data_get($seo, 'title') ?? $this->name,
                 'description' => data_get($seo, 'description')
-                    ?? html_excerpt($this->content)
+                    ?? format($this->content)
                     ?? data_get($seo, 'title')
                     ?? $this->name,
                 'image' => data_get($seo, 'image'),

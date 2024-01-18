@@ -56,12 +56,15 @@ class Format
     // carbon
     public function carbon() : mixed
     {
-        if ($this->value instanceof \Carbon\Carbon) return $this->value;
-        if (validator(['value' => $this->value], ['value' => 'date'])->fails()) return null;
+        if ($this->value instanceof \Carbon\Carbon) $carbon = $this->value;
+        else {
+            if (validator(['value' => $this->value], ['value' => 'date'])->fails()) return null;
+            $carbon = \Carbon\Carbon::parse($this->value);
+        }
 
-        $carbon = \Carbon\Carbon::parse($this->value);
-
-        if ($tz = user('pref.timezone') ?? config('atom.timezone')) $carbon->timezone($tz);
+        if ($tz = optional(user())->settings('timezone') ?? config('atom.timezone')) {
+            $carbon->timezone($tz);
+        }
 
         return $carbon;
     }
