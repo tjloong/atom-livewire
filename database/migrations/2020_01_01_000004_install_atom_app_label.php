@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
             $table->foreignId('parent_id')->nullable()->constrained('labels')->onDelete('cascade');
             $table->timestamps();
+            $table->json('footprint')->nullable();
         });
     }
 

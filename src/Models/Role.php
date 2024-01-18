@@ -4,16 +4,16 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Jiannius\Atom\Traits\Models\HasSlug;
-use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Jiannius\Atom\Traits\Models\Footprint;
 
 class Role extends Model
 {
+    use Footprint;
     use HasFilters;
     use HasSlug;
-    use HasTrace;
     
     protected $guarded = [];
 

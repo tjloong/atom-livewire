@@ -5,11 +5,11 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Notification;
-use Jiannius\Atom\Traits\Models\HasTrace;
+use Jiannius\Atom\Traits\Models\Footprint;
 
 class Comment extends Model
 {
-    use HasTrace;
+    use Footprint;
 
     protected $guarded = [];
 

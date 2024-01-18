@@ -26,7 +26,7 @@ return new class extends Migration
             $table->json('data')->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('files')->onDelete('cascade');
             $table->timestamps();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->json('footprint')->nullable();
         });
     }
 

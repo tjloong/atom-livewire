@@ -5,17 +5,17 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jiannius\Atom\Traits\Models\HasSlug;
-use Jiannius\Atom\Traits\Models\HasTrace;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Jiannius\Atom\Traits\Models\Footprint;
 
 class Banner extends Model
 {
+    use Footprint;
     use HasFactory;
     use HasFilters;
     use HasSlug;
-    use HasTrace;
 
     protected $guarded = [];
 

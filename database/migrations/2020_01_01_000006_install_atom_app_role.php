@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug')->nullable();
             $table->integer('seq')->nullable();
             $table->timestamps();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->json('footprint')->nullable();
         });
 
         Schema::table('users', function ($table) {

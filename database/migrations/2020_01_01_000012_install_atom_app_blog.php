@@ -23,8 +23,7 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->json('footprint')->nullable();
         });
 
         Schema::create('blog_labels', function ($table) {

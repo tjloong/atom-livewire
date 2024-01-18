@@ -29,9 +29,7 @@ return new class extends Migration
             $table->string('tier')->nullable()->after('remember_token');
             $table->timestamp('blocked_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('blocked_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->json('footprint')->nullable();
         });
 
         Schema::create('user_settings', function (Blueprint $table) {
@@ -82,15 +80,7 @@ return new class extends Migration
             $table->dropColumn('data');
             $table->dropColumn('blocked_at');
             $table->dropColumn('deleted_at');
-
-            $table->dropForeign(['created_by']);
-            $table->dropColumn('created_by');
-
-            $table->dropForeign(['blocked_by']);
-            $table->dropColumn('blocked_by');
-            
-            $table->dropForeign(['deleted_by']);
-            $table->dropColumn('deleted_by');
+            $table->dropColumn('footprint');
         });
     }
 };

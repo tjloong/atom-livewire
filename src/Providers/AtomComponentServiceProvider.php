@@ -105,6 +105,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'dropdown.delete',
             'dropdown.archive',
             'dropdown.restore',
+            'dropdown.footprint',
             
             'modal.index',
             'modal.row',

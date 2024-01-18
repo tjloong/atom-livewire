@@ -23,6 +23,7 @@ class AtomCommandServiceProvider extends ServiceProvider
             $this->commands([
                 \Jiannius\Atom\Console\CkeditorCommand::class,
                 \Jiannius\Atom\Console\FontawesomeCommand::class,
+                \Jiannius\Atom\Console\FootprintCommand::class,
                 \Jiannius\Atom\Console\InitCommand::class,
                 \Jiannius\Atom\Console\MigrateCommand::class,
                 \Jiannius\Atom\Console\PublishCommand::class,

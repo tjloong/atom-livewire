@@ -25,7 +25,7 @@ return new class extends Migration
             $table->date('start_at')->nullable();
             $table->date('end_at')->nullable();
             $table->timestamps();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->json('footprint')->nullable();
         });
     }
 
