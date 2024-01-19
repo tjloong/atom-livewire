@@ -100,11 +100,11 @@ trait Footprint
         if ($datecol && $this->$datecol) $ts = $this->$datecol;
 
         $footprint = $this->footprint ?? [];
-        $footprint[$event] = [
+        $footprint[$event] = array_filter([
             'id' => $id,
             'name' => $name,
             'timestamp' => $ts,
-        ];
+        ]);
 
         $this->fill(['footprint' => $footprint]);
 
