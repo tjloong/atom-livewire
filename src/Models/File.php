@@ -273,7 +273,6 @@ class File extends Model
         }
         else if ($url = data_get($this->getAttributes(), 'url')) {
             if (in_array($this->disk, ['do', 's3'])) return $this->getStorage()->response($this->path);
-            else if ($this->is_file) return response()->download($url);
             else return redirect()->to($url);
         }
         else return response('File not found', 404);
