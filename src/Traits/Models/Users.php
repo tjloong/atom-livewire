@@ -12,6 +12,7 @@ use Jiannius\Atom\Notifications\Auth\ActivateNotification;
 trait Users
 {
     use Footprint;
+    use HasFilters;
     use SoftDeletes;
 
     // boot
@@ -19,10 +20,7 @@ trait Users
     {
         static::created(function($user) {
             model('user_setting')->initialize($user);
-
-            if (!$user->password && $user->email) {
-                $user->notify(new ActivateNotification());
-            }
+            $user->sendActivationNotification();
         });
         
         static::saved(function($user) {
@@ -197,6 +195,14 @@ trait Users
 
         if ($status === Password::RESET_LINK_SENT) return $status;
         else return false;
+    }
+
+    // send activation notification
+    public function sendActivationNotification() : void
+    {
+        if (!$this->password && $this->email) {
+            $this->notify(new ActivateNotification());
+        }
     }
 
     // set attributes
