@@ -36,23 +36,6 @@ class Format
             ?? $default;
     }
 
-    // format date
-    public function date() : mixed
-    {
-        if ($carbon = $this->carbon()) {
-            if ($this->options === 'human') return $carbon->diffForHumans();
-            if ($this->options === 'datetime') return $carbon->format('d M Y g:iA');
-            if ($this->options === 'datetime-24') return $carbon->format('d M Y H:i:s');
-            if ($this->options === 'time') return $carbon->format('g:i A');
-            if ($this->options === 'time-24') return $carbon->format('H:i:s');
-            if ($this->options) return $carbon->format($this->options);
-
-            return $carbon->format('d M Y');
-        }
-
-        return null;
-    }
-
     // carbon
     public function carbon() : mixed
     {
@@ -69,25 +52,48 @@ class Format
         return $carbon;
     }
 
+    // date
+    public function date() : mixed
+    {
+        if ($carbon = $this->carbon()) {
+            if ($this->options === 'human') return $carbon->diffForHumans();
+            if ($this->options === 'datetime') return $carbon->format('d M Y g:iA');
+            if ($this->options === 'datetime-24') return $carbon->format('d M Y H:i:s');
+            if ($this->options === 'time') return $carbon->format('g:i A');
+            if ($this->options === 'time-24') return $carbon->format('H:i:s');
+            if ($this->options) return $carbon->format($this->options);
+
+            return $carbon->format('d M Y');
+        }
+
+        return null;
+    }
+
     // currency
     public function currency() : mixed
     {
-        if (!is_numeric($this->value)) return $this->value;
+        if (is_numeric($this->value)) {
+            $symbol = is_string($this->options) ? $this->options : data_get($this->options, 'symbol');
+            $rounding = data_get($this->options, 'rounding', false);
+            $bracket = data_get($this->options, 'bracket', false);
+            $amount = $rounding ? (round((float) $this->value * 2, 1)/2) : $this->value;
+            $value = $symbol ? Number::currency($amount, $symbol) : Number::format($amount, 2);
+    
+            return ($bracket && $this->value < 0) ? '('.str($value)->replaceFirst('-', '').')' : $value;
+        }
 
-        $symbol = is_string($this->options) ? $this->options : data_get($this->options, 'symbol');
-        $rounding = data_get($this->options, 'rounding', false);
-        $bracket = data_get($this->options, 'bracket', false);
-        $amount = $rounding ? (round((float) $this->value * 2, 1)/2) : $this->value;
-        $value = $symbol ? Number::currency($amount, $symbol) : Number::format($amount, 2);
-
-        return ($bracket && $this->value < 0) ? '('.str($value)->replaceFirst('-', '').')' : $value;
+        return null;
     }
 
     // excerpt
-    public function excerpt($len = 80) : mixed
+    public function excerpt($len = null) : mixed
     {
-        if (!is_string($this->value)) return null;
+        if (is_string($this->value)) {
+            $len = $len ?? $this->options ?? 80;
 
-        return str(strip_tags($this->value))->words($len);
+            return str(strip_tags($this->value))->words($len)->trim()->toString();
+        }
+
+        return null;
     }
 }
