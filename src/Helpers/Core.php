@@ -645,34 +645,59 @@ function replace_in_file($search, $replace, $path)
     file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
 }
 
+// schema
+if (!function_exists('schema')) {
+    function schema()
+    {
+        return new class 
+        {
+            public function __call($method, $parameters)
+            {
+                return \Illuminate\Support\Facades\Schema::$method(...$parameters);
+            }
+    
+            public function tables()
+            {
+                return collect(\Illuminate\Support\Facades\DB::select('show tables'))
+                    ->map(fn($val) => array_values((array) $val))
+                    ->collapse();
+            }
+        };
+    }
+}
+
 // format
-function format($value, $options = null)
-{
-    return new \Jiannius\Atom\Services\Format($value, $options);
+if (!function_exists('format')) {
+    function format($value, $options = null)
+    {
+        return new \Jiannius\Atom\Services\Format($value, $options);
+    }
 }
 
 // translate
-function tr($key, $count = 1, $params = [])
-{
-    if (empty($key)) return '';
-
-    if (str($key)->isMatch('/(.*):\d$/')) {
-        $count = (int) last(explode(':', $key));
-        $key = head(explode(':', $key));
+if (!function_exists('tr')) {
+    function tr($key, $count = 1, $params = [])
+    {
+        if (empty($key)) return '';
+    
+        if (str($key)->isMatch('/(.*):\d$/')) {
+            $count = (int) last(explode(':', $key));
+            $key = head(explode(':', $key));
+        }
+    
+        $split = collect(explode('.', $key));
+        $file = $split->shift();
+        $dot = $split->join('.');
+        $baselangpath = base_path('lang/en/'.$file.'.php');
+        $atomlangpath = atom_path('lang/en/'.$file.'.php');
+    
+        $baselang = file_exists($baselangpath) ? data_get(include $baselangpath, $dot) : null;
+        $atomlang = file_exists($atomlangpath) ? data_get(include $atomlangpath, $dot) : null;
+    
+        if (!$baselang && !$atomlang) return $key;
+        else if (!$baselang && $atomlang) $key = 'atom::'.$key;
+    
+        if (is_array($count)) return __($key, $count);
+        else return trans_choice($key, $count, $params);
     }
-
-    $split = collect(explode('.', $key));
-    $file = $split->shift();
-    $dot = $split->join('.');
-    $baselangpath = base_path('lang/en/'.$file.'.php');
-    $atomlangpath = atom_path('lang/en/'.$file.'.php');
-
-    $baselang = file_exists($baselangpath) ? data_get(include $baselangpath, $dot) : null;
-    $atomlang = file_exists($atomlangpath) ? data_get(include $atomlangpath, $dot) : null;
-
-    if (!$baselang && !$atomlang) return $key;
-    else if (!$baselang && $atomlang) $key = 'atom::'.$key;
-
-    if (is_array($count)) return __($key, $count);
-    else return trans_choice($key, $count, $params);
 }
