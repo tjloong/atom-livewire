@@ -137,7 +137,6 @@ class Login extends Component
     public function loggedIn($user) : void
     {
         $user->ping(true);
-        $user->reload();
         request()->session()->regenerate();
     }
 

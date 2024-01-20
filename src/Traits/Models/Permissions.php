@@ -36,11 +36,6 @@ trait Permissions
     // get permissions
     public function getPermissions() : mixed
     {
-        if ($this->isAuth()) {
-            $key = 'permissions_'.$this->id;
-            if (!cache()->has($key)) $this->reload();
-            return cache()->has($key) ? cache($key) : null;
-        }
-        else return $this->permissions;
+        return $this->caching('permissions') ?? $this->permissions;
     }
 }

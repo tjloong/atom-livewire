@@ -18,7 +18,7 @@ class Permission extends Model
     protected static function booted() : void
     {
         static::saved(function($permission) {
-            $permission->user->reload();
+            $permission->user->caching(false);
         });
     }
 
