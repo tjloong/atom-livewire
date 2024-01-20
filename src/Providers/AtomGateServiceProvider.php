@@ -20,16 +20,11 @@ class AtomGateServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('atom.static_site')) return;
+        $policy = find_class('policy');
 
-        Gate::define('tier', fn($user, $tiers) => $user->isTier(explode_if(['|', ',', '/'], $tiers)));
-
-        if (has_table('roles')) {
-            Gate::define('role', fn($user, $roles) => $user->isRole(explode_if(['|', ',', '/'], $roles)));
-        }
-
-        if (has_table('permissions')) {
-            Gate::define('perm', fn($user, $permission) => $user->isPermitted(explode_if(['|', ',', '/'], $permission)));
-        }
+        Gate::define('tier', [$policy, 'tier']);
+        Gate::define('role', [$policy, 'role']);
+        Gate::define('permission', [$policy, 'permission']);
+        Gate::define('perm', [$policy, 'permission']);
     }
 }

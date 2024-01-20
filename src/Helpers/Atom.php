@@ -1,5 +1,18 @@
 <?php
 
+if (!function_exists('find_class')) {
+    function find_class($path)
+    {
+        $path = str($path)->replace('.', '\\');
+        $path = collect(explode('\\', $path))->map(fn($val) => str()->studly($val))->join('\\');
+
+        return collect([
+            'App\\'.$path,
+            'Jiannius\Atom\\'.$path,
+        ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
+    }
+}
+
 /**
  * Get atom livewire component name
  */
