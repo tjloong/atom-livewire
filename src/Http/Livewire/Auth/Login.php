@@ -104,9 +104,7 @@ class Login extends Component
             else return $this->addError('email', tr('auth.alert.failed'));
         }
 
-        $user->fill(['login_at' => now()])->saveQuietly();
-
-        request()->session()->regenerate();
+        $this->loggedIn($user);
         
         return redirect()->intended($this->redirectTo($user));        
     }
@@ -133,6 +131,14 @@ class Login extends Component
         else RateLimiter::hit($this->throttlekey);
 
         return $attempt;
+    }
+
+    // logged in
+    public function loggedIn($user) : void
+    {
+        $user->ping(true);
+        $user->reload();
+        request()->session()->regenerate();
     }
 
     // check has too many attempts

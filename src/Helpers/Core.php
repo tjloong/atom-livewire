@@ -472,27 +472,20 @@ function tier($name)
     return user() && user()->isTier($name);
 }
 
-/**
- * Get authenticated user
- */
-function user($attr = null)
-{
-    $user = auth()->user();
-    if (!$user) return;
-    if (!$attr) return $user;
-
-    if (
-        str($attr)->is('signup') 
-        || str($attr)->is('signup.*')
-        || str($attr)->is('pref') 
-        || str($attr)->is('pref.*')
-    ) {
-        $value = data_get($user, 'data.'.$attr);
-
-        if ($attr === 'pref.timezone' && !$value) return config('atom.timezone');
-        else return $value ? json_decode(json_encode($value), true) : null;
+// get authenticated user
+if (!function_exists('user')) {
+    function user($attr = null)
+    {
+        if ($user = auth()->user()) {
+            if (!$attr) return $user;
+            if (str($attr)->is('signup')) return $user->signup;
+            if (str($attr)->is('signup.*')) return data_get($user->signup, str($attr)->replaceFirst('signup.', ''));
+            if (str($attr)->is('settings')) return $user->settings();
+            if (str($attr)->is('settings.*')) return $user->settings(str($attr)->replaceFirst('settings.', ''));
+    
+            return data_get($user, $attr);
+        }
     }
-    else if ($attr) return data_get($user, $attr);
 }
 
 /**
@@ -643,27 +636,6 @@ function date_range($from, $to, $tz = 'UTC')
 function replace_in_file($search, $replace, $path)
 {
     file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
-}
-
-// schema
-if (!function_exists('schema')) {
-    function schema()
-    {
-        return new class 
-        {
-            public function __call($method, $parameters)
-            {
-                return \Illuminate\Support\Facades\Schema::$method(...$parameters);
-            }
-    
-            public function tables()
-            {
-                return collect(\Illuminate\Support\Facades\DB::select('show tables'))
-                    ->map(fn($val) => array_values((array) $val))
-                    ->collapse();
-            }
-        };
-    }
 }
 
 // format
