@@ -26,17 +26,11 @@ return new class extends Migration
             $table->timestamp('login_at')->nullable()->after('remember_token');
             $table->string('status')->nullable()->after('remember_token');
             $table->json('data')->nullable()->after('remember_token');
+            $table->json('settings')->nullable()->after('remember_token');
             $table->string('tier')->nullable()->after('remember_token');
             $table->timestamp('blocked_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->json('footprint')->nullable();
-        });
-
-        Schema::create('user_settings', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable();
-            $table->json('value')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
         });
 
         Schema::create('verifications', function (Blueprint $table) {
@@ -70,7 +64,6 @@ return new class extends Migration
         DB::table('users')->where('email', $this->rootEmail)->delete();
 
         Schema::dropIfExists('verifications');
-        Schema::dropIfExists('user_settings');
 
         Schema::table('users', function(Blueprint $table) {
             $table->dropColumn('last_active_at');

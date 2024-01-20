@@ -1,24 +1,50 @@
 <?php
 
-namespace Jiannius\Atom\Traits\Models;
+namespace Jiannius\Atom\Models;
 
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Password;
 use Jiannius\Atom\Notifications\Auth\ActivateNotification;
+use Jiannius\Atom\Traits\Models\Footprint;
+use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\Settings;
+use Laravel\Sanctum\HasApiTokens;
 
-trait Users
+class User extends Authenticatable
 {
     use Footprint;
+    use HasApiTokens;
+    use HasFactory;
     use HasFilters;
+    use Notifiable;
+    use Settings;
     use SoftDeletes;
+
+    protected $guarded = [
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'data' => 'array',
+        'login_at' => 'datetime',
+        'last_active_at' => 'datetime',
+        'email_verified_at' => 'datetime',
+    ];
 
     // boot
     protected static function bootUsers() : void
     {
         static::created(function($user) {
-            model('user_setting')->initialize($user);
             $user->sendActivationNotification();
         });
         
@@ -29,15 +55,6 @@ trait Users
         static::deleted(function($user) {
             if ($user->exists) $user->setAttributes()->saveQuietly();
         });
-    }
-
-    // initialize
-    protected function initializeUsers() : void
-    {
-        $this->casts['data'] = 'array';
-        $this->casts['login_at'] = 'datetime';
-        $this->casts['last_active_at'] = 'datetime';
-        $this->casts['email_verified_at'] = 'datetime';
     }
 
     // get role for user
@@ -85,25 +102,27 @@ trait Users
         $query->whereIn('role_id', $id);
     }
 
-    // reload user
-    public function reload() : void
+    // caching
+    public function caching($option = null) : mixed
     {
-        if ($this->isAuth()) {
-            $this->cleanup();
-
-            cache()->rememberForever('settings_'.$this->id, fn() => 
-                model('user_setting')->where('user_id', $this->id)->mapKeyValues()
-            );
-
-            if ($this->permissions) cache()->rememberForever('permissions_'.$this->id, fn() => $this->permissions);
+        // clear cache
+        if ($option === false) {
+            cache()->forget('user_permissions_'.$this->id);
         }
-    }
+        elseif ($option) {
+            return cache('user_'.$option.'_'.$this->id);
+        }
+        else {
+            if ($this->permissions) {
+                cache()->remember(
+                    'user_permissions_'.$this->id,
+                    now()->addDays(7),
+                    fn() => $this->permissions,
+                );
+            }
+        }
 
-    // cleanup
-    public function cleanup() : void
-    {
-        cache()->forget('settings_'.$this->id);
-        cache()->forget('permissions_'.$this->id);
+        return null;
     }
 
     // ping
@@ -122,33 +141,6 @@ trait Users
             route('app.onboarding') => optional($this->signup)->status === enum('signup.status', 'NEW') && !session()->has('onboarding'),
             route('app.dashboard') => true,
         ])->filter()->keys()->first();
-    }
-
-    // get settings
-    public function settings($key = null, $default = null) : mixed
-    {
-        if (is_array($key)) {
-            foreach ($key as $name => $value) {
-                model('user_setting')
-                    ->firstOrNew(['user_id' => $this->id, 'name' => $name])
-                    ->fill(compact('value'))
-                    ->save();
-            }
-
-            return $this->settings();
-        }
-        else {
-            if ($this->isAuth()) {
-                $key = 'settings_'.$this->id;
-                if (!cache()->has($key)) $this->reload();
-                $settings = cache($key);
-            }
-            else {
-                $settings = model('user_settings')->where('user_id', $this->id)->mapKeyValues();
-            }
-
-            return $key ? data_get($settings, $key, $default) : $settings;
-        }
     }
 
     // check user is recently active
