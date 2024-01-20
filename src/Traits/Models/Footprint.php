@@ -28,6 +28,41 @@ trait Footprint
         $this->casts['footprint'] = 'array';
     }
 
+    // scope for where footprint
+    public function scopeWhereFootprint($query, $key, $operator, $value = null) : void
+    {
+        $table = $this->getTable();
+        $key = $this->getFootprintQueryKey($key);
+        $operator = is_null($value) ? null : $operator;
+        $value = is_null($value) ? $operator : $value;
+
+        $query->where($table.'.'.$key, $operator ?? '=', $value);
+    }
+
+    // scope for or where footprint
+    public function scopeOrWhereFootprint($query, $key, $operator, $value = null) : void
+    {
+        $query->orWhere(fn($q) => $q->whereFootprint($query, $key, $operator, $value));
+    }
+
+    // scope for where in footprint
+    public function scopeWhereInFootprint($query, $key, $value) : void
+    {
+        $table = $this->getTable();
+        $key = $this->getFootprintQueryKey($key);
+
+        $query->whereIn($table.'.'.$key, (array) $value);
+    }
+
+    // scope for where not in footprint
+    public function scopeWhereNotInFootprint($query, $key, $value) : void
+    {
+        $table = $this->getTable();
+        $key = $this->getFootprintQueryKey($key);
+
+        $query->whereNotIn($table.'.'.$key, (array) $value);
+    }
+
     // get footprint
     public function footprint($name = null) : mixed
     {
@@ -78,6 +113,12 @@ trait Footprint
         $col = $event.'_by';
 
         return $this->hasColumn($col) ? $col : null;
+    }
+
+    // get footprint query key
+    public function getFootprintQueryKey($key) : string
+    {
+        return str($key)->start('footprint.')->replace('.', '->')->toString();
     }
 
     // check has footprint
