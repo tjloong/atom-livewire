@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Traits\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Password;
@@ -53,12 +52,6 @@ trait Users
         return $this->hasOne(model('signup'));
     }
 
-    // get permissions for user
-    public function permissions(): HasMany
-    {
-        return $this->hasMany(model('permission'));
-    }
-
     // get status attribute
     public function getStatusAttribute($value) : mixed
     {
@@ -92,6 +85,36 @@ trait Users
         $query->whereIn('role_id', $id);
     }
 
+    // reload user
+    public function reload() : void
+    {
+        if ($this->isAuth()) {
+            $this->cleanup();
+
+            cache()->rememberForever('settings_'.$this->id, fn() => 
+                model('user_setting')->where('user_id', $this->id)->mapKeyValues()
+            );
+
+            if ($this->permissions) cache()->rememberForever('permissions_'.$this->id, fn() => $this->permissions);
+        }
+    }
+
+    // cleanup
+    public function cleanup() : void
+    {
+        cache()->forget('settings_'.$this->id);
+        cache()->forget('permissions_'.$this->id);
+    }
+
+    // ping
+    public function ping($login = false) : void
+    {
+        if ($login) $this->fill(['login_at' => now()]);
+
+        $this->fill(['last_active_at' => now()]);
+        $this->saveQuietly();
+    }
+
     // get user home
     public function home() : string
     {
@@ -112,17 +135,37 @@ trait Users
                     ->save();
             }
 
-            return true;
+            return $this->settings();
         }
         else {
-            if (!session('user_settings')) {
-                session(['user_settings' => model('user_setting')->where('user_id', $this->id)
-                    ->get()
-                    ->mapWithKeys(fn($val) => [$val->name => $val->value])]);
+            if ($this->isAuth()) {
+                $key = 'settings_'.$this->id;
+                if (!cache()->has($key)) $this->reload();
+                $settings = cache($key);
+            }
+            else {
+                $settings = model('user_settings')->where('user_id', $this->id)->mapKeyValues();
             }
 
-            return $key ? data_get(session('user_settings'), $key, $default) : session('user_settings');
+            return $key ? data_get($settings, $key, $default) : $settings;
         }
+    }
+
+    // check user is recently active
+    public function isRecentlyActive($duration = '7 days') : bool
+    {
+        $split = explode(' ', $duration);
+        $n = $split[0];
+        $unit = $split[1];
+        $method = str()->camel('diff in '.$unit);
+
+        return optional($this->last_active_at)->$method(now()) >= $n;
+    }
+
+    // check user is authenticated
+    public function isAuth() : bool
+    {
+        return $this->id === user('id');
     }
 
     // check user is tier
@@ -148,20 +191,6 @@ trait Users
 
         if ($strict) return !$roles->some(fn($val) => !$val);
         else return $roles->some(fn($val) => $val);
-    }
-
-    // check user is permitted
-    public function isPermitted($names, $strict = false) : bool
-    {
-        if (session('permissions')) $perms = session('permissions');
-        else {
-            $perms = $this->permissions->pluck('permission')->toArray();
-            session(['permissions' => $perms]);
-        }
-
-        return $strict
-            ? !collect($names)->contains(fn($name) => !in_array($name, $perms))
-            : collect($names)->contains(fn($name) => in_array($name, $perms));
     }
 
     // check user is blocked

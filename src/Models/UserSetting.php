@@ -18,8 +18,8 @@ class UserSetting extends Model
     // booted
     protected static function booted(): void
     {
-        static::saved(function() {
-            session()->forget('user_settings');
+        static::saved(function($setting) {
+            $setting->user->reload();
         });
     }
 
@@ -27,6 +27,12 @@ class UserSetting extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(model('user'));
+    }
+
+    // map key values
+    public function scopeMapKeyValues($query) : mixed
+    {
+        return $query->get()->mapWithKeys(fn($val) => [$val->name => $val->value]);
     }
 
     // initialize
