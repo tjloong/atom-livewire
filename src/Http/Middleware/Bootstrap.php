@@ -43,8 +43,8 @@ class Bootstrap
 
         // load user
         if ($request->user()) {
-            $request->user()->caching();
-
+            $request->user()->cache();
+            
             if ($request->user()->isRecentlyActive('5 minutes')) {
                 $request->user()->ping();
             }    

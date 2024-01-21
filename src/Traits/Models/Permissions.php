@@ -16,7 +16,7 @@ trait Permissions
     // check model is permitted
     public function isPermitted($actions)
     {
-        if ($permissions = $this->getPermissions()) {
+        if ($permissions = $this->cache('permissions', $this->permissions)) {
             return collect($actions)->contains(fn($action) => !empty($permissions->firstWhere('permission', $action)));
         }
 
@@ -26,16 +26,10 @@ trait Permissions
     // check model is permitted all
     public function isPermittedAll($actions) : bool
     {
-        if ($permissions = $this->getPermissions()) {
+        if ($permissions = $this->cache('permissions', $this->permissions)) {
             return !collect($actions)->contains(fn($action) => empty($permissions->firstWhere('permission', $action)));
         }
 
         return false;
-    }
-
-    // get permissions
-    public function getPermissions() : mixed
-    {
-        return $this->caching('permissions') ?? $this->permissions;
     }
 }

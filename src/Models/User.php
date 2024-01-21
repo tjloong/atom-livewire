@@ -102,29 +102,6 @@ class User extends Authenticatable
         $query->whereIn('role_id', $id);
     }
 
-    // caching
-    public function caching($option = null) : mixed
-    {
-        // clear cache
-        if ($option === false) {
-            cache()->forget('user_permissions_'.$this->id);
-        }
-        elseif ($option) {
-            return cache('user_'.$option.'_'.$this->id);
-        }
-        else {
-            if ($this->permissions) {
-                cache()->remember(
-                    'user_permissions_'.$this->id,
-                    now()->addDays(7),
-                    fn() => $this->permissions,
-                );
-            }
-        }
-
-        return null;
-    }
-
     // ping
     public function ping($login = false) : void
     {

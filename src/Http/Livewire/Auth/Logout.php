@@ -9,7 +9,7 @@ class Logout extends Component
     // mount
     public function mount()
     {
-        user()->caching(false);
+        user()->cache(false);
         auth()->logout();
         request()->session()->flush();
         request()->session()->invalidate();
