@@ -1,96 +1,53 @@
 <div class="max-w-screen-md">
-    <x-heading title="settings.heading.site"/>
+    <x-heading title="app.label.site"/>
 
     <x-form>
         <x-form.group cols="2">
-            <x-form.text label="settings.label.site-name"
-                wire:model.defer="settings.site_name"/>
-
-            <x-form.text label="settings.label.site-description"
-                wire:model.defer="settings.site_description"/>
+            <x-form.text wire:model.defer="settings.site_name" label="app.label.site-name"/>
+            <x-form.text wire:model.defer="settings.site_description" label="app.label.site-description"/>
         </x-form.group>
 
-        <x-form.group cols="2" heading="settings.heading.site-contact-info">
-            <x-form.text label="settings.label.contact-name"
-                wire:model.defer="settings.contact_name"/>
-
-            <x-form.text label="settings.label.contact-phone"
-                wire:model.defer="settings.contact_phone"/>
-
-            <x-form.text label="settings.label.contact-email"
-                wire:model.defer="settings.contact_email"/>
-
-            <x-form.text label="settings.label.contact-address"
-                wire:model.defer="settings.contact_address"/>
-
+        <x-form.group cols="2" heading="app.label.site-contact-information">
+            <x-form.text wire:model.defer="settings.contact_name" label="app.label.site-contact-name"/>
+            <x-form.text wire:model.defer="settings.contact_phone" label="app.label.site-contact-phone"/>
+            <x-form.text wire:model.defer="settings.contact_email" label="app.label.site-contact-email"/>
+            <x-form.text wire:model.defer="settings.contact_address" label="app.label.site-contact-address"/>
             <div class="col-span-2">
-                <x-form.textarea label="settings.label.contact-map"
-                    wire:model.defer="settings.contact_map"/>
+                <x-form.textarea wire:model.defer="settings.contact_map" label="app.label.site-contact-map"/>
             </div>
         </x-form.group>
 
-        <x-form.group cols="2" heading="settings.heading.site-whatsapp">
-            <x-form.text label="settings.label.whatsapp-number"
-                wire:model.defer="settings.whatsapp_number"/>
-
-            <x-form.text label="settings.label.whatsapp-text"
-                wire:model.defer="settings.whatsapp_text"/>
-
-            <x-form.checkbox label="settings.label.whatsapp-bubble"
-                wire:model="settings.whatsapp_bubble"/>
+        <x-form.group cols="2" heading="app.label.whatsapp-bubble">
+            <x-form.text wire:model.defer="settings.whatsapp_number" label="app.label.whatsapp-number"/>
+            <x-form.text wire:model.defer="settings.whatsapp_text" label="app.label.whatsapp-text"/>
+            <x-form.checkbox wire:model="settings.whatsapp_bubble" label="app.label.whatsapp-bubble"/>
         </x-form.group>
 
-        <x-form.group cols="2" heading="settings.heading.site-social-media-page">
-            <x-form.text label="settings.label.facebook-url"
-                wire:model.defer="settings.facebook_url"/>
-
-            <x-form.text label="settings.label.instagram-url"
-                wire:model.defer="settings.instagram_url"/>
-
-            <x-form.text label="settings.label.twitter-url"
-                wire:model.defer="settings.twitter_url"/>
-
-            <x-form.text label="settings.label.linkedin-url"
-                wire:model.defer="settings.linkedin_url"/>
-
-            <x-form.text label="settings.label.youtube-url"
-                wire:model.defer="settings.youtube_url"/>
-
-            <x-form.text label="settings.label.spotify-url"
-                wire:model.defer="settings.spotify_url"/>
-
-            <x-form.text label="settings.label.tiktok-url"
-                wire:model.defer="settings.tiktok_url"/>
+        <x-form.group cols="2" heading="app.label.social-media-page">
+            <x-form.text wire:model.defer="settings.facebook_url" label="app.label.facebook-url"/>
+            <x-form.text wire:model.defer="settings.instagram_url" label="app.label.instagram-url"/>
+            <x-form.text wire:model.defer="settings.twitter_url" label="app.label.twitter-url"/>
+            <x-form.text wire:model.defer="settings.linkedin_url" label="app.label.linkedin-url"/>
+            <x-form.text wire:model.defer="settings.youtube_url" label="app.label.youtube-url"/>
+            <x-form.text wire:model.defer="settings.spotify_url" label="app.label.spotify-url"/>
+            <x-form.text wire:model.defer="settings.tiktok_url" label="app.label.tiktok-url"/>
         </x-form.group>
 
         <x-form.group cols="2" heading="SEO">
-            <x-form.text label="settings.label.meta-title"
-                wire:model.defer="settings.meta_title"/>
-
-            <x-form.text label="settings.label.meta-description"
-                wire:model.defer="settings.meta_description"/>
-
-            <x-form.text label="settings.label.meta-image"
-                wire:model.defer="settings.meta_image"/>
+            <x-form.text wire:model.defer="settings.meta_title" label="app.label.meta-title"/>
+            <x-form.text wire:model.defer="settings.meta_description" label="app.label.meta-description"/>
+            <x-form.text wire:model.defer="settings.meta_image" label="app.label.meta-image"/>
         </x-form.group>
 
-        <x-form.group cols="2" heading="settings.heading.site-analytic">
-            <x-form.text label="settings.label.ga-id"
-                wire:model.defer="settings.ga_id"/>
-
-            <x-form.text label="settings.label.gtm-id"
-                wire:model.defer="settings.gtm_id"/>
-
-            <x-form.text label="settings.label.fbpixel-id"
-                wire:model.defer="settings.fbpixel_id"/>
+        <x-form.group cols="2" heading="app.label.site-analytic">
+            <x-form.text wire:model.defer="settings.ga_id" label="app.label.ga-id"/>
+            <x-form.text wire:model.defer="settings.gtm_id" label="app.label.gtm-id"/>
+            <x-form.text wire:model.defer="settings.fbpixel_id" label="app.label.fbpixel-id"/>
         </x-form.group>
 
-        <x-form.group cols="2" heading="settings.heading.site-recaptcha">
-            <x-form.text label="settings.label.site-key"
-                wire:model.defer="settings.recaptcha_site_key"/>
-                
-            <x-form.text label="settings.label.secret-key"
-                wire:model.defer="settings.recaptcha_secret_key"/>
+        <x-form.group cols="2" heading="app.label.recaptcha">
+            <x-form.text wire:model.defer="settings.recaptcha_site_key" label="app.label.site-key"/>
+            <x-form.text wire:model.defer="settings.recaptcha_secret_key" label="app.label.secret-key"/>
         </x-form.group>
     </x-form>
 </div>
