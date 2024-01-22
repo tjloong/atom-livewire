@@ -83,4 +83,12 @@ class Label extends Model
             ->orWhereRaw('`slug` like ?', ['%'.str()->lower($search).'%'])
         );
     }
+
+    // get the badge
+    public function badge() : array
+    {
+        return [
+            ($this->color ?? 'gray') => $this->locale('name'),
+        ];
+    }
 }
