@@ -9,7 +9,7 @@ class FileController extends Controller
     // get
     public function get($ulid, $size = null) : mixed
     {
-        if (($file = model('file')->findUlidOrFail($ulid)) && $file->auth()) {
+        if (($file = model('file')->withoutGlobalScopes()->findUlidOrFail($ulid)) && $file->auth()) {
             if ($size) {
                 // TODO get thumbnail for size
                 // return thumbnail response
