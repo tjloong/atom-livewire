@@ -6,11 +6,16 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait Auditable
 {
+    public $auditCacheKey;
     public $excludedAuditAttributes = [];
 
     // boot
     protected static function bootAuditable() : void
     {
+        static::creating(fn($model) => $model->storeAuditOriginalValues());
+        static::updating(fn($model) => $model->storeAuditOriginalValues());
+        static::deleting(fn($model) => $model->storeAuditOriginalValues());
+
         static::created(function($model) {
             $model->audit('created');
         });
@@ -25,27 +30,40 @@ trait Auditable
         });
     }
 
+    // initialize
+    protected function initializeAuditable() : void
+    {
+        $this->auditCacheKey = 'audit_'.str()->random();
+    }
+
     // get audits for model
     public function audits() : MorphMany
     {
         return $this->morphMany(model('audit'), 'auditable');
     }
 
-    // get auditable new values
-    public function getAuditableNewValues() : array
+    // get auditable old values
+    public function getAuditableOldValues() : array
     {
-        $values = $this->filterAuditableAttributes($this->getDirty());
+        $original = cache($this->auditCacheKey);
+        $new = $this->getAuditableNewValues();
+        $values = $this->filterAuditableAttributes(
+            collect($new)->map(fn($val, $key) => data_get($original, $key))->toArray()
+        );
 
         return $this->transformAuditValues($values);
     }
 
-    // get auditable old values
-    public function getAuditableOldValues() : array
+    // get auditable new values
+    public function getAuditableNewValues() : array
     {
-        $newValues = $this->getAuditableNewValues();
-        $oldValues = collect($newValues)->map(fn ($val, $key) => $this->getOriginal($key))->toArray();
+        $changes = $this->getChanges();
+        $original = cache($this->auditCacheKey);
+        $values = $this->filterAuditableAttributes(
+            collect($changes)->filter(fn($val, $key) => data_get($original, $key) !== $val)->toArray()
+        );
 
-        return $this->transformAuditValues($oldValues);
+        return $this->transformAuditValues($values);
     }
 
     // filter auditable attributes
@@ -53,6 +71,7 @@ trait Auditable
     {
         $excludes = array_merge($this->excludedAuditAttributes, [
             'updated_at',
+            'footprint',
         ]);
 
         return collect($attributes)
@@ -61,9 +80,13 @@ trait Auditable
     }
 
     // transform audit values
-    public function transformAuditValues($values) : array
+    public function transformAuditValues($values, $attrs = []) : array
     {
-        return collect($values)->map(function($value, $key) {
+        $values = collect($values);
+
+        if ($attrs) $values = $values->filter(fn($value, $key) => in_array($key, $attrs));
+
+        return $values->map(function($value, $key) {
             if (str($key)->is('*_by') && is_numeric($value)) {
                 return optional(model('user')->find($value))->name ?? $value;
             }
@@ -71,7 +94,8 @@ trait Auditable
                 return format($value, 'datetime')->value();
             }
             else return $value;
-        })->toArray();
+        })
+        ->toArray();
     }
 
     // get audit data
@@ -103,7 +127,9 @@ trait Auditable
         }
         else {
             $this->createAuditEntry(compact('event'));
-        }        
+        }
+
+        cache()->forget($this->auditCacheKey);
     }
 
     // create audit entry
@@ -113,5 +139,11 @@ trait Auditable
             $this->getAuditData(data_get($data, 'event')),
             $data,
         ));
+    }
+
+    // store audit original values
+    public function storeAuditOriginalValues() : void
+    {
+        cache()->put($this->auditCacheKey, $this->getOriginal(), now()->addMinutes(5));
     }
 }

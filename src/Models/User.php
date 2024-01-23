@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Password;
 use Jiannius\Atom\Notifications\Auth\ActivateNotification;
+use Jiannius\Atom\Traits\Models\Cache;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\Settings;
@@ -17,6 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+    use Cache;
     use Footprint;
     use HasApiTokens;
     use HasFactory;
@@ -42,13 +44,14 @@ class User extends Authenticatable
     ];
 
     // boot
-    protected static function bootUsers() : void
+    protected static function booted() : void
     {
         static::created(function($user) {
+            $user->setAttributes()->saveQuietly();
             $user->sendActivationNotification();
         });
         
-        static::saved(function($user) {
+        static::updated(function($user) {
             $user->setAttributes()->saveQuietly();
         });
 
