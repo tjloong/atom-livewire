@@ -208,7 +208,7 @@
                 x-bind:value="formatDate(date)"
                 class="transparent grow cursor-pointer">
     
-            <div class="shrink-0">
+            <div class="absolute right-1.5 top-2 bottom-2 bg-white flex items-center justify-center">
                 <x-close x-show="date" x-on:click="date = null"/>
                 <x-icon x-show="!date" name="dropdown-caret"/>
             </div>
