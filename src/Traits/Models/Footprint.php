@@ -29,12 +29,19 @@ trait Footprint
     }
 
     // scope for where footprint
-    public function scopeWhereFootprint($query, $key, $operator, $value = null) : void
+    public function scopeWhereFootprint($query, ...$parameters) : void
     {
         $table = $this->getTable();
-        $key = $this->getFootprintQueryKey($key);
-        $operator = is_null($value) ? null : $operator;
-        $value = is_null($value) ? $operator : $value;
+        $key = $this->getFootprintQueryKey(data_get($parameters, 0));
+
+        if (count($parameters) === 3) {
+            $operator = data_get($parameters, 1);
+            $value = data_get($parameters, 2);
+        }
+        else {
+            $operator = null;
+            $value = data_get($parameters, 1);
+        }
 
         $query->where($table.'.'.$key, $operator ?? '=', $value);
     }
@@ -69,7 +76,8 @@ trait Footprint
         if ($name) {
             $split = explode('.', $name);
             $event = $split[0];
-            $attr = count($split) === 2 ? $split[1] : null;
+            $attr = count($split) > 1 ? $split[1] : null;
+            $userAttr = count($split) > 2 ? $split[2] : null;
 
             if (in_array($attr, ['timestamp', 'at', 'datetime', 'date'])) {
                 $ts = $this->{$event.'_at'} ?? data_get($this->footprint, $event.'.timestamp');
@@ -79,18 +87,19 @@ trait Footprint
             }
             elseif (in_array($attr, ['description', 'caption'])) {
                 return tr('app.label.footprint-'.$event, [
-                    'user' => $this->footprint($event.'.name'),
+                    'user' => $this->footprint($event.'.name') ?? '?',
                     'timestamp' => format($this->footprint($event.'.timestamp'), 'datetime')->value(),
                 ]);
             }
-            elseif ($attr) {
+            elseif ($attr === 'user') {
                 $id = $this->{$event.'_by'} ?? data_get($this->footprint, $event.'.id');
                 $user = $id ? model('user')->find($id) : null;
 
-                if ($attr === 'user') return $user;
-                elseif ($val = data_get($this->footprint, $event.'.'.$attr)) return $val;
-                elseif ($user) return data_get($user, $attr);
-                else return null;
+                if ($userAttr) return data_get($user, $userAttr);
+                else return $user;
+            }
+            elseif ($attr) {
+                return data_get($this->footprint, $event.'.'.$attr);
             }
 
             return data_get($this->footprint, $event);
