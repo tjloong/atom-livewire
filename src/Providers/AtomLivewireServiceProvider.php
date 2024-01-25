@@ -91,6 +91,11 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.audit.show' => 'App\Audit\Show',
             'app.audit.listing' => 'App\Audit\Listing',
 
+            // notification
+            'app.notification' => 'App\Notification\Index',
+            'app.notification.show' => 'App\Notification\Show',
+            'app.notification.listing' => 'App\Notification\Listing',
+
             // settings
             'app.settings.index' => 'App\Settings\Index',
             'app.settings.site' => 'App\Settings\Site',

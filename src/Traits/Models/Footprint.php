@@ -139,12 +139,13 @@ trait Footprint
     }
 
     // set footprint
-    public function setFootprint($event) : mixed
+    public function setFootprint($event, $user = null) : mixed
     {
         $datecol = $this->getFootprintDateColumn($event);
         $usercol = $this->getFootprintUserColumn($event);
-        $id = user('id');
-        $name = user('name');
+        $user = $user ?? user();
+        $id = optional($user)->id;
+        $name = optional($user)->name;
         $ts = now();
 
         if ($datecol && $this->$datecol) $ts = $this->$datecol;
