@@ -89,17 +89,28 @@ class NotificationStatus
                 'subject' => $message->subject,
                 'greeting' => $message->greeting,
                 'body' => $message->render(),
+                'tags' => $message->tags,
                 'data' => [
                     'to' => $this->notifiable instanceof \App\Models\User
                         ? [$this->notifiable->email => $this->notifiable->name]
                         : data_get($this->notifiable, 'routes.mail'),
                     'level' => $message->level,
-                    'from' => $message->from,
-                    'reply_to' => $message->replyTo,
-                    'cc' => $message->cc,
-                    'bcc' => $message->bcc,
+                    'from' => [data_get($message->from, 0) => data_get($message->from, 1)],
+                    'reply_to' => collect($message->replyTo)->mapWithKeys(fn($val) => [
+                        data_get($val, 0) => data_get($val, 1),
+                    ]),
+                    'cc' => collect($message->cc)->mapWithKeys(fn($val) => [
+                        data_get($val, 0) => data_get($val, 1),
+                    ]),
+                    'bcc' => collect($message->bcc)->mapWithKeys(fn($val) => [
+                        data_get($val, 0) => data_get($val, 1),
+                    ]),
                     'priority' => $message->priority,
                     'metadata' => $message->metadata,
+                    'attachments' => collect($message->attachments)->map(fn($val) => [
+                        'name' => data_get($val, 'options.as'),
+                        'path' => data_get($val, 'file'),
+                    ]),
                 ],
             ];
         }

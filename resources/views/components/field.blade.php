@@ -38,7 +38,7 @@
                 @if ($badges)
                     <div class="inline-flex flex-wrap gap-1 items-center md:justify-end">
                         @foreach (collect(is_string($badges) ? explode(',', $badges) : $badges)->map(fn($val) => trim($val))->filter() as $key => $badge)
-                            <x-badge :color="is_string($key) ? $key : null" :label="$badge"/>
+                            <x-badge :color="is_string($key) ? $key : null" label="{!! $badge !!}"/>
                         @endforeach
                     </div>
                 @elseif ($tags)

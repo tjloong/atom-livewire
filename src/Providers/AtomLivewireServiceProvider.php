@@ -44,9 +44,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.onboarding' => 'App\Onboarding\Index',
             'app.onboarding.completed' => 'App\Onboarding\Completed',
 
-            // send email
-            'app.send-email' => 'App\SendEmail',
-
             // share
             'app.share' => 'App\Share',
             'app.share.update' => 'App\Share\Update',
@@ -94,6 +91,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // notification
             'app.notification' => 'App\Notification\Index',
             'app.notification.show' => 'App\Notification\Show',
+            'app.notification.update' => 'App\Notification\Update',
             'app.notification.listing' => 'App\Notification\Listing',
 
             // settings

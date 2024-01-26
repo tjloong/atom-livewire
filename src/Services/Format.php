@@ -96,4 +96,20 @@ class Format
 
         return null;
     }
+
+    // email - format ['abc@test.com' => 'John'] to John <abc@test.com> 
+    public function email() : mixed
+    {
+        if (is_array($this->value)) {
+            $emails = collect($this->value)->map(function($val, $key) {
+                $email = is_numeric($key) ? $val : $key;
+                $name = is_numeric($key) ? null : $val;
+                return $name ? ($name.' <'.$email.'>') : $email;
+            })->values();
+
+            return $emails->count() === 1 ? $emails->first() : $emails->all();
+        }
+
+        return null;
+    }
 }

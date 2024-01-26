@@ -1,0 +1,189 @@
+<?php
+
+namespace Jiannius\Atom\Http\Livewire\App\Notification;
+
+use Illuminate\Support\Facades\Notification;
+use Jiannius\Atom\Component;
+use Jiannius\Atom\Traits\Livewire\WithForm;
+use Livewire\WithFileUploads;
+
+class Update extends Component
+{
+    use WithFileUploads;
+    use WithForm;
+
+    public $inputs;
+    public $uploads = [];
+    public $options;    // email address options
+
+    protected $listeners = [
+        'createNotification' => 'open',
+    ];
+
+    // validation
+    protected function validation() : array
+    {
+        return [
+            'mail' => [
+                'inputs.from.name' => ['required' => 'Sender name is required.'],
+                'inputs.from.email' => [
+                    'required' => 'Sender email is required.',
+                    'email' => 'Invalid sender email.',
+                ],
+                'inputs.to' => [
+                    'required' => 'To email is required.',
+                    'array' => 'Invalid to email.',
+                    'min:1' => 'To email is required.',
+                ],
+                'inputs.to.*.email' => [
+                    'email' => 'Invalid to email.'
+                ],
+                'inputs.cc' => ['array' => 'Invalid cc email.'],
+                'inputs.cc.*.email' => ['email' => 'Invalid cc email.'],
+                'inputs.bcc' => ['array' => 'Invalid bcc email.'],
+                'inputs.bcc.*.email' => ['email' => 'Invalid bcc email.'],
+                'inputs.reply_to' => ['nullable'],
+                'inputs.subject' => ['required' => 'Subject is required.'],
+                'inputs.body' => ['required' => 'Body is required.'],
+                'inputs.attachments' => ['nullable'],
+            ],
+        ][data_get($this->inputs, 'channel')] ?? [];
+    }
+
+    // updated upload
+    public function updatedUploads() : void
+    {
+        foreach ($this->uploads as $upload) {
+            $this->inputs['attachments'] = collect($this->inputs['attachments'])->push([
+                'id' => (string) str()->ulid(),
+                'name' => $upload->getClientOriginalName(),
+                'upload_id' => $upload->getFilename(),
+            ]);
+        }
+    }
+
+    // open
+    public function open($data = [], $options = []) : void
+    {
+        $this->options = $this->setEmailList($options);
+
+        $this->inputs = array_merge([
+            'channel' => 'mail',
+            'from' => ['name' => null, 'email' => null],
+            'reply_to' => null,
+            'to' => [],
+            'cc' => [],
+            'bcc' => [],
+            'subject' => null,
+            'body' => null,
+            'attachments' => [],
+        ], $data);
+
+        if (data_get($this->inputs, 'channel') === 'mail' && !data_get($this->inputs, 'to') && $this->options) {
+            $this->inputs['to'] = array_filter([collect($this->options)->shift()]);
+        }
+
+        $this->inputs['to'] = $this->setEmailList($this->inputs['to']);
+        $this->inputs['cc'] = $this->setEmailList($this->inputs['cc']);
+        $this->inputs['bcc'] = $this->setEmailList($this->inputs['bcc']);
+
+        $this->setPlaceholders();
+        $this->openDrawer('notification-update');
+    }
+
+    // close
+    public function close() : void
+    {
+        $this->closeDrawer('notification-update');
+    }
+
+    // get recipients
+    public function getRecipients() : array
+    {
+        return [
+            'mail' => collect(data_get($this->inputs, 'to'))
+                ->mapWithKeys(fn($val) => [
+                    data_get($val, 'email') => data_get($val, 'name'),
+                ])
+                ->toArray(),
+        ][data_get($this->inputs, 'channel')];
+    }
+
+    // set placeholders
+    public function setPlaceholders() : void
+    {
+        $subject = data_get($this->inputs, 'subject');
+        $body = data_get($this->inputs, 'body');
+        $placeholders = data_get($this->inputs, 'placeholders', []);
+
+        foreach ($placeholders as $key => $val) {
+            $subject = str($subject)->replace('{'.$key.'}', $val)->toString();
+            $body = str($body)->replace('{'.$key.'}', $val)->toString();
+        }
+
+        $this->fill([
+            'inputs.subject' => $subject,
+            'inputs.body' => $body,
+        ]);
+    }
+
+    // set email list
+    public function setEmailList($list) : array
+    {
+        return collect($list)
+            ->map(fn($opt) => is_string($opt) ? ['name' => null, 'email' => $opt] : $opt)
+            ->filter(fn($opt) => !empty(data_get($opt, 'email')))
+            ->unique('email')
+            ->values()
+            ->all();
+    }
+
+    // detach
+    public function detach($id) : void
+    {
+        $this->inputs['attachments'] = collect($this->inputs['attachments'])
+            ->reject(fn($val) => data_get($val, 'id') === $id)
+            ->values()
+            ->all();
+    }
+
+    // store attachments
+    public function storeAttachments() : void
+    {
+        $this->inputs['attachments'] = collect($this->inputs['attachments'])->map(function($attachment) {
+            $uploadId = data_get($attachment, 'upload_id');
+            $upload = collect($this->uploads)->first(fn($val) => $val->getFilename() === $uploadId);
+
+            if ($upload) {
+                $path = $upload->store('notifications');
+                $path = storage_path('app/'.$path);
+                data_set($attachment, 'path', $path);
+            }
+
+            return $attachment;
+        });
+    }
+
+    // submit
+    public function submit() : void
+    {
+        $this->validateForm();
+        $this->storeAttachments();
+
+        Notification::route(
+            data_get($this->inputs, 'channel'),
+            $this->getRecipients(),
+        )->notify(
+            new \Jiannius\Atom\Notifications\Notification\Send($this->inputs)
+        );
+
+        $this->popup(tr('app.alert.notification-sent', [
+            'channel' => [
+                'mail' => 'Email',
+            ][data_get($this->inputs, 'channel')],
+        ]));
+
+        $this->emit('notificationSent');
+        $this->close();
+    }
+}

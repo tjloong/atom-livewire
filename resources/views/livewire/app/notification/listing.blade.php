@@ -17,6 +17,7 @@
             <x-table.th label="app.label.date" sort="created_at"/>
             @if ($channel === 'mail')
                 <x-table.th label="app.label.notification-subject"/>
+                <x-table.th label="app.label.notification-to"/>
                 <x-table.th label="app.label.status" class="text-right"/>
             @endif
         </x-slot:thead>
@@ -27,6 +28,7 @@
                 <x-table.td :timestamp="$row->created_at"/>
                 @if ($channel === 'mail')
                     <x-table.td :label="$row->subject"/>
+                    <x-table.td :tags="$row->to"/>
                     <x-table.td :status="$row->status->badge()" class="text-right"/>
                 @endif
             </x-table.td>

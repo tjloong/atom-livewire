@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('subject')->nullable();
             $table->string('greeting')->nullable();
             $table->longText('body')->nullable();
+            $table->json('tags')->nullable();
             $table->json('data')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();

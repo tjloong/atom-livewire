@@ -51,7 +51,7 @@
         @elseif ($tags->count())
             <div class="inline-flex flex-wrap gap-1 items-center">
                 @foreach ($tags->take(2) as $tag)
-                    <x-badge :label="$tag"/>
+                    <x-badge label="{!! str()->limit($tag, 30) !!}"/>
                 @endforeach
 
                 @if ($tags->count() > 2)

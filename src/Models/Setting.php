@@ -11,6 +11,11 @@ class Setting extends Model
 
     public $timestamps = false;
 
+    public $jsons = [
+        'whatsapp_bubble',
+        'revenue_monster_is_sandbox',
+    ];
+
     // booted
     protected static function booted()
     {
@@ -31,10 +36,9 @@ class Setting extends Model
         return cache()->remember('settings', now()->addDays(7), function() {
             return $this->get()
                 ->mapWithKeys(fn($val) => [
-                    $val->name => in_array(data_get($val, 'name'), [
-                        'whatsapp_bubble',
-                        'revenue_monster_is_sandbox',
-                    ]) ? json_decode($val->value, true) : $val->value,
+                    $val->name => in_array(data_get($val, 'name'), $this->jsons)
+                        ? json_decode($val->value, true)
+                        : $val->value,
                 ])
                 ->toArray();
         });

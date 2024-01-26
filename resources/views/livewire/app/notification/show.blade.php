@@ -12,15 +12,30 @@
 
                 @if ($notification->channel === 'mail')
                     <x-field label="app.label.notification-subject" :value="$notification->subject"/>
-                    <x-field label="app.label.notification-from" :value="collect($notification->getJson('data.from'))->filter()->join(', ')"/>
-                    <x-field label="app.label.notification-to" :value="collect($notification->getJson('data.to'))->keys()->filter()->join(', ')"/>
-                    <x-field label="app.label.notification-reply-to" :value="collect($notification->getJson('data.reply_to'))->filter()->join(', ')"/>
-                    <x-field label="app.label.notification-cc" :value="collect($notification->getJson('data.cc'))->filter()->join(', ')"/>
-                    <x-field label="app.label.notification-bcc" :value="collect($notification->getJson('data.cc'))->filter()->join(', ')"/>
-                    <x-field label="app.label.notification-error" :value="$notification->getJson('data.error')"/>
+                    <x-field label="app.label.notification-from" :badges="$notification->from"/>
+                    <x-field label="app.label.notification-to" :badges="$notification->to"/>
+                    <x-field label="app.label.notification-reply-to" :badges="$notification->reply_to"/>
+                    <x-field label="app.label.notification-cc" :badges="$notification->cc"/>
+                    <x-field label="app.label.notification-bcc" :badges="$notification->bcc"/>
+
+                    @if ($attachments = $notification->getJson('data.attachments'))
+                        <x-field label="app.label.attachment">
+                            <div class="flex flex-wrap items-center gap-2">
+                                @foreach ($attachments as $attachment)
+                                    <div class="shrink-0">
+                                        <x-badge icon="paperclip" :label="data_get($attachment, 'name')"/>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </x-field>
+                    @endif
                 @endif
             </div>
         </x-box>
+
+        @if ($error = $notification->getJson('data.error'))
+            <x-alert type="error" message="{!! $error !!}"/>
+        @endif
     </x-form.group>
 
     @if ($notification->channel === 'mail')
