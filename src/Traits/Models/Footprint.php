@@ -113,7 +113,7 @@ trait Footprint
     {
         $col = $event.'_at';
 
-        return $this->hasColumn($col) ? $col : null;
+        return $this->tableHasColumn($col) ? $col : null;
     }
 
     // get footprint user column - eg. closed_by - user column is optional for footprint to work
@@ -121,7 +121,7 @@ trait Footprint
     {
         $col = $event.'_by';
 
-        return $this->hasColumn($col) ? $col : null;
+        return $this->tableHasColumn($col) ? $col : null;
     }
 
     // get footprint query key

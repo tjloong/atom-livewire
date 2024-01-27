@@ -4,12 +4,11 @@ namespace Jiannius\Atom\Traits\Models;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 trait HasFilters
 {
-    /**
-     * Model boot
-     */
+    // model boot
     protected static function bootHasFilters() : void
     {
         static::saving(function ($model) {
@@ -17,22 +16,18 @@ trait HasFilters
         });
     }
 
-    /**
-     * Scope for readable
-     */
+    // scope for readable
     public function scopeReadable($query, $data = null) : void
     {
-        if ($this->usesHasTenant) $query->forTenant();
+        //
     }
 
-    /**
-     * Scope for status
-     */
+    // scope for status
     public function scopeStatus($query, $status) : void
     {
         if ($status === 'trashed') $query->onlyTrashed();
-        else if ($status === 'active' && $this->hasColumn('is_active')) $query->where('is_active', true);
-        else if ($status === 'inactive' && $this->hasColumn('is_active')) $query->where('is_active', false);
+        else if ($status === 'active' && $this->tableHasColumn('is_active')) $query->where('is_active', true);
+        else if ($status === 'inactive' && $this->tableHasColumn('is_active')) $query->where('is_active', false);
         else if ($status) {
             $status = collect($status)
                 ->map(fn($val) => is_string($val) ? $val : $val->value)
@@ -42,71 +37,72 @@ trait HasFilters
         }
     }
 
-    /**
-     * Apply scope from filters
-     */
+    // apply scope from filters
     public function scopeFilter($query, $filters) : void
     {
-        foreach ($this->parseFilters($filters) as $filter) {
-            $column = $filter['column'];
-            $value = $filter['value'];
-            $scope = $filter['scope'] ?? null;
-            $operator = $filter['operator'] ?? null;
-            $function = $filter['function'] ?? null;
+        $table = $this->getTable();
 
-            if ($scope) $query->$scope($value);
+        foreach ($this->parseFilters($filters) as $filter) {
+            $value = $filter['value'];
+
+            if ($scope = $filter['scope'] ?? null) {
+                $query->$scope($value);
+            }
             else {
-                $column = $function
-                    ? DB::raw($function.'('.$column.')')
-                    : $column;
+                $column = $filter['column'];
+                $operator = $filter['operator'] ?? null;
+                $function = $filter['function'] ?? null;
+                $json = $filter['json'] ?? false;
+
+                if ($json) $column = str($column)->replace('.', '->')->toString();
+                if ($function) $column = DB::raw($function.'('.$column.')');
 
                 if ($operator) $query->where($column, $operator, $value);
-                else if (is_array($value)) {
-                    if ($value) $query->whereIn($column, $value);
+                else if (is_array($value) && $value) {
+                    if ($json) $query->whereJsonContains($column, $value);
+                    else $query->whereIn($column, $value);
                 }
-                else $query->where($column, $value);
+                else if (!is_array($value)) {
+                    $query->where($column, $value);
+                }
             }
         }
     }
 
-    /**
-     * Scope for paginateToPage
-     */
+    // scope for paginatetopage
     public function scopeToPage($query, $page = 1, $rows = 50) : LengthAwarePaginator
     {
         return $query->paginate($rows, ['*'], 'page', $page);
     }
 
-    /**
-     * Check model has a specific column
-     */
-    public function hasColumn($column) : bool
+    // get table columns
+    public function tableColumns() : mixed
     {
-        return has_column($this->getTable(), $column);
+        $table = $this->getTable();
+
+        return collect(DB::select("show columns from `$table`"))->map(fn($val) => [
+            'name' => data_get($val, 'Field'),
+            'type' => data_get($val, 'Type'),
+        ])->values();
     }
 
-    /**
-     * Check model column is a date type
-     */
-    public function isDateColumn($column) : bool
+    // get table column type
+    public function tableColumnType($column, $checker = null) : mixed
     {
-        return get_column_type($this->getTable(), $column) === 'date';
+        $columns = $this->tableColumns();
+        $column = $columns->firstWhere('name', $column);
+        $type = data_get($column, 'type');
+
+        return $checker ? in_array($type, (array) $checker) : $type;
     }
 
-    /**
-     * Check model column is a datetime type
-     */
-    public function isDatetimeColumn($column) : bool
+    // check table has column
+    public function tableHasColumn($column) : bool
     {
-        return in_array(
-            get_column_type($this->getTable(), $column),
-            ['datetime', 'timestamp'],
-        );
+        return Schema::hasColumn($this->getTable(), $column);
     }
 
-    /**
-     * Parse filters array
-     */
+    // parse filters array
     public function parseFilters($filters) : array
     {
         $parsed = [];
@@ -121,7 +117,7 @@ trait HasFilters
                 array_push($parsed, ['column' => $column, 'value' => $value, 'scope' => $fn]);
             }
             else {
-                if ($this->isDateColumn($column) || $this->isDatetimeColumn($column)) {
+                if ($this->tableColumnType($column, ['date', 'datetime', 'timestamp'])) {
                     if (str($value)->is('* to *')) {
                         $from = head(explode(' to ', $value));
                         $to = last(explode(' to ', $value));
@@ -140,23 +136,22 @@ trait HasFilters
                         }
                     }
                 }
-                else if ($this->hasColumn($column)) {
+                else if ($this->tableColumnType($column, 'json')) {
+                    array_push($parsed, ['column' => $column, 'value' => $value, 'json' => true]);
+                }
+                else if ($this->tableHasColumn($column)) {
                     array_push($parsed, ['column' => $column, 'value' => $value]);
                 }
             }
         }
 
-        return collect($parsed)->map(fn($val) => array_merge($val, [
-            'column' => $this->getTable().'.'.data_get($val, 'column'),
-        ]))->toArray();
+        return $parsed;
     }
 
-    /**
-     * Sanitize numeric columns
-     */
+    // sanitize numeric columns
     public function sanitizeNumericColumns()
     {
-        $columns = collect(get_table_columns($this->getTable()))->filter(function ($col) {
+        $columns = $this->tableColumns()->filter(function ($col) {
             $type = data_get($col, 'type');
             $str = str($type);
 

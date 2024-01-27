@@ -14,6 +14,7 @@
                     <x-field label="app.label.reply-to" :badges="$notilog->reply_to"/>
                     <x-field label="app.label.cc" :badges="$notilog->cc"/>
                     <x-field label="app.label.bcc" :badges="$notilog->bcc"/>
+                    <x-field label="app.label.tag" :badges="$notilog->tags"/>
 
                     @if ($attachments = $notilog->getJson('data.attachments'))
                         <x-field label="app.label.attachment">

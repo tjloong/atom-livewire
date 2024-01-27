@@ -13,6 +13,7 @@ class Listing extends Component
         'search' => null,
         'channel' => [],
         'status' => [],
+        'tags' => [],
     ];
 
     protected $listeners = [
