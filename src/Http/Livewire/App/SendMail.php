@@ -1,13 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Notification;
+namespace Jiannius\Atom\Http\Livewire\App;
 
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\WithFileUploads;
 
-class Update extends Component
+class SendMail extends Component
 {
     use WithFileUploads;
     use WithForm;
@@ -17,37 +17,35 @@ class Update extends Component
     public $options;    // email address options
 
     protected $listeners = [
-        'createNotification' => 'open',
+        'sendMail' => 'open',
     ];
 
     // validation
     protected function validation() : array
     {
         return [
-            'mail' => [
-                'inputs.from.name' => ['required' => 'Sender name is required.'],
-                'inputs.from.email' => [
-                    'required' => 'Sender email is required.',
-                    'email' => 'Invalid sender email.',
-                ],
-                'inputs.to' => [
-                    'required' => 'To email is required.',
-                    'array' => 'Invalid to email.',
-                    'min:1' => 'To email is required.',
-                ],
-                'inputs.to.*.email' => [
-                    'email' => 'Invalid to email.'
-                ],
-                'inputs.cc' => ['array' => 'Invalid cc email.'],
-                'inputs.cc.*.email' => ['email' => 'Invalid cc email.'],
-                'inputs.bcc' => ['array' => 'Invalid bcc email.'],
-                'inputs.bcc.*.email' => ['email' => 'Invalid bcc email.'],
-                'inputs.reply_to' => ['nullable'],
-                'inputs.subject' => ['required' => 'Subject is required.'],
-                'inputs.body' => ['required' => 'Body is required.'],
-                'inputs.attachments' => ['nullable'],
+            'inputs.from.name' => ['required' => 'Sender name is required.'],
+            'inputs.from.email' => [
+                'required' => 'Sender email is required.',
+                'email' => 'Invalid sender email.',
             ],
-        ][data_get($this->inputs, 'channel')] ?? [];
+            'inputs.to' => [
+                'required' => 'To email is required.',
+                'array' => 'Invalid to email.',
+                'min:1' => 'To email is required.',
+            ],
+            'inputs.to.*.email' => [
+                'email' => 'Invalid to email.'
+            ],
+            'inputs.cc' => ['array' => 'Invalid cc email.'],
+            'inputs.cc.*.email' => ['email' => 'Invalid cc email.'],
+            'inputs.bcc' => ['array' => 'Invalid bcc email.'],
+            'inputs.bcc.*.email' => ['email' => 'Invalid bcc email.'],
+            'inputs.reply_to' => ['nullable'],
+            'inputs.subject' => ['required' => 'Subject is required.'],
+            'inputs.body' => ['required' => 'Body is required.'],
+            'inputs.attachments' => ['nullable'],
+        ];
     }
 
     // updated upload
@@ -68,7 +66,6 @@ class Update extends Component
         $this->options = $this->setEmailList($options);
 
         $this->inputs = array_merge([
-            'channel' => 'mail',
             'from' => ['name' => null, 'email' => null],
             'reply_to' => null,
             'to' => [],
@@ -79,7 +76,7 @@ class Update extends Component
             'attachments' => [],
         ], $data);
 
-        if (data_get($this->inputs, 'channel') === 'mail' && !data_get($this->inputs, 'to') && $this->options) {
+        if (!data_get($this->inputs, 'to') && $this->options) {
             $this->inputs['to'] = array_filter([collect($this->options)->shift()]);
         }
 
@@ -88,25 +85,23 @@ class Update extends Component
         $this->inputs['bcc'] = $this->setEmailList($this->inputs['bcc']);
 
         $this->setPlaceholders();
-        $this->openDrawer('notification-update');
+        $this->openDrawer('send-mail');
     }
 
     // close
     public function close() : void
     {
-        $this->closeDrawer('notification-update');
+        $this->closeDrawer('send-mail');
     }
 
     // get recipients
     public function getRecipients() : array
     {
-        return [
-            'mail' => collect(data_get($this->inputs, 'to'))
-                ->mapWithKeys(fn($val) => [
-                    data_get($val, 'email') => data_get($val, 'name'),
-                ])
-                ->toArray(),
-        ][data_get($this->inputs, 'channel')];
+        return collect(data_get($this->inputs, 'to'))
+            ->mapWithKeys(fn($val) => [
+                data_get($val, 'email') => data_get($val, 'name'),
+            ])
+            ->toArray();
     }
 
     // set placeholders
@@ -155,7 +150,7 @@ class Update extends Component
             $upload = collect($this->uploads)->first(fn($val) => $val->getFilename() === $uploadId);
 
             if ($upload) {
-                $path = $upload->store('notifications');
+                $path = $upload->store('mail');
                 $path = storage_path('app/'.$path);
                 data_set($attachment, 'path', $path);
             }
@@ -170,20 +165,12 @@ class Update extends Component
         $this->validateForm();
         $this->storeAttachments();
 
-        Notification::route(
-            data_get($this->inputs, 'channel'),
-            $this->getRecipients(),
-        )->notify(
-            new \Jiannius\Atom\Notifications\Notification\Send($this->inputs)
+        Notification::route('mail', $this->getRecipients())->notify(
+            new \Jiannius\Atom\Notifications\SendMail($this->inputs)
         );
 
-        $this->popup(tr('app.alert.notification-sent', [
-            'channel' => [
-                'mail' => 'Email',
-            ][data_get($this->inputs, 'channel')],
-        ]));
-
-        $this->emit('notificationSent');
+        $this->popup(tr('app.alert.notification-sent', ['channel' => 'Email']));
+        $this->emit('mailSent');
         $this->close();
     }
 }

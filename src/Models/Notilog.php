@@ -9,7 +9,7 @@ use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasUlid;
 
-class Notification extends Model
+class Notilog extends Model
 {
     use Footprint;
     use HasFactory;
@@ -67,7 +67,7 @@ class Notification extends Model
     protected function status() : Attribute
     {
         return Attribute::make(
-            get: fn($value) => enum('notification.status', $value),
+            get: fn($value) => enum('notilog.status', $value),
             set: fn($value) => is_string($value) ? $value : optional($value)->value,
         );
     }

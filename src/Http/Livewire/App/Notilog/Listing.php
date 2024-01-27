@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Notification;
+namespace Jiannius\Atom\Http\Livewire\App\Notilog;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithTable;
@@ -9,22 +9,20 @@ class Listing extends Component
 {
     use WithTable;
 
-    public $channel;
-
     public $filters = [
         'search' => null,
-        'status' => null,
+        'channel' => [],
+        'status' => [],
     ];
 
     protected $listeners = [
-        'notificationDeleted' => '$refresh',
+        'notilogDeleted' => '$refresh',
     ];
 
     // get query property
     public function getQueryProperty() : mixed
     {
-        return model('notification')
-            ->where('channel', $this->channel)
+        return model('notilog')
             ->filter($this->filters)
             ->when(!$this->tableSortOrder, fn($q) => $q->latest());
     }
@@ -33,9 +31,9 @@ class Listing extends Component
     public function delete() : void
     {
         if ($this->checkboxes) {
-            model('notification')->whereIn('id', $this->checkboxes)->delete();
+            model('notilog')->whereIn('id', $this->checkboxes)->delete();
             $this->reset('checkboxes');
-            $this->emit('notificationDeleted');
+            $this->emit('notilogDeleted');
         }
     }
 }

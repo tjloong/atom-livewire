@@ -7,7 +7,7 @@ use Illuminate\Notifications\Events\NotificationSending;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Queue\InteractsWithQueue;
 
-class NotificationStatus
+class Notilog
 {
     public $channel;
     public $notifiable;
@@ -42,18 +42,18 @@ class NotificationStatus
     // sending
     public function sending() : void
     {
-        if ($this->notification->isNotificationTrackable ?? false) {
-            $ulid = $this->notification->notificationTrackerUlid;
+        if ($this->notification->notilogEnabled ?? false) {
+            $ulid = $this->notification->notilogUlid;
 
-            if (!model('notification')->where('ulid', $ulid)->count()) {
-                $tracker = model('notification')->create(array_merge([
+            if (!model('notilog')->where('ulid', $ulid)->count()) {
+                $notilog = model('notilog')->create(array_merge([
                     'ulid' => $ulid,
                     'channel' => $this->channel,
-                    'status' => enum('notification.status', 'PENDING')->value,
-                ], $this->getTrackerData()));
+                    'status' => enum('notilog.status', 'SENDING')->value,
+                ], $this->getNotificationData()));
     
-                if ($sender = $this->notification->notificationTrackerSender) {
-                    $tracker->setFootprint('created', $sender)->save();
+                if ($sender = $this->notification->notilogSender) {
+                    $notilog->setFootprint('created', $sender)->save();
                 }
             }
         }
@@ -62,25 +62,25 @@ class NotificationStatus
     // sent
     public function sent() : void
     {
-        if ($ulid = $this->notification->notificationTrackerUlid ?? null) {
-            $tracker = model('notification')->findUlid($ulid);
-            $tracker->fill(['status' => enum('notification.status', 'SENT')])->save();
+        if ($ulid = $this->notification->notilogUlid ?? null) {
+            $notilog = model('notilog')->findUlid($ulid);
+            $notilog->fill(['status' => enum('notilog.status', 'SENT')])->save();
         }
     }
 
     // failed - will be call directly from the notification failed handler
     public static function failed($ulid, $error) : void
     {
-        if ($tracker = model('notification')->findUlid($ulid)) {
-            $tracker->fill([
-                'status' => enum('notification.status', 'FAILED')->value,
-                'data' => array_merge($tracker->data, ['error' => $error]),
+        if ($notilog = model('notilog')->findUlid($ulid)) {
+            $notilog->fill([
+                'status' => enum('notilog.status', 'FAILED')->value,
+                'data' => array_merge($notilog->data, ['error' => $error]),
             ])->save();
         }
     }
 
-    // get tracker data
-    public function getTrackerData() : array
+    // get notification data
+    public function getNotificationData() : array
     {
         if ($this->channel === 'mail') {
             $message = $this->notification->toMail($this->notifiable);

@@ -1,16 +1,16 @@
 <?php
 
-namespace Jiannius\Atom\Notifications\Notification;
+namespace Jiannius\Atom\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Jiannius\Atom\Traits\NotificationTracker;
+use Jiannius\Atom\Traits\Notilog;
 
-class Send extends Notification implements ShouldQueue
+class SendMail extends Notification implements ShouldQueue
 {
-    use NotificationTracker;
+    use Notilog;
     use Queueable;
 
     /**
@@ -19,7 +19,7 @@ class Send extends Notification implements ShouldQueue
     public function __construct(
         public $parameters
     ) {
-        $this->trackNotification();
+        $this->enableNotilog();
     }
 
     /**

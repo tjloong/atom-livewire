@@ -40,6 +40,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
             // dashboard
             'app.dashboard' => 'App\Dashboard',
 
+            // send mail
+            'app.send-mail' => 'App\SendMail',
+
             // onboarding
             'app.onboarding' => 'App\Onboarding\Index',
             'app.onboarding.completed' => 'App\Onboarding\Completed',
@@ -88,11 +91,10 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.audit.show' => 'App\Audit\Show',
             'app.audit.listing' => 'App\Audit\Listing',
 
-            // notification
-            'app.notification' => 'App\Notification\Index',
-            'app.notification.show' => 'App\Notification\Show',
-            'app.notification.update' => 'App\Notification\Update',
-            'app.notification.listing' => 'App\Notification\Listing',
+            // notilog
+            'app.notilog' => 'App\Notilog\Index',
+            'app.notilog.show' => 'App\Notilog\Show',
+            'app.notilog.listing' => 'App\Notilog\Listing',
 
             // settings
             'app.settings.index' => 'App\Settings\Index',
