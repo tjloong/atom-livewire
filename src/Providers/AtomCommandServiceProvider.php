@@ -28,7 +28,7 @@ class AtomCommandServiceProvider extends ServiceProvider
                 \Jiannius\Atom\Console\MigrateCommand::class,
                 \Jiannius\Atom\Console\PublishCommand::class,
                 \Jiannius\Atom\Console\RefreshCommand::class,
-                \Jiannius\Atom\Console\RepairCommand::class,
+                \Jiannius\Atom\Console\SettingsCommand::class,
             ]);
         }
     }

@@ -4,10 +4,10 @@ namespace Jiannius\Atom\Console;
 
 use Illuminate\Console\Command;
 
-class RepairCommand extends Command
+class SettingsCommand extends Command
 {
-    protected $signature = 'atom:repair';
-    protected $description = 'Repair settings';
+    protected $signature = 'atom:settings';
+    protected $description = 'Reset settings';
 
     /**
      * Create a new command instance.
@@ -22,8 +22,7 @@ class RepairCommand extends Command
      */
     public function handle(): void
     {
-        model('setting')->repair();
-
+        model('setting')->reset();
         $this->call('atom:refresh');
     }
 }

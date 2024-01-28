@@ -44,43 +44,46 @@ class Setting extends Model
         });
     }
 
-    // repair
-    public function repair()
+    // reset
+    public function reset()
     {
         $defaults = json_decode(file_get_contents(atom_path('resources/json/settings.json')), true);
-        $settings = settings();
         $inserts = collect();
 
-        foreach ($defaults as $name => $value) {
-            if ($name === 'popup_content') $existingData = data_get($settings, 'popup.content');
-            else if ($name === 'popup_delay') $existingData = data_get($settings, 'popup.delay');
-            else if ($name === 'fbpixel_id') $existingData = data_get($settings, 'facebook_pixel_id') ?? data_get($settings, 'analytics.fbp_id') ?? data_get($settings, 'fbpixel_id');
-            else if ($name === 'ga_id') $existingData = data_get($settings, 'google_analytics_id') ?? data_get($settings, 'analytics.ga_id') ?? data_get($settings, 'ga_id');
-            else if ($name === 'gtm_id') $existingData = data_get($settings, 'google_tag_manager_id') ?? data_get($settings, 'analytics.gtm_id') ?? data_get($settings, 'gtm_id');
-            else if ($name === 'site_name') $existingData = data_get($settings, 'company');
-            else if ($name === 'site_description') $existingData = data_get($settings, 'briefs');
-            else if ($name === 'contact_name') $existingData = data_get($settings, 'company');
-            else if ($name === 'contact_phone') $existingData = data_get($settings, 'phone');
-            else if ($name === 'contact_email') $existingData = data_get($settings, 'email');
-            else if ($name === 'contact_address') $existingData = data_get($settings, 'address');
-            else if ($name === 'contact_map') $existingData = data_get($settings, 'gmap_url');
-            else if ($name === 'facebook_url') $existingData = data_get($settings, 'facebook');
-            else if ($name === 'instagram_url') $existingData = data_get($settings, 'instagram');
-            else if ($name === 'twitter_url') $existingData = data_get($settings, 'twitter');
-            else if ($name === 'linkedin_url') $existingData = data_get($settings, 'linkedin');
-            else if ($name === 'youtube_url') $existingData = data_get($settings, 'youtube');
-            else if ($name === 'spotify_url') $existingData = data_get($settings, 'spotify');
-            else if ($name === 'tiktok_url') $existingData = data_get($settings, 'tiktok');
-            else if ($name === 'meta_title') $existingData = data_get($settings, 'seo_title');
-            else if ($name === 'meta_description') $existingData = data_get($settings, 'seo_description');
-            else if ($name === 'meta_image') $existingData = data_get($settings, 'seo_image');
-            else if ($name === 'site_whatsapp_number') $existingData = data_get($settings, 'whatsapp');
-            else $existingData = data_get($settings, $name);
+        foreach ($defaults as $key => $value) {
+            $current = [
+                'popup_content' => settings('popup.content'),
+                'popup_delay' => settings('popup.delay'),
+                'fbpixel_id' => settings('facebook_pixel_id') ?? settings('analytics.fbp_id') ?? settings('fbpixel_id'),
+                'ga_id' => settings('google_analytics_id') ?? settings('analytics.ga_id') ?? settings('ga_id'),
+                'gtm_id' => settings('google_tag_manager_id') ?? settings('analytics.gtm_id') ?? settings('gtm_id'),
+                'site_name' => settings('company'),
+                'site_description' => settings('briefs'),
+                'contact_name' => settings('company'),
+                'contact_phone' => settings('phone'),
+                'contact_email' => settings('email'),
+                'contact_address' => settings('address'),
+                'contact_map' => settings('gmap_url'),
+                'facebook_url' => settings('facebook'),
+                'instagram_url' => settings('instagram'),
+                'twitter_url' => settings('twitter'),
+                'linkedin_url' => settings('linkedin'),
+                'youtube_url' => settings('youtube'),
+                'spotify_url' => settings('spotify'),
+                'tiktok_url' => settings('tiktok'),
+                'meta_title' => settings('seo_title'),
+                'meta_description' => settings('seo_description'),
+                'meta_image' => settings('seo_image'),
+                'site_whatsapp_number' => settings('whatsapp'),
+            ][$key] ?? settings($key);
 
-            $value = empty($existingData) ? $value : $existingData;
+            $value = (empty($current) || (
+                !app()->environment('production')
+                && in_array($key, ['mailer', 'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password', 'smtp_encryption'])
+            )) ? $value : $current;
 
             $inserts->push([
-                'name' => $name,
+                'name' => $key,
                 'value' => is_array($value) ? json_encode($value) : $value,
             ]);
         }
