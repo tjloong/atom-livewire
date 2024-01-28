@@ -48,6 +48,7 @@ class User extends Authenticatable
     {
         static::created(function($user) {
             $user->setAttributes()->saveQuietly();
+            $user->resetSettings();
             $user->sendActivationNotification();
         });
         

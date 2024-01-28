@@ -1,5 +1,6 @@
 @php
     $step = $attributes->get('step', 'any');
+    $placeholder = $attributes->get('placeholder');
 @endphp
 
 <x-form.field {{ $attributes }}>
@@ -17,7 +18,8 @@
     
             <input type="number" class="transparent w-full grow"
                 step="{{ $step }}"
-                {{ $attributes->except(['prefix', 'icon', 'postfix', 'unit', 'step']) }}>
+                placeholder="{{ tr($placeholder) }}"
+                {{ $attributes->except(['prefix', 'icon', 'postfix', 'unit', 'step', 'placeholder']) }}>
     
             @if (isset($postfix)) {{ $postfix }}
             @elseif ($postfix = $attributes->get('postfix') ?? $attributes->get('unit'))

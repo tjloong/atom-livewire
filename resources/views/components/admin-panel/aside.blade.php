@@ -11,6 +11,8 @@
             $route && current_route($route),
         ])->filter()->count() > 0
     );
+
+    $except = ['icon', 'label', 'route', 'params', 'href', 'can', 'active'];
 @endphp
 
 @if (isset($group) && $group->isNotEmpty())
@@ -21,7 +23,7 @@
     || (!isset($subitems))
 ))
     @if ($href)
-        <a href="{{ $href }}" class="block pl-2">
+        <a href="{{ $href }}" class="block pl-2" {{ $attributes->except($except) }}>
             <div class="flex items-center text-white rounded-l-md {{ $active ? 'active font-semibold bg-white/20' : 'font-medium hover:bg-white/10' }}">
                 <div class="grow flex items-center gap-2 py-2.5 px-4">
                     @if ($icon)
@@ -42,12 +44,8 @@
                 @endif
             </div>
         </a>
-    @else
-        <div
-            x-data="{
-                open: false,
-                active: false,
-            }"
+    @elseif (isset($subitems) && $subitems->isNotEmpty())
+        <div x-data="{ open: false, active: false }"
             x-init="active = $refs.subitems?.querySelectorAll('.active')?.length > 0">
             <div x-on:click="open = !open" class="pl-2">
                 <div
@@ -61,26 +59,44 @@
                         {{ tr($label) }}
                     </div>
 
-                    @if (isset($subitems) && $subitems->isNotEmpty())
-                        <div class="shrink-0 text-xs">
-                            <x-icon name="chevron-right"
-                                x-bind:class="(active || open) && 'rotate-90'"
-                                class="transition-transform"/>
-                        </div>
-                    @endif
+                    <div class="shrink-0 text-xs">
+                        <x-icon name="chevron-right"
+                            x-bind:class="(active || open) && 'rotate-90'"
+                            class="transition-transform"/>
+                    </div>
                 </div>
             </div>
 
-            @if (isset($subitems) && $subitems->isNotEmpty())
-                <div
-                    x-ref="subitems"
-                    x-show="active || open"
-                    x-on:click.away="open = false" 
-                    x-collapse
-                    class="bg-gray-900 text-gray-300 py-1.5 pl-4 flex flex-col gap-1">
-                    {{ $subitems }}
+            <div
+                x-ref="subitems"
+                x-show="active || open"
+                x-on:click.away="open = false" 
+                x-collapse
+                class="bg-gray-900 text-gray-300 py-1.5 pl-4 flex flex-col gap-1">
+                {{ $subitems }}
+            </div>
+        </div>
+    @else
+        <div class="block pl-2 cursor-pointer" {{ $attributes->except($except) }}>
+            <div class="flex items-center text-white rounded-l-md {{ $active ? 'active font-semibold bg-white/20' : 'font-medium hover:bg-white/10' }}">
+                <div class="grow flex items-center gap-2 py-2.5 px-4">
+                    @if ($icon)
+                        <div x-bind:class="aside === 'sm' && 'text-xl'" class="shrink-0 w-5 h-5 flex">
+                            <x-icon :name="$icon" class="m-auto"/>
+                        </div>
+                    @endif
+
+                    <div x-show="aside === 'lg' || !aside" class="grow leading-none">
+                        {{ tr($label) }}
+                    </div>
                 </div>
-            @endif
+
+                @if ($active)
+                    <div x-show="aside === 'lg' || !aside" class="shrink-0 p-1 px-2">
+                        <div class="w-2 h-5 bg-theme rounded-full"></div>
+                    </div>
+                @endif
+            </div>
         </div>
     @endif
 @endif

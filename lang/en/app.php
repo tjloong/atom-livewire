@@ -251,6 +251,7 @@ return [
         'sender-name' => 'Sender Name',
         'sent-mail' => 'Sent Mail|Sent Mails',
         'settings' => 'Settings',
+        'settings-updated' => 'Settings Updated',
         'share' => 'Share',
         'show' => 'Show',
         'showing-archived' => 'Showing :count archived',
