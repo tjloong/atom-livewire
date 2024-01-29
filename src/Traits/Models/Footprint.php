@@ -86,7 +86,7 @@ trait Footprint
                 else return $ts ? new Carbon($ts) : null;
             }
             elseif (in_array($attr, ['description', 'caption'])) {
-                return tr('app.label.footprint-'.$event, [
+                return tr('app.label.footprint-'.str($event)->replace('_', '-')->toString(), [
                     'user' => $this->footprint($event.'.name') ?? '?',
                     'timestamp' => format($this->footprint($event.'.timestamp'), 'datetime')->value(),
                 ]);
@@ -141,6 +141,7 @@ trait Footprint
     // set footprint
     public function setFootprint($event, $user = null) : mixed
     {
+        $event = str($event)->replace('-', '_')->toString();
         $datecol = $this->getFootprintDateColumn($event);
         $usercol = $this->getFootprintUserColumn($event);
         $user = $user ?? user();
@@ -168,6 +169,7 @@ trait Footprint
     // erase footprint
     public function eraseFootprint($event) : mixed
     {
+        $event = str($event)->replace('-', '_')->toString();
         $datecol = $this->getFootprintDateColumn($event);
         $usercol = $this->getFootprintUserColumn($event);
 

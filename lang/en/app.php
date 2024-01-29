@@ -249,6 +249,7 @@ return [
         'select-user' => 'Select User',
         'select' => 'Select',
         'selected-count' => ':count Selected',
+        'send' => 'Send',
         'send-email' => 'Send Email',
         'send-request' => 'Send Request',
         'sender-email' => 'Sender Email',
