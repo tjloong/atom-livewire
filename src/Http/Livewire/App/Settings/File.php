@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\File;
+namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
 use Jiannius\Atom\Component;
 
-class Index extends Component
+class File extends Component
 {
     // get storage used property
     public function getStorageUsedProperty() : string

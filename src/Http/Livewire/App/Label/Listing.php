@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\Label;
+namespace Jiannius\Atom\Http\Livewire\App\Label;
 
 use Jiannius\Atom\Component;
 
@@ -15,6 +15,6 @@ class Listing extends Component
             model('label')->where('id', $id)->update(['seq' => $index + 1]);
         }
 
-        $this->popup('app.alert.sorted');
+        $this->popup('app.label.sorted');
     }
 }

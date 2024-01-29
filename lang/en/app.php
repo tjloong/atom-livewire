@@ -2,6 +2,7 @@
 
 return [
     'label' => [
+        'accept' => 'Accept',
         'account' => 'Account',
         'active-date' => 'Active Date',
         'active' => 'Active',
@@ -72,6 +73,7 @@ return [
         'date-range' => 'Date range',
         'date' => 'Date|Dates',
         'day-count' => ':count day|:count days',
+        'decline' => 'Decline',
         'default' => 'Default',
         'delete' => 'Delete',
         'description' => 'Description',
@@ -138,6 +140,7 @@ return [
         'hidden' => 'Hidden',
         'href' => 'Link to URL',
         'image-url' => 'Image URL',
+        'image' => 'Image',
         'instagram-url' => 'Instagram URL',
         'integration' => 'Integration',
         'ip-address' => 'IP Address',
@@ -172,13 +175,14 @@ return [
         'new-value' => 'New Value',
         'new' => 'New',
         'next-step' => 'Next Step',
+        'next' => 'Next',
         'no-footprint' => 'No Footprint',
         'note' => 'Notes',
         'number' => 'Number',
         'old-value' => 'Old Value',
         'or-login-with' => 'Or Login With',
-        'outbox' => 'Outbox',
         'outbox-log' => 'Outbox Log',
+        'outbox' => 'Outbox',
         'overview' => 'Overview',
         'owned-on' => 'Owned on :date',
         'owner' => 'Owner',
@@ -250,8 +254,8 @@ return [
         'sender-email' => 'Sender Email',
         'sender-name' => 'Sender Name',
         'sent-mail' => 'Sent Mail|Sent Mails',
-        'settings' => 'Settings',
         'settings-updated' => 'Settings Updated',
+        'settings' => 'Settings',
         'share' => 'Share',
         'show' => 'Show',
         'showing-archived' => 'Showing :count archived',
@@ -346,6 +350,10 @@ return [
             'title' => 'Submit Form',
             'message' => 'Are you sure to submit?',    
         ],
+        'no-result' => [
+            'title' => 'No Results',
+            'message' => 'We could not find anything.',
+        ],
         'recaptcha' => 'Google think you are a bot. Please refresh and try again.',
         'email-sent' => 'Email Sent.',
         'notification-sent' => ':channel Sent.',
@@ -362,10 +370,6 @@ return [
     ],
 
     'empty' => [
-        'result' => [
-            'title' => 'No Results',
-            'subtitle' => 'We could not find anything.',
-        ],
         'option' => [
             'title' => 'No Options',
             'subtitle' => 'Options list is empty.',

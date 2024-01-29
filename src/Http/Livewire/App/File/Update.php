@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings\File;
+namespace Jiannius\Atom\Http\Livewire\App\File;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;

@@ -1,19 +1,19 @@
-@props([
-    'getSize' => function() use ($attributes) {
+@php
+    $title = $attributes->get('title', 'app.alert.no-result.title');
+    $message = $attributes->get('message') ?? $attributes->get('subtitle') ?? 'app.alert.no-result.message';
+    $getSize = function() use ($attributes) {
         if ($size = $attributes->get('size')) return $size;
         if ($attributes->get('sm')) return 'sm';
         if ($attributes->get('xs')) return 'xs';
         return 'md';
-    },
-])
+    };
+@endphp
 
-<div class="flex justify-center 
-    {{ [
-        'xs' => 'gap-3 py-4',
-        'sm' => 'flex-col items-center gap-3 py-8',
-        'md' => 'flex-col items-center gap-3 py-8',
-    ][$getSize()] }} 
-    {{ $attributes->get('box') ? 'bg-white rounded-lg border shadow' : '' }}">
+<div class="flex justify-center {{ [
+    'xs' => 'gap-3 py-4',
+    'sm' => 'flex-col items-center gap-3 py-8',
+    'md' => 'flex-col items-center gap-3 py-8',
+][$getSize()] }}">
     @isset($icon) {{ $icon }}
     @elseif ($icon = $attributes->get('icon', 'folder-open'))
         <div class="shrink-0 rounded-full bg-white shadow flex border {{ [
@@ -36,16 +36,16 @@
                 'sm' => '',
                 'md' => 'text-lg',
             ][$getSize()] }}">
-                {!! tr($attributes->get('title', 'common.empty.result.title')) !!}
+                {!! tr($title) !!}
             </div>
 
-            @if ($subtitle = $attributes->get('subtitle', 'common.empty.result.subtitle'))
+            @if ($message)
                 <div class="text-gray-400 font-medium {{ [
                     'xs' => 'text-sm',
                     'sm' => 'text-sm',
                     'md' => '',
                 ][$getSize()] }}">
-                    {!! tr($subtitle) !!}
+                    {!! tr($message) !!}
                 </div> 
             @endif
         </div>

@@ -96,29 +96,25 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.notilog.show' => 'App\Notilog\Show',
             'app.notilog.listing' => 'App\Notilog\Listing',
 
+            // label
+            'app.label.update' => 'App\Label\Update',
+            'app.label.listing' => 'App\Label\Listing',
+            
+            // user
+            'app.user.update' => 'App\User\Update',
+            'app.user.listing' => 'App\User\Listing',
+
+            // file
+            'app.file.update' => 'App\File\Update',
+            'app.file.listing' => 'App\File\Listing',
+
             // settings
             'app.settings.index' => 'App\Settings\Index',
             'app.settings.site' => 'App\Settings\Site',
             'app.settings.login' => 'App\Settings\Login',
             'app.settings.password' => 'App\Settings\Password',
-
-            // settings > user
-            'app.settings.user' => 'App\Settings\User\Index',
-            'app.settings.user.update' => 'App\Settings\User\Update',
-            'app.settings.user.listing' => 'App\Settings\User\Listing',
-
-            // settings > file
-            'app.settings.file' => 'App\Settings\File\Index',
-            'app.settings.file.update' => 'App\Settings\File\Update',
-            'app.settings.file.library' => 'App\Settings\File\Library',
-            'app.settings.file.listing' => 'App\Settings\File\Listing',
-
-            // settings > label
-            'app.settings.label' => 'App\Settings\Label\Index',
-            'app.settings.label.update' => 'App\Settings\Label\Update',
-            'app.settings.label.listing' => 'App\Settings\Label\Listing',
-
-            // settings > integration
+            'app.settings.user' => 'App\Settings\User',
+            'app.settings.file' => 'App\Settings\File',
             'app.settings.integration.email' => 'App\Settings\Integration\Email',
             'app.settings.integration.storage' => 'App\Settings\Integration\Storage',
             'app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',

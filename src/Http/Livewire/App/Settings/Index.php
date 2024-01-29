@@ -30,12 +30,9 @@ class Index extends Component
             ['group' => 'atom::settings.sidenav.group.system', 'tabs' => [
                 ['slug' => 'user', 'label' => 'atom::settings.sidenav.tab.user', 'icon' => 'users'],
                 ['slug' => 'role', 'label' => 'atom::settings.sidenav.tab.role', 'icon' => 'user-tag'],
+                ['slug' => 'blog', 'label' => 'atom::settings.sidenav.tab.blog', 'icon' => 'pen-nib'],
                 ['slug' => 'page', 'label' => 'atom::settings.sidenav.tab.page', 'icon' => 'newspaper'],
                 ['slug' => 'file', 'label' => 'atom::settings.sidenav.tab.file', 'icon' => 'images'],
-            ]],
-
-            ['group' => 'atom::settings.sidenav.group.labels', 'tabs' => [
-                ['slug' => 'label/blog-category', 'label' => 'atom::settings.sidenav.tab.blog', 'icon' => 'tag'],
             ]],
 
             ['group' => 'atom::settings.sidenav.group.website', 'tabs' => [
