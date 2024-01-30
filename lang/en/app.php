@@ -34,6 +34,7 @@ return [
         'bg-color' => 'Background Color',
         'bg-image' => 'Background Image',
         'blog-category' => 'Blog Category',
+        'blog-settings' => 'Blog Settings',
         'blog' => 'Blog|Blogs',
         'body' => 'Body',
         'browse-library' => 'Browse Library',
@@ -362,11 +363,9 @@ return [
         'created' => 'Record Created',
         'updated' => 'Record Updated',
         'deleted' => 'Record Deleted',
-        'user' => [
-            'self-delete-failed' => [
-                'title' => 'Unable To Delete User',
-                'message' => 'You cannot delete yourself.',
-            ],
+        'user-delete-self' => [
+            'title' => 'Unable To Delete User',
+            'message' => 'You cannot delete yourself.',
         ],
     ],
 
