@@ -34,7 +34,7 @@ npm install
 ```
 protected $middleware = [
     ...
-    \Jiannius\Atom\Http\Middleware\SiteSecurity::class, // for site security like https redirect etc
+    \Jiannius\Atom\Http\Middleware\Bootstrap::class, // for site security like https redirect etc
 ];
 ```
 
@@ -107,17 +107,9 @@ npm install
 8. Add middleware to app\Http\Kernel.php
 
 ```
-protected $middlewareGroups = [
-    'web' => [
-        ...
-        \Jiannius\Atom\Http\Middleware\SiteSecurity::class, // for site security like https redirect etc
-        \Jiannius\Atom\Http\Middleware\TrackReferer::class, // to track ref link
-        \Jiannius\Atom\Http\Middleware\UserLastActive::class, // log user last active timestamp
-    ],
-
-    'api' => [
-        ...
-    ],
+protected $middleware = [
+    ...
+    \Jiannius\Atom\Http\Middleware\Bootstrap::class,
 ];
 ```
 

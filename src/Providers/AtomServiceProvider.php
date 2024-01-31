@@ -60,14 +60,10 @@ class AtomServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../../stubs-static/config' => base_path('config'),
+            __DIR__.'/../../stubs-static/resources' => base_path('resources'),
             __DIR__.'/../../stubs-static/tailwind.config.js' => base_path('tailwind.config.js'),
             __DIR__.'/../../stubs-static/postcss.config.js' => base_path('postcss.config.js'),
             __DIR__.'/../../stubs-static/vite.config.js' => base_path('vite.config.js'),
-            __DIR__.'/../../stubs-static/resources/views/layouts' => resource_path('views/layouts'),
-            __DIR__.'/../../stubs-static/resources/css' => resource_path('css'),
-            __DIR__.'/../../stubs-static/resources/js' => resource_path('js'),
-            __DIR__.'/../../resources/views/errors' => resource_path('views/errors'),
-            __DIR__.'/../../resources/views/vendor' => resource_path('views/vendor'),
         ], 'atom-install-static');
     }
 
@@ -75,15 +71,13 @@ class AtomServiceProvider extends ServiceProvider
     public function registerBasePublishing() : void
     {
         $this->publishes([
+            __DIR__.'/../../stubs/app' => base_path('app'),
             __DIR__.'/../../stubs/config' => base_path('config'),
+            __DIR__.'/../../stubs/resources' => base_path('resources'),
+            __DIR__.'/../../stubs/routes' => base_path('routes'),
             __DIR__.'/../../stubs/tailwind.config.js' => base_path('tailwind.config.js'),
             __DIR__.'/../../stubs/postcss.config.js' => base_path('postcss.config.js'),
             __DIR__.'/../../stubs/vite.config.js' => base_path('vite.config.js'),
-            __DIR__.'/../../stubs/resources/views/layouts' => base_path('resources/views/layouts'),
-            __DIR__.'/../../stubs/resources/css' => base_path('resources/css'),
-            __DIR__.'/../../stubs/resources/js' => base_path('resources/js'),
-            __DIR__.'/../../resources/views/errors' => base_path('resources/views/errors'),
-            __DIR__.'/../../resources/views/vendor' => base_path('resources/views/vendor'),
         ], 'atom-base');
     }
 }

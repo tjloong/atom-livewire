@@ -10,7 +10,6 @@
         "laravel/socialite": "^5.0",
         "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^2.0",
-        "orchestra/testbench": "^8.0",
         "rap2hpoutre/fast-excel": "^5.0",
         "torann/geoip": "^3.0",
         "jenssegers/agent": "^2.0",
@@ -23,6 +22,9 @@
         "laravel/pail": "^1.0",
         "phpoffice/phpword": "^1.1",
         "consoletvs/profanity": "^3.3"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0"
     },
     "license": "MIT",
     "autoload": {

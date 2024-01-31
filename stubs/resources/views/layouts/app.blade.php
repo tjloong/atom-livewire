@@ -42,19 +42,19 @@
     @elseroute('app.*')
         <x-admin-panel>
             <x-slot:links>
-                <x-button icon="globe" label="layout.nav.go-to-site" href="/"/>
+                <x-button icon="globe" label="app.label.go-to-site" href="/"/>
             </x-slot:links>
 
             <x-slot:aside>
                 <div class="grow overflow-y-auto overflow-x-hidden pt-5">
-                    <x-admin-panel.aside label="layout.nav.dashboard" route="app.dashboard"/>                
-                    <x-admin-panel.aside label="layout.nav.blog" route="app.blog.listing"/>
-                    <x-admin-panel.aside label="layout.nav.enquiry" route="app.enquiry.listing"/>
-                    <x-admin-panel.aside label="layout.nav.signup" route="app.signup.listing"/>
+                    <x-admin-panel.aside label="app.label.dashboard" route="app.dashboard"/>                
+                    <x-admin-panel.aside label="app.label.blog" route="app.blog.listing"/>
+                    <x-admin-panel.aside label="app.label.enquiry" route="app.enquiry.listing"/>
+                    <x-admin-panel.aside label="app.label.signup" route="app.signup.listing"/>
                 </div>
 
                 <div class="shrink-0 py-3">
-                    <x-admin-panel.aside label="layout.nav.settings" route="app.settings"/>
+                    <x-admin-panel.aside label="app.label.settings" route="app.settings"/>
                 </div>
             </x-slot:aside>
 
@@ -63,9 +63,9 @@
             @endroute
 
             @livewire('app.signup.update', key('signup-update'))
-            @livewire('app.settings.file.update', key('file-update'))
-            @livewire('app.settings.page.update', key('page-update'))
-            @livewire('app.settings.label.update', key('label-update'))
+            @livewire('app.file.update', key('file-update'))
+            @livewire('app.page.update', key('page-update'))
+            @livewire('app.label.update', key('label-update'))
         </x-admin-panel>
 
     {{-- Web layout --}}

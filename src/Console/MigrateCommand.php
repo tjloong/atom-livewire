@@ -41,6 +41,9 @@ class MigrateCommand extends Command
                     'app.file',
                     'app.label',
                     'app.setting',
+                    'app.page',
+                    'app.enquiry',
+                    'app.notilog',
                 ] as $module) {
                     $this->call('atom:migrate', ['module' => $module]);
                 }

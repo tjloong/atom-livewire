@@ -10,26 +10,13 @@ use RecursiveIteratorIterator;
 class PublishCommand extends Command
 {
     protected $signature = 'atom:publish
-                            {module? : Module to be published. Use "models.<model>" to publish model. User "routes.<route>" to publish route.}
+                            {module? : Module to be published. Use "models.<model>" to publish model. User "enums.<enum>" to publish enum.}
                             {--force : Force overwrite if file exists.}
                             {--config : Show config for module.}';
 
     protected $description = 'Publish Atom\'s modules.';
 
-    protected $modules = [
-        'base' => [
-            'models' => ['User'],
-            'routes' => [
-                'auth/socialite.php',
-                'auth/login.php',
-                'auth/register.php',
-                'auth/verification.php',
-                'app/dashboard.php',
-                'app/settings.php',
-                'web.php',
-            ],
-        ],
-    ];
+    protected $modules = [];
 
     /**
      * Create a new command instance.
@@ -46,47 +33,42 @@ class PublishCommand extends Command
     {
         if ($module = $this->argument('module')) {
             if (str($module)->is('models.*')) return $this->publishModels($module);
-            else if (str($module)->is('routes.*')) return $this->publishRoutes($module);
             else if (str($module)->is('enums.*')) return $this->publishEnums($module);
             else if (str($module)->is('jobs.*')) return $this->publishJobs($module);
             else if (str($module)->is('notifications.*')) return $this->publishNotifications($module);
-            else if ($config = $this->getModuleConfig($module)) {
+            else {
+                $config = $this->getModuleConfig($module);
                 if ($this->option('config')) return dump($config);
 
-                $confirm = $this->option('force') || $this->confirm(
+                if (!$this->option('force') && !$this->confirm(
                     $module === 'base'
                         ? 'This will publish Atom base. You should only do this once. Continue?'
                         : 'Publish '.$module.', continue?'
                     , true
-                );
+                )) return $this->line('Action Cancelled.');
 
-                if (!$confirm) return $this->line('Action Canceled.');
+                if ($config) {
+                    $this->publishLivewire($config);
+                    $this->publishModels($config);
+                    $this->publishEnums($config);
+                    $this->publishJobs($config);
+                    $this->publishNotifications($config);
+                }
+                else {
+                    $this->publishLivewire($module);
+                }
 
-                $this->publishLivewire($config);
-                $this->publishModels($config);
-                $this->publishEnums($config);
-                $this->publishJobs($config);
-                $this->publishNotifications($config);
-                $this->publishRoutes($config);
-
+                // publish base stubs
                 if ($module === 'base') {
-                    // publish base stubs
                     $this->call('vendor:publish', ['--tag' => 'atom-base', '--force' => true]);
                 }
             }
-            else {
-                return $this->publishLivewire($module);
-            }
         }
-        else {
-            if ($module = $this->choice('Please choose a module', array_keys($this->modules))) {
-                $this->call('atom:publish', [
-                    'module' => $module,
-                    '--force' => $this->option('force'),
-                    '--routes' => $this->option('routes'),
-                    '--models' => $this->option('models'),
-                ]);
-            }
+        elseif ($module = $this->choice('Please choose a module', array_keys($this->modules))) {
+            $this->call('atom:publish', [
+                'module' => $module,
+                '--force' => $this->option('force'),
+            ]);
         }
     }
 
@@ -99,7 +81,6 @@ class PublishCommand extends Command
             return [
                 'module' => $module,
                 'models' => (array) data_get($config, 'models', str()->studly(str($module)->split('/\./')->last())),
-                'routes' => (array) data_get($config, 'routes', str(format_view_path($module))->finish('.php')->toString()),
                 'livewire' => (array) data_get($config, 'livewire', format_class_path($module)),
                 'enums' => (array) data_get($config, 'enums', []),
                 'jobs' => (array) data_get($config, 'jobs', []),
@@ -109,38 +90,6 @@ class PublishCommand extends Command
         else {
 
         }
-    }
-
-    // publish routes
-    public function publishRoutes($config): void
-    {
-        $this->info('Publishing routes...');
-
-        $routes = is_string($config)
-            ? (array) str(format_view_path($config))->finish('.php')->toString()
-            : data_get($config, 'routes');
-
-        foreach ($routes as $route) {
-            $path = atom_path(str($route)->start('routes/')->toString());
-
-            if (!file_exists($path)) $this->error('Unable to find route at '.$path);
-            else {
-                $source = file_get_contents($path);
-                $source = str($source)->replace("<?php\n", "")->trim();
-                $topath = base_path('routes/web.php');
-                $target = file_get_contents($topath);
-                $content = str($target);
-    
-                if ($content->contains($source)) $this->warn("Routes for $route already configured in routes/web.php.");
-                else {
-                    $content = $content->append("\n\n".$source)->toString();
-                    file_put_contents($topath, $content);
-                    $this->info("Appended $route to routes/web.php.");
-                }
-            }
-        }
-        
-        $this->newLine();
     }
 
     // publish models
@@ -154,12 +103,13 @@ class PublishCommand extends Command
                 : data_get($config, 'models')
         )
             ->map(fn($s) => str($s)->finish('.php'))
-            ->map(fn($s) => ['src/Models/'.$s, 'app/Models/'.$s]);
+            ->map(fn($s) => ['src/Models/'.$s, 'app/Models/'.$s])
+            ->filter(fn($val) => file_exists(atom_path($val[0])));
 
-        if ($models->count()) {
-            $this->copy($models);
-            $this->newLine();
-        }
+        if ($models->count()) $this->copy($models);
+        else $this->line('Nothing to publish.');
+
+        $this->newLine();
     }
 
     // publish livewire

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->longText('value')->nullable();
         });
 
-        model('setting')->repair();
+        model('setting')->reset();
     }
 
     /**
