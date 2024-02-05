@@ -2,6 +2,7 @@
 
 return [
     'label' => [
+        'show-all' => 'Show All',
         'accept' => 'Accept',
         'account' => 'Account',
         'active-date' => 'Active Date',
@@ -66,6 +67,8 @@ return [
         'create-announcement' => 'Create Announcement',
         'create-label' => 'Create Label',
         'create-popup' => 'Create Pop-Up',
+        'create-user' => 'Create User',
+        'new-user' => 'New User',
         'created-date' => 'Created Date',
         'created-on' => 'Created on :date',
         'currency' => 'Currency|Currencies',

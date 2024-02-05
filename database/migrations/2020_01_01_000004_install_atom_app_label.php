@@ -16,6 +16,7 @@ return new class extends Migration
             $table->json('name')->nullable();
             $table->string('slug')->nullable();
             $table->string('type')->nullable();
+            $table->text('description')->nullable();
             $table->integer('seq')->nullable();
             $table->string('color')->nullable();
             $table->json('data')->nullable();

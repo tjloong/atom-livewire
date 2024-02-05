@@ -49,7 +49,7 @@ trait HasFilters
                 $query->$scope($value);
             }
             else {
-                $column = $filter['column'];
+                $column = $table.'.'.$filter['column'];
                 $operator = $filter['operator'] ?? null;
                 $function = $filter['function'] ?? null;
                 $json = $filter['json'] ?? false;
