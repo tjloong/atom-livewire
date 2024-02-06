@@ -70,12 +70,6 @@
                 </x-box>
             </x-form.field>
         @endif
-
-        @if ($user->exists)
-            <x-form.group>
-                <x-box.trace :data="$user->fresh()"/>
-            </x-form.group>
-        @endif
     </div>
 @endif
 </x-form.drawer>

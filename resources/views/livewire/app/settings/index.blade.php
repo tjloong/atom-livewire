@@ -15,10 +15,14 @@
     </div>
 
     <div class="grow p-6">
-        @livewire(
-            data_get($this->component, 'name'), 
-            ['params' => data_get($this->component, 'params')],
-            key($tab),
-        )
+        @if (str($tab)->is('label/*'))
+            @livewire('app.settings.label', [
+                'type' => str($tab)->replaceFirst('label/', '')->toString(),
+            ], key($tab))
+        @elseif (str($tab)->contains('/'))
+            @livewire('app.settings.'.(str($tab)->replace('/', '.')->toString()), key($tab))
+        @else
+            @livewire('app.settings.'.$tab, key($tab))
+        @endif
     </div>
 </div>

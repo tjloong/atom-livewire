@@ -115,6 +115,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.password' => 'App\Settings\Password',
             'app.settings.user' => 'App\Settings\User',
             'app.settings.file' => 'App\Settings\File',
+            'app.settings.label' => 'App\Settings\Label',
             'app.settings.integration.email' => 'App\Settings\Integration\Email',
             'app.settings.integration.storage' => 'App\Settings\Integration\Storage',
             'app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',
