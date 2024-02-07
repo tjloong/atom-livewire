@@ -23,7 +23,6 @@ class Banner extends Model
         'placement' => 'array',
         'seq' => 'integer',
         'is_active' => 'boolean',
-        'image_id' => 'integer',
         'start_at' => 'date',
         'end_at' => 'date',
     ];
@@ -32,6 +31,12 @@ class Banner extends Model
     public function image(): BelongsTo
     {
         return $this->belongsTo(model('file'), 'image_id');
+    }
+
+    // get mobile image for banner
+    public function mobile_image(): BelongsTo
+    {
+        return $this->belongsTo(model('file'), 'mob_image_id');
     }
 
     // attribute for status

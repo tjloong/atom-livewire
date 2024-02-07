@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('seq')->nullable();
             $table->boolean('is_active')->nullable();
             $table->foreignId('image_id')->nullable()->constrained('files')->onDelete('set null');
+            $table->foreignId('mob_image_id')->nullable()->constrained('files')->onDelete('set null');
             $table->date('start_at')->nullable();
             $table->date('end_at')->nullable();
             $table->timestamps();
