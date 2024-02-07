@@ -49,7 +49,7 @@ trait Footprint
     // scope for or where footprint
     public function scopeOrWhereFootprint($query, $key, $operator, $value = null) : void
     {
-        $query->orWhere(fn($q) => $q->whereFootprint($query, $key, $operator, $value));
+        $query->orWhere(fn($q) => $q->whereFootprint($key, $operator, $value));
     }
 
     // scope for where in footprint

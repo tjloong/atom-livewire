@@ -7,7 +7,7 @@ function current_route()
 {
     $args = func_get_args();
     $routes = count($args) > 1 ? $args : head($args);
-    $currentRoute = request()->route()->getName();
+    $currentRoute = optional(request()->route())->getName();
 
     return $routes
         ? collect($routes)->contains(fn($val) => str($currentRoute)->is($val))
