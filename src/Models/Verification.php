@@ -22,7 +22,7 @@ class Verification extends Model
     {
         static::created(function($model) {
             $model->fill([
-                'code' => fake()->randomNumber(6, true),
+                'code' => mt_rand(100000, 999999),
             ])->saveQuietly();
             
             $model->notify();
