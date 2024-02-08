@@ -35,7 +35,7 @@ class Share extends Model
     // get parent for shareable
     public function parent(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withoutGlobalScopes();
     }
 
     // attribute for url
