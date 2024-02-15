@@ -40,20 +40,20 @@ class Banner extends Model
     }
 
     // attribute for status
-    protected function status(): Attribute
+    protected function status() : Attribute
     {
         return Attribute::make(
-            get: function () {
-                if (!$this->is_active) return enum('banner.status', 'INACTIVE');
-                else if ($this->start_at && $this->start_at->isFuture()) return enum('banner.status', 'UPCOMING');
-                else if ($this->end_at && $this->end_at->isPast()) return enum('banner.status', 'ENDED');
-                else return enum('banner.status', 'ACTIVE');
-            },
+            get: fn() => enum('banner.status', collect([
+                'INACTIVE' => !$this->is_active,
+                'ENDED' => $this->end_at && $this->end_at->isPast(),
+                'UPCOMING' => $this->start_at && $this->start_at->isFuture(),
+                'ACTIVE' => true,
+            ])->filter()->keys()->first()),
         );
     }
 
     // scope for fussy search
-    public function scopeSearch($query, $search): void
+    public function scopeSearch($query, $search) : void
     {
         $query->where(fn($q) => $q
             ->where('name', 'like', "%$search%")
@@ -62,37 +62,49 @@ class Banner extends Model
         );
     }
 
-    // scope for status
-    public function scopeStatus($query, $status): void
+    // scope for placement
+    public function scopePlacement($query, $placement) : void
     {
-        $query->where(function ($q) use ($status) {
-            foreach ((array) $status as $val) {
-                if (is_string($val)) $val = enum('banner.status', $val);
+        $placement = (array) $placement;
 
-                if ($val === enum('banner.status', 'INACTIVE')) {
-                    $q->orWhere('is_active', false);
-                }
-                else {
-                    $q->orWhere(function ($q) use ($val) {
-                        $q->where('is_active', true);
+        if ($placement) {
+            $query->where(fn($q) => $q
+                ->whereJsonContains('placement', $placement)
+                ->orWhereNull('placement')
+                ->orWhere('placement', '[]')
+            );
+        }
+    }
 
-                        if ($val === enum('banner.status', 'UPCOMING')) {
-                            $q->where('start_at', '>', now());
-                        }
-                        if ($val === enum('banner.status', 'ENDED')) {
-                            $q->where('end_at', '<', now());
-                        }
-                        if ($val === enum('banner.status', 'ACTIVE')) {
-                            $q->where(fn($q) => $q
-                                ->whereRaw('start_at is null and end_at is null')
-                                ->orWhereRaw('start_at is not null and start_at < ? and end_at is null', [now()])
-                                ->orWhereRaw('start_at is null and end_at is not null and end_at > ?', [now()])
-                                ->orWhereRaw('start_at < ? and end_at > ?', [now(), now()])
-                            );
-                        }
-                    });
+    // scope for status
+    public function scopeStatus($query, $status) : void
+    {
+        if ($status) {
+            $query->where(function($q) use ($status) {
+                foreach ((array) $status as $value) {
+                    $value = is_string($value) ? $value : $value->value;
+
+                    if ($value === enum('banner.status', 'INACTIVE')->value) {
+                        $q->orWhere('banners.is_active', false);
+                    }
+                    elseif ($value === enum('banner.status', 'ENDED')->value) {
+                        $q->orWhereRaw('banners.is_active = true and banners.end_at is not null and banners.end_at < now()');
+                    }
+                    elseif ($value === enum('banner.status', 'UPCOMING')->value) {
+                        $q->orWhereRaw('banners.is_active = true and banners.start_at is not null and banners.start_at > now()');
+                    }
+                    elseif ($value === enum('banner.status', 'ACTIVE')->value) {
+                        $q->orWhereRaw('(
+                            banners.is_active = true and (
+                                (banners.start_at is null and banners.end_at is null)
+                                or (banners.start_at <= now() and banners.end_at is null)
+                                or (banners.start_at is null and banners.end_at >= now())
+                                or (banners.start_at <= now() and banners.end_at >= now())
+                            )
+                        )');
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

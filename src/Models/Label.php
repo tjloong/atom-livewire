@@ -91,4 +91,10 @@ class Label extends Model
             ($this->color ?? 'gray') => $this->locale('name'),
         ];
     }
+
+    // get labels by type
+    public function getType($type) : mixed
+    {
+        return model('label')->where('type', $type)->orderBy('seq')->orderBy('id')->get();
+    }
 }
