@@ -41,21 +41,24 @@ trait HasFilters
     public function scopeFilter($query, $filters) : void
     {
         $table = $this->getTable();
+        $filters = $this->parseFilters($filters);
 
-        foreach ($this->parseFilters($filters) as $filter) {
+        foreach ($filters as $filter) {
             $value = $filter['value'];
 
             if ($scope = $filter['scope'] ?? null) {
                 $query->$scope($value);
             }
             else {
-                $column = $table.'.'.$filter['column'];
+                $column = $filter['column'];
                 $operator = $filter['operator'] ?? null;
                 $function = $filter['function'] ?? null;
                 $json = $filter['json'] ?? false;
 
                 if ($json) $column = str($column)->replace('.', '->')->toString();
-                if ($function) $column = DB::raw($function.'('.$column.')');
+                
+                if ($function) $column = DB::raw($function.'('.$table.'.'.$column.')');
+                else $column = $table.'.'.$column;
 
                 if ($operator) $query->where($column, $operator, $value);
                 else if (is_array($value) && $value) {
