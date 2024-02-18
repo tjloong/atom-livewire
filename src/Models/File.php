@@ -218,8 +218,8 @@ class File extends Model
 
         // url
         if (is_string($content)) {
-            if ($vid = youtube_vid($content)) {
-                $info = json_decode(file_get_contents('https://noembed.com/embed?dataType=json&url='.$content), true);
+            if ($vid = youtube($content)->vid()) {
+                $info = youtube($content)->info();
 
                 $file->fill([
                     'name' => data_get($info, 'title') ?? $vid,

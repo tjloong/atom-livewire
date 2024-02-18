@@ -638,6 +638,14 @@ function replace_in_file($search, $replace, $path)
     file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
 }
 
+// youtube
+if (!function_exists('youtube')) {
+    function youtube($url)
+    {
+        return new \Jiannius\Atom\Services\Youtube($url);
+    }
+}
+
 // format
 if (!function_exists('format')) {
     function format($value, $options = null)
