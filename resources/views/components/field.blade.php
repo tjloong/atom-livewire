@@ -5,6 +5,7 @@
     $badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status');
     $value = $attributes->get('value');
     $target = $attributes->get('target', '_self');
+    $truncate = $attributes->get('truncate', true);
     $hide = $attributes->get('hide-empty', false);
     $orientation = $attributes->get('col') ? 'col' : 'row';
     $except = ['label', 'icon', 'href', 'tags', 'value', 'badges', 'status', 'target', 'col', 'row', 'hide-empty'];
@@ -55,9 +56,8 @@
                 @else
                     <div class="grid">
                         <div
-                            x-data="{ truncate: true }" 
-                            x-on:click="truncate = false"
-                            x-on:click.away="truncate = true"
+                            x-data="{ truncate: @js($truncate) }" 
+                            x-on:click="truncate = !truncate"
                             x-bind:class="truncate && 'truncate'">
                             @if (is_array($value)) {!! json_encode($value) !!}
                             @else {!! $value ?? '--' !!}

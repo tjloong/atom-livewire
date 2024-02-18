@@ -1,41 +1,43 @@
-@if ($trails = breadcrumbs()->trails)
-    <ol id="breadcrumbs"
+@php
+    $breadcrumbs = $attributes->get('breadcrumbs');
+@endphp
+
+@if (count($breadcrumbs))
+    <ol
         itemscope
         itemtype="https://schema.org/BreadcrumbList"
         {{ $attributes->class([
             'flex flex-wrap items-center gap-2 py-2 md:flex-nowrap overflow-hidden',
-            $attributes->get('class'),
-        ]) }}
-    >
-        @foreach ($trails as $i => $trail)
+            $attributes->get('class', 'mb-5'),
+        ])->except('breadcrumbs') }}>
+        @foreach ($breadcrumbs as $i => $breadcrumb)
+            @php $icon = data_get($breadcrumb, 'icon') @endphp
+            @php $href = data_get($breadcrumb, 'href') @endphp
+            @php $label = data_get($breadcrumb, 'label') @endphp
+
             <li 
                 itemscope 
                 itemprop="itemListElement" 
                 itemtype="https://schema.org/ListItem"
-                class="shrink-0 flex items-center gap-2 max-w-[100px] md:max-w-none truncate" 
-            >
-                @if ($i === array_key_first($trails))
-                    <x-icon name="house" class="text-gray-400 shrink-0"/>
-                @endif
+                class="shrink-0 flex items-center gap-2 max-w-[100px] md:max-w-none truncate">
+                <div class="flex items-center gap-2">
+                    @if ($icon) <x-icon :name="$icon" class="text-gray-400 shrink-0"/> @endif
 
-                @if ($label = __(data_get($trail, 'label')))
-                    @if ($href = data_get($trail, 'route'))
+                    @if ($href)
                         <a itemprop="item" href="{{ $href }}" class="text-gray-800 font-medium truncate">
-                            <span itemprop="name" class="">
-                                {!! str($label)->limit(100) !!}
-                            </span>
+                            <span itemprop="name">{!! tr($label) !!}</span>
                         </a>
                     @else
                         <span itemprop="name" class="text-gray-500 font-medium truncate">
-                            {!! str($label)->limit(100) !!}
+                            {!! tr($label) !!}
                         </span>
                     @endif
-                @endif
+                </div>
             </li>
 
-            @if ($i !== array_key_last($trails))
+            @if ($i !== array_key_last($breadcrumbs))
                 <li class="flex shrink-0">
-                    <x-icon name="chevron-right" size="10" class="m-auto"/>
+                    <x-icon name="chevron-right" class="m-auto text-xs text-gray-400"/>
                 </li>
             @endif
         @endforeach
