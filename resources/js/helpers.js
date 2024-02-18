@@ -150,14 +150,6 @@ window.deviceType = () => {
     return 'desktop'
 }
 
-// get youtube vid
-window.getYoutubeVid = (url) => {
-    const regex = /(?:youtube(?:-nocookie)?\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/
-    const matches = url.match(regex)
-
-    return matches ? matches[1] : null
-}
-
 // generate random string
 window.random = () => {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
