@@ -151,7 +151,7 @@ class User extends Authenticatable
     public function isRole($slugs, $strict = false) : bool
     {
         if (tier('root')) return true;
-        
+
         $roles = collect($slugs)->mapWithKeys(function($slug) {
             $substr = str()->slug(str_replace('*', '', $slug));
             $roleslug = optional($this->role)->slug;

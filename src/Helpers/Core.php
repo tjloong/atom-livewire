@@ -495,7 +495,7 @@ function role($name)
 {
     if (!user()) return;
 
-    return user()->isRole($name);
+    return user()->can('role', $name);
 }
 
 /**

@@ -23,7 +23,7 @@
                 <div class="flex items-center gap-2">
                     @if ($icon) <x-icon :name="$icon" class="text-gray-400 shrink-0"/> @endif
 
-                    @if ($href)
+                    @if ($href && $i !== array_key_last($breadcrumbs))
                         <a itemprop="item" href="{{ $href }}" class="text-gray-800 font-medium truncate">
                             <span itemprop="name">{!! tr($label) !!}</span>
                         </a>
