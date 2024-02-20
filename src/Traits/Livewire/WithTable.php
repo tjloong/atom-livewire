@@ -92,7 +92,9 @@ trait WithTable
         $query = (clone $this->query)->whereIn($this->query->getModel()->getTable().'.id', $id);
 
         if ($this->showArchived) {
-            $query->whereNotNull('archived_at')->get()->each(fn($row) => $row->markArchived(false));
+            $query->whereNotNull('archived_at')->get()->each(fn($row) => 
+                $row->eraseFootprint('archived')->save()
+            );
         }
         elseif ($this->showTrashed) {
             $query->onlyTrashed()->restore();
@@ -113,7 +115,7 @@ trait WithTable
             ->delete();
 
         $this->reset('checkboxes');
-        $this->popup('Moved to Trashed.');
+        $this->popup('app.label.trashed');
     }
 
     // empty trashed
@@ -124,7 +126,7 @@ trait WithTable
             ->forceDelete();
 
         $this->fill(['showTrashed' => false]);
-        $this->popup('Trashed Cleared.');
+        $this->popup('app.label.trash-cleared');
     }
 
     // move to archived
@@ -133,18 +135,17 @@ trait WithTable
         (clone $this->query)
             ->whereIn($this->query->getModel()->getTable().'.id', $id)
             ->get()
-            ->each(fn($row) => $row->markArchived());
+            ->each(fn($row) => $row->setFootprint('archived')->save());
 
         $this->reset('checkboxes');
-        $this->popup('Moved to Archived.');
+        $this->popup('app.label.archived');
     }
 
     // restore all archived
     public function restoreArchived() : void
     {
-        (clone $this->query)->whereNotNull('archived_at')->update([
-            'archived_at' => null,
-            'archived_by' => null,
-        ]);
+        (clone $this->query)->whereNotNull('archived_at')->each(fn($row) => 
+            $row->eraseFootprint('archived')->save()
+        );
     }
 }
