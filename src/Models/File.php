@@ -260,7 +260,7 @@ class File extends Model
     // check is authorized to read file
     public function auth() : bool
     {
-        return tier('root') || user('id') === $this->created_by;
+        return tier('root') || user('id') === $this->footprint('created.id');
     }
 
     // response
