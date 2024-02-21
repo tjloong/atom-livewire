@@ -21,9 +21,9 @@
                 placeholder="{{ tr($placeholder) }}"
                 {{ $attributes->except(['prefix', 'icon', 'postfix', 'unit', 'step', 'placeholder']) }}>
     
-            @if (isset($postfix)) {{ $postfix }}
-            @elseif ($postfix = $attributes->get('postfix') ?? $attributes->get('unit'))
-                <div class="shrink-0 text-gray-500 font-medium">{{ tr($postfix) }}</div>
+            @if (isset($suffix)) {{ $suffix }}
+            @elseif ($suffix = $attributes->get('suffix') ?? $attributes->get('unit'))
+                <div class="shrink-0 text-gray-500 font-medium">{{ tr($suffix) }}</div>
             @endif
         </div>
 
