@@ -80,4 +80,10 @@ class Blog extends Model
             ->when($status === enum('blog.status', 'DRAFT'), fn($q) => $q->whereNull('published_at'))
             ->when($status === enum('blog.status', 'PUBLISHED'), fn($q) => $q->whereNotNull('published_at'));
     }
+
+    // scope for label
+    public function scopeLabel($query, $label) : void
+    {
+        if ($label) $query->whereHas('labels', fn($q) => $q->whereIn('blog_labels.label_id', (array) $label));
+    }
 }

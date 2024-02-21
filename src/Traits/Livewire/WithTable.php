@@ -9,11 +9,13 @@ trait WithTable
 {
     use WithPagination;
 
-    public $tableSortOrder;
+    public $tableOrderBy;
+    public $tableOrderDesc;
+    public $tableShowTrashed;
+    public $tableShowArchived;
+
     public $tableMaxRows = 100;
-    public $checkboxes = [];
-    public $showTrashed = false;
-    public $showArchived = false;
+    public $tableCheckboxes = [];
 
     // get paginator property
     public function getPaginatorProperty() : mixed
@@ -23,60 +25,45 @@ trait WithTable
 
         $query = (clone $this->query);
 
-        if ($this->tableSortOrder) {
-            $order = explode(',', $this->tableSortOrder);
-            $query->orderBy($order[0], $order[1] ?? 'asc');
+        if ($this->tableOrderBy) {
+            $query->orderBy($this->tableOrderBy, $this->tableOrderDesc ? 'desc' : 'asc');
         }
 
-        if (has_column($query->getModel()->getTable(), 'archived_at')) {
-            if ($this->showArchived) $query->whereNotNull('archived_at');
+        if ($query->getModel()->tableHasColumn('archived_at')) {
+            if ($this->tableShowArchived) $query->whereNotNull('archived_at');
             else $query->whereNull('archived_at');
         }
 
-        if (has_column($query->getModel()->getTable(), 'deleted_at')) {
-            if ($this->showTrashed) $query->onlyTrashed();
+        if ($query->getModel()->tableHasColumn('deleted_at')) {
+            if ($this->tableShowTrashed) $query->onlyTrashed();
         }
 
         return $query->paginate($this->tableMaxRows);
     }
 
-    // get table property
-    public function getTableProperty() : array
-    {
-        return $this->paginator
-            ->through(fn($query) => $this->getTableColumns($query) ?: $query)
-            ->items();
-    }
-
     // updated filters
     public function updatedFilters() : void
     {
-        $this->reset([
-            'page',
-            'checkboxes',
-        ]);
+        $this->reset('page');
+        $this->reset('tableCheckboxes');
     }
 
-    // get table columns
-    public function getTableColumns($query) : array
+    // set table max rows
+    public function setTableMaxRows($n) : void
     {
-        return [];
-    }
-
-    // reset table sort order
-    public function resetTableSortOrder() : void
-    {
-        $this->reset('tableSortOrder');
+        $this->fill(['tableMaxRows' => $n]);
     }
 
     // reset filters
     public function resetFilters() : void
     {
+        $this->reset('page');
         $this->reset('filters');
+        $this->reset('tableCheckboxes');
     }
 
     // select checkbox
-    public function selectCheckbox($val) : void
+    public function selectTableCheckbox($val) : void
     {
         $checkboxes = collect($this->checkboxes);
         
@@ -87,7 +74,7 @@ trait WithTable
     }
 
     // restore
-    public function restore($id) : void
+    public function restoreTableRows($id) : void
     {
         $query = (clone $this->query)->whereIn($this->query->getModel()->getTable().'.id', $id);
 
@@ -101,51 +88,59 @@ trait WithTable
         }
 
         $this->reset([
-            'showArchived',
-            'showTrashed',
-            'checkboxes',
+            'tableShowArchived',
+            'tableShowTrashed',
+            'tableCheckboxes',
         ]);
     }
 
     // move to trashed
-    public function trash($id) : void
+    public function trashTableRows() : void
     {
         (clone $this->query)
-            ->whereIn($this->query->getModel()->getTable().'.id', $id)
+            ->whereIn($this->query->getModel()->getTable().'.id', $this->tableCheckboxes)
             ->delete();
 
-        $this->reset('checkboxes');
+        $this->reset('tableCheckboxes');
         $this->popup('app.label.trashed');
     }
 
-    // empty trashed
-    public function emptyTrashed($id = []) : void
-    {
-        (clone $this->query)->onlyTrashed()
-            ->when($id, fn($q) => $q->whereIn($this->query->getModel()->getTable().'.id', $id))
-            ->forceDelete();
-
-        $this->fill(['showTrashed' => false]);
-        $this->popup('app.label.trash-cleared');
-    }
-
     // move to archived
-    public function archive($id) : void
+    public function archiveTableRows() : void
     {
         (clone $this->query)
-            ->whereIn($this->query->getModel()->getTable().'.id', $id)
+            ->whereIn($this->query->getModel()->getTable().'.id', $this->tableCheckboxes)
             ->get()
             ->each(fn($row) => $row->setFootprint('archived')->save());
 
-        $this->reset('checkboxes');
+        $this->reset('tableCheckboxes');
         $this->popup('app.label.archived');
     }
 
-    // restore all archived
-    public function restoreArchived() : void
+    // delete
+    public function deleteTableRows() : void
     {
-        (clone $this->query)->whereNotNull('archived_at')->each(fn($row) => 
-            $row->eraseFootprint('archived')->save()
-        );
+        (clone $this->query)
+            ->whereIn($this->query->getModel()->getTable().'.id', $this->tableCheckboxes)
+            ->delete();
+
+        $this->reset('tableCheckboxes');
+        $this->popup('app.label.deleted');
+    }
+
+    // empty trashed
+    public function emptyTrashedTableRows() : void
+    {
+        (clone $this->query)->onlyTrashed()
+            ->when($this->tableCheckboxes, fn($q) => $q->whereIn($this->query->getModel()->getTable().'.id', $this->tableCheckboxes))
+            ->forceDelete();
+
+            $this->reset([
+                'tableShowArchived',
+                'tableShowTrashed',
+                'tableCheckboxes',
+            ]);
+
+            $this->popup('app.label.trash-cleared');
     }
 }

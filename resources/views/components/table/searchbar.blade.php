@@ -12,7 +12,7 @@
                 </div>
 
                 <div class="text-gray-500">
-                    {{ tr('common.label.row', $total) }}
+                    {{ tr('app.label.row', $total) }}
                 </div>
                 
                 @isset($tableMaxRows) 
@@ -22,7 +22,7 @@
                         <x-slot:anchor>
                             <div class="bg-gray-200 rounded-full text-sm font-medium leading-6 px-2 flex items-center gap-2 cursor-pointer">
                                 <div>
-                                    <span x-data x-text="$wire.get('tableMaxRows')"></span> / {{ tr('common.label.page') }}
+                                    {{ $this->tableMaxRows }} / {{ tr('app.label.page') }}
                                 </div>
                                 <x-icon name="chevron-down" size="10"/>
                             </div>
@@ -31,8 +31,8 @@
                         <div class="flex flex-col divide-y">
                             @foreach ([50, 100, 150, 200, 500] as $n)
                                 <x-dropdown.item 
-                                    :label="$n.' / '.tr('common.label.page')"
-                                    x-on:click="$wire.set('tableMaxRows', {{ $n }}); close()"/>
+                                    :label="$n.' / '.tr('app.label.page')"
+                                    wire:click="$set('tableMaxRows', {{ $n }})"/>
                             @endforeach
                         </div>
                     </x-dropdown>
@@ -59,7 +59,7 @@
                                 x-model="text"
                                 x-on:keydown.enter.stop="search"
                                 class="grow transparent"
-                                placeholder="{{ tr('common.label.search') }}">
+                                placeholder="{{ tr('app.label.search') }}">
 
                             <div class="shrink-0">
                                 <x-close x-show="!empty(text)" x-on:click.stop="text = null; search()"/>

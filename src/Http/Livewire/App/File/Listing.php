@@ -26,7 +26,7 @@ class Listing extends Component
         return model('file')
             ->filter($this->filters)
             ->whereNull('parent_id')
-            ->when(!$this->tableSortOrder, fn($q) => $q->latest());
+            ->when(!$this->tableOrderBy, fn($q) => $q->latest());
     }
 
     // delete

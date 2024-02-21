@@ -5,30 +5,24 @@
         </div>
 
         <div class="grow flex items-center gap-3">
-            @if ($this->showTrashed)
-                {{ tr('common.label.showing-trashed', ['count' => $count]) }}
+            @if ($this->tableShowTrashed)
+                {{ tr('app.label.showing-trashed', ['count' => $count]) }}
                 
-                <x-link label="common.label.clear"
-                    wire:key="table-clear-trashed"
-                    x-on:click="$dispatch('confirm', {
-                        title: '{{ tr('common.alert.clear-trashed.title') }}',
-                        message: '{{ tr('common.alert.clear-trashed.message') }}',
-                        type: 'error',
-                        onConfirmed: () => $wire.emptyTrashed(),
-                    })"/>
+                <x-link label="app.label.clear" wire:key="table-clear-trashed" x-on:click="$dispatch('confirm', {
+                    title: '{{ tr('app.alert.clear-trashed.title') }}',
+                    message: '{{ tr('app.alert.clear-trashed.message') }}',
+                    type: 'error',
+                    onConfirmed: () => $wire.emptyTrashedTableRows(),
+                })"/>
 
-                <x-link label="common.label.cancel"
-                    wire:click="$set('showTrashed', false)"
-                    wire:key="table-cancel-show-trashed"/>
+                <x-link label="app.label.cancel" wire:key="table-cancel-show-trashed" wire:click="$set('tableShowTrashed', false)"/>
             @else
-                {{ tr('common.label.trashed-count', ['count' => $count]) }}
+                {{ tr('app.label.trashed-count', ['count' => $count]) }}
 
-                <x-link label="common.label.show" 
-                    wire:key="table-show-trashed"
-                    x-on:click="
-                        $wire.set('showTrashed', true);
-                        $wire.set('showArchived', false)
-                    "/>
+                <x-link label="app.label.show" wire:key="table-show-trashed" x-on:click="() => {
+                    $wire.set('tableShowTrashed', true);
+                    $wire.set('tableShowArchived', false)
+                }"/>
             @endif
         </div>
     </div>

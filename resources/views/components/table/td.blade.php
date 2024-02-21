@@ -26,17 +26,19 @@
 @endphp
 
 @if ($value = $attributes->get('checkbox'))
-    <td 
-        wire:click.stop="selectCheckbox(@js($value))"
-        data-checkbox-value="{{ $value }}"
-        class="align-top py-3 px-2 w-10 cursor-pointer">
-        @if (in_array($value, $this->checkboxes))
-            <div class="mx-4 w-6 h-6 p-0.5 rounded shadow border border-theme border-2">
-                <div class="w-full h-full bg-theme"></div>
+    <td
+        x-on:click.stop="toggleCheckbox(@js($value))"
+        x-on:toggle-checkbox="toggleCheckbox(@js($value))"
+        class="align-top py-3 px-2 w-10 cursor-pointer"
+        data-table-checkbox
+        wire:key="{{ $value }}">
+        <div
+            x-bind:class="checkboxes.includes(@js($value)) ? 'border-theme border-2' : 'border-gray-300'"
+            class="mx-4 w-6 h-6 p-0.5 rounded shadow border bg-white">
+            <div x-show="checkboxes.includes(@js($value))" class="w-full h-full bg-theme flex text-white p-px">
+                <x-icon name="check" class="text-xs m-auto"/>
             </div>
-        @else
-            <div class="mx-4 w-6 h-6 p-0 5 rounded shadow border bg-white border-gray-300"></div>
-        @endif
+        </div>
     </td>
 @else
     <td 

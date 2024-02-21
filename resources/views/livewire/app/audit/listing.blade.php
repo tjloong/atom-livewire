@@ -15,7 +15,7 @@
         @foreach ($this->paginator->items() as $row)
             <x-table.tr wire:click="$emit('showAudit', {{ $row->id }})">
                 <x-table.td :timestamp="$row->created_at"/>
-                <x-table.td :label="$row->user->name"/>
+                <x-table.td :label="optional($row->user)->name"/>
                 <x-table.td :badges="$row->event->badge()"/>
                 <x-table.td :label="str($row->auditable_type)->headline()"/>
                 <x-table.td :tags="$row->tags"/>

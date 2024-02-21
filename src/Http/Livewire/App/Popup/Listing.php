@@ -25,6 +25,6 @@ class Listing extends Component
     {
         return model('popup')
             ->filter($this->filters)
-            ->when(!$this->tableSortOrder, fn($q) => $q->latest());
+            ->when(!$this->tableOrderBy, fn($q) => $q->latest());
     }
 }

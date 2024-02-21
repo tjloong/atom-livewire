@@ -25,7 +25,7 @@ class Listing extends Component
     {
         return model('banner')
             ->filter($this->filters)
-            ->when(!$this->tableSortOrder, fn($q) => $q->oldest('seq')->latest('id'));
+            ->when(!$this->tableOrderBy, fn($q) => $q->oldest('seq')->latest('id'));
     }
 
     // sort

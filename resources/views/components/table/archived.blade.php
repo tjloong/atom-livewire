@@ -5,24 +5,16 @@
         </div>
 
         <div class="grow flex items-center gap-3">
-            @if ($this->showArchived)
-                {{ tr('common.label.showing-archived', ['count' => $count]) }}
-                
-                <x-link label="common.label.restore"
-                    wire:click="restoreArchived"
-                    wire:key="table-restore-archived"/>
-
-                <x-link label="common.label.cancel"
-                    wire:click="$set('showArchived', false)"
-                    wire:key="table-cancel-show-archived"/>
+            @if ($this->tableShowArchived)
+                {{ tr('app.label.showing-archived', ['count' => $count]) }}
+                <x-link label="app.label.restore" wire:key="table-restore-archived" wire:click="restoreTableRows"/>
+                <x-link label="app.label.cancel" wire:key="table-cancel-show-archived" wire:click="$set('tableShowArchived', false)"/>
             @else
-                {{ tr('common.label.archived-count', ['count' => $count]) }}
-                <x-link label="common.label.show" 
-                    x-on:click="
-                        $wire.set('showArchived', true);
-                        $wire.set('showTrashed', false)
-                    "
-                    wire:key="table-show-archived"/>
+                {{ tr('app.label.archived-count', ['count' => $count]) }}
+                <x-link label="app.label.show" wire:key="table-show-archived" x-on:click="() => {
+                    Livewire.set('tableShowArchived', true)
+                    Livewire.set('tableShowTrashed', false)
+                }"/>
             @endif
         </div>
     </div>

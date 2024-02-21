@@ -252,6 +252,7 @@ return [
         'select-time' => 'Select Time',
         'select-user' => 'Select User',
         'select' => 'Select',
+        'selected' => 'Selected',
         'selected-count' => ':count Selected',
         'send-email' => 'Send Email',
         'send-request' => 'Send Request',

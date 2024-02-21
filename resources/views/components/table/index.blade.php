@@ -6,29 +6,13 @@
     x-cloak
     x-data="{
         sortable: @js($sortable),
-        checkboxes: [],
-        get isEmpty () {
-            const rows = Array.from($el.querySelectorAll('table > tbody > tr')).length
-            return rows <= 0
-        },
+        orderBy: @entangle('tableOrderBy'),
+        orderDesc: @entangle('tableOrderDesc'),
+        checkboxes: @entangle('tableCheckboxes').defer,
         toggleCheckbox (data) {
-            if (data === '*') {
-                this.checkboxes = this.checkboxes.length 
-                    ? [] 
-                    : Array
-                        .from($el.querySelectorAll('[data-table-checkbox]'))
-                        .map(elem => (elem.getAttribute('data-table-checkbox')))
-
-                this.$wire.set('checkboxes', this.checkboxes)
-            }
-            else {
-                const index = this.checkboxes.indexOf(data)
-
-                if (index > -1) this.checkboxes.splice(index, 1)
-                else this.checkboxes.push(data)
-
-                this.$wire.set('checkboxes', this.checkboxes)
-            }
+            const index = this.checkboxes.indexOf(data)
+            if (index > -1) this.checkboxes.splice(index, 1)
+            else this.checkboxes.push(data)
         },
     }"
     x-init="sortable && new Sortable($el.querySelector('tbody'), { onSort: () => {
