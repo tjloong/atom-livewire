@@ -48,16 +48,20 @@
                 }"
                 x-on:click="sort"
                 x-bind:class="isSorted && 'bg-gray-200 rounded'"
-                class="py-1 px-2 whitespace-nowrap cursor-pointer text-black font-semibold text-left flex items-center gap-2"
-                {{ $attributes->except(['label', 'sort']) }}>
-                <div class="grow truncate uppercase">
-                    {!! tr($label) !!}
-                </div>
+                {{ $attributes->class([
+                    'py-1 px-2 whitespace-nowrap cursor-pointer text-black font-semibold',
+                    $attributes->get('class', 'text-left'),
+                ])->except(['label', 'sort']) }}>
+                <div class="inline-flex items-center gap-2">
+                    <div class="uppercase">
+                        {!! tr($label) !!}
+                    </div>
 
-                <div class="shrink-0 text-gray-500 text-xs">
-                    <x-icon x-show="isSorted && orderDesc" name="chevron-up"/> 
-                    <x-icon x-show="isSorted && !orderDesc" name="chevron-down"/>
-                    <x-icon x-show="!isSorted" name="sort"/>
+                    <div class="shrink-0 text-gray-500 text-xs">
+                        <x-icon x-show="isSorted && orderDesc" name="chevron-up"/> 
+                        <x-icon x-show="isSorted && !orderDesc" name="chevron-down"/>
+                        <x-icon x-show="!isSorted" name="sort"/>
+                    </div>
                 </div>
             </div>
         @else
