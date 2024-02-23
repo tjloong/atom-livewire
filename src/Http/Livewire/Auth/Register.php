@@ -170,6 +170,7 @@ class Register extends Component
             'name' => data_get($data, 'name'),
             'email' => data_get($data, 'email'),
             'password' => bcrypt(data_get($data, 'password')),
+            'tier' => 'signup',
             'data' => data_get($data, 'data'),
             'email_verified_at' => now(),
             'login_at' => now(),
