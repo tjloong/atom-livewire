@@ -77,7 +77,7 @@ class Format
             $rounding = data_get($this->options, 'rounding', false);
             $bracket = data_get($this->options, 'bracket', false);
             $amount = $rounding ? (round((float) $this->value * 2, 1)/2) : $this->value;
-            $value = $symbol ? Number::currency($amount, $symbol) : Number::format($amount, 2);
+            $value = $symbol ? ($symbol.' '.Number::format($amount, 2)) : Number::format($amount, 2);
     
             return ($bracket && $this->value < 0) ? '('.str($value)->replaceFirst('-', '').')' : $value;
         }
