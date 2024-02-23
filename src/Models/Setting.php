@@ -47,7 +47,12 @@ class Setting extends Model
     // reset
     public function reset()
     {
-        $defaults = json_decode(file_get_contents(atom_path('resources/json/settings.json')), true);
+        $path = collect([
+            base_path('resources/json/settings.json'),
+            atom_path('resources/json/settings.json'),
+        ])->filter(fn($val) => file_exists($val))->first();
+
+        $defaults = json_decode(file_get_contents($path), true);
         $inserts = collect();
 
         foreach ($defaults as $key => $value) {
