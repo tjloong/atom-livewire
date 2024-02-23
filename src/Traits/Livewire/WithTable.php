@@ -34,11 +34,19 @@ trait WithTable
             else $query->whereNull('archived_at');
         }
 
-        if ($query->getModel()->tableHasColumn('deleted_at')) {
-            if ($this->tableShowTrashed) $query->onlyTrashed();
-        }
+        if ($query->getModel()->tableHasColumn('deleted_at') && $this->tableShowTrashed) $query->onlyTrashed();
+        else if ($filters = $this->getTableFilters()) $query->filter($filters);
 
         return $query->paginate($this->tableMaxRows);
+    }
+
+    // get is filters empty
+    public function getIsFiltersEmptyProperty() : bool
+    {
+        return !$this->filters || empty(collect($this->filter)->reject(fn($val) =>
+            is_null($val)
+            || (is_array($val) && !count($val))
+        ));
     }
 
     // updated filters
@@ -52,6 +60,18 @@ trait WithTable
     public function setTableMaxRows($n) : void
     {
         $this->fill(['tableMaxRows' => $n]);
+    }
+
+    // get table trashed count
+    public function getTableTrashedCount() : int
+    {
+        return (clone $this->query)->onlyTrashed()->count();
+    }
+
+    // get table filters
+    public function getTableFilters() : mixed
+    {
+        return $this->filters;
     }
 
     // reset filters
