@@ -2,8 +2,12 @@
 
 namespace Jiannius\Atom\Enums\Signup;
 
+use Jiannius\Atom\Traits\Enum;
+
 enum Status : string
 {
+    use Enum;
+
     case TRASHED = 'trashed';
     case BLOCKED = 'blocked';
     case ONBOARDED = 'onboarded';
@@ -17,20 +21,5 @@ enum Status : string
             static::ONBOARDED => 'green',
             static::NEW => 'yellow',
         };
-    }
-
-    public function label()
-    {
-        return str()->headline($this->value);
-    }
-
-    public function option()
-    {
-        return ['value' => $this->value, 'label' => $this->label()];
-    }
-
-    public function badge()
-    {
-        return [$this->color() => $this->value];
     }
 }

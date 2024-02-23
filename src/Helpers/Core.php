@@ -98,34 +98,6 @@ function has_component($name)
     ])->contains(fn($val) => file_exists(atom_ns_path($val)));
 }
 
-// enum
-function enum()
-{
-    $args = collect(func_get_args());
-
-    $name = collect(explode('.', $args->get(0)))
-        ->map(fn($val) => str($val)->singular()->studly()->toString())
-        ->join('\\');
-    
-    $ns = collect([
-        'App\\Enums\\'.$name,
-        'Jiannius\\Atom\\Enums\\'.$name,
-    ])->first(fn($val) => file_exists(atom_ns_path($val)));
-
-    if ($args->has(1)) {
-        if (is_null($args->get(1))) {
-            return defined("$ns::__DEFAULT")
-                ? $ns::__DEFAULT
-                : null;
-        }
-        else {
-            if ($ret = $ns::tryFrom($args->get(1))) return $ret;
-            if ($ret = constant("$ns::{$args->get(1)}")) return $ret;
-        }
-    }
-    else return collect($ns::cases());
-}
-
 /**
  * Recaptcha verification
  */
@@ -654,6 +626,15 @@ if (!function_exists('format')) {
     }
 }
 
+// enum
+if (!function_exists('enum')) {
+    function enum($name, $getter = null)
+    {
+        $enum = new \Jiannius\Atom\Services\Enum($name);
+        
+        return $getter ? $enum->get($getter) : $enum;
+    }
+}
 // translate
 if (!function_exists('tr')) {
     function tr($key, $count = 1, $params = [])
