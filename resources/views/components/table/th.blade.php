@@ -1,5 +1,6 @@
 @php
     $label = $attributes->get('label');
+    $align = $attributes->get('align', 'left');
     $sortBy = $attributes->get('sort');
     $checkbox = $attributes->get('checkbox', false);
 @endphp
@@ -48,10 +49,12 @@
                 }"
                 x-on:click="sort"
                 x-bind:class="isSorted && 'bg-gray-200 rounded'"
-                {{ $attributes->class([
-                    'py-1 px-2 whitespace-nowrap cursor-pointer text-black font-semibold',
-                    $attributes->get('class', 'text-left'),
-                ])->except(['label', 'sort']) }}>
+                class="py-1 px-2 whitespace-nowrap cursor-pointer text-black font-semibold {{ pick([
+                    'text-left' => $align === 'left',
+                    'text-center' => $align === 'center',
+                    'text-right' => $align === 'right',
+                ]) }}"
+                {{ $attributes->except(['label', 'sort', 'align']) }}>
                 <div class="inline-flex items-center gap-2">
                     <div class="uppercase">
                         {!! tr($label) !!}
@@ -65,7 +68,11 @@
                 </div>
             </div>
         @else
-            <div class="py-1 px-2 whitespace-nowrap uppercase text-gray-500 text-left">
+            <div class="py-1 px-2 whitespace-nowrap uppercase text-gray-500 {{ pick([
+                'text-left' => $align === 'left',
+                'text-center' => $align === 'center',
+                'text-right' => $align === 'right',
+            ]) }}" {{ $attributes->except(['align', 'label', 'sort']) }}>
                 {!! tr($label) !!}
             </div>
         @endif

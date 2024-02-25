@@ -44,7 +44,7 @@
                 </tbody>
 
                 @isset($tfoot)
-                    <tfoot>
+                    <tfoot class="border-t">
                         {{ $tfoot }}
                     </tfoot>
                 @endisset

@@ -61,13 +61,6 @@ function colors($name = null)
     return $colors->collapse()->values()->all();
 }
 
-// get name abbreviation
-function name_abbr($name, $len = 2)
-{
-    $abbr = str($name)->slug()->split('/-/')->map(fn($val) => str($val)->upper()->charAt(0))->join('');
-    return $len ? str($abbr)->substr(0, $len) : $abbr;
-}
-
 // explode if separator matched
 function explode_if($separator, $string)
 {
@@ -635,6 +628,15 @@ if (!function_exists('enum')) {
         return $getter ? $enum->get($getter) : $enum;
     }
 }
+
+// pick
+if (!function_exists('pick')) {
+    function pick($collection)
+    {
+        return collect($collection)->filter()->keys()->first();
+    }
+}
+
 // translate
 if (!function_exists('tr')) {
     function tr($key, $count = 1, $params = [])

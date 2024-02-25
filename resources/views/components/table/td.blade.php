@@ -1,112 +1,190 @@
-@props([
-    'getImage' => function() use ($attributes) {
-        $src = $attributes->get('image') ?? $attributes->get('avatar');
-        $placeholder = $attributes->get('placeholder');
-
-        return $src || $placeholder ? [
-            'src' => $src,
-            'placeholder' => $placeholder,
-            'is_avatar' => $attributes->has('avatar'),
-        ] : null;
-    }
-])
-
 @php
     $date = $attributes->get('date');
+    $href = $attributes->get('href');
+    $align = $attributes->get('align', 'left');
+    $valign = $attributes->get('valign', 'top');
+    $human = $attributes->get('human');
+    $label = $attributes->get('label');
+    $limit = $attributes->get('limit');
+    $trans = $attributes->get('trans');
+    $caption = $attributes->get('caption') ?? $attributes->get('small');
+    $colspan = $attributes->get('colspan');
+    $sprintf = $attributes->get('sprintf') ?? $attributes->get('printf');
+    $tooltip = $attributes->get('tooltip');
+    $checkbox = $attributes->get('checkbox');
+    $currency = $attributes->get('currency');
     $datetime = $attributes->get('datetime');
     $timestamp = $attributes->get('timestamp');
+    $percentage = $attributes->get('percentage');
 
     $tags = $attributes->get('tags') ?? $attributes->get('tag');
     $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->map(fn($val) => trim($val))->filter();
-
+    
     $badges = is_bool($attributes->get('active'))
         ? ($attributes->get('active') ? ['green' => 'active'] : ['gray' => 'inactive'])
         : ($attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status'));
     $badges = collect(is_string($badges) ? explode(',', $badges) : $badges)->map(fn($val) => trim($val))->filter();
+
+    $image = $attributes->has('image') ? $attributes->get('image') : false;
+    $image = $image instanceof \App\Models\File ? $image->url : $image;
+
+    $avatar = $attributes->has('avatar') ? $attributes->get('avatar') : false;
+    $avatar = $avatar instanceof \App\Models\File ? $avatar->url : $avatar;
+
+    $element = $href ? 'a' : 'div';
+    $except = [
+        'active', 
+        'align',
+        'avatar', 
+        'badges', 
+        'checkbox', 
+        'colspan',
+        'date', 
+        'datetime', 
+        'from-now', 
+        'image',
+        'label',
+        'limit',
+        'printf',
+        'small',
+        'sprintf',
+        'status', 
+        'tags', 
+        'tooltip',
+        'trans',
+    ];
+
+    if ($date && $human) $body = format($date, 'human')->value();
+    elseif ($date) $body = format($date)->value();
+    elseif ($datetime) $body = format($datetime)->value().' <br><span class="text-sm uppercase text-gray-500">'.format($datetime, 'time')->value().'</span>';
+    elseif ($timestamp) $body = format($timestamp, 'datetime')->value();
+    elseif (str($label)->length() > 0) {
+        if ($currency && is_numeric($label)) $body = format($label, $currency)->value();
+        elseif ($percentage && is_numeric($label)) $body = str($label)->finish('%')->toString();
+        elseif (is_numeric($limit)) {
+            $body = str($label)->limit($limit)->toString();
+            if (str($label)->length() > $limit && !$tooltip) $tooltip = $label;
+        }
+        else $body = $label;
+    }
+    elseif ($trans) {
+        $params = collect($trans);
+        $key = $params->shift();
+        $body = tr($key, ...$params);
+    }
+    elseif ($sprintf) {
+        $params = collect($sprintf);
+        $format = $params->shift();
+        $body = sprintf($format, ...$params);
+    }
+    elseif (!$image && !$avatar && !$tags->count() && !$badges->count()) $body = '--';
+    else $body = null;
 @endphp
 
-@if ($value = $attributes->get('checkbox'))
+@if ($checkbox)
     <td
-        x-on:click.stop="toggleCheckbox(@js($value))"
-        x-on:toggle-checkbox="toggleCheckbox(@js($value))"
+        x-on:click.stop="toggleCheckbox(@js($checkbox))"
+        x-on:toggle-checkbox="toggleCheckbox(@js($checkbox))"
         class="align-top py-3 px-2 w-10 cursor-pointer"
         data-table-checkbox
-        wire:key="{{ $value }}">
+        wire:key="{{ $checkbox }}">
         <div
-            x-bind:class="checkboxes.includes(@js($value)) ? 'border-theme border-2' : 'border-gray-300'"
+            x-bind:class="checkboxes.includes(@js($checkbox)) ? 'border-theme border-2' : 'border-gray-300'"
             class="mx-4 w-6 h-6 p-0.5 rounded shadow border bg-white">
-            <div x-show="checkboxes.includes(@js($value))" class="w-full h-full bg-theme flex text-white p-px">
+            <div x-show="checkboxes.includes(@js($checkbox))" class="w-full h-full bg-theme flex text-white p-px">
                 <x-icon name="check" class="text-xs m-auto"/>
             </div>
         </div>
     </td>
+@elseif ($slot->isNotEmpty())
+    <td colspan="{{ $colspan }}" class="{{ $attributes->get('class', 'py-3 px-4 whitespace-nowrap') }}">
+        {{ $slot }}
+    </td>
 @else
-    <td 
-        class="py-3 px-4 whitespace-nowrap {{ $attributes->get('class', 'align-top') }} {{ $getImage() ? 'w-4' : '' }}"
-        {{ $attributes->except(['checkbox', 'status', 'active', 'tags', 'badges', 'date', 'datetime', 'from-now', 'avatar', 'image', 'class']) }}>
-        @if ($badges->count())
-            <div class="inline-flex flex-wrap gap-1 items-center">
-                @foreach ($badges as $key => $badge)
-                    <x-badge :label="$badge" :color="is_string($key) ? $key : null"/>
-                @endforeach
-            </div>
-        @elseif ($tags->count())
-            <div class="inline-flex flex-wrap gap-1 items-center">
-                @foreach ($tags->take(2) as $tag)
-                    <x-badge label="{!! str()->limit($tag, 30) !!}"/>
-                @endforeach
+    <td
+        x-data="{ tooltip: false }"
+        x-on:mouseover="tooltip = true"
+        x-on:mouseout="tooltip = false"
+        colspan="{{ $colspan }}"
+        class="relative whitespace-nowrap align-{{ $valign }}">
+        <{{$element}} 
+            {{ $attributes->class([
+                'py-3 px-4 inline-flex gap-3 w-full',
+                pick([
+                    'items-start' => $valign === 'top',
+                    'items-center' => $valign === 'center',
+                    'items-end' => $valign === 'bottom',
+                ]),
+                pick([
+                    'justify-start' => $align === 'left',
+                    'justify-center' => $align === 'center',
+                    'justify-end' => $align === 'right',
+                ]),
+                $attributes->hasLike('wire:*', 'x-*') || $href ? 'cursor-pointer text-blue-600' : null,
+            ])->except($except) }}>
+            @if ($image !== false || $avatar !== false || $body)
+                <div class="shrink-0 grow flex items-center gap-3">
+                    @if ($image !== false)
+                        <div class="shrink-0">
+                            <figure class="w-12 h-12 rounded-md border bg-gray-200 flex items-center justify-center overflow-hidden">
+                                @if (!$image) <x-icon name="image" class="text-gray-400 text-lg"/>
+                                @else <img src="{{ $image }}" class="w-full h-full object-cover">
+                                @endif
+                            </figure>
+                        </div>
+                    @endif
 
-                @if ($tags->count() > 2)
-                    <x-badge :label="'+'.($tags->count() - 2)"/>
-                @endif
-            </div>
-        @elseif ($date)
-            @if ($attributes->get('human')) {{ format($date, 'human') }}
-            @else {{ format($date) }}
+                    @if ($avatar !== false)
+                        <div class="shrink-0">
+                            <figure class="w-12 h-12 rounded-full border bg-gray-200 flex items-center justify-center overflow-hidden">
+                                @if ($body) <span class="text-gray-500 font-extrabold">{{ format($body)->abbr() }}</span>
+                                @else <img src="{{ $avatar }}" class="w-full h-full object-cover"/>
+                                @endif
+                            </figure>
+                        </div>
+                    @endif
+
+                    @if ($body)
+                        <div class="grow flex flex-col text-{{ $align }}">
+                            <div class="{{ $href || $caption ? 'font-medium' : '' }}">{!! $body !!}</div>
+                            @if ($caption) <div class="text-sm text-gray-500">{!! $caption !!}</div> @endif
+                        </div>
+                    @endif
+                </div>
             @endif
-        @elseif ($datetime)
-            <div>{{ format($datetime) }}</div>
-            <div class="text-sm text-gray-500">{{ format($datetime, 'time') }}</div>
-        @elseif ($timestamp)
-            {{ format($timestamp, 'datetime') }}
-        @elseif ($image = $getImage())
-            <x-image :src="data_get($image, 'src')"
-                :avatar="data_get($image, 'is_avatar')"
-                :placeholder="data_get($image, 'placeholder')"
-                size="40x40"
-                color="purple"/>
-        @elseif ($attributes->get('dropdown'))
-            <x-dropdown icon="ellipsis-vertical">
-                {{ $slot }}
-            </x-dropdown>
-        @elseif (isset($label) || $slot->isNotEmpty())
-            <div class="grid">
-                @if ($href = $attributes->get('href'))
-                    <a 
-                        href="{!! $href !!}" 
-                        class="{{ $tooltip ? '' : 'truncate' }}" 
-                        target="{{ $attributes->get('target', '_self') }}"
-                        @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
-                    >
-                        {{ $label ?: (($slot->isNotEmpty() ? $slot : null) ?? '--') }}
-                    </a>
-                @else
-                    <div 
-                        class="{{ collect([
-                            $tooltip ? null : 'truncate',
-                            $attributes->has('wire:click') || $attributes->has('x-on:click') ? 'cursor-pointer font-semibold text-blue-500' : null,
-                        ])->filter()->join(' ') }}"
-                        @if ($tooltip) x-tooltip="{{ $tooltip }}" @endif
-                    >
-                        {{ $label ?: (($slot->isNotEmpty() ? $slot : null) ?? '--') }}
-                    </div>
-                @endif
 
-                @if ($small = $attributes->get('small'))
-                    <div class="text-sm text-gray-500 truncate font-medium">
-                        {!! $small !!}
-                    </div>
-                @endif
+            @if ($badges->count() || $tags->count())
+                <div class="grow inline-flex flex-wrap gap-1 items-center {{
+                    pick([
+                        'justify-start' => $align === 'left' && empty($body),
+                        'justify-center' => $align === 'center' && empty($body),
+                        'justify-end' => $align === 'right' || !empty($body),
+                    ])
+                }}">
+                    @foreach ($badges as $key => $badge)
+                        <x-badge :label="$badge" :color="is_string($key) ? $key : null"/>
+                    @endforeach
+
+                    @foreach ($tags->take(2) as $tag)
+                        <x-badge label="{!! str()->limit($tag, 30) !!}"/>
+                    @endforeach
+
+                    @if ($tags->count() > 2)
+                        <x-badge :label="'+'.($tags->count() - 2)"/>
+                    @endif
+                </div>
+            @endif
+        </{{ $element }}>
+
+        @if ($tooltip)
+            <div x-show="tooltip" class="absolute z-30 bottom-full bg-black/80 text-white text-sm rounded-md px-2 py-1 {{
+                pick([
+                    'left-2' => $align === 'left',
+                    'left-1/2 -translate-x-1/2' => $align === 'center',
+                    'right-2' => $align === 'right',
+                ])
+            }}">
+                {!! $tooltip !!}
             </div>
         @endif
     </td>

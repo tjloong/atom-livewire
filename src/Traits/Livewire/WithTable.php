@@ -71,7 +71,7 @@ trait WithTable
     // get table filters
     public function getTableFilters() : mixed
     {
-        return $this->filters;
+        return $this->filters ?? null;
     }
 
     // reset filters

@@ -112,4 +112,18 @@ class Format
 
         return null;
     }
+
+    // abbreviation
+    public function abbr($len = 2) : mixed
+    {
+        if (is_string($this->value)) {
+            $splits = str($this->value)->slug()->split('/-/');
+            $splits = $splits->count() === 1 ? collect(mb_str_split($splits->first())) : $splits;
+            $abbr = $splits->map(fn($val) => str($val)->upper()->charAt(0))->join('');
+
+            return $len ? str($abbr)->substr(0, $len) : $abbr;
+        }
+
+        return null;
+    }
 }
