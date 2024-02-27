@@ -21,7 +21,8 @@
         $dispatch('sorted', values)
     }})"
     class="relative flex flex-col divide-y bg-white border shadow rounded-lg"
-    {{ $attributes->wire('sorted') }}>
+    {{ $attributes->wire('sorted') }}
+    {{ $attributes->wire('key') }}>
     @isset($header) {{ $header }} @endif
 
     @if ($slot->isEmpty())
