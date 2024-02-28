@@ -57,7 +57,7 @@
                             <input type="text"
                                 x-ref="text"
                                 x-model="text"
-                                x-on:keydown.enter.stop="search"
+                                x-on:keydown.enter.prevent="search"
                                 class="grow transparent"
                                 placeholder="{{ tr('app.label.search') }}">
 
