@@ -43,6 +43,10 @@
             </div>
         </div>
     @else
-        {!! $label !!}
+        <div class="grid">
+            <div class="truncate">
+                {!! $label !!}
+            </div>
+        </div>
     @endif
 </span>

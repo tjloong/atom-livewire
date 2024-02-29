@@ -68,6 +68,7 @@ return [
         'create-label' => 'Create Label',
         'create-popup' => 'Create Pop-Up',
         'create-user' => 'Create User',
+        'created-by' => 'Created By',
         'created-date' => 'Created Date',
         'created-on' => 'Created on :date',
         'currency' => 'Currency|Currencies',
