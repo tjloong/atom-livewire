@@ -1,7 +1,8 @@
 @php
     $icon = $attributes->get('icon');
     $label = tr($attributes->get('label'));
-    $color = $attributes->get('color', 'gray');
+    $color = $attributes->get('color', 'white');
+    $inverted = $attributes->get('inverted', true);
 
     $size = collect([
         'xs' => $attributes->get('xs'),
@@ -19,18 +20,18 @@
 @endphp
 
 <span style="
-    background-color: {{ in_array($color, ['white', 'black']) ? $color : colors("$color.inverted") }}; 
-    color: {{ in_array($color, ['white', 'black']) ? colors("$color.inverted") : colors($color) }};
-    border: 1px solid {{ in_array($color, ['white', 'black']) ? $color : colors("$color.light") }};"
-    {{ $attributes->class([
-        'px-2 inline-block font-semibold rounded-md',   
-        [
-            'xs' => 'text-xs',
-            'sm' => 'text-sm',
-            'md' => 'text-base',
-            'lg' => 'text-lg',
-        ][$size],
-    ]) }}>
+    background-color: {{ $inverted ? color($color)->inverted() : color($color) }};
+    color: {{ $inverted ? color($color) : color($color)->inverted() }};
+    border: 1px solid {{ color($color) }};
+" {{ $attributes->class([
+    'px-2 inline-block font-semibold rounded-md',   
+    [
+        'xs' => 'text-xs',
+        'sm' => 'text-sm',
+        'md' => 'text-base',
+        'lg' => 'text-lg',
+    ][$size],
+]) }}>
     @if ($slot->isNotEmpty()) {{ $slot }}
     @elseif ($icon)
         <div class="-mx-2 leading-none flex items-center">

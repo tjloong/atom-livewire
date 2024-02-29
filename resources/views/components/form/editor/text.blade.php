@@ -73,7 +73,7 @@
 
     <x-form.editor.dropdown icon="droplet" tooltip="Text Color">
         <div class="grid grid-cols-11 w-max p-1">
-            @foreach (colors() as $color)
+            @foreach (colors()->all() as $color)
                 <div x-on:click="commands().setColor(@js($color)); close()"
                     class="w-5 h-5 hover:border-2 hover:border-gray-400"
                     style="background-color: {{ $color }};"></div>
@@ -88,7 +88,7 @@
 
     <x-form.editor.dropdown icon="highlighter" tooltip="Highlight">
         <div class="grid grid-cols-11 w-max p-1">
-            @foreach (colors() as $color)
+            @foreach (colors()->all() as $color)
                 <div x-on:click="commands().setHighlight(@js($color)); close()"
                     class="w-5 h-5 hover:border-2 hover:border-gray-400"
                     style="background-color: {{ $color }};"></div>

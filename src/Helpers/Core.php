@@ -19,48 +19,6 @@ function version()
     }
 }
 
-// colors
-function colors($name = null)
-{
-    $colors = collect(json_decode(file_get_contents(atom_path('resources/json/colors.json')), true));
-
-    if ($name) {
-        $hex = str($name)->is('*.*') ? head(explode('.', $name)) : $name;
-        $var = str($name)->is('*.*') ? last(explode('.', $name)) : null;
-
-        if (str($hex)->is('#*')) {
-            $group = $colors->where(fn($val) => in_array($hex, $val))->first();
-            $len = count($group);
-            $pos = collect($group)->search($hex);
-
-            if ($var === 'inverted') {
-                if ($pos <= 3) return '#ffffff';
-
-                $pos = $pos - 4;
-                if ($pos < 0) $pos = 0;
-
-                return $group[$pos];
-            }
-            elseif ($var === 'light') {
-                if ($pos <= 3) return $hex;
-                return $group[$pos - 2];
-            }
-            elseif ($var === 'dark') {
-                $pos = $pos + 4;
-                if ($pos > $len - 1) $pos = $len - 1;
-                return $group[$pos];
-            }
-            else return $hex;
-        }
-        else if ($hex === 'white') return $var === 'inverted' ? '#000000' : '#ffffff';
-        else if ($hex === 'black') return $var === 'inverted' ? '#ffffff' : '#000000';
-        else if (in_array($hex, ['gray', 'zinc', 'neutral'])) return colors(collect(['slate', $var])->filter()->join('.'));
-        else if ($color = data_get($colors, "$hex.4")) return colors(collect([$color, $var])->filter()->join('.'));
-    }
-
-    return $colors->collapse()->values()->all();
-}
-
 // explode if separator matched
 function explode_if($separator, $string)
 {
@@ -601,6 +559,14 @@ function date_range($from, $to, $tz = 'UTC')
 function replace_in_file($search, $replace, $path)
 {
     file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
+}
+
+// color
+if (!function_exists('color')) {
+    function color($hex)
+    {
+        return new \Jiannius\Atom\Services\Color($hex);
+    }
 }
 
 // youtube

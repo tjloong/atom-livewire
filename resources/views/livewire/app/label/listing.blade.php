@@ -25,7 +25,7 @@
 
                 @if ($label->color)
                     <div class="shrink-0">
-                        <div class="w-5 h-5 rounded-full border shadow" style="background-color: {{ colors($label->color) }}"></div>
+                        <div class="w-5 h-5 rounded-full border shadow" style="background-color: {{ color($label->color) }}"></div>
                     </div>
                 @endif
 

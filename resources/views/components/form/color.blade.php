@@ -40,7 +40,7 @@
             x-transition.opacity
             class="absolute z-40 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden mt-px">
             <div class="grow grid grid-cols-11 gap-1 p-2 max-h-[300px] overflow-auto">
-                @foreach (colors() as $color)
+                @foreach (colors()->all() as $color)
                     <div
                         x-on:click="value = @js($color)"
                         x-bind:style="{ backgroundColor: @js($color) }"
