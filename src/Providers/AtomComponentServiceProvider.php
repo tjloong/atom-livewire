@@ -44,6 +44,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'cdn-scripts',
             'alpine-data',
             'announcement',
+            'media-object',
             'page-overlay',
             'social-share',
             'contact-card',

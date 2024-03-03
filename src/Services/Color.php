@@ -9,9 +9,9 @@ class Color
     public $variation;
 
     // contructor
-    public function __construct($input)
+    public function __construct($input = null)
     {
-        $this->input = str($input)->lower()->toString();
+        $this->input = $input ? str($input)->lower()->toString() : null;
         $this->options = collect(json_decode(file_get_contents(atom_path('resources/json/colors.json')), true));
     }
 

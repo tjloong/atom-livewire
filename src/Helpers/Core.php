@@ -563,7 +563,7 @@ function replace_in_file($search, $replace, $path)
 
 // color
 if (!function_exists('color')) {
-    function color($hex)
+    function color($hex = null)
     {
         return new \Jiannius\Atom\Services\Color($hex);
     }

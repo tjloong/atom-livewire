@@ -247,6 +247,7 @@ return [
         'select-date' => 'Select Date',
         'select-datetime' => 'Select Date & Time',
         'select-gender' => 'Select Gender',
+        'select-label' => 'Select Label',
         'select-none' => 'Select None',
         'select-option' => 'Select an option',
         'select-state' => 'Select State',

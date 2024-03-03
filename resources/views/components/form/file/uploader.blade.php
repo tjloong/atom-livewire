@@ -73,7 +73,7 @@
         class="inline-flex flex-wrap items-center gap-3 cursor-pointer">
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
-            <x-button icon="upload" label="common.label.upload"/>
+            <x-button icon="upload" label="app.label.upload"/>
 
             @if ($dropzone)
                 <x-form.file.dropzone :max="$max" class="grow"/>

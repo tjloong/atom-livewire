@@ -1,6 +1,6 @@
 @php
     $label = $attributes->get('label');
-    $icon = $attributes->get('icon');
+    $icon = explode('--', $attributes->get('icon'));
     $position = $attributes->get('position', 'start');
     $href = $attributes->get('href');
     $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
@@ -29,7 +29,7 @@
     $class = collect([
         $block ? 'flex w-full' : 'inline-flex',
         $disabled ? 'pointer-events-none opacity-50' : null,
-        'items-center justify-center gap-1.5 font-medium tracking-wide rounded-md',
+        'items-center justify-center gap-2 font-medium tracking-wide rounded-md',
         'transition-colors duration-200 focus:ring-2 focus:ring-offset-2',
 
         $icon && !$label ? [
@@ -93,22 +93,29 @@
 @endphp
 
 @if ($href)
-    <a href="{{ $href }}" target="{{ $target }}" rel="{{ $rel }}" class="{{ $class }}"
-        {{ $attributes->except($except) }}>
+    <a href="{{ $href }}" target="{{ $target }}" rel="{{ $rel }}" class="{{ $class }}" {{ $attributes->except($except) }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
-            @if ($icon && $position === 'start') <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
-            {{ tr($label) }}
-            @if ($icon && $position === 'end') <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
+            @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon[0]" class="m-auto"/></div> @endif
+
+            @if (is_array($label)) {!! tr(...$label) !!}
+            @else {!! tr($label) !!}
+            @endif
+
+            @if ($icon && isset($icon[1])) <div class="shrink-0 flex"><x-icon :name="$icon[1]" class="m-auto"/></div> @endif
         @endif
     </a>
 @else
     <button class="{{ $class }}" {{ $attributes->merge(['type' => 'button'])->except($except) }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
-            @if ($icon && $position === 'start') <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
-            {{ tr($label) }}
-            @if ($icon && $position === 'end') <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
+            @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon[0]" class="m-auto"/></div> @endif
+
+            @if (is_array($label)) {!! tr(...$label) !!}
+            @else {!! tr($label) !!}
+            @endif
+
+            @if ($icon && isset($icon[1])) <div class="shrink-0 flex"><x-icon :name="$icon[1]" class="m-auto"/></div> @endif
         @endif
     </button>
 @endif

@@ -1,7 +1,7 @@
 @php
     $icon = $attributes->get('icon');
     $label = tr($attributes->get('label'));
-    $color = $attributes->get('color', 'white');
+    $color = $attributes->get('color', 'gray');
     $inverted = $attributes->get('inverted', true);
 
     $size = collect([
