@@ -2,6 +2,8 @@
 
 return [
     'label' => [
+        'allow-all' => 'Allow All',
+        'forbid-all' => 'Forbid All',
         'accept' => 'Accept',
         'account' => 'Account',
         'active-date' => 'Active Date',

@@ -32,4 +32,31 @@ trait Permissions
 
         return false;
     }
+
+    // get permissions list
+    public function getPermissionsList() : array
+    {
+        return collect(model('permission')->permissions())->mapWithKeys(fn($actions, $module) => [
+            $module => collect($actions)->mapWithKeys(fn($action) => [
+                $action => $this->permissions()
+                    ->where('permission', $module.'.'.$action)
+                    ->count() > 0,
+            ])
+        ])->toArray();
+    }
+
+    // save permissions
+    public function savePermissions($permissions) : void
+    {
+        foreach ($permissions as $module => $actions) {
+            foreach ($actions as $action => $allow) {
+                $key = $module.'.'.$action;
+
+                if (!$allow) $this->permissions()->where('permission', $key)->delete();
+                else if (!$this->permissions()->where('permission', $key)->count()) {
+                    $this->permissions()->create(['permission' => $key]);
+                }
+            }
+        }
+    }
 }

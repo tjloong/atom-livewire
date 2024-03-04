@@ -32,6 +32,7 @@ class Update extends Component
                     'required' => 'Name is required.',
                     'max:255' => 'Name is too long (Max 255 characters).',
                 ],
+                'user.role_id' => ['required' => 'Role is required.'],
             ],
 
             $this->isLoginMethod(['email', 'email-verified']) ? [
@@ -64,27 +65,8 @@ class Update extends Component
                     }
                 ],
             ] : [],
-
-            has_table('roles') && !optional($this->user)->isTier('root') ? [
-                'user.role_id' => ['required' => 'Role is required.'],
-            ] : [],
         );
     }
-
-    // get permissions property
-    public function getPermissionsProperty() : mixed
-    {
-        if (!has_table('permissions')) return null;
-
-        return collect(model('permission')->getPermissionList())->mapWithKeys(fn($actions, $module) => [
-            $module => collect($actions)->mapWithKeys(fn($action) => [
-                $action => tier('root') || $this->user->permissions()
-                    ->where('permission', $module.'.'.$action)
-                    ->count(),
-            ])
-        ]);
-    }
-
 
     // create
     public function create() : void
@@ -96,7 +78,7 @@ class Update extends Component
     // update
     public function update($id) : void
     {
-        $this->user = model('user')->readable()->withTrashed()->find($id);
+        $this->user = model('user')->withTrashed()->find($id);
         $this->open();
     }
 
@@ -111,6 +93,7 @@ class Update extends Component
                 'inputs.password' => null,
                 'inputs.is_root' => $this->user->exists ? $this->user->isTier('root') : tier('root'),
                 'inputs.is_blocked' => !empty($this->user->blocked_at),
+                'inputs.permissions' => $this->user->getPermissionsList(),
             ]);
 
             $this->openDrawer('user-update');
@@ -155,19 +138,6 @@ class Update extends Component
         $this->close();
     }
 
-    // toggle permission
-    public function togglePermission($module, $action) : void
-    {
-        $key = $module.'.'.$action;
-
-        if ($permission = $this->user->permissions->firstWhere('permission', $key)) {
-            $permission->delete();
-        }
-        else {
-            $this->user->permissions()->create(['permission' => $key]);
-        }
-    }
-
     // submit
     public function submit() : void
     {
@@ -185,6 +155,7 @@ class Update extends Component
         }
         
         $this->user->save();
+        $this->user->savePermissions(data_get($this->inputs, 'permissions'));
 
         if ($this->user->wasRecentlyCreated) $this->emit('userCreated');
         else $this->emit('userUpdated');

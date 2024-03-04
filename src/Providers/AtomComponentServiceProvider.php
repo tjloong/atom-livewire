@@ -158,6 +158,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.textarea',
             'form.signature',
             'form.recaptcha',
+            'form.permission',
             'form.checkbox-select',
 
             'form.editor.index',
