@@ -1,6 +1,5 @@
 <div>
-    <x-button.social-login/>
-    <x-divider label="OR"/>
+    <x-button.social-login divider="OR"/>
     <div class="flex flex-col gap-4">
         <x-form recaptcha="register">
             <x-form.group>
