@@ -5,7 +5,7 @@
 @endphp
 
 <x-form.field {{ $attributes }}>
-    <div class="relative border rounded-lg flex flex-col divide-y overflow-hidden">
+    <div class="relative border rounded-lg flex flex-col divide-y overflow-hidden" {{ $attributes->wire('sorted') }}>
         @if ($slot->isNotEmpty())
             {{ $slot }}
         @else
@@ -37,7 +37,8 @@
             x-on:files-created="input($event.detail)"
             x-on:files-selected="input($event.detail)"
             x-on:files-uploaded="input($event.detail)"
-            class="w-full bg-slate-100">
+            class="w-full bg-slate-100"
+            {{ $attributes->wire('sorted') }}>
             @if ($enabledUrl)
                 <div x-show="isUrlMode" class="p-4 flex flex-col gap-4">
                     <x-form.file.url {{ $attributes }}/>
