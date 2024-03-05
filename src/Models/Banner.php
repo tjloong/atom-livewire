@@ -27,6 +27,25 @@ class Banner extends Model
         'end_at' => 'date',
     ];
 
+    // booted
+    protected static function booted() : void
+    {
+        static::updating(function($banner) {
+            if ($banner->isDirty('image_id')) {
+                optional(model('file')->find($banner->getOriginal('image_id')))->delete();
+            }
+
+            if ($banner->isDirty('mob_image_id')) {
+                optional(model('file')->find($banner->getOriginal('mob_image_id')))->delete();
+            }
+        });
+
+        static::deleting(function($banner) {
+            optional($banner->image)->delete();
+            optional($banner->mobile_image)->delete();
+        });
+    }
+
     // get image for banner
     public function image(): BelongsTo
     {
