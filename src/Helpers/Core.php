@@ -440,48 +440,6 @@ function format_filesize($value, $initUnit = 'B')
     return round($n, 2).' '.$units[$index];
 }
 
-/**
- * Format address
- */
-function format_address($value)
-{
-    $l1 = preg_replace('/,$/im', '', data_get($value, 'address_1'));
-    $l2 = preg_replace('/,$/im', '', data_get($value, 'address_2'));
-    $l3 = collect([data_get($value, 'zip'), data_get($value, 'postcode'), data_get($value, 'city')])->filter()->join(' ');
-    $l4 = collect([
-        data_get($value, 'state'), 
-        data_get(countries(data_get($value, 'country')), 'name'),
-    ])->filter()->join(' ');
-
-    $address = collect([$l1, $l2, $l3, $l4])->filter()->join(', ');
-
-    return empty($address) ? null : $address;
-}
-
-/**
- * Format date to string
- */
-function format_date($date, $format = 'date', $tz = null): mixed
-{
-    if (!$date) return $date;
-
-    if (!$date instanceof Carbon) {
-        if (validator(['date_value' => $date], ['date_value' => 'date'])->fails()) return $date;
-        $date = Carbon::parse($date);
-    }
-
-    $tz = $tz ?? user('pref.timezone') ?? config('atom.timezone');
-    $date = $date->timezone($tz);
-
-    if ($format === 'carbon') return $date;
-    else if ($format === 'date') return $date->format('d M Y');
-    else if ($format === 'datetime') return $date->format('d M Y g:iA');
-    else if ($format === 'time') return $date->format('g:i A');
-    else if ($format === 'time-full') return $date->format('g:i:s A');
-    else if ($format === 'human') return $date->diffForHumans();
-    else if ($format) return $date->format($format);
-}
-
 // format class path
 function format_class_path($path, $prefix = ''): mixed
 {

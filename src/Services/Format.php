@@ -85,6 +85,26 @@ class Format
         return null;
     }
 
+    // address
+    public function address() : mixed
+    {
+        $l1 = preg_replace('/,$/im', '', data_get($this->value, 'address_1') ?? data_get($this->value, 'addr_1'));
+        $l2 = preg_replace('/,$/im', '', data_get($this->value, 'address_2') ?? data_get($this->value, 'addr_2'));
+
+        $zip = data_get($this->value, 'zip') ?? data_get($this->value, 'postcode');
+        $city = data_get($this->value, 'city');
+        $l3 = collect([$zip, $city])->filter()->join(' ');
+
+        $state = data_get($this->value, 'state');
+        $country = data_get($this->value, 'country');
+        $country = data_get(countries($country), 'name');
+        $l4 = collect([$state, $country])->filter()->join(' ');
+
+        $address = collect([$l1, $l2, $l3, $l4])->filter()->join(', ');
+    
+        return empty($address) ? null : $address;
+    }
+
     // excerpt
     public function excerpt($len = null) : mixed
     {

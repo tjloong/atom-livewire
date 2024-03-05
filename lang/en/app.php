@@ -58,6 +58,7 @@ return [
         'completion-date' => 'Completion Date',
         'confirm-new-password' => 'Confirm New Password',
         'confirm-password' => 'Confirm Password',
+        'contact' => 'Contact',
         'contact-number' => 'Contact Number',
         'content' => 'Content',
         'continue-with-social-login' => 'Continue with :provider',
