@@ -21,7 +21,8 @@
         "laravel/sanctum": "^3.2",
         "laravel/pail": "^1.0",
         "phpoffice/phpword": "^1.1",
-        "consoletvs/profanity": "^3.3"
+        "consoletvs/profanity": "^3.3",
+        "calebporzio/sushi": "^2"
     },
     "require-dev": {
         "orchestra/testbench": "^8.0"

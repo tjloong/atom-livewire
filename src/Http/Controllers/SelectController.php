@@ -28,6 +28,19 @@ class SelectController extends Controller
         $this->options->push($opt);
     }
 
+    // states
+    public function states($params, $value) : void
+    {
+        if ($country = data_get($params, 'country')) {
+            collect(countries($country.'.states'))
+                ->sortBy('name')
+                ->each(fn($opt) => $this->setOption([
+                    'value' => data_get($opt, 'name'),
+                    'label' => data_get($opt, 'name')
+                ]));
+        }
+    }
+
     // currencies
     public function currencies() : void
     {
