@@ -123,10 +123,14 @@
                 $attributes->hasLike('wire:*', 'x-*') || $href ? 'cursor-pointer text-blue-600' : null,
             ])->except($except) }}>
             @if ($image !== false || $avatar !== false || $body)
-                <div class="shrink-0 grow flex items-center gap-3">
+                <div class="shrink-0 grow flex gap-3 {{ pick([
+                    'items-start' => $valign === 'top',
+                    'items-center' => $valign === 'center',
+                    'items-end' => $valign === 'bottom',
+                ]) }}">
                     @if ($image !== false)
                         <div class="shrink-0">
-                            <figure class="w-12 h-12 rounded-md border bg-gray-200 flex items-center justify-center overflow-hidden">
+                            <figure class="w-10 h-10 rounded-md border bg-gray-200 flex items-center justify-center overflow-hidden">
                                 @if (!$image) <x-icon name="image" class="text-gray-400 text-lg"/>
                                 @else <img src="{{ $image }}" class="w-full h-full object-cover">
                                 @endif
@@ -136,7 +140,7 @@
 
                     @if ($avatar !== false)
                         <div class="shrink-0">
-                            <figure class="w-12 h-12 rounded-full border bg-gray-200 flex items-center justify-center overflow-hidden">
+                            <figure class="w-10 h-10 rounded-full border bg-gray-200 flex items-center justify-center overflow-hidden">
                                 @if ($body) <span class="text-gray-500 font-extrabold">{{ format($body)->abbr() }}</span>
                                 @else <img src="{{ $avatar }}" class="w-full h-full object-cover"/>
                                 @endif

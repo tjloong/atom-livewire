@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Banner;
+namespace App\Http\Livewire\App\Banner;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithTable;
@@ -11,7 +11,9 @@ class Listing extends Component
 
     public $filters = [
         'search' => null,
-        'status' => null,
+        'type' => [],
+        'status' => [],
+        'placement' => [],
     ];
 
     protected $listeners = [
@@ -23,9 +25,7 @@ class Listing extends Component
     // get query property
     public function getQueryProperty() : mixed
     {
-        return model('banner')
-            ->filter($this->filters)
-            ->when(!$this->tableOrderBy, fn($q) => $q->oldest('seq')->latest('id'));
+        return model('banner')->when(!$this->tableOrderBy, fn($q) => $q->oldest('seq')->latest('id'));
     }
 
     // sort
@@ -35,15 +35,15 @@ class Listing extends Component
             model('banner')->find($id)->fill(['seq' => $seq])->save();
         }
 
-        $this->popup('common.alert.sorted');
+        $this->popup('app.alert.sorted');
     }
 
     // delete
     public function delete() : void
     {
-        if ($this->checkboxes) {
-            model('banner')->whereIn('id', $this->checkboxes)->delete();
-            $this->reset('checkboxes');
+        if ($this->tableCheckboxes) {
+            model('banner')->whereIn('id', $this->tableCheckboxes)->delete();
+            $this->reset('tableCheckboxes');
         }
     }
 }

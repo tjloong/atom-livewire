@@ -6,12 +6,12 @@
     <x-form.group>
         <x-box>
             <div class="flex flex-col divide-y">
-                <x-field label="common.label.name" :value="$enquiry->name"/>
-                <x-field label="common.label.phone" :value="$enquiry->phone"/>
-                <x-field label="common.label.email" :value="$enquiry->email"/>
+                <x-field label="app.label.name" :value="$enquiry->name"/>
+                <x-field label="app.label.phone" :value="$enquiry->phone"/>
+                <x-field label="app.label.email" :value="$enquiry->email"/>
         
                 <div class="p-4">
-                    <x-form.field label="common.label.message">
+                    <x-form.field label="app.label.message">
                         {!! nl2br($enquiry->message) !!}
                     </x-form.field>
                 </div>
@@ -20,11 +20,8 @@
     </x-form.group>
 
     <x-form.group>
-        <x-form.textarea label="common.label.remark"
-            wire:model.defer="enquiry.notes"/>
-
-        <x-form.select.enum label="common.label.status" enum="enquiry.status"
-            wire:model.defer="inputs.status"/>
+        <x-form.textarea wire:model.defer="enquiry.notes" label="app.label.remark"/>
+        <x-form.select.enum wire:model.defer="inputs.status" label="app.label.status" enum="enquiry.status"/>
     </x-form.group>
 @endif
 </x-form.drawer>

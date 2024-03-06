@@ -62,12 +62,30 @@ class Banner extends Model
     protected function status() : Attribute
     {
         return Attribute::make(
-            get: fn() => enum('banner.status', collect([
+            get: fn() => enum('banner.status', pick([
                 'INACTIVE' => !$this->is_active,
                 'ENDED' => $this->end_at && $this->end_at->isPast(),
                 'UPCOMING' => $this->start_at && $this->start_at->isFuture(),
                 'ACTIVE' => true,
-            ])->filter()->keys()->first()),
+            ])),
+        );
+    }
+
+    // attribute for type
+    protected function type() : Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => enum('banner.type', $value),
+            set: fn($value) => is_string($value) ? $value : optional($value)->value,
+        );
+    }
+
+    // attribute for placement
+    protected function placement() : Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => enum('banner.placement', $value),
+            set: fn($value) => is_string($value) ? $value : optional($value)->value,
         );
     }
 

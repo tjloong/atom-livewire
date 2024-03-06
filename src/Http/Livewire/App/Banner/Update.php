@@ -65,6 +65,7 @@ class Update extends Component
     // close
     public function close() : void
     {
+        $this->emit('setBannerId');
         $this->closeDrawer('banner-update');
     }
 

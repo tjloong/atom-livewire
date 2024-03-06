@@ -4,8 +4,9 @@
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
                     <x-form.group>
-                        <x-form.select.enum label="common.label.status" enum="banner.status"
-                            wire:model="filters.status"/>
+                        <x-form.select.enum wire:model="filters.type" label="app.label.type" enum="banner.type" multiple/>
+                        <x-form.select.enum wire:model="filters.placement" label="app.label.placement" enum="banner.placement" multiple/>
+                        <x-form.select.enum wire:model="filters.status" label="app.label.status" enum="banner.status" multiple/>
                     </x-form.group>
                 </x-table.filters>
             </x-table.searchbar>
@@ -14,32 +15,23 @@
         </x-slot:header>
 
         <x-slot:thead>
-            <x-table.th/>
-            <x-table.th label="banner.label.name" sort="name"/>
-            <x-table.th label="banner.label.type" sort="type"/>
-            <x-table.th label="banner.label.start-date" sort="start_at"/>
-            <x-table.th label="banner.label.end-date" sort="end_at"/>
-            <x-table.th label="banner.label.status"/>
+            <x-table.th label="app.label.banner" sort="name"/>
+            <x-table.th label="app.label.start-date" sort="start_at" align="right"/>
+            <x-table.th label="app.label.end-date" sort="end_at" align="right"/>
+            <x-table.th label="app.label.status" align="right"/>
         </x-slot:thead>
 
-        @foreach ($this->paginator->items() as $banner)
-            <x-table.tr data-sortable-id="{{ $banner->id }}"
-                class="cursor-pointer"
-                wire:click="$emit('updateBanner', {{ $banner->id }})">
-                <x-table.td :image="optional($banner->image)->url"/>
-                <x-table.td :label="$banner->name" class="font-medium"/>
-                <x-table.td :label="$banner->type"/>
-                <x-table.td :date="$banner->start_at"/>
-                <x-table.td :date="$banner->end_at"/>
-                <x-table.td :status="$banner->status->badge()"/>
+        @foreach ($this->paginator->items() as $row)
+            <x-table.tr data-sortable-id="{{ $row->id }}" wire:click="$emit('updateBanner', {{ $row->id }})">
+                <x-table.td :label="$row->name" 
+                    :image="optional($row->image)->url"
+                    :caption="$row->type->label()"
+                    class="font-medium"/>
+                <x-table.td :date="$row->start_at" align="right"/>
+                <x-table.td :date="$row->end_at" align="right"/>
+                <x-table.td :badges="$row->status->badge()" align="right"/>
             </x-table.td>
         @endforeach
-
-        <x-slot:empty>
-            <x-no-result
-                title="banner.empty.title"
-                subtitle="banner.empty.subtitle"/>
-        </x-slot:empty>
     </x-table>
 
     {!! $this->paginator->links() !!}

@@ -2,6 +2,12 @@
 
 return [
     'label' => [
+        'banner' => 'Banner|Banners',
+        'new-banner' => 'New Banner',
+        'create-banner' => 'Create Banner',
+        'link-url' => 'Link URL',
+        'placement' => 'Placement',
+        'image-for-mobile' => 'Image for mobile',
         'allow-all' => 'Allow All',
         'forbid-all' => 'Forbid All',
         'accept' => 'Accept',
