@@ -72,7 +72,6 @@ class CreateThumbnails implements ShouldQueue
                 'height' => $img->height(),
                 'extension' => $this->file->extension,
                 'data' => $this->file->data,
-                'created_by' => $this->file->created_by,
             ]);
 
             unlink($temp);
