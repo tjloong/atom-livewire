@@ -1,4 +1,4 @@
-<x-drawer id="notilog-show" wire:close="close()">
+<x-drawer wire:close="close()">
 @if (optional($notilog)->exists)
     <x-slot:heading title="app.label.outbox-log" :status="$notilog->status->badge()"></x-slot:heading>
     <x-slot:buttons delete></x-slot:buttons>

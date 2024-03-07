@@ -17,7 +17,7 @@
             <x-table.th label="app.label.date" sort="created_at"/>
             <x-table.th label="app.label.subject"/>
             <x-table.th label="app.label.to"/>
-            <x-table.th label="app.label.status" class="text-right"/>
+            <x-table.th label="app.label.status" align="right"/>
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $row)
@@ -26,7 +26,7 @@
                 <x-table.td :timestamp="$row->created_at"/>
                 <x-table.td :label="$row->subject"/>
                 <x-table.td :tags="$row->to"/>
-                <x-table.td :status="$row->status->badge()" class="text-right"/>
+                <x-table.td :badges="$row->status->badge()" align="right"/>
             </x-table.td>
         @endforeach
     </x-table>
