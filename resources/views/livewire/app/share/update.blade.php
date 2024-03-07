@@ -29,7 +29,7 @@
                     <x-form.number wire:model.debounce.400ms="share.valid_for" postfix="day(s)" class="w-1/2"/>
                     @if ($dt = $share->expired_at)
                         <div class="text-sm font-medium text-gray-500">
-                            {{ __('Share link will expired on :date', ['date' => format_date($dt)]) }}
+                            {{ __('Share link will expired on :date', ['date' => format($dt)]) }}
                         </div>
                     @endif
                 </div>

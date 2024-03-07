@@ -5,13 +5,13 @@
         </h1>
 
         @if ($date = $attributes->get('posted-at'))
-            <div class="text-gray-500 font-medium">{{ __('Posted on ') }} {{ format_date($date) }}</div>
+            <div class="text-gray-500 font-medium">{{ __('Posted on ') }} {{ format($date) }}</div>
         @elseif ($date = $attributes->get('published-at'))
-            <div class="text-gray-500 font-medium">{{ __('Published on ') }} {{ format_date($date) }}</div>
+            <div class="text-gray-500 font-medium">{{ __('Published on ') }} {{ format($date) }}</div>
         @endif
 
         @if ($date = $attributes->get('updated-at'))
-            <div class="text-gray-500 font-medium">{{ __('Updated on ') }} {{ format_date($date) }}</div>
+            <div class="text-gray-500 font-medium">{{ __('Updated on ') }} {{ format($date) }}</div>
         @endif
 
         <div>

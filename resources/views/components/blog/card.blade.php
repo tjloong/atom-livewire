@@ -18,7 +18,7 @@
         </div>
 
         <div class="text-gray-500 text-sm">
-            {{ format_date($date) }}
+            {{ format($date) }}
         </div>
     </a>
 @else
