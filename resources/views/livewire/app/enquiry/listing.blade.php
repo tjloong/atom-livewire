@@ -21,13 +21,13 @@
             <x-table.th label="app.label.status" align="right"/>
         </x-slot:thead>
 
-        @foreach ($this->paginator->items() as $enquiry)
-            <x-table.tr wire:click="$emit('updateEnquiry', {{ $enquiry->id }})">
-                <x-table.td :date="$enquiry->created_at"/>
-                <x-table.td :label="$enquiry->name" class="font-medium"/>
-                <x-table.td :label="$enquiry->phone"/>
-                <x-table.td :label="$enquiry->email"/>
-                <x-table.td :badges="$enquiry->status->badge()" align="right"/>
+        @foreach ($this->paginator->items() as $row)
+            <x-table.tr wire:click="$emit('updateEnquiry', {{ $row->id }})">
+                <x-table.td :date="$row->created_at"/>
+                <x-table.td :label="$row->name" class="font-medium"/>
+                <x-table.td :label="$row->phone"/>
+                <x-table.td :label="$row->email"/>
+                <x-table.td :badges="$row->status->badge()" align="right"/>
             </x-table.tr>
         @endforeach
     </x-table>

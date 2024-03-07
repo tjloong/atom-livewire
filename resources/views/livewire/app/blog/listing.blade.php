@@ -4,8 +4,7 @@
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
                     <x-form.group>
-                        <x-form.select.enum label="app.label.status" enum="blog.status"
-                            wire:model="filters.status"/>
+                        <x-form.select.enum wire:model="filters.status" label="app.label.status" enum="blog.status"/>
                     </x-form.group>
                 </x-table.filters>
             </x-table.searchbar>
@@ -21,7 +20,7 @@
             <x-table.tr wire:click="$emit('updateBlog', {{ $row->id }})">
                 <x-table.td :label="$row->name" limit="50" class="font-medium"/>
                 <x-table.td :tags="$row->labels->pluck('name.'.app()->currentLocale())->toArray()"/>
-                <x-table.td :status="$row->status->badge()" class="text-right"/>
+                <x-table.td :badges="$row->status->badge()" class="text-right"/>
             </x-table.tr>
         @endforeach
     </x-table.tr>

@@ -1,38 +1,34 @@
 <x-form.drawer id="blog-update" class="max-w-screen-xl w-full" wire:close="close()">
 @if ($blog)
-    <x-slot:buttons :delete="$blog->exists">
-        <x-button.submit sm/>
-
-        @if ($blog->exists)
-            @if ($blog->status === enum('blog.status', 'DRAFT'))
-                <x-button icon="upload" label="app.label.publish" sm
-                    wire:click="publish(true)"/>
-            @else
-                <x-button icon="undo" label="app.label.unpublish" sm
-                    wire:click="publish(false)"/>
+    @if ($blog->exists)
+        <x-slot:buttons
+            :trash="!$blog->trashed()"
+            :delete="$blog->trashed()"
+            :restore="$blog->trashed()">
+            <x-button.submit sm/>
+            
+            @if ($blog->status === enum('blog.status', 'DRAFT')) <x-button sm icon="upload" label="app.label.publish" wire:click="publish(true)"/>
+            @else <x-button sm icon="undo" label="app.label.unpublish" wire:click="publish(false)"/>
             @endif
 
-            <x-button icon="eye" label="app.label.preview" sm
-                href="{{ route('web.blog', $blog->slug) }}"
-                target="_blank"/>
-        @endif
-    </x-slot:buttons>
+            <x-button sm icon="eye" label="app.label.preview" :href="route('web.blog', $blog->slug)" target="_blank"/>
+        </x-slot:buttons>
+    @endif
 
     <div class="p-5 flex flex-col md:flex-row gap-4">
         <div class="md:w-8/12">
             <x-box>
                 <x-form.group>
-                    <input type="text" placeholder="{{ tr('app.label.title') }}"
-                        wire:model.defer="blog.name"
-                        class="transparent text-2xl font-bold">
+                    <input type="text" wire:model.defer="blog.name" placeholder="{{ tr('app.label.title') }}" class="transparent text-2xl font-bold">
                 </x-form.group>
 
                 <x-form.group>
-                    <x-form.text label="app.label.excerpt"
-                        wire:model.defer="blog.description"/>
+                    <x-form.text wire:model.defer="blog.description" label="app.label.excerpt"/>
+                    <x-form.editor wire:model="blog.content" label="app.label.content"/>
+                </x-form.group>
 
-                    <x-form.editor label="app.label.content"
-                        wire:model="blog.content"/>
+                <x-form.group heading="SEO">
+                    <x-form.seo wire:model.defer="inputs.seo"/>
                 </x-form.group>
             </x-box>
         </div>
@@ -40,22 +36,16 @@
         <div class="md:w-4/12">
             <x-box>
                 <x-form.group>
+                    <x-form.field label="Status">
+                        <x-badge :label="$blog->status->value" :color="$blog->status->color()"/>
+                    </x-form.field>
+
                     @if ($blog->status === enum('blog.status', 'PUBLISHED'))
-                        <x-form.date label="app.label.publish-date" 
-                            wire:model="blog.published_at"/>
+                        <x-form.date wire:model="blog.published_at" label="app.label.publish-date"/>
                     @endif
         
-                    <x-form.select.label type="blog-category" multiple
-                        label="common.label.category"
-                        placeholder="common.label.select-category"
-                        wire:model="inputs.labels"/>
-
-                    <x-form.file label="app.label.cover-image" accept="image/*"
-                        wire:model="blog.cover_id"/>
-                </x-form.group>
-
-                <x-form.group heading="SEO">
-                    <x-form.seo wire:model.defer="inputs.seo"/>
+                    <x-form.select.label wire:model="inputs.labels" type="blog-category" multiple/>
+                    <x-form.file wire:model="blog.cover_id" label="app.label.cover-image" accept="image/*"/>
                 </x-form.group>
             </x-box>
         </div>

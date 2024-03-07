@@ -11,7 +11,7 @@ class Listing extends Component
 
     public $filters = [
         'search' => null,
-        'status' => null,
+        'status' => [],
     ];
 
     protected $listeners = [
@@ -23,8 +23,6 @@ class Listing extends Component
     // get query property
     public function getQueryProperty() : mixed
     {
-        return model('blog')
-            ->filter($this->filters)
-            ->when(!$this->tableOrderBy, fn($q) => $q->latest());
+        return model('blog')->when(!$this->tableOrderBy, fn($q) => $q->latest());
     }
 }
