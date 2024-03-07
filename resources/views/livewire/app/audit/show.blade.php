@@ -6,7 +6,7 @@
         <x-box>
             <div class="flex flex-col divide-y">
                 <x-field label="app.label.date" :value="format($audit->created_at, 'datetime')"/>
-                <x-field label="app.label.user" :value="$audit->user->name"/>
+                <x-field label="app.label.user" :value="$audit->user->name ?? '--'"/>
                 <x-field label="app.label.event" :badges="$audit->event->badge()"/>
                 <x-field label="app.label.type" :value="str($audit->auditable_type)->headline()"/>
                 <x-field label="app.label.tag" :tags="$audit->tags"/>
