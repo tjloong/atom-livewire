@@ -1,4 +1,4 @@
-<x-form.drawer id="label-update" class="max-w-screen-sm w-full">
+<x-form.drawer class="max-w-screen-sm">
 @if ($label)
     @if ($label->exists)
         <x-slot:heading title="app.label.update-label"></x-slot:heading>

@@ -4,25 +4,19 @@ namespace Jiannius\Atom\Traits\Livewire;
 
 trait WithDrawer
 {
-    public $drawers = [];
+    public $isDrawerOpened = false;
 
     // open drawer
-    public function openDrawer($id) : void
+    public function openDrawer() : void
     {
-        $this->drawers[$id] = true;
-        $this->dispatchBrowserEvent($id.'-open');
+        $this->isDrawerOpened = true;
+        $this->dispatchBrowserEvent('open-drawer', $this->id);
     }
 
     // close drawer
-    public function closeDrawer($id) : void
+    public function closeDrawer() : void
     {
-        $this->drawers[$id] = false;
-        $this->dispatchBrowserEvent($id.'-close');
-    }
-
-    // check is drawer open
-    public function isDrawerOpened($id) : bool
-    {
-        return data_get($this->drawers, $id, false);
+        $this->isDrawerOpened = false;
+        $this->dispatchBrowserEvent('close-drawer', $this->id);
     }
 }

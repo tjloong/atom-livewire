@@ -23,19 +23,16 @@ class Listing extends Component
     // get query property
     public function getQueryProperty() : mixed
     {
-        return model('file')
-            ->filter($this->filters)
-            ->whereNull('parent_id')
-            ->when(!$this->tableOrderBy, fn($q) => $q->latest());
+        return model('file')->whereNull('parent_id')->when(!$this->tableOrderBy, fn($q) => $q->latest());
     }
 
     // delete
     public function delete() : void
     {
-        if ($this->checkboxes) {
-            model('file')->whereIn('id', $this->checkboxes)->get()->each(fn($q) => $q->delete());
+        if ($this->tableCheckboxes) {
+            model('file')->whereIn('id', $this->tableCheckboxes)->get()->each(fn($q) => $q->delete());
             $this->popup('file.alert.delete');
-            $this->reset('checkboxes');
+            $this->reset('tableCheckboxes');
         }
     }
 }

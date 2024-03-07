@@ -55,7 +55,7 @@ class Update extends Component
     public function open() : void
     {
         if ($this->page) {
-            $this->openDrawer('page-update');
+            $this->openDrawer();
         }
     }
 
@@ -63,7 +63,7 @@ class Update extends Component
     public function close(): void
     {
         $this->emit('setPageId');
-        $this->closeDrawer('page-update');
+        $this->closeDrawer();
     }
 
     // submit

@@ -1,4 +1,4 @@
-<x-form.drawer id="file-update" class="max-w-xl w-full">
+<x-form.drawer class="max-w-xl">
 @if ($file)
     <x-slot:heading title="Update File"></x-slot:heading>
     <x-slot:buttons delete></x-slot:buttons>

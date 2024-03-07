@@ -1,4 +1,4 @@
-<x-form.drawer id="page-update" class="max-w-screen-lg w-full">
+<x-form.drawer class="max-w-screen-lg">
 @if ($page)
     <x-slot:heading 
         title="{!! $page->name !!}"

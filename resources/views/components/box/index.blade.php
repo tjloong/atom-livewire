@@ -4,7 +4,7 @@
     @isset($heading)
         {{ $heading }}
     @elseif ($heading = $attributes->get('heading'))
-        <x-heading class="py-2 px-4" sm
+        <x-heading class="p-4" sm
             :title="$attributes->get('heading')">
             @isset($buttons) {{ $buttons }} @endisset
         </x-heading>
