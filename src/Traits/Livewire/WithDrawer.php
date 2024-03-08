@@ -7,16 +7,16 @@ trait WithDrawer
     public $isDrawerOpened = false;
 
     // open drawer
-    public function openDrawer() : void
+    public function openDrawer($id = null) : void
     {
         $this->isDrawerOpened = true;
-        $this->dispatchBrowserEvent('open-drawer', $this->id);
+        $this->dispatchBrowserEvent('open-drawer', $id ?? $this->id);
     }
 
     // close drawer
-    public function closeDrawer() : void
+    public function closeDrawer($id = null) : void
     {
         $this->isDrawerOpened = false;
-        $this->dispatchBrowserEvent('close-drawer', $this->id);
+        $this->dispatchBrowserEvent('close-drawer', $id ?? $this->id);
     }
 }
