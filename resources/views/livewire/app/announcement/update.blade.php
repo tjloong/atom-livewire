@@ -1,4 +1,4 @@
-<x-form.drawer id="announcement-update" class="max-w-screen-lg w-full" wire:close="close()">
+<x-form.drawer class="max-w-screen-lg" wire:close="close()">
 @if ($announcement)
     @if ($announcement->exists) 
         <x-slot:heading title="app.label.update-announcement"></x-slot:heading>

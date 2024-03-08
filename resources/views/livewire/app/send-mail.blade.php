@@ -1,4 +1,4 @@
-<x-form.drawer id="send-mail" class="max-w-screen-md w-full">
+<x-form.drawer class="max-w-screen-md">
 @if ($inputs)
     <x-slot:heading title="app.label.send-email"></x-slot:heading>
 

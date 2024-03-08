@@ -1,4 +1,4 @@
-<x-form.drawer id="enquiry-update" wire:close="close()">
+<x-form.drawer wire:close="close()">
 @if ($enquiry)
     <x-slot:heading title="{!! $enquiry->name !!}"></x-slot:heading>
     <x-slot:buttons delete></x-slot:buttons>

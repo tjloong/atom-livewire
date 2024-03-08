@@ -1,4 +1,4 @@
-<x-drawer name="signup-update" wire:close="close()">
+<x-drawer wire:close="close()">
 @if ($signup)
     <x-slot:heading>
         <x-media-object :label="$signup->user->name" :caption="$signup->user->email" avatar/>

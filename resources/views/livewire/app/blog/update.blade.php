@@ -1,4 +1,4 @@
-<x-form.drawer id="blog-update" class="max-w-screen-xl w-full" wire:close="close()">
+<x-form.drawer class="max-w-screen-xl" wire:close="close()">
 @if ($blog)
     @if ($blog->exists)
         <x-slot:buttons

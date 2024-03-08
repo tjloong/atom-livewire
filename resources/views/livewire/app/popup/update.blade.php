@@ -1,4 +1,4 @@
-<x-form.drawer id="popup-update" class="max-w-screen-lg w-full" wire:close="close()">
+<x-form.drawer class="max-w-screen-lg" wire:close="close()">
 @if ($popup)
     @if ($popup->exists) 
         <x-slot:heading title="app.label.update-popup"></x-slot:heading>

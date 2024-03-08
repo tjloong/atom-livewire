@@ -1,4 +1,4 @@
-<x-form.drawer id="banner-update" wire:close="close()">
+<x-form.drawer wire:close="close()">
     @if ($banner)
         @if ($banner->exists) 
             <x-slot:heading title="{!! $banner->name !!}" :status="$banner->status->badge()"></x-slot:heading>

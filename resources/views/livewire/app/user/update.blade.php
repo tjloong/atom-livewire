@@ -1,4 +1,4 @@
-<x-form.drawer id="user-update">
+<x-form.drawer>
 @if ($user)
     @if ($user->exists)
         <x-slot:heading title="{{ $user->name }}" subtitle="{{ $user->email }}"></x-slot:heading>
