@@ -22,8 +22,6 @@ class Listing extends Component
     // get query property
     public function getQueryProperty() : mixed
     {
-        return model('page')
-            ->filter($this->filters)
-            ->when(!$this->tableOrderBy, fn($q) => $q->latest());
+        return model('page')->when(!$this->tableOrderBy, fn($q) => $q->latest());
     }
 }
