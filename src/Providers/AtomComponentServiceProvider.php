@@ -160,7 +160,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.recaptcha',
             'form.permission',
             'form.checkbox-select',
-
+            
             'form.editor.index',
             'form.editor.text',
             'form.editor.media',
@@ -170,14 +170,14 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.editor.actions',
             'form.editor.heading',
             'form.editor.dropdown',
-
+            
             'form.file.index',
             'form.file.url',
             'form.file.dropzone',
             'form.file.uploader',
             'form.file.library',
             'form.file.listing',
-
+            
             'form.select.index',
             'form.select.enum',
             'form.select.label',
@@ -185,7 +185,8 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.select.gender',
             'form.select.country',
             'form.select.currency',
-
+            'form.select.nationality',
+            
             'form.checkbox.index',
             'form.checkbox.privacy',
             'form.checkbox.multiple',            

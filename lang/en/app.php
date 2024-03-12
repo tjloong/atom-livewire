@@ -2,6 +2,8 @@
 
 return [
     'label' => [
+        'nationality' => 'Nationality',
+        'select-nationality' => 'Select Nationality',
         'banner' => 'Banner|Banners',
         'new-banner' => 'New Banner',
         'create-banner' => 'Create Banner',
@@ -377,10 +379,10 @@ return [
         'recaptcha' => 'Google think you are a bot. Please refresh and try again.',
         'email-sent' => 'Email Sent.',
         'notification-sent' => ':channel Sent.',
-        'sorted' => 'Record Sorted.',
-        'created' => 'Record Created',
-        'updated' => 'Record Updated',
-        'deleted' => 'Record Deleted',
+        'sorted' => 'Sorted.',
+        'created' => 'Created',
+        'updated' => 'Updated',
+        'deleted' => 'Deleted',
         'user-delete-self' => [
             'title' => 'Unable To Delete User',
             'message' => 'You cannot delete yourself.',
