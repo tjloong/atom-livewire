@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->timestamps();
+            $table->json('footprint')->nullable();
         });
     }
 

@@ -581,7 +581,7 @@ if (!function_exists('tr')) {
         $baselang = file_exists($baselangpath) ? data_get(include $baselangpath, $dot) : null;
         $atomlang = file_exists($atomlangpath) ? data_get(include $atomlangpath, $dot) : null;
     
-        if (!$baselang && !$atomlang) return $key;
+        if (!$baselang && !$atomlang) return __($key);
         else if (!$baselang && $atomlang) $key = 'atom::'.$key;
     
         if (is_array($count)) return __($key, $count);
