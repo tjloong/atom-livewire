@@ -561,6 +561,14 @@ if (!function_exists('pick')) {
     }
 }
 
+// short for data_get()
+if (!function_exists('get')) {
+    function get(...$params)
+    {
+        return data_get(...$params);
+    }
+}
+
 // translate
 if (!function_exists('tr')) {
     function tr($key, $count = 1, $params = [])
