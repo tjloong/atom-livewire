@@ -14,11 +14,11 @@
         open () {
             this.setZIndex()
             this.show = true
-            documentBodyScrolling(false)
+            document.body.style.overflow = 'hidden'
         },
         close () {
             this.show = false
-            documentBodyScrolling(true)
+            document.body.style.overflow = 'auto'
         },
         setZIndex () {
             const z = Array.from(document.querySelectorAll('.drawer'))

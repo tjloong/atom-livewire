@@ -4,7 +4,7 @@
 ])
 
 <div wire:key="{{ $wirekey }}" 
-    {{ $attributes->class(['flex flex-col gap-1'])->only('class') }}>
+    {{ $attributes->class(['w-full flex flex-col gap-1'])->only('class') }}>
     @if (isset($label) || component_label($attributes))
         <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
             <span>

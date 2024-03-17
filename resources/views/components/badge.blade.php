@@ -1,8 +1,15 @@
 @php
     $icon = $attributes->get('icon');
-    $label = tr($attributes->get('label'));
-    $color = $attributes->get('color', 'gray');
+    $active = $attributes->has('active') ? $attributes->get('active') : null;
     $inverted = $attributes->get('inverted', true);
+
+    $label = is_bool($active) && !$attributes->get('label')
+        ? tr($active ? 'app.label.active' : 'app.label.inactive')
+        : tr($attributes->get('label'));
+
+    $color = is_bool($active)
+        ? ($active ? 'green' : 'gray')
+        : $attributes->get('color', 'gray');
 
     $size = collect([
         'xs' => $attributes->get('xs'),
@@ -35,17 +42,17 @@
     @if ($slot->isNotEmpty()) {{ $slot }}
     @elseif ($icon)
         <div class="-mx-2 leading-none flex items-center">
-            <div class="shrink-0 flex py-1.5 px-2">
+            <div class="shrink-0 flex px-2 py-1">
                 <x-icon :name="$icon" class="m-auto"/>
             </div>
 
-            <div class="pr-2" x-tooltip="{!! strlen($label) > 25 ? $label : null !!}">
+            <div class="pr-2 lowercase" x-tooltip="{!! strlen($label) > 25 ? $label : null !!}">
                 {!! str($label)->limit(25) !!}
             </div>
         </div>
     @else
         <div class="grid">
-            <div class="truncate">
+            <div class="truncate lowercase">
                 {!! $label !!}
             </div>
         </div>

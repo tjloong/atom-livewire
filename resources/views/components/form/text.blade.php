@@ -1,9 +1,8 @@
 @php
-    $prefix = $prefix ?? $attributes->get('prefix');
-    $postfix = $postfix ?? $attributes->get('postfix');
     $clear = $attributes->get('clear', false);
     $placeholder = $attributes->get('placeholder');
     $icon = $attributes->get('icon');
+    $except = ['error', 'required', 'caption', 'label', 'label-tag', 'prefix', 'postfix', 'suffix'];
 @endphp
 
 <x-form.field {{ $attributes }}>
@@ -21,14 +20,16 @@
         class="form-input w-full flex items-center gap-2 {{ $attributes->get('readonly') ? 'readonly' : '' }}"
         {{ $attributes->wire('clear') }}
         {{ $attributes->whereStartsWith('x-on:clear') }}>
-        @if ($icon) <div class="shrink-0"><x-icon :name="$icon" class="text-gray-400"/></div>@endif
-
-        @if (is_string($prefix))
-            @if (str($prefix)->is('icon:*')) <x-icon :name="str($prefix)->replace('icon:', '')->toString()" class="text-gray-400"/>
-            @else <div class="shrink-0 text-gray-500 font-medium">{{ tr($prefix) }}</div>
-            @endif
-        @else {{ $prefix }}
+        @if ($icon)
+            <div class="shrink-0 flex">
+                <x-icon :name="$icon" class="m-auto text-gray-400"/>
+            </div>
         @endif
+
+        @isset($prefix) {{ $prefix }}
+        @elseif ($prefix = $attributes->get('prefix'))
+            <div class="shrink-0 text-gray-500 font-medium">{{ tr($prefix) }}</div>
+        @endisset
 
         <div class="grow">
             <input type="text" 
@@ -37,8 +38,8 @@
                 x-on:blur="focus = false"
                 x-on:input="clearable = !empty($event.target.value)"
                 class="w-full transparent"
-                placeholder="{{ $placeholder === 'autogen' ? tr('common.label.empty-autogen') : tr($placeholder) }}"
-                {{ $attributes->except(['error', 'required', 'caption', 'label', 'label-tag', 'prefix', 'postfix']) }}>
+                placeholder="{{ $placeholder === 'autogen' ? tr('app.label.empty-autogen') : tr($placeholder) }}"
+                {{ $attributes->except($except) }}>
         </div>
 
         @if ($attributes->hasLike('wire:clear*', 'x-on:clear*'))
@@ -47,26 +48,26 @@
             </div>
         @endif
 
-        @if (is_string($postfix))
-            @if (str($postfix)->is('icon:*')) <x-icon :name="str($postfix)->replace('icon:', '')->toString()" class="text-gray-400"/>
-            @else <div class="shrink-0 text-gray-500 font-medium">{{ tr($postfix) }}</div>
-            @endif
-        @elseif ($postfix)
-            {{ $postfix }}
-        @endif
+        @isset($suffix) {{ $suffix }}
+        @elseif ($suffix = $attributes->get('suffix') ?? $attributes->get('postfix'))
+            <div class="shrink-0 text-gray-500 font-medium">{{ tr($suffix) }}</div>
+        @endisset
 
         @isset($button)
             @php $label = $button->attributes->get('label') @endphp 
             @php $icon = $button->attributes->get('icon') @endphp 
-            <a {{ $button->attributes->class([
-                'flex items-center justify-center gap-2 rounded-full -mr-1 text-sm',
-                $label ? 'px-2 py-0.5' : null,
-                !$label && $icon ? 'p-1' : null,
-                $button->attributes->get('class', 'text-gray-800 bg-gray-200'),
-            ]) }}">
-                @if ($icon) <x-icon :name="$icon" size="11"/> @endif
-                {{ tr($label) }}
-            </a>
+            <button type="button" {{ $button->attributes->class([
+                'shrink-0 flex items-center gap-1 px-3 -mx-3 py-1.5 -my-1.5 text-sm',
+                $button->attributes->get('class', 'bg-white border-l hover:bg-gray-100'),
+            ]) }}>
+                @if ($icon)
+                    <div class="shrink-0 flex">
+                        <x-icon :name="$icon" class="m-auto"/>
+                    </div>
+                @endif
+
+                {!! tr($label) !!}
+            </button>
         @endisset
     </div>
 </x-form.field>

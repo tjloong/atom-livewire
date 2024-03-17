@@ -4,11 +4,6 @@ window.isPageReloaded = () => {
         || window.performance.getEntriesByType('navigation').map((nav) => nav.type).includes('reload')
 }
 
-// document body scrolling
-window.documentBodyScrolling = (bool) => {
-    document.body.style.overflow = bool ? 'auto' : 'hidden'
-}
-
 // camelize
 window.camelize = (str) => {
     return str
