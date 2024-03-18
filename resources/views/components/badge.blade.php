@@ -31,7 +31,7 @@
     color: {{ $inverted ? color($color) : color($color)->inverted() }};
     border: 1px solid {{ color($color) }};
 " {{ $attributes->class([
-    'px-2 inline-block font-semibold rounded-md',   
+    'px-2 inline-block font-semibold rounded-md',
     [
         'xs' => 'text-xs',
         'sm' => 'text-sm',
@@ -46,13 +46,13 @@
                 <x-icon :name="$icon" class="m-auto"/>
             </div>
 
-            <div class="pr-2 lowercase" x-tooltip="{!! strlen($label) > 25 ? $label : null !!}">
+            <div class="pr-2" x-tooltip="{!! strlen($label) > 25 ? $label : null !!}">
                 {!! str($label)->limit(25) !!}
             </div>
         </div>
     @else
         <div class="grid">
-            <div class="truncate lowercase">
+            <div class="truncate">
                 {!! $label !!}
             </div>
         </div>
