@@ -48,7 +48,7 @@ class Signup extends Model
     // scope for search
     public function scopeSearch($query, $search) : void
     {
-        $query->whereHas('user', fn($q) => $q->where('name', 'like', "%$search%"));
+        $query->whereHas('user', fn($q) => $q->search($search));
     }
 
     // scope for status
