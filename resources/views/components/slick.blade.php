@@ -1,98 +1,106 @@
 @php
-    $arrows = $attributes->get('arrows', true);
-    $dots = $attributes->get('dots', true);
-    $autoplay = $attributes->get('autoplay', true);
-    $speed = $attributes->get('speed', 3000);
-    $slidesToShow = $attributes->get('slides-to-show', null);
-    $slidesToScroll = $attributes->get('slides-to-scroll', null);
+    $configs = [
+        'dots' => $attributes->get('dots', true),
+        'arrows' => $attributes->get('arrows', true),
+        'autoplay' => $attributes->get('autoplay', true),
+        'autoplaySpeed' => $attributes->get('speed', 3000),
+        'slidesToShow' => $attributes->get('slides-to-show', 1),
+        'slidesToScroll' => $attributes->get('slides-to-scroll', 1),
+        'adaptiveHeight' => $attributes->get('adaptive-height', true),
+    ];
+
     $hasThumbnails = isset($thumbnails);
+    $thumbnailsConfigs = $hasThumbnails ? [
+        'dots' => $thumbnails->attributes->get('dots', false),
+        'arrows' => $thumbnails->attributes->get('arrows', false),
+        'slidesToShow' => $thumbnails->attributes->get('slides-to-show', 3),
+        'slidesToScroll' => $thumbnails->attributes->get('slides-to-scroll', 1),
+    ] : [];
 
-    if ($hasThumbnails) {
-        $thumbnailsArrows = $thumbnails->attributes->get('arrows', true);
-        $thumbnailsSlidesToShow = $thumbnails->attributes->get('slides-to-show', 3);
-        $thumbnailsDots = $thumbnails->attributes->get('dots', true);
-    }
-
-    $except = ['arrows', 'dots', 'autoplay', 'speed'];
+    $except = [
+        'arrows', 'dots', 'autoplay', 'speed',
+        'slides-to-show', 'slides-to-scroll', 'adaptive-height',
+    ];
 @endphp
 
 <div
     x-cloak
     x-data="{
+        configs: @js($configs),
+        thumbnailsConfigs: @js($thumbnailsConfigs),
         hasThumbnails: @js($hasThumbnails),
-    }"
-    x-init="() => {
-        const slides = $($el).find('.slick-slides')
 
-        slides.slick({
-            dots: @js($dots),
-            autoplay: @js($autoplay),
-            autoplaySpeed: @js($speed),
-            slidesToShow: @js($slidesToShow),
-            slidesToScroll: @js($slidesToScroll),
-            arrows: @js($arrows),
-            prevArrow: '.slick-prev',
-            nextArrow: '.slick-next',
-            asNavFor: @js($hasThumbnails ? '.slick-thumbnails' : null),
-        })
+        startSlides () {
+            const slides = $($el).find('.slides')
 
-        slides.on('init', function (event, slick) {
-            $dispatch('slides-init', { event, slick })
-        })
+            slides.slick({
+                ...this.configs,
+                prevArrow: '.slick-prev',
+                nextArrow: '.slick-next',
+                asNavFor: this.hasThumbnails ? '.slick-thumbnails' : null,
+            })
 
-        slides.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
-            $dispatch('slides-before-changed', { event, slick, currentSlide, nextSlide })
-        })
-
-        slides.on('afterChange', function (event, slick, currentSlide) {
-            $dispatch('slides-after-changed', { event, slick, currentSlide })
-        })
-
-        @if ($hasThumbnails)
-        const tn = $($el).find('.slick-thumbnails')
+            slides.on('init', function (event, slick) {
+                $dispatch('slides-init', { event, slick })
+            })
         
-        tn.slick({
-            slidesToShow: @js($thumbnailsSlidesToShow),
-            slidesToScroll: 1,
-            asNavFor: '.slick-container',
-            dots: @js($thumbnailsDots),
-            centerMode: true,
-            focusOnSelect: true,
-        })
+            slides.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+                $dispatch('slides-before-changed', { event, slick, currentSlide, nextSlide })
+            })
+        
+            slides.on('afterChange', function (event, slick, currentSlide) {
+                $dispatch('slides-after-changed', { event, slick, currentSlide })
+            })
+        },
 
-        tn.on('init', function (event, slick) {
-            $dispatch('thumbnails-init', { event, slick })
-        })
+        startThumbnails () {
+            if (!this.hasThumbnails) return
 
-        tn.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
-            $dispatch('thumbnails-before-changed', { event, slick, currentSlide, nextSlide })
-        })
+            const tn = $($el).find('.thumbnails')
 
-        tn.on('afterChange', function (event, slick, currentSlide) {
-            $dispatch('thumbnails-after-changed', { event, slick, currentSlide })
-        })
-        @endif
+            tn.slick({
+                ...this.thumbnailsConfigs,
+                asNavFor: '.slick-slides',
+                centerMode: true,
+                centerPadding: '40px',
+                focusOnSelect: true,
+            })
+
+            tn.on('init', function (event, slick) {
+                $dispatch('thumbnails-init', { event, slick })
+            })
+        
+            tn.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+                $dispatch('thumbnails-before-changed', { event, slick, currentSlide, nextSlide })
+            })
+        
+            tn.on('afterChange', function (event, slick, currentSlide) {
+                $dispatch('thumbnails-after-changed', { event, slick, currentSlide })
+            })
+        },
     }"
+    x-init="startSlides(); startThumbnails(); $($el).removeClass('hidden')"
+    class="hidden"
     {{ $attributes->except($except) }}>
     <div class="relative">
-        @if ($arrows)
+        @if (get($configs, 'arrows'))
             {!! $leftArrow !!}
             {!! $rightArrow !!}
         @endif
 
-        <div class="slick-slides">
+        <div class="slides">
             {{ $slot }}
         </div>
     </div>
 
     @if ($hasThumbnails)
-        <div class="relative">
-            @if ($thumbnailsArrows)
+        <div class="relative hidden md:block">
+            @if (get($thumbnailsConfigs, 'arrows'))
                 {!! $leftArrow !!}
                 {!! $rightArrow !!}
             @endif
 
-            <div class="slick-thumbnails">
+            <div class="thumbnails">
                 {{ $thumbnails }}
             </div>
         </div>
