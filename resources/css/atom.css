@@ -1,6 +1,7 @@
 @import './reset.css';
 @import './form.css';
 @import './flatpickr.css';
+@import './slick.css';
 
 .tooltip {
     @apply bg-gray-700 text-white text-sm rounded py-1 px-2 w-max opacity-90;

@@ -1,5 +1,8 @@
 @props([
     'cdns' => [
+        'jquery' => [
+            'https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
+        ],
         'animate' => [
             'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css',
         ],
@@ -21,6 +24,10 @@
         ],
         'sortable' => [
             'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js',
+        ],
+        'slick' => [
+            'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css',
+            'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js',
         ],
         'swiper' => [
             'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js',
@@ -66,6 +73,7 @@
     'floating-ui', 
     'flatpickr', 
     'dayjs',
+    'jquery',
 ], $libs) as $name)
     @if ($cdn = collect($cdns)->get($name))
         @foreach ($cdn as $script)

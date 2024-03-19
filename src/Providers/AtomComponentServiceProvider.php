@@ -30,6 +30,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'field',
             'image',
             'popup',
+            'slick',
             'loader',
             'drawer',
             'divider',
