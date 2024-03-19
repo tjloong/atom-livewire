@@ -4,6 +4,7 @@
     $label = $attributes->get('label');
     $caption = $attributes->get('caption');
     $content = $attributes->get('content');
+    $badge = $attributes->get('badge') ?? $attributes->get('status');
 
     $avatar = $attributes->has('avatar') ? $attributes->get('avatar') : false;
     $avatar = $avatar->url ?? $avatar;
@@ -20,6 +21,11 @@
         '2xl' => $attributes->get('2xl', false),
         'base' => true,
     ]);
+
+    $except = [
+        'align', 'valign', 'label', 'caption', 'content', 
+        'badge', 'status', 'avatar', 'image', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', 'base',
+    ];
 @endphp
 
 <div {{ $attributes->class([
@@ -34,7 +40,7 @@
         'justify-center' => $align === 'center',
         'justify-end' => $align === 'right',
     ]),
-]) }}>
+])->except($except) }}>
     @if ($image !== false)
         <figure class="{{ collect([
             'shrink-0 rounded-md border bg-gray-100 flex items-center justify-center text-gray-400',
@@ -86,8 +92,18 @@
     @else
         <div class="grow flex flex-col gap-2">
             <div>
-                <div class="font-medium">
-                    {!! tr($label) !!}
+                <div class="flex items-center gap-2">
+                    <div class="font-medium">
+                        {!! tr($label) !!}
+                    </div>
+
+                    @if ($badge)
+                        <div class="shrink-0">
+                            @foreach ($badge as $key => $val)
+                                <x-badge :label="$val" :color="$key"/>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 @if ($caption)
