@@ -6,9 +6,9 @@
             @if ($message = session('message')) <x-alert>{{ $message }}</x-alert> @endif
             @if ($errors->has('email')) <x-alert.errors/> @endif
 
-            <x-form.text wire:model.defer="inputs.username" :label="$this->usernameLabel" autofocus/>
+            <x-form.text wire:model.defer="inputs.email" label="app.label.email" autofocus/>
 
-            <div>
+            <div class="flex flex-col gap-2">
                 <x-form.password wire:model.defer="inputs.password" label="app.label.password"/>
     
                 @if (has_route('password.forgot'))

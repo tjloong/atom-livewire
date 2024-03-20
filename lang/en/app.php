@@ -396,6 +396,14 @@ return [
         ],
     ],
 
+    'notification' => [
+        'verification' => [
+            'subject' => 'Your Verification Code',
+            'greeting' => 'Hi,',
+            'content' => 'Here is your verification code.',
+        ],
+    ],
+
     'empty' => [
         'option' => [
             'title' => 'No Options',

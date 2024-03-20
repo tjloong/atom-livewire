@@ -4,12 +4,10 @@ namespace Jiannius\Atom\Http\Livewire\App\User;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
 
 class Update extends Component
 {
     use WithForm;
-    use WithLoginMethods;
 
     public $user;
     public $inputs;
@@ -22,50 +20,25 @@ class Update extends Component
     // validation
     protected function validation() : array
     {
-        return array_merge(
-            [
-                'inputs.password' => array_merge(
-                    optional($this->user)->exists ? ['nullable'] : ['required' => 'Password is required.'],
-                    ['min:8' => 'Password must be at least 8 characters.'],
-                ),
-                'user.name' => [
-                    'required' => 'Name is required.',
-                    'max:255' => 'Name is too long (Max 255 characters).',
-                ],
-                'user.role_id' => ['required' => 'Role is required.'],
-            ],
-
-            $this->isLoginMethod(['email', 'email-verified']) ? [
-                'user.email' => [
-                    'required_without:user.username' => 'Login email is required.',
-                    function ($attr, $value, $fail) {
-                        if ($value && model('user')
-                            ->where('email', $value)
-                            ->where('id', '<>', $this->user->id)
-                            ->count()
-                        ) {
-                            $fail('Login email is taken.');
-                        }
-                    },
-                ],
-            ] : [],
-
-            $this->isLoginMethod('username') ? [
-                'user.username' => [
-                    'required_without:user.email' => 'Username is required.',
-                    'max:255' => 'Username is too long (Max 255 characters).',
-                    function ($attr, $value, $fail) {
-                        if ($value && model('user')
-                            ->where('username', $value)
-                            ->where('id', '<>', $this->user->id)
-                            ->count()
-                        ) {
-                            $fail('Username is taken.');
-                        }
+        return [
+            'inputs.password' => array_merge(
+                optional($this->user)->exists ? ['nullable'] : ['required' => 'Password is required.'],
+                ['min:8' => 'Password must be at least 8 characters.'],
+            ),
+            'user.email' => [
+                'required' => 'Login email is required.',
+                'email' => 'Invalid email address.',
+                function ($attr, $value, $fail) {
+                    if (model('user')->where('email', $value)->where('id', '<>', $this->user->id)->count()) {
+                        $fail('Login email is taken.');
                     }
-                ],
-            ] : [],
-        );
+                },
+            ],
+            'user.name' => [
+                'required' => 'Name is required.',
+                'max:255' => 'Name is too long (Max 255 characters).',
+            ],
+        ];
     }
 
     // create

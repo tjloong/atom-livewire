@@ -20,12 +20,12 @@ class Verification extends Model
     // booted
     protected static function booted() : void
     {
-        static::created(function($model) {
-            $model->fill([
+        static::created(function($verification) {
+            $verification->fill([
                 'code' => mt_rand(100000, 999999),
             ])->saveQuietly();
             
-            $model->notify();
+            $verification->notify();
         });
     }
 
@@ -33,7 +33,8 @@ class Verification extends Model
     public function notify() : void
     {
         if ($this->email) {
-            Notification::route('mail', $this->email)->notify(new Send($this));
+            Notification::route('mail', $this->email)
+                ->notify(new Send($this));
         }
         else if ($this->phone) {
             //

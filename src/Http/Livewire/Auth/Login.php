@@ -6,27 +6,25 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
 use Laravel\Socialite\Facades\Socialite;
 
 class Login extends Component
 {
     use WithForm;
-    use WithLoginMethods;
 
     public $throttlekey;
 
     public $inputs = [
-        'username' => null,
+        'email' => null,
         'password' => null,
         'remember' => false,
     ];
 
     // validation
-    protected function validation(): array
+    protected function validation() : array
     {
         return [
-            'inputs.username' => ['required' => $this->usernameLabel.' is required.'],
+            'inputs.email' => ['required' => 'Email is required.'],
             'inputs.password' => ['required' => 'Password is required.'],
         ];
     }
@@ -58,39 +56,18 @@ class Login extends Component
         }
     }
 
-    // get username label property
-    public function getUsernameLabelProperty(): string
-    {
-        return collect([
-            $this->isLoginMethod('username') ? 'Username' : null,
-            $this->isLoginMethod(['email', 'email-verified']) ? 'Email' : null,
-        ])->filter()->join(' or ');
-    }
-
     // get user
-    public function getUser(): mixed
+    public function getUser() : mixed
     {
-        $username = data_get($this->inputs, 'username');
-        $query = model('user')->whereNotNull('password')->whereNull('blocked_at');
-
-        if ($this->isLoginMethod('username') && $this->isLoginMethod(['email', 'email-verified'])) {
-            $query->where(fn($q) => $q
-                ->where('username', $username)
-                ->orWhere('email', $username)
-            );
-        }
-        else if ($this->isLoginMethod('username')) {
-            $query->where('username', $username);
-        }
-        else if ($this->isLoginMethod(['email', 'email-verified'])) {
-            $query->where('email', $username);
-        }
-
-        return $query->first();
+        return model('user')
+            ->whereNotNull('password')
+            ->whereNull('blocked_at')
+            ->where('email', get($this->inputs, 'email'))
+            ->first();
     }
 
     // submit
-    public function submit($user = null): mixed
+    public function submit($user = null) : mixed
     {
         if ($user) Auth::login($user);
         else {
@@ -110,22 +87,14 @@ class Login extends Component
     }
 
     // attempt login
-    public function login($user = null): mixed
+    public function login($user = null) : mixed
     {
-        $attempt = false;
-        $username = data_get($this->inputs, 'username');
-        $password = data_get($this->inputs, 'password');
-        $remember = data_get($this->inputs, 'remember');
+        $email = get($this->inputs, 'email');
+        $password = get($this->inputs, 'password');
+        $remember = get($this->inputs, 'remember');
+        $attempt = Auth::attempt(compact('email', 'password'), $remember);
 
-        if (!$attempt && $this->isLoginMethod('username')) {
-            $attempt = Auth::attempt(compact('username', 'password'), $remember);
-        }
-
-        if (!$attempt && $this->isLoginMethod(['email', 'email-verified'])) {
-            $attempt = Auth::attempt(['email' => $username, 'password' => $password], $remember);
-        }
-
-        $this->throttlekey = str()->lower($username).'|'.request()->ip();
+        $this->throttlekey = str()->lower($email).'|'.request()->ip();
 
         if ($attempt) RateLimiter::clear($this->throttlekey);
         else RateLimiter::hit($this->throttlekey);
@@ -141,7 +110,7 @@ class Login extends Component
     }
 
     // check has too many attempts
-    public function tooManyAttempts(): mixed
+    public function tooManyAttempts() : mixed
     {
         if (!RateLimiter::tooManyAttempts($this->throttlekey, 5)) return false;
 
@@ -156,7 +125,7 @@ class Login extends Component
     }
 
     // redirection
-    public function redirectTo($user): string
+    public function redirectTo($user) : string
     {
         return $user->home();
     }

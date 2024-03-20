@@ -14,9 +14,7 @@ class Send extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(
-        public $verificationCode
-    ) {
+    public function __construct(public $verification) {
         //
     }
 
@@ -34,10 +32,10 @@ class Send extends Notification
     public function toMail(mixed $notifiable): \Illuminate\Notifications\Messages\MailMessage
     {
         return (new MailMessage)
-            ->subject(__('atom::auth.notification.verification.subject'))
-            ->greeting(__('atom::auth.notification.verification.greeting'))
-            ->line(__('atom::auth.notification.verification.content'))
-            ->line('<h1>'.$this->verificationCode->code.'</h1>');
+            ->subject(tr('app.notification.verification.subject'))
+            ->greeting(tr('app.notification.verification.greeting'))
+            ->line(tr('app.notification.verification.content'))
+            ->line('<h1>'.$this->verification->code.'</h1>');
     }
 
     /**

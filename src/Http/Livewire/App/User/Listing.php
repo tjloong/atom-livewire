@@ -3,18 +3,15 @@
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
 use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 
 class Listing extends Component
 {
-    use WithLoginMethods;
     use WithTable;
 
     public $filters = [
         'search' => null,
         'status' => null,
-        'role_id' => null,
     ];
 
     protected $listeners = [
@@ -32,8 +29,6 @@ class Listing extends Component
     // get query property
     public function getQueryProperty() : mixed
     {
-        return model('user')
-            ->filter($this->filters)
-            ->when(!$this->tableOrderBy, fn($q) => $q->latest());
+        return model('user')->when(!$this->tableOrderBy, fn($q) => $q->latest());
     }
 }

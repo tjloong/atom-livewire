@@ -6,22 +6,27 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Cookie;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithLoginMethods;
 use Laravel\Socialite\Facades\Socialite;
 
 class Register extends Component
 {
     use WithForm;
-    use WithLoginMethods;
 
     public $ref;
     public $utm;
     public $plan;
     public $token;
-    public $inputs;
     public $provider;
     public $verification;
     public $hasValidSignature;
+
+    public $inputs = [
+        'name' => null,
+        'email' => null,
+        'password' => null,
+        'agree_tnc' => false,
+        'agree_promo' => true,
+    ];
 
     protected $queryString = ['ref', 'utm', 'token', 'provider', 'plan'];
     
@@ -87,12 +92,7 @@ class Register extends Component
         }
         else {
             $this->hasValidSignature = request()->hasValidSignature();
-
-            $this->fill(['inputs' => [
-                'email' => request()->query('email'),
-                'agree_tnc' => false,
-                'agree_promo' => true,        
-            ]]);
+            $this->fill(['inputs.email' => request()->query('email')]);
         }
     }
 
@@ -111,22 +111,22 @@ class Register extends Component
     // verified
     public function verify() : bool
     {
-        if (!$this->isLoginMethod('email-verified')) return true;
+        if (!config('atom.auth.verify')) return true;
         if ($this->hasValidSignature) return true;
 
         if ($this->verification = model('verification')
-            ->where('email', data_get($this->inputs, 'email'))
+            ->where('email', get($this->inputs, 'email'))
             ->where(fn($q) => $q
                 ->whereNull('expired_at')
                 ->orWhere('expired_at', '>', now())
             )
             ->first()
         ) {
-            if ($this->verification->code === data_get($this->inputs, 'verification')) {
+            if ($this->verification->code === get($this->inputs, 'verification')) {
                 $this->clearVerificationCode();
                 return true;
             }
-            else if (data_get($this->inputs, 'verification')) {
+            else if (get($this->inputs, 'verification')) {
                 $this->popup('auth.alert.verification', 'alert', 'error');
             }
         }
@@ -140,15 +140,15 @@ class Register extends Component
     // send verification code
     public function sendVerificationCode() : void
     {
-        if ($this->isLoginMethod('email-verified')) {
+        if (config('atom.auth.verify')) {
             $this->clearVerificationCode();
 
             $this->verification = model('verification')->create([
-                'email' => data_get($this->inputs, 'email'),
+                'email' => get($this->inputs, 'email'),
                 'expired_at' => now()->addDay(),
             ]);
         }
-        else if ($this->isLoginMethod('phone-verified')) {
+        else if (config('atom.auth.otp')) {
             //
         }
     }
@@ -157,7 +157,7 @@ class Register extends Component
     public function clearVerificationCode() : void
     {
         model('verification')
-            ->where('email', data_get($this->inputs, 'email'))
+            ->where('email', get($this->inputs, 'email'))
             ->delete();
     }
 
@@ -167,11 +167,11 @@ class Register extends Component
         $data = $data ?? $this->inputs;
 
         $user = model('user')->forceFill([
-            'name' => data_get($data, 'name'),
-            'email' => data_get($data, 'email'),
-            'password' => bcrypt(data_get($data, 'password')),
+            'name' => get($data, 'name'),
+            'email' => get($data, 'email'),
+            'password' => bcrypt(get($data, 'password')),
             'tier' => 'signup',
-            'data' => data_get($data, 'data'),
+            'data' => get($data, 'data'),
             'email_verified_at' => now(),
             'login_at' => now(),
         ]);
@@ -181,15 +181,9 @@ class Register extends Component
         $user->signup()->create([
             'channel' => $this->utm ?? $this->ref ?? 'direct',
             'geo' => geoip()->getLocation()->toArray(),
-            'agree_tnc' => data_get($data, 'agree_tnc'),
-            'agree_promo' => data_get($data, 'agree_promo'),
+            'agree_tnc' => get($data, 'agree_tnc'),
+            'agree_promo' => get($data, 'agree_promo'),
         ]);
-
-        auth()->login($user);
-
-        Cookie::forget('_ref');
-
-        event(new Registered($user->fresh()));
 
         return $this->registered($user->fresh());
     }
@@ -197,6 +191,12 @@ class Register extends Component
     // post registration
     public function registered($user) : mixed
     {
+        auth()->login($user);
+
+        Cookie::forget('_ref');
+
+        event(new Registered($user->fresh()));
+
         return redirect($user->home());
     }
 }
