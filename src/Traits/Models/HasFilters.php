@@ -129,12 +129,12 @@ trait HasFilters
                     }
                     else {
                         if (str($key)->is('from_*')) {
-                            $value = format_date($value, 'carbon')->startOfDay()->utc();
+                            $value = format($value)->carbon()->startOfDay()->utc();
                             array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '>=']);
                         }
     
                         if (str($key)->is('to_*')) {
-                            $value = format_date($value, 'carbon')->endOfDay()->utc();
+                            $value = format($value)->carbon()->endOfDay()->utc();
                             array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '<=']);
                         }
                     }
@@ -165,7 +165,7 @@ trait HasFilters
         })->map(fn($col) => data_get($col, 'name'))->values()->all();
 
         foreach ($columns as $col) {
-            if (empty($this->$col)) $this->$col = null;
+            if (empty($this->$col) && $this->$col != 0) $this->$col = null;
         }
     }
 
