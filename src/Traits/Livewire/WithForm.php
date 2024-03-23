@@ -56,7 +56,7 @@ trait WithForm
     }
 
     // perform form validation
-    public function validateForm($config = []) : void
+    public function validateForm($attr = [], $config = []) : void
     {
         if (data_get($this->form, 'recaptcha_token')) {
             $this->validate([
@@ -91,7 +91,9 @@ trait WithForm
         }
 
         $this->resetValidation();
-        $this->validate();
+
+        if ($attr) $this->validate($attr);
+        else $this->validate();
 
         // auto trim values
         $except = (array)data_get($config, 'trim_except');
