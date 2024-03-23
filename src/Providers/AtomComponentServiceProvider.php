@@ -29,8 +29,10 @@ class AtomComponentServiceProvider extends ServiceProvider
             'badge',
             'field',
             'image',
+            'label',
             'popup',
             'slick',
+            'anchor',
             'loader',
             'drawer',
             'divider',
@@ -181,6 +183,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             
             'form.select.index',
             'form.select.enum',
+            'form.select.email',
             'form.select.label',
             'form.select.state',
             'form.select.gender',
