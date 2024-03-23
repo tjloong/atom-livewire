@@ -1,6 +1,7 @@
 @php
     $icon = $attributes->get('icon');
     $href = $attributes->get('href');
+    $hover = $attributes->get('hover', false);
     $tags = $attributes->get('tags') ?? $attributes->get('tag');
     $badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status');
     $value = $attributes->get('value');
@@ -17,19 +18,15 @@
     || !empty($tags)
     || !empty($href)
 )))
-    <div {{ $attributes->merge($orientation === 'col'
-        ? ['class' => 'flex flex-col gap-1 hover:bg-slate-50']
-        : ['class' => 'py-2 px-4 flex flex-col gap-1 md:flex-row md:flex-wrap md:items-center md:justify-between hover:bg-slate-50'],
-    )->only('class') }}>
+    <div {{ $attributes->class([
+        $orientation === 'col'
+            ? 'flex flex-col gap-1'
+            : 'py-2 px-4 flex flex-col gap-1 md:flex-row md:flex-wrap md:items-center md:justify-between',
+        $hover ? 'hover:bg-slate-50' : null,
+    ])->only('class') }}>
         <div class="shrink-0">
             @isset($label) {{ $label }}
-            @else
-                <label>
-                    <div class="flex items-center gap-2">
-                        @if ($icon) <x-icon :name="$icon"/> @endif
-                        {!! tr($attributes->get('label')) !!}
-                    </div>
-                </label>
+            @else <x-label :label="$attributes->get('label')"/>
             @endisset
         </div>
 

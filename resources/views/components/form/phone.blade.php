@@ -1,75 +1,87 @@
 @php
-    $countries = countries()->map(fn($val) => [
-        'flag' => data_get($val, 'flag'),
-        'code' => data_get($val, 'dial_code'),
-        'name' => data_get($val, 'name'),
-    ])->toArray();
+    $code = $attributes->get('code', '+60');
+    $placeholder = $attributes->get('placeholder', 'app.label.phone-number');
+    $except = ['label', 'caption', 'placeholder'];
 @endphp
 
 <x-form.field {{ $attributes }}>
     <div
+        x-cloak
         x-data="{
             value: @entangle($attributes->wire('model')),
             focus: false,
             search: null,
+            option: null,
+            options: [],
             dropdown: false,
-            countries: @js($countries),
-            inputs: {
-                code: '+60',
-                tel: null,
+            code: @js($code),
+            number: null,
+            get filtered () {
+                return this.options.filter(opt => (
+                    !this.search
+                    || opt.value.includes(this.search)
+                    || opt.label.toLowerCase().includes(this.search.toLowerCase())
+                ))
             },
-            get flag () {
-                return this.countries.find(val => (val.code === this.inputs.code))?.flag
-            },
-            get options () {
-                if (!this.search) return this.countries
-
-                return this.countries.filter(val => {
-                    const haystack = `${val.code} ${val.name}`
-                    return haystack.toLowerCase().includes(this.search.toLowerCase())
-                })
+            format () {
+                const val = `${this.code}${this.number}`
+                this.value = val.length ? val : null
             },
             open () {
                 this.dropdown = true
-                this.$nextTick(() => this.$refs.search.querySelector('input').focus())
+                this.$nextTick(() => $(this.$refs.search).find('input').focus())
             },
-            select (code) {
-                this.inputs.code = code
-                this.dropdown = false
-                this.search = false
+            select (opt) {
+                if (!opt) return
+                this.option = { ...opt }
+                this.code = opt.value
+                this.search = null
             },
-        }"
-        x-init="() => {
-            if (value) {
-                const country = countries.find(val => (value.startsWith(val.code)))
-                inputs.code = country?.code
-                inputs.tel = value.replace(inputs.code, '').replace('+', '')
-            }
-
-            $watch('inputs', () => {
-                if (inputs.code && inputs.tel) value = `${inputs.code}${inputs.tel}`
-                else value = null
-            })
         }"
         x-modelable="value"
-        x-on:click.stop="focus = true"
-        x-on:click.away="focus = dropdown = false"
-        class="relative">
-        <div x-ref="anchor" x-bind:class="{ 'active': focus }" class="form-input flex items-center gap-3">
-            <a x-on:click="open()" class="flex items-center gap-2">
+        x-init="$nextTick(() => {
+            axios.post(@js(route('__select.get')), { callback: 'dial_codes' }).then(({ data }) => {
+                options = [...data]
+
+                if (value) {
+                    const find = options.find(opt => (value.startsWith(opt.value)))
+
+                    if (find) {
+                        select(find)
+                        number = value.replace(code, '').replace('+', '')
+                    }
+                }
+                else if (code) {
+                    const find = options.find(opt => (opt.value === code))
+                    if (find) select(find)
+                }
+            })
+
+            $watch('code', () => format())
+            $watch('number', () => format())
+        })"
+        class="relative"
+        {{ $attributes->except($except) }}>
+        <div 
+            x-ref="anchor"
+            x-bind:class="focus && 'active'"
+            class="form-input flex items-center gap-3">
+            <div 
+                x-on:click="open()"
+                x-on:click.away="dropdown = false"
+                class="cursor-pointer flex items-center gap-2">
                 <div class="w-4 h-4 flex">
-                    <template x-if="flag">
-                        <img x-bind:src="flag" class="w-full h-full object-contain">
-                    </template>                    
+                    <img x-bind:src="option?.flag" x-show="option" class="w-full h-full object-contain">
                 </div>
-                <div class="text-gray-500" x-text="inputs.code"></div>
+                <div class="text-gray-500" x-text="code"></div>
                 <x-icon name="dropdown-caret"/>
-            </a>
+            </div>
 
             <input 
                 type="tel" 
                 x-ref="tel"
-                x-model="inputs.tel"
+                x-model="number"
+                x-on:input.stop
                 class="w-full appearance-none border-0 p-0 focus:ring-0">
         </div>
 
@@ -81,21 +93,19 @@
             <div x-ref="search" class="p-3 border-b">
                 <x-form.text icon="search"
                     x-model="search" 
-                    x-on:keydown.enter.prevent="options.length && select(options[0].code)"
+                    x-on:keydown.enter.prevent="filtered.length && select(filtered[0])"
                     placeholder="app.label.search"/>
             </div>
 
             <div class="max-h-[250px] overflow-auto">
                 <div class="flex flex-col divide-y">
-                    <template x-for="opt in options">
-                        <div x-on:click="select(opt.code)" class="flex items-center gap-2 py-2 px-4 hover:bg-gray-100 cursor-pointer">
+                    <template x-for="opt in filtered">
+                        <div x-on:click="select(opt)" class="flex items-center gap-2 py-2 px-4 hover:bg-gray-100 cursor-pointer">
                             <div class="shrink-0 w-4 h-4 flex">
-                                <template x-if="opt.flag">
-                                    <img x-bind:src="opt.flag" class="w-full h-full object-contain">
-                                </template>                    
+                                <img x-bind:src="opt.flag" x-show="opt.flag" class="w-full h-full object-contain">
                             </div>
-                            <div class="shrink-0 text-gray-500" x-text="opt.code"></div>
-                            <div class="grow font-medium" x-text="opt.name"></div>
+                            <div class="shrink-0 text-gray-500" x-text="opt.value"></div>
+                            <div class="grow font-medium" x-text="opt.label"></div>
                         </div>
                     </template>
                 </div>

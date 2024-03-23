@@ -50,7 +50,7 @@
         @elseif ($address = $attributes->get('address'))
             @if (is_string($address)) {{ $address }}
             @else
-                <div class="text-sm">
+                <div>
                     @if ($name = data_get($address, 'name')) {{ $name }}<br> @endif
                     @if ($company = data_get($address, 'company')) {{ $company }}<br> @endif
                     @if ($address = data_get($address, 'address')) {{ $address }} @endif
@@ -71,7 +71,7 @@
                 .querySelectorAll('.form-input:not(.transparent)')
                 .forEach(node => node.classList.add('error'))"
             wire:key="{{ uniqid() }}"
-            class="text-sm text-red-500 font-medium">
+            class="text-sm text-red-500 font-medium form-field-error">
             {{ tr($error) }}
         </div>
     @endif

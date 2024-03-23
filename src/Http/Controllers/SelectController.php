@@ -28,6 +28,16 @@ class SelectController extends Controller
         $this->options->push($opt);
     }
 
+    // dial codes
+    public function dial_codes() : void
+    {
+        countries()->each(fn($val) => $this->setOption([
+            'value' => get($val, 'dial_code'),
+            'label' => get($val, 'name'),
+            'flag' => get($val, 'flag'),
+        ]));
+    }
+
     // states
     public function states($params, $value) : void
     {
