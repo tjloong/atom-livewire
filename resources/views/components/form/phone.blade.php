@@ -8,7 +8,8 @@
     <div
         x-cloak
         x-data="{
-            value: @entangle($attributes->wire('model')),
+            wirevalue: @entangle($attributes->wire('model')),
+            input: null,
             focus: false,
             search: null,
             option: null,
@@ -25,11 +26,20 @@
             },
             format () {
                 const val = `${this.code}${this.number}`
-                this.value = val.length ? val : null
+                this.input = val.length ? val : null
+                this.$dispatch('input', this.input)
             },
             open () {
                 this.dropdown = true
                 this.$nextTick(() => $(this.$refs.search).find('input').focus())
+            },
+            initInput (val) {
+                const find = this.options.find(opt => (val.startsWith(opt.value)))
+
+                if (find) {
+                    this.select(find)
+                    this.number = val.replace(this.code, '').replace('+', '')
+                }
             },
             select (opt) {
                 if (!opt) return
@@ -38,19 +48,12 @@
                 this.search = null
             },
         }"
-        x-modelable="value"
+        x-modelable="input"
         x-init="$nextTick(() => {
             axios.post(@js(route('__select.get')), { callback: 'dial_codes' }).then(({ data }) => {
                 options = [...data]
 
-                if (value) {
-                    const find = options.find(opt => (value.startsWith(opt.value)))
-
-                    if (find) {
-                        select(find)
-                        number = value.replace(code, '').replace('+', '')
-                    }
-                }
+                if (wirevalue) initInput(wirevalue)
                 else if (code) {
                     const find = options.find(opt => (opt.value === code))
                     if (find) select(find)
@@ -59,6 +62,7 @@
 
             $watch('code', () => format())
             $watch('number', () => format())
+            $watch('wirevalue', wirevalue => initInput(wirevalue))
         })"
         class="relative"
         {{ $attributes->except($except) }}>
