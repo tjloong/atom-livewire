@@ -3,12 +3,14 @@
 namespace Jiannius\Atom;
 
 use Jiannius\Atom\Traits\Livewire\WithDrawer;
+use Jiannius\Atom\Traits\Livewire\WithModal;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 use Livewire\Component as LivewireComponent;
 
 class Component extends LivewireComponent
 {
     use WithDrawer;
+    use WithModal;
     use WithPopupNotify;
 
     // mount

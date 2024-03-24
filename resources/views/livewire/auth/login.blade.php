@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-4">
     <x-form recaptcha="login">
-        <x-form.group>
+        <x-group>
             <x-heading title="auth.label.signin" 2xl/>
 
             @if ($message = session('message')) <x-alert>{{ $message }}</x-alert> @endif
@@ -15,7 +15,7 @@
                     <x-link label="auth.label.forgot-password" :href="route('password.forgot')" class="text-theme text-sm"/>
                 @endif
             </div>
-        </x-form.group>
+        </x-group>
     
         <x-slot:foot>
             <x-button.submit label="app.label.login" icon="login" color="theme" block lg/>

@@ -2,7 +2,7 @@
     <x-button.social-login divider="OR"/>
     <div class="flex flex-col gap-4">
         <x-form recaptcha="register">
-            <x-form.group>
+            <x-group>
             @if (!$errors->any() && $this->verification)
             <x-heading title="app.label.email-verification" 2xl/>
 
@@ -68,7 +68,7 @@
                     <x-form.checkbox.marketing wire:model="inputs.agree_promo"/>
                 </div>
             @endif
-            </x-form.group>
+            </x-group>
 
             <x-slot:foot>
                 <x-button.submit md block label="app.label.create-account"/>

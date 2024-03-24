@@ -3,9 +3,9 @@
         <x-slot:header>
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
-                    <x-form.group>
+                    <x-group>
                         <x-form.select.enum enum="user.status" wire:model="filters.status"/>
-                    </x-form.group>
+                    </x-group>
                 </x-table.filters>
             </x-table.searchbar>
         </x-slot:header>

@@ -2,17 +2,17 @@
     <x-heading title="settings.heading.email"/>
     
     <x-form>
-        <x-form.group cols="2">
+        <x-group cols="2">
             <x-form.select label="settings.label.email-provider"
                 wire:model="settings.mailer"
                 :options="[
                     ['value' => 'smtp', 'label' => 'SMTP'],
                     ['value' => 'mailgun', 'label' => 'Mailgun'],
                 ]"/>
-        </x-form.group>
+        </x-group>
 
         @if ($settings['mailer'] === 'smtp')
-            <x-form.group cols="2">
+            <x-group cols="2">
                 <x-form.text label="settings.label.smtp-host"
                     wire:model.defer="settings.smtp_host"/>
 
@@ -31,23 +31,23 @@
                         ['value' => 'ssl', 'label' => 'SSL'],
                         ['value' => 'tls', 'label' => 'TLS'],
                     ]"/>
-            </x-form.group>
+            </x-group>
         @elseif ($settings['mailer'] === 'mailgun')
-            <x-form.group cols="2">
+            <x-group cols="2">
                 <x-form.text label="settings.label.mailgun-domain"
                     wire:model.defer="settings.mailgun_domain"/>
 
                 <x-form.text label="settings.label.mailgun-secret"
                     wire:model.defer="settings.mailgun_secret"/>
-            </x-form.group>
+            </x-group>
         @endif
 
-        <x-form.group cols="2">
+        <x-group cols="2">
             <x-form.text label="settings.label.email-notify-from"
                 wire:model.defer="settings.notify_from"/>
 
             <x-form.text label="settings.label.email-notify-to"
                 wire:model.defer="settings.notify_to"/>
-        </x-form.group>
+        </x-group>
     </x-form>
 </div>

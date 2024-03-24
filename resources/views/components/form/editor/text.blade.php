@@ -43,12 +43,12 @@
                     },
                 }"
                 class="w-52">
-                <x-form.group>
+                <x-group>
                     <x-form.number x-model="size" label="Font Size" postfix="px"/>
                     <x-button color="green" sm outlined block
                         label="Set Font Size"
                         x-on:click="save()"/>
-                </x-form.group>
+                </x-group>
             </div>
         </div>
     </x-form.editor.dropdown>

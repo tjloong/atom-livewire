@@ -36,6 +36,7 @@
     x-on:close-drawer.window="id === $event.detail && close()"
     x-on:open="open()"
     x-on:close="close()"
+    x-bind:class="show && 'active'"
     class="drawer fixed inset-0 z-40"
     {{ $attributes->wire('close') }}>
     <div
@@ -46,13 +47,13 @@
 
     <div class="fixed top-1 bottom-1 right-0 z-50 pl-2 w-full {{ $attributes->get('class', 'max-w-screen-sm') }}">
         <div class="bg-white rounded-l-lg shadow-lg overflow-hidden flex flex-col h-full">
-            <div class="shrink-0 bg-white py-3 px-6 flex items-center justify-between gap-3 border-b rounded-t-lg">
+            <div class="shrink-0 bg-white py-3 px-6 flex flex-wrap items-center justify-between gap-3 border-b rounded-t-lg">
                 <div class="cursor-pointer" x-on:click="$dispatch('close')">
                     <x-icon name="arrow-right-long" class="text-lg"/>
                 </div>
 
                 @if ($render)
-                    <div x-data class="flex items-center gap-2">
+                    <div x-data class="flex flex-wrap items-center gap-2">
                         @isset($buttons)
                             @if (!$buttons->attributes->get('blank'))
                                 {{ $buttons }}

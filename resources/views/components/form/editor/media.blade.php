@@ -72,12 +72,12 @@
             </div>
 
             <div x-show="!exists" class="w-80">
-                <x-form.group>
+                <x-group>
                     <x-form.text label="Image URL" x-model="url"/>
                     <x-form.text label="Alt Text" x-model="alt"/>
-                </x-form.group>
+                </x-group>
     
-                <x-form.group class="p-3">
+                <x-group class="p-3">
                     <div class="flex items-center gap-2">
                         <x-button icon="check" color="green" outlined sm block
                             label="Save"
@@ -87,7 +87,7 @@
                             label="Browse"
                             x-on:click="showLibrary = true"/>
                     </div>
-                </x-form.group>
+                </x-group>
             </div>
 
             <x-form.file.library accept="image/*"/>
@@ -113,17 +113,17 @@
                 }
             }" 
             class="w-80">
-            <x-form.group>
+            <x-group>
                 <x-form.text label="Youtube URL" x-model="url"/>
                 <x-form.number label="Width" x-model="width"/>
                 <x-form.number label="Height" x-model="height"/>
-            </x-form.group>
+            </x-group>
 
-            <x-form.group class="p-3">
+            <x-group class="p-3">
                 <x-button color="green" icon="add" outlined sm
                     label="Add Youtube Video"
                     x-on:click="save()"/>
-            </x-form.group>
+            </x-group>
         </div>
     </x-form.editor.dropdown>
 </div>

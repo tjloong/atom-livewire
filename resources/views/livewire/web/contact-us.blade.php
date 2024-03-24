@@ -43,7 +43,7 @@
                 </div>
 
                 <x-form recaptcha="contact_us">
-                    <x-form.group>
+                    <x-group>
                         <x-form.text label="web.contact.label.name"
                             wire:model.defer="enquiry.name"/>
                         <x-form.phone label="web.contact.label.phone"
@@ -52,7 +52,7 @@
                             wire:model.defer="enquiry.email"/>
                         <x-form.textarea label="web.contact.label.message"
                             wire:model.defer="enquiry.message"/>
-                    </x-form.group>
+                    </x-group>
 
                     <x-slot:foot>
                         <x-button.submit color="theme" md block

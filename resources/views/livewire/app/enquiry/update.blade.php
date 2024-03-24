@@ -3,7 +3,7 @@
     <x-slot:heading title="{!! $enquiry->name !!}"></x-slot:heading>
     <x-slot:buttons delete></x-slot:buttons>
 
-    <x-form.group>
+    <x-group>
         <x-box>
             <div class="flex flex-col divide-y">
                 <x-field label="app.label.name" :value="$enquiry->name"/>
@@ -17,11 +17,11 @@
                 </div>
             </div>
         </x-box>
-    </x-form.group>
+    </x-group>
 
-    <x-form.group>
+    <x-group>
         <x-form.textarea wire:model.defer="enquiry.notes" label="app.label.remark"/>
         <x-form.select.enum wire:model.defer="inputs.status" label="app.label.status" enum="enquiry.status"/>
-    </x-form.group>
+    </x-group>
 @endif
 </x-form.drawer>

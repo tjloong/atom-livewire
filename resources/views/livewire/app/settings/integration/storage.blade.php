@@ -2,7 +2,7 @@
     <x-heading title="Storage Settings"/>
     
     <x-form>
-        <x-form.group cols="2">
+        <x-group cols="2">
             <x-form.select wire:model="settings.filesystem" label="Storage Provider" :options="[
                 ['value' => 'local', 'label' => 'Local'],
                 ['value' => 'do', 'label' => 'Digital Ocean Spaces'],
@@ -18,6 +18,6 @@
                 <x-form.text wire:model.defer="settings.do_spaces_endpoint" label="DO Spaces Endpoint"/>
                 <x-form.text wire:model.defer="settings.do_spaces_folder" label="DO Spaces Folder"/>
             @endif
-        </x-form.group>        
+        </x-group>        
     </x-form>
 </div>

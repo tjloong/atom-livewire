@@ -56,6 +56,7 @@ return [
         'closed-on' => 'Closed on :date',
         'code' => 'Code',
         'color' => 'Color',
+        'copy' => 'Copy',
         'completed-date' => 'Completed Date',
         'completed-on' => 'Completed on :date',
         'completion-date' => 'Completion Date',

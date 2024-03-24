@@ -32,12 +32,12 @@
                 },
             }"
             class="w-80">
-            <x-form.group>
+            <x-group>
                 <x-form.text label="Link URL" x-ref="href" x-model="href"/>
                 <x-form.checkbox label="Open in new tab" x-model="blank"/>
-            </x-form.group>
+            </x-group>
 
-            <x-form.group class="p-3">
+            <x-group class="p-3">
                 <div class="flex items-center gap-2">
                     <x-button color="green" icon="check" outlined sm block
                         label="Save"
@@ -48,7 +48,7 @@
                         x-show="exists"
                         x-on:click="remove()"/>
                 </div>
-            </x-form.group>
+            </x-group>
         </div>
     </x-form.editor.dropdown>
     

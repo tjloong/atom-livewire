@@ -3,7 +3,7 @@
     <x-slot:heading title="Update File"></x-slot:heading>
     <x-slot:buttons delete></x-slot:buttons>
 
-    <x-form.group>
+    <x-group>
         <div class="rounded-lg bg-slate-100 flex flex-col overflow-hidden shadow">
             @if ($file->is_video || $file->is_image || $file->type === 'youtube')
                 <a href="{{ $file->url }}" target="_blank">
@@ -24,15 +24,15 @@
                 </div>
             @endif
         </div>
-    </x-form.group>
+    </x-group>
 
-    <x-form.group>
+    <x-group>
         <x-form.text wire:model.defer="file.name" :label="$file->type === 'youtube' ? 'Video Name' : 'File Name'"/>
             
         @if ($file->is_image)
             <x-form.text wire:model.defer="inputs.alt" label="Alt Text" placeholder="Insert Alt Text"/>
             <x-form.text wire:model.defer="inputs.description" placeholder="Insert Image Description"/>
         @endif
-    </x-form.group>
+    </x-group>
 @endif
 </x-form.drawer>

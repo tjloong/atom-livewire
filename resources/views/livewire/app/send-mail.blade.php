@@ -6,13 +6,13 @@
         <x-button.submit sm label="Send" icon="paper-plane"/>
     </x-slot:buttons>
 
-    <x-form.group cols="2">
+    <x-group cols="2">
         <x-form.email wire:model.defer="inputs.from.email" label="app.label.sender-email"/>
         <x-form.text wire:model.defer="inputs.from.name" label="app.label.sender-name"/>
         <x-form.text wire:model.defer="inputs.reply_to" label="app.label.reply-to"/>
-    </x-form.group>
+    </x-group>
 
-    <x-form.group>
+    <x-group>
         <x-form.email wire:model="inputs.to" :options="$options" label="app.label.to" multiple/>
         <x-form.email wire:model="inputs.cc" :options="$options" label="app.label.cc" multiple/>
         <x-form.email wire:model="inputs.bcc" label="app.label.bcc" multiple/>
@@ -40,6 +40,6 @@
                 </div>
             </x-box.flat>
         </x-form.field>
-    </x-form.group>
+    </x-group>
 @endif
 </x-form.drawer>

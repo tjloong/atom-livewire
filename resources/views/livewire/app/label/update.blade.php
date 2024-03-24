@@ -7,7 +7,7 @@
         <x-slot:heading title="app.label.create-label"></x-slot:heading>
     @endif
 
-    <x-form.group>
+    <x-group>
         @if ($type = $label->type)
             <x-form.text :value="str()->headline($type)" label="app.label.type" readonly/>
         @endif
@@ -49,7 +49,7 @@
             <x-form.color wire:model="label.color" label="app.label.color"/>
             <x-form.file wire:model="label.image_id" label="app.label.image"/>
         @endif
-    </x-form.group>
+    </x-group>
 @endif
 </x-form.drawer>
     

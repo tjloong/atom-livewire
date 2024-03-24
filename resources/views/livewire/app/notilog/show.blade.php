@@ -3,7 +3,7 @@
     <x-slot:heading title="app.label.outbox-log" :status="$notilog->status->badge()"></x-slot:heading>
     <x-slot:buttons delete></x-slot:buttons>
 
-    <x-form.group>
+    <x-group>
         <x-box>
             <div class="flex flex-col divide-y">
                 <x-field label="app.label.channel" :value="$notilog->channel"/>
@@ -34,15 +34,15 @@
         @if ($error = $notilog->getJson('data.error'))
             <x-alert type="error" message="{!! $error !!}"/>
         @endif
-    </x-form.group>
+    </x-group>
 
     @if ($notilog->channel === 'mail')
-        <x-form.group>
+        <x-group>
             <x-form.field label="app.label.subject" :value="$notilog->subject"/>
             <x-form.field label="app.label.body">
                 <x-box>{!! $notilog->body !!}</x-box>
             </x-form.field>
-        </x-form.group>
+        </x-group>
     @endif
 @endif
 </x-drawer>

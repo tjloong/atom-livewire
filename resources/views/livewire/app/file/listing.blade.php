@@ -3,9 +3,9 @@
         <x-slot:header>
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
-                    <x-form.group>
+                    <x-group>
                         <x-form.select.enum wire:model="filters.mime" label="file.label.mime" enum="file.type"/>
-                    </x-form.group>
+                    </x-group>
                 </x-table.filters>
             </x-table.searchbar>
 
