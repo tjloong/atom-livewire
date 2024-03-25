@@ -70,7 +70,8 @@
     x-on:files-uploaded="page = 1; fetch()"
     class="fixed inset-0"
     style="z-index: 999;">
-    <x-modal.overlay x-on:click="close()"/>
+    <div class="fixed inset-0 z-40 bg-black/60" x-on:click="close()"></div>
+    
     <div class="absolute top-0 bottom-0 right-0 left-0 py-1 md:left-auto">
         <div class="bg-white border shadow-lg rounded-l-lg h-full ml-auto flex flex-col">
             <div class="shrink-0 py-3 px-6 cursor-pointer border-b" x-on:click="close()">

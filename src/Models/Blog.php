@@ -41,9 +41,11 @@ class Blog extends Model
     protected function status() : Attribute
     {
         return Attribute::make(
-            get: fn() => !$this->published_at || $this->published_at->isFuture()
-                ? enum('blog.status', 'DRAFT')
-                : enum('blog.status', 'PUBLISHED'),
+            get: fn() => enum('blog.status', pick([
+                'UPCOMING' => $this->published_at && $this->published_at->gt(now()),
+                'PUBLISHED' => !empty($this->published_at),
+                'DRAFT' => true,
+            ])),
         );
     }
 
@@ -72,13 +74,25 @@ class Blog extends Model
     }
 
     // scope for status
-    public function scopeStatus($query, $status) : void
+    public function scopeStatus($query, $status): void
     {
-        if (is_string($status)) $status = enum('blog.status', $status);
-        
-        $query
-            ->when($status === enum('blog.status', 'DRAFT'), fn($q) => $q->whereNull('published_at'))
-            ->when($status === enum('blog.status', 'PUBLISHED'), fn($q) => $q->whereNotNull('published_at'));
+        if ($status) {
+            $query->where(function($q) use ($status) {
+                foreach ((array) $status as $value) {
+                    $value = is_string($value) ? $value : $value->value;
+
+                    if ($value === enum('blog.status', 'DRAFT')->value) {
+                        $q->orWhereNull('blogs.published_at');
+                    }
+                    elseif ($value === enum('blog.status', 'UPCOMING')->value) {
+                        $q->orWhereRaw('(blogs.published_at is not null and blogs.published_at > now())');
+                    }
+                    elseif ($value === enum('blog.status', 'PUBLISHED')->value) {
+                        $q->orWhereRaw('(blogs.published_at is not null and blogs.published_at <= now())');
+                    }
+                }
+            });
+        }
     }
 
     // scope for label
