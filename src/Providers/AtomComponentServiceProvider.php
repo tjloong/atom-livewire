@@ -224,9 +224,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'slider.slide',
             'slider.thumbs',
 
-            'faq.index',
-            'faq.item',
-
             'footer.index',
             'footer.pre',
 
