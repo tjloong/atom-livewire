@@ -11,7 +11,7 @@
         x-bind:class="disabled && 'opacity-30 pointer-events-none'">
         <label class="normal-case font-normal text-base text-gray-800" @disabled($disabled)>
             <div class="flex gap-3">
-                <div class="shrink-0 py-0.5">
+                <div class="shrink-0 py-1">
                     <input type="checkbox" class="hidden peer" {{ $attributes }}>
                     <div class="
                         bg-white text-white border border-gray-300 rounded flex 

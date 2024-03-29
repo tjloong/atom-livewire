@@ -165,7 +165,7 @@ trait HasFilters
         })->map(fn($col) => data_get($col, 'name'))->values()->all();
 
         foreach ($columns as $col) {
-            if (empty($this->$col) && $this->$col != 0) $this->$col = null;
+            if (empty($this->$col)) $this->fill([$col => null]);
         }
     }
 

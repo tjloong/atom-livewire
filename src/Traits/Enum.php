@@ -21,4 +21,10 @@ trait Enum
     {
         return [$this->color() => $this->value];
     }
+
+    // is
+    public function is($val) : bool
+    {
+        return $this->value === $val || $this->name === $val;
+    }
 }
