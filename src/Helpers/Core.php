@@ -548,8 +548,18 @@ if (!function_exists('enum')) {
     function enum($name, $getter = null)
     {
         $enum = new \Jiannius\Atom\Services\Enum($name);
-        
-        return $getter ? $enum->get($getter) : $enum;
+
+        if ($getter) {
+            if (
+                $getter instanceof UnitEnum
+                || $getter instanceof BackedEnum
+            ) {
+                return $getter;
+            }
+            else return $enum->get($getter);
+        }
+
+        return $enum;
     }
 }
 

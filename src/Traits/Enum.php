@@ -25,6 +25,12 @@ trait Enum
     // is
     public function is($val) : bool
     {
-        return $this->value === $val || $this->name === $val;
+        return in_array($this->value, (array) $val) || in_array($this->name, (array) $val);
+    }
+
+    // is not
+    public function isNot($val) : bool
+    {
+        return !$this->is($val);
     }
 }
