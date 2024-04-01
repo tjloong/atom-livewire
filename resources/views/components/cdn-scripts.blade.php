@@ -19,6 +19,9 @@
             'https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/utc.js',
             'https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/relativeTime.js',
         ],
+        'fullcalendar' => [
+            'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js',
+        ],
         'social-share' => [
             'https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js',
         ],
