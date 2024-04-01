@@ -13,7 +13,7 @@ class Index extends Component
     public function mount(): void
     {
         $this->share = model('share')
-            ->status(enum('share.status', 'ACTIVE'))
+            ->status('ACTIVE')
             ->where('ulid', $this->ulid)
             ->firstOrFail();
     }

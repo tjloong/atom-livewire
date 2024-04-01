@@ -41,7 +41,7 @@ class Update extends Component
         $this->share = $this->parent->fresh()->share 
             ?? $this->parent->share()->create(['is_enabled' => true]);
 
-        $this->dispatchBrowserEvent('share-update-open');
+        $this->openModal();
     }
 
     // regenerate
