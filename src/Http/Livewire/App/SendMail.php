@@ -65,7 +65,7 @@ class SendMail extends Component
     {
         $this->options = $this->setEmailList($options);
 
-        $this->inputs = array_merge([
+        $this->inputs = [
             'from' => ['name' => null, 'email' => null],
             'reply_to' => null,
             'to' => [],
@@ -74,9 +74,10 @@ class SendMail extends Component
             'subject' => null,
             'body' => null,
             'attachments' => [],
-        ], $data);
+            ...$data,
+        ];
 
-        if (!data_get($this->inputs, 'to') && $this->options) {
+        if (!get($this->inputs, 'to') && $this->options) {
             $this->inputs['to'] = array_filter([collect($this->options)->shift()]);
         }
 

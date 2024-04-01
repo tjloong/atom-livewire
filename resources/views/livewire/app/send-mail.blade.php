@@ -7,15 +7,15 @@
     </x-slot:buttons>
 
     <x-group cols="2">
-        <x-form.email wire:model.defer="inputs.from.email" label="app.label.sender-email"/>
+        <x-form.select.email wire:model.defer="inputs.from.email" label="app.label.sender-email"/>
         <x-form.text wire:model.defer="inputs.from.name" label="app.label.sender-name"/>
         <x-form.text wire:model.defer="inputs.reply_to" label="app.label.reply-to"/>
     </x-group>
 
     <x-group>
-        <x-form.email wire:model="inputs.to" :options="$options" label="app.label.to" multiple/>
-        <x-form.email wire:model="inputs.cc" :options="$options" label="app.label.cc" multiple/>
-        <x-form.email wire:model="inputs.bcc" label="app.label.bcc" multiple/>
+        <x-form.select.email wire:model="inputs.to" :options="$options" label="app.label.to" multiple/>
+        <x-form.select.email wire:model="inputs.cc" :options="$options" label="app.label.cc" multiple/>
+        <x-form.select.email wire:model="inputs.bcc" label="app.label.bcc" multiple/>
         <x-form.text wire:model.defer="inputs.subject" label="app.label.subject"/>
         <x-form.textarea wire:model.defer="inputs.body" label="app.label.body" rows="10"/>
 
