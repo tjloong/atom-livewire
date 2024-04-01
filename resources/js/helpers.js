@@ -1,3 +1,7 @@
+Array.prototype.pluck = function($attr) {
+    return this.map(val => (val[$attr]))
+}
+
 Array.prototype.unique = function (attr = null) {
     if (typeof attr === 'function') {
         let values = this.map(row => (attr(row)))
