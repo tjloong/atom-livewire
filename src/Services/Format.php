@@ -30,6 +30,7 @@ class Format
     public function value($default = null) : mixed
     {
         return $this->date()
+            ?? $this->period()
             ?? $this->currency()
             ?? $this->excerpt()
             ?? $this->value
@@ -37,12 +38,14 @@ class Format
     }
 
     // carbon
-    public function carbon() : mixed
+    public function carbon($value = null) : mixed
     {
-        if ($this->value instanceof \Carbon\Carbon) $carbon = $this->value;
+        $value = $value ?? $this->value;
+
+        if ($value instanceof \Carbon\Carbon) $carbon = $value;
         else {
-            if (validator(['value' => $this->value], ['value' => 'date'])->fails()) return null;
-            $carbon = \Carbon\Carbon::parse($this->value);
+            if (validator(['value' => $value], ['value' => 'date'])->fails()) return null;
+            $carbon = \Carbon\Carbon::parse($value);
         }
 
         if ($tz = optional(user())->settings('timezone') ?? config('atom.timezone')) {
@@ -64,6 +67,39 @@ class Format
             if ($this->options) return $carbon->format($this->options);
 
             return $carbon->format('d M Y');
+        }
+
+        return null;
+    }
+
+    // period
+    public function period() : mixed
+    {
+        if (is_array($this->value)) {
+            $from = $this->carbon($this->value[0]);
+            $to = $this->carbon($this->value[1]);
+
+            if ($from && !$to) {
+                $val = format($from, $this->options)->value().' - ∞';
+            }
+            else if (!$from && $to) {
+                $val = '∞ - '.format($to, $this->options)->value();
+            }
+            else if ($from->isSameDay($to)) {
+                $val = format($from)->value();
+                if ($this->options === 'datetime') $val .= ' '.format($from, 'time')->value().' - '.format($to, 'time')->value();
+            }
+            else if ($from->isSameMonth($to) && $from->isSameYear($to) && $this->options !== 'datetime') {
+                $val = $from->day.' - '.format($to)->value();
+            }
+            else if ($this->options === 'datetime') {
+                $val = format($from, 'datetime')->value().' - '.format($to, 'datetime')->value();
+            }
+            else {
+                $val = format($from)->value().' - '.format($to)->value();
+            }
+
+            return $val;
         }
 
         return null;
