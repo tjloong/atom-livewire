@@ -86,7 +86,7 @@
             x-ref="dropdown"
             x-show="show"
             x-transition
-            class="absolute z-40 left-0 top-full mt-px z-20 w-max bg-white rounded-md shadow-lg border">
+            class="absolute left-0 top-full mt-px z-20 w-max bg-white rounded-md shadow-lg border">
             <div class="flex flex-col divide-y">
                 @foreach ([
                     'today',
@@ -157,7 +157,7 @@
             x-ref="dropdown"
             x-show="show"
             x-transition
-            class="absolute z-40 left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
+            class="absolute left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
             <div
                 x-data="{
                     inputs: {
