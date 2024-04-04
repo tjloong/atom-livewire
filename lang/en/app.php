@@ -95,6 +95,7 @@ return [
         'do-not-cancel' => 'Do Not Cancel',
         'documentation-url' => 'Documentation URL',
         'done' => 'Done',
+        'have-account?' => 'Have account?',
         'dont-have-account' => 'Don\'t have an account?',
         'download' => 'Download',
         'due-date' => 'Due Date',

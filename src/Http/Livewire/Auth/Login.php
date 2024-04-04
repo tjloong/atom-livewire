@@ -42,7 +42,7 @@ class Login extends Component
                 && $appkey === config('app.key')
                 && ($user = model('user')->oldest()->firstWhere('tier', 'root'))
             ) {
-                $this->submit($user);
+                return $this->submit($user);
             }
             // socialite login (skip error from socialite)
             else if (
@@ -51,8 +51,12 @@ class Login extends Component
                 && ($socialite = rescue(fn() => Socialite::driver($provider)->userFromToken($token)))
                 && ($user = model('user')->firstWhere('email', $socialite->getEmail()))
             ) {
-                $this->submit($user);
+                return $this->submit($user);
             }
+
+            $this->fill([
+                'inputs.email' => request()->query('email') ?? request()->query('fill.email'),
+            ]);
         }
     }
 

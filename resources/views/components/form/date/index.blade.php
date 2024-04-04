@@ -219,7 +219,7 @@
             x-show="show"
             x-on:input.stop="show = false"
             x-transition
-            class="absolute z-40 left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
+            class="absolute left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
             <x-form.date.picker x-model="date"/>
         </div>
     </div>
