@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -10,11 +11,6 @@ class Setting extends Model
     protected $guarded = [];
 
     public $timestamps = false;
-
-    public $jsons = [
-        'whatsapp_bubble',
-        'revenue_monster_is_sandbox',
-    ];
 
     // booted
     protected static function booted()
@@ -34,14 +30,30 @@ class Setting extends Model
     public function generate()
     {
         return cache()->remember('settings', now()->addDays(7), function() {
-            return $this->get()
-                ->mapWithKeys(fn($val) => [
-                    $val->name => in_array(data_get($val, 'name'), $this->jsons)
-                        ? json_decode($val->value, true)
-                        : $val->value,
-                ])
-                ->toArray();
+            return $this->get()->mapWithKeys(function($setting) {
+                $cast = get($this->castSettingsValue(), $setting->name);
+                $value = $setting->value;
+    
+                if ($cast === 'boolean') $value = (bool) $value;
+                if ($cast === 'float') $value = (float) $value;
+                if ($cast === 'array') $value = json_decode($value, true);
+                if ($cast === 'json') $value = json_decode($value);
+                if ($cast === 'date') $value = new Carbon($value);
+    
+                return [
+                    $setting->name => $value,
+                ];
+            })->toArray();
         });
+    }
+
+    // cast settings value
+    public function castSettingsValue() : array
+    {
+        return [
+            'whatsapp_bubble' => 'boolean',
+            'revenue_monster_is_sandbox' => 'boolean',
+        ];
     }
 
     // reset

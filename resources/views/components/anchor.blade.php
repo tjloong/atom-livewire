@@ -1,10 +1,17 @@
 @php
     $label = $attributes->get('label') ?? $attributes->get('href');
     $icon = $attributes->get('icon');
+    $align = $attributes->get('align');
     $caption = $attributes->get('caption') ?? $attributes->get('small');
 @endphp
 
-<a {{ $attributes->except(['label', 'icon', 'align', 'caption']) }}>
+<a 
+    {{ $attributes->class([
+        pick([
+            'flex items-center justify-center' => $align === 'center',
+            'flex items-center justify-end' => $align === 'right',
+        ]),
+    ])->except(['label', 'icon', 'align', 'caption']) }}>
     @if ($label)
         @if ($icon)
             <span class="inline-flex items-center gap-2 text-blue-500 underline decoration-dotted">
