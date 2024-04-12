@@ -19,7 +19,8 @@
     
         <x-slot:foot>
             <x-button.submit label="app.label.login" icon="login" color="theme" block lg/>
-            <x-button.social-login divider="app.label.or-login-with"/>
+            <x-divider label="app.label.or-login-with"/>
+            <x-button.social-login/>
         </x-slot:foot>
     </x-form>
 
