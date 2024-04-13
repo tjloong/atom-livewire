@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4">
-    @if (!$this->verification)
+    @if (!$this->verification && model('setting')->getSocialLogins()->count())
         <x-button.social-login/>
         <x-divider label="or"/>
     @endif

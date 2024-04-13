@@ -123,18 +123,18 @@ class Banner extends Model
         if ($status) {
             $query->where(function($q) use ($status) {
                 foreach ((array) $status as $value) {
-                    $value = is_string($value) ? $value : $value->value;
+                    $value = enum('banner.status', $value);
 
-                    if ($value === enum('banner.status', 'INACTIVE')->value) {
+                    if ($value->is('INACTIVE')) {
                         $q->orWhere('banners.is_active', false);
                     }
-                    elseif ($value === enum('banner.status', 'ENDED')->value) {
+                    elseif ($value->is('ENDED')) {
                         $q->orWhereRaw('banners.is_active = true and banners.end_at is not null and banners.end_at < now()');
                     }
-                    elseif ($value === enum('banner.status', 'UPCOMING')->value) {
+                    elseif ($value->is('UPCOMING')) {
                         $q->orWhereRaw('banners.is_active = true and banners.start_at is not null and banners.start_at > now()');
                     }
-                    elseif ($value === enum('banner.status', 'ACTIVE')->value) {
+                    elseif ($value->is('ACTIVE')) {
                         $q->orWhereRaw('(
                             banners.is_active = true and (
                                 (banners.start_at is null and banners.end_at is null)

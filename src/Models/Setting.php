@@ -56,6 +56,27 @@ class Setting extends Model
         ];
     }
 
+    // get social logins
+    public function getSocialLogins() : mixed
+    {
+        return collect([
+            'google' => 'Google',
+            'facebook' => 'Facebook',
+            'linkedin' => 'LinkedIn',
+            'twitter' => 'Twitter',
+            'twitter-oauth-2' => 'Twitter',
+            'github' => 'Github',
+        ])
+        ->map(fn($label, $name) => [
+            'name' => $name,
+            'label' => $label,
+            'client_id' => settings($name.'_client_id'),
+            'client_secret' => settings($name.'_client_secret'),
+        ])
+        ->filter(fn($val) => !empty(get($val, 'client_id')) && !empty(get($val, 'client_secret')))
+        ->values();    
+    }
+
     // reset
     public function reset()
     {
