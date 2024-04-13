@@ -9,7 +9,7 @@
 
 @if ($size === 'sm')
     <a href="{{ $href }}" class="grid gap-1 bg-white border p-4 rounded-md shadow text-gray-800">
-        <div class="font-bold truncate">
+        <div class="font-bold">
             {{ $title }}
         </div>
 
@@ -29,14 +29,13 @@
                     <img
                         src="{{ $cover }}"
                         alt="{{ $title }}"
-                        class="w-full h-full object-cover transition-all duration-500 hover:transform hover:scale-125"
-                    >
+                        class="w-full h-full object-cover transition-all duration-500 hover:transform hover:scale-125">
                 </figure>
             @endif
         </a>
 
         <a href="{{ $href }}" class="p-4 bg-white grid gap-2">
-            <div class="text-lg font-bold truncate text-gray-800">
+            <div class="text-lg font-bold text-gray-800">
                 {{ $title }}
             </div>
             <div class="text-sm text-gray-400 font-medium">
