@@ -12,6 +12,7 @@ class Login extends Component
 {
     use WithForm;
 
+    public $redirect;
     public $throttlekey;
 
     public $inputs = [
@@ -55,6 +56,7 @@ class Login extends Component
             }
 
             $this->fill([
+                'redirect' => request()->query('redirect'),
                 'inputs.email' => request()->query('email') ?? request()->query('fill.email'),
             ]);
         }
@@ -131,6 +133,6 @@ class Login extends Component
     // redirection
     public function redirectTo($user) : string
     {
-        return $user->home();
+        return $this->redirect ?? $user->home();
     }
 }

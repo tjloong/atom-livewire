@@ -2,6 +2,7 @@
     $icon = $attributes->get('icon');
     $active = $attributes->has('active') ? $attributes->get('active') : null;
     $inverted = $attributes->get('inverted', true);
+    $lowercase = $attributes->get('lowercase', true);
 
     $label = is_bool($active) && !$attributes->get('label')
         ? tr($active ? 'app.label.active' : 'app.label.inactive')
@@ -32,6 +33,7 @@
     border: 1px solid {{ color($color) }};
 " {{ $attributes->class([
     'px-2 inline-block font-semibold rounded-md',
+    $lowercase ? 'lowercase' : null,
     [
         'xs' => 'text-xs',
         'sm' => 'text-sm',

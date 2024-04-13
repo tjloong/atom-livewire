@@ -17,6 +17,7 @@ class Register extends Component
     public $plan;
     public $token;
     public $provider;
+    public $redirect;
     public $verification;
     public $hasValidSignature;
 
@@ -56,6 +57,8 @@ class Register extends Component
     // mount
     public function mount()
     {
+        $this->redirect = request()->query('redirect');
+
         if (!$this->ref && !$this->utm && !$this->token && !$this->provider) {
             return redirect('/');
         }
@@ -200,6 +203,6 @@ class Register extends Component
 
         event(new Registered($user->fresh()));
 
-        return redirect($user->home());
+        return redirect($this->redirect ?? $user->home());
     }
 }
