@@ -52,7 +52,7 @@ trait WithTable
     // updated filters
     public function updatedFilters() : void
     {
-        $this->reset('page');
+        $this->resetPage();
         $this->reset('tableCheckboxes');
     }
 
@@ -77,7 +77,7 @@ trait WithTable
     // reset filters
     public function resetFilters() : void
     {
-        $this->reset('page');
+        $this->resetPage();
         $this->reset('filters');
         $this->reset('tableCheckboxes');
     }

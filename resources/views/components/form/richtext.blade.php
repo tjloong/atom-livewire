@@ -4,7 +4,6 @@
         x-data="{
             content: @entangle($attributes->wire('model')),
             loading: false,
-            showLibrary: false,
             toolbar: @js($toolbar),
             placeholder: @js(tr($attributes->get('placeholder', 'Your content...'))),
             startEditor () {
@@ -20,8 +19,6 @@
                     
                     // insert media
                     editor.ui.view.toolbar.on('insert-media:click', () => {
-                        this.showLibrary = true
-
                         const insert = (event) => {
                             const files = [event.detail].flat()
 
@@ -51,10 +48,12 @@
                                 }
                             })
 
-                            window.removeEventListener('media', insert)
+                            window.removeEventListener('files-selected', insert)
                         }
 
-                        window.addEventListener('media', insert)
+                        window.addEventListener('files-selected', insert)
+
+                        Livewire.emit('showFilesLibrary', { accept: 'image/*', multiple: false })
                     })
                 })
             },
@@ -62,8 +61,5 @@
         x-init="startEditor()"
         class="{{ $attributes->get('class') }}">
         <div x-ref="ckeditor" x-show="!loading"></div>
-        <div x-on:files-selected.stop="$dispatch('media', $event.detail)">
-            <x-form.file.library accept="image/*"/>
-        </div>
     </div>
 </x-form.field>

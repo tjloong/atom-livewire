@@ -106,6 +106,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // file
             'app.file.update' => 'App\File\Update',
+            'app.file.library' => 'App\File\Library',
             'app.file.listing' => 'App\File\Listing',
 
             // settings
