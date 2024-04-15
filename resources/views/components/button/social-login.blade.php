@@ -4,13 +4,13 @@
 
 @if ($settings->count())
     <div class="flex flex-col gap-2">
-        @foreach ($providers as $provider)
+        @foreach ($settings as $setting)
             <x-button
-                :label="tr('app.label.continue-with-social-login', ['provider' => data_get($provider, 'label')])"
-                :icon="data_get($provider, 'name').' brands'"
-                :color="data_get($provider, 'name')"
+                :label="tr('app.label.continue-with-social-login', ['provider' => get($setting, 'label')])"
+                :icon="get($setting, 'name').' brands'"
+                :color="get($setting, 'name')"
                 :href="route('socialite.redirect', array_merge(
-                    ['provider' => data_get($provider, 'name')],
+                    ['provider' => get($setting, 'name')],
                     request()->query(),
                 ))"/>
         @endforeach
