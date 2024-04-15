@@ -16,5 +16,18 @@
         <x-icon name="upload" size="24"/> {{ tr('file.label.drop-to-upload') }}
     </div>
 
-    {{ tr('file.label.or-drop-to-upload', ['max' => format_filesize($attributes->get('max'), 'MB')]) }}
+    <div class="flex flex-col">
+        {{ tr('file.label.or-drop-to-upload', ['max' => format_filesize($attributes->get('max'), 'MB')]) }}
+        <input type="text" class="transparent w-full" placeholder="{{ tr('app.label.paste-to-upload') }}"
+            x-on:click.stop
+            x-on:input="$event.target.value = ''"
+            x-on:paste.window="() => {
+                let items = $event.clipboardData.items
+                let files = Array.from(items)
+                    .filter(item => (item.kind === 'file'))
+                    .map(item => (item.getAsFile()))
+
+                if (files.length) $dispatch('pasted', files)
+            }">
+    </div>
 </div>

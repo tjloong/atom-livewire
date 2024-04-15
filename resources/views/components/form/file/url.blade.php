@@ -9,26 +9,29 @@
     x-data="{
         text: null,
         submit () {
-            axios.post(@js(route('__file.url')), { url: this.text.split(`\n`) })
-                .then(res => {
-                    this.$dispatch('files-created', res.data)
-                    this.text = null
-                })
+            axios.post(@js(route('__file.url')), { url: this.text.split(`\n`) }).then(res => {
+                this.$dispatch('files-created', res.data)
+                this.text = null
+            })
         },
     }"
+    x-on:input.stop
     class="flex flex-col gap-2">
     <x-form.field :label="collect([
-        !$accept || $acceptImage ? tr('common.label.image-url') : null,
-        !$accept || $acceptYoutube ? tr('common.label.youtube-url') : null,
+        !$accept || $acceptImage ? tr('app.label.image-url') : null,
+        !$accept || $acceptYoutube ? tr('app.label.youtube-url') : null,
     ])->filter()->join(' / ')">
-        @if ($multiple) <textarea x-model="text" x-on:input.stop class="form-input w-full" rows="5"></textarea>
-        @else <input type="text" x-model="text" x-on:input.stop class="form-input w-full">
+        @if ($multiple)
+            <div class="relative w-full">
+                <textarea x-model="text" class="form-input w-full" rows="3"></textarea>
+                <div class="absolute top-0 right-0 z-10 p-2">
+                    <x-button xs color="green" icon="check" label="app.label.add"/>
+                </div>
+            </div>
+        @else
+            <x-form.text x-model="text" x-on:keydown.enter.prevent="submit">
+                <x-slot:button label="app.label.add" icon="add" x-on:click="submit()"></x-slot:button>
+            </x-form.text>
         @endif
     </x-form.field>
-
-    <div>
-        <x-button color="green" icon="add" sm
-            label="common.label.add"
-            x-on:click="submit"/>
-    </div>
 </div>

@@ -21,7 +21,7 @@
             <x-button.submit label="app.label.login" icon="login" color="theme" block lg/>
             
             @if (model('setting')->getSocialLogins()->count())
-                <x-divider label="app.label.or-login-with"/>
+                <x-divider label="or"/>
                 <x-button.social-login/>
             @endif
         </x-slot:foot>

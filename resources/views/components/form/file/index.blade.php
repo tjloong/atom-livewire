@@ -12,12 +12,13 @@
             <x-form.file.listing {{ $attributes }}/>
         @endif
 
-        <div wire:ignore x-cloak
+        <div
+            wire:ignore
+            x-cloak
             x-data="{
+                tab: 'upload',
                 value: @entangle($attributes->wire('model')),
                 multiple: @js($multiple),
-                isUrlMode: false,
-                showLibrary: false,
                 input (files) {
                     const value = files.map(val => (val.id))
                     
@@ -29,46 +30,57 @@
                     }
                     else if (value.length) this.value = value[0]
                     else this.value = null
-
-                    this.isUrlMode = false
-                    this.showLibrary = false
                 },
             }"
             x-on:files-created="input($event.detail)"
             x-on:files-selected="input($event.detail)"
             x-on:files-uploaded="input($event.detail)"
-            class="w-full bg-slate-100"
-            {{ $attributes->wire('sorted') }}>
+            class="w-full bg-slate-100 flex flex-col">
+            <template x-if="tab === 'upload'">
+                <x-form.file.uploader class="p-4" {{ $attributes }}/>
+            </template>
+
             @if ($enabledUrl)
-                <div x-show="isUrlMode" class="p-4 flex flex-col gap-4">
-                    <x-form.file.url {{ $attributes }}/>
-                    <x-link icon="back" label="common.label.back" class="text-sm"
-                        x-on:click="isUrlMode = false"/>
-                </div>
+                <template x-if="tab === 'url'">
+                    <div class="p-4">
+                        <x-form.file.url {{ $attributes }}/>
+                    </div>
+                </template>
             @endif
 
-            <div x-show="!isUrlMode" class="p-4 flex flex-col gap-4">
-                <x-form.file.uploader {{ $attributes }}/>
-
-                @if ($enabledUrl || $enabledLibrary)
-                    <div class="flex items-center divide-x divide-gray-300 text-sm">
-                        @if ($enabledLibrary)
-                            <x-link icon="search" class="pr-3"
-                                label="common.label.browse-library"
-                                x-on:click="showLibrary = true"/>
-                        @endif
+            @if ($enabledUrl || $enabledLibrary)
+                <div class="p-2 flex flex-wrap items-center gap-1 border-t">
+                    <div class="grow flex items-center gap-1">
+                        <div
+                            x-on:click="tab = 'upload'"
+                            x-bind:class="tab === 'upload' ? 'font-medium text-gray-600 bg-gray-200' : 'cursor-pointer text-gray-400 hover:bg-gray-200'"
+                            class="py-1.5 px-3 text-sm uppercase rounded-md">
+                            {{ tr('app.label.upload') }}
+                        </div>
 
                         @if ($enabledUrl)
-                            <x-link icon="code" class="pl-3"
-                                label="common.label.get-from-url"
-                                x-on:click="isUrlMode = true"/>
+                            <div
+                                x-on:click="tab = 'url'"
+                                x-bind:class="tab === 'url' ? 'font-medium text-gray-600 bg-gray-200' : 'cursor-pointer text-gray-400 hover:bg-gray-200'"
+                                class="py-1.5 px-3 text-sm uppercase rounded-md">
+                                {{ tr('app.label.get-from-url') }}
+                            </div>
                         @endif
                     </div>
-                @endif
-            </div>
 
-            @if ($enabledLibrary)
-                <x-form.file.library {{ $attributes }}/>
+                    @if ($enabledLibrary)
+                        <div class="shrink-0">
+                            <div
+                                x-on:click="Livewire.emit('showFilesLibrary', {
+                                    accept: {{ Js::from($attributes->get('accept')) }},
+                                    multiple: {{ Js::from($attributes->get('multiple')) }},
+                                })"
+                                class="py-1.5 px-3 text-sm text-gray-500 font-medium uppercase rounded-md cursor-pointer hover:bg-gray-200">
+                                {{ tr('app.label.browse-library') }}
+                            </div>
+                        </div>
+                    @endif
+                </div>
             @endif
         </div>
     </div>

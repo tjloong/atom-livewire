@@ -4,6 +4,7 @@
     $accept = $attributes->get('accept') ?? '';
     $multiple = $attributes->get('multiple', false);
     $dropzone = $attributes->get('dropzone', true);
+    $paste = $attributes->get('paste', true);
     $path = $attributes->get('path', 'uploads');
     $visibility = $attributes->get('visibility', 'private');
 @endphp
@@ -25,12 +26,10 @@
                     this.progress = Math.round((progressEvent.loaded * 100)/progressEvent.total)
                 }}
 
-                axios.post(@js(route('__file.upload')), formdata, config)
-                    .then(res => {
-                        this.$dispatch('files-uploaded', res.data)
-                        this.$wire.emit('fileUploaded')
-                    })
-                    .then(() => this.progress = 0)
+                axios.post(@js(route('__file.upload')), formdata, config).then(res => {
+                    this.$dispatch('files-uploaded', res.data)
+                    this.$wire.emit('fileUploaded')
+                }).then(() => this.progress = 0)
             }
         },
         validate (files) {
@@ -60,7 +59,8 @@
         },
     }"
     x-on:dropped="upload($event.detail)"
-    {{ $attributes->merge(['class' => 'relative'])->only('class') }}
+    x-on:pasted="upload($event.detail)"
+    {{ $attributes->merge(['class' => 'relative w-full'])->only('class') }}
     {{ $attributes->whereStartsWith('x-') }}>
     <input type="file" accept="{{ $accept }}" class="hidden" {{ $multiple ? 'multiple' : null }}
         x-ref="input"
@@ -71,18 +71,17 @@
         x-show="progress <= 0"
         x-on:click="$refs.input.click()" 
         class="inline-flex flex-wrap items-center gap-3 cursor-pointer">
-        @if ($slot->isNotEmpty()) {{ $slot }}
+        @if ($slot->isNotEmpty())
+            {{ $slot }}
         @else
             <x-button icon="upload" label="app.label.upload"/>
-
-            @if ($dropzone)
-                <x-form.file.dropzone :max="$max" class="grow"/>
-            @endif
+            @if ($dropzone) <x-form.file.dropzone :max="$max" class="grow"/> @endif
         @endif
     </div>
 
     <div x-show="progress > 0">
-        @isset($progress) {{ $progress }}
+        @isset($progress)
+            {{ $progress }}
         @else
             <div class="w-full rounded-full h-4 bg-white border overflow-hidden">
                 <div class="w-full h-full bg-blue-200" x-bind:style="{ width: `${progress}%` }"></div>

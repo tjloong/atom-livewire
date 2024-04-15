@@ -225,10 +225,11 @@ class File extends Model
                     'name' => data_get($info, 'title') ?? $vid,
                     'mime' => 'youtube',
                     'url' => $content,
-                    'data' => array_merge($file->data, [
+                    'data' => [
+                        ...$file->data,
                         'vid' => $vid,
                         'thumbnail' => data_get($info, 'thumbnail_url'),
-                    ]),
+                    ],
                 ])->save();
             }
             else if ($img = rescue(fn() => Image::make($content), null)) {
