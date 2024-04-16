@@ -1,37 +1,68 @@
 <div
     x-cloak
     x-data="{
-        slider: null,
         show: false,
-        open (index) {
-            $el.classList.add('inset-0')
-            $el.classList.remove('-left-[9999]')
-            $el.classList.remove('opacity-0')
-            this.slider.moveToIdx(index)
+        slider: null,
+        dimension: 'w-[350px] h-[500px] md:w-[700px] lg:w-[1000px] lg:h-[800px]',
+        images: {{ Js::from($attributes->get('images', [])) }},
+        open (index = 0) {
+            this.show = true
+            this.startSlider(index)
         },
         close () {
-            $el.classList.add('opacity-0')
-            setTimeout(() => {
-                $el.classList.remove('inset-0')
-                $el.classList.add('-left-[9999]')
-            }, 300)
+            this.show = false
+
+            if (this.slider) {
+                this.slider = false
+            }
         },
-        setupSlider (slider) {
-            this.slider = slider
+        startSlider (index) {
+            this.$refs.slider.innerHTML = ''
+
+            this.images.forEach(url => {
+                let img = document.createElement('img')
+                img.classList.add('keen-slider__slide')
+                img.classList.add('object-contain')
+                this.dimension.split(' ').forEach(name => img.classList.add(name))
+                img.src = url
+
+                this.$refs.slider.appendChild(img)
+            })
+
+            this.$nextTick(() => {
+                this.slider = new KeenSlider(this.$refs.slider, { 
+                    loop: true,
+                    initial: index,
+                })
+            })
         },
     }"
-    x-init="close()"
+    x-show="show"
+    x-transition.opacity.duration.300ms
     x-on:lightbox.window="open($event.detail)"
-    class="fixed z-40 bg-black/80 flex items-center justify-center transition-opacity duration-300 opacity-0 -left-[9999]">
-    @if ($slot->isNotEmpty())
-        <div class="max-w-screen-lg mx-auto p-5">
+    x-on:click="close()"
+    class="fixed inset-0 z-40 bg-black/80">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div x-bind:class="dimension">
             <div x-on:click="close()" class="flex justify-end mb-5 text-gray-300 text-4xl cursor-pointer">
                 <x-icon name="xmark"/>
             </div>
 
-            <x-slider :autoplay="false" :nav="false">
-                {{ $slot }}
-            </x-slider>
+            <div class="relative">
+                <div x-ref="slider" x-on:click.stop class="keen-slider"></div>
+
+                <div
+                    x-on:click.stop="slider.prev()"
+                    class="absolute top-0 left-0 bottom-0 w-10 md:w-20 bg-black/10 text-white flex items-center justify-center cursor-pointer">
+                    <x-icon name="arrow-left" class="text-3xl"/>
+                </div>
+
+                <div
+                    x-on:click.stop="slider.next()"
+                    class="absolute top-0 right-0 bottom-0 w-10 md:w-20 bg-black/10 text-white flex items-center justify-center cursor-pointer">
+                    <x-icon name="arrow-right" class="text-3xl"/>
+                </div>
+            </div>
         </div>
-    @endif
+    </div>
 </div>
