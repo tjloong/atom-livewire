@@ -20,7 +20,6 @@ class Banner extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'placement' => 'array',
         'seq' => 'integer',
         'is_active' => 'boolean',
         'start_at' => 'date',
@@ -84,8 +83,8 @@ class Banner extends Model
     protected function placement() : Attribute
     {
         return Attribute::make(
-            get: fn($value) => enum('banner.placement', $value),
-            set: fn($value) => is_string($value) ? $value : optional($value)->value,
+            get: fn($value) => collect(json_decode($value))->map(fn($val) => enum('banner.placement', $val))->toArray(),
+            set: fn($value) => collect($value)->map(fn($val) => is_string($val) ? $val : optional($val)->value),
         );
     }
 
