@@ -132,7 +132,9 @@ function settings($attr = null, $default = null)
  */
 function pdf($view, $data)
 {
-    return Pdf::loadView($view, $data);
+    return Pdf::setOption([
+        'logOutputFile' => storage_path('logs/dompdf.log'),
+    ])->loadView($view, $data);
 }
 
 // export word
