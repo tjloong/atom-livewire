@@ -42,6 +42,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'heading',
             'spinner',
             'checkbox',
+            'lightbox',
             'no-result',
             'file-card',
             'html-meta',
@@ -69,9 +70,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'dashboard.chart',
             'dashboard.listing',
             'dashboard.statbox',
-
-            'lightbox.index',
-            'lightbox.slide',
 
             'close.index',
             'close.delete',

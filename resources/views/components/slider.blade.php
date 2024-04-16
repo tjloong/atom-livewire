@@ -2,6 +2,7 @@
     $nav = $attributes->get('nav', true);
     $arrows = $attributes->get('arrows', true);
     $autoplay = $attributes->get('autoplay', 2500);
+    $adaptiveHeight = $attributes->get('adaptive-height', false);
 @endphp
 
 <div {{ $attributes }}>
@@ -10,6 +11,12 @@
         x-data="{
             slider: null,
             thumbnails: null,
+            config: {{ Js::from(compact(
+                'nav',
+                'arrows',
+                'autoplay',
+                'adaptiveHeight',
+            )) }},
             identifySlides (container) {
                 Array.from(container.querySelectorAll(':scope > *'))
                     .forEach(elm => elm.classList.add('keen-slider__slide'))
@@ -57,6 +64,12 @@
                 
                 slider.on('dragStarted', () => stop())
             },
+            adaptiveHeightPlugin (slider) {
+                let updateHeight = () => slider.container.style.height = slider.slides[slider.track.details.rel].offsetHeight + 'px'
+
+                slider.on('created', updateHeight)
+                slider.on('slideChanged', updateHeight)
+            },
             thumbnailsPlugin (thumbnails) {
                 const activateSlide = (i) => {
                     thumbnails.slides.forEach(slide => slide.classList.add('opacity-40'))
@@ -76,20 +89,27 @@
                     thumbnails.moveToIdx(Math.min(thumbnails.track.details.maxIdx, nextIndex))
                 })
             },
+            getPlugins () {
+                let plugins = []
+
+                if (this.config.nav) plugins.push((slider) => this.navPlugin(slider))
+                if (this.config.autoplay) plugins.push((slider) => this.autoplayPlugin(slider))
+                if (this.config.adaptiveHeight) plugins.push((slider) => this.adaptiveHeightPlugin(slider))
+
+                plugins.push((slider) => {
+                    try { setupSlider(slider) }
+                    catch (err) {}
+                })
+
+                return plugins
+            },
         }"
         x-init="$nextTick(() => {
             identifySlides($refs.slider)
             slider = new KeenSlider(
                 $refs.slider, 
                 { loop: true },
-                [
-                    (slider) => navPlugin(slider),
-                    (slider) => autoplayPlugin(slider),
-                    (slider) => {
-                        try { setupSlider(slider) }
-                        catch (err) {}
-                    },
-                ],
+                getPlugins(),
             )
 
             if ($refs.thumbnails) {
