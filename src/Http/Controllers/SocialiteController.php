@@ -11,18 +11,22 @@ class SocialiteController extends Controller
     public function redirect() : mixed
     {        
         $provider = request()->provider;
-        $query = request()->query();
+        $qs = request()->query();
 
-        if (!$this->isProviderEnabled($provider)) abort(404);
-        if ($query) session(['socialite-query' => $query]);
+        $this->configureService($provider, $qs);
 
-        return Socialite::driver($provider)->with($query)->redirect();
+        if ($qs) session(['socialite-qs' => $qs]);
+
+        return Socialite::driver($provider)->with($qs)->redirect();
     }
 
     // callback
     public function callback() : mixed
     {
         $provider = request()->provider;
+        
+        $this->configureService($provider);
+
         $user = Socialite::driver($provider)->user();
         $token = $user->token;
         $route = model('user')->where('email', $user->getEmail())->count() ? 'login' : 'register';
@@ -33,12 +37,20 @@ class SocialiteController extends Controller
         return to_route($route, array_merge(compact('token', 'provider'), $query));
     }
 
-    // check is provider enabled
-    public function isProviderEnabled($provider) : bool
+    // configure service
+    public function configureService($provider, $qs = []) : void
     {
         $id = settings($provider.'_client_id');
         $secret = settings($provider.'_client_secret');
+        if (!$id || !$secret) abort(404);
 
-        return $id && $secret;
+        config([
+            'services.'.$provider.'.client_id' => $id,
+            'services.'.$provider.'.client_secret' => $secret,
+            'services.'.$provider.'.redirect' => route('socialite.callback', [
+                'provider' => $provider,
+                ...$qs,
+            ]),
+        ]);
     }
 }
