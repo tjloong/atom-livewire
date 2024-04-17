@@ -12,7 +12,7 @@ trait HasFilters
     protected static function bootHasFilters() : void
     {
         static::saving(function ($model) {
-            $model->sanitizeNumericColumns();
+            $model->sanitizeColumns();
         });
     }
 
@@ -151,21 +151,32 @@ trait HasFilters
         return $parsed;
     }
 
-    // sanitize numeric columns
-    public function sanitizeNumericColumns()
+    // sanitize columns
+    public function sanitizeColumns()
     {
-        $columns = $this->tableColumns()->filter(function ($col) {
-            $type = data_get($col, 'type');
-            $str = str($type);
+        foreach ($this->tableColumns() as $col) {
+            $type = str(get($col, 'type'));
+            $name = get($col, 'name');
+            $value = $this->$name;
 
-            return $str->is('decimal*') 
-                || $str->is('double*') 
-                || $str->is('int*') 
-                || $str->is('bigint*');
-        })->map(fn($col) => data_get($col, 'name'))->values()->all();
+            $isNumeric = $type->is('decimal*')
+                || $type->is('double*')
+                || $type->is('int*')
+                || $type->is('bigint*');
 
-        foreach ($columns as $col) {
-            if (empty($this->$col)) $this->fill([$col => null]);
+            $isString = $type->is('varchar*')
+                || $type->is('text')
+                || $type->is('longText');
+
+            if ($isNumeric && empty($value)) $this->fill([$name => null]);
+            else if ($isString && is_string($value)) $this->fill([$name => trim($value)]);
+            else if (is_array($value)) {
+                foreach ($value as $key => $val) {
+                    if (is_string($val)) $value[$key] = trim($val);
+                }
+
+                $this->fill([$name => $value]);
+            }
         }
     }
 
