@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Settings;
+namespace Jiannius\Atom\Http\Livewire\App\Settings\Profile;
 
 use Illuminate\Auth\Events\PasswordReset;
 use Jiannius\Atom\Component;

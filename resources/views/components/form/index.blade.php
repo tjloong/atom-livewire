@@ -44,7 +44,7 @@
     x-on:submit.prevent="submit"
     class="relative">
     <div x-show="disabled" class="absolute inset-0"></div>
-    <x-box :heading="$attributes->get('heading')">
+    <x-box :heading="$attributes->get('heading')" :icon="$attributes->get('icon')">
         @isset($heading)
             <x-slot:heading>
                 {{ $heading }}

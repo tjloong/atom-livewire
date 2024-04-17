@@ -18,10 +18,7 @@ class Index extends Component
     public function getTabsProperty(): array
     {
         return [
-            ['group' => 'app.label.account', 'tabs' => [
-                ['slug' => 'login', 'label' => 'app.label.login-information', 'icon' => 'login',],
-                ['slug' => 'password', 'label' => 'app.label.change-password', 'icon' => 'lock',],
-            ]],
+            ['slug' => 'profile', 'label' => 'app.label.my-profile', 'icon' => 'id-card-clip',],
 
             ['group' => 'app.label.system', 'tabs' => [
                 ['slug' => 'site', 'label' => 'app.label.site', 'icon' => 'globe'],

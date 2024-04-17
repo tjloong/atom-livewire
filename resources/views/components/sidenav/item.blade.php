@@ -25,7 +25,7 @@
         x-data="{
             href: @js($href),
             value: @js($value),
-            label: @js($label),
+            label: @js(tr($label)),
             get active () {
                 return tab === this.value
             },

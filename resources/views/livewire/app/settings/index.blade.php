@@ -2,14 +2,15 @@
     <div class="shrink-0 bg-white p-5 md:w-72">
         <x-sidenav wire:model="tab" heading="settings.heading.settings">
             @foreach ($this->tabs as $item)
-                <x-sidenav.group :label="data_get($item, 'group')"/>
+                <x-sidenav.group :label="get($item, 'group')"/>
 
-                @foreach (data_get($item, 'tabs') as $child)
-                    <x-sidenav.item
-                        :name="data_get($child, 'slug')"
-                        :icon="data_get($child, 'icon')"
-                        :label="data_get($child, 'label')"/>
-                @endforeach
+                @if ($children = get($item, 'tabs'))
+                    @foreach ($children as $child)
+                        <x-sidenav.item :value="get($child, 'slug')" :icon="get($child, 'icon')" :label="get($child, 'label')"/>
+                    @endforeach
+                @else
+                    <x-sidenav.item :value="get($item, 'slug')" :icon="get($item, 'icon')" :label="get($item, 'label')"/>
+                @endif
             @endforeach
         </x-sidenav>
     </div>
