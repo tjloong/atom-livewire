@@ -2,8 +2,6 @@
 
 namespace Jiannius\Atom\Services;
 
-use \Illuminate\Support\Facades\Route as LaravelRoute;
-
 class Route
 {
     // __call
@@ -21,7 +19,7 @@ class Route
             $arguments = [$methods, $path, $callback];
         }
         
-        return LaravelRoute::$name(...$arguments);
+        return \Illuminate\Support\Facades\Route::$name(...$arguments);
     }
 
     // get callback
