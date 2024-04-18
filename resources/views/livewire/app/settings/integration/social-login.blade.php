@@ -1,14 +1,11 @@
 <div class="max-w-screen-md">
-    <x-heading title="settings.heading.social"/>
+    <x-heading title="app.label.social-login"/>
     
     <x-form>
-        @foreach ($this->platforms as $item)
-            <x-group cols="2" :heading="data_get($this->platformLabels, $item)">
-                <x-form.text wire:model.defer="settings.{{ $item }}_client_id" 
-                    :label="data_get($this->clientIdLabels, $item)"/>
-
-                <x-form.text wire:model.defer="settings.{{ $item }}_client_secret" 
-                    :label="data_get($this->clientSecretLabels, $item)"/>
+        @foreach ($this->providers as $provider)
+            <x-group cols="2" :heading="get($provider, 'label')">
+                <x-form.text wire:model.defer="settings.{{ get($provider, 'name') }}_client_id" label="Client ID"/>
+                <x-form.text wire:model.defer="settings.{{ get($provider, 'name') }}_client_secret" label="Client Secret"/>
             </x-group>
         @endforeach
     </x-form>

@@ -6,18 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AtomSocialiteServiceProvider extends ServiceProvider
 {
-    public $providers = [
-        'bitbucket',
-        'facebook',
-        'github',
-        'gitlab',
-        'google',
-        'linkedin_openid',
-        'slack',
-        'twitter',
-        'twitter_oauth_2',
-    ];
-
     /**
      * Register any application services.
      *
@@ -38,12 +26,12 @@ class AtomSocialiteServiceProvider extends ServiceProvider
         if (config('atom.static_site')) return;
         if ($this->app->runningInConsole()) return;
 
-        foreach ($this->providers as $provider) {
-            $id = settings($provider.'_client_id');
-            $secret = settings($provider.'_client_secret');
-            
+        foreach (model('setting')->getSocialLogins() as $provider) {
+            $id = settings(get($provider, 'name').'_client_id');
+            $secret = settings(get($provider, 'name').'_client_secret');
+
             if ($id && $secret) {
-                $provider = str($provider)->slug()->toString();
+                $provider = str(get($provider, 'name'))->slug()->toString();
 
                 config([
                     'services.'.$provider => [

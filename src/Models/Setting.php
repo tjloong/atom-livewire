@@ -57,15 +57,18 @@ class Setting extends Model
     }
 
     // get social logins
-    public function getSocialLogins() : mixed
+    public function getSocialLogins($filtered = true) : mixed
     {
         return collect([
-            'google' => 'Google',
+            'bitbucket' => 'Bitbucket',
             'facebook' => 'Facebook',
-            'linkedin' => 'LinkedIn',
-            'twitter' => 'Twitter',
-            'twitter-oauth-2' => 'Twitter',
+            'google' => 'Google',
+            'linkedin_openid' => 'LinkedIn',
             'github' => 'Github',
+            'gitlab' => 'Gitlab',
+            'slack' => 'Slack',
+            'twitter' => 'Twitter',
+            'twitter_oauth_2' => 'Twitter',
         ])
         ->map(fn($label, $name) => [
             'name' => $name,
@@ -73,8 +76,10 @@ class Setting extends Model
             'client_id' => settings($name.'_client_id'),
             'client_secret' => settings($name.'_client_secret'),
         ])
-        ->filter(fn($val) => !empty(get($val, 'client_id')) && !empty(get($val, 'client_secret')))
-        ->values();    
+        ->when($filtered, fn($collection) => $collection
+            ->filter(fn($val) => !empty(get($val, 'client_id')) && !empty(get($val, 'client_secret')))
+            ->values()
+        );
     }
 
     // reset
