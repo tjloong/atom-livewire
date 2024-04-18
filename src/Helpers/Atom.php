@@ -13,6 +13,14 @@ if (!function_exists('find_class')) {
     }
 }
 
+if (!function_exists('find_livewire')) {
+    function find_livewire($path) {
+        $path = 'http.livewire.'.$path;
+
+        return find_class($path) ?? find_class($path.'.index');
+    }
+}
+
 /**
  * Get atom livewire component name
  */

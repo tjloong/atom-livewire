@@ -13,7 +13,7 @@ class SocialiteController extends Controller
         $provider = request()->provider;
         $qs = request()->query();
 
-        $this->configureService($provider, $qs);
+        $this->enabled($provider);
 
         if ($qs) session(['socialite-qs' => $qs]);
 
@@ -25,7 +25,7 @@ class SocialiteController extends Controller
     {
         $provider = request()->provider;
         
-        $this->configureService($provider);
+        $this->enabled($provider);
 
         $user = Socialite::driver($provider)->user();
         $token = $user->token;
@@ -37,20 +37,14 @@ class SocialiteController extends Controller
         return to_route($route, array_merge(compact('token', 'provider'), $query));
     }
 
-    // configure service
-    public function configureService($provider, $qs = []) : void
+    // check is enabled
+    public function enabled($provider) : void
     {
-        $id = settings($provider.'_client_id');
-        $secret = settings($provider.'_client_secret');
-        if (!$id || !$secret) abort(404);
-
-        config([
-            'services.'.$provider.'.client_id' => $id,
-            'services.'.$provider.'.client_secret' => $secret,
-            'services.'.$provider.'.redirect' => route('socialite.callback', [
-                'provider' => $provider,
-                ...$qs,
-            ]),
-        ]);
+        if (
+            empty(config('services.'.$provider.'.client_id'))
+            || !empty(config('services.'.$provider.'.client_secret'))
+        ) {
+            abort(404);
+        }
     }
 }

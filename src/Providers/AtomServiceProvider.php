@@ -11,8 +11,6 @@ class AtomServiceProvider extends ServiceProvider
     public function register() : void
     {        
         $this->mergeConfigFrom(__DIR__.'/../../stubs/config/atom.php', 'atom');
-
-        $this->app->register(AtomEventServiceProvider::class);
     }
 
     // boot
