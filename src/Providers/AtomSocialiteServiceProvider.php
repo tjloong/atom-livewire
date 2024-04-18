@@ -49,7 +49,7 @@ class AtomSocialiteServiceProvider extends ServiceProvider
                     'services.'.$provider => [
                         'client_id' => $id,
                         'client_secret' => $secret,
-                        'redirect' => '__auth/'.$provider.'/callback',
+                        'redirect' => url('__auth/'.$provider.'/callback'),
                     ],
                 ]);
             }
