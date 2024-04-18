@@ -42,7 +42,7 @@ class SocialiteController extends Controller
     {
         if (
             empty(config('services.'.$provider.'.client_id'))
-            || !empty(config('services.'.$provider.'.client_secret'))
+            || empty(config('services.'.$provider.'.client_secret'))
         ) {
             abort(404);
         }
