@@ -35,10 +35,6 @@
         @endforeach
     @endif
 
-    @if ($enabledLivewire = $livewire ?? true)
-        @livewireStyles
-    @endif
-
     @if ($enabledAnalytics = $analytics ?? false)
         <x-analytics.fathom/>
         <x-analytics.gtm/>
@@ -53,10 +49,16 @@
         'resources/js/app.js',
     ])
 
+    @stack('scripts')
     @stack('styles')
+
+    @livewireScripts
+    @livewireStyles
 </head>
 
 <body class="font-{{ $fontTheme ?? 'sans' }} antialiased {{ $class ?? '' }}">
+    @stack('noscripts')
+
     @if ($enabled = $analytics ?? false)
         <x-analytics.gtm noscript/>
         <x-analytics.fbpixel noscript/>
@@ -68,9 +70,5 @@
     <x-loader/>
 
     @yield('content')
-
-    @if ($enabledLivewire = $livewire ?? true)
-        @livewireScripts
-    @endif
 </body>
 </html>

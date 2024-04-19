@@ -39,10 +39,6 @@
         'fullcalendar' => [
             'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js',
         ],
-        'keen-slider' => [
-            'https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.js',
-            'https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.css',
-        ],
         'recaptcha' => [
             ($sitekey = settings('recaptcha_site_key'))
             ? 'https://www.google.com/recaptcha/api.js?render='.$sitekey
