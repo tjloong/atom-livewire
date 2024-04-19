@@ -23,7 +23,7 @@ class AtomEmailServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (config('atom.static_site')) return;
+        if (config('atom.static')) return;
 
         try {
             $mailer = settings('mailer');

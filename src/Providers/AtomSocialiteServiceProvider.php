@@ -23,7 +23,7 @@ class AtomSocialiteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (config('atom.static_site')) return;
+        if (config('atom.static')) return;
         if ($this->app->runningInConsole()) return;
 
         foreach (model('setting')->getSocialLogins() as $provider) {

@@ -109,9 +109,13 @@ function breadcrumbs()
  */
 function settings($attr = null, $default = null)
 {
-    if (config('atom.static_site')) return $default;
-
-    $settings = model('setting')->generate();
+    if (config('atom.static')) {
+        $path = resource_path('json/settings.json');
+        $settings = file_exists($path) ? json_decode(file_get_contents($path), true) : [];
+    }
+    else {
+        $settings = model('setting')->generate();
+    }
 
     if (!$attr) {
         return $settings;

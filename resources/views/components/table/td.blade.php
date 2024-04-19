@@ -87,7 +87,7 @@
         x-on:toggle-checkbox="toggleCheckbox(@js($checkbox))"
         class="align-top py-3 px-2 w-10 cursor-pointer"
         data-table-checkbox
-        wire:key="{{ $checkbox }}">
+        wire:key="td-checkbox-{{ $checkbox }}">
         <div
             x-bind:class="checkboxes.includes(@js($checkbox)) ? 'border-theme border-2' : 'border-gray-300'"
             class="mx-4 w-6 h-6 p-0.5 rounded shadow border bg-white">
