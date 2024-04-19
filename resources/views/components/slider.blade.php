@@ -1,8 +1,5 @@
 <div {{ $attributes }}>
-    <div 
-        x-cloak 
-        x-on:track-slide.stop="trackSlide($event.detail)"
-        {{ $attributes->merge(['x-data' => 'slider']) }}>
+    <div x-cloak {{ $attributes->merge(['x-data' => 'slider']) }}>
         <div class="relative">
             @isset($slides)
                 <div x-ref="slider" {{ $slides->attributes->merge(['class' => 'keen-slider']) }}>
@@ -175,6 +172,12 @@
                     slider.on('slideChanged', updateHeight)
                 },
 
+                helpersPlugin (slider) {
+                    slider.getSlide = (index) => (slider.slides[index || slider.track.details.rel])
+                    slider.getSlideName = (index) => (slider.getSlide(index)?.getAttribute('data-slide-name'))
+                    slider.slides.forEach(slide => slide.addEventListener('click', () => slider.emit('slideClicked')))
+                },
+
                 thumbnailsPlugin (thumbnails) {
                     const activateSlide = (i) => {
                         thumbnails.slides.forEach(slide => slide.classList.add('opacity-40'))
@@ -196,7 +199,7 @@
                 },
 
                 getPlugins () {
-                    let plugins = []
+                    let plugins = [(slider) => this.helpersPlugin(slider)]
 
                     if (this.config.nav) plugins.push((slider) => this.navPlugin(slider))
                     if (this.config.autoplay) plugins.push((slider) => this.autoplayPlugin(slider))
