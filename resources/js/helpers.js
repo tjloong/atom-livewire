@@ -1,5 +1,30 @@
-Array.prototype.pluck = function($attr) {
-    return this.map(val => (val[$attr]))
+String.prototype.toDateFormat = function(format) {
+    const date = dayjs(this, 'YYYY-MM-DD HH:mm:ss')
+    if (date.isValid()) return date.format(format)
+}
+
+String.prototype.toDateString = function() {
+    const date = dayjs(this, 'YYYY-MM-DD HH:mm:ss')
+    if (date.isValid()) return date.format('DD MMM YYYY')
+}
+
+String.prototype.toDatetimeString = function() {
+    const date = dayjs(this, 'YYYY-MM-DD HH:mm:ss')
+    if (date.isValid()) return date.format('DD MMM YYYY h:mm A')
+}
+
+String.prototype.toTimeString = function() {
+    const date = dayjs(this, 'YYYY-MM-DD HH:mm:ss')
+    if (date.isValid()) return date.format('h:mm A')
+}
+
+String.prototype.fromNow = function() {
+    const date = dayjs(this, 'YYYY-MM-DD HH:mm:ss')
+    if (date.isValid()) return date.fromNow()
+}
+
+Array.prototype.pluck = function(attr) {
+    return this.map(val => (val[attr]))
 }
 
 Array.prototype.unique = function (attr = null) {
@@ -106,26 +131,6 @@ window.shortNumber = (n) => {
         notation: "compact",
         maximumFractionDigits: 1
     }).format(n);
-}
-
-// format date
-window.formatDate = (value, option) => {
-    const date = dayjs(value, 'YYYY-MM-DD HH:mm:ss')
-    const format = {
-        time: 'h:mm A',
-        date: 'DD MMM YYYY',
-        datetime: 'DD MMM YYYY - h:mm A',
-    }
-
-    if (date.isValid()) {
-        if (option && option.format) return date.format(option.format)
-        else if (option == 'fromNow') return date.fromNow()
-        else if (option == 'datetime') return date.format(format.datetime)
-        else if (option == 'time') return date.format(format.time)
-        else return date.format(format.date)
-    }
-
-    return value
 }
 
 // format currency

@@ -36,9 +36,6 @@
             'https://cdn.jsdelivr.net/npm/flatpickr',
             'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
         ],        
-        'fullcalendar' => [
-            'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js',
-        ],
         'recaptcha' => [
             ($sitekey = settings('recaptcha_site_key'))
             ? 'https://www.google.com/recaptcha/api.js?render='.$sitekey

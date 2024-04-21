@@ -75,7 +75,7 @@ class Format
     // period
     public function period() : mixed
     {
-        if (is_array($this->value)) {
+        if (is_array($this->value) && !empty(array_filter($this->value))) {
             $from = $this->carbon($this->value[0]);
             $to = $this->carbon($this->value[1]);
 
