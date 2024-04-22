@@ -103,15 +103,15 @@ class Banner extends Model
     {
         if ($placement) {
             $query->where(fn($q) => $q
-                ->whereJsonContains('placement', (array) $placement)
-                ->orWhereNull('placement')
-                ->orWhere('placement', '[]')
+                ->whereNull('placement')
+                ->orWhereJsonContains('placement', (array) $placement)
+                ->orWhereJsonContains('placement', [])
             );
         }
         else {
             $query->where(fn($q) => $q
                 ->whereNull('placement')
-                ->orWhere('placement', '[]')
+                ->orWhereJsonContains('placement', [])
             );
         }
     }
