@@ -12,6 +12,8 @@ class Index extends Component
     public function mount()
     {
         $this->tab = $this->tab ?? data_get(tabs($this->tabs), '0.slug');
+
+        if (!tabs($this->tabs, $this->tab)) abort(404);
     }
 
     // get tabs property
