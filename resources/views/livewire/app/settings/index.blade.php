@@ -4,7 +4,7 @@
             @foreach ($this->tabs as $item)
                 <x-sidenav.group :label="get($item, 'group')"/>
 
-                @if ($children = get($item, 'tabs'))
+                @if ($children = get($item, 'tabs', []))
                     @foreach ($children as $child)
                         <x-sidenav.item :value="get($child, 'slug')" :icon="get($child, 'icon')" :label="get($child, 'label')"/>
                     @endforeach
