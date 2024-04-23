@@ -65,9 +65,9 @@
     
             <template x-if="from && to">
                 <div class="grow flex items-center gap-3">
-                    <div x-text="formatDate(from)" class="grow text-center truncate"></div>
+                    <div x-text="from.toDateString()" class="grow text-center truncate"></div>
                     <x-icon name="arrow-right" class="shrink-0"/>
-                    <div x-text="formatDate(to)" class="grow text-center truncate"></div>
+                    <div x-text="to.toDateString()" class="grow text-center truncate"></div>
                 </div>
             </template>
 
@@ -205,7 +205,7 @@
             </div>
     
             <input type="text" placeholder="{{ tr($placeholder) }}" readonly
-                x-bind:value="formatDate(date)"
+                x-bind:value="date?.toDateString()"
                 class="transparent grow cursor-pointer">
     
             <div class="absolute right-1.5 top-2 bottom-2 bg-white flex items-center justify-center">
