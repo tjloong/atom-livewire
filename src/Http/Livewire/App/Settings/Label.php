@@ -8,6 +8,12 @@ class Label extends Component
 {
     public $type;
 
+    protected $listeners = [
+        'labelCreated' => '$refresh',
+        'labelUpdated' => '$refresh',
+        'labelDeleted' => '$refresh',
+    ];
+
     // get labels property
     public function getLabelsProperty() : mixed
     {

@@ -64,6 +64,7 @@ class Update extends Component
 
             $this->fill([
                 'inputs.name' => (array) $this->label->name,
+                'inputs.data' => $this->label->data ?: [],
             ]);
     
             $this->openDrawer();
@@ -90,8 +91,9 @@ class Update extends Component
         $this->validateForm();
 
         $this->label->fill([
-            'name' => data_get($this->inputs, 'name'),
+            'name' => get($this->inputs, 'name'),
             'slug' => null,
+            'data' => get($this->inputs, 'data') ?: null,
         ])->save();
 
         if ($this->label->wasRecentlyCreated) $this->emit('labelCreated');

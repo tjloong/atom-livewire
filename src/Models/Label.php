@@ -10,6 +10,7 @@ use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasLocale;
 use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\HasSequence;
 
 class Label extends Model
 {
@@ -17,6 +18,7 @@ class Label extends Model
     use HasFilters;
     use HasLocale;
     use HasSlug;
+    use HasSequence;
 
     protected $guarded = [];
 
@@ -95,6 +97,6 @@ class Label extends Model
     // get labels by type
     public function getType($type) : mixed
     {
-        return model('label')->where('type', $type)->orderBy('seq')->orderBy('id')->get();
+        return model('label')->where('type', $type)->sequence()->get();
     }
 }

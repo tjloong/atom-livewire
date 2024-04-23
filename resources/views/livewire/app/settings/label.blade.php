@@ -6,8 +6,6 @@
     </x-heading>
 
     <x-box>
-        @livewire('app.label.listing', [
-            'labels' => $this->labels,
-        ], key('label-listing'))
+        @livewire('app.label.listing', ['labels' => $this->labels], key(uniqid()))
     </x-box>
 </div>
