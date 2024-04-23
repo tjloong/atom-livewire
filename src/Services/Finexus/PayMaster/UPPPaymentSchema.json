@@ -1,0 +1,891 @@
+{
+  "VersionControl": {
+    "Version": "3.0.0",
+    "Description": "UPP Payment Schema",
+    "Release Date": "1st July 2021",
+    "Created by": "Chris Ong"
+  },
+  "MT0280": {
+    "header": {
+      "h001_MTI": {
+        "IfNull": {
+          "DefaultValue": "0280"
+        },
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h002_VNO": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "VersionNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h003_TDT": {
+        "IfNull": {
+          "ClassName": "com.PayMaster.DataConversion.DateTimeConversion",
+          "MethodName": "getCurrentDate"
+        },
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h004_TTM": {
+        "IfNull": {
+          "ClassName": "com.PayMaster.DataConversion.DateTimeConversion",
+          "MethodName": "getCurrentTime"
+        },
+        "Hash": "true",
+        "Display": "false"
+      }
+    },
+    "body": {
+      "f001_MID": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "MerchantID",
+        "Hash": "true",
+        "Display": "true"
+      },
+      "f007_TxnAmt": {
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.NumberConversion",
+          "MethodName": "convertNumberToString",
+          "Parameter": [
+            "getter('TxnAmt')"
+          ]
+        },
+        "MerchantField": "TxnAmt",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f010_CurrCode": {
+        "MerchantField": "CurrCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f019_ExpTxnAmt": {
+        "MerchantField": "ExpTxnAmt",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f247_OrgTxnAmt": {
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.NumberConversion",
+          "MethodName": "convertNumberToString",
+          "Parameter": [
+            "getter('OrigTxnAmt')"
+          ]
+        },
+        "MerchantField": "OrigTxnAmt",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f248_OrgCurrCode": {
+        "MerchantField": "OrigCurrCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f249_TxnCh": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "TxnChannel",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f250_CCProcFeeAmt": {
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.NumberConversion",
+          "MethodName": "convertNumberToString",
+          "Parameter": [
+            "getter('CCProcFee')"
+          ]
+        },
+        "MerchantField": "CCProcFee",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f251_DDProcFeeAmt": {
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.NumberConversion",
+          "MethodName": "convertNumberToString",
+          "Parameter": [
+            "getter('DDProcFee')"
+          ]
+        },
+        "MerchantField": "DDProcFee",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f252_PromoCode": {
+        "MerchantField": "PromoCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f253_CntyCode": {
+        "MerchantField": "CountryCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f255_IssCode": {
+        "MerchantField": "CardIssuerCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f256_FICode": {
+        "MerchantField": "FICode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f260_ServID": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "ServiceID",
+        "Hash": "true",
+        "Display": "true"
+      },
+      "f261_HostID": {
+        "MerchantField": "MerchHostID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f262_SessID": {
+        "MerchantField": "MerchSessionID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f263_MRN": {
+        "MerchantField": "MerchRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f264_Locale": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "LangLocale",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f270_ORN": {
+        "MerchantField": "OrderRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f271_ODesc": {
+        "MerchantField": "OrderDesc",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f278_EMailAddr": {
+        "MerchantField": "UserEmail",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f279_HP": {
+        "MerchantField": "UserContact",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f280_RURL_UPPPS": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.CharacterConversion",
+          "MethodName": "replaceCharacter",
+          "Parameter": [
+            "getter('SuccRespURL')",
+            "&",
+            "&"
+          ]
+        },
+        "MerchantField": "SuccRespURL",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f281_RURL_UPPPU": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.CharacterConversion",
+          "MethodName": "replaceCharacter",
+          "Parameter": [
+            "getter('UnsuccRespURL')",
+            "&",
+            "&"
+          ]
+        },
+        "MerchantField": "UnsuccRespURL",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f282_RURL_UPPPC": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.CharacterConversion",
+          "MethodName": "replaceCharacter",
+          "Parameter": [
+            "getter('CancelRespURL')",
+            "&",
+            "&"
+          ]
+        },
+        "MerchantField": "CancelRespURL",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f285_IPAddr": {
+        "MerchantField": "UserIPAddress",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f287_ExpOrgTxnAmt": {
+        "MerchantField": "ExpOrigTxnAmt",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f289_CustId": {
+        "MerchantField": "PortalUserID",
+        "Hash": "false",
+        "Display": "false"
+      },
+      "f290_Signature": {
+        "MerchantField": "Signature",
+        "Hash": "false",
+        "Display": "false"
+      },
+      "f350_CrdTyp": {
+        "MerchantField": "CardType",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f354_TID": {
+        "MerchantField": "TerminalID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f325_ECommMercInd": {
+        "MerchantField": "EcommMerchInd",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f339_TokenFlg": {
+        "MerchantField": "TokenFlag",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f344_MercCustId": {
+        "MerchantField": "MerchUserID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f347_TokenShrtNm": {
+        "MerchantField": "TokenShrtName",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f362_PreAuthFlg": {
+        "MerchantField": "PreAuthFlag",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f363_InvNum": {
+        "MerchantField": "InvoiceNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f364_Fee": {
+        "MerchantField": "Fee",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f365_POSEnvFlg": {
+        "MerchantField": "POSEnvFlag",
+        "Version": {
+          "Published": "6"
+        },
+        "Hash": "true",
+        "Display": "false"
+      }
+    },
+    "trailer": {
+      "t001_SHT": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "SHAlgorithmType",
+        "Hash": "false",
+        "Display": "false"
+      },
+      "t002_SHV": {
+        "IfNull": {
+          "ClassName": "com.PayMaster.SecureHash.MessageHashing",
+          "MethodName": "hashMessageInSHA2",
+          "Parameter": [
+            "prop('SecretKey')",
+            "getter('hashMessage')"
+          ]
+        },
+        "Hash": "false",
+        "Display": "false"
+      }
+    }
+  },
+
+  "MT0290": {
+    "header": {
+      "h001_MTI": {
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h002_VNO": {
+        "MerchantField": "VersionNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h003_TDT": {
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h004_TTM": {
+        "Hash": "true",
+        "Display": "false"
+      }
+    },
+    "body": {
+      "f001_MID": {
+        "MerchantField": "MerchantID",
+        "Hash": "true",
+        "Display": "true"
+      },
+      "f004_PAN": {
+        "MerchantField": "CardNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f005_ExpDate": {
+        "SplitConversion": {
+          "ClassName": "com.PayMaster.DataConversion.SubstringConversion",
+          "MethodName": "substringConversion",
+          "Parameter": [
+            "getter('f005_ExpDate')",
+            "2"
+          ],
+          "MerchantField": [ "ExpiryYear", "ExpiryMth" ]
+        },
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f006_TxnDtTm": {
+        "MerchantField": "TxnDtTm",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f007_TxnAmt": {
+        "MerchantField": "TxnAmt",
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.NumberConversion",
+          "MethodName": "convertStringToNumber",
+          "Parameter": [
+            "getter('f007_TxnAmt')",
+            "getter('f019_ExpTxnAmt')"
+          ]
+        },
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f009_RespCode": {
+        "IfElse": {
+          "FromValue": "getter('f283_UPP_PM')",
+          "CompareTo": "00",
+          "True": "getter('f009_RespCode')",
+          "False": "getter('f254_DDRespCode')"
+        },
+        "MerchantField": "TxnStatus",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f010_CurrCode": {
+        "MerchantField": "CurrCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f011_AuthIDResp": {
+        "MerchantField": "AuthIDRespCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f019_ExpTxnAmt": {
+        "MerchantField": "ExpTxnAmt",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f023_RRN": {
+        "MerchantField": "RetrievalRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f024_OrgRespCode": {
+        "IfElse": {
+          "FromValue": "getter('f283_UPP_PM')",
+          "CompareTo": "00",
+          "True": "getter('f024_OrgRespCode')",
+          "False": "getter('f286_OrgDDRespCode')"
+        },
+        "MerchantField": "OrigRespCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f254_DDRespCode": {
+        "IfElse": {
+          "FromValue": "getter('f283_UPP_PM')",
+          "CompareTo": "00",
+          "True": "getter('f009_RespCode')",
+          "False": "getter('f254_DDRespCode')"
+        },
+        "MerchantField": "TxnStatus",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f256_FICode": {
+        "MerchantField": "FICode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f257_PGRN": {
+        "MerchantField": "PymtGwRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f258_TxnStatDetCde": {
+        "MerchantField": "TxnStatDetCde",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f259_TxnStatMsg": {
+        "MerchantField": "TxnStatMsg",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f260_ServID": {
+        "MerchantField": "ServiceID",
+        "Hash": "true",
+        "Display": "true"
+      },
+      "f261_HostID": {
+        "MerchantField": "MerchHostID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f262_SessID": {
+        "MerchantField": "MerchSessionID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f263_MRN": {
+        "MerchantField": "MerchRefNo",
+        "Hash": "true",
+        "Display": "true"
+      },
+      "f270_ORN": {
+        "MerchantField": "OrderRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f277_DDRN": {
+        "MerchantField": "FPXRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f283_UPP_PM": {
+        "MerchantField": "UppPymtMode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f286_OrgDDRespCode": {
+        "IfElse": {
+          "FromValue": "getter('f283_UPP_PM')",
+          "CompareTo": "00",
+          "True": "getter('f024_OrgRespCode')",
+          "False": "getter('f286_OrgDDRespCode')"
+        },
+        "MerchantField": "OrigRespCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f350_CrdTyp": {
+        "MerchantField": "CardType",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f352_AcqBank": {
+        "MerchantField": "AcqBank",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f353_IPPTenure": {
+        "MerchantField": "IPPTenure",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f325_ECommMercInd": {
+        "MerchantField": "EcommMerchInd",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f339_TokenFlg": {
+        "MerchantField": "TokenFlag",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f344_MercCustId": {
+        "MerchantField": "MerchUserID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f346_Token": {
+        "MerchantField": "Token",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f347_TokenShrtNm": {
+        "MerchantField": "TokenShrtName",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f348_MaskPAN": {
+        "MerchantField": "MaskCardNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f365_POSEnvFlg": {
+        "MerchantField": "POSEnvFlag",
+        "Version": {
+          "Published": "6"
+        },
+        "Hash": "true",
+        "Display": "false"
+      }
+    },
+    "trailer": {
+      "t001_SHT": {
+        "MerchantField": "SHAlgorithmType",
+        "Hash": "false",
+        "Display": "false"
+      },
+      "t002_SHV": {
+        "MerchantField": "SHValue",
+        "Hash": "false",
+        "Display": "false"
+      }
+    }
+  },
+  "MT0780": {
+    "header": {
+      "h001_MTI": {
+        "IfNull": {
+          "DefaultValue": "0100"
+        },
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h002_VNO": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "VersionNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h003_TDT": {
+        "IfNull": {
+          "ClassName": "com.PayMaster.DataConversion.DateTimeConversion",
+          "MethodName": "getCurrentDate"
+        },
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h004_TTM": {
+        "IfNull": {
+          "ClassName": "com.PayMaster.DataConversion.DateTimeConversion",
+          "MethodName": "getCurrentTime"
+        },
+        "Hash": "true",
+        "Display": "false"
+      }
+    },
+    "body": {
+      "f001_MID": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "MerchantID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f260_ServID": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "ServiceID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f263_MRN": {
+        "MerchantField": "MerchRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f284_RURL_UPPPQ": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.CharacterConversion",
+          "MethodName": "replaceCharacter",
+          "Parameter": [
+            "getter('QueryRespURL')",
+            "&",
+            "^"
+          ]
+        },
+        "MerchantField": "QueryRespURL",
+        "Hash": "true",
+        "Display": "false"
+      }
+    },
+    "trailer": {
+      "t001_SHT": {
+        "IfNull": {
+          "PropertiesValue": "true"
+        },
+        "MerchantField": "SHAlgorithmType",
+        "Hash": "false",
+        "Display": "false"
+      },
+      "t002_SHV": {
+        "IfNull": {
+          "ClassName": "com.PayMaster.SecureHash.MessageHashing",
+          "MethodName": "hashMessageInSHA2",
+          "Parameter": [
+            "prop('SecretKey')",
+            "getter('hashMessage')"
+          ]
+        },
+        "Hash": "false",
+        "Display": "false"
+      }
+    }
+  },
+  "MT0790": {
+    "header": {
+      "h001_MTI": {
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h002_VNO": {
+        "MerchantField": "VersionNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h003_TDT": {
+        "Hash": "true",
+        "Display": "false"
+      },
+      "h004_TTM": {
+        "Hash": "true",
+        "Display": "false"
+      }
+    },
+    "body": {
+      "f001_MID": {
+        "MerchantField": "MerchantID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f004_PAN": {
+        "MerchantField": "CardNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f006_TxnDtTm": {
+        "MerchantField": "TxnDtTm",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f007_TxnAmt": {
+        "MerchantField": "TxnAmt",
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.NumberConversion",
+          "MethodName": "convertStringToNumber",
+          "Parameter": [
+            "getter('f007_TxnAmt')",
+            "getter('f019_ExpTxnAmt')"
+          ]
+        },
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f009_RespCode": {
+        "IfElse": {
+          "FromValue": "getter('f283_UPP_PM')",
+          "CompareTo": "00",
+          "True": "getter('f009_RespCode')",
+          "False": "getter('f254_DDRespCode')"
+        },
+        "MerchantField": "TxnStatus",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f010_CurrCode": {
+        "MerchantField": "CurrCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f011_AuthIDResp": {
+        "MerchantField": "AuthIDRespCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f019_ExpTxnAmt": {
+        "MerchantField": "ExpTxnAmt",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f023_RRN": {
+        "MerchantField": "RetrievalRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f024_OrgRespCode": {
+        "IfElse": {
+          "FromValue": "getter('f283_UPP_PM')",
+          "CompareTo": "00",
+          "True": "getter('f024_OrgRespCode')",
+          "False": "getter('f286_OrgDDRespCode')"
+        },
+        "MerchantField": "OrigRespCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f247_OrgTxnAmt": {
+        "MerchantField": "OrigTxnAmt",
+        "Conversion": {
+          "ClassName": "com.PayMaster.DataConversion.NumberConversion",
+          "MethodName": "convertStringToNumber",
+          "Parameter": [
+            "getter('f247_OrgTxnAmt')",
+            "getter('f287_ExpOrgTxnAmt')"
+          ]
+        },
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f248_OrgCurrCode": {
+        "MerchantField": "OrigCurrCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f249_TxnCh": {
+        "MerchantField": "TxnChannel",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f254_DDRespCode": {
+        "MerchantField": "TxnStatus",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f256_FICode": {
+        "MerchantField": "FICode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f257_PGRN": {
+        "MerchantField": "PymtGwRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f258_TxnStatDetCde": {
+        "MerchantField": "TxnStatDetCde",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f259_TxnStatMsg": {
+        "MerchantField": "TxnStatMsg",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f260_ServID": {
+        "MerchantField": "ServiceID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f261_HostID": {
+        "MerchantField": "MerchHostID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f262_SessID": {
+        "MerchantField": "MerchSessionID",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f263_MRN": {
+        "MerchantField": "MerchRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f270_ORN": {
+        "MerchantField": "OrderRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f274_QRespCode": {
+        "MerchantField": "QueryStatus",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f277_DDRN": {
+        "MerchantField": "FPXRefNo",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f283_UPP_PM": {
+        "MerchantField": "UppPymtMode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f286_OrgDDRespCode": {
+        "MerchantField": "OrigRespCode",
+        "Hash": "true",
+        "Display": "false"
+      },
+      "f287_ExpOrgTxnAmt": {
+        "MerchantField": "ExpOrigTxnAmt",
+        "Hash": "true",
+        "Display": "false"
+      }
+    },
+    "trailer": {
+      "t001_SHT": {
+        "MerchantField": "SHAlgorithmType",
+        "Hash": "false",
+        "Display": "false"
+      },
+      "t002_SHV": {
+        "MerchantField": "SHValue",
+        "Hash": "false",
+        "Display": "false"
+
+      }
+    }
+  }
+}

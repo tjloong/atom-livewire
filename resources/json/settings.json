@@ -67,10 +67,8 @@
     "ipay_merchant_key": null,
     "ipay_url": "https://payment.ipay88.com.my/epayment/entry.asp",
     "ipay_query_url": "https://payment.ipay88.com.my/epayment/enquiry.asp",
-    "revenue_monster_client_id": "1696583121510293053",
-    "revenue_monster_client_secret": "IKHFJwYMxAFXaMzSxySiADlYfubzuOuN",
-    "revenue_monster_store_id": "1693407764569107835",
-    "revenue_monster_private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAo7V/DCdbQ1xKjPJ1E5DOtzk8JOftwNW3Xu7BlftYeOwvpFJX\nLK7ODqLQ8zuFPUGFWexLaXZyln65ZUHQtXAl8EeNHuA0ygMFZLAL+N5F2DEjFlq9\nc7w9xBVSQtJ+QFTJWB3ECnO/z4DHWVqtluJYcE45s01uT64E0iqfIRVwhBvk4gdo\na72s6ZGniPtGodkdT9uRoJtKSjxZbXccjNs0CkxmKFRKyr2poBG3uKls2V0MXe3l\nsjHFvPvlkvziPfGKRqZLwk1mk7T2kDfyvajty1xX3TxKjUpKLN0A2ezNTjeoLn7I\n7NPG2h5XeRpVSPipMaXjcCYdw/u70k4OjY6iNQIDAQABAoIBAQCDiadlapIH07YK\n/h1X9ThDO/e5Z6k/Eflei9R74BK8RnoZPBfTTTk/xU7CwQZTq7ur/xKw0H1NstDg\nLTu3LT8uiy82qcuArWC+AD3+XwobpY+dvJcQ0SWH0eHg0ySiJ/4HkRMdmtd5sO18\nPEHSRFfvFMuD6ClEWHyDKb/mY0Wev0faRebmY9qwhrQOuv+ugmowe34L59sTPPE2\nxFegcSOChyy2fjIQSh2wlXPJo01hGSlt8WtUeC4550LoTfaR0NrI2CIjgz7nFwoo\ntD/HF9DqfD5B50PxFz3iEBgRvqSvsZgQk9n8C11dUNoqlx95xeJIh7JyT7NztcC+\n3rHKmmQZAoGBAOUwrKW/rmLLLmRembJ3BKBNqqDbEsEwOSbGbOUudiEL4SkBBSkd\nPdH65Gl0GnNoffC0IRjSdX/Tw5GHRpHP/C6F03OJLyZB6OzthKuEoOU1qoEvVDBm\n2nWNYnpFgekbwwtShF/HV9kLl7BE36o89NozpAY0cTz5I5dsmknb0zYrAoGBALbb\n7G0vXeVMPrNaiN4unKKkc77YqMDRygEYXXG7mM+nMv6MSfw9yiMGcQaD/x2q1BHb\nZLy+bSmT0wnjvvQq/Qbro8eqlweh0Y3mf2Sv4Qi4Ks9d6Dqzj+mAez6cKdT4E5i8\nYOFELuLEh5HTWfntHi/miSgZ6ITLidvwBCzhgrkfAoGASDx/Lf6sSBciGCB48Pby\nTlQsY2apEprQaJhB2jo6oU/NN89KgRrmUThypYoijB1zFFqx09EBl7h2+3dXlr2n\nDkK/0rp6UeSUNZjnJ+g1jgjMJMt2DYtdb4+QalleCMrnPrpTXpzF43Lz7GrI1C9C\nPUPpfssopb8gqKliN8VBXOECgYBGQ8XawsvC04R4aL6VGbYorSao3BokVbjYqOMn\nU93JVUc8Fu5LFfc5dD00Mr5ySPVKk1JnUIkj4+DBORlkO6yU3zFFBSEZ1q1uaHbl\nWswPDK2ulzgobl1LbYpuKZXNdzIYi7JyfT/C9Z/egidd6SajY2Oq3CHD/W5Q7C6+\njD0uIwKBgDtel5Lyosxkd6axnzgyz2YDFlUVPdmuoD/VMw9qEf/WJGgOz5CdIbqT\na/UyGKuvl8qOK5N1FrQKfEEzoVfc2LEPDl17TX7Iw1gJfM3GybpoDBB/I0EewCy2\nvUpQhfU5FLqYnH1dxxpCLjb0sNjijltOJ2EZgHiRTR4dtraiXnmD\n-----END RSA PRIVATE KEY-----",
-    "revenue_monster_is_sandbox": true,
+    "finexus_merchant_id": "000010000013049",
+    "finexus_secret_key": "B96856FA91749A259F71340E3C6BC3478524320F218587D22071A35DD4E7B4FF",
+    "finexus_terminal_id": "10004125",
     "currency": "MYR"
 }

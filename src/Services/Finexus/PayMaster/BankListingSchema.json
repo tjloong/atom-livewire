@@ -1,0 +1,174 @@
+{
+	"VersionControl":{
+		"Version":"3.0.0",
+		"Description":"Bank Listing Schema",
+		"Release Date":"8th June 2023",
+		"Created by": "Choong Sheng Wei"
+	},
+	"MT0360":{
+		"header": {
+			"h001_MTI": {
+				"IfNull": {
+					"DefaultValue":"0360"
+				},
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h002_VNO": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},				
+				"MerchantField":"VersionNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h003_TDT": {
+				"IfNull": {
+					"ClassName":"com.PayMaster.DataConversion.DateTimeConversion",
+					"MethodName":"getCurrentDate"
+				},
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h004_TTM": {
+				"IfNull": {
+					"ClassName":"com.PayMaster.DataConversion.DateTimeConversion",
+					"MethodName":"getCurrentTime"
+				},
+				"Hash":"true",
+				"Display":"false"
+			}
+		},
+		"body": {
+			"f001_MID": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},
+				"MerchantField":"MerchantID",
+				"Hash":"true",
+				"Display":"true"
+			},
+			"f010_CurrCode": {
+				"MerchantField":"CurrCode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f249_TxnCh": {	
+				"MerchantField":"TxnChannel",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f256_FICode": {
+				"MerchantField":"FICode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f260_ServID": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},	
+				"MerchantField":"ServiceID",
+				"Hash":"true",
+				"Display":"true"
+			},
+			"f262_SessID": {
+				"MerchantField":"MerchSessionID",
+				"Hash":"true",
+				"Display":"false"
+			}
+		},
+		"trailer": {
+			"t001_SHT": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},	
+				"MerchantField":"SHAlgorithmType",
+				"Hash":"false",
+				"Display":"false"
+			},
+			"t002_SHV": {
+				"IfNull":{
+					"ClassName":"com.PayMaster.SecureHash.MessageHashing",
+					"MethodName":"hashMessageInSHA2",
+					"Parameter":[
+						"prop('SecretKey')",
+						"getter('hashMessage')"
+					]
+				},
+				"Hash":"false",
+				"Display":"false"
+			}
+		}
+	},
+	
+	"MT0370":{
+		"header": {
+			"h001_MTI": {
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h002_VNO": {				
+				"MerchantField":"VersionNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h003_TDT": {
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h004_TTM": {
+				"Hash":"true",
+				"Display":"false"
+			}
+		},
+		"body": {
+			"f001_MID": {
+				"MerchantField":"MerchantID",
+				"Hash":"true",
+				"Display":"true"
+			},
+			"f249_TxnCh": {
+				"MerchantField":"TxnChannel",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f256_FICode": {
+				"MerchantField":"FICode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f258_TxnStatDetCde": {
+				"MerchantField":"TxnStatDetCde",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f259_TxnStatMsg": {
+				"MerchantField":"TxnStatMsg",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f260_ServID": {
+				"MerchantField":"ServiceID",
+				"Hash":"true",
+				"Display":"true"
+			},
+			"f351_AcqBankList": {
+				"MerchantField":"AcqBankList",
+				"Hash":"true",
+				"Display":"false"
+			}
+		},
+		"trailer": {
+			"t001_SHT": {
+				"MerchantField":"SHAlgorithmType",
+				"Hash":"false",
+				"Display":"false"
+			},
+			"t002_SHV": {
+				"MerchantField":"SHValue",
+				"Hash":"false",
+				"Display":"false"
+			}
+		}
+	}
+}

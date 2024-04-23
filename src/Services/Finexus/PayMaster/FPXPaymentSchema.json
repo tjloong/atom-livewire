@@ -1,0 +1,442 @@
+{
+	"VersionControl":{
+		"Version":"3.0.0",
+		"Description":"FPX Payment Schema",
+		"Release Date":"1st July 2021",
+		"Created by": "Chris Ong"
+	},
+	"MT0260":{
+		"header": {
+			"h001_MTI": {
+				"IfNull": {
+					"DefaultValue":"0260"
+				},
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h002_VNO": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},				
+				"MerchantField":"VersionNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h003_TDT": {
+				"IfNull": {
+					"ClassName":"com.PayMaster.DataConversion.DateTimeConversion",
+					"MethodName":"getCurrentDate"
+				},
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h004_TTM": {
+				"IfNull": {
+					"ClassName":"com.PayMaster.DataConversion.DateTimeConversion",
+					"MethodName":"getCurrentTime"
+				},
+				"Hash":"true",
+				"Display":"false"
+			}
+		},
+		"body": {
+			"f001_MID": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},
+				"MerchantField":"MerchantID",
+				"Hash":"true",
+				"Display":"true"
+			},
+			"f003_ProcCode": {
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f006_TxnDtTm": {
+				"IfNull": {
+					"ClassName":"com.PayMaster.DataConversion.DateTimeConversion",
+					"MethodName":"getCurrentDateTime"
+				},
+				"MerchantField":"TxnDtTm",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f007_TxnAmt": {
+				"Conversion":{
+					"ClassName":"com.PayMaster.DataConversion.NumberConversion",
+					"MethodName":"convertNumberToString",
+					"Parameter":[
+						"getter('TxnAmt')"
+					]
+				},
+				"MerchantField":"TxnAmt",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f010_CurrCode": {
+				"MerchantField":"CurrCode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f019_ExpTxnAmt": {
+				"MerchantField":"ExpTxnAmt",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f247_OrgTxnAmt": {
+				"Conversion":{
+					"ClassName":"com.PayMaster.DataConversion.NumberConversion",
+					"MethodName":"convertNumberToString",
+					"Parameter":[
+						"getter('OrigTxnAmt')"
+					]
+				},
+				"MerchantField":"OrigTxnAmt",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f248_OrgCurrCode": {
+				"MerchantField":"OrigCurrCode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f249_TxnCh": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},	
+				"MerchantField":"TxnChannel",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f253_CntyCode": {
+				"MerchantField":"CountryCode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f256_FICode": {
+				"MerchantField":"FICode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f260_ServID": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},	
+				"MerchantField":"ServiceID",
+				"Hash":"true",
+				"Display":"true"
+			},
+			"f261_HostID": {
+				"MerchantField":"MerchHostID",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f262_SessID": {
+				"MerchantField":"MerchSessionID",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f263_MRN": {
+				"MerchantField":"MerchRefNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f264_Locale": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},	
+				"MerchantField":"LangLocale",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f268_CHName": {
+				"MerchantField":"UserName",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f270_ORN": {
+				"MerchantField":"OrderRefNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f271_ODesc": {
+				"MerchantField":"OrderDesc",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f275_RURL_DD": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},	
+				"Conversion":{
+					"ClassName":"com.PayMaster.DataConversion.CharacterConversion",
+					"MethodName":"replaceCharacter",
+					"Parameter":[
+						"getter('FPXRespURL')",
+						"&",
+						"^"
+					]
+				},
+				"MerchantField":"FPXRespURL",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f276_URL_VMPS": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},	
+				"Conversion":{
+					"ClassName":"com.PayMaster.DataConversion.CharacterConversion",
+					"MethodName":"replaceCharacter",
+					"Parameter":[
+						"getter('ViewMerchPymtStatusURL')",
+						"&",
+						"^"
+					]
+				},
+				"MerchantField":"ViewMerchPymtStatusURL",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f278_EMailAddr": {
+				"MerchantField":"UserEmail",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f279_HP": {
+				"MerchantField":"UserContact",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f285_IPAddr": {
+				"MerchantField":"UserIPAddress",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f287_ExpOrgTxnAmt": {
+				"MerchantField":"ExpOrigTxnAmt",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f352_AcqBank": {
+				"MerchantField":"AcqBank",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f400_AddData": {
+				"MerchantField":"AdditionalData",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f340_MercPromoCde": {
+				"MerchantField":"MerchPromoCode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f341_MercPromoAmt": {
+				"Conversion":{
+					"ClassName":"com.PayMaster.DataConversion.SplitConversion",
+					"MethodName":"splitConvertNumberToString",
+					"Parameter":[
+						"getter('MerchPromoAmt')",
+						"|"
+					]
+				},
+				"MerchantField":"MerchPromoAmt",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f342_PromoAmtAcqCst": {
+				"Conversion":{
+					"ClassName":"com.PayMaster.DataConversion.SplitConversion",
+					"MethodName":"splitConvertNumberToString",
+					"Parameter":[
+						"getter('PromoAmtAcqCost')",
+						"|"
+					]
+				},
+				"MerchantField":"PromoAmtAcqCost",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f343_PromoAmtMercCst": {
+				"Conversion":{
+					"ClassName":"com.PayMaster.DataConversion.SplitConversion",
+					"MethodName":"splitConvertNumberToString",
+					"Parameter":[
+						"getter('PromoAmtMerchCost')",
+						"|"
+					]
+				},
+				"MerchantField":"PromoAmtMerchCost",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f363_InvNum": {
+				"MerchantField":"InvoiceNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f364_Fee": {
+				"MerchantField":"Fee",
+				"Hash":"true",
+				"Display":"false"
+			}
+		},
+		"trailer": {
+			"t001_SHT": {
+				"IfNull": {
+					"PropertiesValue":"true"
+				},	
+				"MerchantField":"SHAlgorithmType",
+				"Hash":"false",
+				"Display":"false"
+			},
+			"t002_SHV": {
+				"IfNull":{
+					"ClassName":"com.PayMaster.SecureHash.MessageHashing",
+					"MethodName":"hashMessageInSHA2",
+					"Parameter":[
+						"prop('SecretKey')",
+						"getter('hashMessage')"
+					]
+				},
+				"Hash":"false",
+				"Display":"false"
+			}
+		}
+	},
+	
+	"MT0270":{
+		"header": {
+			"h001_MTI": {
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h002_VNO": {				
+				"MerchantField":"VersionNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h003_TDT": {
+				"Hash":"true",
+				"Display":"false"
+			},
+			"h004_TTM": {
+				"Hash":"true",
+				"Display":"false"
+			}
+		},
+		"body": {
+			"f001_MID": {
+				"MerchantField":"MerchantID",
+				"Hash":"true",
+				"Display":"true"
+			},
+			"f003_ProcCode": {
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f006_TxnDtTm": {
+				"MerchantField":"TxnDtTm",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f007_TxnAmt": {
+				"MerchantField":"TxnAmt",
+				"Conversion":{
+					"ClassName":"com.PayMaster.DataConversion.NumberConversion",
+					"MethodName":"convertStringToNumber",
+					"Parameter":[
+						"getter('f007_TxnAmt')",
+						"getter('f019_ExpTxnAmt')"
+					]
+				},
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f010_CurrCode": {
+				"MerchantField":"CurrCode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f019_ExpTxnAmt": {
+				"MerchantField":"ExpTxnAmt",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f254_DDRespCode": {
+				"MerchantField":"TxnStatus",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f256_FICode": {
+				"MerchantField":"FICode",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f257_PGRN": {
+				"MerchantField":"PymtGwRefNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f258_TxnStatDetCde": {
+				"MerchantField":"TxnStatDetCde",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f259_TxnStatMsg": {
+				"MerchantField":"TxnStatMsg",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f260_ServID": {
+				"MerchantField":"ServiceID",
+				"Hash":"true",
+				"Display":"true"
+			},
+			"f261_HostID": {
+				"MerchantField":"MerchHostID",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f262_SessID": {
+				"MerchantField":"MerchSessionID",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f263_MRN": {
+				"MerchantField":"MerchRefNo",
+				"Hash":"true",
+				"Display":"true"
+			},
+			"f270_ORN": {
+				"MerchantField":"OrderRefNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f277_DDRN": {
+				"MerchantField":"FPXRefNo",
+				"Hash":"true",
+				"Display":"false"
+			},
+			"f286_OrgDDRespCode": {
+				"MerchantField":"OrigRespCode",
+				"Hash":"true",
+				"Display":"false"
+			}
+		},
+		"trailer": {
+			"t001_SHT": {
+				"MerchantField":"SHAlgorithmType",
+				"Hash":"false",
+				"Display":"false"
+			},
+			"t002_SHV": {
+				"MerchantField":"SHValue",
+				"Hash":"false",
+				"Display":"false"
+			}
+		}
+	}
+}

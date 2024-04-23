@@ -1,0 +1,192 @@
+{
+  "VersionControl": {
+    "Version": "3.0.0",
+    "Description": "PayMaster Entry Point",
+    "ReleasedDate": "1st July 2021",
+    "Created by": "Chris Ong"
+  },
+  "PaymasterEntryPoint": {
+    "C01": {
+      "Description": "Card Account Verification",
+      "MessageType": "MT0200",
+      "f003_ProcCode": "003000",
+      "f008_POSCond": "51",
+      "Encryption": "false"
+    },
+    "C02": {
+      "Description": "E-Commerce Transaction",
+      "MessageType": "MT0200",
+      "f003_ProcCode": "003000",
+      "f008_POSCond": "59",
+      "Encryption": "false"
+    },
+    "C03": {
+      "Description": "MOTO Transaction",
+      "MessageType": "MT0200",
+      "f003_ProcCode": "003000",
+      "f008_POSCond": "08",
+      "Encryption": "false"
+    },
+    "C04": {
+      "Description": "Recurring Transaction",
+      "MessageType": "MT0200",
+      "f003_ProcCode": "003000",
+      "f008_POSCond": "73",
+      "Encryption": "false"
+    },
+    "C05": {
+      "Description": "E-Commerce Transaction Refund",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "993000",
+      "f008_POSCond": "59",
+      "Encryption": "false"
+    },
+    "C06": {
+      "Description": "MOTO Transaction Refund",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "993000",
+      "f008_POSCond": "08",
+      "Encryption": "false"
+    },
+    "C07": {
+      "Description": "Recurring Transaction Refund",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "993000",
+      "f008_POSCond": "73",
+      "Encryption": "false"
+    },
+    "C08": {
+      "Description": "Void for E-Commerce Transaction Refund",
+      "MessageType": "MT0200",
+      "f003_ProcCode": "023000",
+      "f008_POSCond": "59",
+      "Encryption": "false"
+    },
+    "C09": {
+      "Description": "Void for MOTO Transaction Refund",
+      "MessageType": "MT0200",
+      "f003_ProcCode": "023000",
+      "f008_POSCond": "08",
+      "Encryption": "false"
+    },
+    "C10": {
+      "Description": "Void for Recurring Transaction Refund",
+      "MessageType": "MT0200",
+      "f003_ProcCode": "023000",
+      "f008_POSCond": "73",
+      "Encryption": "false"
+    },
+    "C11": {
+      "Description": "Pre-Authorization Transaction",
+      "MessageType": "MT0100",
+      "f003_ProcCode": "303000",
+      "f008_POSCond": "06",
+      "Encryption": "false"
+    },
+    "C12": {
+      "Description": "Void for Pre-Authorization Transaction",
+      "MessageType": "MT0100",
+      "f003_ProcCode": "023000",
+      "f008_POSCond": "06",
+      "Encryption": "false"
+    },
+    "C13": {
+      "Description": "Pre-Authorization Transaction Completion",
+      "MessageType": "MT0220",
+      "f003_ProcCode": "003000",
+      "f008_POSCond": "06",
+      "Encryption": "false"
+    },
+    "C14": {
+      "Description": "Void for Pre-Authorization Transaction Completion",
+      "MessageType": "MT0220",
+      "f003_ProcCode": "023000",
+      "f008_POSCond": "06",
+      "Encryption": "false"
+    },
+    "C15": {
+      "Description": "Reversal for E-Commerce Transaction",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "220000",
+      "f008_POSCond": "59",
+      "Encryption": "false"
+    },
+    "C16": {
+      "Description": "Reversal for MOTO Transaction",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "220000",
+      "f008_POSCond": "08",
+      "Encryption": "false"
+    },
+    "C17": {
+      "Description": "Reversal for Recurring Transaction",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "220000",
+      "f008_POSCond": "73",
+      "Encryption": "false"
+    },
+    "C18": {
+      "Description": "Reversal for Pre-Authorization Transaction",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "303000",
+      "f008_POSCond": "59",
+      "Encryption": "false"
+    },
+    "C19": {
+      "Description": "Reversal for E-Commerce Transaction Refund",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "203000",
+      "f008_POSCond": "59",
+      "Encryption": "false"
+    },
+    "C20": {
+      "Description": "Reversal for MOTO Transaction Refund",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "203000",
+      "f008_POSCond": "08",
+      "Encryption": "false"
+    },
+    "C21": {
+      "Description": "Reversal for Recurring Transaction Refund",
+      "MessageType": "MT0400",
+      "f003_ProcCode": "203000",
+      "f008_POSCond": "73",
+      "Encryption": "false"
+    },
+    "D01": {
+      "Description": "Normal Sales Transaction",
+      "MessageType": "MT0260",
+      "f003_ProcCode": "001000",
+      "Encryption": "false"
+    },
+    "U01": {
+      "Description": "UPP Transaction",
+      "MessageType": "MT0280",
+      "Encryption": "false"
+    },
+    "U02": {
+      "Description": "UPP Transaction Status Query",
+      "MessageType": "MT0780",
+      "Encryption": "false"
+    },
+    "Q01": {
+      "Description": "QR Payload Generation",
+      "MessageType": "MT0180",
+      "f003_ProcCode": "000000",
+      "f008_POSCond": "67",
+      "Encryption": "false"
+    },
+    "Q02": {
+      "Description": "QR Payment for Normal Sales",
+      "MessageType": "MT0240",
+      "f003_ProcCode": "003000",
+      "f008_POSCond": "67",
+      "Encryption": "false"
+    },
+    "B01": {
+      "Description": "Bank Listing",
+      "MessageType": "MT0360",
+      "Encryption": "false"
+    }
+  }
+}

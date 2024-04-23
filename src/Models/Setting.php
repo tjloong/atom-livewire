@@ -52,7 +52,6 @@ class Setting extends Model
     {
         return [
             'whatsapp_bubble' => 'boolean',
-            'revenue_monster_is_sandbox' => 'boolean',
         ];
     }
 
