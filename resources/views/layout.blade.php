@@ -7,33 +7,24 @@
 
     <x-html-meta :noindex="isset($indexing) ? !$indexing : true"/>
 
-    <link rel="shortcut icon" href="{{ 
-        $favicon 
-        ?? (file_exists(storage_path('app/public/img/favicon.ico')) ? asset('storage/img/favicon.ico') : null)
-        ?? (file_exists(storage_path('app/public/img/favicon.png')) ? asset('storage/img/favicon.png') : null)
-        ?? (file_exists(storage_path('app/public/img/favicon.svg')) ? asset('storage/img/favicon.svg') : null)
-        ?? (file_exists(storage_path('app/public/img/favicon.jpg')) ? asset('storage/img/favicon.jpg') : null)
-    }}">
-    
-    @if (isset($gfont) && $gfont !== false)
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="{{ $gfont }}">
-    @elseif (!isset($gfont) && str(app()->currentLocale())->is('zh*'))
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;500;700;900&display=swap">
-    @elseif (!isset($gfont))
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap">
+    @if ($favicon = collect(['ico', 'png', 'svg', 'jpg'])
+        ->filter(fn($ext) => file_exists(storage_path('app/public/img/favicon.'.$ext)))
+        ->map(fn($ext) => url('/storage/img/favicon.'.$ext))
+        ->first())
+    <link rel="shortcut icon" href="{{ $favicon }}">
     @endif
 
-    @if ($fa = array_merge(['fontawesome'], $fontawesome ?? ['solid', 'brands']))
-        @foreach ($fa as $val)
-        <link href="/fontawesome/css/{{ $val }}.css" rel="stylesheet">
-        @endforeach
-    @endif
+    @section('gfont')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ str(app()->currentLocale())->is('zh*') ? 'Noto+Sans+SC' : 'Inter' }}:wght@100;300;400;500;700;900&display=swap">
+    @show
+
+    @section('fontawesome')
+    <link href="/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="/fontawesome/css/solid.css" rel="stylesheet">
+    <link href="/fontawesome/css/brands.css" rel="stylesheet">
+    @show
 
     @if ($enabledAnalytics = $analytics ?? false)
         <x-analytics.fathom/>
