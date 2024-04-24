@@ -34,17 +34,7 @@ class Finexus extends Component
     // test
     public function test() : mixed
     {
-        return app('finexus')->checkout([
-            'PaymentID' => 'U01',
-            'MerchRefNo' => 'merchant-refNo-0001',
-            'CurrCode' => '458',
-            'TxnAmt' => '1.00',
-            'ExpTxnAmt' => '2',
-            'EcommMerchInd' => '1',
-            'CountryCode' => 'MY',
-            'TokenFlag' => 'N',
-            'PreAuthFlag' => 'N',
-        ]);
+        return app('finexus')->test();
     }
 
     // submit
