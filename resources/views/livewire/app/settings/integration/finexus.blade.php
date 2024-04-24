@@ -6,6 +6,8 @@
             <x-form.text wire:model.defer="settings.finexus_merchant_id" label="Merchant ID"/>
             <x-form.text wire:model.defer="settings.finexus_secret_key" label="Secret Key"/>
             <x-form.text wire:model.defer="settings.finexus_terminal_id" label="Terminal ID"/>
+            <x-form.text wire:model.defer="settings.finexus_url" label="URL"/>
+            <x-form.text wire:model.defer="settings.finexus_query_url" label="Query URL"/>
         </x-group>
 
         <x-slot:foot>

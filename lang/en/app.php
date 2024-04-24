@@ -400,6 +400,8 @@ return [
             'title' => 'No Results',
             'message' => 'We could not find anything.',
         ],
+        'connection-ok' => 'Connection OK',
+        'connection-failed' => 'Connection Failed',
         'recaptcha' => 'Google think you are a bot. Please refresh and try again.',
         'email-sent' => 'Email Sent.',
         'notification-sent' => ':channel Sent.',

@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
+use Illuminate\Support\Facades\Storage;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
@@ -18,6 +19,8 @@ class Finexus extends Component
             'settings.finexus_merchant_id' => ['required' => 'Merchant ID is required.'],
             'settings.finexus_secret_key' => ['required' => 'Secret key is required.'],
             'settings.finexus_terminal_id' => ['nullable'],
+            'settings.finexus_url' => ['required' => 'URL is required.'],
+            'settings.finexus_query_url' => ['required' => 'Query URL is required.'],
         ];
     }
 
@@ -28,13 +31,16 @@ class Finexus extends Component
             'settings.finexus_merchant_id' => settings('finexus_merchant_id'),
             'settings.finexus_secret_key' => settings('finexus_secret_key'),
             'settings.finexus_terminal_id' => settings('finexus_terminal_id'),
+            'settings.finexus_url' => settings('finexus_url'),
+            'settings.finexus_query_url' => settings('finexus_query_url'),
         ]);
     }
 
     // test
-    public function test() : mixed
+    public function test() : void
     {
-        return app('finexus')->test();
+        if (app('finexus')->test()) $this->popup('app.alert.connection-ok', 'alert', 'success');
+        else $this->popup('app.alert.connection-failed', 'alert', 'error');
     }
 
     // submit
@@ -43,6 +49,8 @@ class Finexus extends Component
         $this->validateForm();
 
         settings($this->settings);
+
+        app('finexus')->deleteConfigFile();
 
         $this->popup('app.alert.updated');
     }

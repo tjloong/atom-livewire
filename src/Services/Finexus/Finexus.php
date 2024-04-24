@@ -2,6 +2,12 @@
 
 namespace Jiannius\Atom\Services\Finexus;
 
+use com\PayMaster\Entities\PayMasterEntity;
+use com\PayMaster\Import\ImportFile;
+use com\PayMaster\MessageRequestBuilder\PaymentRequestMessageBuilder;
+use com\PayMaster\MessageResponseBuilder\PaymentResponseMessageBuilder;
+use com\PayMaster\MessageRequestBuilder\WebServicePaymentRequestMessageBuilder;
+use com\PayMaster\PropertiesReader\PropertiesReader;
 use Illuminate\Support\Facades\Storage;
 
 // Finexus integration helper
@@ -14,7 +20,7 @@ class Finexus
 {
     private $country = 'MY';
     private $currency = '458';
-    private $configFile = 'finexus.ini';
+    private $configFilePath = 'finexus.ini';
 
     // import pay master - to be called in AppServiceProvider
     public function importPayMaster() : void
@@ -22,42 +28,15 @@ class Finexus
         $basepath = 'phar://'.__DIR__.'/PayMaster/PayMaster.phar/';
         include_once $basepath.'com/PayMaster/Import/ImportFile.php';
 
-        $import = new \com\PayMaster\Import\ImportFile();
+        $import = new ImportFile();
         $import->includeFile($basepath);
     }
 
     // checkout
     // parameters please refer: https://sandbox.finexusgroup.com/myxaas/docs/PayMaster-MPI/upp/set-parameters/payment-parameters
-    public function checkout($parameters = [], $refreshConfigs = false) : mixed
+    public function checkout($parameters = []) : mixed
     {
-        $this->generateConfigsFile($refreshConfigs);
-
-        // Declare variable for Payment Master Properties - 1st Parameter = File Path , 2nd Parameter = File name
-        $propertiesReader = new \com\PayMaster\PropertiesReader\PropertiesReader();
-
-        //Path to the root project folder
-        $propertiesReader->PropertiesReader(storage_path('app/'.$this->configFile));
-
-        // Declare variable for Payment Master Entity
-        $paymentRequestEntity = new \com\PayMaster\Entities\PayMasterEntity();
-
-        // Get all the parameter values from the user side and set into Payment Master Entity
-        foreach ($this->getParameters($parameters) as $key => $val) {
-            $paymentRequestEntity->setter($key, $val);
-        }
-
-        // Call Payment Master Payment Request Message Builder to generate the message
-        $paymentRequestMessageBuilder = new \com\PayMaster\MessageRequestBuilder\PaymentRequestMessageBuilder();
-        $paymentMessage = $paymentRequestMessageBuilder->buildPaymentRequestMessage($paymentRequestEntity, $propertiesReader);
-
-        return redirect(settings('finexus_url').'?'.$paymentMessage);
-    }
-
-    // get parameters
-    // for parameters help please refer: https://sandbox.finexusgroup.com/myxaas/docs/PayMaster-MPI/upp/set-parameters/payment-parameters
-    public function getParameters($data) : array
-    {
-        return [
+        $parameters = [
             'PaymentID' => 'U01', // U01 - UPP transaction, U02 - UPP transaction status query
             'EcommMerchInd' => '1',
             'MerchRefNo' => '', // application's order number / payment number / transaction number
@@ -67,14 +46,71 @@ class Finexus
             'ExpTxnAmt' => '2',
             'TokenFlag' => 'N',
             'PreAuthFlag' => 'N',
-            ...$data,
+            ...$parameters,
         ];
+
+        $propertiesReader = $this->getPropertiesReader();
+        $paymentRequestEntity = new PayMasterEntity();
+
+        foreach ($parameters as $key => $val) {
+            $paymentRequestEntity->setter($key, $val);
+        }
+
+        $paymentRequestMessageBuilder = new PaymentRequestMessageBuilder();
+        $paymentMessage = $paymentRequestMessageBuilder->buildPaymentRequestMessage($paymentRequestEntity, $propertiesReader);
+
+        return redirect(settings('finexus_url').'?'.$paymentMessage);
     }
 
-    // generate configs file
-    public function generateConfigsFile($refresh) : void
+    // parse response
+    public function parseResponse($response) : mixed
     {
-        if ($refresh || !Storage::exists($this->configFile)) {
+        $propertiesReader = $this->getPropertiesReader();
+
+        $paymentResponseEntity = new PayMasterEntity();
+        $paymentResponseEntity->setter("ResponseMessage", $response);
+
+        $paymentResponseMessageBuilder = new PaymentResponseMessageBuilder();
+        $paymentResponseMessageBuilder->buildUPPPaymentResponseMessage($paymentResponseEntity, $propertiesReader);
+
+        $code = $paymentResponseEntity->getter('TxnStatDetCde');
+
+        // invalid hash value
+        if ($code === '5015') abort(500, 'Invalide secure hash value.');
+
+        return $paymentResponseEntity->getPayMasterEntity();
+    }
+
+    // query
+    public function query($data) : mixed
+    {
+        $propertiesReader = $this->getPropertiesReader();
+
+        $paymentRequestEntity = new PayMasterEntity();
+        $paymentRequestEntity->setter('PaymentID', 'U02'); 
+        $paymentRequestEntity->setter('MerchantID', get($data, 'MerchantID'));
+        $paymentRequestEntity->setter('ServiceID', get($data, 'ServiceID'));
+        $paymentRequestEntity->setter('MerchRefNo', get($data, 'MerchRefNo'));
+
+        $WebServicePaymentRequestMessageBuilder = new WebServicePaymentRequestMessageBuilder();
+        $WebServicePaymentRequestMessageBuilder->buildUPPQueryRequestMessage($paymentRequestEntity, $propertiesReader);
+
+        return $paymentRequestEntity->getPayMasterEntity();
+    }
+
+    // get properties reader
+    public function getPropertiesReader() : mixed
+    {
+        $propertiesReader = new PropertiesReader();
+        $propertiesReader->PropertiesReader($this->getConfigFile());
+
+        return $propertiesReader;
+    }
+
+    // get config file
+    public function getConfigFile() : string
+    {
+        if (!Storage::exists($this->configFilePath)) {
             $configs = [
                 'VersionNo' => '06',
                 'ServiceID' => 'FNX',
@@ -94,24 +130,26 @@ class Finexus
 
             $content = collect($configs)->map(fn($val, $key) => "$key=$val")->join("\n");
 
-            Storage::put($this->configFile, $content);
+            Storage::put($this->configFilePath, $content);
         }
+
+        return storage_path('app/'.$this->configFilePath);
+    }
+
+    // delete config file
+    public function deleteConfigFile() : void
+    {
+        if (Storage::exists($this->configFilePath)) Storage::delete($this->configFilePath);
     }
 
     // test checkout
-    public function test() : mixed
+    public function test() : bool
     {
-        return $this->checkout([
-            'PaymentID' => 'U01',
+        $query = $this->query([
             'MerchRefNo' => 'TESTING-'.time(),
-            'CurrCode' => '458',
-            'TxnAmt' => '1.00',
-            'ExpTxnAmt' => '2',
-            'EcommMerchInd' => '1',
-            'CountryCode' => 'MY',
-            'TokenFlag' => 'N',
-            'PreAuthFlag' => 'N',
         ]);
+
+        return get($query, 'QueryStatus') === '12'; // status 12 = transaction not found
     }
 
     // set country
