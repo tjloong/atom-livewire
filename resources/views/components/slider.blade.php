@@ -60,11 +60,12 @@
     </div>
 </div>
 
-@once
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.css">
+@push('assets')
+    @basset('https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.js')
+    @basset('https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.css')
+@endpush
 
+@pushOnce('scripts')
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('slider', (config = {}, plugins = []) => ({
@@ -212,6 +213,5 @@
                 },
             }))
         })
-    </script>
-@endpush
-@endonce
+    </script>    
+@endPushOnce

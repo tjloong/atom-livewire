@@ -71,6 +71,6 @@
     "finexus_secret_key": "B96856FA91749A259F71340E3C6BC3478524320F218587D22071A35DD4E7B4FF",
     "finexus_terminal_id": "10004125",
     "finexus_url": "https://sandbox.finexusgroup.com/upp/faces/upp/payment.xhtml",
-    "finexus_query_url": "https://sandbox.finexusgroup.com:10501/upp/services/Gateway",
+    "finexus_query_url": "https://sandbox.finexusgroup.com/upp/services/Gateway",
     "currency": "MYR"
 }

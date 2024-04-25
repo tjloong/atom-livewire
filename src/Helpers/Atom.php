@@ -21,6 +21,13 @@ if (!function_exists('find_livewire')) {
     }
 }
 
+if (!function_exists('atom_asset_path')) {
+    function atom_asset_path($path = null, $relative = false)
+    {
+        return atom_path('public/build/assets/'.$path, $relative);
+    }
+}
+
 /**
  * Get atom livewire component name
  */

@@ -20,12 +20,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ str(app()->currentLocale())->is('zh*') ? 'Noto+Sans+SC' : 'Inter' }}:wght@100;300;400;500;700;900&display=swap">
     @show
 
-    @section('fontawesome')
-    <link href="/fontawesome/css/fontawesome.css" rel="stylesheet">
-    <link href="/fontawesome/css/solid.css" rel="stylesheet">
-    <link href="/fontawesome/css/brands.css" rel="stylesheet">
-    @show
-
     @if ($enabledAnalytics = $analytics ?? false)
         <x-analytics.fathom/>
         <x-analytics.gtm/>
@@ -34,6 +28,12 @@
     @endif
 
     <x-cdn-scripts :libs="array_filter($cdn ?? [])"/>
+    @basset('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js')
+    @basset('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css')
+    @stack('assets')
+
+    @livewireScripts
+    @livewireStyles
 
     @vite($vite ?? [
         'resources/css/app.css',
@@ -41,10 +41,6 @@
     ])
 
     @stack('scripts')
-    @stack('styles')
-
-    @livewireScripts
-    @livewireStyles
 </head>
 
 <body class="font-{{ $fontTheme ?? 'sans' }} antialiased {{ $class ?? '' }}">
