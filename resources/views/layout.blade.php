@@ -24,10 +24,11 @@
 <x-cdn-scripts :libs="array_filter($cdn ?? [])"/>
 
 @stack('assets')
-<script src="{{ basset('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js') }}"></script>
-<link href="{{ basset('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css') }}">
-<script src="{{ basset('https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0/dist/floating-ui.core.umd.min.js') }}"></script>
-<script src="{{ basset('https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.3/dist/floating-ui.dom.umd.min.js') }}"></script>
+
+@basset('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js')
+@basset('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css')
+@basset('https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0/dist/floating-ui.core.umd.min.js')
+@basset('https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.3/dist/floating-ui.dom.umd.min.js')
 
 @section('gfont')
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,13 +42,15 @@
 ])
 
 @stack('alpine')
-<script src="{{ basset('https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.13.10/dist/cdn.min.js') }}" defer></script>
-<script src="{{ basset('https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js') }}" defer></script>
+
+@basset('https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.13.10/dist/cdn.min.js', true, ['defer' => true])
+@basset('https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js', true, ['defer' => true])
 
 @livewireScripts
 @livewireStyles
 
 @stack('scripts')
+
 </head>
 
 <body class="font-{{ $fontTheme ?? 'sans' }} antialiased {{ $class ?? '' }}">

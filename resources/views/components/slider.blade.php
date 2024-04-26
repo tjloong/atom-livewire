@@ -61,157 +61,157 @@
 </div>
 
 @push('assets')
-    @basset('https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.js')
-    @basset('https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.css')
+@basset('https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.js')
+@basset('https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.css')
 @endpush
 
 @pushOnce('scripts')
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('slider', (config = {}, plugins = []) => ({
-                config: {
-                    nav: true,
-                    arrows: true,
-                    autoplay: 2500,
-                    adaptiveHeight: false,
-                    ...config,
-                },
-                plugins,
-                slider: null,
-                thumbnails: null,
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('slider', (config = {}, plugins = []) => ({
+            config: {
+                nav: true,
+                arrows: true,
+                autoplay: 2500,
+                adaptiveHeight: false,
+                ...config,
+            },
+            plugins,
+            slider: null,
+            thumbnails: null,
 
-                init () {
-                    this.$nextTick(() => {
-                        this.startSlider()
-                        this.startThumbnails()
-                    })
-                },
+            init () {
+                this.$nextTick(() => {
+                    this.startSlider()
+                    this.startThumbnails()
+                })
+            },
 
-                startSlider () {
-                    if (!this.$refs.slider) return
+            startSlider () {
+                if (!this.$refs.slider) return
 
-                    this.identifySlides(this.$refs.slider)
-                    this.slider = new KeenSlider(this.$refs.slider, this.config, this.getPlugins())
-                },
+                this.identifySlides(this.$refs.slider)
+                this.slider = new KeenSlider(this.$refs.slider, this.config, this.getPlugins())
+            },
 
-                startThumbnails () {
-                    if (!this.$refs.thumbnails) return
+            startThumbnails () {
+                if (!this.$refs.thumbnails) return
 
-                    this.identifySlides(this.$refs.thumbnails)
-                    this.thumbnails = new KeenSlider(this.$refs.thumbnails, {
-                        slides: {
-                            perView: 6,
-                            spacing: 4,
-                        },
-                        breakpoints: {
-                            '(min-width: 1000px)': {
-                                slides: {
-                                    perView: 8,
-                                    spacing: 4,
-                                },
+                this.identifySlides(this.$refs.thumbnails)
+                this.thumbnails = new KeenSlider(this.$refs.thumbnails, {
+                    slides: {
+                        perView: 6,
+                        spacing: 4,
+                    },
+                    breakpoints: {
+                        '(min-width: 1000px)': {
+                            slides: {
+                                perView: 8,
+                                spacing: 4,
                             },
                         },
-                    }, [(thumbnails) => this.thumbnailsPlugin(thumbnails)])
-                },
+                    },
+                }, [(thumbnails) => this.thumbnailsPlugin(thumbnails)])
+            },
 
-                identifySlides (container) {
-                    Array.from(container.querySelectorAll(':scope > *'))
-                        .forEach(elm => elm.classList.add('keen-slider__slide'))
-                },
+            identifySlides (container) {
+                Array.from(container.querySelectorAll(':scope > *'))
+                    .forEach(elm => elm.classList.add('keen-slider__slide'))
+            },
 
-                navPlugin (slider) {
-                    const goToSlide = (i) => slider.moveToIdx(i)
+            navPlugin (slider) {
+                const goToSlide = (i) => slider.moveToIdx(i)
 
-                    const activateDot = () => {
-                        const dots = Array.from(this.$refs.nav.querySelectorAll('*'))
-                        const dot = dots[slider.track.details.rel]
-                        dots.forEach(elm => elm.classList.remove('w-5'))
-                        dot.classList.add('w-5')
+                const activateDot = () => {
+                    const dots = Array.from(this.$refs.nav.querySelectorAll('*'))
+                    const dot = dots[slider.track.details.rel]
+                    dots.forEach(elm => elm.classList.remove('w-5'))
+                    dot.classList.add('w-5')
+                }
+
+                const createDots = () => {
+                    const elm = this.$refs.nav.querySelector('*')
+                    const classNames = elm.getAttribute('class')
+                    this.$refs.nav.innerHTML = ''
+
+                    for (let i = 0; i < slider.track.details.slidesLength; i++) {
+                        const div = document.createElement('div')
+                        classNames.split(' ').forEach(name => div.classList.add(name))
+                        div.addEventListener('click', () => goToSlide(i))
+                        this.$refs.nav.append(div)
                     }
 
-                    const createDots = () => {
-                        const elm = this.$refs.nav.querySelector('*')
-                        const classNames = elm.getAttribute('class')
-                        this.$refs.nav.innerHTML = ''
+                    activateDot()
+                }
 
-                        for (let i = 0; i < slider.track.details.slidesLength; i++) {
-                            const div = document.createElement('div')
-                            classNames.split(' ').forEach(name => div.classList.add(name))
-                            div.addEventListener('click', () => goToSlide(i))
-                            this.$refs.nav.append(div)
-                        }
+                if (this.$refs.nav) {
+                    slider.on('created', () => createDots())
+                    slider.on('slideChanged', () => activateDot())
+                }
+            },
 
-                        activateDot()
-                    }
+            autoplayPlugin (slider) {
+                let timer
+                let play = () => timer = setInterval(() => slider.next(), this.config.autoplay)
+                let stop = () => clearInterval(timer)
 
-                    if (this.$refs.nav) {
-                        slider.on('created', () => createDots())
-                        slider.on('slideChanged', () => activateDot())
-                    }
-                },
+                slider.on('created', () => {
+                    this.$el.addEventListener('mouseover', () => stop())
+                    this.$el.addEventListener('mouseout', () => play())
+                    play()
+                })
+                
+                slider.on('dragStarted', () => stop())
+            },
 
-                autoplayPlugin (slider) {
-                    let timer
-                    let play = () => timer = setInterval(() => slider.next(), this.config.autoplay)
-                    let stop = () => clearInterval(timer)
+            adaptiveHeightPlugin (slider) {
+                let updateHeight = () => {
+                    slider.container.style.height = slider.slides[slider.track.details.rel].offsetHeight + 'px'
+                }
 
-                    slider.on('created', () => {
-                        this.$el.addEventListener('mouseover', () => stop())
-                        this.$el.addEventListener('mouseout', () => play())
-                        play()
+                slider.on('created', updateHeight)
+                slider.on('slideChanged', updateHeight)
+            },
+
+            helpersPlugin (slider) {
+                slider.getSlide = (index) => (slider.slides[index || slider.track.details.rel])
+                slider.getSlideName = (index) => (slider.getSlide(index)?.getAttribute('data-slide-name'))
+                slider.slides.forEach(slide => slide.addEventListener('click', () => slider.emit('slideClicked')))
+            },
+
+            thumbnailsPlugin (thumbnails) {
+                const activateSlide = (i) => {
+                    thumbnails.slides.forEach(slide => slide.classList.add('opacity-40'))
+                    thumbnails.slides[i].classList.remove('opacity-40')
+                }
+
+                thumbnails.on('created', () => {
+                    activateSlide(this.slider.track.details.rel)
+                    thumbnails.slides.forEach((slide, index) => {
+                        slide.addEventListener('click', () => this.slider.moveToIdx(index))
                     })
-                    
-                    slider.on('dragStarted', () => stop())
-                },
+                })
 
-                adaptiveHeightPlugin (slider) {
-                    let updateHeight = () => {
-                        slider.container.style.height = slider.slides[slider.track.details.rel].offsetHeight + 'px'
-                    }
+                this.slider.on('animationStarted', () => {
+                    const nextIndex = this.slider.animator.targetIdx || 0
+                    activateSlide(this.slider.track.absToRel(nextIndex))
+                    thumbnails.moveToIdx(Math.min(thumbnails.track.details.maxIdx, nextIndex))
+                })
+            },
 
-                    slider.on('created', updateHeight)
-                    slider.on('slideChanged', updateHeight)
-                },
+            getPlugins () {
+                let plugins = [(slider) => this.helpersPlugin(slider)]
 
-                helpersPlugin (slider) {
-                    slider.getSlide = (index) => (slider.slides[index || slider.track.details.rel])
-                    slider.getSlideName = (index) => (slider.getSlide(index)?.getAttribute('data-slide-name'))
-                    slider.slides.forEach(slide => slide.addEventListener('click', () => slider.emit('slideClicked')))
-                },
+                if (this.config.nav) plugins.push((slider) => this.navPlugin(slider))
+                if (this.config.autoplay) plugins.push((slider) => this.autoplayPlugin(slider))
+                if (this.config.adaptiveHeight) plugins.push((slider) => this.adaptiveHeightPlugin(slider))
 
-                thumbnailsPlugin (thumbnails) {
-                    const activateSlide = (i) => {
-                        thumbnails.slides.forEach(slide => slide.classList.add('opacity-40'))
-                        thumbnails.slides[i].classList.remove('opacity-40')
-                    }
-
-                    thumbnails.on('created', () => {
-                        activateSlide(this.slider.track.details.rel)
-                        thumbnails.slides.forEach((slide, index) => {
-                            slide.addEventListener('click', () => this.slider.moveToIdx(index))
-                        })
-                    })
-
-                    this.slider.on('animationStarted', () => {
-                        const nextIndex = this.slider.animator.targetIdx || 0
-                        activateSlide(this.slider.track.absToRel(nextIndex))
-                        thumbnails.moveToIdx(Math.min(thumbnails.track.details.maxIdx, nextIndex))
-                    })
-                },
-
-                getPlugins () {
-                    let plugins = [(slider) => this.helpersPlugin(slider)]
-
-                    if (this.config.nav) plugins.push((slider) => this.navPlugin(slider))
-                    if (this.config.autoplay) plugins.push((slider) => this.autoplayPlugin(slider))
-                    if (this.config.adaptiveHeight) plugins.push((slider) => this.adaptiveHeightPlugin(slider))
-
-                    return [
-                        ...plugins,
-                        ...this.plugins,
-                    ]
-                },
-            }))
-        })
-    </script>    
+                return [
+                    ...plugins,
+                    ...this.plugins,
+                ]
+            },
+        }))
+    })
+</script>
 @endPushOnce
