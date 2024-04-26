@@ -12,7 +12,7 @@
     x-on:click.away="close()">
     <button type="button" 
         x-ref="button"
-        x-tooltip="{{ $attributes->get('tooltip') }}" 
+        x-tooltip.text="{{ $attributes->get('tooltip') }}" 
         x-bind:class="show && 'bg-slate-100'"
         x-on:click="show ? close() : open()">
         <x-icon name="{{ $attributes->get('icon') }}"/>

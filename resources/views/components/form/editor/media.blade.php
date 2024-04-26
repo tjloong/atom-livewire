@@ -29,27 +29,27 @@
             x-on:files-selected.stop="select($event.detail)">
             <div x-show="exists" class="flex flex-col divide-y w-max p-1">
                 <div class="flex items-center gap-2">
-                    <button type="button" x-tooltip="Align Image Left" 
+                    <button type="button" x-tooltip.text="Align Image Left" 
                         x-on:click="commands().updateAttributes('image', { align: 'left', float: null })">
                         <x-icon name="align-left"/>
                     </button>
 
-                    <button type="button" x-tooltip="Align Image Center" 
+                    <button type="button" x-tooltip.text="Align Image Center" 
                         x-on:click="commands().updateAttributes('image', { align: 'center', float: null })">
                         <x-icon name="align-center"/>
                     </button>
 
-                    <button type="button" x-tooltip="Align Image Right" 
+                    <button type="button" x-tooltip.text="Align Image Right" 
                         x-on:click="commands().updateAttributes('image', { align: 'right', float: null })">
                         <x-icon name="align-right"/>
                     </button>
 
-                    <button type="button" x-tooltip="Float Left" 
+                    <button type="button" x-tooltip.text="Float Left" 
                         x-on:click="commands().updateAttributes('image', { float: 'left', align: null })">
                         <x-icon name="indent"/>
                     </button>
 
-                    <button type="button" x-tooltip="Float Right" 
+                    <button type="button" x-tooltip.text="Float Right" 
                         x-on:click="commands().updateAttributes('image', { float: 'right', align: null })">
                         <x-icon name="outdent"/>
                     </button>
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="flex">
-                    <button type="button" x-tooltip="Remove Image" x-on:click="commands().deleteSelection(); close()">
+                    <button type="button" x-tooltip.text="Remove Image" x-on:click="commands().deleteSelection(); close()">
                         <x-icon name="trash"/>
                     </button>
                 </div>

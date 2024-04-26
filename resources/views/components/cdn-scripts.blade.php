@@ -28,10 +28,6 @@
             'https://cdn.jsdelivr.net/npm/@pqina/flip@1.7.7/dist/flip.min.js',
             'https://cdn.jsdelivr.net/npm/@pqina/flip@1.7.7/dist/flip.min.css',
         ],
-        'floating-ui' => [
-            'https://cdn.jsdelivr.net/npm/@floating-ui/core@1.0.0/dist/floating-ui.core.umd.min.js',
-            'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.0.0/dist/floating-ui.dom.umd.min.js',
-        ],
         'flatpickr' => [
             'https://cdn.jsdelivr.net/npm/flatpickr',
             'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
@@ -58,8 +54,6 @@
 ])
 
 @foreach (array_merge([
-    'alpinejs', 
-    'floating-ui', 
     'flatpickr', 
     'dayjs',
 ], $libs) as $name)

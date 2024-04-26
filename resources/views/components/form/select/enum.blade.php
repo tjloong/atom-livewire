@@ -8,4 +8,9 @@
     $options = $options->map(fn($case) => $case->option());
 @endphp
 
-<x-form.select :options="$options" :search="false" {{ $attributes->except(['exclude', 'enum', 'options']) }}/>
+<x-form.select 
+    :options="$options" 
+    :searchable="true"
+    {{ $attributes->except(['exclude', 'enum', 'options']) }}>
+    {{ $slot }}
+</x-form.select>

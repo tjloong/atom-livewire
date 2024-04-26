@@ -119,6 +119,7 @@ return [
         'exit' => 'Exit',
         'expire-in-day' => 'Expires in :count day|Expires in :count days',
         'expiry-date' => 'Expiry Date',
+        'export' => 'Export',
         'facebook-url' => 'Facebook URL',
         'fax' => 'Fax',
         'fbpixel-id' => 'Facebook Pixel ID',

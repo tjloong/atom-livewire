@@ -101,12 +101,7 @@
         {{ $slot }}
     </td>
 @else
-    <td
-        x-data="{ tooltip: false }"
-        x-on:mouseover="tooltip = true"
-        x-on:mouseout="tooltip = false"
-        colspan="{{ $colspan }}"
-        class="relative whitespace-nowrap align-{{ $valign }}">
+    <td colspan="{{ $colspan }}" class="relative whitespace-nowrap align-{{ $valign }}">
         <{{$element}} 
             {{ $attributes->class([
                 'py-3 px-4 inline-flex gap-3 w-full',
@@ -150,8 +145,16 @@
 
                     @if ($body)
                         <div class="grow flex flex-col text-{{ $align }}">
-                            <div class="{{ $href || $caption ? 'font-medium' : '' }}">{!! $body !!}</div>
-                            @if ($caption) <div class="text-sm text-gray-500">{!! $caption !!}</div> @endif
+                            <div
+                                x-data
+                                x-tooltip.text="{{ $tooltip }}" 
+                                class="{{ $href || $caption ? 'font-medium' : '' }}">
+                                {!! $body !!}
+                            </div>
+                            
+                            @if ($caption)
+                                <div class="text-sm text-gray-500">{!! $caption !!}</div>
+                            @endif
                         </div>
                     @endif
                 </div>
@@ -180,7 +183,7 @@
             @endif
         </{{ $element }}>
 
-        @if ($tooltip)
+        {{-- @if ($tooltip)
             <div x-show="tooltip" class="absolute z-30 bottom-full bg-black/80 text-white text-sm rounded-md px-2 py-1 {{
                 pick([
                     'left-2' => $align === 'left',
@@ -190,6 +193,6 @@
             }}">
                 {!! $tooltip !!}
             </div>
-        @endif
+        @endif --}}
     </td>
 @endif

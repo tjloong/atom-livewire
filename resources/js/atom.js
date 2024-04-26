@@ -1,3 +1,13 @@
+import './prototype/array.js'
+import './prototype/number.js'
+import './prototype/string.js'
+import './prototype/element.js'
+import './helper/function.js'
+import Ajax from './helper/ajax.js'
+import Float from './helper/float.js'
+import Dropdown from './alpine/dropdown.js'
+import Select from './alpine/select.js'
+import Tooltip from './alpine/tooltip.js'
 import { ulid } from 'ulid'
 
 // dayjs plugins
@@ -7,5 +17,12 @@ if (window.dayjs) {
 }
 
 window.ulid = ulid
+window.dd = console.log.bind(console)
+window.ajax = (url) => (new Ajax(url))
+window.float = (refEl, floatEl) => (new Float(refEl, floatEl))
 
-import './helpers.js'
+document.addEventListener('alpine:init', () => {
+    Alpine.data('select', Select)
+    Alpine.directive('dropdown', Dropdown)
+    Alpine.directive('tooltip', Tooltip)
+})

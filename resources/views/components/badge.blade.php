@@ -48,7 +48,7 @@
                 <x-icon :name="$icon" class="m-auto"/>
             </div>
 
-            <div class="pr-2" x-tooltip="{!! strlen($label) > 25 ? $label : null !!}">
+            <div class="pr-2" x-tooltip.text="{!! strlen($label) > 25 ? $label : null !!}">
                 {!! str($label)->limit(25) !!}
             </div>
         </div>

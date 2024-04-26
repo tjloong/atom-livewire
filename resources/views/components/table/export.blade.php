@@ -1,7 +1,7 @@
 @if ($slot->isEmpty())
     <div
         x-data
-        x-tooltip="Export"
+        x-tooltip.text="{{ tr('app.label.export') }}"
         wire:click.prevent="{{ $attributes->get('callback', 'export') }}"
         class="cursor-pointer p-2 rounded-full flex text-gray-500 hover:text-gray-800 hover:bg-gray-200">
         <x-icon name="export" class="m-auto"/>

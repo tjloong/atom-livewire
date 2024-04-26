@@ -6,14 +6,17 @@
     $parent = $attributes->get('parent');
 @endphp
 
-<x-form.select callback="labels"
+<x-form.select
+    callback="labels"
     :label="$label"
     :placeholder="$placeholder"
     :params="compact('type', 'children', 'parent')" 
     {{ $attributes->except(['label', 'placeholder', 'type', 'children', 'parent']) }}>
-    @isset($foot) {{ $foot }}
+    @isset($foot) 
+        <x-slot:foot>{{ $foot }}</x-slot:foot>
     @else
-        <x-slot:foot icon="add" label="app.label.new"
-            x-on:click="Livewire.emit('createLabel', {{ json_encode(compact('type')) }})"></x-slot:foot>
+        <x-slot:foot>
+            <x-button sm label="app.label.new" icon="add" x-on:click="Livewire.emit('createLabel', {{ json_encode(compact('type')) }})"/>
+        </x-slot:foot>
     @endisset
 </x-form.select>

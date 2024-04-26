@@ -1,6 +1,6 @@
 <div class="max-w-screen-md">
     <x-heading title="Storage Settings"/>
-    
+
     <x-form>
         <x-group cols="2">
             <x-form.select wire:model="settings.filesystem" label="Storage Provider" :options="[
@@ -18,6 +18,6 @@
                 <x-form.text wire:model.defer="settings.do_spaces_endpoint" label="DO Spaces Endpoint"/>
                 <x-form.text wire:model.defer="settings.do_spaces_folder" label="DO Spaces Folder"/>
             @endif
-        </x-group>        
+        </x-group>
     </x-form>
 </div>
