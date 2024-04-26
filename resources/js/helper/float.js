@@ -15,7 +15,7 @@ export default class
         this.floatEl = floatEl
     }
 
-    placement (placement) {
+    placement (placement = 'bottom') {
         this.config.placement = placement
         return this
     }
@@ -51,6 +51,7 @@ export default class
     }
 
     compute () {
+        if (!this.config.placement) this.placement()
         if (!this.config.middleware) this.middleware()
 
         const { computePosition, autoUpdate } = window.FloatingUIDOM
