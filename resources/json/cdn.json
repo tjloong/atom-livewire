@@ -43,6 +43,5 @@
         "https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.css"
     ],
 
-    "recaptcha": "https://www.google.com/recaptcha/api.js?render=",
     "sortable": "https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"
 }

@@ -21,11 +21,7 @@ class CDN
                         $attr = is_string($src) ? [] : collect($src)->except('url')->toArray();
                         $extension = (string) str($url)->afterLast('.');
 
-                        if ($name === 'recaptcha') {
-                            $sitekey = settings('recaptcha_site_key');
-                            $url = $sitekey ? $url.$sitekey : null;
-                        }
-                        else if (!str($url)->startsWith(['http', 'https'])) {
+                        if (!str($url)->startsWith(['http', 'https'])) {
                             $url = atom_path($url);
                         }
 
@@ -66,6 +62,10 @@ class CDN
     // get cdn
     public function get($name) : array
     {
+        if ($name === 'recaptcha' && ($sitekey = settings('recaptcha_site_key'))) {
+            return [['url' => '<script src="https://www.google.com/recaptcha/api.js?render='.$sitekey.'"></script>']];
+        }
+
         return $this->getLibraries()->where('name', $name)->values()->all();
     }
 }

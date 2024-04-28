@@ -21,8 +21,9 @@ class AtomBladeServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Blade::directive('cdn', function($expression) {
-            return "<?php foreach (app('cdn')->get({$expression}) as \$cdndata) { 
-                Basset::basset(get(\$cdndata, 'url'), true, get(\$cdndata, 'attr', []));
+            return "<?php foreach (app('cdn')->get({$expression}) as \$cdndata) {
+                if (str(get(\$cdndata, 'url'))->startsWith('<script')) echo get(\$cdndata, 'url');
+                else if (get(\$cdndata, 'url')) Basset::basset(get(\$cdndata, 'url'), true, get(\$cdndata, 'attr', []));
             } ?>";
         });
 
