@@ -1,7 +1,0 @@
-{
-  "resources/css/ckeditor.css": {
-    "file": "assets/ckeditor.css",
-    "src": "resources/css/ckeditor.css",
-    "isEntry": true
-  }
-}

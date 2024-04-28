@@ -5,7 +5,6 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/css/ckeditor.css', 
             ],
             refresh: true,
         }),
