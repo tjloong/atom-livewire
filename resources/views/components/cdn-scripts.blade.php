@@ -9,24 +9,9 @@
         'chartjs' => [
             'https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js',
         ],
-        'ckeditor' => [
-            '/ckeditor/ckeditor.js',
-        ],
-        'clipboard' => [
-            'https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js',
-        ],
         'colorpicker' => [
             'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css',
             'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js',
-        ],
-        'flip' => [
-            'https://cdn.jsdelivr.net/npm/@pqina/flip@1.7.7/dist/flip.min.js',
-            'https://cdn.jsdelivr.net/npm/@pqina/flip@1.7.7/dist/flip.min.css',
-        ],
-        'recaptcha' => [
-            ($sitekey = settings('recaptcha_site_key'))
-            ? 'https://www.google.com/recaptcha/api.js?render='.$sitekey
-            : null,
         ],
         'shuffle' => [
             'https://cdn.jsdelivr.net/npm/shufflejs@6.1.0/dist/shuffle.min.js',
@@ -36,9 +21,6 @@
         ],
         'social-share' => [
             'https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js',
-        ],
-        'sortable' => [
-            'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js',
         ],
     ],
     'libs' => $attributes->get('libs', []),

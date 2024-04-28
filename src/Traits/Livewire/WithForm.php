@@ -58,7 +58,7 @@ trait WithForm
     // perform form validation
     public function validateForm($attr = [], $config = []) : void
     {
-        if (data_get($this->form, 'recaptcha_token')) {
+        if (get($this->form, 'recaptcha_token') && app()->environment('production')) {
             $this->validate([
                 'form.recaptcha_token' => function($attr, $value, $fail) {
                     try {
@@ -77,12 +77,12 @@ trait WithForm
                         $this->resetRecaptchaToken();
 
                         throw_if(
-                            !data_get($res, 'success')
-                            || data_get($res, 'score') < (empty($min) ? 0.5 : $min)
+                            !get($res, 'success')
+                            || get($res, 'score') < (empty($min) ? 0.5 : $min)
                         );
                     }
                     catch (RuntimeException $e) {
-                        $e = tr('common.alert.recaptcha');
+                        $e = tr('app.alert.recaptcha');
                         $this->popup($e, 'alert', 'error');
                         $fail($e);
                     }

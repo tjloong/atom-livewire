@@ -222,7 +222,7 @@
             x-show="dropdown"
             x-transition.opacity.duration.300
             x-anchor.offset.4="$refs.anchor"
-            class="bg-white shadow-lg rounded-md border border-gray-300 overflow-hidden">
+            class="bg-white shadow-lg rounded-md border border-gray-300 overflow-hidden z-10">
             <template x-if="isSearchable">
                 <div x-on:input.stop class="rounded-t-md border bg-slate-100 py-2 px-4 flex items-center gap-3">
                     <div class="shrink-0 text-gray-400"><x-icon name="search"/></div>
