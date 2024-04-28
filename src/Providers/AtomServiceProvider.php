@@ -27,6 +27,7 @@ class AtomServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../../lang', 'atom');
 
         $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
+        $this->app->bind('cdn', fn() => new \Jiannius\Atom\Services\CDN);
 
         // custom polymorphic types
         if ($morphMap = config('atom.morph_map')) {

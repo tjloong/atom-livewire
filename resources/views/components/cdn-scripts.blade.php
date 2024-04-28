@@ -19,19 +19,10 @@
             'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css',
             'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js',
         ],
-        'dayjs' => [
-            'https://cdn.jsdelivr.net/npm/dayjs@1.11.4/dayjs.min.js',
-            'https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/utc.js',
-            'https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/relativeTime.js',
-        ],
         'flip' => [
             'https://cdn.jsdelivr.net/npm/@pqina/flip@1.7.7/dist/flip.min.js',
             'https://cdn.jsdelivr.net/npm/@pqina/flip@1.7.7/dist/flip.min.css',
         ],
-        'flatpickr' => [
-            'https://cdn.jsdelivr.net/npm/flatpickr',
-            'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
-        ],        
         'recaptcha' => [
             ($sitekey = settings('recaptcha_site_key'))
             ? 'https://www.google.com/recaptcha/api.js?render='.$sitekey
@@ -53,10 +44,7 @@
     'libs' => $attributes->get('libs', []),
 ])
 
-@foreach (array_merge([
-    'flatpickr', 
-    'dayjs',
-], $libs) as $name)
+@foreach ($libs as $name)
     @if ($cdn = collect($cdns)->get($name))
         @foreach ($cdn as $script)
             @if (str()->endsWith($script, '.css'))

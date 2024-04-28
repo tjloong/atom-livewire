@@ -21,14 +21,21 @@
 <x-analytics.fbpixel/>
 @endif
 
-<x-cdn-scripts :libs="array_filter($cdn ?? [])"/>
+@section('cdn')
+@foreach ([
+    'dayjs',
+    'flatpickr',
+    'fontawesome',
+    'sortable',
+    'alpinejs/anchor',
+    'alpinejs/collapse',
+    'alpinejs/tooltip',
+] as $cdnname)
+@cdn($cdnname)
+@endforeach
+@show
 
-@stack('assets')
-
-@basset('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js')
-@basset('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css')
-@basset('https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0/dist/floating-ui.core.umd.min.js')
-@basset('https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.3/dist/floating-ui.dom.umd.min.js')
+@stack('cdn')
 
 @section('gfont')
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,24 +48,20 @@
     'resources/js/app.js',
 ])
 
-@stack('alpine')
-
-@basset('https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.13.10/dist/cdn.min.js', true, ['defer' => true])
-@basset('https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js', true, ['defer' => true])
-
 @livewireScripts
 @livewireStyles
 
-@stack('scripts')
+@cdn('alpinejs')
 
+@stack('scripts')
 </head>
 
 <body class="font-{{ $fontTheme ?? 'sans' }} antialiased {{ $class ?? '' }}">
 @stack('noscripts')
 
 @if ($enabled = $analytics ?? false)
-    <x-analytics.gtm noscript/>
-    <x-analytics.fbpixel noscript/>
+<x-analytics.gtm noscript/>
+<x-analytics.fbpixel noscript/>
 @endif
 
 <x-notify.alert/>

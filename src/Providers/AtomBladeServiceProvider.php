@@ -14,12 +14,18 @@ class AtomBladeServiceProvider extends ServiceProvider
     {
         //
     }
-
+    
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
+        Blade::directive('cdn', function($expression) {
+            return "<?php foreach (app('cdn')->get({$expression}) as \$cdndata) { 
+                Basset::basset(get(\$cdndata, 'url'), true, get(\$cdndata, 'attr', []));
+            } ?>";
+        });
+
         Blade::if('route', function() {
             return current_route(func_get_args());
         });

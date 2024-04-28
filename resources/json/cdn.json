@@ -1,0 +1,48 @@
+{
+    "alpinejs": {
+        "url": "https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js",
+        "defer": true
+    },
+
+    "alpinejs/mask": "https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.13.10/dist/cdn.min.js",
+    "alpinejs/sort": "https://cdn.jsdelivr.net/npm/@alpinejs/sort@3.13.10/dist/cdn.min.js",
+    "alpinejs/anchor": "https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.13.10/dist/cdn.min.js",
+    "alpinejs/collapse": "https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.13.10/dist/cdn.min.js",
+    "alpinejs/intersect": "https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.13.10/dist/cdn.min.js",
+
+    "alpinejs/tooltip": [
+        "https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-tooltip@2.0.0/dist/cdn.min.js",
+        "https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.min.css"
+    ],
+
+    "ckeditor": "resources/ckeditor/build/ckeditor.js",
+
+    "dayjs": [
+        "https://cdn.jsdelivr.net/npm/dayjs@1.11.4/dayjs.min.js",
+        "https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/utc.js",
+        "https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/relativeTime.js"
+    ],
+
+    "flatpickr": [
+        "https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js",
+        "https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css"
+    ],
+
+    "floating-ui": [
+        "https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0/dist/floating-ui.core.umd.min.js",
+        "https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.3/dist/floating-ui.dom.umd.min.js"
+    ],
+
+    "fontawesome": [
+        "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js",
+        "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css"
+    ],
+
+    "keen-slider": [
+        "https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.js",
+        "https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.css"
+    ],
+
+    "recaptcha": "https://www.google.com/recaptcha/api.js?render=",
+    "sortable": "https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"
+}
