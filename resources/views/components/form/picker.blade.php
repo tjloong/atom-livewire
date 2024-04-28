@@ -15,10 +15,7 @@
                 if (this.clearOnOpen) this.value = null
 
                 this.show = true
-                this.$nextTick(() => {
-                    floatDropdown(this.$refs.anchor, this.$refs.dd)
-                    this.$refs.search && this.$refs.search.focus()
-                })
+                this.$nextTick(() => this.$refs.search?.focus())
             },
             close () {
                 this.show = false
@@ -40,7 +37,6 @@
             },
         }"
         x-on:click.away="close()"
-        class="relative"
         {{ $attributes->wire('page') }}
         {{ $attributes->wire('search') }}
     >
@@ -86,9 +82,10 @@
         </div>
 
         <div 
-            x-ref="dd"
+            x-ref="dropdown"
             x-show="show"
-            x-transition.opacity
+            x-anchor.offset.4="$refs.anchor"
+            x-transition.opacity.duration.300
             class="absolute z-20 bg-white shadow-lg rounded-md border border-gray-300 overflow-hidden grid divide-y w-full min-w-[300px]"
         >
             <div class="py-2 px-4 flex items-center gap-2 bg-gray-100">

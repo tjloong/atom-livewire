@@ -1,25 +1,25 @@
 <div class="group">
-    <button type="button" x-tooltip.text="Bold" x-on:click="commands().toggleBold()">
+    <button type="button" x-tooltip.raw="Bold" x-on:click="commands().toggleBold()">
         <x-icon name="bold"/>
     </button>
     
-    <button type="button" x-tooltip.text="Italic" x-on:click="commands().toggleItalic()">
+    <button type="button" x-tooltip.raw="Italic" x-on:click="commands().toggleItalic()">
         <x-icon name="italic"/>
     </button>
     
-    <button type="button" x-tooltip.text="Underline" x-on:click="commands().toggleUnderline()">
+    <button type="button" x-tooltip.raw="Underline" x-on:click="commands().toggleUnderline()">
         <x-icon name="underline"/>
     </button>
     
-    <button type="button" x-tooltip.text="Strikethrough" x-on:click="commands().toggleStrike()">
+    <button type="button" x-tooltip.raw="Strikethrough" x-on:click="commands().toggleStrike()">
         <x-icon name="strikethrough"/>
     </button>
     
-    <button type="button" x-tooltip.text="Subscript" x-on:click="commands().toggleSubscript()">
+    <button type="button" x-tooltip.raw="Subscript" x-on:click="commands().toggleSubscript()">
         <x-icon name="subscript"/>
     </button>
     
-    <button type="button" x-tooltip.text="Superscript" x-on:click="commands().toggleSuperscript()">
+    <button type="button" x-tooltip.raw="Superscript" x-on:click="commands().toggleSuperscript()">
         <x-icon name="superscript"/>
     </button>
 
@@ -54,19 +54,19 @@
     </x-form.editor.dropdown>
 
     <x-form.editor.dropdown icon="align-left" tooltip="Text Align">
-        <button type="button" x-tooltip.text="Align Left" x-on:click="commands().setTextAlign('left')">
+        <button type="button" x-tooltip.raw="Align Left" x-on:click="commands().setTextAlign('left')">
             <x-icon name="align-left"/>
         </button>
 
-        <button type="button" x-tooltip.text="Align Center" x-on:click="commands().setTextAlign('center')">
+        <button type="button" x-tooltip.raw="Align Center" x-on:click="commands().setTextAlign('center')">
             <x-icon name="align-center"/>
         </button>
 
-        <button type="button" x-tooltip.text="Align Right" x-on:click="commands().setTextAlign('right')">
+        <button type="button" x-tooltip.raw="Align Right" x-on:click="commands().setTextAlign('right')">
             <x-icon name="align-right"/>
         </button>
 
-        <button type="button" x-tooltip.text="Justify" x-on:click="commands().setTextAlign('justify')">
+        <button type="button" x-tooltip.raw="Justify" x-on:click="commands().setTextAlign('justify')">
             <x-icon name="align-justify"/>
         </button>
     </x-form.editor.dropdown>

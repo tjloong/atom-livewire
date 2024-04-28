@@ -1,22 +1,19 @@
 @php
     $icon = $attributes->get('icon');
     $label = $attributes->get('label');
-    $placement = $attributes->get('placement', 'bottom');
+    $placement = $attributes->get('placement');
+    $directive = $placement ? 'x-anchor.'.$placement : 'x-anchor';
 @endphp
 
-<div x-cloak
-    x-data="{
-        show: false,
-        open () {
-            this.show = true
-            this.$nextTick(() => floatDropdown(this.$refs.anchor, this.$refs.dropdown, @js($placement)))
-        },
-        close () {
-            this.show = false
-        },
-    }"
+<div 
+    x-cloak
+    x-data="{ open: false }"
     {{ $attributes->except(['icon', 'label', 'placement']) }}>
-    <div x-ref="anchor" x-on:click="open()" x-on:click.away="close()" class="inline-block cursor-pointer">
+    <div 
+        x-ref="anchor" 
+        x-on:click.atop="open = true" 
+        x-on:click.away="open = false"
+        class="inline-block cursor-pointer">
         @if (isset($anchor)) {{ $anchor }}
         @else
             <div class="flex items-center gap-2">
@@ -27,10 +24,12 @@
         @endif
     </div>
 
-    <div x-ref="dropdown"
-        x-show="show"
-        x-transition
-        class="absolute z-20 bg-white border rounded-md shadow-lg max-w-md min-w-[250px] overflow-hidden">
+    <div 
+        x-ref="dropdown"
+        x-show="open"
+        {{ $directive }}.offset.4="$refs.anchor"
+        x-transition.opacity.duration.300
+        class="bg-white border rounded-md shadow-lg max-w-md min-w-[250px] overflow-hidden">
         {{ $slot }}
     </div>
 </div>

@@ -38,23 +38,23 @@
             </div>
 
             <div x-show="exists && !mode" class="flex items-center flex-wrap p-1 w-max">
-                <button type="button" x-tooltip.text="Add Column" x-on:click="mode = 'column'">
+                <button type="button" x-tooltip.raw="Add Column" x-on:click="mode = 'column'">
                     <x-icon name="up-down"/>
                 </button>
 
-                <button type="button" x-tooltip.text="Add Row" x-on:click="mode = 'row'">
+                <button type="button" x-tooltip.raw="Add Row" x-on:click="mode = 'row'">
                     <x-icon name="left-right"/>
                 </button>
 
-                <button type="button" x-tooltip.text="Merge Cells" x-on:click="commands().mergeCells(); close()">
+                <button type="button" x-tooltip.raw="Merge Cells" x-on:click="commands().mergeCells(); close()">
                     <x-icon name="object-group"/>
                 </button>
 
-                <button type="button" x-tooltip.text="Split Cell" x-on:click="commands().splitCell(); close()">
+                <button type="button" x-tooltip.raw="Split Cell" x-on:click="commands().splitCell(); close()">
                     <x-icon name="arrows-left-right-to-line"/>
                 </button>
 
-                <button type="button" x-tooltip.text="Delete Table" x-on:click="commands().deleteTable(); close()">
+                <button type="button" x-tooltip.raw="Delete Table" x-on:click="commands().deleteTable(); close()">
                     <x-icon name="trash"/>
                 </button>
             </div>

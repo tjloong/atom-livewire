@@ -147,7 +147,7 @@
                         <div class="grow flex flex-col text-{{ $align }}">
                             <div
                                 x-data
-                                x-tooltip.text="{{ $tooltip }}" 
+                                x-tooltip.raw="{{ $tooltip }}" 
                                 class="{{ $href || $caption ? 'font-medium' : '' }}">
                                 {!! $body !!}
                             </div>

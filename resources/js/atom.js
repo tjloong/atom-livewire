@@ -4,9 +4,7 @@ import './prototype/string.js'
 import './prototype/element.js'
 import './helper/function.js'
 import Ajax from './helper/ajax.js'
-import Float from './helper/float.js'
-import Dropdown from './alpine/dropdown.js'
-import Tooltip from './alpine/tooltip.js'
+import Clipboard from './alpine/magic/clipboard.js'
 import { ulid } from 'ulid'
 
 // dayjs plugins
@@ -18,9 +16,7 @@ if (window.dayjs) {
 window.ulid = ulid
 window.dd = console.log.bind(console)
 window.ajax = (url) => (new Ajax(url))
-window.float = (refEl, floatEl) => (new Float(refEl, floatEl))
 
 document.addEventListener('alpine:init', () => {
-    Alpine.directive('dropdown', Dropdown)
-    Alpine.directive('tooltip', Tooltip)
+    Alpine.magic('clipboard', Clipboard)
 })

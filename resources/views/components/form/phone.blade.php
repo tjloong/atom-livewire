@@ -8,15 +8,17 @@
     <div
         x-cloak
         x-data="{
-            wirevalue: @entangle($attributes->wire('model')),
+            wire: @entangle($attributes->wire('model')),
             input: null,
             focus: false,
             search: null,
+            dropdown: false,
             option: null,
             options: [],
-            dropdown: false,
             code: @js($code),
+            endpoint: @js(route('__select')),
             number: null,
+
             get filtered () {
                 return this.options.filter(opt => (
                     !this.search
@@ -24,15 +26,31 @@
                     || opt.label.toLowerCase().includes(this.search.toLowerCase())
                 ))
             },
+
+            init () {
+                ajax(this.endpoint).post({ callback: 'dial_codes' }).then(data => {
+                    this.options = [...data]
+
+                    this.$nextTick(() => {
+                        if (this.wire) this.initInput(this.wire)
+                        else if (this.code) {
+                            const find = this.options.find(opt => (opt.value === this.code))
+                            if (find) this.select(find)
+                        }
+                    })
+                })
+    
+                this.$watch('code', () => this.format())
+                this.$watch('number', () => this.format())
+                this.$watch('wire', wire => this.initInput(wire))
+            },
+
             format () {
                 const val = `${this.code}${this.number}`
                 this.input = val.length ? val : null
                 this.$dispatch('input', this.input)
             },
-            open () {
-                this.dropdown = true
-                this.$nextTick(() => $(this.$refs.search).find('input').focus())
-            },
+            
             initInput (val) {
                 const find = this.options.find(opt => (val.startsWith(opt.value)))
 
@@ -41,30 +59,34 @@
                     this.number = val.replace(this.code, '').replace('+', '')
                 }
             },
+            
             select (opt) {
                 if (!opt) return
                 this.option = { ...opt }
                 this.code = opt.value
+                this.close()
+            },
+
+            open () {
+                this.focus = true
+                this.dropdown = true
+                this.$nextTick(() => {
+                    this.$refs.dropdown.style.minWidth = this.$root.offsetWidth+'px'
+                    this.$refs.search.focus()
+                })
+            },
+
+            close () {
                 this.search = null
+                this.focus = false
+                this.dropdown = false
             },
         }"
         x-modelable="input"
-        x-init="$nextTick(() => {
-            axios.post(@js(route('__select.get')), { callback: 'dial_codes' }).then(({ data }) => {
-                options = [...data]
-
-                if (wirevalue) initInput(wirevalue)
-                else if (code) {
-                    const find = options.find(opt => (opt.value === code))
-                    if (find) select(find)
-                }
-            })
-
-            $watch('code', () => format())
-            $watch('number', () => format())
-            $watch('wirevalue', wirevalue => initInput(wirevalue))
-        })"
-        class="relative"
+        x-on:focus="$nextTick(() => $refs.tel.focus())"
+        x-on:click.away="close()"
+        tabindex="0"
+        class="focus:outline-none active:outline-none"
         {{ $attributes->except($except) }}>
         <div 
             x-ref="anchor"
@@ -72,7 +94,6 @@
             class="form-input flex items-center gap-3">
             <div 
                 x-on:click="open()"
-                x-on:click.away="dropdown = false"
                 class="cursor-pointer flex items-center gap-2">
                 <div class="w-4 h-4 flex">
                     <img x-bind:src="option?.flag" x-show="option" class="w-full h-full object-contain">
@@ -85,20 +106,27 @@
                 type="tel" 
                 x-ref="tel"
                 x-model="number"
+                x-on:focus="focus = true"
+                x-on:blur="focus = false"
                 x-on:input.stop
                 class="w-full appearance-none border-0 p-0 focus:ring-0">
         </div>
 
         <div 
             x-ref="dropdown"
-            x-show="dropdown" 
-            x-transition.opacity
-            class="absolute z-10 top-full w-max bg-white border shadow mt-1 rounded-md overflow-hidden">
-            <div x-ref="search" class="p-3 border-b">
-                <x-form.text icon="search"
-                    x-model="search" 
+            x-show="dropdown"
+            x-anchor.offset.4="$refs.anchor"
+            x-transition.opacity.duration.300
+            class="bg-white border border-gray-300 shadow-lg rounded-md overflow-hidden">
+            <div x-on:input.stop class="rounded-t-md border bg-slate-100 py-2 px-4 flex items-center gap-3">
+                <div class="shrink-0 text-gray-400"><x-icon name="search"/></div>
+
+                <input type="text"
+                    x-ref="search"
+                    x-model.debounce.100ms="search"
                     x-on:keydown.enter.prevent="filtered.length && select(filtered[0])"
-                    placeholder="app.label.search"/>
+                    placeholder="{{ tr('app.label.search') }}"
+                    class="grow transparent w-full">
             </div>
 
             <div class="max-h-[250px] overflow-auto">

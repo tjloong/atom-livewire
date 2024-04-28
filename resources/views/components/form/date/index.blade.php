@@ -2,15 +2,17 @@
     $time = $attributes->get('time', false);
     $range = $attributes->get('range', false);
     $placeholder = $attributes->get('placeholder', collect([
-        'common.label.select-date' => !$time && !$range,
-        'common.label.select-datetime' => $time && !$range,
-        'common.label.select-date-range' => $range,
+        'app.label.select-date' => !$time && !$range,
+        'app.label.select-datetime' => $time && !$range,
+        'app.label.select-date-range' => $range,
     ])->filter()->keys()->first());
 @endphp
 
 <x-form.field {{ $attributes }}>
 @if ($range)
-    <div wire:ignore x-cloak
+    <div 
+        wire:ignore 
+        x-cloak
         x-data="{
             range: @entangle($attributes->wire('model')),
             show: false,
@@ -45,12 +47,7 @@
             }
         }"
         x-modelable="range"
-        x-init="() => {
-            $watch('range', () => show = false)
-            $watch('show', () => {
-                if (show) $nextTick(() => floatDropdown($refs.anchor, $refs.dropdown))
-            })
-        }"
+        x-init="$watch('range', () => show = false)"
         x-on:click.away="show = false"
         x-bind:class="show && 'active'"
         {{ $attributes
@@ -85,7 +82,8 @@
         <div 
             x-ref="dropdown"
             x-show="show"
-            x-transition
+            x-anchor.offset.4="$refs.anchor"
+            x-transition.opacity.duration.300
             class="absolute left-0 top-full mt-px z-20 w-max bg-white rounded-md shadow-lg border">
             <div class="flex flex-col divide-y">
                 @foreach ([
@@ -112,7 +110,9 @@
         </div>
     </div>
 @elseif ($time)
-    <div wire:ignore x-cloak
+    <div 
+        wire:ignore 
+        x-cloak
         x-data="{
             show: false,
             datetime: @entangle($attributes->wire('model')),
@@ -122,9 +122,6 @@
             },
         }"
         x-modelable="datetime"
-        x-init="$watch('show', () => {
-            if (show) $nextTick(() => floatDropdown($refs.anchor, $refs.dropdown))
-        })"
         x-on:click.away="show = false"
         x-on:datetime-updated="(e) => {
             let date = e.detail.date
@@ -156,7 +153,8 @@
         <div 
             x-ref="dropdown"
             x-show="show"
-            x-transition
+            x-anchor.offset.4="$refs.anchor"
+            x-transition.opacity.duration.300
             class="absolute left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
             <div
                 x-data="{
@@ -185,15 +183,14 @@
         </div>
     </div>
 @else
-    <div wire:ignore x-cloak
+    <div 
+        wire:ignore 
+        x-cloak
         x-data="{
             date: @entangle($attributes->wire('model')),
             show: false,
         }"
         x-modelable="date"
-        x-init="$watch('show', () => {
-            if (show) $nextTick(() => floatDropdown($refs.anchor, $refs.dropdown))
-        })"
         x-on:click.away="show = false"
         x-bind:class="show && 'active'"
         {{ $attributes->merge(['class' => 'form-input w-full relative']) }}>
@@ -217,8 +214,9 @@
         <div 
             x-ref="dropdown"
             x-show="show"
+            x-anchor.offset.4="$refs.anchor"
             x-on:input.stop="show = false"
-            x-transition
+            x-transition.opacity.duration.300
             class="absolute left-0 top-full mt-px z-10 w-max bg-white rounded-md shadow-lg border">
             <x-form.date.picker x-model="date"/>
         </div>

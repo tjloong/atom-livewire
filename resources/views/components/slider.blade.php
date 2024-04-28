@@ -1,82 +1,21 @@
+@php
+    $config = [
+        'nav' => $attributes->get('nav', true),
+        'loop' => $attributes->get('loop', true),
+        'arrows' => $attributes->get('arrows', true),
+        'autoplay' => $attributes->get('autoplay', 2500),
+        'adaptiveHeight' => $attributes->get('adaptiveHeight', false),
+    ];
+
+    $except = ['nav', 'loop', 'arrows', 'autoplay', 'adaptiveHeight'];
+@endphp
+
 <div {{ $attributes }}>
-    <div x-cloak {{ $attributes->merge(['x-data' => 'slider']) }}>
-        <div class="relative">
-            @isset($slides)
-                <div x-ref="slider" {{ $slides->attributes->merge(['class' => 'keen-slider']) }}>
-                    {{ $slides }}
-                </div>
-            @else
-                <div x-ref="slider" class="keen-slider">
-                    {{ $slot }}
-                </div>
-            @endisset
-
-            <template x-if="config.arrows">
-                <div x-ref="arrows" class="keen-slider__arrows">
-                    <button type="button" x-on:click="slider.prev()" class="absolute top-0 left-2 bottom-0 flex items-center justify-center">
-                        @isset($prev) {{ $prev }}
-                        @else
-                            <div class="w-10 h-10 rounded-full bg-gray-100/50 text-gray-600 flex items-center justify-center">
-                                <x-icon name="arrow-left"/>
-                            </div>
-                        @endisset
-                    </button>
-
-                    <button type="button" x-on:click="slider.next()" class="absolute top-0 right-2 bottom-0 flex items-center justify-center">
-                        @isset($next) {{ $next }}
-                        @else
-                            <div class="w-10 h-10 rounded-full bg-gray-100/50 text-gray-600 flex items-center justify-center">
-                                <x-icon name="arrow-right"/>
-                            </div>
-                        @endisset
-                    </button>
-                </div>
-            </template>
-
-            <template x-if="config.nav">
-                <div x-ref="nav" class="keen-slider__nav absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 py-3">
-                    @isset($dot) {{ $dot }}
-                    @else <div class="w-2 h-2 bg-theme rounded-full cursor-pointer"></div>
-                    @endisset
-                </div>
-            </template>
-        </div>
-
-        @isset($thumbnails)
-            <div class="mt-2 relative">
-                <div x-ref="thumbnails" {{ $thumbnails->attributes->merge(['class' => 'keen-slider']) }}>
-                    {{ $thumbnails }}
-                </div>
-
-                <button type="button" x-on:click="slider.prev()" class="absolute bg-white/80 top-0 left-0 bottom-0 w-5 flex items-center justify-center">
-                    <x-icon name="chevron-left" class="text-gray-500"/>
-                </button>
-
-                <button type="button" x-on:click="slider.next()" class="absolute bg-white/80 top-0 right-0 bottom-0 w-5 flex items-center justify-center">
-                    <x-icon name="chevron-right" class="text-gray-500"/>
-                </button>
-            </div>
-        @endisset
-    </div>
-</div>
-
-@push('assets')
-@basset('https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.js')
-@basset('https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.css')
-@endpush
-
-@pushOnce('scripts')
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('slider', (config = {}, plugins = []) => ({
-            config: {
-                nav: true,
-                arrows: true,
-                autoplay: 2500,
-                adaptiveHeight: false,
-                ...config,
-            },
-            plugins,
+    <div
+        wire:ignore
+        x-cloak
+        x-data="{
+            config: @js($config),
             slider: null,
             thumbnails: null,
 
@@ -179,6 +118,12 @@
                 slider.slides.forEach(slide => slide.addEventListener('click', () => slider.emit('slideClicked')))
             },
 
+            eventsPlugin (slider) {
+                slider.on('created', (slider) => this.$dispatch('slider-created', slider))
+                slider.on('slideClicked', (slider) => this.$dispatch('slide-clicked', slider))
+                slider.on('slideChanged', (slider) => this.$dispatch('slide-changed', slider))
+            },
+
             thumbnailsPlugin (thumbnails) {
                 const activateSlide = (i) => {
                     thumbnails.slides.forEach(slide => slide.classList.add('opacity-40'))
@@ -200,18 +145,75 @@
             },
 
             getPlugins () {
-                let plugins = [(slider) => this.helpersPlugin(slider)]
+                let plugins = [
+                    (slider) => this.helpersPlugin(slider),
+                    (slider) => this.eventsPlugin(slider),
+                ]
 
                 if (this.config.nav) plugins.push((slider) => this.navPlugin(slider))
                 if (this.config.autoplay) plugins.push((slider) => this.autoplayPlugin(slider))
                 if (this.config.adaptiveHeight) plugins.push((slider) => this.adaptiveHeightPlugin(slider))
 
-                return [
-                    ...plugins,
-                    ...this.plugins,
-                ]
+                return plugins
             },
-        }))
-    })
-</script>
-@endPushOnce
+        }"
+        {{ $attributes->except($except) }}>
+        <div class="relative">
+            @isset($slides)
+                <div x-ref="slider" {{ $slides->attributes->merge(['class' => 'keen-slider']) }}>
+                    {{ $slides }}
+                </div>
+            @else
+                <div x-ref="slider" class="keen-slider">
+                    {{ $slot }}
+                </div>
+            @endisset
+
+            <template x-if="config.arrows">
+                <div x-ref="arrows" class="keen-slider__arrows">
+                    <button type="button" x-on:click="slider.prev()" class="absolute top-0 left-2 bottom-0 flex items-center justify-center">
+                        @isset($prev) {{ $prev }}
+                        @else
+                            <div class="w-10 h-10 rounded-full bg-gray-100/50 text-gray-600 flex items-center justify-center">
+                                <x-icon name="arrow-left"/>
+                            </div>
+                        @endisset
+                    </button>
+
+                    <button type="button" x-on:click="slider.next()" class="absolute top-0 right-2 bottom-0 flex items-center justify-center">
+                        @isset($next) {{ $next }}
+                        @else
+                            <div class="w-10 h-10 rounded-full bg-gray-100/50 text-gray-600 flex items-center justify-center">
+                                <x-icon name="arrow-right"/>
+                            </div>
+                        @endisset
+                    </button>
+                </div>
+            </template>
+
+            <template x-if="config.nav">
+                <div x-ref="nav" class="keen-slider__nav absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 py-3">
+                    @isset($dot) {{ $dot }}
+                    @else <div class="w-2 h-2 bg-theme rounded-full cursor-pointer"></div>
+                    @endisset
+                </div>
+            </template>
+        </div>
+
+        @isset($thumbnails)
+            <div class="mt-2 relative">
+                <div x-ref="thumbnails" {{ $thumbnails->attributes->merge(['class' => 'keen-slider']) }}>
+                    {{ $thumbnails }}
+                </div>
+
+                <button type="button" x-on:click="slider.prev()" class="absolute bg-white/80 top-0 left-0 bottom-0 w-5 flex items-center justify-center">
+                    <x-icon name="chevron-left" class="text-gray-500"/>
+                </button>
+
+                <button type="button" x-on:click="slider.next()" class="absolute bg-white/80 top-0 right-0 bottom-0 w-5 flex items-center justify-center">
+                    <x-icon name="chevron-right" class="text-gray-500"/>
+                </button>
+            </div>
+        @endisset
+    </div>
+</div>

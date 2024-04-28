@@ -9,17 +9,29 @@
         orderBy: @entangle('tableOrderBy'),
         orderDesc: @entangle('tableOrderDesc'),
         checkboxes: @entangle('tableCheckboxes').defer,
+
+        createSortable () {
+            if (!this.sortable) return
+
+            let tbody = this.$el.querySelector('tbody')
+            if (!tbody) return
+
+            new Sortable(tbody, {
+                onSort: () => {
+                    const rows = Array.from(tbody.querySelectorAll(':scope > tr'))
+                    const values = rows.map(tr => (tr.getAttribute('data-sortable-id')))
+                    this.$dispatch('sorted', values)
+                },
+            })
+        },
+
         toggleCheckbox (data) {
             const index = this.checkboxes.indexOf(data)
             if (index > -1) this.checkboxes.splice(index, 1)
             else this.checkboxes.push(data)
         },
     }"
-    x-init="sortable && new Sortable($el.querySelector('tbody'), { onSort: () => {
-        const rows = Array.from($el.querySelectorAll('tbody > tr'))
-        const values = rows.map(tr => (tr.getAttribute('data-sortable-id')))
-        $dispatch('sorted', values)
-    }})"
+    x-init="createSortable()"
     class="relative flex flex-col divide-y bg-white border shadow rounded-lg"
     {{ $attributes->wire('sorted') }}
     {{ $attributes->wire('key') }}>

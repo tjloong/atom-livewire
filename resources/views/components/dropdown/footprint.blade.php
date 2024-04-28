@@ -17,22 +17,21 @@
         ->values();
 @endphp
 
-<div x-cloak
-    x-data="{ show: false }"
-    x-init="$watch('show', () => {
-        $nextTick(() => floatDropdown($refs.anchor, $refs.dropdown, @js($placement)))
-    })"
-    x-on:click.away="show = false"
-    class="relative">
+<div 
+    x-cloak
+    x-data="{ open: false }"
+    x-on:click.away="open = false">
     <div x-ref="anchor" x-on:click.stop="show = true">
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else <x-button sm icon="shoe-prints"/>
         @endif
     </div>
 
-    <div x-ref="dropdown"
-        x-show="show"
-        x-transition
+    <div 
+        x-ref="dropdown"
+        x-show="open"
+        x-anchor.{{ $placement }}="$refs.anchor"
+        x-transition.opacity.duration.300
         class="absolute right-0 z-20 border border-gray-300 bg-white rounded-md shadow-lg w-max">
         <div class="flex flex-col divide-y">
             <div class="text-sm font-medium text-gray-500 flex items-center gap-2 py-2 px-4">

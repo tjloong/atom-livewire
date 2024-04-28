@@ -16,7 +16,7 @@
             </div>
         @else
             <div
-                x-tooltip.text="{{ tr('app.label.filter') }}"
+                x-tooltip.raw="{{ tr('app.label.filter') }}"
                 x-on:click.prevent="show = true"
                 class="cursor-pointer p-2 rounded-full flex text-gray-500 hover:text-gray-800 hover:bg-gray-200">
                 <x-icon name="sliders" class="m-auto"/>

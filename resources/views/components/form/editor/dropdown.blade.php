@@ -1,24 +1,23 @@
-<div class="relative" 
-    x-data="{
-        show: false,
-        open () {
-            this.show = true
-            this.$nextTick(() => floatPositioning(this.$refs.button, this.$refs.dd))
-        },
-        close () {
-            this.show = false
-        },
-    }"
-    x-on:click.away="close()">
+@php
+    $placement = $attributes->get('placement');
+    $directive = $placement ? 'x-anchor.'.$placement : 'x-anchor';
+@endphp
+
+<div x-cloak x-data="{ open: false }" x-on:click.away="open = false">
     <button type="button" 
         x-ref="button"
-        x-tooltip.text="{{ $attributes->get('tooltip') }}" 
+        x-tooltip.raw="{{ $attributes->get('tooltip') }}" 
         x-bind:class="show && 'bg-slate-100'"
         x-on:click="show ? close() : open()">
         <x-icon name="{{ $attributes->get('icon') }}"/>
     </button>
     
-    <div x-ref="dd" x-show="show" x-transition class="dropdown">
+    <div
+        x-ref="dropdown"
+        x-show="open"
+        {{ $directive }}="$refs.button"
+        x-transition.opacity
+        class="dropdown">
         {{ $slot }}
     </div>
 </div>

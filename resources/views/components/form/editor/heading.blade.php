@@ -3,13 +3,13 @@
         <div class="flex flex-col items-center justify-center p-2">
             @foreach ([1, 2, 3, 4] as $n)
                 <div class="cursor-pointer p-1 font-bold" 
-                    x-tooltip.text="Heading {{ $n }}"
+                    x-tooltip.raw="Heading {{ $n }}"
                     x-on:click="commands().toggleHeading({ level: @js($n) }); close()">
                     H{{ $n }}
                 </div>
             @endforeach
 
-            <div class="cursor-pointer p-1" x-tooltip.text="Paragraph" x-on:click="commands().setParagraph(); close()">
+            <div class="cursor-pointer p-1" x-tooltip.raw="Paragraph" x-on:click="commands().setParagraph(); close()">
                 <x-icon name="paragraph"/>
             </div>
         </div>

@@ -70,34 +70,3 @@ window.deviceType = () => {
 window.random = () => {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
-
-// floating element positioning
-window.floatPositioning = (refEl, floatEl, config = { placement: 'bottom' }) => {
-    const { computePosition, flip, shift, offset, autoPlacement } = window.FloatingUIDOM
-
-    const middleware = []
-    if (config.offset) middleware.push(offset(config.offset))
-    if (config.flip) middleware.push(flip())
-    if (config.shift) middleware.push(shift(config.shift))
-    if (!config.placement) middleware.push(autoPlacement())
-
-    const options = {}
-    if (config.placement) options.placement = config.placement
-    if (middleware.length) options.middleware = middleware
-
-    computePosition(refEl, floatEl, options).then(({x, y}) => {
-        Object.assign(floatEl.style, { left: `${x}px`, top: `${y}px` })
-    })
-}
-
-// floating for dropdown
-window.floatDropdown = (anchor, dropdown, placement = 'bottom') => {
-    const { computePosition, flip, shift, offset } = window.FloatingUIDOM
-    
-    computePosition(anchor, dropdown, {
-        placement,
-        middleware: [flip(), shift({ padding: 10 }), offset(4)],
-    }).then(({x, y}) => {
-        Object.assign(dropdown.style, { left: `${x}px`, top: `${y}px` })
-    })
-}

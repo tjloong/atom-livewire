@@ -1,21 +1,21 @@
 <div class="p-1">
     <div class="bg-slate-100 rounded-md flex items-center justify-end">
         <button type="button" 
-            x-tooltip.text="Undo" 
+            x-tooltip.raw="Undo" 
             x-show="can().undo()" 
             x-on:click="commands().undo()">
             <x-icon name="rotate-left"/>
         </button>
     
         <button type="button" 
-            x-tooltip.text="Redo" 
+            x-tooltip.raw="Redo" 
             x-show="can().redo()" 
             x-on:click="commands().redo()">
             <x-icon name="rotate-right"/>
         </button>
 
         <button type="button"
-            x-tooltip.text="Remove Formatting"
+            x-tooltip.raw="Remove Formatting"
             x-on:click="
                 commands().unsetAllMarks();
                 commands().clearNodes();

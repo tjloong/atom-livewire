@@ -10,7 +10,7 @@
 
 <x-form.select 
     :options="$options" 
-    :searchable="true"
+    :searchable="false"
     {{ $attributes->except(['exclude', 'enum', 'options']) }}>
     {{ $slot }}
 </x-form.select>

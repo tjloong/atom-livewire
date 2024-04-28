@@ -55,14 +55,14 @@
             },
             focus () {
                 this.$refs.text.focus()
-                floatDropdown(this.$refs.anchor, this.$refs.dd)
             },
         }"
         x-modelable="value"
         x-on:click="open"
         x-on:click.away="close"
         class="relative">
-        <div x-ref="anchor"
+        <div 
+            x-ref="anchor"
             x-bind:class="show && 'active'"
             class="form-input w-full flex gap-3">
             @if ($icon = $attributes->get('icon'))
@@ -96,9 +96,11 @@
             </div>
         </div>
 
-        <div x-ref="dd"
+        <div 
+            x-ref="dropdown"
             x-show="show"
-            x-transition
+            x-anchor.offset.4="$refs.anchor"
+            x-transition.opacity.duration.300
             class="absolute z-20 min-w-full">
             <div
                 x-show="!filteredOptions.length && text && text.length" 

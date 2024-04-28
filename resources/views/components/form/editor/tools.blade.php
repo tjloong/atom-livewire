@@ -52,11 +52,11 @@
         </div>
     </x-form.editor.dropdown>
     
-    <button type="button" x-tooltip.text="Blockquote" x-on:click="commands().toggleBlockquote()">
+    <button type="button" x-tooltip.raw="Blockquote" x-on:click="commands().toggleBlockquote()">
         <x-icon name="quote-left"/>
     </button>
 
-    <button type="button" x-tooltip.text="Horizontal Rule" x-on:click="commands().setHorizontalRule()">
+    <button type="button" x-tooltip.raw="Horizontal Rule" x-on:click="commands().setHorizontalRule()">
         <x-icon name="minus"/>
     </button>
 </div>
