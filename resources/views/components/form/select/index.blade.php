@@ -12,7 +12,7 @@
         'value' => $opt, 'label' => $opt,
     ] : $opt)->toArray();
 
-    $except = ['options', 'icon', 'multiple', 'callback', 'params', 'searchable', 'placeholder'];
+    $except = ['options', 'icon', 'multiple', 'callback', 'params', 'searchable', 'placeholder', 'wire:model', 'wire:model.defer'];
 @endphp
 
 <x-form.field {{ $attributes }}>

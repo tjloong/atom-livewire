@@ -19,8 +19,8 @@
 
 <div 
     x-cloak
-    x-data="{ open: false }"
-    x-on:click.away="open = false">
+    x-data="{ show: false }"
+    x-on:click.away="show = false">
     <div x-ref="anchor" x-on:click.stop="show = true">
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else <x-button sm icon="shoe-prints"/>
@@ -29,10 +29,10 @@
 
     <div 
         x-ref="dropdown"
-        x-show="open"
-        x-anchor.{{ $placement }}="$refs.anchor"
+        x-show="show"
+        x-anchor.{{ $placement }}.offset.4="$refs.anchor"
         x-transition.opacity.duration.300
-        class="absolute right-0 z-20 border border-gray-300 bg-white rounded-md shadow-lg w-max">
+        class="z-20 border border-gray-300 bg-white rounded-md shadow-lg w-max">
         <div class="flex flex-col divide-y">
             <div class="text-sm font-medium text-gray-500 flex items-center gap-2 py-2 px-4">
                 <x-icon name="shoe-prints" class="text-xs"/> {{ tr('app.label.footprint') }}
