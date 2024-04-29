@@ -78,7 +78,7 @@ class SendMail extends Component
         ];
 
         if (!get($this->inputs, 'to') && $this->options) {
-            $this->inputs['to'] = array_filter([collect($this->options)->shift()]);
+            $this->inputs['to'] = $this->options;
         }
 
         $this->inputs['to'] = $this->setEmailList($this->inputs['to']);
@@ -126,12 +126,20 @@ class SendMail extends Component
     // set email list
     public function setEmailList($list) : array
     {
-        return collect($list)
-            ->map(fn($opt) => is_string($opt) ? ['name' => null, 'email' => $opt] : $opt)
-            ->filter(fn($opt) => !empty(data_get($opt, 'email')))
-            ->unique('email')
-            ->values()
-            ->all();
+        $emails = collect();
+
+        foreach ($list as $item) {
+            if (is_string($item)) $emails->push(['name' => $item, 'email' => $item]);
+            else {
+                $split = collect(explode(';', get($item, 'email')))->map(fn($val) => trim($val));
+
+                foreach ($split as $value) {
+                    $emails->push(['name' => get($item, 'name'), 'email' => $value]);
+                }
+            }
+        }
+
+        return $emails->unique('email')->values()->all();
     }
 
     // store attachments
