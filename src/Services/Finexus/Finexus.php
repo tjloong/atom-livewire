@@ -53,6 +53,7 @@ class Finexus
         $paymentRequestEntity = new PayMasterEntity();
 
         foreach ($parameters as $key => $val) {
+            if ($key === 'UserContact') $val = preg_replace("/[^0-9]/", "", $val);
             $paymentRequestEntity->setter($key, $val);
         }
 
