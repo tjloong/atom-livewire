@@ -134,15 +134,6 @@ class SendMail extends Component
             ->all();
     }
 
-    // detach
-    public function detach($id) : void
-    {
-        $this->inputs['attachments'] = collect($this->inputs['attachments'])
-            ->reject(fn($val) => data_get($val, 'id') === $id)
-            ->values()
-            ->all();
-    }
-
     // store attachments
     public function storeAttachments() : void
     {

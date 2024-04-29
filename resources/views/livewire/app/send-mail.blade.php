@@ -21,16 +21,19 @@
 
         <x-form.field label="app.label.attachment">
             <x-box.flat>
-                <div class="flex flex-col divide-y">
-                    @foreach (data_get($inputs, 'attachments') as $attachment)
-                        <div class="flex items-center gap-3 py-2 px-4">
+                <div
+                    x-cloak
+                    x-data="{ attachments: @entangle('inputs.attachments') }"
+                    class="flex flex-col">
+                    <template x-for="(item, i) in attachments">
+                        <div class="flex items-center gap-3 py-2 px-4 border-b">
                             <x-icon name="paperclip"/> 
-                            <div class="grow font-medium">{{ data_get($attachment, 'name') }}</div>
-                            <div class="shrink-0 text-red-500 cursor-pointer" wire:click="detach(@js(data_get($attachment, 'id')))">
+                            <div x-text="item.name" class="grow font-medium"></div>
+                            <div x-on:click="attachments.splice(i, 1)" class="shrink-0 text-red-500 cursor-pointer">
                                 <x-icon name="remove"/>
                             </div>
                         </div>
-                    @endforeach
+                    </template>
 
                     <div class="py-2 px-4" x-data>
                         <input type="file" x-ref="file" wire:model="uploads" class="hidden" multiple>
