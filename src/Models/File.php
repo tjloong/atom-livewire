@@ -124,8 +124,16 @@ class File extends Model
         return Attribute::make(
             get: function($url) {
                 if ($this->mime === 'youtube') return $url;
-                if ($this->ulid) return route('__file.get', $this->ulid);
+                return route('__file.get', $this->ulid);
             },
+        );
+    }
+
+    // attribute for temporary url
+    protected function temporaryUrl() : Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->getStorage()->temporaryUrl($this->path, now()->addMinutes(5)),
         );
     }
 

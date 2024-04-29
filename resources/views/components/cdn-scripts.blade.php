@@ -16,9 +16,6 @@
         'shuffle' => [
             'https://cdn.jsdelivr.net/npm/shufflejs@6.1.0/dist/shuffle.min.js',
         ],
-        'signature-pad' => [
-            'https://cdn.jsdelivr.net/npm/signature_pad@4.1.6/dist/signature_pad.umd.min.js',
-        ],
         'social-share' => [
             'https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js',
         ],
