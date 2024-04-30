@@ -11,7 +11,9 @@
 
 <div
     x-data="{
-        progress: 0,
+        loading: false,
+        endpoint: @js(route('__file.upload')),
+
         upload (files) {
             if (this.validate(files)) {
                 const formdata = new FormData()
@@ -22,16 +24,15 @@
                     formdata.append('visibility', @js($visibility))
                 })
 
-                const config = { onUploadProgress: (progressEvent) => {
-                    this.progress = Math.round((progressEvent.loaded * 100)/progressEvent.total)
-                }}
+                this.loading = true
 
-                axios.post(@js(route('__file.upload')), formdata, config).then(res => {
-                    this.$dispatch('files-uploaded', res.data)
+                ajax(this.endpoint).post(formdata).then(res => {
+                    this.$dispatch('files-uploaded', res)
                     this.$wire.emit('fileUploaded')
-                }).then(() => this.progress = 0)
+                }).finally(() => this.loading = false)
             }
         },
+
         validate (files) {
             // scan for unsupported file type
             if (Array.from(files).some(file => {
@@ -42,7 +43,7 @@
                     else return !val.includes(file.type)
                 })
             })) {
-                this.$dispatch('alert', { message: @js(tr('file.alert.unsupported')), type: 'error' })
+                this.$dispatch('alert', { message: @js(tr('app.alert.unsupported-upload-file-type')), type: 'error' })
                 return false
             }
 
@@ -68,7 +69,7 @@
         x-on:input.stop>
 
     <div
-        x-show="progress <= 0"
+        x-show="!loading"
         x-on:click="$refs.input.click()" 
         class="inline-flex flex-wrap items-center gap-3 cursor-pointer">
         @if ($slot->isNotEmpty())
@@ -79,13 +80,56 @@
         @endif
     </div>
 
-    <div x-show="progress > 0">
-        @isset($progress)
-            {{ $progress }}
-        @else
-            <div class="w-full rounded-full h-4 bg-white border overflow-hidden">
-                <div class="w-full h-full bg-blue-200" x-bind:style="{ width: `${progress}%` }"></div>
-            </div>
-        @endisset
+    <div x-show="loading" class="flex flex-col items-center justify-center gap-3">
+        <x-icon name="upload" class="text-theme"/>
+        <i class="uploader-loader mx-auto"></i>
     </div>
 </div>
+
+@pushOnce('scripts')
+<style>
+.uploader-loader {
+	--color: gray;
+	--size-mid: 6vmin;
+	--size-dot: 1.5vmin;
+	--size-bar: 0.4vmin;
+	--size-square: 3vmin;
+	
+	display: block;
+	position: relative;
+	width: 50%;
+	display: grid;
+	place-items: center;
+}
+.uploader-loader::before,
+.uploader-loader::after {
+	content: '';
+	box-sizing: border-box;
+	position: absolute;
+}
+.uploader-loader::before {
+	height: var(--size-bar);
+	width: 6vmin;
+	background-color: var(--color);
+	animation: uploader-loader 0.8s cubic-bezier(0, 0, 0.03, 0.9) infinite;
+}
+
+@keyframes uploader-loader {
+	0%, 44%, 88.1%, 100% {
+		transform-origin: left;
+	}
+	
+	0%, 100%, 88% {
+		transform: scaleX(0);
+	}
+	
+	44.1%, 88% {
+		transform-origin: right;
+	}
+	
+	33%, 44% {
+		transform: scaleX(1);
+	}
+}
+</style>
+@endPushOnce

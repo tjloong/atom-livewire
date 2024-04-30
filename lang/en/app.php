@@ -412,6 +412,7 @@ return [
         'recaptcha' => 'Google think you are a bot. Please refresh and try again.',
         'email-sent' => 'Email Sent.',
         'notification-sent' => ':channel Sent.',
+        'unsupported-upload-file-type' => 'Unsupported upload file type',
         'sorted' => 'Sorted.',
         'created' => 'Created',
         'updated' => 'Updated',

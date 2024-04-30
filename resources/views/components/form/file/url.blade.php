@@ -8,9 +8,11 @@
 <div 
     x-data="{
         text: null,
+        endpoint: @js(route('__file.url')),
+
         submit () {
-            axios.post(@js(route('__file.url')), { url: this.text.split(`\n`) }).then(res => {
-                this.$dispatch('files-created', res.data)
+            ajax(this.endpoint).post({ url: this.text.split(`\n`) }).then(res => {
+                this.$dispatch('files-created', res)
                 this.text = null
             })
         },

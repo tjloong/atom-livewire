@@ -6,7 +6,6 @@ export default class
     constructor (url) {
         this.url = url
         this.headers = {
-            'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
     }
@@ -22,7 +21,7 @@ export default class
     post (payload) {
         return fetch(this.url, {
             method: 'POST',
-            body: JSON.stringify(payload),
+            body: payload instanceof FormData ? payload : JSON.stringify(payload),
             headers: this.headers,
         }).then(res => (res.json()))
     }
