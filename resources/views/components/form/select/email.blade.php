@@ -1,128 +1,190 @@
 @php
+    $wire = $attributes->wire('model');
     $prefix = $attributes->get('prefix');
     $suffix = $attributes->get('suffix');
     $icon = $attributes->get('icon', 'envelope');
+    $iconsuffix = $attributes->get('icon-suffix');
     $multiple = $attributes->get('multiple', false);
     $placeholder = $attributes->get('placeholder');
     $options = $attributes->get('options', []);
     $except = ['prefix', 'suffix', 'icon', 'multiple', 'placeholder', 'options'];
+
+    if ($errors->has($wire->value())) $err = $errors->first($wire->value());
+    elseif ($errors->has($wire->value().'*.email')) $err = $errors->first($wire->value().'*.email');
+    else $err = null;
 @endphp
 
-<x-form.field {{ $attributes }}>
-    <div x-cloak wire:ignore
+<x-form.field :error="$err" {{ $attributes }}>
+    <div
+        wire:ignore
+        x-cloak
         x-data="{
             value: @entangle($attributes->wire('model')),
-            text: null,
             focus: false,
+            search: null,
+            pointer: null,
+            dropdown: false,
+            options: @js($options),
             multiple: @js($multiple),
-            get options () {
-                return @js($options)
-                    .map(opt => (typeof opt === 'string' ? { name: opt, email: opt } : opt))
-                    .filter(opt => !empty(opt.email))
-                    .filter(opt => {
-                        let search = this.text
-                            ? (opt.email.includes(this.text) || opt.name.includes(this.text))
-                            : true
 
-                        let exists = this.multiple
-                            ? this.value.some(val => (val.email === opt.email))
-                            : this.value === opt.email
-
-                        return !exists && search
-                    })
+            get filtered () {
+                return this.options
+                .map(opt => (typeof opt === 'string' ? { name: opt, email: opt } : opt))
+                .filter(opt => !empty(opt.email))
+                .filter(opt => {
+                    let text = this.multiple ? this.search : this.value
+                    let search = text ? (opt.email.includes(text) || opt.name.includes(text)) : true
+                    let exists = this.multiple ? this.value.some(val => (val.email === opt.email)) : this.value === opt.email
+                    return !exists && search
+                })
             },
-            select (opt) {
-                if (this.multiple) {
-                    if (!this.value) this.value = []
-                    if (!this.value.some(val => (val.email === opt.email))) this.value.push(opt)
-                    this.text = null
-                }
-                else this.text = this.value = opt.email
 
-                this.$refs.input.focus()
+            init () {
+                if (this.multiple && !this.value) this.value = []
+            },
+
+            open () {
+                this.focus = true
+                this.dropdown = true
+                this.$nextTick(() => this.$refs.dropdown.style.minWidth = this.$refs.anchor.offsetWidth+'px')
+            },
+
+            close () {
+                this.focus = false
+                this.pointer = null
+                this.dropdown = false
+            },
+
+            select (index) {
+                let opt
+                
+                if (index > 0) opt = this.filtered[index]
+                else if (this.pointer > 0) opt = this.filtered[this.pointer]
+                else opt = this.filtered[0]
+
+                if (this.multiple) {
+                    if (this.search) {
+                        this.search.split(';').map(str => str.trim()).forEach(str => this.value.push({
+                            name: str,
+                            email: str,
+                        }))
+
+                        this.search = null
+                        this.close()
+                    }
+                    else if (opt) this.value.push(opt)
+                }
+                else {
+                    if (!opt) return
+                    this.value = opt.email
+                }
+            },
+
+            clear () {
+                if (this.search) return
+                if (!this.value.length) return
+
+                this.value.pop()
+            },
+
+            validate (val) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)
+            },
+
+            navigate (e) {
+                const isUp = e.key === 'ArrowUp'
+                const isDown = e.key === 'ArrowDown'
+                const max = this.filtered.length ? this.filtered.length - 1 : 0
+
+                if (this.pointer === null) this.pointer = 0
+                else if (isDown) this.pointer++
+                else if (isUp) this.pointer--
+
+                if (this.pointer < 0) this.pointer = 0
+                if (this.pointer > max) this.pointer = max
             },
         }"
         x-modelable="value"
-        x-init="() => {
-            if (!multiple) {
-                text = value
-                $watch('text', () => value = text)
-            }
-        }"
-        class="relative">
-        <div class="flex items-center gap-2">
+        x-on:keydown.down.stop="navigate"
+        x-on:keydown.up.stop="navigate"
+        x-on:keydown.esc.stop="close()"
+        x-on:click.away="close()">
+        <div x-ref="anchor" class="flex items-center gap-2">
             <div
-                x-init="$watch('focus', () => focus && $nextTick(() => $refs.input.focus()))"
-                x-on:click="focus = true"
-                x-on:click.away="focus = false"
-                x-bind:class="focus && 'active'"
+                x-on:click="open()"
+                x-bind:class="(focus || dropdown) && 'active'"
                 class="form-input w-full flex gap-3 overflow-hidden">
-                @if ($prefix)
-                    <div class="shrink-0 text-gray-400 border-r border-gray-300 bg-gray-100 -ml-3 -my-1.5 py-1.5 px-2">
-                        {!! $prefix !!}
-                    </div>
-                @endif
+                @if ($prefix) <div class="shrink-0 text-gray-400">{!! $prefix !!}</div> @endif
+                @if ($icon) <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div> @endif
 
-                @if ($icon)
-                    <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div>
-                @endif
-
-                <div class="grow flex items-center gap-2 flex-wrap">
-                    <template x-for="(item, i) in (multiple ? (value || []) : [])">
-                        <div
-                            x-bind:class="
-                                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(item.email)
-                                ? 'bg-gray-100 border-gray-300'
-                                : 'bg-red-100 border-red-300 text-red-500'
-                            "
-                            class="text-sm rounded-md border flex items-center">
-                            <div class="pl-2 grow font-medium" x-text="item.email"></div>
-                            <div class="shrink-0 px-2 flex cursor-pointer" x-on:click="value.splice(i, 1)">
-                                <x-icon name="xmark" class="m-auto"/>
+                <template X-if="multiple">
+                    <div class="grow flex items-center gap-2 flex-wrap">
+                        <template x-for="(item, i) in value">
+                            <div
+                                x-bind:class="validate(item.email) ? 'bg-gray-100 border-gray-300' : 'bg-red-100 border-red-300 text-red-500'"
+                                class="text-sm rounded-md border flex items-center">
+                                <div class="pl-2 grow font-medium" x-text="item.email"></div>
+                                <div class="shrink-0 px-2 flex cursor-pointer" x-on:click.stop="value.splice(i, 1)">
+                                    <x-icon name="xmark" class="m-auto"/>
+                                </div>
                             </div>
-                        </div>
-                    </template>
-
-                    <input x-ref="input" 
-                        x-model="text"
-                        x-on:keydown.enter.prevent="() => {
-                            if (options.length) select(options[0])
-                            else select({ name: text, email: text })
-                        }"
-                        type="email"
-                        class="transparent grow"
-                        placeholder="{!! tr($placeholder) !!}">
-                </div>
-
-                @if ($suffix)
-                    <div class="shrink-0 text-gray-400 border-l border-gray-300 bg-gray-100 -mr-3 -my-1.5 py-1.5 px-2">
-                        {!! $suffix !!}
+                        </template>
+    
+                        <input type="email" x-ref="input" 
+                            x-model="search" 
+                            x-on:focus="open()"
+                            x-on:blur="search ? select() : close()"
+                            x-on:keydown.enter.prevent="select()"
+                            x-on:keydown.backspace="clear()"
+                            x-on:keydown.;.prevent="select()"
+                            x-on:keydown.comma.prevent="select()"
+                            x-on:keydown.slash.prevent="select()"
+                            x-on:input.prevent
+                            class="transparent grow"
+                            placeholder="{!! tr($placeholder) !!}">
                     </div>
-                @endif
+                </template>
+
+                <template x-if="!multiple">
+                    <input type="email" x-ref="input" 
+                        x-model="value"
+                        x-on:focus="open()"
+                        x-on:blur="close()"
+                        x-on:keydown.enter.prevent="select()"
+                        x-on:input.prevent
+                        class="transparent grow" 
+                        placeholder="{{ tr($placeholder) }}">
+                </template>
+
+                @if ($iconsuffix) <div class="shrink-0 text-gray-400"><x-icon :name="$iconsuffix"/></div> @endif
+                @if ($suffix) <div class="shrink-0 text-gray-400">{!! $suffix !!}</div> @endif
             </div>
 
             @isset($button) <x-button inverted {{ $button->attributes }}/> @endisset
         </div>
 
-        <div x-ref="dropdown"
-            x-show="focus && (
-                (multiple && !empty(text))
-                || (options && options.length > 0)
-            )"
-            x-transition
-            class="absolute z-10 left-0 right-0 bg-white border rounded-md shadow-lg mt-px max-h-[250px] overflow-auto">
+        <div 
+            x-ref="dropdown"
+            x-anchor.offset.4="$refs.anchor"
+            x-show="dropdown && filtered?.length > 0"
+            x-transition.opacity.duration.300
+            class="z-10 bg-white border border-gray-300 rounded-md shadow-lg overflow-hidden">
             <div class="flex flex-col">
                 <div class="text-sm text-gray-500 font-medium border-b py-2 px-4 bg-slate-100">
                     {{ tr('app.label.press-enter-to-select') }}
                 </div>
 
-                <template x-for="opt in options" x-bind:key="opt.email">
-                    <div x-on:click="select(opt)" class="py-2 px-4 cursor-pointer hover:bg-slate-50 border-b last:border-0">
-                        <template x-if="opt.name === opt.email">
+                <template x-for="(opt, i) in filtered" x-bind:key="opt.email">
+                    <div
+                        x-on:click="select(i)"
+                        x-on:mouseover="pointer = null"
+                        x-bind:class="pointer === i ? 'bg-gray-50' : 'hover:bg-gray-50'"
+                        class="py-2 px-4 cursor-pointer hover:bg-slate-50 border-b last:border-0">
+                        <template x-if="opt.name === opt.email || !opt.name">
                             <div class="font-medium" x-text="opt.email"></div>
                         </template>
 
-                        <template x-if="opt.name !== opt.email">
+                        <template x-if="opt.name && opt.email">
                             <div>
                                 <div class="font-medium" x-text="opt.name"></div>
                                 <div class="text-sm text-gray-500" x-text="opt.email"></div>

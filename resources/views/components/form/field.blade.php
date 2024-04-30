@@ -1,7 +1,8 @@
-@props([
-    'field' => $attributes->get('name') ?? $attributes->wire('model')->value() ?? null,
-    'wirekey' => $attributes->get('wire:key') ?? $attributes->wire('model')->value(),
-])
+@php
+    $field = $attributes->get('name') ?? $attributes->wire('model')->value() ?? null;
+    $wirekey = $attributes->get('wire:key') ?? $attributes->wire('model')->value();
+    $err = $attributes->get('error');
+@endphp
 
 <div wire:key="{{ $wirekey }}" 
     {{ $attributes->class(['w-full flex flex-col gap-1'])->only('class') }}>
@@ -65,14 +66,14 @@
         </div>
     @endif
 
-    @if ($error = $errors->first($field))
+    @if ($err || $errors->first($field))
         <div 
             x-init="$el.parentNode
                 .querySelectorAll('.form-input:not(.transparent)')
                 .forEach(node => node.classList.add('error'))"
             wire:key="{{ uniqid() }}"
             class="text-sm text-red-500 font-medium form-field-error">
-            {{ tr($error) }}
+            {{ tr($err ?: $errors->first($field)) }}
         </div>
     @endif
 </div>

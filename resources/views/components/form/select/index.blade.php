@@ -145,7 +145,7 @@
                 const isDown = e.key === 'ArrowDown'
                 const max = this.filtered.length ? this.filtered.length - 1 : 0
 
-                if (isDown && !this.$refs.dropdown.isOpened) this.$refs.dropdown.open()
+                if (!this.dropdown) this.open()
                 else {
                     if (this.pointer === null) this.pointer = 0
                     else if (isDown) this.pointer++
