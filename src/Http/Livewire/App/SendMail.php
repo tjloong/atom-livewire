@@ -41,7 +41,10 @@ class SendMail extends Component
             'inputs.cc.*.email' => ['email' => 'Invalid cc email.'],
             'inputs.bcc' => ['array' => 'Invalid bcc email.'],
             'inputs.bcc.*.email' => ['email' => 'Invalid bcc email.'],
-            'inputs.reply_to' => ['nullable'],
+            'inputs.reply_to' => [
+                'nullable',
+                'email' => 'Invalid reply-to email',
+            ],
             'inputs.subject' => ['required' => 'Subject is required.'],
             'inputs.body' => ['required' => 'Body is required.'],
             'inputs.attachments' => ['nullable'],
@@ -156,7 +159,7 @@ class SendMail extends Component
             }
 
             return $attachment;
-        });
+        })->toArray();
     }
 
     // submit

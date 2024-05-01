@@ -14,7 +14,10 @@ export default class
         return fetch(this.url, {
             method: 'GET',
             body: JSON.stringify(payload),
-            headers: this.headers,
+            headers: {
+                'Content-Type': 'application/json', 
+                ...this.headers,
+            },
         }).then(res => (res.json()))
     }
 
@@ -22,7 +25,10 @@ export default class
         return fetch(this.url, {
             method: 'POST',
             body: payload instanceof FormData ? payload : JSON.stringify(payload),
-            headers: this.headers,
+            headers: payload instanceof FormData ? this.headers : {
+                'Content-Type': 'application/json',
+                ...this.headers,
+            },
         }).then(res => (res.json()))
     }
 }

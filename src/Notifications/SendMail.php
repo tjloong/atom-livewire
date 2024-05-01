@@ -35,31 +35,31 @@ class SendMail extends Notification implements ShouldQueue
      */
     public function toMail(mixed $notifiable): \Illuminate\Notifications\Messages\MailMessage
     {
-        $senderName = data_get($this->parameters, 'from.name');
-        $senderEmail = data_get($this->parameters, 'from.email');
-        $replyTo = data_get($this->parameters, 'reply_to');
-        $cc = collect(data_get($this->parameters, 'cc'))->pluck('email')->filter()->toArray();
-        $bcc = collect(data_get($this->parameters, 'bcc'))->pluck('email')->filter()->toArray();
-        $subject = data_get($this->parameters, 'subject');
-        $body = nl2br(data_get($this->parameters, 'body'));
-        $tags = data_get($this->parameters, 'tags', []);
-        $attachments = data_get($this->parameters, 'attachments', []);
+        $senderName = get($this->parameters, 'from.name');
+        $senderEmail = get($this->parameters, 'from.email');
+        $replyTo = get($this->parameters, 'reply_to');
+        $cc = collect(get($this->parameters, 'cc'))->pluck('email')->filter()->toArray();
+        $bcc = collect(get($this->parameters, 'bcc'))->pluck('email')->filter()->toArray();
+        $subject = get($this->parameters, 'subject');
+        $body = nl2br(get($this->parameters, 'body'));
+        $tags = get($this->parameters, 'tags', []);
+        $attachments = get($this->parameters, 'attachments', []);
+        $mail = (new MailMessage);
 
-        $mail = (new MailMessage)
-            ->from($senderEmail, $senderName)
-            ->replyTo($replyTo ?? $senderEmail)
-            ->cc($cc)
-            ->bcc($bcc)
-            ->subject($subject)
-            ->line($body);
+        if (!empty($senderEmail)) $mail->from($senderEmail, $senderName);
+        if (!empty($replyTo)) $mail->replyTo($replyTo);
+        if ($cc) $mail->cc($cc);
+        if ($bcc) $mail->bcc($bcc);
+
+        $mail->subject($subject)->line($body);
 
         foreach ($tags as $tag) {
             $mail->tag($tag);
         }
 
         foreach ($attachments as $attachment) {
-            $mail->attach(data_get($attachment, 'path'), [
-                'as' => data_get($attachment, 'name', 'file'),
+            $mail->attach(get($attachment, 'path'), [
+                'as' => get($attachment, 'name', 'file'),
             ]);
         }
 

@@ -19,7 +19,7 @@ trait Notilog
     }
 
     // failed handler
-    public function failed(\Exception $e) : void
+    public function failed($e) : void
     {
         NotilogListener::failed($this->notilogUlid, $e->getMessage());
     }
