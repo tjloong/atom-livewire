@@ -50,8 +50,6 @@ class Finexus extends Component
 
         settings($this->settings);
 
-        app('finexus')->deleteConfigFile();
-
         $this->popup('app.alert.updated');
     }
 }

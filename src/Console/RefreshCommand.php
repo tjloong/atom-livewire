@@ -31,7 +31,6 @@ class RefreshCommand extends Command
         $this->call('event:clear');
         $this->call('route:clear');
         $this->call('config:clear');
-        $this->call('basset:clear');
         $this->call('livewire:discover');
     }
 }
