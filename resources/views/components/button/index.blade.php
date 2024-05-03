@@ -1,6 +1,6 @@
 @php
     $label = $attributes->get('label');
-    $icon = explode('--', $attributes->get('icon'));
+    $icon = array_filter(explode('--', $attributes->get('icon')));
     $position = $attributes->get('position', 'start');
     $href = $attributes->get('href');
     $rel = $attributes->get('rel', 'noopener noreferrer nofollow');

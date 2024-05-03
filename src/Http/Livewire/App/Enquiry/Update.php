@@ -30,7 +30,7 @@ class Update extends Component
     {
         if ($this->enquiry = model('enquiry')->find($id)) {
             $this->fill(['inputs.status' => $this->enquiry->status->value]);
-            $this->openDrawer('enquiry-update');
+            $this->openDrawer();
         }
     }
 
@@ -38,7 +38,7 @@ class Update extends Component
     public function close() : void
     {
         $this->emit('setEnquiryId');
-        $this->closeDrawer('enquiry-update');
+        $this->closeDrawer();
     }
 
     // delete

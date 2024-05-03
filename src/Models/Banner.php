@@ -9,6 +9,7 @@ use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Jiannius\Atom\Traits\Models\Footprint;
+use Jiannius\Atom\Traits\Models\HasSequence;
 
 class Banner extends Model
 {
@@ -16,6 +17,7 @@ class Banner extends Model
     use HasFactory;
     use HasFilters;
     use HasSlug;
+    use HasSequence;
 
     protected $guarded = [];
 

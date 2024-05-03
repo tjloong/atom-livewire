@@ -1,8 +1,5 @@
 @props([
     'cdns' => [
-        'animate' => [
-            'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css',
-        ],
         'apexcharts' => [
             'https://cdn.jsdelivr.net/npm/apexcharts',
         ],
