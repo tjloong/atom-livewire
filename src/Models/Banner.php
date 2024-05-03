@@ -76,7 +76,7 @@ class Banner extends Model
     protected function type() : Attribute
     {
         return Attribute::make(
-            get: fn($value) => enum('banner.type', $value),
+            get: fn($value) => $value ? enum('banner.type', $value) : null,
             set: fn($value) => is_string($value) ? $value : optional($value)->value,
         );
     }
