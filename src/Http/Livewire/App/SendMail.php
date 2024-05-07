@@ -134,7 +134,7 @@ class SendMail extends Component
         foreach ($list as $item) {
             if (is_string($item)) $emails->push(['name' => $item, 'email' => $item]);
             else {
-                $split = collect(explode(';', get($item, 'email')))->map(fn($val) => trim($val));
+                $split = collect(preg_split('/(;|\/|,)/', get($item, 'email')))->map(fn($val) => trim($val));
 
                 foreach ($split as $value) {
                     $emails->push(['name' => get($item, 'name'), 'email' => $value]);
