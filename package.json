@@ -25,10 +25,7 @@
         "@tiptap/extension-youtube": "^2.1.12",
         "@tiptap/pm": "^2.1.12",
         "@tiptap/starter-kit": "^2.1.12",
-        "alpinejs": "^3.10.3",
-        "dayjs": "^1.11.4",
         "laravel-vite-plugin": "^1.0.2",
-        "ulid": "^2",
         "vite": "^5.2.10"
     }
 }

@@ -64,6 +64,7 @@ select.form-input,
 }
 
 .form-input:focus,
+.form-input:focus-within
 .form-input:active,
 .form-input.active {
     @apply outline-none ring-1 ring-theme;
@@ -74,7 +75,8 @@ select.form-input,
     @apply border border-red-500 ring-2 ring-red-200;
 }
 
-input.transparent {
+input.transparent,
+select.transparent {
     @apply bg-transparent appearance-none p-0 border-0 focus:ring-0 hover:ring-0;
 }
 .form-input.readonly {

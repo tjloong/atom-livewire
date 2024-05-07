@@ -1,3 +1,7 @@
+@php
+    $placeholder = $attributes->get('placeholder', 'app.label.select-color');
+@endphp
+
 <x-form.field {{ $attributes }}>
     <div
         x-data="{
@@ -7,38 +11,39 @@
         x-modelable="value"
         x-on:click="show = true"
         x-on:click.away="show = false"
-        class="relative"
         {{ $attributes }}>
-        <div x-ref="anchor" class="form-input w-full">
-            <div
-                x-bind:class="!value && 'form-input-caret'" 
-                class="flex items-center gap-3">
-                <div class="shrink-0">
-                    <x-icon name="fill" class="text-gray-400"/>
-                </div>
+        <button type="button"
+            x-ref="anchor"
+            class="form-input w-full flex items-center gap-3">
+            <div class="shrink-0"><x-icon name="fill" class="text-gray-400"/></div>
 
-                <div x-show="!empty(value)" class="shrink-0 flex items-center justify-center">
-                    <div
-                        x-bind:style="{ backgroundColor: value }"
-                        class="w-5 h-5 rounded-full shadow border"></div>
-                </div>
+            <div class="grow flex items-center gap-3">
+                <div
+                    x-show="value"
+                    x-bind:style="{ backgroundColor: value }"
+                    class="w-5 h-5 rounded-full shadow border"></div>
 
-                <input type="text"
-                    x-model="value"
-                    class="transparent grow"
-                    placeholder="{{ tr($attributes->get('placeholder', 'app.label.select-color')) }}"
-                    readonly>
+                <input type="text" placeholder="{{ tr($placeholder) }}" readonly
+                    x-bind:value="value || null"
+                    class="transparent grow cursor-pointer">
+            </div>
 
-                <div x-show="!empty(value)" x-on:click="value = null" class="shrink-0">
-                    <x-close/>
+            <div class="shrink-0">
+                <x-icon name="dropdown-caret" x-show="!value"/>
+
+                <div x-show="value" x-on:click.stop="value = null" class="cursor-pointer text-gray-400 hover:text-gray-600">
+                    <x-icon name="xmark"/>
                 </div>
             </div>
-        </div>
 
-        <div x-ref="dd"
+        </button>
+
+        <div
+            x-ref="dropdown"
             x-show="show"
-            x-transition.opacity
-            class="absolute z-40 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden mt-px">
+            x-anchor.offset.4="$refs.anchor"
+            x-transition.opacity.duration.300
+            class="z-10 bg-white shadow-lg rounded-lg border border-gray-300 overflow-hidden">
             <div class="grow grid grid-cols-11 gap-1 p-2 max-h-[300px] overflow-auto">
                 @foreach (color()->all() as $color)
                     <div

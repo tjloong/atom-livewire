@@ -1,6 +1,7 @@
 @php
     $label = $attributes->get('label') ?? $attributes->get('href');
     $icon = $attributes->get('icon');
+    $iconsuffix = $attributes->get('icon-suffix');
     $align = $attributes->get('align');
     $caption = $attributes->get('caption') ?? $attributes->get('small');
 @endphp
@@ -13,10 +14,11 @@
         ]),
     ])->except(['label', 'icon', 'align', 'caption']) }}>
     @if ($label)
-        @if ($icon)
+        @if ($icon || $iconsuffix)
             <span class="inline-flex items-center gap-2 text-blue-500 underline decoration-dotted">
-                <x-icon :name="$icon" class="shrink-0"/>
+                @if ($icon) <x-icon :name="$icon" class="shrink-0"/> @endif
                 {!! tr($label) !!}
+                @if ($iconsuffix) <x-icon :name="$iconsuffix" class="shrink-0"/> @endif
             </span>
         @else
             <span class="text-blue-500 underline decoration-dotted">{!! tr($label) !!}</span>

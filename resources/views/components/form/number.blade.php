@@ -9,8 +9,8 @@
         x-on:click="focus = true"
         x-on:click.away="focus = false"
         x-bind:class="focus && 'active'"
-        class="form-input w-full p-0 flex items-center divide-x divide-gray-300">
-        <div class="flex items-center gap-2 grow py-1.5 px-3">
+        class="form-input w-full flex items-center divide-x divide-gray-300">
+        <div class="flex items-center gap-2 grow">
             @if (isset($prefix)) {{ $prefix }}
             @elseif ($prefix = $attributes->get('prefix')) <div class="shrink-0 text-gray-500 font-medium">{{ tr($prefix) }}</div>
             @elseif ($icon = $attributes->get('icon')) <x-icon :name="$icon" class="text-gray-400"/>
@@ -35,7 +35,7 @@
 
             @if ($label || $icon)
                 <button type="button" {{ $button->attributes->class([
-                    'py-1.5 px-2 flex items-center justify-center gap-2 text-sm text-gray-500',
+                    'pl-3 flex items-center justify-center gap-2 text-sm text-gray-500',
                 ]) }}>
                     @if ($icon) <x-icon :name="$icon"/> @endif
                     @if ($label) {{ tr($label )}} @endif
