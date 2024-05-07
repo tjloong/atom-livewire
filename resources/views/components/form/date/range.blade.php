@@ -128,7 +128,7 @@
         {{ $attributes->except('placeholder') }}>
         <button type="button"
             x-ref="anchor"
-            x-on:click.stop="open()"
+            x-on:click="open()"
             x-on:click.away="close()"
             x-on:keydown.esc="close()"
             x-on:keydown.up="navigate"

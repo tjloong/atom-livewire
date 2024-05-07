@@ -38,7 +38,7 @@
         {{ $attributes->except('placeholder') }}>
         <button type="button"
             x-ref="anchor"
-            x-on:click.stop="open()"
+            x-on:click="open()"
             class="form-input flex items-center gap-3 w-full">
             <div class="shrink-0 text-gray-400"><x-icon name="calendar"/></div>
     
