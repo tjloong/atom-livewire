@@ -52,21 +52,27 @@ class SelectController extends Controller
     }
 
     // currencies
-    public function currencies() : void
+    public function currencies($params, $value) : void
     {
+        $search = (string) str(get($params, 'search'))->upper();
+
         currencies()
-            ->reject(fn($val) => empty(data_get($val, 'code')))
-            ->map(fn($currency) => [
-                'value' => data_get($currency, 'code'),
-                'label' => collect([
-                    data_get($currency, 'code'),
-                    data_get($currency, 'symbol'),
-                ])->filter()->join(' - '),
-            ])
-            ->unique('value')
-            ->sortBy('label')
-            ->values()
-            ->each(fn($opt) => $this->setOption($opt));
+        ->filter(fn($val) => !empty(get($val, 'code')) && (
+            get($val, 'code') === $value
+            || get($val, 'code') === $search
+            || str(get($val, 'code'))->is([$search, $search.'*', '*'.$search])
+        ))
+        ->map(fn($currency) => [
+            'value' => data_get($currency, 'code'),
+            'label' => collect([
+                data_get($currency, 'code'),
+                data_get($currency, 'symbol'),
+            ])->filter()->join(' - '),
+        ])
+        ->unique('value')
+        ->sortBy('label')
+        ->values()
+        ->each(fn($opt) => $this->setOption($opt));
     }
 
     // labels
@@ -106,28 +112,5 @@ class SelectController extends Controller
                 $this->labels(array_merge($params, ['parent' => $label->id]), $value);
             }
         }
-    }
-
-    // months
-    public function months() : void
-    {
-        collect(range(1, 12))->map(fn($n) => $this->setOption([
-            'value' => $n,
-            'label' => date('F', mktime(0, 0, 0, $n, 1, 2000)),
-        ]));
-    }
-
-    // month days
-    public function month_days($params) : void
-    {
-        $month = data_get($params, 'month');
-
-        collect($month
-            ? range(1, cal_days_in_month(CAL_GREGORIAN, (int) $month, 2000))
-            : range(1, 31)
-        )->each(fn($n) => $this->setOption([
-            'value' => $n,
-            'label' => (string) $n,
-        ]));
     }
 }

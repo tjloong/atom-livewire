@@ -136,7 +136,7 @@
                     @if ($avatar !== false)
                         <div class="shrink-0">
                             <figure class="w-10 h-10 rounded-full border bg-gray-200 flex items-center justify-center overflow-hidden">
-                                @if ($body) <span class="text-gray-500 font-extrabold">{{ format($body)->abbr() }}</span>
+                                @if ($body) <span class="text-gray-500 font-bold text-sm">{{ format($body)->abbr() }}</span>
                                 @else <img src="{{ $avatar }}" class="w-full h-full object-cover"/>
                                 @endif
                             </figure>

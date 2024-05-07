@@ -3,7 +3,8 @@
 @endphp
 
 <x-form.field {{ $attributes }}>
-    <div wire:ignore
+    <div
+        wire:ignore
         x-cloak
         x-data="setupEditor($wire.entangle('{{ $attributes->wire('model')->value() }}').defer, @js($placeholder))"
         x-init="() => init($refs.editor)"

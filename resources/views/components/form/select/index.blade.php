@@ -5,7 +5,6 @@
     $params = $attributes->get('params');
     $searchable = $attributes->get('searchable', true);
     $clearable = $attributes->get('clearable', true);
-    $wiremodel = $attributes->wire('model');
     $placeholder = tr($attributes->get('placeholder', 'app.label.select-option'));
 
     $options = collect($attributes->get('options'))->map(fn($opt) => is_string($opt) ? [
@@ -20,7 +19,7 @@
         wire:ignore
         x-cloak
         x-data="{
-            value: @entangle($wiremodel),
+            value: @entangle($attributes->wire('model')),
             options: @js($options),
             multiple: @js($multiple),
             searchable: @js($searchable),
@@ -28,7 +27,6 @@
             callback: @js($callback),
             params: @js($params),
             endpoint: @js(route('__select')),
-            focus: false,
             loading: false,
             dropdown: false,
             search: null,
@@ -41,10 +39,7 @@
             },
 
             get isSearchable () {
-                return this.searchable && (
-                    this.loading
-                    || (!this.loading && (this.options.length || !empty(this.search)))
-                )
+                return this.searchable && (this.options.length || !empty(this.search))
             },
 
             get isEmpty () {
@@ -54,31 +49,51 @@
             },
 
             get filtered () {
-                return this.options.filter(opt => (!opt.hidden))
+                if (this.callback || empty(this.search)) return this.options
+
+                return this.options.filter(opt => {
+                    let haystack = `${opt.label} ${opt.small || ''} ${opt.caption || ''}`.trim().toLowerCase()
+                    let needle = this.search.toLowerCase()
+                    return haystack.includes(needle)
+                })
             },
 
             init () {
-                this.$nextTick(() => {
-                    if (this.value === undefined && this.multiple) this.value = []
-                    if (!this.isEmpty) this.filter()
-                })
-
-                this.$watch('search', (search) => this.filter(search))
+                if (this.callback) {
+                    if (!this.isEmpty) this.fetch()
+                    this.$watch('search', () => this.fetch())
+                    this.$watch('value', value => !this.isEmpty && !this.selection && this.fetch())
+                }
             },
 
             open () {
-                this.dropdown = true
-                this.$nextTick(() => {
-                    this.$refs.search?.focus()
-                    this.$refs.dropdown.style.minWidth = this.$root.offsetWidth+'px'
-                    if (!this.options.length && this.callback) this.filter()
-                })
+                let pop = () => {
+                    this.dropdown = true
+                    this.$nextTick(() => {
+                        this.$refs.search?.focus()
+                        this.$refs.dropdown.style.minWidth = this.$root.offsetWidth+'px'
+                    })
+                }
+
+                if (this.callback && !this.options.length) this.fetch().then(pop)
+                else pop()
             },
 
             close () {
                 this.search = null
-                this.focus = false
+                this.loading = false
                 this.dropdown = false
+                this.pointer = null
+            },
+
+            fetch () {
+                this.loading = true
+
+                return ajax(this.endpoint).post({ 
+                    callback: this.callback, 
+                    params: { ...this.params, search: this.search },
+                    value: this.value,
+                }).then(res => this.options = [...res]).then(() => this.loading = false)
             },
 
             select (index) {
@@ -92,8 +107,6 @@
                 else if (this.value === opt.value) this.value = null
                 else this.value = opt.value
 
-                this.$dispatch('input', this.value)
-
                 if (!this.multiple) this.close()
             },
 
@@ -106,38 +119,6 @@
                     const index = this.value.indexOf(opt.value)
                     this.value.splice(index, 1)
                 }
-
-                this.$dispatch('input', this.value)
-            },
-
-            fetch (callback, params) {
-                this.loading = true
-
-                ajax(this.endpoint)
-                .post({ callback, params, value: this.value })
-                .then(res => this.options = res)
-                .finally(() => {
-                    this.loading = false
-                    this.$refs.search?.focus()
-                })
-            },
-
-            filter (search) {
-                if (this.callback) {
-                    this.fetch(this.callback, { ...this.params, search })
-                }
-                else {
-                    this.options = this.options.map(opt => ({
-                        ...opt,
-                        hidden: !empty(search) && (
-                            !opt.label.toLowerCase().includes(search.toLowerCase())
-                            && !opt.small?.toLowerCase().includes(search.toLowerCase())
-                            && !opt.caption?.toLowerCase().includes(search.toLowerCase())
-                        ),
-                    }))
-                }
-
-                this.$dispatch('fetch', search)
             },
 
             navigate (e) {
@@ -157,32 +138,27 @@
             },
 
             isSelected (opt) {
-                return this.multiple && this.value && this.value.includes(opt.value)
-                    || !this.multiple && this.value === opt.value
+                return (this.multiple && this.value && this.value.includes(opt.value))
+                    || (!this.multiple && this.value === opt.value)
             },
         }"
         x-modelable="value"
-        x-on:focus="focus = true"
-        x-on:blur="focus = false"
         x-on:click.away="close()"
         x-on:keydown.down.stop="navigate"
         x-on:keydown.up.stop="navigate"
         x-on:keydown.enter.prevent="select(pointer || 0)"
         x-on:keydown.esc.prevent="close()"
-        tabindex="0"
-        class="focus:outline-none active:outline-none"
         {{ $attributes->except($except)}}>
-        <div
+        <button type="button"
             x-ref="anchor"
             x-on:click="open()"
-            x-bind:class="focus && 'active'"
             class="form-input w-full cursor-pointer flex gap-3">
             @if ($icon) <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div> @endif
 
             <template x-if="isEmpty">
-                <div class="grow text-gray-400">{{ $placeholder }}</div>
+                <div class="grow text-gray-400 text-left">{{ $placeholder }}</div>
             </template>
-    
+
             @if ($slot->isNotEmpty())
                 <template x-if="!isEmpty">
                     <div class="grow">{{ $slot }}</div>
@@ -202,20 +178,26 @@
                         </template>
                     </div>
                 </template>
-
+    
                 <template x-if="!isEmpty && !multiple">
-                    <div x-text="selection?.label" class="grow"></div>
+                    <div x-text="selection?.label" class="grow text-left"></div>
                 </template>
             @endif
 
-            <template x-if="clearable && !isEmpty">
-                <div class="shrink-0"><x-close x-on:click.stop="remove()"/></div>
+            <template x-if="loading">
+                <div class="shrink-0 flex items-center justify-center text-theme">
+                    <x-spinner size="20"/>
+                </div>
             </template>
 
-            <template x-if="!clearable || (clearable && isEmpty)">
+            <template x-if="!loading && clearable && !isEmpty">
+                <div class="shrink-0 text-gray-400 hover:text-gray-600" x-on:click.stop="remove()"><x-icon name="xmark"/></div>
+            </template>
+
+            <template x-if="!loading && (!clearable || (clearable && isEmpty))">
                 <div class="shrink-0"><x-icon name="dropdown-caret"/></div>
             </template>
-        </div>
+        </button>
 
         <div
             x-ref="dropdown"
@@ -242,16 +224,12 @@
                         class="shrink-0 text-gray-400 cursor-pointer">
                         <x-icon name="arrow-left"/>
                     </div>
-
-                    <div x-show="loading" class="shrink-0 flex items-center justify-center text-theme">
-                        <x-spinner size="20"/>
-                    </div>
                 </div>
             </template>
 
             <div class="flex flex-col divide-y">
                 <ul class="max-h-[250px] overflow-auto">
-                    <template x-for="(opt, i) in filtered" x-bind:key="opt.value">
+                    <template x-for="(opt, i) in filtered" x-bind:key="`${random()}_${opt.value}`">
                         <li 
                             x-bind:class="pointer === i ? 'bg-gray-50' : 'hover:bg-gray-50'"
                             x-on:mouseover="pointer = null"
@@ -314,7 +292,9 @@
                     </template>
 
                     <template x-if="!loading && !filtered.length">
-                        <x-no-result xs/>
+                        <div class="px-5">
+                            <x-no-result xs/>
+                        </div>
                     </template>
                 </ul>
 

@@ -6,20 +6,24 @@
                 alt: null,
                 exists: false,
                 showLibrary: false,
+
                 init () {
                     this.$watch('show', (show) => show && this.start())
                 },
+                
                 start () {
                     editor().chain().focus()
                     this.url = editor().getAttributes('image').src
                     this.alt = editor().getAttributes('image').alt
                     this.exists = editor().isActive('image')
                 },
+                
                 select (files) {
                     this.url = files[0].url
                     this.alt = files[0].data?.alt
                     this.save()
                 },
+                
                 save () {
                     if (!this.url) return
                     commands().setImage({ src: this.url, alt: this.alt })
@@ -85,12 +89,10 @@
 
                         <x-button icon="search" sm block
                             label="Browse"
-                            x-on:click="showLibrary = true"/>
+                            x-on:click="Livewire.emit('showFilesLibrary', { accept: 'image/*' })"/>
                     </div>
                 </x-group>
             </div>
-
-            <x-form.file.library accept="image/*"/>
         </div>
     </x-form.editor.dropdown>
 

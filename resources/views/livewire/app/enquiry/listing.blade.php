@@ -5,7 +5,7 @@
                 <x-table.filters>
                     <x-group>
                         <x-form.select.enum wire:model="filters.status" label="app.label.status" enum="enquiry.status" multiple/>
-                        <x-form.date wire:model="filters.created_at" label="app.label.created-date" range/>
+                        <x-form.date.range wire:model="filters.created_at" label="app.label.created-date"/>
                     </x-group>
                 </x-table.filters>
 
