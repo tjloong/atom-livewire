@@ -1,18 +1,19 @@
+@php
+$favicon = collect([
+    ['mime' => 'image/png', 'file' => 'favicon.png'],
+    ['mime' => 'image/x-icon', 'file' => 'favicon.ico'],
+    ['mime' => 'image/jpeg', 'file' => 'favicon.jpg'],
+    ['mime' => 'image/svg+xml', 'file' => 'favicon.svg'],
+])->first(fn($val) => file_exists(storage_path('app/public/img/'.get($val, 'file'))));
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->currentLocale()) }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
-
 <x-html-meta :noindex="isset($indexing) ? !$indexing : true"/>
-
-@if ($favicon = collect(['ico', 'png', 'svg', 'jpg'])
-    ->filter(fn($ext) => file_exists(storage_path('app/public/img/favicon.'.$ext)))
-    ->map(fn($ext) => url('/storage/img/favicon.'.$ext))
-    ->first())
-<link rel="shortcut icon" href="{{ $favicon }}">
-@endif
 
 @if ($enabledAnalytics = $analytics ?? false)
 <x-analytics.fathom/>
@@ -22,8 +23,13 @@
 @endif
 
 @section('vite')
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+@vite('resources/js/app.js')
+@vite('resources/css/app.css')
 @show
+
+@if ($favicon)
+<link rel="icon" type="{{ get($favicon, 'mime') }}" href="{{ url('storage/img/'.get($favicon, 'file')) }}">
+@endif
 
 @section('gfont')
 <link rel="preconnect" href="https://fonts.googleapis.com">
