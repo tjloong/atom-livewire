@@ -192,8 +192,9 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.checkbox.marketing',
 
             'form.date.index',
-            'form.date.picker',
+            'form.date.range',
             'form.date.time',
+            'form.date.datetime',
 
             'page-header.index',
             'page-header.back',

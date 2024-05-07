@@ -1,6 +1,6 @@
 <div class="max-w-screen-xl mx-auto">
     <x-heading title="Dashboard" 2xl>
-        <x-form.date wire:model="filters.date_range" :label="false" range/>
+        <x-form.date.range wire:model="filters.date_range" :label="false"/>
     </x-heading>
     
     <div class="flex flex-col gap-6">
