@@ -1,25 +1,17 @@
-<div wire:ignore
-    x-data="{
-        sortable: null,
-        setChildren (labelId) {
-            $el.removeAttribute('wire:ignore')
-            $wire.setChildren(labelId).then(() => $el.setAttribute('wire:ignore', true))
-        },
-    }"
-    x-init="sortable = new Sortable($el, { onEnd: () => {
-        const id = Array.from($el.querySelectorAll('[data-sortable-id]'))
-            .map(el => el.getAttribute('data-sortable-id'))
-
-        $wire.sort(id)
-    }})"
+<div
+    wire:ignore
+    x-sort="() => $wire.sort(
+        Array.from($el.querySelectorAll(`[data-id]`)).map(el => (el.getAttribute('data-id')))
+    )"
     class="flex flex-col divide-y">
     @foreach ($labels as $label)
         @php $count = $label->children()->count() @endphp
-        <div 
-            class="flex flex-col divide-y rounded hover:ring-1 hover:ring-theme hover:ring-offset-1"
-            data-sortable-id="{{ $label->id }}">
+        <div
+            x-sort:item
+            data-id="{{ $label->id }}"
+            class="flex flex-col divide-y rounded hover:ring-1 hover:ring-theme hover:ring-offset-1">
             <div class="p-2 flex items-center gap-3">
-                <div class="shrink-0 px-2 cursor-move text-gray-400">
+                <div x-sort:handle class="shrink-0 px-2 cursor-move text-gray-400">
                     <x-icon name="sort"/>
                 </div>
 
