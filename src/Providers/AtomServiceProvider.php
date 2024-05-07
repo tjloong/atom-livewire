@@ -35,6 +35,14 @@ class AtomServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
+            // basset cache paths
+            config([
+                'backpack.basset.view_paths' => [
+                    resource_path('views'),
+                    atom_path('resources/views'),
+                ],
+            ]);
+
             $this->publishes([
                 __DIR__.'/../../publishes/app' => base_path('app'),
                 __DIR__.'/../../publishes/config' => base_path('config'),

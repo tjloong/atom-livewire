@@ -1,14 +1,6 @@
 @extends('atom::layout', [
     'indexing' => current_route('web.*', 'register'),
     'analytics' => current_route('web.*', 'register', 'app.onboarding.completed'),
-    'cdn' => current_route('app.*') ? [
-        'ckeditor', 
-        'sortable',
-    ] : [
-        'clipboard',
-        'swiper',
-        'recaptcha',
-    ],
 ])
 
 @section('content')

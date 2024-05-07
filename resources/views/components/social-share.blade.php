@@ -1,14 +1,4 @@
-<div
-    x-data="{
-        copy (url) {
-            navigator.clipboard.writeText(url).then(() => this.$dispatch('toast', {
-                message: '{{ __('URL copied.') }}'
-            }))
-        },
-    }"
-    x-init="Sharer.init()"
-    class="inline-block"
->
+<div x-data x-init="Sharer.init()" class="inline-block">
     <x-dropdown right="{{ $attributes->get('right') }}">
         <x-slot:anchor>
             <x-button :label="$attributes->get('label', 'Share')" icon="share-alt"/>
@@ -32,7 +22,12 @@
             label="Copy site link"
             icon="link"
             href="#"
-            x-on:click.prevent="copy('{{ $attributes->get('url') }}')"
-        />
+            x-on:click.prevent="$clipboard('{{ $attributes->get('url') }}').then(() => $dispatch('toast', {
+                message: '{{ tr('app.label.url-copied') }}',
+            }))"/>
     </x-dropdown>
 </div>
+
+@pushOnce('cdn')
+@basset('https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js')
+@endPushOnce

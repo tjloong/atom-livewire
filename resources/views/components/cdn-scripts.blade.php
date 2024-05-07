@@ -1,8 +1,5 @@
 @props([
     'cdns' => [
-        'apexcharts' => [
-            'https://cdn.jsdelivr.net/npm/apexcharts',
-        ],
         'chartjs' => [
             'https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js',
         ],
@@ -12,9 +9,6 @@
         ],
         'shuffle' => [
             'https://cdn.jsdelivr.net/npm/shufflejs@6.1.0/dist/shuffle.min.js',
-        ],
-        'social-share' => [
-            'https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js',
         ],
     ],
     'libs' => $attributes->get('libs', []),

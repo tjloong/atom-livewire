@@ -5,17 +5,13 @@ import './prototype/element.js'
 import './helper/function.js'
 import Ajax from './helper/ajax.js'
 import Clipboard from './alpine/magic/clipboard.js'
-import { ulid } from 'ulid'
 
-// dayjs plugins
-if (window.dayjs) {
-    dayjs.extend(dayjs_plugin_utc)
-    dayjs.extend(dayjs_plugin_relativeTime)
-}
-
-window.ulid = ulid
 window.dd = console.log.bind(console)
+window.ulid = ULID?.ulid
 window.ajax = (url) => (new Ajax(url))
+
+window.dayjs?.extend(dayjs_plugin_utc)
+window.dayjs?.extend(dayjs_plugin_relativeTime)
 
 document.addEventListener('alpine:init', () => {
     Alpine.magic('clipboard', Clipboard)

@@ -21,21 +21,9 @@
 <x-analytics.fbpixel/>
 @endif
 
-@section('cdn')
-@foreach ([
-    'dayjs',
-    'flatpickr',
-    'fontawesome',
-    'sortable',
-    'alpinejs/anchor',
-    'alpinejs/collapse',
-    'alpinejs/tooltip',
-] as $cdnname)
-@cdn($cdnname)
-@endforeach
+@section('vite')
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 @show
-
-@stack('cdn')
 
 @section('gfont')
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,15 +31,30 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ str(app()->currentLocale())->is('zh*') ? 'Noto+Sans+SC' : 'Inter' }}:wght@100;300;400;500;700;900&display=swap">
 @show
 
-@vite($vite ?? [
-    'resources/css/app.css',
-    'resources/js/app.js',
-])
+@basset("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js")
+@basset("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css")
+
+@stack('cdn')
+@section('cdn')
+@basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/dayjs.min.js')
+@basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/utc.js')
+@basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/relativeTime.js')
+@basset('https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js')
+@basset('https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css')
+@basset('https://cdn.jsdelivr.net/npm/ulid@2.3.0/dist/index.umd.min.js')
+@basset('https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.13.10/dist/cdn.min.js', true, ['defer' => true])
+@basset('https://cdn.jsdelivr.net/npm/@alpinejs/sort@3.13.10/dist/cdn.min.js', true, ['defer' => true])
+@basset('https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.13.10/dist/cdn.min.js', true, ['defer' => true])
+@basset('https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.13.10/dist/cdn.min.js', true, ['defer' => true])
+@basset('https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.13.10/dist/cdn.min.js', true, ['defer' => true])
+@basset('https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-tooltip@2.0.0/dist/cdn.min.js', true, ['defer' => true])
+@basset('https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.min.css')
+@show
+
+@basset('https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js', true, ['defer' => true])
 
 @livewireScripts
 @livewireStyles
-
-@cdn('alpinejs')
 
 @stack('scripts')
 </head>
