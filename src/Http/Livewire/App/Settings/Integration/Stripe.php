@@ -39,6 +39,6 @@ class Stripe extends Component
 
         settings($this->settings);
 
-        $this->popup('stripe.alert.updated');
+        $this->popup('app.alert.updated');
     }
 }
