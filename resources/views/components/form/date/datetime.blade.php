@@ -6,23 +6,20 @@
             value: @entangle($attributes->wire('model')),
             show: false,
             date: null,
-            time: null,
+            hr: null,
+            min: null,
+            am: null,
             calendar: null,
 
             get formatted () {
-                let body = [this.date]
+                let parser = dayjs(this.value)
+                if (!parser.isValid()) return null
 
-                let time = this.time
-                let parser = dayjs(`1970-01-01 ${time}`, 'YYYY-MM-DD HH:mm:ss')
-                if (parser.isValid()) body.push(parser.format('hh:mm A'))
-
-                return body.filter(Boolean).join(' ')
+                return parser.format('DD MMM YYYY hh:mm A')
             },
     
             init () {
                 this.parse()
-                this.$watch('date', () => this.setDatetime())
-                this.$watch('time', () => this.setDatetime())
                 this.$watch('value', (value, old) => {
                     if (value !== old) this.parse()
                 })
@@ -33,7 +30,9 @@
                 let valid = parser.isValid()
 
                 this.date = valid ? parser.format('YYYY-MM-DD') : null
-                this.time = valid ? parser.format('HH:mm:ss') : null
+                this.hr = valid ? parser.format('hh') : null
+                this.min = valid ? parser.format('mm') : null
+                this.am = valid ? parser.format('A') : null
             },
     
             open () {
@@ -43,7 +42,7 @@
     
             close () {
                 this.show = false
-                this.$nextTick(() => this.destroyCalendar())
+                setTimeout(() => this.destroyCalendar(), 300)
             },
 
             clear () {
@@ -52,14 +51,14 @@
             },
 
             setDatetime () {
-                if (!this.date && !this.time) this.value = null
-                else if (this.date && !this.time) this.date = null
-                else if (!this.date && this.time) this.date = dayjs().format('YYYY-MM-DD')
-                else {
-                    let datetime = dayjs(`${this.date} ${this.time}`, 'YYYY-MM-DD hh:mm A')
-                    this.value = datetime.utc().toISOString()
-                    this.calendar.setDate(this.date)
-                }
+                if (!this.date && !this.hr && !this.min && !this.am) this.value = null
+                else if (!this.date && this.hr === '--' && this.min === '--' && this.am === '--') this.value = null
+                else if (!this.date || this.hr === '--' || this.min === '--' || this.am === '--') return
+
+                let datetime = `${this.date} ${this.hr}:${this.min} ${this.am}`
+                let parser = dayjs(datetime, 'YYYY-MM-DD h:mm A')
+
+                this.value = parser.isValid() ? parser.utc().toISOString() : null
             },
     
             createCalendar () {
@@ -83,7 +82,8 @@
         }"
         x-modelable="value"
         x-on:click.away="close()"
-        x-on:keydown.esc="close()"
+        x-on:keydown.esc.stop="close()"
+        x-on:keydown.down="!show && open()"
         {{ $attributes->except(['wire:model', 'wire:model.defer']) }}>
         <button type="button" 
             x-ref="anchor"
@@ -92,7 +92,7 @@
             <div class="shrink-0 text-gray-400"><x-icon name="calendar"/></div>
 
             <div class="grow flex items-center gap-2">
-                <input type="text" placeholder="{{ tr('app.label.select-date') }}" readonly
+                <input type="text" placeholder="{{ tr('app.label.select-datetime') }}" readonly
                     x-bind:value="formatted"
                     class="transparent grow cursor-pointer">
             </div>
@@ -100,7 +100,7 @@
             <div class="shrink-0">
                 <div
                     x-show="value"
-                    x-on:click="clear()"
+                    x-on:click.stop="clear()"
                     class="cursor-pointer text-gray-400 hover:text-gray-600">
                     <x-icon name="xmark"/>
                 </div>
@@ -113,12 +113,44 @@
             x-ref="dropdown"
             x-show="show"
             x-anchor.bottom-start.offset.4="$refs.anchor"
-            x-on:mouseout="pointer = null"
+            x-on:input.stop="$nextTick(() => setDatetime())"
             x-transition.opacity.duration.300
-            class="bg-white rounded-md shadow-lg border z-10 flex flex-col divide-y overflow-hidden">
+            class="bg-white rounded-md shadow-lg border z-10 flex flex-col overflow-hidden">
             <div x-ref="calendar"></div>
-            <div x-show="show" class="p-2">
-                <x-form.date.time x-model="time"/>
+            <div class="p-3 border-t mt-1">
+                <x-form.field label="app.label.time">
+                    <div class="form-input flex items-center gap-3">
+                        <div class="shrink-0 text-gray-400">
+                            <x-icon name="clock"/>
+                        </div>
+            
+                        <div class="grow flex items-center gap-3">
+                            <select x-model="hr" class="appearance-none">
+                                <option selected>--</option>
+                                @foreach (range(1, 12) as $n)
+                                    <option>{{ str()->padLeft($n, 2, '0') }}</option>
+                                @endforeach
+                            </select>
+            
+                            <span class="font-bold">:</span>
+            
+                            <select x-model="min" class="appearance-none">
+                                <option selected>--</option>
+                                @foreach (range(0, 59) as $n)
+                                    <option>{{ str()->padLeft($n, 2, '0') }}</option>
+                                @endforeach
+                            </select>
+            
+                            <span class="font-bold">:</span>
+            
+                            <select x-model="am" class="appearance-none">
+                                <option selected>--</option>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>            
+                </x-form.field>
             </div>
         </div>
     </div>

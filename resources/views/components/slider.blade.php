@@ -1,13 +1,13 @@
 @php
-    $config = [
-        'nav' => $attributes->get('nav', true),
-        'loop' => $attributes->get('loop', true),
-        'arrows' => $attributes->get('arrows', true),
-        'autoplay' => $attributes->get('autoplay', 2500),
-        'adaptiveHeight' => $attributes->get('adaptiveHeight', false),
-    ];
+$config = [
+    'nav' => $attributes->get('nav', true),
+    'loop' => $attributes->get('loop', true),
+    'arrows' => $attributes->get('arrows', true),
+    'autoplay' => $attributes->get('autoplay', 2500),
+    'adaptiveHeight' => $attributes->get('adaptiveHeight', false),
+];
 
-    $except = ['nav', 'loop', 'arrows', 'autoplay', 'adaptiveHeight'];
+$except = ['nav', 'loop', 'arrows', 'autoplay', 'adaptiveHeight'];
 @endphp
 
 <div {{ $attributes }}>

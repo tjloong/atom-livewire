@@ -35,7 +35,7 @@
             </div>
 
             @if (data_get($children, 'parent_id') === $label->id)
-                <div x-on:click.stop x-on:sorted.stop class="px-2">
+                <div x-on:click.stop class="px-2">
                     @livewire(
                         'app.label.listing',
                         ['labels' => data_get($children, 'labels')],
