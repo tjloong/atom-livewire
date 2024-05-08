@@ -103,12 +103,18 @@ class Banner extends Model
     // scope for placement
     public function scopePlacement($query, $placement = null) : void
     {
+        if (!$placement) return;
+
         $query->where(fn($q) => $q
-            ->whereRaw('(
+            ->when($placement === 'any', fn($q) => $q->whereRaw('(
                 `placement` is null
                 or (json_contains(`placement`, json_array()) and json_length(`placement`) = 0)
-            )')
-            ->when($placement, fn($q) => $q->orWhereJsonContains('placement', (array) $placement))
+            )'))
+            ->when($placement && $placement !== 'any', function($q) use ($placement) {
+                foreach ((array) $placement as $value) {
+                    $q->orWhereJsonContains('placement', $value);
+                }
+            })
         );
     }
 
