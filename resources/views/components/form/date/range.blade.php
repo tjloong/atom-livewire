@@ -141,9 +141,9 @@
 
             <template x-if="from && to">
                 <div class="grow flex items-center gap-3">
-                    <div x-text="from?.toDateString()" class="grow text-center truncate"></div>
+                    <div x-text="from?.toDateString()" class="px-3 truncate"></div>
                     <x-icon name="arrow-right" class="shrink-0 text-gray-400"/>
-                    <div x-text="to?.toDateString()" class="grow text-center truncate"></div>
+                    <div x-text="to?.toDateString()" class="px-3 truncate"></div>
                 </div>
             </template>
 

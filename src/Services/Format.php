@@ -108,17 +108,25 @@ class Format
     // currency
     public function currency() : mixed
     {
-        if (is_numeric($this->value)) {
-            $symbol = is_string($this->options) ? $this->options : data_get($this->options, 'symbol');
-            $rounding = data_get($this->options, 'rounding', false);
-            $bracket = data_get($this->options, 'bracket', false);
-            $amount = $rounding ? (round((float) $this->value * 2, 1)/2) : $this->value;
-            $value = $symbol ? ($symbol.' '.Number::format($amount, 2)) : Number::format($amount, 2);
-    
-            return ($bracket && $this->value < 0) ? '('.str($value)->replaceFirst('-', '').')' : $value;
-        }
+        if (!is_numeric($this->value)) return null;
 
-        return null;
+        $symbol = is_string($this->options) ? $this->options : data_get($this->options, 'symbol');
+        $rounding = data_get($this->options, 'rounding', false);
+        $bracket = data_get($this->options, 'bracket', false);
+        $amount = $rounding ? (round((float) $this->value * 2, 1)/2) : $this->value;
+        $value = $symbol ? ($symbol.' '.Number::format($amount, 2)) : Number::format($amount, 2);
+
+        return ($bracket && $this->value < 0) ? '('.str($value)->replaceFirst('-', '').')' : $value;
+    }
+
+    // short number
+    public function short() : mixed
+    {
+        if (!is_numeric($this->value)) return null;
+
+        if ($this->value > 999999999) return round(($this->value/1000000000), 2).'B';
+        if ($this->value > 999999) return round(($this->value/1000000), 2).'M';
+        if ($this->value > 999) return round(($this->value/1000), 2).'K';
     }
 
     // address
