@@ -5,9 +5,8 @@ namespace Jiannius\Atom;
 use Jiannius\Atom\Traits\Livewire\WithDrawer;
 use Jiannius\Atom\Traits\Livewire\WithModal;
 use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
-use Livewire\Component as LivewireComponent;
 
-class Component extends LivewireComponent
+class Component extends \Livewire\Component
 {
     use WithDrawer;
     use WithModal;
@@ -23,14 +22,22 @@ class Component extends LivewireComponent
     public function render()
     {
         $class = static::class;
-        $view = str($class)
+
+        $path = str($class)
             ->replaceFirst('Jiannius\Atom\Http\\', '')
             ->replaceFirst('App\Http\\', '')
             ->split('/\\\/')
             ->map(fn($s) => str()->kebab($s))
             ->join('.');
+        
+        $view = view()->exists($path) ? $path : 'atom::'.$path;
 
-        if (view()->exists($view)) return view($view);
-        if (view()->exists('atom::'.$view)) return view('atom::'.$view);
+        // get layout
+        $route = optional(request()->route())->getName();
+        $prefix = $route ? collect(explode('.', $route))->first() : null;
+        $path = $prefix ? resource_path('views/layouts/'.$prefix.'.blade.php') : null;
+        $layout = $path && file_exists($path) ? 'layouts.'.$prefix : 'layouts.app';
+
+        return view($view)->layout($layout);
     }
 }
