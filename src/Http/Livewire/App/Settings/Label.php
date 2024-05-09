@@ -6,7 +6,7 @@ use Jiannius\Atom\Component;
 
 class Label extends Component
 {
-    public $type;
+    public $slug;
 
     protected $listeners = [
         'labelCreated' => '$refresh',
@@ -18,7 +18,7 @@ class Label extends Component
     public function getLabelsProperty() : mixed
     {
         return model('label')
-            ->where('type', $this->type)
+            ->where('type', $this->slug)
             ->orderBy('seq')
             ->orderBy('id')
             ->get();

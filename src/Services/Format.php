@@ -124,9 +124,14 @@ class Format
     {
         if (!is_numeric($this->value)) return null;
 
-        if ($this->value > 999999999) return round(($this->value/1000000000), 2).'B';
-        if ($this->value > 999999) return round(($this->value/1000000), 2).'M';
-        if ($this->value > 999) return round(($this->value/1000), 2).'K';
+        if ($this->value > 999999999) $val = round(($this->value/1000000000), 2).'B';
+        else if ($this->value > 999999) $val = round(($this->value/1000000), 2).'M';
+        else if ($this->value > 999) $val = round(($this->value/1000), 2).'K';
+        else $val = $this->value;
+
+        return is_string($this->options)
+            ? $this->options.' '.(string) $val
+            : (string) $val;
     }
 
     // address

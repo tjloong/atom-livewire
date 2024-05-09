@@ -3,7 +3,7 @@
 if (!function_exists('find_class')) {
     function find_class($path)
     {
-        $path = str($path)->replace('.', '\\');
+        $path = str($path)->replace('.', '\\')->replace('/', '\\');
         $path = collect(explode('\\', $path))->map(fn($val) => str()->studly($val))->join('\\');
 
         return collect([

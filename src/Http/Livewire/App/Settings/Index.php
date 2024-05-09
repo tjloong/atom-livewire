@@ -36,4 +36,19 @@ class Index extends Component
             ]]
         ];
     }
+
+    // get livewire property
+    public function getLivewireProperty() : array
+    {
+        $name = (string) str('app/settings/'.$this->tab)->replace('/', '.');
+        $params = [];
+
+        if (!find_livewire($name)) {
+            $split = collect(explode('/', $this->tab));
+            $name = 'app.settings.'.$split->shift();
+            $params = ['slug' => $split->join('/')];
+        }
+
+        return compact('name', 'params');
+    }
 }
