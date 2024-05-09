@@ -1,4 +1,7 @@
 @php
+$label = $attributes->get('label');
+$value = (string) $attributes->get('value');
+$color = $attributes->get('color');
 $callback = $attributes->get('callback');
 @endphp
 
@@ -6,9 +9,14 @@ $callback = $attributes->get('callback');
     wire:ignore
     x-cloak
     x-data="{
-        stats: null,
-        loading: true,
+        loading: false,
         callback: @js($callback),
+
+        stats: {
+            label: @js(tr($label)),
+            value: @js($value),
+            color: @js($color),
+        },
 
         get trend () {
             if (!this.stats.trend) return
@@ -51,7 +59,7 @@ $callback = $attributes->get('callback');
         },
 
         init () {
-            this.fetch()
+            if (this.callback) this.fetch()
         },
 
         fetch () {
@@ -76,7 +84,11 @@ $callback = $attributes->get('callback');
         <div class="flex flex-col gap-1 w-full h-full">
             <div>
                 <div x-show="stats.label" x-text="stats.label" class="font-medium text-gray-500"></div>
-                <div x-show="stats.value" x-text="stats.value" class="text-3xl font-bold"></div>
+                <div 
+                    x-show="stats.value"
+                    x-text="stats.value"
+                    x-bind:class="stats.color"
+                    class="text-3xl font-bold"></div>
             </div>
 
             <template x-if="trend">
@@ -177,8 +189,8 @@ $callback = $attributes->get('callback');
                                 },
                                 ...(chart.max.value ? {
                                     yaxis: {
-                                        min: chart.min?.value || 0,
-                                        max: chart.max.value * 1.08,  // add buffer to yaxis to prevent annotation being cut off
+                                        min: (chart.min?.value || 0) * 1.12,
+                                        max: chart.max.value * 1.12,  // add buffer to yaxis to prevent annotation being cut off
                                     },
                                     annotations: {
                                         yaxis: [{
@@ -203,7 +215,7 @@ $callback = $attributes->get('callback');
                             this.$watch('loading', loading => loading && this.apexchart?.destroy())
                         },
                     }"
-                    class="relative h-72 -mx-5 -mb-5">
+                    class="relative h-56 -mx-5 -mb-5">
                     <div x-show="chart.empty" class="w-full h-full flex items-center justify-center">
                         <x-inline label="app.label.no-data" icon="chart-line" class="font-medium text-gray-400"/>
                     </div>
