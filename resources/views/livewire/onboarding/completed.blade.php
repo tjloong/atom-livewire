@@ -3,15 +3,15 @@
 
     <div class="flex flex-col gap-1">
         <div class="text-3xl font-bold">
-            {{ tr('onboarding.completed.title') }}
+            {{ tr('app.onboarding.your-account-setup-is-completed') }}
         </div>
     
         <div class="text-gray-500 text-lg font-medium">
-            {{ tr('onboarding.completed.subtitle') }}
+            {{ tr('app.onboarding.we-are-excited-to-have-you') }}
         </div>
     </div>
 
     <div>
-        <x-button icon="house" label="common.label.back-to-home" md :href="$redirect ?? user()->home()"/>
+        <x-button icon="house" label="app.label.back-to-home" md :href="$redirect ?? user()->home()"/>
     </div>
 </div>

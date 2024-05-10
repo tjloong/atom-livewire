@@ -401,6 +401,14 @@ return [
         'youtube-url' => 'Youtube URL',
     ],
 
+    'onboarding' => [
+        'please-spend-a-minute' => 'Please spend a minute to complete the following',
+        'quickly-setup-your-account' => 'This will help us quickly setup your account',
+        'your-account-setup-is-completed' => 'Your account setup is completed. Thank you for signing up with us.',
+        'we-are-excited-to-have-you' => 'We are so excited to have you as our newest friend!',    
+        'ill-do-this-later' => 'I\'ll do this later',
+    ],
+
     'alert' => [
         'delete' => [
             'title' => 'Permanently Delete Record',

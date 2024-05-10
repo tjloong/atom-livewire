@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Onboarding;
+namespace Jiannius\Atom\Http\Livewire\Onboarding;
 
 use Jiannius\Atom\Component;
 
@@ -61,7 +61,7 @@ class Index extends Component
     public function reload() : mixed
     {
         return $this->isCompleted
-            ? to_route('app.onboarding.completed', ['redirect' => $this->redirect])
-            : to_route('app.onboarding', ['redirect' => $this->redirect]);
+            ? to_route('onboarding.completed', ['redirect' => $this->redirect])
+            : to_route('onboarding', ['redirect' => $this->redirect]);
     }
 }

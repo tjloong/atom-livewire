@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Onboarding;
+namespace Jiannius\Atom\Http\Livewire\Onboarding;
 
 use Jiannius\Atom\Component;
 

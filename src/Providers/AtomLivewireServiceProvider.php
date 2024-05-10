@@ -30,6 +30,10 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'web.page' => 'Web\Page',
             'web.contact-us' => 'Web\ContactUs',
 
+            // onboarding
+            'onboarding' => 'Onboarding\Index',
+            'onboarding.completed' => 'Onboarding\Completed',
+
             // auth
             'auth.login' => 'Auth\Login',
             'auth.register' => 'Auth\Register',
@@ -42,10 +46,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // send mail
             'app.send-mail' => 'App\SendMail',
-
-            // onboarding
-            'app.onboarding' => 'App\Onboarding\Index',
-            'app.onboarding.completed' => 'App\Onboarding\Completed',
 
             // share
             'app.share' => 'App\Share',

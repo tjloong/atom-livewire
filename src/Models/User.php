@@ -119,7 +119,7 @@ class User extends Authenticatable
     public function home() : string
     {
         return collect([
-            route('app.onboarding') => optional($this->signup)->status === enum('signup.status', 'NEW') && !session()->has('onboarding'),
+            route('onboarding') => $this->signup?->status?->is('NEW') && !session()->has('onboarding'),
             route('app.dashboard') => true,
         ])->filter()->keys()->first();
     }
