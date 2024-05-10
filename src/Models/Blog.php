@@ -79,15 +79,15 @@ class Blog extends Model
         if ($status) {
             $query->where(function($q) use ($status) {
                 foreach ((array) $status as $value) {
-                    $value = is_string($value) ? $value : $value->value;
+                    $value = enum('blog.status', $value);
 
-                    if ($value === enum('blog.status', 'DRAFT')->value) {
+                    if ($value->is('DRAFT')) {
                         $q->orWhereNull('blogs.published_at');
                     }
-                    elseif ($value === enum('blog.status', 'UPCOMING')->value) {
+                    elseif ($value->is('UPCOMING')) {
                         $q->orWhereRaw('(blogs.published_at is not null and blogs.published_at > now())');
                     }
-                    elseif ($value === enum('blog.status', 'PUBLISHED')->value) {
+                    elseif ($value->is('PUBLISHED')) {
                         $q->orWhereRaw('(blogs.published_at is not null and blogs.published_at <= now())');
                     }
                 }
