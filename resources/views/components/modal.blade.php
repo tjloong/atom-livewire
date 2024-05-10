@@ -11,24 +11,16 @@
         id: @js($id),
         show: @js($show),
         bgclose: @js($bgclose),
+
         open () {
-            this.setZIndex()
             this.show = true
+            $layering.zindex()
             document.body.style.overflow = 'hidden'
         },
+
         close () {
             this.show = false
-            document.body.style.overflow = 'auto'
-        },
-        setZIndex () {
-            const z = Array.from(document.querySelectorAll('.drawer.active'))
-                .concat(Array.from(document.querySelectorAll('.modal.active')))
-                .map(elm => (window.getComputedStyle(elm).getPropertyValue('z-index')))
-                .map(n => (+n))
-
-            this.$el.style.zIndex = z.length
-                ? Math.max(...z) + 1
-                : 40
+            if (!$layering.isEmpty()) document.body.style.overflow = 'auto'
         },
     }"
     x-show="show"
@@ -37,7 +29,8 @@
     x-on:close-modal.window="id === $event.detail && close()"
     x-on:open="open()"
     x-on:close="close()"
-    class="modal fixed inset-0 flex items-center justify-center"
+    x-bind:class="show && 'active'"
+    class="modal fixed z-40 inset-0 flex items-center justify-center"
     {{ $attributes->wire('close') }}>
     <div
         x-on:dblclick.stop="bgclose === 'dblclick' && $dispatch('close')"

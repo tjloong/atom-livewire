@@ -11,23 +11,16 @@
         id: @js($id),
         show: @js($show),
         bgclose: @js($bgclose),
+
         open () {
-            this.setZIndex()
             this.show = true
+            $layering.zindex()
             document.body.style.overflow = 'hidden'
         },
+
         close () {
             this.show = false
-            document.body.style.overflow = 'auto'
-        },
-        setZIndex () {
-            const z = Array.from(document.querySelectorAll('.drawer'))
-                .map(el => (window.getComputedStyle(el).getPropertyValue('z-index')))
-                .map(n => +n)
-
-            const max = Math.max(...z)
-
-            this.$el.style.zIndex = max + 1
+            if ($layering.isEmpty()) document.body.style.overflow = 'auto'
         },
     }"
     x-show="show"

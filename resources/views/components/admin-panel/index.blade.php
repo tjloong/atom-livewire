@@ -99,7 +99,7 @@
                             <div class="flex flex-col divide-y">
                                 @if (!current_route('app.*')) <x-dropdown.item label="layout.nav.back-to-app" icon="back" :href="user()->home()"/> @endif
                                 <x-dropdown.item label="layout.nav.settings" icon="gear" :href="route('app.settings')"/>
-                                <x-dropdown.item label="layout.nav.logout" icon="logout" :href="route('logout')"/>
+                                <x-dropdown.item label="layout.nav.logout" icon="logout" :href="route('auth.logout')"/>
                             </div>
                         @endisset
                     </x-dropdown>

@@ -35,6 +35,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'popup',
             'anchor',
             'drawer',
+            'inform',
             'inline',
             'loader',
             'slider',
@@ -48,28 +49,25 @@ class AtomComponentServiceProvider extends ServiceProvider
             'html-meta',
             'thumbnail',
             'breadcrumbs',
-            'cdn-scripts',
-            'alpine-data',
             'announcement',
             'media-object',
             'page-overlay',
             'social-share',
             'contact-card',
             'flip-countdown',
+            'avatar-bullets',
             'payment-gateway',
             'whatsapp-bubble',
             'placeholder-bar',
             'email-verification',
 
-            'sortable.index',
-            'sortable.item',
-            
+            'layout.index',
+            'layout.app.index',
+            'layout.app.nav',
+            'layout.app.layer',
+
             'alert.index',
             'alert.errors',
-            
-            'dashboard.chart',
-            'dashboard.listing',
-            'dashboard.statbox',
 
             'close.index',
             'close.delete',
@@ -195,9 +193,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.date.range',
             'form.date.time',
             'form.date.datetime',
-
-            'page-header.index',
-            'page-header.back',
         
             'tabs.index',
             'tabs.tab',
@@ -219,9 +214,6 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             'footer.index',
             'footer.pre',
-
-            'builder.hero',
-            'builder.testimonial',
         ];
 
         foreach ($components as $value) {
