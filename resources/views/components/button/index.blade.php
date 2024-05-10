@@ -1,6 +1,7 @@
 @php
     $label = $attributes->get('label');
-    $icon = array_filter(explode('--', $attributes->get('icon')));
+    $icon = $attributes->get('icon');
+    $iconsuffix = $attributes->get('icon-suffix');
     $position = $attributes->get('position', 'start');
     $href = $attributes->get('href');
     $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
@@ -51,9 +52,9 @@
         $inverted ? [
             'black' => 'bg-gray-200 text-gray-600 hover:text-white hover:bg-black focus:ring-black',
             'theme' => 'bg-theme-light text-theme hover:bg-theme hover:text-theme-inverted focus:ring-theme',
-            'green' => 'bg-green-100 text-green-500 hover:bg-green-500 hover:text-white focus:ring-green-500',
-            'red' => 'bg-red-100 text-red-500 hover:bg-red-500 hover:text-white focus:ring-red-500',
-            'blue' => 'bg-blue-100 text-blue-500 hover:bg-blue-500 hover:text-white focus:ring-blue-500',
+            'green' => 'bg-green-100 text-green-500 border border-red-200 hover:bg-green-500 hover:border-green-500 hover:text-white focus:ring-green-500',
+            'red' => 'bg-red-100 text-red-500 border border-red-200 hover:bg-red-500 hover:border-red-500 hover:text-white focus:ring-red-500',
+            'blue' => 'bg-blue-100 text-blue-500 border border-blue-200 hover:bg-blue-500 hover:border-blue-500 hover:text-white focus:ring-blue-500',
             'yellow' => 'bg-amber-100 text-amber-400 hover:bg-amber-400 hover:text-white focus:ring-amber-400',
             'gray' => 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-600 focus:ring-gray-200',
             'google' => 'bg-rose-100 text-rose-500 hover:bg-rose-500 hover:text-white focus:ring-rose-500',
@@ -96,26 +97,26 @@
     <a href="{{ $href }}" target="{{ $target }}" rel="{{ $rel }}" class="{{ $class }}" {{ $attributes->except($except) }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
-            @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon[0]" class="m-auto"/></div> @endif
+            @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
 
             @if (is_array($label)) {!! tr(...$label) !!}
             @else {!! tr($label) !!}
             @endif
 
-            @if ($icon && isset($icon[1])) <div class="shrink-0 flex"><x-icon :name="$icon[1]" class="m-auto"/></div> @endif
+            @if ($iconsuffix) <div class="shrink-0 flex"><x-icon :name="$iconsuffix" class="m-auto"/></div> @endif
         @endif
     </a>
 @else
     <button class="{{ $class }}" {{ $attributes->merge(['type' => 'button'])->except($except) }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
-            @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon[0]" class="m-auto"/></div> @endif
+            @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif
 
             @if (is_array($label)) {!! tr(...$label) !!}
             @else {!! tr($label) !!}
             @endif
 
-            @if ($icon && isset($icon[1])) <div class="shrink-0 flex"><x-icon :name="$icon[1]" class="m-auto"/></div> @endif
+            @if ($iconsuffix) <div class="shrink-0 flex"><x-icon :name="$iconsuffix" class="m-auto"/></div> @endif
         @endif
     </button>
 @endif
