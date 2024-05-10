@@ -222,4 +222,9 @@ fbq('track', 'PageView');
 
 {{ $slot }}
 </body>
+
+<x-notify.alert/>
+<x-notify.confirm/>
+<x-notify.toast/>
+<x-loader/>
 </html>

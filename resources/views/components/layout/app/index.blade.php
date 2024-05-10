@@ -24,11 +24,6 @@
 @endisset
 </x-slot:cdn>
 
-<x-notify.alert/>
-<x-notify.confirm/>
-<x-notify.toast/>
-<x-loader/>
-
 <div 
     x-cloak 
     x-data="{ nav: null }"
