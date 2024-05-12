@@ -17,7 +17,7 @@ class Listing extends Component
     protected $listeners = [
         'fileUpdated' => '$refresh',
         'fileDeleted' => '$refresh',
-        'fileUploaded' => '$refresh',
+        'filesUploaded' => '$refresh',
     ];
 
     // get query property
@@ -31,7 +31,7 @@ class Listing extends Component
     {
         if ($this->tableCheckboxes) {
             model('file')->whereIn('id', $this->tableCheckboxes)->get()->each(fn($q) => $q->delete());
-            $this->popup('file.alert.delete');
+            $this->popup('app.alert.delete');
             $this->reset('tableCheckboxes');
         }
     }

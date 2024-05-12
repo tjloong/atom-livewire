@@ -11,26 +11,39 @@
 
 <div
     x-data="{
-        loading: false,
+        jobs: [],
         endpoint: @js(route('__file.upload')),
 
-        upload (files) {
-            if (this.validate(files)) {
-                const formdata = new FormData()
+        get loading () {
+            return (this.jobs || []).some(job => (!job.completed))
+        },
 
-                Array.from(files).forEach(file => {
-                    formdata.append('files[]', file)
-                    formdata.append('path', @js($path))
-                    formdata.append('visibility', @js($visibility))
-                })
+        upload () {
+            let job = this.jobs.find(job => (!job.completed))
 
-                this.loading = true
-
+            if (job) {
+                let formdata = new FormData()            
+                formdata.append('files[]', job.file)
+                formdata.append('path', @js($path))
+                formdata.append('visibility', @js($visibility))
+    
                 ajax(this.endpoint).post(formdata).then(res => {
-                    this.$dispatch('files-uploaded', res)
-                    this.$wire.emit('fileUploaded')
-                }).finally(() => this.loading = false)
+                    job.res = res
+                    job.completed = true
+                    this.upload()
+                })
             }
+            else {
+                let res = this.jobs.pluck('res').flat()
+                this.$dispatch('files-uploaded', res)
+                this.$wire.emit('filesUploaded')
+            }
+        },
+
+        queue (files) {
+            if (!this.validate(files)) return
+            this.jobs = Array.from(files).map(file => ({ file, completed: false }))
+            this.upload()
         },
 
         validate (files) {
@@ -59,13 +72,13 @@
             return true
         },
     }"
-    x-on:dropped="upload($event.detail)"
-    x-on:pasted="upload($event.detail)"
+    x-on:dropped="queue($event.detail)"
+    x-on:pasted="queue($event.detail)"
     {{ $attributes->merge(['class' => 'relative w-full'])->only('class') }}
     {{ $attributes->whereStartsWith('x-') }}>
     <input type="file" accept="{{ $accept }}" class="hidden" {{ $multiple ? 'multiple' : null }}
         x-ref="input"
-        x-on:change="upload($event.target.files)"
+        x-on:change="queue($event.target.files)"
         x-on:input.stop>
 
     <div
@@ -80,56 +93,17 @@
         @endif
     </div>
 
-    <div x-show="loading" class="flex flex-col items-center justify-center gap-3">
-        <x-icon name="upload" class="text-theme"/>
-        <i class="uploader-loader mx-auto"></i>
+    <div x-show="loading" class="flex flex-col gap-1 text-sm">
+        <div class="text-sm text-gray-500">{{ tr('app.label.processing') }}</div>
+
+        <template x-for="job in jobs" hidden>
+            <div class="flex items-center gap-3">
+                <div x-text="job.file.name" class="grow truncate"></div>
+                <div class="shrink-0 w-20">
+                    <i x-show="!job.completed" class="uploader-loader mx-auto"></i>
+                    <div x-show="job.completed" class="w-full h-1 rounded-full bg-green-500"></div>
+                </div>
+            </div>
+        </template>
     </div>
 </div>
-
-@pushOnce('scripts')
-<style>
-.uploader-loader {
-	--color: gray;
-	--size-mid: 6vmin;
-	--size-dot: 1.5vmin;
-	--size-bar: 0.4vmin;
-	--size-square: 3vmin;
-	
-	display: block;
-	position: relative;
-	width: 50%;
-	display: grid;
-	place-items: center;
-}
-.uploader-loader::before,
-.uploader-loader::after {
-	content: '';
-	box-sizing: border-box;
-	position: absolute;
-}
-.uploader-loader::before {
-	height: var(--size-bar);
-	width: 6vmin;
-	background-color: var(--color);
-	animation: uploader-loader 0.8s cubic-bezier(0, 0, 0.03, 0.9) infinite;
-}
-
-@keyframes uploader-loader {
-	0%, 44%, 88.1%, 100% {
-		transform-origin: left;
-	}
-	
-	0%, 100%, 88% {
-		transform: scaleX(0);
-	}
-	
-	44.1%, 88% {
-		transform-origin: right;
-	}
-	
-	33%, 44% {
-		transform: scaleX(1);
-	}
-}
-</style>
-@endPushOnce

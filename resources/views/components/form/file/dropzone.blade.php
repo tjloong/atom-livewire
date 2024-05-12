@@ -21,7 +21,7 @@
         <input type="text" class="transparent w-full" placeholder="{{ tr('app.label.paste-to-upload') }}"
             x-on:click.stop
             x-on:input="$event.target.value = ''"
-            x-on:paste.window="() => {
+            x-on:paste.stop="() => {
                 let items = $event.clipboardData.items
                 let files = Array.from(items)
                     .filter(item => (item.kind === 'file'))

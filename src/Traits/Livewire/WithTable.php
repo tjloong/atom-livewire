@@ -145,7 +145,7 @@ trait WithTable
             ->delete();
 
         $this->reset('tableCheckboxes');
-        $this->popup('app.label.deleted');
+        $this->popup('app.alert.deleted');
     }
 
     // empty trashed
@@ -161,6 +161,6 @@ trait WithTable
                 'tableCheckboxes',
             ]);
 
-            $this->popup('app.label.trash-cleared');
+            $this->popup('app.alert.trash-cleared');
     }
 }
