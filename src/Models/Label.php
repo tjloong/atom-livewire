@@ -29,7 +29,11 @@ class Label extends Model
         'is_locked' => 'boolean',
     ];
 
-    protected $appends = ['name_locale'];
+    protected $appends = [
+        'name_locale',
+        'color_value',
+        'color_value_inverted',
+    ];
 
     protected $slugify = ['name.en' => 'slug'];
 
@@ -74,6 +78,22 @@ class Label extends Model
 
                 return $parents->reverse()->values();
             }
+        );
+    }
+
+    // attribute for color value
+    protected function colorValue() : Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->color ? color($this->color)->value() : null,
+        );
+    }
+
+    // attribute for color value inverted
+    protected function colorValueInverted() : Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->color ? color($this->color)->inverted()->value() : null,
         );
     }
 

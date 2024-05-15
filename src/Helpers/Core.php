@@ -555,7 +555,7 @@ if (!function_exists('enum')) {
     {
         $enum = new \Jiannius\Atom\Services\Enum($name);
 
-        if ($getter) {
+        if ($getter !== null) {
             if (
                 $getter instanceof UnitEnum
                 || $getter instanceof BackedEnum
