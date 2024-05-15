@@ -32,7 +32,7 @@
     color: {{ $inverted ? color($color) : color($color)->inverted() }};
     border: 1px solid {{ color($color) }};
 " {{ $attributes->class([
-    'px-2 inline-block font-semibold rounded-md',
+    'px-2 inline-block font-medium rounded-md',
     $lowercase ? 'lowercase' : null,
     [
         'xs' => 'text-xs',

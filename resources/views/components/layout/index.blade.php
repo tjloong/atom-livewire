@@ -48,6 +48,7 @@ $cdnlist = collect([
     'flatpickr' => false,
     'ulid' => false,
     'ckeditor' => false,
+    'apexcharts' => false,
     'keen-slider' => false,
     'fullcalendar' => false,
     'alpinejs/mask' => false,
@@ -139,6 +140,10 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 @endif
 @if ($cdnlist->get('fullcalendar'))
 @basset('https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js')
+@endif
+@if ($cdnlist->get('apexcharts'))
+@basset('https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js')
+@basset('https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.css')
 @endif
 @if ($cdnlist->get('ulid'))
 @basset('https://cdn.jsdelivr.net/npm/ulid@2.3.0/dist/index.umd.min.js')
