@@ -48,22 +48,17 @@
                     : (this.value === null || this.value === undefined)
             },
 
-            get filtered () {
-                if (this.callback || empty(this.search)) return this.options
-
-                return this.options.filter(opt => {
-                    let haystack = `${opt.label} ${opt.small || ''} ${opt.caption || ''}`.trim().toLowerCase()
-                    let needle = this.search.toLowerCase()
-                    return haystack.includes(needle)
-                })
+            get noOptions () {
+                return !this.options.filter(opt => (!opt.hidden)).length
             },
 
             init () {
                 if (this.callback) {
                     if (!this.isEmpty) this.fetch()
                     this.$watch('search', () => this.fetch())
-                    this.$watch('value', value => !this.isEmpty && !this.selection && this.fetch())
+                    this.$watch('value', () => !this.isEmpty && !this.selection && this.fetch())
                 }
+                else this.$watch('search', () => this.filter())
             },
 
             open () {
@@ -86,6 +81,18 @@
                 this.pointer = null
             },
 
+            filter () {
+                this.options.forEach(opt => {
+                    let haystack = `${opt.label} ${opt.small} ${opt.caption}`.trim().toLowerCase()
+
+                    Object.assign(opt, {
+                        hidden: this.search && !haystack.includes(this.search.toLowerCase()),
+                    })
+                })
+
+                this.pointer = null
+            },
+
             fetch () {
                 this.loading = true
 
@@ -97,7 +104,7 @@
             },
 
             select (index) {
-                const opt = this.filtered[index]
+                const opt = this.options[index]
 
                 if (this.multiple) {
                     const index = this.value.indexOf(opt.value)
@@ -116,24 +123,28 @@
                     else this.value = null
                 }
                 else {
-                    const index = this.value.indexOf(opt.value)
+                    let index = this.value.indexOf(opt.value)
                     this.value.splice(index, 1)
                 }
             },
 
-            navigate (e) {
-                const isUp = e.key === 'ArrowUp'
-                const isDown = e.key === 'ArrowDown'
-                const max = this.filtered.length ? this.filtered.length - 1 : 0
-
+            navigate (dir) {
                 if (!this.dropdown) this.open()
                 else {
-                    if (this.pointer === null) this.pointer = 0
-                    else if (isDown) this.pointer++
-                    else if (isUp) this.pointer--
+                    let min = this.options.findIndex(opt => (!opt.hidden))
+                    let max = this.options.findLastIndex(opt => (!opt.hidden))
 
-                    if (this.pointer < 0) this.pointer = 0
-                    if (this.pointer > max) this.pointer = max
+                    if (this.pointer === null) this.pointer = min
+                    else if (dir === 'down' && this.pointer < max) this.pointer++
+                    else if (dir === 'up' && this.pointer > min) this.pointer--
+
+                    if (this.options[this.pointer]?.hidden && this.pointer > min && this.pointer < max) {
+                        this.navigate(dir)
+                    }
+                    else {
+                        let el = Array.from(this.$refs.options.querySelectorAll('li'))[this.pointer]
+                        el.scrollIntoView({ block: 'end' })
+                    }
                 }
             },
 
@@ -144,8 +155,8 @@
         }"
         x-modelable="value"
         x-on:click.away="close()"
-        x-on:keydown.down.stop="navigate"
-        x-on:keydown.up.stop="navigate"
+        x-on:keydown.down.stop="navigate('down')"
+        x-on:keydown.up.stop="navigate('up')"
         x-on:keydown.enter.prevent="select(pointer || 0)"
         x-on:keydown.esc.prevent="close()"
         {{ $attributes->except($except)}}>
@@ -178,7 +189,7 @@
                         </template>
                     </div>
                 </template>
-    
+
                 <template x-if="!isEmpty && !multiple">
                     <div x-text="selection?.label" class="grow text-left"></div>
                 </template>
@@ -228,70 +239,78 @@
             </template>
 
             <div class="flex flex-col divide-y">
-                <ul class="max-h-[250px] overflow-auto">
-                    <template x-for="(opt, i) in filtered" x-bind:key="`${random()}_${opt.value}`">
+                <ul x-ref="options" class="max-h-[250px] overflow-auto">
+                    <template x-for="(opt, i) in options" x-bind:key="`${random()}_${opt.value}`">
                         <li 
-                            x-bind:class="pointer === i ? 'bg-gray-50' : 'hover:bg-gray-50'"
+                            x-bind:class="{
+                                'hidden': opt.hidden,
+                                'bg-gray-50': pointer === i,
+                                'hover:bg-gray-50': pointer !== i,
+                            }"
                             x-on:mouseover="pointer = null"
                             x-on:click="select(i)" 
                             class="cursor-pointer border-b last:border-0">
-                            <div x-show="opt.is_group" class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
-                                <template x-if="opt.icon">
-                                    <i x-bind:class="opt.icon.split(' ').map(val => `fa-${val}`)"></i>
-                                </template>
-                                <div class="grow font-semibold" x-text="opt.label"></div>
-                                <x-icon name="chevron-down" class="shrink-0"/>
-                            </div>
-
-                            <div 
-                                x-show="!opt.is_group"
-                                x-bind:class="isSelected(opt) 
-                                    ? 'border-l-4 border-theme pl-3 pr-4'
-                                    : 'px-4 hover:bg-slate-50'"
-                                class="py-2 flex items-center gap-3 cursor-pointer">
-                                <template x-if="opt.color">
-                                    <div class="shrink-0 w-4 h-4 rounded-full shadow"
-                                        x-bind:style="{ backgroundColor: opt.color }"></div>
-                                </template>
-
-                                <template x-if="opt.avatar?.url || typeof opt.avatar === 'string'">
-                                    <div class="shrink-0 w-10 h-10 rounded-full border shadow">
-                                        <img x-bind:src="opt.avatar?.url || opt.avatar" class="w-full h-full object-cover">
+                            @if (isset($option) && $option->isNotEmpty())
+                                {{ $option }}
+                            @else
+                                <template x-if="opt.is_group">
+                                    <div x-show="opt.is_group" class="py-2 px-4 flex items-center gap-3 font-semibold bg-gray-100">
+                                        <template x-if="opt.icon">
+                                            <i x-bind:class="opt.icon.split(' ').map(val => `fa-${val}`)"></i>
+                                        </template>
+                                        <div class="grow font-semibold" x-text="opt.label"></div>
+                                        <x-icon name="chevron-down" class="shrink-0"/>
                                     </div>
                                 </template>
 
-                                <template x-if="typeof opt.avatar === 'object' && !opt.avatar?.url && opt.avatar?.placeholder">
-                                    <div class="shrink-0 w-10 h-10 rounded-full bg-gray-500 text-gray-100 shadow flex items-center justify-center">
-                                        <div class="font-bold" x-text="opt.avatar?.placeholder.substring(0, 2).toUpperCase()"></div>
-                                    </div>
-                                </template>
+                                <div 
+                                    x-show="!opt.is_group"
+                                    x-bind:class="isSelected(opt) ? 'border-l-4 border-theme pl-3 pr-4' : 'px-4 hover:bg-slate-50'"
+                                    class="py-2 flex items-center gap-3 cursor-pointer">
+                                    <template x-if="opt.color">
+                                        <div class="shrink-0 w-4 h-4 rounded-full shadow"
+                                            x-bind:style="{ backgroundColor: opt.color }"></div>
+                                    </template>
 
-                                <template x-if="opt.hasOwnProperty('flag')">
-                                    <div class="shrink-0 w-5 h-5 flex">
-                                        <img x-show="opt.flag" x-bind:src="opt.flag" class="w-full object-contain m-auto">
-                                        <div x-show="!opt.flag" class="w-full h-full border rounded bg-gray-100"></div>
-                                    </div>
-                                </template>
-
-                                <div class="grow">
-                                    <div class="flex items-center gap-3">
-                                        <div class="grow grid">
-                                            <div x-text="opt.label" class="truncate"></div>
+                                    <template x-if="opt.avatar?.url || typeof opt.avatar === 'string'">
+                                        <div class="shrink-0 w-10 h-10 rounded-full border shadow">
+                                            <img x-bind:src="opt.avatar?.url || opt.avatar" class="w-full h-full object-cover">
                                         </div>
-                                        <div x-text="opt.remark" class="shrink-0 text-right text-sm text-gray-500 font-medium"></div>
-                                    </div>
+                                    </template>
 
-                                    <div class="flex items-center gap-3">
-                                        <div class="grow grid">
-                                            <div class="text-sm text-gray-500 truncate" x-text="opt.small || opt.caption"></div>
+                                    <template x-if="typeof opt.avatar === 'object' && !opt.avatar?.url && opt.avatar?.placeholder">
+                                        <div class="shrink-0 w-10 h-10 rounded-full bg-gray-500 text-gray-100 shadow flex items-center justify-center">
+                                            <div class="font-bold" x-text="opt.avatar?.placeholder.substring(0, 2).toUpperCase()"></div>
+                                        </div>
+                                    </template>
+
+                                    <template x-if="opt.hasOwnProperty('flag')">
+                                        <div class="shrink-0 w-5 h-5 flex">
+                                            <img x-show="opt.flag" x-bind:src="opt.flag" class="w-full object-contain m-auto">
+                                            <div x-show="!opt.flag" class="w-full h-full border rounded bg-gray-100"></div>
+                                        </div>
+                                    </template>
+
+                                    <div class="grow">
+                                        <div class="flex items-center gap-3">
+                                            <div class="grow grid">
+                                                <div x-text="opt.label" class="truncate"></div>
+                                            </div>
+                                            <div x-text="opt.remark" class="shrink-0 text-right text-sm text-gray-500 font-medium"></div>
+                                        </div>
+
+                                        <div class="flex items-center gap-3">
+                                            <div class="grow grid">
+                                                <div class="text-sm text-gray-500 truncate" x-text="opt.small || opt.caption"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         </li>
                     </template>
 
-                    <template x-if="!loading && !filtered.length">
+                    <template x-if="!loading && noOptions">
                         <div class="px-5">
                             <x-no-result xs/>
                         </div>
