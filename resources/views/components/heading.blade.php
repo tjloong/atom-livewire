@@ -24,7 +24,7 @@
             @isset($title)
                 {{ $title }}
             @else
-                <div class="truncate {{ collect([
+                <div class="grow {{ collect([
                     'text-base font-semibold' => $attributes->get('sm'),
                     'text-lg font-semibold' => $attributes->get('lg'),
                     'text-2xl font-bold' => $attributes->get('2xl'),

@@ -26,9 +26,25 @@ class Layering
         this.el.style.zIndex = max + 1
     }
 
+    lockScroll () {
+        document.body.style.overflow = 'hidden'
+    }
+
+    unlockScroll () {
+        document.body.style.overflow = 'auto'
+    }
+
     isEmpty (category = null) {
         if (category) return !this[category].length
         else return !this.all().length
+    }
+
+    isActive (id) {
+        let layers = Array.from(document.querySelectorAll(`[data-layer-id="${id}"].active`))
+        let modals = Array.from(document.querySelectorAll(`[data-modal-id="${id}"].active`))
+        let drawers = Array.from(document.querySelectorAll(`[data-drawer-id="${id}"].active`))
+
+        return layers.concat(modals).concat(drawers).length > 0
     }
 }
 

@@ -1,6 +1,5 @@
 @php
-    $id = $attributes->get('id') ?? $this->id;
-    $show = $attributes->get('show', false);
+    $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
     $bgclose = $attributes->get('bg-close', true);
     $render = $slot->isNotEmpty() && isset($this->isModalOpened) && $this->isModalOpened;
 @endphp
@@ -9,32 +8,33 @@
     x-cloak
     x-data="{
         id: @js($id),
-        show: @js($show),
         bgclose: @js($bgclose),
+        show: @entangle('isModalOpened'),
 
         open () {
             this.show = true
+            this.$dispatch('open')
             $layering.zindex()
-            document.body.style.overflow = 'hidden'
+            $layering.lockScroll()
         },
 
         close () {
             this.show = false
-            if (!$layering.isEmpty()) document.body.style.overflow = 'auto'
+            this.$dispatch('close')
+            if (!$layering.isEmpty()) $layering.unlockScroll()
         },
     }"
     x-show="show"
     x-transition.opacity.duration.200ms
     x-on:open-modal.window="id === $event.detail && open()"
     x-on:close-modal.window="id === $event.detail && close()"
-    x-on:open="open()"
-    x-on:close="close()"
     x-bind:class="show && 'active'"
+    data-modal-id="{{ $id }}"
     class="modal fixed z-40 inset-0 flex items-center justify-center"
     {{ $attributes->wire('close') }}>
     <div
-        x-on:dblclick.stop="bgclose === 'dblclick' && $dispatch('close')"
-        x-on:click.stop="bgclose === true && $dispatch('close')"
+        x-on:dblclick.stop="bgclose === 'dblclick' && close()"
+        x-on:click.stop="bgclose === true && close()"
         class="absolute inset-0 bg-black/60">
     </div>
 

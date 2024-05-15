@@ -1,5 +1,5 @@
 @php
-$id = $attributes->get('id') ?? $this->id;
+$id = $attributes->get('id') ?? $this->getName() ?? $this->id;
 $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOpened;
 @endphp
 
@@ -8,24 +8,24 @@ $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOp
     x-data="{
         id: @js($id),
         nav: null,
-        show: false,
+        show: @entangle('isLayerOpened'),
 
         open () {
             this.show = true
+            this.$dispatch('open')
             $layering.zindex()
-            document.body.style.overflow = 'hidden'
+            $layering.lockScroll()
             this.$el.style.top = document.querySelector('.app-layout-header').offsetHeight+'px'
         },
 
         close () {
             this.show = false
-            if ($layering.isEmpty()) document.body.style.overflow = 'auto'
+            this.$dispatch('close')
+            if ($layering.isEmpty()) $layering.unlockScroll()
         },
     }"
     x-show="show"
     x-transition.opacity.duration.300
-    x-on:open.stop="open()"
-    x-on:close.stop="close()"
     x-on:open-layer.window="id === $event.detail && open()"
     x-on:close-layer.window="id === $event.detail && close()"
     x-on:app-layout-nav-updated.window="nav = $event.detail"
@@ -34,11 +34,11 @@ $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOp
         'left-0 lg:left-60': !nav || nav === 'lg',
         'active': show,
     }"
+    data-layer-id="{{ $id }}"
     class="app-layout-layer fixed z-40 bottom-0 right-0 overflow-auto bg-gray-50 transition-all duration-200"
-    {{ $attributes->wire('close') }}>
+    {{ $attributes->except(['class', 'id']) }}>
     <div {{ $attributes->class([
-        'mx-auto p-5',
-        $attributes->get('class', 'max-w-screen-2xl'),
+        $attributes->get('class', 'max-w-screen-2xl mx-auto p-5 w-full h-full'),
     ])->only('class') }}>
         @isset ($top)
             {{ $top }}
@@ -47,7 +47,7 @@ $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOp
                 @if (($back ?? null)?->isNotEmpty())
                     {{ $back }}
                 @else
-                    <div class="shrink-0" x-on:click="$dispatch('close')">
+                    <div class="shrink-0" {{ ($back ?? null)?->attributes?->merge(['x-on:click' => 'close()']) }}>
                         <x-inline 
                             label="{{ ($back ?? null)?->attributes?->get('label') ?? 'app.label.back' }}" 
                             icon="back" 
@@ -57,13 +57,15 @@ $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOp
                 @endisset
 
                 @isset ($buttons)
-                    <div class="grow flex items-center justify-end flex-wrap gap-2">
+                    <div class="grow flex items-center md:justify-end flex-wrap gap-2">
                         {{ $buttons }}
                     </div>
                 @endisset
             </div>
         @endisset
 
-        {{ $slot }}
+        @if (isset($this->isLayerOpened) && $this->isLayerOpened)
+            {{ $slot }}
+        @endif
     </div>
 </div>

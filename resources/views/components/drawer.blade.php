@@ -1,5 +1,5 @@
 @php
-    $id = $attributes->get('id') ?? $this->id;
+    $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
     $show = $attributes->get('show', false);
     $bgclose = $attributes->get('bg-close', true);
     $render = $slot->isNotEmpty() && isset($this->isDrawerOpened) && $this->isDrawerOpened;
@@ -9,39 +9,41 @@
     x-cloak
     x-data="{
         id: @js($id),
-        show: @js($show),
         bgclose: @js($bgclose),
+        show: @entangle('isDrawerOpened'),
 
         open () {
             this.show = true
+            this.$dispatch('open')
             $layering.zindex()
-            document.body.style.overflow = 'hidden'
+            $layering.lockScroll()
         },
 
         close () {
             this.show = false
-            if ($layering.isEmpty()) document.body.style.overflow = 'auto'
+            this.$dispatch('close')
+            if ($layering.isEmpty()) $layering.unlockScroll()
         },
     }"
     x-show="show"
     x-transition.opacity.duration.200ms
     x-on:open-drawer.window="id === $event.detail && open()"
     x-on:close-drawer.window="id === $event.detail && close()"
-    x-on:open="open()"
-    x-on:close="close()"
+    x-on:keydown.escape.stop="close()"
     x-bind:class="show && 'active'"
+    data-drawer-id="{{ $id }}"
     class="drawer fixed inset-0 z-40"
-    {{ $attributes->wire('close') }}>
+    {{ $attributes->except(['class', 'id']) }}>
     <div
-        x-on:dblclick.stop="bgclose === 'dblclick' && $dispatch('close')"
-        x-on:click.stop="bgclose === true && $dispatch('close')"
+        x-on:dblclick.stop="bgclose === 'dblclick' && close()"
+        x-on:click.stop="bgclose === true && close()"
         class="fixed inset-0 bg-black/80 z-40">
     </div>
 
     <div class="fixed top-1 bottom-1 right-0 z-50 pl-2 w-full {{ $attributes->get('class', 'max-w-screen-sm') }}">
         <div class="bg-white rounded-l-lg shadow-lg overflow-hidden flex flex-col h-full">
             <div class="shrink-0 bg-white py-3 px-6 flex flex-wrap items-center justify-between gap-3 border-b rounded-t-lg">
-                <div class="cursor-pointer" x-on:click="$dispatch('close')">
+                <div class="cursor-pointer" x-on:click="close()">
                     <x-icon name="arrow-right-long" class="text-lg"/>
                 </div>
 
