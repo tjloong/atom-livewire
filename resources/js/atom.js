@@ -11,6 +11,7 @@ import Clipboard from './alpine/magic/clipboard.js'
 window.dd = console.log.bind(console)
 window.ulid = () => (ULID.ulid())
 window.ajax = (url) => (new Ajax(url))
+window.href = (url) => window.location = url
 
 window.dayjs?.extend(dayjs_plugin_utc)
 window.dayjs?.extend(dayjs_plugin_relativeTime)

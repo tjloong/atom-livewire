@@ -44,3 +44,7 @@ String.prototype.slug = function() {
         .replace(/^-+/, '') // Trim - from start of text
         .replace(/-+$/, '') // Trim - from end of text
 }
+
+String.prototype.limit = function(length) {
+    return this.length > length ? `${this.substring(0, length)}...` : this
+}

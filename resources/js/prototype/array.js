@@ -38,3 +38,8 @@ Array.prototype.toggle = function(value) {
     
     return this
 }
+
+Array.prototype.take = function(n) {
+    let array = [...this]
+    return array.slice(0, n)
+}
