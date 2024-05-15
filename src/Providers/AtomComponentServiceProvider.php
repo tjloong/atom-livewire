@@ -90,6 +90,8 @@ class AtomComponentServiceProvider extends ServiceProvider
             'box.trace',
             'box.row',
             'box.stat',
+            'box.loading.index',
+            'box.loading.placeholder',
             
             'button.index',
             'button.edit',

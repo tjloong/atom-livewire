@@ -1,5 +1,5 @@
 <div 
-    class="box flex flex-col divide-y rounded-lg bg-white border shadow"
+    class="box relative flex flex-col divide-y rounded-lg bg-white border shadow"
     {{ $attributes->except(['heading', 'class']) }}>
     @isset($heading)
         {{ $heading }}
