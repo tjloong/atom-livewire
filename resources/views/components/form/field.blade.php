@@ -1,30 +1,34 @@
 @php
     $field = $attributes->get('name') ?? $attributes->wire('model')->value() ?? null;
+    $fieldname = $field ? last(explode('.', $field)) : null;
     $wirekey = $attributes->get('wire:key') ?? $attributes->wire('model')->value();
     $err = $attributes->get('error');
+    $tags = $attributes->get('tag') ?? $attributes->get('tags') ?? [];
+    $label = $label ?? $attributes->get('label');
+    $nolabel = $attributes->get('no-label', false) || $label === false;
+    $required = $attributes->get('required') || (get($this, 'form.required', [])[$field] ?? false);
 @endphp
 
-<div wire:key="{{ $wirekey }}" 
-    {{ $attributes->class(['w-full flex flex-col gap-1'])->only('class') }}>
-    @if (isset($label) || component_label($attributes))
-        <label class="flex items-center gap-2 font-medium leading-5 text-gray-400 text-sm">
-            <span>
-                @if (isset($label)) {{ $label }}
-                @else {{ str(tr(component_label($attributes, '', false)))->upper() }}
+<div wire:key="{{ $wirekey }}" {{ $attributes->class(['w-full flex flex-col gap-1'])->only('class') }}>
+    @if (!$nolabel)
+        <label class="flex items-center gap-2 flex-wrap">
+            <div class="font-medium leading-5 text-gray-400 text-sm uppercase">
+                @if ($label instanceof \Illuminate\View\Component) {{ $label }}
+                @elseif ($label) {!! tr($label) !!}
+                @elseif ($fieldname && str($fieldname)->is('*_id')) {{ str($fieldname)->replaceLast('_id', '') }}
+                @elseif ($fieldname) {{ $fieldname }}
                 @endif
-            </span>
+            </div>
 
-            @if ($tag = $attributes->get('tag'))
-                <span class="bg-blue-100 text-blue-500 font-medium text-xs px-1 rounded-md">
-                    {{ tr($tag) }}
-                </span>
+            @if ($tags)
+                <div class="flex items-center gap-2">
+                @foreach ($tags as $key => $val)
+                    <x-badge :label="$val" :color="is_string($key) ? $key : null"/>
+                @endforeach
+                </div>
             @endif
 
-            @if ($attributes->get('required') || (
-                $field
-                && ($requiredFields = data_get($this, 'form.required'))
-                && ($requiredFields[$field] ?? null)
-            ))
+            @if ($required)
                 <x-icon name="asterisk" class="text-red-400 text-sm"/>
             @endif
         </label>
@@ -67,13 +71,13 @@
     @endif
 
     @if ($err || $errors->first($field))
-        <div 
-            x-init="$el.parentNode
-                .querySelectorAll('.form-input:not(.transparent)')
-                .forEach(node => node.classList.add('error'))"
-            wire:key="{{ uniqid() }}"
+        <div
+            wire:key="{{ uniqid() }}" 
+            x-init="$el.parentNode.querySelectorAll('.form-input:not(.transparent)').forEach(node => node.addClass('error'))"
             class="text-sm text-red-500 font-medium form-field-error">
             {{ tr($err ?: $errors->first($field)) }}
         </div>
+    @else
+        <div x-init="$el.parentNode.querySelectorAll('.form-input.error').forEach(node => node.removeClass('error'))" class="hidden"></div>
     @endif
 </div>
