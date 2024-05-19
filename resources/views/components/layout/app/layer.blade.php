@@ -38,7 +38,7 @@ $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOp
     class="app-layout-layer fixed z-40 bottom-0 right-0 overflow-auto bg-gray-50 transition-all duration-200"
     {{ $attributes->except(['class', 'id']) }}>
     <div {{ $attributes->class([
-        $attributes->get('class', 'max-w-screen-2xl mx-auto p-5 w-full h-full'),
+        $attributes->get('class', 'max-w-screen-2xl mx-auto p-5 w-full min-h-full'),
     ])->only('class') }}>
         @isset ($top)
             {{ $top }}
@@ -47,17 +47,17 @@ $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOp
                 @if (($back ?? null)?->isNotEmpty())
                     {{ $back }}
                 @else
-                    <div class="shrink-0" {{ ($back ?? null)?->attributes?->merge(['x-on:click' => 'close()']) }}>
+                    <div class="grow" {{ ($back ?? null)?->attributes?->merge(['x-on:click' => 'close()']) }}>
                         <x-inline 
                             label="{{ ($back ?? null)?->attributes?->get('label') ?? 'app.label.back' }}" 
                             icon="back" 
-                            class="bg-gray-200 rounded-full cursor-pointer text-sm py-1 px-3 font-medium hover:ring-1 hover:ring-offset-2 hover:ring-gray-200">
+                            class="bg-gray-200 w-max rounded-full cursor-pointer text-sm py-1 px-3 font-medium hover:ring-1 hover:ring-offset-2 hover:ring-gray-200">
                         </x-inline>
                     </div>
                 @endisset
 
                 @isset ($buttons)
-                    <div class="grow flex items-center md:justify-end flex-wrap gap-2">
+                    <div class="shrink-0 flex items-center flex-wrap gap-2">
                         {{ $buttons }}
                     </div>
                 @endisset

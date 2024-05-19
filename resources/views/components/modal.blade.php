@@ -31,7 +31,7 @@
     x-bind:class="show && 'active'"
     data-modal-id="{{ $id }}"
     class="modal fixed z-40 inset-0 flex items-center justify-center"
-    {{ $attributes->wire('close') }}>
+    {{ $attributes->except(['class', 'id', 'bgclose']) }}>
     <div
         x-on:dblclick.stop="bgclose === 'dblclick' && close()"
         x-on:click.stop="bgclose === true && close()"
@@ -58,7 +58,7 @@
                 </div>
 
                 @isset($foot)
-                    <div class="shrink-0 bg-gray-100 rounded-b-lg">
+                    <div {{ $foot->attributes->merge(['class' => 'shrink-0 bg-gray-100 rounded-b-lg']) }}>
                         {{ $foot }}
                     </div>
                 @endisset
