@@ -48,3 +48,9 @@ String.prototype.slug = function() {
 String.prototype.limit = function(length) {
     return this.length > length ? `${this.substring(0, length)}...` : this
 }
+
+String.prototype.nl2br = function(is_xhtml) {
+    if (typeof this === 'undefined' || this === null) return ''
+    let breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
+    return (this + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+}

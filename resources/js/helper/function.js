@@ -70,3 +70,7 @@ window.deviceType = () => {
 window.random = () => {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
+
+
+// json
+window.json = (...args) => (JSON.stringify(...args))

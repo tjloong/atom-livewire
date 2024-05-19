@@ -43,3 +43,7 @@ Array.prototype.take = function(n) {
     let array = [...this]
     return array.slice(0, n)
 }
+
+Array.prototype.prepend = function(value) {
+    this.unshift(value)
+}
