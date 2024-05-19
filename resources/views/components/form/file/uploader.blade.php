@@ -84,11 +84,11 @@
     <div
         x-show="!loading"
         x-on:click="$refs.input.click()" 
-        class="inline-flex flex-wrap items-center gap-3 cursor-pointer">
+        class="inline-flex flex-wrap gap-3 cursor-pointer">
         @if ($slot->isNotEmpty())
             {{ $slot }}
         @else
-            <x-button icon="upload" label="app.label.upload"/>
+            <div><x-button sm icon="upload" label="app.label.upload"/></div>
             @if ($dropzone) <x-form.file.dropzone :max="$max" class="grow"/> @endif
         @endif
     </div>

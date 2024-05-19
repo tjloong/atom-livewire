@@ -37,7 +37,7 @@
             x-on:files-uploaded="input($event.detail)"
             class="w-full bg-slate-100 flex flex-col">
             <template x-if="tab === 'upload'">
-                <x-form.file.uploader class="p-4" {{ $attributes }}/>
+                <x-form.file.uploader class="p-3" {{ $attributes }}/>
             </template>
 
             @if ($enabledUrl)
