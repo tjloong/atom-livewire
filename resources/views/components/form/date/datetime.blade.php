@@ -1,4 +1,9 @@
-<x-form.field {{ $attributes }}>
+@php
+$icon = $attributes->get('icon', 'calendar');
+$placeholder = $attributes->get('placeholder', 'app.label.select-datetime');
+@endphp
+
+<x-form.field {{ $attributes->except('class') }}>
     <div 
         wire:ignore 
         x-cloak
@@ -84,30 +89,31 @@
         x-on:click.away="close()"
         x-on:keydown.esc.stop="close()"
         x-on:keydown.down="!show && open()"
-        {{ $attributes->except(['wire:model', 'wire:model.defer']) }}>
-        <button type="button" 
-            x-ref="anchor"
-            x-on:click="open()"
-            class="form-input w-full flex items-center gap-3">
-            <div class="shrink-0 text-gray-400"><x-icon name="calendar"/></div>
+        {{ $attributes->except(['class', 'wire:model', 'wire:model.defer']) }}>
+        <div x-ref="anchor" x-on:click="open()">
+            @if ($slot->isNotEmpty())
+                {{ $slot }}
+            @else
+                <button type="button" 
+                    x-bind:class="(!value || !show) && 'select'"
+                    {{ $attributes->class([
+                        'flex items-center gap-3',
+                        $attributes->get('class', 'form-input w-full')
+                    ])->only('class') }}>
+                    <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div>
 
-            <div class="grow flex items-center gap-2">
-                <input type="text" placeholder="{{ tr('app.label.select-datetime') }}" readonly
-                    x-bind:value="formatted"
-                    class="transparent grow cursor-pointer">
-            </div>
+                    <div class="grow flex items-center gap-2">
+                        <input type="text" placeholder="{{ tr($placeholder) }}" readonly
+                            x-bind:value="formatted"
+                            class="transparent grow cursor-pointer">
+                    </div>
 
-            <div class="shrink-0">
-                <div
-                    x-show="value"
-                    x-on:click.stop="clear()"
-                    class="cursor-pointer text-gray-400 hover:text-gray-600">
-                    <x-icon name="xmark"/>
-                </div>
-
-                <x-icon x-show="!value" name="dropdown-caret"/>
-            </div>
-        </button>
+                    <div x-show="value && show" x-on:click.stop="clear()" class="shrink-0 flex cursor-pointer text-gray-400 hover:text-gray-600">
+                        <x-icon name="xmark" class="m-auto"/>
+                    </div>
+                </button>
+            @endif
+        </div>
 
         <div 
             x-ref="dropdown"
