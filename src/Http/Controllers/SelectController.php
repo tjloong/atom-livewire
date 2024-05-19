@@ -78,12 +78,12 @@ class SelectController extends Controller
     // labels
     public function labels($params, $value) : void
     {
-        $type = data_get($params, 'type');
-        $search = data_get($params, 'search');
-        $parentId = data_get($params, 'parent');
-        $loadChildren = data_get($params, 'children');
+        $type = get($params, 'type');
+        $search = get($params, 'search');
+        $parentId = get($params, 'parent');
 
-        $labels = model('label')->whereIn('id', (array) $value)->union(
+        model('label')->whereIn('id', (array) $value)
+        ->union(
             model('label')
             ->whereNotIn('id', (array) $value)
             ->when($type, fn($q) => $q->where('type', $type))
@@ -92,25 +92,14 @@ class SelectController extends Controller
                 fn($q) => $q->whereNull('parent_id'),
             )
             ->when($search, fn($q) => $q->search($search))
-        )->orderBy('seq')->orderBy('id')->get();
-
-        foreach ($labels as $label) {
-            $path = $loadChildren
-                ? $label->parents
-                    ->map(fn($parent) => $parent->locale('name'))
-                    ->map(fn($val) => str($val)->limit(15)->toString())
-                    ->join(' / ')
-                : null;
-
-            $this->setOption([
-                'value' => $label->id,
-                'label' => collect([$path, $label->locale('name')])->filter()->join(' / '),
-                'color' => $label->color,
-            ]);
-
-            if ($loadChildren && $label->children->count()) {
-                $this->labels(array_merge($params, ['parent' => $label->id]), $value);
-            }
-        }
+        )
+        ->sequence()
+        ->get()
+        ->each(fn($label) => $this->setOption([
+            'value' => $label->id,
+            'label' => $label->name_locale,
+            'color_value' => $label->color_value,
+            'color_value_inverted' => $label->color_value_inverted,
+        ]));
     }
 }

@@ -8,8 +8,6 @@ return [
 
     'label' => [
         'mime' => 'MIME Type',
-        'drop-to-upload' => 'Drop here to upload',
-        'or-drop-to-upload' => 'Or drag & drop here to upload (Max :max)',
         'storage-used' => ':size Used',
     ],
     
