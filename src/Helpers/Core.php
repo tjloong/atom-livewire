@@ -590,24 +590,24 @@ if (!function_exists('tr')) {
     function tr($key, $count = 1, $params = [])
     {
         if (empty($key)) return '';
-    
+
         if (str($key)->isMatch('/(.*):\d$/')) {
             $count = (int) last(explode(':', $key));
             $key = head(explode(':', $key));
         }
-    
+
         $split = collect(explode('.', $key));
         $file = $split->shift();
         $dot = $split->join('.');
         $baselangpath = base_path('lang/en/'.$file.'.php');
         $atomlangpath = atom_path('lang/en/'.$file.'.php');
-    
+
         $baselang = file_exists($baselangpath) ? data_get(include $baselangpath, $dot) : null;
         $atomlang = file_exists($atomlangpath) ? data_get(include $atomlangpath, $dot) : null;
-    
+
         if (!$baselang && !$atomlang) return __($key);
         else if (!$baselang && $atomlang) $key = 'atom::'.$key;
-    
+
         if (is_array($count)) return __($key, $count);
         else return trans_choice($key, $count, $params);
     }

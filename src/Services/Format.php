@@ -134,6 +134,23 @@ class Format
             : (string) $val;
     }
 
+    // file size
+    public function filesize($initUnit) : mixed
+    {
+        if (!is_numeric($this->value)) return $this->value;
+
+        $n = $this->value;
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $index = array_search($initUnit, $units);
+    
+        while ($n > 1024) {
+            $n = $n/1024;
+            $index = $index + 1;
+        }
+    
+        return round($n, 2).' '.$units[$index];    
+    }
+
     // address
     public function address() : mixed
     {
