@@ -33,7 +33,13 @@ $except = ['label', 'disabled', 'placeholder', 'type', 'children', 'parent'];
         </template>
 
         <template x-if="!multiple">
-            <input type="text" placeholder="{{ tr($placeholder) }}" class="transparent grow w-full cursor-pointer" readonly>
+            <div
+                x-bind:style="{ color: selection?.color_value }"
+                x-bind:class="selection?.color_value && 'font-medium'"
+                class="flex items-center gap-3">
+                <x-icon name="tag"/>
+                <span x-text="selection?.label"></span>
+            </div>
         </template>
     </div>
 
