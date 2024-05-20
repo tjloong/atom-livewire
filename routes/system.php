@@ -2,7 +2,7 @@
 
 $route = app('route');
 
-$route->get('__sitemap', 'SitemapController@index')->name('__sitemap');
+$route->get('__sitemap', 'SitemapController')->name('__sitemap');
 $route->get('__locale/{locale}', 'LocaleController@set')->name('__locale');
 $route->post('__select', 'SelectController@get')->name('__select');
 $route->post('__share', 'ShareController')->name('__share');

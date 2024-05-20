@@ -4,10 +4,10 @@
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
     @foreach($sitemaps as $sitemap)
     <url>
-        <loc>{{ data_get($sitemap, 'url') }}</loc>
-        <lastmod>{{ data_get($sitemap, 'lastmod') }}</lastmod>
-        <changefreq>{{ data_get($sitemap, 'freq') }}</changefreq>
-        <priority>{{ data_get($sitemap, 'priority') }}</priority>
+        <loc>{{ get($sitemap, 'url') }}</loc>
+        <lastmod>{{ get($sitemap, 'lastmod') }}</lastmod>
+        <changefreq>{{ get($sitemap, 'changefreq') }}</changefreq>
+        <priority>{{ get($sitemap, 'priority') }}</priority>
     </url>
     @endforeach
 </urlset>

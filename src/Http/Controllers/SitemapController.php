@@ -6,10 +6,7 @@ use App\Http\Controllers\Controller;
 
 class SitemapController extends Controller
 {
-    /**
-     * Index
-     */
-    public function index()
+    public function __invoke()
     {
         $sitemaps = $this->getUrls()->map(function($freq, $url) {
             $path = parse_url($url, PHP_URL_PATH);
@@ -24,9 +21,7 @@ class SitemapController extends Controller
             ];
         })->values()->all();
 
-        return response()
-            ->view('atom::sitemap', compact('sitemaps'))
-            ->header('Content-Type', 'application/xml');
+        return response()->view('atom::sitemap', compact('sitemaps'))->header('Content-Type', 'application/xml');
     }
 
     // get urls
