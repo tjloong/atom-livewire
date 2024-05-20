@@ -24,7 +24,7 @@
             @isset($title)
                 {{ $title }}
             @else
-                <div class="grow {{ collect([
+                <div class="{{ collect([
                     'text-base font-semibold' => $attributes->get('sm'),
                     'text-lg font-semibold' => $attributes->get('lg'),
                     'text-2xl font-bold' => $attributes->get('2xl'),

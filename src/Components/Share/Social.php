@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Components;
+namespace Jiannius\Atom\Components\Share;
 
 use Illuminate\View\Component;
 
-class SocialShare extends Component
+class Social extends Component
 {
     public $uid;
     public $sites;
@@ -41,6 +41,6 @@ class SocialShare extends Component
     // render component
     public function render()
     {
-        return view('atom::components.social-share');
+        return view('atom::components.share.social');
     }
 }
