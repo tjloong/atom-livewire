@@ -90,21 +90,13 @@
 
     $except = [
         'size', 'color', 'inverted', 'outlined', 
-        'icon', 'label', 'block', 'href', 'target', 'recaptcha', 
+        'icon', 'label', 'block', 'recaptcha', 
         'c', 's', 'xs', 'sm', 'md', 'lg', 'xl', '2xl',
     ];
 @endphp
 
 @if ($href)
-    <a {{ $attributes
-        ->merge([
-            'href' => $href,
-            'target' => $target,
-            'rel' => $rel,
-        ])
-        ->class([$baseClass, $colorClass, $attributes->get('class', $sizeClass)])
-        ->except($except)
-    }}>
+    <a {{ $attributes->class([$baseClass, $colorClass, $attributes->get('class', $sizeClass)])->except($except) }}>
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
             @if ($icon) <div class="shrink-0 flex"><x-icon :name="$icon" class="m-auto"/></div> @endif

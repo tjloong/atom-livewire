@@ -15,7 +15,7 @@
         @endif
 
         <div>
-            <x-social-share :title="$attributes->get('title')" :url="url()->current()"/>
+            <x-share.social :title="$attributes->get('title')" :url="url()->current()"/>
         </div>
     </div>
 
