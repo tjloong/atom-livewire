@@ -26,14 +26,16 @@ class Route
     public function getCallback($callback): mixed
     {
         if (is_string($callback)) {
-            if (str($callback)->is('*Controller@*')) {
-                [$postfix, $method] = explode('@', $callback);
+            if (str($callback)->is('*Controller*')) {
+                if (str($callback)->is('*@*')) [$postfix, $method] = explode('@', $callback);
+                else $postfix = $callback;
+
                 $class = collect([
                     'App\Http\Controllers\\'.$postfix,
                     'Jiannius\Atom\Http\Controllers\\'.$postfix,
                 ])->first(fn($ns) => class_exists($ns));
 
-                return [$class, $method];
+                return isset($method) ? [$class, $method] : $class;
             }
             else {
                 return collect([

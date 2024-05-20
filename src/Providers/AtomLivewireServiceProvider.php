@@ -34,6 +34,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'onboarding' => 'Onboarding\Index',
             'onboarding.completed' => 'Onboarding\Completed',
 
+            // share
+            'share' => 'Share',
+
             // auth
             'auth.login' => 'Auth\Login',
             'auth.register' => 'Auth\Register',
@@ -46,10 +49,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
 
             // send mail
             'app.send-mail' => 'App\SendMail',
-
-            // share
-            'app.share' => 'App\Share',
-            'app.share.update' => 'App\Share\Update',
 
             // signup
             'app.signup' => 'App\Signup\Index',

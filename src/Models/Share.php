@@ -42,7 +42,7 @@ class Share extends Model
     protected function url(): Attribute
     {
         return Attribute::make(
-            get: fn() => route('app.share', (string) $this->ulid),
+            get: fn() => route('share', (string) $this->ulid),
         );
     }
 

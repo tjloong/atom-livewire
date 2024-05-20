@@ -401,6 +401,8 @@ return [
         'yesterday' => 'Yesterday',
         'your-name' => 'Your Name',
         'youtube-url' => 'Youtube URL',
+        'share-link' => 'Share link',
+        'enable-sharing' => 'Enable sharing',
     ],
 
     'onboarding' => [
