@@ -1,14 +1,16 @@
 @php
+$autoresize = $attributes->get('autoresize', true);
 $placeholder = $attributes->get('placeholder');
 @endphp
 
 <x-form.field {{ $attributes->except('class') }}>
-    <textarea
-        placeholder="{!! tr($placeholder) !!}"
-        class="{{ $attributes->get('class', 'form-input w-full overflow-hidden resize-none') }}"
-        {{ $attributes->except('class') }}>
+    <textarea placeholder="{!! tr($placeholder) !!}" {{ $attributes->class([
+        $autoresize ? 'resize-none' : '',
+        $attributes->get('class', 'form-input w-full overflow-hidden')
+    ])->only('class') }} {{ $attributes->except('class') }}>
     </textarea>
 
+    @if ($autoresize)
     <template x-data="{
         textarea: null,
 
@@ -24,4 +26,5 @@ $placeholder = $attributes->get('placeholder');
             this.textarea.style.height = this.textarea.scrollHeight+20+'px'
         },
     }" hidden></template>
+    @endif
 </x-form.field>
