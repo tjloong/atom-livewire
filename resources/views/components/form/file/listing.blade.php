@@ -31,23 +31,15 @@
                 }
                 else this.value = null
             },
-            sorted () {
-                const data = Array.from(this.$refs.sortable.children).map(child => (child.getAttribute('data-sortable-id')))
-                this.$dispatch('sorted', data)
-            },
             isSelected (id) {
                 return this.checkboxes.includes(id)
             },
         }"
-        x-init="() => {
-            if (sortable) new Sortable($refs.sortable, { onSort: () => sorted() })
-
-            $nextTick(() => {
-                let w = $el.offsetWidth
-                w = w > 800 ? 800 : w
-                if (w > 300 && w <= 800) cols = Math.round(w/100) + 2
-            })
-        }"
+        x-init="$nextTick(() => {
+            let w = $el.offsetWidth
+            w = w > 800 ? 800 : w
+            if (w > 300 && w <= 800) cols = Math.round(w/100) + 2
+        })"
         class="flex flex-col">
         <div x-show="checkboxes.length" class="p-3 flex items-center gap-2 flex-wrap border-b">
             <div class="grow">
@@ -86,7 +78,8 @@
         @if ($accept === 'image/*')
             @if ($multiple)
                 <div
-                    x-ref="sortable"
+                    x-sort="() => $dispatch('sorted', $sortid)"
+                    x-sort:config="{ disabled: !sortable }"
                     x-bind:class="{
                         'grid-cols-4': cols === 4,
                         'grid-cols-5': cols === 5,
@@ -99,8 +92,9 @@
                     class="p-4 grid gap-2 bg-white max-h-[500px] overflow-auto">
                     @foreach ($files as $file)
                         <div 
+                            x-sort:item
+                            x-bind:data-id="{{Js::from($file->id)}}"
                             class="w-full bg-gray-100 rounded-md overflow-hidden relative"
-                            data-sortable-id="@js($file->id)"
                             style="padding-top: 100%;">
                             <div
                                 x-on:click="checkboxes.length ? select(@js($file->id)) : $wire.emit('updateFile', @js($file->id))"
