@@ -18,7 +18,10 @@
     $percentage = $attributes->get('percentage');
 
     $tags = $attributes->get('tags') ?? $attributes->get('tag');
-    $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->map(fn($val) => trim($val))->filter();
+    $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->map(function($val) {
+        if ($val instanceof \UnitEnum || $val instanceof \BackedEnum) return $val->label();
+        else return trim($val);
+    })->filter();
     
     $badges = is_bool($attributes->get('active'))
         ? ($attributes->get('active') ? ['green' => 'active'] : ['gray' => 'inactive'])

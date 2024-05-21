@@ -47,6 +47,7 @@ $cdnlist = collect([
     'dayjs' => false,
     'flatpickr' => false,
     'ulid' => false,
+    'animate' => false,
     'ckeditor' => false,
     'apexcharts' => false,
     'keen-slider' => false,
@@ -140,6 +141,9 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 @endif
 @if ($cdnlist->get('fullcalendar'))
 @basset('https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js')
+@endif
+@if ($cdnlist->get('animate'))
+@basset('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css')
 @endif
 @if ($cdnlist->get('apexcharts'))
 @basset('https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js')
