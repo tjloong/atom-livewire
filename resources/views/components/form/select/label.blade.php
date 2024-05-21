@@ -13,11 +13,14 @@ $except = ['label', 'disabled', 'placeholder', 'type', 'children', 'parent'];
         <template x-if="multiple">
             <div class="flex items-center gap-2 flex-wrap">
                 <template x-for="item in selection">
-                    <div class="flex items-center rounded-md text-sm" x-bind:style="{
-                        backgroundColor: item.color_value_inverted,
-                        color: item.color_value,
-                        border: `1px solid ${item.color_value}`,
-                    }">
+                    <div
+                        x-bind:style="item.color_value && {
+                            backgroundColor: item.color_value_inverted,
+                            color: item.color_value,
+                            border: `1px solid ${item.color_value}`,
+                        }"
+                        x-bind:class="!item.color_value && 'bg-gray-200 border rounded text-sm'"
+                        class="flex items-center rounded-md text-sm">
                         <div class="grid font-medium px-2">
                             <div x-text="item.label" class="truncate"></div>
                         </div>
