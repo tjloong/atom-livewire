@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Providers;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 
 class AtomServiceProvider extends ServiceProvider
@@ -29,6 +30,9 @@ class AtomServiceProvider extends ServiceProvider
         $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
         $this->app->bind('cdn', fn() => new \Jiannius\Atom\Services\CDN);
 
+        // macros
+        $this->macros();
+
         // custom polymorphic types
         if ($morphMap = config('atom.morph_map')) {
             Relation::enforceMorphMap($morphMap);
@@ -52,6 +56,29 @@ class AtomServiceProvider extends ServiceProvider
                 __DIR__.'/../../publishes/postcss.config.js' => base_path('postcss.config.js'),
                 __DIR__.'/../../publishes/vite.config.js' => base_path('vite.config.js'),
             ], 'atom');
+        }
+    }
+
+    // macros
+    public function macros() : void
+    {
+        if (!Carbon::hasMacro('local')) {
+            Carbon::macro('local', function() {
+                $tz = optional(user())->settings('timezone') ?? config('atom.timezone');
+                return $tz ? $this->timezone($tz) : $this;
+            });
+        }
+
+        if (!Carbon::hasMacro('pretty')) {
+            Carbon::macro('pretty', function($option = 'date') {
+                if ($option === 'date') $format = 'd M Y';
+                if ($option === 'datetime') $format = 'd M Y g:iA';
+                if ($option === 'datetime-24') $format = 'd M Y H:i:s';
+                if ($option === 'time') $format = 'g:i A';
+                if ($option === 'time-24') $format = 'H:i:s';
+
+                return $this->local()->format($format);
+            });
         }
     }
 }
