@@ -1,19 +1,19 @@
-class Layering
+class Modal
 {
     el
-    layers
+    pages
     modals
     drawers
 
     constructor (el) {
         this.el = el
-        this.layers = Array.from(document.querySelectorAll('.app-layout-layer.active'))
         this.modals = Array.from(document.querySelectorAll('.modal.active'))
-        this.drawers = Array.from(document.querySelectorAll('.drawer.active'))
+        this.pages = Array.from(document.querySelectorAll('.modal-page.active'))
+        this.drawers = Array.from(document.querySelectorAll('.modal-drawer.active'))
     }
 
     all () {
-        return this.layers.concat(this.modals).concat(this.drawers)
+        return this.pages.concat(this.modals).concat(this.drawers)
     }
 
     zindex () {
@@ -40,14 +40,12 @@ class Layering
     }
 
     isActive (id) {
-        let layers = Array.from(document.querySelectorAll(`[data-layer-id="${id}"].active`))
-        let modals = Array.from(document.querySelectorAll(`[data-modal-id="${id}"].active`))
-        let drawers = Array.from(document.querySelectorAll(`[data-drawer-id="${id}"].active`))
-
-        return layers.concat(modals).concat(drawers).length > 0
+        return Array.from(
+            document.querySelectorAll(`[data-modal-id="${id}"].active`)
+        ).length > 0
     }
 }
 
 export default (el) => {
-    return new Layering(el)
+    return new Modal(el)
 }

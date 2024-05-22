@@ -34,49 +34,14 @@ class Component extends \Livewire\Component
         $this->keynonce = uniqid();
     }
 
-    // open modal
-    public function openModal($id = null) : void
+    public function modal($open = true, $id = null)
     {
-        $this->isModalOpened = true;
         $this->refreshKeynonce();
-        $this->dispatchBrowserEvent('open-modal', $id ?? $this->getName() ?? $this->id);
-    }
 
-    // close modal
-    public function closeModal($id = null) : void
-    {
-        $this->isModalOpened = false;
-        $this->dispatchBrowserEvent('close-modal', $id ?? $this->getName() ?? $this->id);
-    }
+        $id = $id ?? $this->getName() ?? $this->id;
 
-    // open layer
-    public function openLayer($id = null) : void
-    {
-        $this->isLayerOpened = true;
-        $this->refreshKeynonce();
-        $this->dispatchBrowserEvent('open-layer', $id ?? $this->getName() ?? $this->id);
-    }
-
-    // close layer
-    public function closeLayer($id = null) : void
-    {
-        $this->isLayerOpened = false;
-        $this->dispatchBrowserEvent('close-layer', $id ?? $this->getName() ?? $this->id);
-    }
-
-    // open drawer
-    public function openDrawer($id = null) : void
-    {
-        $this->isDrawerOpened = true;
-        $this->refreshKeynonce();
-        $this->dispatchBrowserEvent('open-drawer', $id ?? $this->getName() ?? $this->id);
-    }
-
-    // close drawer
-    public function closeDrawer($id = null) : void
-    {
-        $this->isDrawerOpened = false;
-        $this->dispatchBrowserEvent('close-drawer', $id ?? $this->getName() ?? $this->id);
+        if ($open) $this->dispatchBrowserEvent('open-modal', $id);
+        else $this->dispatchBrowserEvent('close-modal', $id);
     }
 
     // get layout

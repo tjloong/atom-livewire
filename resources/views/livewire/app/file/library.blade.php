@@ -1,4 +1,4 @@
-<x-drawer class="max-w-screen-lg">
+<x-modal.drawer class="max-w-screen-lg">
     <x-slot:heading
         icon="folder-open"
         title="{!! get($config, 'title', 'app.label.files-library') !!}"></x-slot:heading>
@@ -105,4 +105,4 @@
             @endif
         </div>
     </div>
-</x-drawer>
+</x-modal.drawer>

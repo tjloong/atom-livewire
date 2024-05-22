@@ -2,37 +2,36 @@
     $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
     $show = $attributes->get('show', false);
     $bgclose = $attributes->get('bg-close', true);
-    $render = $slot->isNotEmpty() && isset($this->isDrawerOpened) && $this->isDrawerOpened;
 @endphp
 
 <div
     x-cloak
     x-data="{
         id: @js($id),
+        show: @js($show),
         bgclose: @js($bgclose),
-        show: @entangle('isDrawerOpened'),
 
         open () {
             this.show = true
             this.$dispatch('open')
-            $layering.zindex()
-            $layering.lockScroll()
+            $modal.zindex()
+            $modal.lockScroll()
         },
 
         close () {
             this.show = false
             this.$dispatch('close')
-            if ($layering.isEmpty()) $layering.unlockScroll()
+            if ($modal.isEmpty()) $modal.unlockScroll()
         },
     }"
     x-show="show"
     x-transition.opacity.duration.200ms
-    x-on:open-drawer.window="id === $event.detail && open()"
-    x-on:close-drawer.window="id === $event.detail && close()"
+    x-on:open-modal.window="id === $event.detail && open()"
+    x-on:close-modal.window="id === $event.detail && close()"
     x-on:keydown.escape.stop="close()"
     x-bind:class="show && 'active'"
-    data-drawer-id="{{ $id }}"
-    class="drawer fixed inset-0 z-40"
+    data-modal-id="{{ $id }}"
+    class="modal-drawer fixed inset-0 z-40"
     {{ $attributes->except(['class', 'id']) }}>
     <div
         x-on:dblclick.stop="bgclose === 'dblclick' && close()"
@@ -47,7 +46,7 @@
                     <x-icon name="arrow-right-long" class="text-lg"/>
                 </div>
 
-                @if ($render)
+                @if ($slot->isNotEmpty())
                     <div x-data class="flex flex-wrap items-center gap-2">
                         @isset($buttons)
                             @if (!$buttons->attributes->get('blank'))
@@ -109,28 +108,28 @@
                 @endif
             </div>
 
-            @if ($render && isset($heading))
-                <div {{ $heading->attributes->class([
-                    'shrink-0 border-b',
-                    $heading->attributes->get('class', 'px-5 pt-3'),
-                ])->except(['icon', 'title', 'subtitle', 'status']) }}>
-                    @if ($heading->isNotEmpty())
-                        {{ $heading }}
-                    @else
-                        <x-heading 
-                            :icon="$heading->attributes->get('icon')"
-                            :title="$heading->attributes->get('title')"
-                            :subtitle="$heading->attributes->get('subtitle')"
-                            :status="$heading->attributes->get('status')"/>
-                    @endif
-                </div>
-            @endif
+            @if ($slot->isNotEmpty())
+                @isset($heading)
+                    <div {{ $heading->attributes->class([
+                        'shrink-0 border-b',
+                        $heading->attributes->get('class', 'px-5 pt-3'),
+                    ])->except(['icon', 'title', 'subtitle', 'status']) }}>
+                        @if ($heading->isNotEmpty())
+                            {{ $heading }}
+                        @else
+                            <x-heading 
+                                :icon="$heading->attributes->get('icon')"
+                                :title="$heading->attributes->get('title')"
+                                :subtitle="$heading->attributes->get('subtitle')"
+                                :status="$heading->attributes->get('status')"/>
+                        @endif
+                    </div>
+                @endisset
 
-            @if ($render)
                 <div class="grow overflow-auto pb-5">
                     {{ $slot }}
                 </div>
-
+    
                 @isset($foot)
                     <div class="shrink-0">
                         {{ $foot }}

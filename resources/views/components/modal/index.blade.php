@@ -1,27 +1,27 @@
 @php
     $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
+    $show = $attributes->get('show', false);
     $bgclose = $attributes->get('bg-close', true);
-    $render = $slot->isNotEmpty() && isset($this->isModalOpened) && $this->isModalOpened;
 @endphp
 
 <div
     x-cloak
     x-data="{
         id: @js($id),
+        show: @js($show),
         bgclose: @js($bgclose),
-        show: @entangle('isModalOpened'),
 
         open () {
             this.show = true
             this.$dispatch('open')
-            $layering.zindex()
-            $layering.lockScroll()
+            $modal.zindex()
+            $modal.lockScroll()
         },
 
         close () {
             this.show = false
             this.$dispatch('close')
-            if (!$layering.isEmpty()) $layering.unlockScroll()
+            if (!$modal.isEmpty()) $modal.unlockScroll()
         },
     }"
     x-show="show"
@@ -40,7 +40,7 @@
 
     <div class="relative w-full p-3 {{ $attributes->get('class', 'max-w-screen-sm') }}">
         <div class="bg-white rounded-lg shadow-lg flex flex-col divide-y">
-            @if ($render)
+            @if ($slot->isNotEmpty())
                 @isset($heading)
                     @if ($heading->isNotEmpty()) {{ $heading }}
                     @else

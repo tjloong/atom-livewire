@@ -1,5 +1,5 @@
 <form wire:submit.prevent="submit">
-    <x-drawer {{ $attributes }}>
+    <x-modal.drawer {{ $attributes }}>
         @isset($heading)
             <x-slot:heading>
                 @if ($heading->attributes->get('title'))
@@ -45,5 +45,5 @@
         @endisset
 
         {{ $slot }}
-    </x-drawer>
+    </x-modal.drawer>
 </form>

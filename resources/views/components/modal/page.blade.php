@@ -1,6 +1,6 @@
 @php
 $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
-$render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOpened;
+$show = $attributes->get('show', false);
 @endphp
 
 <div
@@ -8,34 +8,34 @@ $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOp
     x-data="{
         id: @js($id),
         nav: null,
-        show: @entangle('isLayerOpened'),
+        show: @js($show),
 
         open () {
             this.show = true
             this.$dispatch('open')
-            $layering.zindex()
-            $layering.lockScroll()
+            $modal.zindex()
+            $modal.lockScroll()
             this.$el.style.top = document.querySelector('.app-layout-header').offsetHeight+'px'
         },
 
         close () {
             this.show = false
             this.$dispatch('close')
-            if ($layering.isEmpty()) $layering.unlockScroll()
+            if ($modal.isEmpty()) $modal.unlockScroll()
         },
     }"
     x-show="show"
     x-transition.opacity.duration.300
-    x-on:open-layer.window="id === $event.detail && open()"
-    x-on:close-layer.window="id === $event.detail && close()"
+    x-on:open-modal.window="id === $event.detail && open()"
+    x-on:close-modal.window="id === $event.detail && close()"
     x-on:app-layout-nav-updated.window="nav = $event.detail"
     x-bind:class="{
         'left-0 lg:left-0': nav === 'hidden',
         'left-0 lg:left-60': !nav || nav === 'lg',
         'active': show,
     }"
-    data-layer-id="{{ $id }}"
-    class="app-layout-layer fixed z-40 bottom-0 right-0 overflow-auto bg-gray-50 transition-all duration-200"
+    data-modal-id="{{ $id }}"
+    class="modal-page fixed z-40 bottom-0 right-0 overflow-auto bg-gray-50 transition-all duration-200"
     {{ $attributes->except(['class', 'id']) }}>
     <div {{ $attributes->class([
         $attributes->get('class', 'max-w-screen-2xl mx-auto p-5 w-full min-h-full'),
@@ -47,7 +47,7 @@ $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOp
                 @if (($back ?? null)?->isNotEmpty())
                     {{ $back }}
                 @else
-                    <div class="grow" {{ ($back ?? null)?->attributes?->merge(['x-on:click' => 'close()']) }}>
+                    <div class="grow" x-on:click="close()">
                         <x-inline 
                             label="{{ ($back ?? null)?->attributes?->get('label') ?? 'app.label.back' }}" 
                             icon="back" 
@@ -64,8 +64,6 @@ $render = $slot->isNotEmpty() && isset($this->isLayerOpened) && $this->isLayerOp
             </div>
         @endisset
 
-        @if (isset($this->isLayerOpened) && $this->isLayerOpened)
-            {{ $slot }}
-        @endif
+        {{ $slot }}
     </div>
 </div>

@@ -31,10 +31,8 @@ class AtomComponentServiceProvider extends ServiceProvider
             'group',
             'image',
             'label',
-            'modal',
             'popup',
             'anchor',
-            'drawer',
             'inform',
             'inline',
             'loader',
@@ -64,7 +62,10 @@ class AtomComponentServiceProvider extends ServiceProvider
             'layout.index',
             'layout.app.index',
             'layout.app.nav',
-            'layout.app.layer',
+
+            'modal.index',
+            'modal.page',
+            'modal.drawer',
 
             'alert.index',
             'alert.errors',

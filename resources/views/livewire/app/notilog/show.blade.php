@@ -1,4 +1,4 @@
-<x-drawer wire:close="close()">
+<x-modal.drawer wire:close="close()">
 @if (optional($notilog)->exists)
     <x-slot:heading title="app.label.outbox-log" :status="$notilog->status->badge()"></x-slot:heading>
     <x-slot:buttons delete></x-slot:buttons>
@@ -45,4 +45,4 @@
         </x-group>
     @endif
 @endif
-</x-drawer>
+</x-modal.drawer>

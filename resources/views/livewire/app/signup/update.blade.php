@@ -1,4 +1,4 @@
-<x-drawer wire:close="close()">
+<x-modal.drawer wire:close="close()">
 @if ($signup)
     <x-slot:heading>
         <x-media-object :label="$signup->user->name" :caption="$signup->user->email" avatar/>
@@ -20,4 +20,4 @@
         </x-box>        
     </div>
 @endif
-</x-drawer>
+</x-modal.drawer>
