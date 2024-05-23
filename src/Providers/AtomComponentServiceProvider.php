@@ -73,14 +73,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'close.index',
             'close.delete',
 
-            'admin-panel.index',
-            'admin-panel.aside',
-            
-            'analytics.fathom',
-            'analytics.fbpixel',
-            'analytics.ga',
-            'analytics.gtm',
-
             'notify.alert',
             'notify.toast',
             'notify.confirm',
