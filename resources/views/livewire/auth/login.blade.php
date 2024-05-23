@@ -11,8 +11,8 @@
             <div class="flex flex-col gap-2">
                 <x-form.password wire:model.defer="inputs.password" label="app.label.password"/>
     
-                @if (has_route('auth.password.forgot'))
-                    <x-link label="auth.label.forgot-password" :href="route('auth.password.forgot')" class="text-theme text-sm"/>
+                @if (has_route('password.forgot'))
+                    <x-link label="auth.label.forgot-password" :href="route('password.forgot')" class="text-theme text-sm"/>
                 @endif
             </div>
         </x-group>
@@ -27,10 +27,10 @@
         </x-slot:foot>
     </x-form>
 
-    @if (has_route('auth.register'))
+    @if (has_route('register'))
         <div class="inline-flex item-center gap-2 px-4">
             {{ tr('auth.label.dont-have-account') }} 
-            <x-link label="auth.label.signup-now" :href="route('auth.register', ['utm' => 'page-login'])"/>
+            <x-link label="auth.label.signup-now" :href="route('register', ['utm' => 'page-login'])"/>
         </div>
     @endif
 </div>

@@ -9,26 +9,26 @@ class Route
     {
         if (in_array($name, ['get', 'post', 'put', 'patch', 'delete', 'options'])) {
             $path = $arguments[0];
-            $callback = $this->getCallback($arguments[1]);
+            $callback = $this->callback($arguments[1]);
             $arguments = [$path, $callback];
         }
         else if ($name === 'match') {
             $methods = $arguments[0];
             $path = $arguments[1];
-            $callback = $this->getCallback($arguments[2]);
+            $callback = $this->callback($arguments[2]);
             $arguments = [$methods, $path, $callback];
         }
-        
+
         return \Illuminate\Support\Facades\Route::$name(...$arguments);
     }
 
     // get callback
-    public function getCallback($callback): mixed
+    public function callback($name) : mixed
     {
-        if (is_string($callback)) {
-            if (str($callback)->is('*Controller*')) {
-                if (str($callback)->is('*@*')) [$postfix, $method] = explode('@', $callback);
-                else $postfix = $callback;
+        if (is_string($name)) {
+            if (str($name)->is('*Controller*')) {
+                if (str($name)->is('*@*')) [$postfix, $method] = explode('@', $name);
+                else $postfix = $name;
 
                 $class = collect([
                     'App\Http\Controllers\\'.$postfix,
@@ -39,13 +39,121 @@ class Route
             }
             else {
                 return collect([
-                    'App\Http\Livewire\\'.$callback,
-                    'App\Http\Livewire\\'.$callback.'\Index',
-                    'Jiannius\Atom\Http\Livewire\\'.$callback,
-                    'Jiannius\Atom\Http\Livewire\\'.$callback.'\Index',
+                    'App\Http\Livewire\\'.$name,
+                    'App\Http\Livewire\\'.$name.'\Index',
+                    'Jiannius\Atom\Http\Livewire\\'.$name,
+                    'Jiannius\Atom\Http\Livewire\\'.$name.'\Index',
                 ])->first(fn($ns) => class_exists($ns));
             }
         }
-        else return $callback;
+        else return $name;
+    }
+
+    // create default route
+    public function default() : void
+    {
+        $this->get('__sitemap', 'SitemapController')->name('__sitemap');
+        $this->get('__locale/{locale}', 'LocaleController@set')->name('__locale');
+        $this->post('__select', 'SelectController@get')->name('__select');
+        $this->post('__share', 'ShareController')->name('__share');
+        $this->post('__file/url', 'FileController@url')->name('__file.url');
+        $this->post('__file/list', 'FileController@list')->name('__file.list');
+        $this->post('__file/upload', 'FileController@upload')->name('__file.upload');
+        $this->get('__file/{ulid}/{size?}', 'FileController@get')->name('__file.get');    
+    }
+
+    // create auth routes
+    public function auth($login = true, $password = true, $register = false, $socialite = false) : void
+    {
+        if ($login) {
+            $this->get('login', 'Auth\Login')->name('login');
+            $this->get('logout', 'Auth\Logout')->middleware('auth')->name('logout');
+        }
+
+        if ($password) {
+            $this->get('reset-password', 'Auth\ResetPassword')->name('password.reset');
+            $this->get('forgot-password', 'Auth\ForgotPassword')->middleware('guest')->name('password.forgot');
+        }
+
+        if ($register) {
+            $this->get('register', 'Auth\Register')->middleware('guest')->name('register');
+        }
+
+        if ($socialite) {
+            $this->get('__auth/{provider}/redirect', 'SocialiteController@redirect')->name('socialite.redirect');
+            $this->get('__auth/{provider}/callback', 'SocialiteController@callback')->name('socialite.callback');
+        }
+    }
+
+    // create integration routes
+    public function integration($finexus = false, $stripe = false, $ipay = false, $gkash = false, $ozopay = false) : void
+    {
+        if ($finexus) {
+            $this->prefix('__finexus')->as('__finexus')->withoutMiddleware('web')->group(function() {
+                $this->get('success', 'FinexusController@success')->name('.success');
+                $this->get('failed', 'FinexusController@failed')->name('.failed');
+                $this->get('cancel', 'FinexusController@cancel')->name('.cancel');
+                $this->get('query', 'FinexusController@query')->name('.query');
+            });
+        }
+
+        if ($stripe) {
+            $this->prefix('__stripe')->as('__stripe')->withoutMiddleware('web')->group(function() {
+                $this->get('success', 'StripeController@success')->name('.success');
+                $this->get('cancel', 'StripeController@cancel')->name('.cancel');
+                $this->post('webhook', 'StripeController@webhook')->name('.webhook');
+            });
+        }
+
+        if ($ipay) {
+            $this->prefix('__ipay')->as('__ipay')->withoutMiddleware('web')->group(function() {
+                $this->get('checkout', 'IpayController@checkout')->name('.checkout');
+                $this->post('redirect', 'IpayController@redirect')->name('.redirect');
+                $this->post('webhook', 'IpayController@webhook')->name('.webhook');
+            });
+        }
+
+        if ($gkash) {
+            $this->prefix('__gkash')->as('__gkash')->withoutMiddleware('web')->group(function() {
+                $this->get('checkout', 'GkashController@checkout')->name('.checkout');
+                $this->post('redirect', 'GkashController@redirect')->name('.redirect');
+                $this->post('webhook', 'GkashController@webhook')->name('.webhook');
+            });
+        }
+
+        if ($ozopay) {
+            $this->prefix('__ozopay')->as('__ozopay')->withoutMiddleware('web')->group(function() {
+                $this->get('checkout', 'OzopayController@checkout')->name('.checkout');
+                $this->post('redirect', 'OzopayController@redirect')->name('.redirect');
+                $this->post('webhook', 'OzopayController@webhook')->name('.webhook');
+            });
+        }
+    }
+
+    // create onboarding routes
+    public function onboarding() : void
+    {
+        $this->prefix('onboarding')->as('onboarding')->middleware('auth')->group(function() {
+            $this->get('/', 'Onboarding');
+            $this->get('completed', 'Onboarding\Completed')->name('.completed');
+        });
+    }
+
+    // create wrapper for app
+    public function app($closure) : mixed
+    {
+        return $this->prefix('app')->as('app')->middleware('auth')->group($closure);
+    }
+
+    // create wrapper for root
+    public function root($closure) : mixed
+    {
+        return $this->prefix('root')->as('root')->middleware('auth')->group($closure);
+    }
+
+    // create wrapper for web
+    public function web($closure) : mixed
+    {
+        return $this->as('web')->group($closure);
     }
 }

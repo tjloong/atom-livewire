@@ -13,5 +13,5 @@
         </x-slot:foot>
     </x-form>
     
-    <x-link icon="back" label="app.label.back-to-login" :href="route('auth.login')"/>
+    <x-link icon="back" label="app.label.back-to-login" :href="route('login')"/>
 </div>

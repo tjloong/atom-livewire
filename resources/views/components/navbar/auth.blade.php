@@ -24,7 +24,7 @@
 
         <div class="flex flex-col divide-y">
             {{ $slot }}
-            <x-dropdown.item :href="route('auth.logout')" icon="logout" label="common.label.logout"/>
+            <x-dropdown.item :href="route('logout')" icon="logout" label="common.label.logout"/>
         </div>
     </x-dropdown>
 @endauth

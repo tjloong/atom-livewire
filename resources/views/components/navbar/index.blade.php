@@ -45,11 +45,11 @@
                     <x-navbar.auth/>
                 @else
                     <div class="w-full flex flex-col items-center bg-white shadow rounded-lg p-2 md:flex-row md:gap-3 md:bg-transparent md:shadow-none md:w-auto md:shrink-0">
-                        @if (has_route('auth.login'))
+                        @if (has_route('login'))
                             <x-navbar.item href="/login" label="Login"/>
                         @endif
 
-                        @if (has_route('auth.register'))
+                        @if (has_route('register'))
                             <x-navbar.item href="/register?utm=navbar" label="Register" class="md:hidden"/>
                             <div class="hidden md:block">
                                 <x-button href="/register?utm=navbar" label="Register" color="theme"/>

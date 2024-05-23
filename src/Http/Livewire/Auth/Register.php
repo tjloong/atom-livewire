@@ -67,7 +67,7 @@ class Register extends Component
             && ($socialite = rescue(fn() => Socialite::driver($this->provider)->userFromToken($this->token)))
         ) {
             if (model('user')->firstWhere('email', $socialite->getEmail())) {
-                return to_route('auth.login', array_merge([
+                return to_route('login', array_merge([
                     'token' => $this->token,
                     'provider' => $this->provider,
                 ], request()->query()));

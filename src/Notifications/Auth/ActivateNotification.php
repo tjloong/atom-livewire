@@ -33,7 +33,7 @@ class ActivateNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable): \Illuminate\Notifications\Messages\MailMessage
     {
-        $url = url(route('auth.password.reset', [
+        $url = url(route('password.reset', [
             'token' => app(PasswordBroker::class)->createToken($notifiable),
             'email' => $notifiable->email,
         ]));

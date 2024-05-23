@@ -42,7 +42,7 @@ class ForgotPassword extends Component
         if ($user = $this->getUser()) {
             if ($user->sendPasswordResetLink()) {
                 session()->flash('message', tr('auth.alert.password-sent'));
-                return to_route('auth.login');
+                return to_route('login');
             }
             else return $this->popup('auth.alert.password-reset-failed', 'alert', 'error');
         }

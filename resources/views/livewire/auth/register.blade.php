@@ -79,7 +79,7 @@
     </x-form>
     
     <div class="text-center">
-        {{ tr('auth.label.have-account') }} <x-link label="auth.label.signin" :href="route('auth.login')"/>
+        {{ tr('auth.label.have-account') }} <x-link label="auth.label.signin" :href="route('login')"/>
     </div>
 </div>
 
