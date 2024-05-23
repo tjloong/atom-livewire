@@ -9,9 +9,6 @@ class Component extends \Livewire\Component
     use WithPopupNotify;
 
     public $keynonce;
-    public $isModalOpened = false;
-    public $isLayerOpened = false;
-    public $isDrawerOpened = false;
 
     // mount
     public function mount()
@@ -34,6 +31,7 @@ class Component extends \Livewire\Component
         $this->keynonce = uniqid();
     }
 
+    // open/close modal
     public function modal($open = true, $id = null)
     {
         $this->refreshKeynonce();
@@ -47,9 +45,7 @@ class Component extends \Livewire\Component
     // get layout
     public function layout() : string
     {
-        $route = optional(request()->route())->getName();
-        $prefix = $route ? collect(explode('.', $route))->first() : 'app';
-        $path = 'layouts.'.$prefix;
+        $path = 'layouts.'.request()->portal();
 
         return view()->exists($path) ? $path : '';
     }

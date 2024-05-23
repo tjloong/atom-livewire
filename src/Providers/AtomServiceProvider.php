@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Providers;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 
@@ -62,6 +63,24 @@ class AtomServiceProvider extends ServiceProvider
     // macros
     public function macros() : void
     {
+        if (!Request::hasMacro('portal')) {
+            Request::macro('portal', function() {
+                $route = $this->route()?->getName();
+
+                if (in_array($route, ['login', 'logout', 'register', 'password.forgot', 'password.reset'])) {
+                    return 'auth';
+                }
+                else if ($route) {
+                    $portal = collect(explode('.', $route))->first();
+
+                    if (str($portal)->startsWith('__') || in_array($portal, ['socialite'])) return null;
+                    else return $portal;
+                }
+
+                return null;
+            });
+        }
+
         if (!Carbon::hasMacro('local')) {
             Carbon::macro('local', function() {
                 $tz = optional(user())->settings('timezone') ?? config('atom.timezone');
