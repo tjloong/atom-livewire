@@ -16,14 +16,20 @@ class Modal
         return this.pages.concat(this.modals).concat(this.drawers)
     }
 
-    zindex () {
-        let layers = this.all()
-        .map(layer => (window.getComputedStyle(layer).getPropertyValue('z-index')))
-        .map(n => +n)
+    zindex (el = null, n = null) {
+        el = el || this.el
 
-        let max = Math.max(...layers)
-
-        this.el.style.zIndex = max + 1
+        if (n) el.style.zIndex = n
+        else if (n === false) el.style.zindex = null
+        else {
+            let layers = this.all()
+            .map(layer => (window.getComputedStyle(layer).getPropertyValue('z-index')))
+            .map(n => +n)
+    
+            let max = Math.max(...layers)
+    
+            el.style.zIndex = max + 1
+        }
     }
 
     lockScroll () {

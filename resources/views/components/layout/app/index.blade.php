@@ -27,7 +27,14 @@
 <div 
     x-cloak 
     x-data="{ nav: null }"
-    x-init="$watch('nav', nav => $dispatch('app-layout-nav-updated', nav))"
+    x-init="$watch('nav', nav => {
+        if (nav === 'lg') {
+            $modal.zindex($refs.overlay)
+            $modal.zindex($refs.nav)
+        }
+
+        $dispatch('app-layout-nav-changed', nav)
+    })"
     class="app-layout min-h-screen h-px">
     @if ($flash = session('flash'))
         <div class="fixed top-0 left-1/2 -translate-x-1/2 z-50 max-w-screen-md w-full flex flex-col gap-3 p-4">
@@ -40,6 +47,7 @@
     @endif
 
     <div
+        x-ref="overlay"
         x-show="nav === 'lg'"
         x-transition.opacity.duration.500ms
         x-on:click="nav = null"
@@ -108,28 +116,39 @@
             </div>
 
             @auth
-            <div class="shrink-0 p-4">                
-                <x-dropdown>
-                    <x-slot:anchor>
-                        <div class="flex items-center gap-2 justify-end cursor-pointer font-medium w-max max-w-[100px] lg:max-w-[200px]">
-                            <div class="shrink-0 w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-sm font-semibold border-4 border-gray-200 text-gray-100">
-                                {{ str(user('name'))->substr(0, 1) }}
-                            </div>
-                            <span class="truncate">{!! user('name') !!}</span>
-                            <x-icon name="dropdown-caret"/>
+            <div class="shrink-0 p-4">   
+                <div x-cloak x-data="{ open: false }">
+                    <div
+                        x-ref="anchor"
+                        x-on:click.stop="open = true" 
+                        x-on:click.away="open = false"
+                        class="flex items-center gap-2 justify-end cursor-pointer font-medium form-input-caret pr-5 w-max max-w-[100px] lg:max-w-[200px]">
+                        <div class="shrink-0 w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-sm font-semibold border-4 border-gray-200 text-gray-100">
+                            {{ str(user('name'))->substr(0, 1) }}
                         </div>
-                    </x-slot:anchor>
+                        <span class="truncate">{!! user('name') !!}</span>
+                    </div>
 
-                    @isset($auth) 
-                        {{ $auth }}
-                    @else
-                        <div class="flex flex-col divide-y">
-                            @if (!current_route('app.*')) <x-dropdown.item label="app.label.back-to-app" icon="back" :href="user()->home()"/> @endif
-                            <x-dropdown.item label="app.label.settings" icon="gear" :href="route('app.settings')"/>
-                            <x-dropdown.item label="app.label.logout" icon="logout" :href="route('logout')"/>
-                        </div>
-                    @endisset
-                </x-dropdown>
+                    <div
+                        x-show="open"
+                        x-anchor.offset.4="$refs.anchor"
+                        x-init="$watch('open', open => open
+                            ? $modal.zindex($el.closest('header'))
+                            : $modal.zindex($el.closest('header'), 20)
+                        )"
+                        x-transition.opacity.duration.300
+                        class="bg-white z-10 border rounded-md shadow-lg max-w-md min-w-[250px] overflow-hidden">
+                        @isset($auth) 
+                            {{ $auth }}
+                        @else
+                            <div class="flex flex-col divide-y">
+                                @if (!current_route('app.*')) <x-dropdown.item label="app.label.back-to-app" icon="back" :href="user()->home()"/> @endif
+                                <x-dropdown.item label="app.label.settings" icon="gear" :href="route('app.settings')"/>
+                                <x-dropdown.item label="app.label.logout" icon="logout" :href="route('logout')"/>
+                            </div>
+                        @endisset
+                    </div>
+                </div>
             </div>
             @endauth
         </header>

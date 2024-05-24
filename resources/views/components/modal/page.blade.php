@@ -28,7 +28,7 @@ $show = $attributes->get('show', false);
     x-transition.opacity.duration.300
     x-on:open-modal.window="id === $event.detail && open()"
     x-on:close-modal.window="id === $event.detail && close()"
-    x-on:app-layout-nav-updated.window="nav = $event.detail"
+    x-on:app-layout-nav-changed.window="nav = $event.detail"
     x-bind:class="{
         'left-0 lg:left-0': nav === 'hidden',
         'left-0 lg:left-60': !nav || nav === 'lg',

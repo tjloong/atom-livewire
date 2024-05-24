@@ -11,7 +11,7 @@
     {{ $attributes->except(['icon', 'label', 'placement']) }}>
     <div 
         x-ref="anchor" 
-        x-on:click.atop="open = true" 
+        x-on:click.stop="open = true" 
         x-on:click.away="open = false"
         class="inline-block cursor-pointer">
         @if (isset($anchor)) {{ $anchor }}
