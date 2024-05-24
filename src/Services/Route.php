@@ -139,6 +139,12 @@ class Route
         });
     }
 
+    // create share route
+    public function share() : void
+    {
+        $this->get('share/{ulid}', 'Share')->name('share');
+    }
+
     // create wrapper for app
     public function app($closure) : mixed
     {
