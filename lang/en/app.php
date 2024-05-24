@@ -16,7 +16,7 @@ return [
         'agree-privacy' => 'I have read and agreed to the website/app\'s Terms of Use and Privacy Policy.',
         'agreed-marketing' => 'Agreed to marketing',
         'agreed-privacy' => 'Agreed to T&C',
-        'all-rights-reserved' => 'All rights reserved.',
+        'all-rights-reserved' => 'All rights reserved',
         'all' => 'All',
         'allow-all' => 'Allow All',
         'amount' => 'Amount',
