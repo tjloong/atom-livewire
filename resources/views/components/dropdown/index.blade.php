@@ -25,11 +25,10 @@
     </div>
 
     <div 
-        x-ref="dropdown"
         x-show="open"
         {{ $directive }}.offset.4="$refs.anchor"
         x-transition.opacity.duration.300
-        class="bg-white border rounded-md shadow-lg max-w-md min-w-[250px] overflow-hidden">
+        class="bg-white z-10 border rounded-md shadow-lg max-w-md min-w-[250px] overflow-hidden">
         {{ $slot }}
     </div>
 </div>

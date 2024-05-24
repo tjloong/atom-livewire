@@ -47,12 +47,19 @@ $show = $attributes->get('show', false);
                 @if (($back ?? null)?->isNotEmpty())
                     {{ $back }}
                 @else
-                    <div class="grow" x-on:click="close()">
-                        <x-inline 
-                            label="{{ ($back ?? null)?->attributes?->get('label') ?? 'app.label.back' }}" 
-                            icon="back" 
-                            class="bg-gray-200 w-max rounded-full cursor-pointer text-sm py-1 px-3 font-medium hover:ring-1 hover:ring-offset-2 hover:ring-gray-200">
-                        </x-inline>
+                    <div class="grow">
+                    @isset($back)
+                        <button type="button" {{ $back->attributes->merge([
+                            'x-on:click' => 'close()',
+                            'class' => 'bg-gray-200 w-max rounded-full cursor-pointer text-sm py-1 px-3 font-medium flex items-center gap-2 hover:ring-1 hover:ring-offset-2 hover:ring-gray-200',
+                        ]) }}>
+                            <x-icon name="back"/> {!! tr($back->attributes->get('label', 'app.label.back')) !!}
+                        </button>
+                    @else
+                        <button type="button" x-on:click="close()" class="bg-gray-200 w-max rounded-full cursor-pointer text-sm py-1 px-3 font-medium flex items-center gap-2 hover:ring-1 hover:ring-offset-2 hover:ring-gray-200">
+                            <x-icon name="back"/> {!! tr('app.label.back') !!}
+                        </button>
+                    @endisset
                     </div>
                 @endisset
 
