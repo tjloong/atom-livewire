@@ -1,16 +1,20 @@
 <x-modal.drawer class="max-w-screen-lg">
+@if ($paginator)
     <x-slot:heading
         icon="folder-open"
-        title="{!! get($config, 'title', 'app.label.files-library') !!}"></x-slot:heading>
+        title="{!! get($config, 'title', 'app.label.files-library') !!}">
+    </x-slot:heading>
 
     <div
         x-cloak
         x-data="{
-            multiple: {{ Js::from(get($config, 'multiple')) }},
+            multiple: {{Js::from(get($config, 'multiple'))}},
             checkboxes: [],
+
             isSelected (id) {
                 return this.checkboxes.findIndex(val => (val.id === id)) > -1
             },
+
             select (file) {
                 if (this.multiple) {
                     let index = this.checkboxes.findIndex(val => (val.id === file.id))
@@ -31,20 +35,20 @@
                     <x-icon name="xmark" class="m-auto"/>
                 </div>
             </div>
-
+    
             <x-button.submit sm type="button" label="app.label.select" x-on:click="() => {
                 $dispatch('files-selected', checkboxes)
                 close()
             }"/>
         </div>
-
+    
         <div x-show="!checkboxes.length" class="p-4 border-b">
             <div class="flex items-center divide-x divide-gray-300 border border-gray-300 rounded-md">
                 <div class="grow flex items-center gap-3 py-2 px-3">
                     <div class="shrink-0 text-gray-400">
                         <x-icon name="search"/>
                     </div>
-
+    
                     <input type="text" wire:model.debounce.500ms="filters.search"
                         class="transparent grow" 
                         placeholder="{{ tr('app.label.search') }}">
@@ -53,13 +57,13 @@
                         <x-close wire:click="$set('filters.search', null)"/>
                     @endif
                 </div>
-
+    
                 <div class="shrink-0 px-4">
                     <x-form.file.uploader :dropzone="false" :accept="get($config, 'accept')" :multiple="get($config, 'multiple')">
                         <div class="flex items-center gap-2">
                             <x-icon name="upload"/> {{ tr('app.label.upload') }}
                         </div>
-
+    
                         <x-slot:progress>
                             <div class="font-semibold" x-text="progress+'%'"></div>
                         </x-slot:progress>
@@ -67,7 +71,7 @@
                 </div>
             </div>
         </div>
-
+    
         <div class="flex flex-col divide-y">
             @forelse ($this->paginator->items() as $file)
                 <div
@@ -105,4 +109,5 @@
             @endif
         </div>
     </div>
+@endif
 </x-modal.drawer>

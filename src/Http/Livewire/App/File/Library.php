@@ -3,11 +3,10 @@
 namespace Jiannius\Atom\Http\Livewire\App\File;
 
 use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithTable;
 
 class Library extends Component
 {
-    use WithTable;
+    public $paginator;
 
     public $filters = [
         'search' => null,
@@ -22,20 +21,11 @@ class Library extends Component
         'showFilesLibrary' => 'open',
     ];
 
-    // get query property
-    public function getQueryProperty() : mixed
-    {
-        return model('file')->latest();
-    }
-
     // open
     public function open($config = []) : void
     {
-        $this->config = [
-            ...$this->config,
-            ...$config,
-        ];
-
-        $this->openDrawer();
+        $this->config = [...$this->config, ...$config];
+        $this->paginator = model('file')->filter($this->filters)->latest()->paginate(50);
+        $this->modal();
     }
 }
