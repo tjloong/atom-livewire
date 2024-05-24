@@ -94,16 +94,17 @@ trait WithTable
     }
 
     // restore
-    public function restoreTableRows($id) : void
+    public function restoreTableRows() : void
     {
-        $query = (clone $this->query)->whereIn($this->query->getModel()->getTable().'.id', $id);
+        $query = (clone $this->query)
+            ->when($this->tableCheckboxes, fn($q) => $q->whereIn($this->query->getModel()->getTable().'.id', $this->tableCheckboxes));
 
-        if ($this->showArchived) {
+        if ($this->tableShowArchived) {
             $query->whereNotNull('archived_at')->get()->each(fn($row) => 
                 $row->eraseFootprint('archived')->save()
             );
         }
-        elseif ($this->showTrashed) {
+        elseif ($this->tableShowTrashed) {
             $query->onlyTrashed()->restore();
         }
 

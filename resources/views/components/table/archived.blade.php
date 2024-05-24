@@ -12,8 +12,8 @@
             @else
                 {{ tr('app.label.archived-count', ['count' => $count]) }}
                 <x-link label="app.label.show" wire:key="table-show-archived" x-on:click="() => {
-                    Livewire.set('tableShowArchived', true)
-                    Livewire.set('tableShowTrashed', false)
+                    $wire.set('tableShowArchived', true)
+                    $wire.set('tableShowTrashed', false)
                 }"/>
             @endif
         </div>
