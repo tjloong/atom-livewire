@@ -50,7 +50,7 @@ class Update extends Component
     {
         if ($this->popup) {
             $this->resetValidation();
-            $this->openDrawer('popup-update');
+            $this->modal(id: 'popup-update');
         }
     }
 
@@ -58,7 +58,7 @@ class Update extends Component
     public function close() : void
     {
         $this->emit('setPopupId');
-        $this->closeDrawer('popup-update');
+        $this->modal(false, 'popup-update');
     }
 
     // duplicate

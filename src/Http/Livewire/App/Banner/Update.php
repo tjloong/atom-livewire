@@ -58,7 +58,7 @@ class Update extends Component
     public function open() : void
     {
         if ($this->banner) {
-            $this->openDrawer('banner-update');
+            $this->modal(id: 'banner-update');
         }
     }
 
@@ -66,7 +66,7 @@ class Update extends Component
     public function close() : void
     {
         $this->emit('setBannerId');
-        $this->closeDrawer('banner-update');
+        $this->modal(false, 'banner-update');
     }
 
     // delete

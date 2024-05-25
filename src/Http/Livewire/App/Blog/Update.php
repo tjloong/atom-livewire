@@ -62,7 +62,7 @@ class Update extends Component
                 ],
             ]);
 
-            $this->openDrawer('blog-update');
+            $this->modal(id: 'blog-update');
         }
     }
 
@@ -70,7 +70,7 @@ class Update extends Component
     public function close() : void
     {
         $this->emit('setBlogId');
-        $this->closeDrawer('blog-update');
+        $this->modal(false, 'blog-update');
     }
 
     // trash

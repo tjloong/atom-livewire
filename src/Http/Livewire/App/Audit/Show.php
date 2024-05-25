@@ -16,7 +16,7 @@ class Show extends Component
     public function open($id) : void
     {
         if ($this->audit = model('audit')->find($id)) {
-            $this->openDrawer('audit-show');
+            $this->modal(id: 'audit-show');
         }
     }
 
@@ -24,6 +24,6 @@ class Show extends Component
     public function close() : void
     {
         $this->emit('setAuditId');
-        $this->closeDrawer('audit-show');
+        $this->modal(false, 'audit-show');
     }
 }

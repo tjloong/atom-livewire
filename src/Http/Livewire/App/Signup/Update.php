@@ -16,7 +16,7 @@ class Update extends Component
     public function open($id) : void
     {
         if ($this->signup = model('signup')->find($id)) {
-            $this->openDrawer('signup-update');
+            $this->modal(id: 'signup-update');
         }
     }
 
@@ -24,6 +24,6 @@ class Update extends Component
     public function close() : void
     {
         $this->emit('setSignupId');
-        $this->closeDrawer('signup-update');
+        $this->modal(false, 'signup-update');
     }
 }

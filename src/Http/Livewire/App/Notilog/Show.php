@@ -16,7 +16,7 @@ class Show extends Component
     public function open($ulid) : void
     {
         if ($this->notilog = model('notilog')->where('ulid', $ulid)->first()) {
-            $this->openDrawer();
+            $this->modal();
         }
     }
 
@@ -24,7 +24,7 @@ class Show extends Component
     public function close() : void
     {
         $this->emit('setNotilogId');
-        $this->closeDrawer();
+        $this->modal(false);
     }
 
     // delete

@@ -33,14 +33,14 @@ class Update extends Component
                 'inputs.description' => data_get($this->file->data, 'description'),
             ]);
 
-            $this->openDrawer();
+            $this->modal();
         }
     }
 
     // close
     public function close() : void
     {
-        $this->closeDrawer();
+        $this->modal(false);
     }
 
     // delete

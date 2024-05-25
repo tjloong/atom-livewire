@@ -89,13 +89,13 @@ class SendMail extends Component
         $this->inputs['bcc'] = $this->setEmailList($this->inputs['bcc']);
 
         $this->setPlaceholders();
-        $this->openDrawer();
+        $this->modal();
     }
 
     // close
     public function close() : void
     {
-        $this->closeDrawer();
+        $this->modal(false);
     }
 
     // get recipients

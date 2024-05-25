@@ -67,7 +67,7 @@ class Update extends Component
                 'image' => data_get($this->announcement->seo, 'image'),
             ]]);
     
-            $this->openDrawer('announcement-update');
+            $this->modal(id: 'announcement-update');
         }
     }
 
@@ -75,7 +75,7 @@ class Update extends Component
     public function close() : void
     {
         $this->emit('setAnnouncementId');
-        $this->closeDrawer('announcement-update');
+        $this->modal(false, 'announcement-update');
     }
 
     // duplicate

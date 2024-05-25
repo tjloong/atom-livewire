@@ -67,14 +67,14 @@ class Update extends Component
                 'inputs.data' => $this->label->data ?: [],
             ]);
     
-            $this->openDrawer();
+            $this->modal();
         }
     }
 
     // close
     public function close() : void
     {
-        $this->closeDrawer();
+        $this->modal(false);
     }
 
     // delete

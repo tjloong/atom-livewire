@@ -69,14 +69,14 @@ class Update extends Component
                 'inputs.permissions' => $this->user->getPermissionsList(),
             ]);
 
-            $this->openDrawer('user-update');
+            $this->modal(id: 'user-update');
         }
     }
 
     // close
     public function close() : void
     {
-        $this->closeDrawer('user-update');
+        $this->modal(false, 'user-update');
     }
 
     // trash
