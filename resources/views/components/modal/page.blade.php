@@ -11,6 +11,7 @@ $show = $attributes->get('show', false);
         show: @js($show),
 
         open () {
+            if (this.show) return
             this.show = true
             this.$dispatch('open')
             $modal.zindex()
@@ -19,6 +20,7 @@ $show = $attributes->get('show', false);
         },
 
         close () {
+            if (!this.show) return
             this.show = false
             this.$dispatch('close')
             if ($modal.isEmpty()) $modal.unlockScroll()

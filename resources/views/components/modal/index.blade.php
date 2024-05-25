@@ -12,6 +12,7 @@
         bgclose: @js($bgclose),
 
         open () {
+            if (this.show) return
             this.show = true
             this.$dispatch('open')
             $modal.zindex()
@@ -19,6 +20,7 @@
         },
 
         close () {
+            if (!this.show) return
             this.show = false
             this.$dispatch('close')
             if (!$modal.isEmpty()) $modal.unlockScroll()
