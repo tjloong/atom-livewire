@@ -1,5 +1,5 @@
 @php
-    $field = $attributes->get('name') ?? $attributes->wire('model')->value() ?? null;
+    $field = $attributes->get('field') ?? $attributes->get('name') ?? $attributes->wire('model')->value() ?? null;
     $fieldname = $field ? last(explode('.', $field)) : null;
     $wirekey = $attributes->get('wire:key') ?? $attributes->wire('model')->value();
     $err = $attributes->get('error');
@@ -70,14 +70,14 @@
         </div>
     @endif
 
-    @if ($err || $errors->first($field))
-        <div
-            wire:key="{{ uniqid() }}" 
-            x-init="$el.parentNode.querySelectorAll('.form-input:not(.transparent)').forEach(node => node.addClass('error'))"
-            class="text-sm text-red-500 font-medium form-field-error">
-            {{ tr($err ?: $errors->first($field)) }}
-        </div>
-    @else
-        <div x-init="$el.parentNode.querySelectorAll('.form-input.error').forEach(node => node.removeClass('error'))" class="hidden"></div>
-    @endif
+    <div
+        x-data="{ errors: @entangle('errors') }"
+        x-init="$watch('errors', () => errors[{{Js::from($field)}}]
+            ? $el.parentNode.querySelectorAll('.form-input:not(.transparent)').forEach(node => node.addClass('error'))
+            : $el.parentNode.querySelectorAll('.form-input.error').forEach(node => node.removeClass('error')))
+        "
+        x-text="errors[{{Js::from($field)}}]"
+        x-show="errors[{{Js::from($field)}}]"
+        class="text-sm text-red-500 font-medium font-field-error">
+    </div>
 </div>

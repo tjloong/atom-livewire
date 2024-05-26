@@ -8,6 +8,7 @@ class Component extends \Livewire\Component
 {
     use WithPopupNotify;
 
+    public $errors;
     public $keynonce;
 
     // mount
@@ -53,6 +54,9 @@ class Component extends \Livewire\Component
     // render
     public function render()
     {
+        // expose error bag so front end can use
+        $this->errors = collect($this->getErrorBag()->toArray())->map(fn($e) => head($e))->toArray();
+
         $class = static::class;
 
         $path = str($class)
