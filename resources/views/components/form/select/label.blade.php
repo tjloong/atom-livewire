@@ -11,7 +11,7 @@ $except = ['label', 'disabled', 'placeholder', 'type', 'children', 'parent'];
 <x-form.select callback="labels" :label="$label" :placeholder="$placeholder" :params="$params" {{ $attributes->except($except) }}>
     <div class="w-full">
         <template x-if="multiple">
-            <div class="flex items-center gap-2 flex-wrap">
+            <div class="flex items-center gap-2 flex-wrap pr-6">
                 <template x-for="item in selection">
                     <div
                         x-bind:style="item.color_value && {

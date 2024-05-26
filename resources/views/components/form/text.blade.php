@@ -1,11 +1,13 @@
 @php
     $clear = $attributes->get('clear', false);
+    $readonly = $attributes->get('readonly');
+    $transparent = $attributes->get('transparent');
     $placeholder = $attributes->get('placeholder');
     $icon = $attributes->get('icon');
-    $except = ['error', 'required', 'caption', 'label', 'label-tag', 'prefix', 'postfix', 'suffix'];
+    $except = ['error', 'required', 'class', 'caption', 'label', 'label-tag', 'prefix', 'postfix', 'suffix'];
 @endphp
 
-<x-form.field {{ $attributes }}>
+<x-form.field {{ $attributes->except('class') }}>
     <div 
         x-data="{
             focus: false,
@@ -17,9 +19,12 @@
             },
         }"
         x-bind:class="focus && 'active'"
-        class="form-input w-full flex items-center gap-2 {{ $attributes->get('readonly') ? 'readonly' : '' }}"
-        {{ $attributes->wire('clear') }}
-        {{ $attributes->whereStartsWith('x-on:clear') }}>
+        {{ $attributes->class([
+            'flex items-center gap-2',
+            $readonly ? 'readonly' : '',
+            $transparent ? 'transparent' : '',
+            $attributes->get('class', 'form-input w-full'),
+        ])->only(['class', 'wire:clear', 'wire:clear.stop', 'x-on:clear', 'x-on:clear.stop']) }}>
         @if ($icon)
             <div class="shrink-0 flex">
                 <x-icon :name="$icon" class="m-auto text-gray-400"/>

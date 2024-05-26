@@ -24,7 +24,6 @@
             options: @js($options),
             multiple: @js($multiple),
             searchable: @js($searchable),
-            clearable: @js($clearable),
             disabled: @js($disabled),
             callback: @js($callback),
             params: @js($params),
@@ -38,6 +37,10 @@
                 let found = this.options.filter(opt => (opt.selected))
                 if (this.multiple) return found
                 else return found.length ? found[0] : null
+            },
+
+            get isClearable () {
+                return @js($clearable) && !this.loading && this.show && !this.noSelection
             },
 
             get isSearchable () {
@@ -59,7 +62,12 @@
                     if (this.callback) {
                         if (!this.noSelection) this.fetch()
                         this.$watch('search', () => this.fetch())
-                        this.$watch('value', () => !this.noSelection && this.fetch())
+                        this.$watch('value', (value, old) => {
+                            let isEqual = this.multiple
+                                ? (value.length === old.length && value.every(val => (old.indexOf(val) !== -1)))
+                                : value === old
+                            if (!isEqual && !this.noSelection) this.fetch()
+                        })
                     }
                     else {
                         this.filter()
@@ -74,7 +82,7 @@
                 this.show = true
                 this.adjustDropdown()
 
-                if (this.callback && !this.options.length) this.fetch()
+                if (this.callback) this.fetch()
                 else this.filter()
             },
 
@@ -197,7 +205,10 @@
             @if (isset($anchor))
                 {{ $anchor }}
             @else
-                <button type="button" x-bind:disabled="disabled" class="relative flex gap-3 {{ $attributes->get('class', 'form-input w-full select') }}">
+                <button type="button"
+                    x-bind:disabled="disabled"
+                    x-bind:class="!isClearable && 'select'"
+                    class="relative flex gap-3 {{ $attributes->get('class', 'form-input w-full') }}">
                     @if ($icon)
                         <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div>
                     @endif
@@ -205,10 +216,6 @@
                     <div x-bind:class="multiple && !noSelection && !loading && 'first:-ml-1.5'" class="grow">
                         <template x-if="noSelection">
                             <input type="text" class="transparent w-full cursor-pointer" placeholder="{!! $placeholder !!}" readonly>
-                        </template>
-
-                        <template x-if="!noSelection && !show && loading">
-                            <input type="text" class="transparent w-full cursor-pointer" placeholder="{!! tr('app.label.loading') !!}" readonly>
                         </template>
 
                         <template x-if="!noSelection">
@@ -239,8 +246,8 @@
                         </template>
                     </div>
                     
-                    <template x-if="!loading && clearable && show && !noSelection">
-                        <div class="absolute right-1 top-1 bottom-1 bg-white p-1 flex" x-on:click.stop="remove()">
+                    <template x-if="isClearable">
+                        <div class="absolute right-1 top-1 bottom-1 p-1 flex" x-on:click.stop="remove()">
                             <div class="w-5 h-5 rounded-md flex m-auto text-gray-400 hover:text-gray-600 hover:bg-gray-200">
                                 <x-icon name="xmark" class="m-auto"/>
                             </div>
