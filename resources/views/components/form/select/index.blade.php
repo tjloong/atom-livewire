@@ -15,7 +15,7 @@
     $except = ['options', 'icon', 'class', 'multiple', 'callback', 'params', 'disabled', 'searchable', 'placeholder', 'wire:model', 'wire:model.defer'];
 @endphp
 
-<x-form.field {{ $attributes->except('class') }}>
+<x-form.field {{ $attributes->except(['class', 'wire:key']) }}>
     <div
         wire:ignore
         x-cloak
