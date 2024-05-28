@@ -38,7 +38,7 @@ $model = get_class($entity);
 <template x-teleport="body">
     <div
         x-show="show"
-        x-init="$watch('show', show => show && $layering.zindex())"
+        x-init="$watch('show', show => show && $modal.zindex())"
         x-transition.opacity.duration.300
         class="fixed inset-0">
         <div class="absolute inset-0 bg-black/80" x-on:click.stop="close()"></div>

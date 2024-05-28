@@ -97,7 +97,7 @@ $placeholder = $attributes->get('placeholder', 'app.label.select-datetime');
                 <button type="button" 
                     x-bind:class="(!value || !show) && 'select'"
                     {{ $attributes->class([
-                        'flex items-center gap-3',
+                        'relative flex items-center gap-3',
                         $attributes->get('class', 'form-input w-full')
                     ])->only('class') }}>
                     <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div>
@@ -108,8 +108,10 @@ $placeholder = $attributes->get('placeholder', 'app.label.select-datetime');
                             class="transparent grow cursor-pointer">
                     </div>
 
-                    <div x-show="value && show" x-on:click.stop="clear()" class="shrink-0 flex cursor-pointer text-gray-400 hover:text-gray-600">
-                        <x-icon name="xmark" class="m-auto"/>
+                    <div x-show="value && show" x-on:click.stop="clear()" class="absolute top-0 bottom-0 right-1 flex">
+                        <div class="w-5 h-5 rounded-md flex m-auto text-gray-400 hover:text-gray-600 hover:bg-gray-200">
+                            <x-icon name="xmark" class="m-auto"/>
+                        </div>
                     </div>
                 </button>
             @endif

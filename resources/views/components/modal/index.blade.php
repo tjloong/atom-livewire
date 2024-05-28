@@ -49,7 +49,8 @@
                         <x-heading lg class="p-4"
                             :icon="$heading->attributes->get('icon')"
                             :title="$heading->attributes->get('title')"
-                            :subtitle="$heading->attributes->get('subtitle')">
+                            :subtitle="$heading->attributes->get('subtitle')"
+                            :status="$heading->attributes->get('status')">
                             <x-close x-on:click.stop="close"/>
                         </x-heading>
                     @endif

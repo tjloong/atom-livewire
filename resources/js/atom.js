@@ -9,6 +9,7 @@ import Modal from './alpine/magic/modal.js'
 import SortId from './alpine/magic/sortid.js'
 import Clipboard from './alpine/magic/clipboard.js'
 import Badge from './alpine/directive/badge.js'
+import Textarea from './alpine/directive/textarea.js'
 
 window.dd = console.log.bind(console)
 window.ulid = () => (ULID.ulid())
@@ -24,4 +25,5 @@ document.addEventListener('alpine:init', () => {
     Alpine.magic('sortid', SortId)
     Alpine.magic('clipboard', Clipboard)
     Alpine.directive('badge', Badge)
+    Alpine.directive('textarea', Textarea)
 })
