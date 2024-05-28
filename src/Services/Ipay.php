@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Services;
 
+use Illuminate\Support\Facades\Blade;
+
 class Ipay
 {
     public $credentials;
@@ -23,27 +25,15 @@ class Ipay
         ]);
     }
 
-    // get job handler
-    public function getJobHandler() : mixed
-    {
-        $jobname = request()->query('job') ?? 'IpayProvision';
-        $jobhandler = collect([
-            'App\\Jobs\\'.$jobname,
-            'Jiannius\\Atom\\Jobs\\'.$jobname,
-        ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
-
-        return $jobhandler;
-    }
-
     // get signature
     public function getSignature($body) : string
     {
         $data = [
             $this->credentials->get('merchant_key'),
-            data_get($body, 'MerchantCode'),
-            data_get($body, 'RefNo'),
-            str(data_get($body, 'Amount'))->replace('.', '')->replace(',', '')->toString(),
-            data_get($body, 'Currency'),
+            get($body, 'MerchantCode'),
+            get($body, 'RefNo'),
+            str(get($body, 'Amount'))->replace('.', '')->replace(',', '')->toString(),
+            get($body, 'Currency'),
         ];
 
         $str = implode('', $data);
@@ -55,26 +45,42 @@ class Ipay
     public function checkout($params) : mixed
     {
         $data = [
+            ...$params,
+            'Amount' => app()->environment('production') ? currency(get($params, 'Amount')) : currency(1),
             'MerchantCode' => $this->credentials->get('merchant_code'),
-            'RefNo' => (string) data_get($params, 'payment_id'),
-            'Amount' => app()->environment('production')
-                ? currency(data_get($params, 'amount'))
-                : currency(1),
-            'Currency' => data_get($params, 'currency'),
-            'ProdDesc' => data_get($params, 'payment_description'),
-            'UserName' => data_get($params, 'customer.name'),
-            'UserEmail' => data_get($params, 'customer.email'),
-            'UserContact' => data_get($params, 'customer.phone'),
             'SignatureType' => 'SHA256',
-            'ResponseURL' => route('__ipay.redirect', ['job' => data_get($params, 'job')]),
-            'BackendURL' => route('__ipay.webhook', ['job' => data_get($params, 'job')]),
+            'ResponseURL' => route('__ipay.redirect'),
+            'BackendURL' => route('__ipay.webhook'),
         ];
 
-        $body = array_merge($data, ['signature' => $this->getSignature($data)]);
+        $body = [
+            ...$data,
+            'signature' => $this->getSignature($data),
+        ];
 
         return to_route('__ipay.checkout', [
             'body' => $body,
             'url' => $this->credentials->get('url'),
         ]);
+    }
+
+    // get checkout form
+    public static function getCheckoutForm() : mixed
+    {
+        $url = request()->url;
+        $body = request()->body;
+        $form = '';
+
+        foreach (array_keys($body) as $key) {
+            $form .= '<input name="'.$key.'" value="'.get($body, $key).'">';
+        }
+
+        $response = <<<EOL
+        <form name="ipay_checkout" method="POST" action="$url" style="display: none;">$form</form>
+        <div>Redirecting to payment gateway...</div>
+        <script>window.onload = function() { document.forms['ipay_checkout'].submit() }</script>
+        EOL;
+
+        return Blade::render($response);
     }
 }

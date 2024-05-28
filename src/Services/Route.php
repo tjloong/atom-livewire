@@ -107,9 +107,11 @@ class Route
 
         if ($ipay) {
             $this->prefix('__ipay')->as('__ipay')->withoutMiddleware('web')->group(function() {
-                $this->get('checkout', 'IpayController@checkout')->name('.checkout');
                 $this->post('redirect', 'IpayController@redirect')->name('.redirect');
                 $this->post('webhook', 'IpayController@webhook')->name('.webhook');
+                $this->get('checkout', function() {
+                    return \Jiannius\Atom\Services\Ipay::getCheckoutForm();
+                })->name('.checkout');
             });
         }
 
