@@ -27,7 +27,3 @@
             }))"/>
     </x-dropdown>
 </div>
-
-@pushOnce('cdn')
-@basset('https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js')
-@endPushOnce

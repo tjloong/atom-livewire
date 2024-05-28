@@ -47,6 +47,8 @@ $cdnlist = collect([
     'dayjs' => false,
     'flatpickr' => false,
     'ulid' => false,
+    'sharer' => false,
+    'shuffle' => false,
     'animate' => false,
     'ckeditor' => false,
     'apexcharts' => false,
@@ -134,6 +136,12 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 @if ($cdnlist->get('flatpickr'))
 @basset('https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js')
 @basset('https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css')
+@endif
+@if ($cdnlist->get('sharer'))
+@basset('https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js')
+@endif
+@if ($cdnlist->get('shuffle'))
+@basset('https://cdn.jsdelivr.net/npm/shufflejs@6.1.0/dist/shuffle.min.js')
 @endif
 @if ($cdnlist->get('keen-slider'))
 @basset('https://cdn.jsdelivr.net/npm/keen-slider@6.8.6/keen-slider.min.js')
