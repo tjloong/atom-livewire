@@ -7,6 +7,8 @@
             toolbar: @js($toolbar),
             placeholder: @js(tr($attributes->get('placeholder', 'Your content...'))),
             startEditor () {
+                this.$watch('content', (content, old) => content !== old && this.$dispatch('content-update', content))
+
                 ClassicEditor.create(this.$refs.ckeditor, { 
                     placeholder: this.placeholder, 
                     toolbar: this.toolbar,
@@ -16,6 +18,7 @@
 
                     // onchange update
                     editor.model.document.on('change:data', () => this.content = editor.getData())
+                    window.addEventListener('content-update', e => editor.setData(e.detail))
                     
                     // insert media
                     editor.ui.view.toolbar.on('insert-media:click', () => {

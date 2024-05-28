@@ -75,9 +75,9 @@
         x-init="$watch('errors', () => errors[{{Js::from($field)}}]
             ? $el.parentNode.querySelectorAll('.form-input:not(.transparent)').forEach(node => node.addClass('error'))
             : $el.parentNode.querySelectorAll('.form-input.error').forEach(node => node.removeClass('error')))
-        "
-        x-text="errors[{{Js::from($field)}}]"
-        x-show="errors[{{Js::from($field)}}]"
-        class="text-sm text-red-500 font-medium font-field-error">
+        ">
+        <template x-if="errors">
+            <div x-text="errors[{{Js::from($field)}}]" x-show="errors[{{Js::from($field)}}]" class="text-sm text-red-500 font-medium font-field-error"></div>
+        </template>
     </div>
 </div>
