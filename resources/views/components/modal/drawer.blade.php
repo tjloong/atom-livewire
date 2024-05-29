@@ -24,6 +24,7 @@
             this.show = false
             this.$dispatch('close')
             if ($modal.isEmpty()) $modal.unlockScroll()
+            $modal.unlockScroll()
         },
     }"
     x-show="show"
