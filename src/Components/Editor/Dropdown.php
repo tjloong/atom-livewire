@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Components\Form\Editor;
+namespace Jiannius\Atom\Components\Editor;
 
 use Illuminate\View\Component;
 
@@ -8,6 +8,6 @@ class Dropdown extends Component
 {
     public function render()
     {
-        return view('atom::components.form.editor.dropdown');
+        return view('atom::components.editor.dropdown');
     }
 }

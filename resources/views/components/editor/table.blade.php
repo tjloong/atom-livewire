@@ -1,5 +1,5 @@
 <div class="group">
-    <x-form.editor.dropdown icon="table" tooltip="Table">
+    <x-editor.dropdown icon="table" tooltip="Table">
         <div x-data="{
             mode: null,
             exists: false,
@@ -83,5 +83,5 @@
                 </div>
             </div>
         </div>
-    </x-form.editor.dropdown>
+    </x-editor.dropdown>
 </div>

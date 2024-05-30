@@ -44,6 +44,7 @@ $fbp = $analytics ? (settings('fbp_id') ?? config('atom.fbp_id')) : null;
 
 $cdnlist = collect([
     'fontawesome' => true,
+    'apexcharts' => false,
     'dayjs' => false,
     'flatpickr' => false,
     'ulid' => false,

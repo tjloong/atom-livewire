@@ -137,72 +137,57 @@ const ImageExtended = Image.extend({
     },
 })
 
-window.setupEditor = (content, placeholder = 'Write something...') => {
+window.Editor = (element, config) => {
     let editor
 
-    return {
-        content,
-        focus: false,
-  
-        init(element) {
-            this.initEditor(element)
-            this.$watch('content', (content) => {
-                if (content === editor.getHTML()) return
-                editor.commands.setContent(content, false)
-            })
+    editor = new Editor({
+        element,
+        autofocus: 'end',
+    
+        extensions: [
+            Color,
+            FontSize,
+            Highlight.configure({ multicolor: true }),
+            ImageExtended.configure({ allowBase64: true }),
+            Link.configure({ openOnClick: false }),
+            Placeholder.configure({ placeholder: config.placeholder }),
+            Subscript,
+            Superscript,
+            StarterKit,
+            TableExtended.configure({ resizable: true }),
+            TableCellExtended,
+            TableRow,
+            TableHeader,
+            TextAlign.configure({ types: ['heading', 'paragraph'] }),
+            TextStyle,
+            Underline,
+            Youtube,
+        ],
+
+        editorProps: {
+            attributes: {
+                class: 'editor-content mx-3 focus:outline-none',
+            },
         },
 
-        initEditor (element) {
-            editor = new Editor({
-                element,
-                content: this.content,
-                extensions: [
-                    Color,
-                    FontSize,
-                    Highlight.configure({ multicolor: true }),
-                    ImageExtended.configure({ allowBase64: true }),
-                    Link.configure({ openOnClick: false }),
-                    Placeholder.configure({ placeholder }),
-                    Subscript,
-                    Superscript,
-                    StarterKit,
-                    TableExtended.configure({ resizable: true }),
-                    TableCellExtended,
-                    TableRow,
-                    TableHeader,
-                    TextAlign.configure({ types: ['heading', 'paragraph'] }),
-                    TextStyle,
-                    Underline,
-                    Youtube,
-                ],
-                editorProps: {
-                    attributes: {
-                        class: 'editor-content m-4 focus:outline-none',
-                    },
-                },
-                onFocus: ({ editor, event }) => {
-                    this.focus = true
-                },
-                onBlur: ({ editor, event }) => {
-                    this.focus = false
-                },
-                onUpdate: ({ editor }) => {
-                    this.content = editor.getHTML()
-                },
-            })
+        onFocus ({ editor, event }) {
+            element.dispatchEvent(new CustomEvent('editor-focus', { bubbles: true, detail: { editor, event }}))
+        },
+    
+        onBlur ({ editor, event }) {
+            element.dispatchEvent(new CustomEvent('editor-blur', { bubbles: true, detail: { editor, event }}))
+        },
+    
+        onCreate ({ editor }) {
+            element.dispatchEvent(new CustomEvent('editor-create', { bubbles: true, detail: { editor }}))
+        },
+    
+        onUpdate ({ editor }) {
+            element.dispatchEvent(new CustomEvent('editor-update', { bubbles: true, detail: { editor }}))
         },
 
-        editor () {
-            return editor
-        },
+        ...config,
+    })
 
-        can () {
-            return editor.can()
-        },
-
-        commands () {
-            editor.chain().focus()
-            return editor.commands
-        },
-    }
+    element.editor = editor
 }

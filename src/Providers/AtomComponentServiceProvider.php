@@ -104,6 +104,16 @@ class AtomComponentServiceProvider extends ServiceProvider
             'dropdown.archive',
             'dropdown.restore',
             'dropdown.footprint',
+
+            'editor.index',
+            'editor.text',
+            'editor.media',
+            'editor.tools',
+            'editor.table',
+            'editor.bullet',
+            'editor.actions',
+            'editor.heading',
+            'editor.dropdown',
             
             'table.index',
             'table.th',
@@ -152,16 +162,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'form.recaptcha',
             'form.permission',
             'form.checkbox-select',
-            
-            'form.editor.index',
-            'form.editor.text',
-            'form.editor.media',
-            'form.editor.tools',
-            'form.editor.table',
-            'form.editor.bullet',
-            'form.editor.actions',
-            'form.editor.heading',
-            'form.editor.dropdown',
             
             'form.file.index',
             'form.file.url',

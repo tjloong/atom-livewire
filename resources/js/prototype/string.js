@@ -54,3 +54,7 @@ String.prototype.nl2br = function(is_xhtml) {
     let breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
     return (this + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 }
+
+String.prototype.striptags = function() {
+    return this.replace(/(<([^>]+)>)/gi, "")
+}

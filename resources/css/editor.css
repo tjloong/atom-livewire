@@ -13,6 +13,9 @@
             @apply m-auto;
         }
     }
+    button:hover, .button:hover {
+        @apply bg-slate-100 rounded;
+    }
 
     .dropdown {
         @apply absolute z-10 left-0 bg-white border rounded-md shadow;

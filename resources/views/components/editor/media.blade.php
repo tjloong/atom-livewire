@@ -1,5 +1,5 @@
 <div class="group">
-    <x-form.editor.dropdown icon="image" tooltip="Image">
+    <x-editor.dropdown icon="image" tooltip="Image">
         <div
             x-data="{
                 url: null,
@@ -75,28 +75,26 @@
                 </div>
             </div>
 
-            <div x-show="!exists" class="w-80">
-                <x-group>
+            <div x-show="!exists" class="w-80 flex flex-col divide-y">
+                <div class="p-3 flex flex-col gap-3">
                     <x-form.text label="Image URL" x-model="url"/>
                     <x-form.text label="Alt Text" x-model="alt"/>
-                </x-group>
+                </div>
     
-                <x-group class="p-3">
-                    <div class="flex items-center gap-2">
-                        <x-button icon="check" color="green" outlined sm block
-                            label="Save"
-                            x-on:click="save()"/>
+                <div class="p-3 flex items-center gap-2">
+                    <x-button icon="check" color="green" outlined sm block
+                        label="Save"
+                        x-on:click="save()"/>
 
-                        <x-button icon="search" sm block
-                            label="Browse"
-                            x-on:click="Livewire.emit('showFilesLibrary', { accept: 'image/*' })"/>
-                    </div>
-                </x-group>
+                    <x-button icon="search" sm block
+                        label="Browse"
+                        x-on:click="Livewire.emit('showFilesLibrary', { accept: 'image/*' })"/>
+                </div>
             </div>
         </div>
-    </x-form.editor.dropdown>
+    </x-editor.dropdown>
 
-    <x-form.editor.dropdown icon="brands youtube" tooltip="Youtube Video">
+    <x-editor.dropdown icon="brands youtube" tooltip="Youtube Video">
         <div
             x-data="{
                 url: null,
@@ -114,18 +112,18 @@
                     close()
                 }
             }" 
-            class="w-80">
-            <x-group>
+            class="w-80 flex flex-col divide-y">
+            <div class="p-3 flex flex-col gap-3">
                 <x-form.text label="Youtube URL" x-model="url"/>
                 <x-form.number label="Width" x-model="width"/>
                 <x-form.number label="Height" x-model="height"/>
-            </x-group>
+            </div>
 
-            <x-group class="p-3">
+            <div class="p-3">
                 <x-button color="green" icon="add" outlined sm
                     label="Add Youtube Video"
                     x-on:click="save()"/>
-            </x-group>
+            </div>
         </div>
-    </x-form.editor.dropdown>
+    </x-editor.dropdown>
 </div>

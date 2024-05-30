@@ -36,6 +36,14 @@ export default class Color
         return this
     }
 
+    all () {
+        return Object.keys(this.palette)
+        .filter(val => !['black', 'white'].includes(val))
+        .map(val => (this.palette[val]))
+        .flat()
+        .concat('#ffffff', '#000000')
+    }
+
     value () {
         if (!this.isHex()) this.toHex()
         if (this.variation) return this.getVariationValue()
