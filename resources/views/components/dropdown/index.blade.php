@@ -1,19 +1,20 @@
 @php
-    $icon = $attributes->get('icon');
-    $label = $attributes->get('label');
-    $placement = $attributes->get('placement');
-    $directive = $placement ? 'x-anchor.'.$placement : 'x-anchor';
+$icon = $attributes->get('icon');
+$label = $attributes->get('label');
+$placement = $attributes->get('placement');
+$closeOnSelect = $attributes->get('close-on-select', true);
+$directive = $placement ? 'x-anchor.'.$placement : 'x-anchor';
 @endphp
 
 <div 
     x-cloak
-    x-data="{ open: false }"
+    x-data="{
+        open: false,
+        closeOnSelect: @js($closeOnSelect),
+    }"
+    x-on:click.away="open = false"
     {{ $attributes->except(['icon', 'label', 'placement']) }}>
-    <div 
-        x-ref="anchor" 
-        x-on:click.stop="open = true" 
-        x-on:click.away="open = false"
-        class="inline-block cursor-pointer">
+    <div x-ref="anchor" x-on:click.stop="open = true" class="inline-block cursor-pointer">
         @if (isset($anchor)) {{ $anchor }}
         @else
             <div class="flex items-center gap-2">
@@ -28,7 +29,8 @@
         x-show="open"
         {{ $directive }}.offset.4="$refs.anchor"
         x-transition.opacity.duration.300
-        class="bg-white z-10 border rounded-md shadow-lg max-w-md min-w-[250px] overflow-hidden">
+        x-on:click.stop="closeOnSelect && (open = false)"
+        class="bg-white z-10 border rounded-md shadow-lg max-w-md min-w-[250px]">
         {{ $slot }}
     </div>
 </div>

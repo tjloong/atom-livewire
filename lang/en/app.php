@@ -80,6 +80,7 @@ return [
         'create-account' => 'Create Account',
         'create-announcement' => 'Create Announcement',
         'create-banner' => 'Create Banner',
+        'create-new' => 'Create New',
         'create-label' => 'Create Label',
         'create-popup' => 'Create Pop-Up',
         'create-user' => 'Create User',
