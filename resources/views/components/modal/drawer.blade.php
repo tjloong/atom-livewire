@@ -129,7 +129,7 @@
                     </div>
                 @endisset
 
-                <div class="grow overflow-auto pb-5">
+                <div class="modal-drawer-body grow overflow-auto pb-5">
                     {{ $slot }}
                 </div>
     
