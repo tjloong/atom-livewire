@@ -55,6 +55,7 @@ $cdnlist = collect([
     'apexcharts' => false,
     'keen-slider' => false,
     'fullcalendar' => false,
+    'fullcalendar/google-calendar' => false,
     'alpinejs/mask' => false,
     'alpinejs/sort' => false,
     'alpinejs/anchor' => true,
@@ -150,6 +151,9 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 @endif
 @if ($cdnlist->get('fullcalendar'))
 @basset('https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js')
+@endif
+@if ($cdnlist->get('fullcalendar/google-calendar'))
+@basset('https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.13/index.global.min.js')
 @endif
 @if ($cdnlist->get('animate'))
 @basset('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css')
