@@ -16,6 +16,8 @@ class Setting extends Model
     protected static function booted()
     {
         static::saving(function($setting) {
+            $cast = get($setting->castSettingsValue(), $setting->name);
+            if (in_array($cast, ['array', 'json'])) $setting->value = json_encode($setting->value);
             cache()->forget('settings');
         });
     }
