@@ -93,6 +93,17 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
+        if (!ComponentAttributeBag::hasMacro('modifiers')) {
+            ComponentAttributeBag::macro('modifier', function($name = null) {
+                $attribute = collect($this->whereStartsWith('wire:model')->getAttributes())->keys()->first()
+                    ?? collect($this->whereStartsWith('x-model')->getAttributes())->keys()->first();
+
+                $modifier = (string) str($attribute)->replace('x-model', '')->replace('wire:model', '');
+
+                return $name ? str($modifier)->is('*'.$name.'*') : $modifier;
+            });
+        }
+
         if (!Carbon::hasMacro('local')) {
             Carbon::macro('local', function() {
                 $tz = optional(user())->settings('timezone') ?? config('atom.timezone');

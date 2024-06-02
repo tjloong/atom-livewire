@@ -29,6 +29,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'field',
             'group',
             'image',
+            'input',
             'label',
             'popup',
             'anchor',
@@ -121,7 +122,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'sidenav.item',
             
             'form.index',
-            'form.qty',
             'form.seo',
             'form.tags',
             'form.myic',

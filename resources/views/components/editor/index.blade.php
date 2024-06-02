@@ -1,17 +1,20 @@
 @php
+$for = $attributes->get('for') ?? $attributes->wire('model')->value();
 $mode = $attributes->get('mode', 'html');
 $label = $attributes->get('label');
 $nolabel = $attributes->get('no-label');
 $enabled = $attributes->get('enabled', false);
 $readonly = $attributes->get('readonly', false);
+$lazy = $attributes->modifier('lazy');
 $placeholder = $attributes->get('placeholder', 'Write something...');
-$lazy = $attributes->has('x-model.lazy') || $attributes->has('wire:model.lazy');
 $except = ['label', 'enabled', 'readonly', 'placeholder', 'wire:model', 'wire:model.defer', 'wire:model.lazy'];
 @endphp
 
-<div class="flex flex-col gap-2">
+<div>
     @if (!$nolabel)
-        <x-label :label="$label" :for="$attributes->get('for') ?? $attributes->wire('model')->value()"/>
+        <div class="mb-2">
+            <x-label :label="$label" :for="$for"/>
+        </div>
     @endif
 
     <div

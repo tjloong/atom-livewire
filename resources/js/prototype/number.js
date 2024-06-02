@@ -29,3 +29,19 @@ Number.prototype.currency = function(symbol = null, round = false) {
 
     return symbol ? `${symbol} ${currency}` : `${currency}`
 }
+
+Number.prototype.decimalPlaces = function() {
+    if (Math.floor(this.valueOf()) === this.valueOf()) return 0
+
+    let str = this.toString()
+
+    if (str.indexOf('.') !== -1 && str.indexOf('-') !== -1) return str.split('-')[1] || 0
+    else if (str.indexOf('.') !== -1) return str.split('.')[1].length || 0
+
+    return str.split('-')[1] || 0
+}
+
+Number.prototype.round = function(decimal = 2) {
+    let weight = +('1'.padEnd(decimal + 1, '0'))
+    return Math.round((this + Number.EPSILON) * weight) / weight
+}
