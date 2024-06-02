@@ -1,12 +1,16 @@
 <x-form.drawer>
 @if ($user)
     @if ($user->exists)
-        <x-slot:heading title="{!! $user->name !!}" subtitle="{{ $user->email }}"></x-slot:heading>
-
         <x-slot:buttons
             :trash="!$user->trashed()"
             :restore="$user->trashed()"
-            :delete="$user->trashed()"></x-slot:buttons>
+            :delete="$user->trashed()">
+        </x-slot:buttons>
+
+        <x-slot:heading
+            title="{!! $user->name !!}"
+            subtitle="{{ $user->email }}">
+        </x-slot:heading>
     @else
         <x-slot:heading title="Create User"></x-slot:heading>
     @endif

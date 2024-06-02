@@ -65,13 +65,11 @@
             </div>
 
             <div class="shrink-0">
-                <x-button.confirm color="red" icon="trash" label="app.label.remove" inverted sm
-                    x-on:click="$dispatch('confirm', {
-                        title: '{{ tr('app.alert.remove-file.title', 2) }}',
-                        message: '{{ tr('app.alert.remove-file.message', 2) }}',
-                        type: 'error',
-                        onConfirmed: () => remove(),
-                    })"/>
+                <x-button action="remove" sm invert x-prompt.confirm.error="{
+                    title: 'app.alert.remove-file.title',
+                    message: 'app.alert.remove-file.message',
+                    confirm: () => remove(),
+                }"/>
             </div>
         </div>
 

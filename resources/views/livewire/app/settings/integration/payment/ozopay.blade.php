@@ -26,6 +26,6 @@
     />
 
     <div>
-        <x-button.submit/>
+        <x-button action="submit"/>
     </div>
 </form>

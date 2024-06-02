@@ -3,8 +3,8 @@
     @if ($announcement->exists) 
         <x-slot:heading title="app.label.update-announcement"></x-slot:heading>
         <x-slot:buttons delete>
-            <x-button.submit sm/>
-            <x-button icon="copy" label="common.label.duplicate" sm wire:click="duplicate()"/>
+            <x-button action="submit" sm/>
+            <x-button action="duplicate" sm/>
         </x-slot:buttons>
     @else
         <x-slot:heading title="app.label.create-announcement"></x-slot:heading>
@@ -21,7 +21,7 @@
 
     <x-group>
         <x-form.text label="app.label.href" wire:model.defer="announcement.href"/>
-        <x-form.editor label="app.label.content" wire:model.defer="announcement.content"/>
+        <x-editor label="app.label.content" wire:model.defer="announcement.content"/>
     </x-group>
 
     <x-group heading="SEO">

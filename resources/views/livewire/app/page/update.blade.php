@@ -8,7 +8,7 @@
     </x-group>
 
     <x-group>
-        <x-form.editor label="app.label.content" wire:model.defer="page.content"/>
+        <x-editor label="app.label.content" wire:model.defer="page.content"/>
     </x-group>
 @endif
 </x-form.drawer>

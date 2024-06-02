@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\ComponentAttributeBag;
 
 class AtomServiceProvider extends ServiceProvider
 {
@@ -78,6 +79,17 @@ class AtomServiceProvider extends ServiceProvider
                 }
 
                 return null;
+            });
+        }
+
+        if (!ComponentAttributeBag::hasMacro('hasLike')) {
+            ComponentAttributeBag::macro('hasLike', function() {
+                $value = func_get_args();
+                $keys = collect($this->getAttributes())->keys();
+
+                return !empty(
+                    $keys->first(fn($key) => str($key)->is($value))
+                );
             });
         }
 

@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-4">
     @if (!$this->verification && model('setting')->getSocialLogins()->count())
-        <x-button.social-login/>
+        <x-button-social/>
         <x-divider label="or"/>
     @endif
 
@@ -74,7 +74,7 @@
         </x-group>
 
         <x-slot:foot>
-            <x-button.submit md block label="app.label.create-account"/>
+            <x-button action="submit" md block label="app.label.create-account"/>
         </x-slot:foot>
     </x-form>
     

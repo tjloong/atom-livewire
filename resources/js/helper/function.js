@@ -74,3 +74,49 @@ window.random = () => {
 
 // json
 window.json = (...args) => (JSON.stringify(...args))
+
+// get
+window.get = (haystack, needle) => {
+    let value = { ...haystack }
+    let keys = needle.split('.')
+
+    while(keys.length && value) {
+        let key = keys.shift()
+        value = value.hasOwnProperty(key) ? value[key] : null
+    }
+
+    return value
+}
+
+// tr
+window.tr = (...args) => {
+    if (!window.lang) return args.length === 1 ? args[0] : args
+
+    let key = args.shift()
+    let lang = get(window.lang, key)
+
+    if (!lang) return key
+    if (typeof lang !== 'string') return key
+
+    let arg = args[0]
+    let split = lang.split('|')
+    let singular = split[0]
+    let plural = split[1]
+
+    if (empty(arg)) {
+        return singular
+    }
+
+    if (typeof arg === 'number') {
+        if (arg > 1 && plural) return plural.replace(':count', arg)
+        else return singular.replace(':count', arg)
+    }
+
+    if (typeof arg === 'object') {
+        Object.keys(arg).forEach(key => {
+            singular = singular.replace(key, arg[key])
+        })
+
+        return singular
+    }
+}

@@ -13,7 +13,7 @@
         </x-group>
 
         <x-slot:foot>
-            <x-button.submit block label="app.label.reset-password"/>
+            <x-button action="submit" block label="app.label.reset-password"/>
         </x-slot:foot>
     </x-form>
 

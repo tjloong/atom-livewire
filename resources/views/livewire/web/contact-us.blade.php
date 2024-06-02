@@ -55,7 +55,7 @@
                     </x-group>
 
                     <x-slot:foot>
-                        <x-button.submit color="theme" md block
+                        <x-button action="submit" color="theme" md block
                             label="web.contact.button.send"/>
                     </x-slot:foot>
                 </x-form>

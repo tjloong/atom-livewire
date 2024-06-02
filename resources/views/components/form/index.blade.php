@@ -61,7 +61,7 @@
             @endif
         @else
             <x-slot:foot>
-                <x-button.submit/>
+                <x-button action="submit"/>
             </x-slot:foot>
         @endif
     </x-box>

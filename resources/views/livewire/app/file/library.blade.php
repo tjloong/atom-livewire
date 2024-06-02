@@ -36,7 +36,7 @@
                 </div>
             </div>
     
-            <x-button.submit sm type="button" label="app.label.select" x-on:click="() => {
+            <x-button action="submit" sm type="button" label="app.label.select" x-on:click="() => {
                 $dispatch('files-selected', checkboxes)
                 close()
             }"/>

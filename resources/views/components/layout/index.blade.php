@@ -43,6 +43,7 @@ $ga = $analytics ? (settings('ga_id') ?? config('atom.ga_id')) : null;
 $fbp = $analytics ? (settings('fbp_id') ?? config('atom.fbp_id')) : null;
 
 $cdnlist = collect([
+    'lang' => true,
     'fontawesome' => true,
     'apexcharts' => false,
     'dayjs' => false,
@@ -123,6 +124,9 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 {{ $cdn }}
 @endif
 
+@if ($cdnlist->get('lang'))
+<script src="{{ route('__locale', 'all') }}"></script>
+@endif
 @if ($cdnlist->get('fontawesome'))
 @basset("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js")
 @basset("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css")

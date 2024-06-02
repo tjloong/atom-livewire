@@ -11,7 +11,7 @@
         </x-group>
 
         <x-slot:foot>
-            <x-button.submit/>
+            <x-button action="submit"/>
             <x-button icon="link" label="app.label.test-connection" wire:click="test"/>
         </x-slot:foot>
     </x-form>

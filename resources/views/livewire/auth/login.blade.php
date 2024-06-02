@@ -18,11 +18,11 @@
         </x-group>
     
         <x-slot:foot>
-            <x-button.submit label="app.label.login" icon="login" color="theme" block lg/>
+            <x-button action="submit" label="app.label.login" icon="login" color="theme" block lg/>
             
             @if (model('setting')->getSocialLogins()->count())
                 <x-divider label="or"/>
-                <x-button.social-login/>
+                <x-button-social/>
             @endif
         </x-slot:foot>
     </x-form>

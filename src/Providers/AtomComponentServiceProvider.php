@@ -4,7 +4,6 @@ namespace Jiannius\Atom\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\View\ComponentAttributeBag;
 
 class AtomComponentServiceProvider extends ServiceProvider
 {
@@ -33,6 +32,7 @@ class AtomComponentServiceProvider extends ServiceProvider
             'label',
             'popup',
             'anchor',
+            'button',
             'inform',
             'inline',
             'loader',
@@ -49,12 +49,11 @@ class AtomComponentServiceProvider extends ServiceProvider
             'breadcrumbs',
             'announcement',
             'media-object',
-            'page-overlay',
             'social-share',
             'contact-card',
+            'button-social',
             'flip-countdown',
             'avatar-bullets',
-            'payment-gateway',
             'whatsapp-bubble',
             'placeholder-bar',
             'email-verification',
@@ -85,17 +84,6 @@ class AtomComponentServiceProvider extends ServiceProvider
             'box.stat',
             'box.loading.index',
             'box.loading.placeholder',
-            
-            'button.index',
-            'button.edit',
-            'button.group',
-            'button.trash',
-            'button.submit',
-            'button.delete',
-            'button.restore',
-            'button.archive',
-            'button.confirm',
-            'button.social-login',
             
             'dropdown.index',
             'dropdown.item',
@@ -225,14 +213,5 @@ class AtomComponentServiceProvider extends ServiceProvider
 
             Blade::component($value, $classname);
         }
-
-        ComponentAttributeBag::macro('hasLike', function() {
-            $value = func_get_args();
-            $keys = collect($this->getAttributes())->keys();
-
-            return !empty(
-                $keys->first(fn($key) => str($key)->is($value))
-            );
-        });
     }
 }

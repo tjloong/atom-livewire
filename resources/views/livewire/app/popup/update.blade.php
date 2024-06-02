@@ -1,11 +1,11 @@
 <x-form.drawer class="max-w-screen-lg" wire:close="close()">
 @if ($popup)
     @if ($popup->exists) 
-        <x-slot:heading title="app.label.update-popup"></x-slot:heading>
         <x-slot:buttons delete>
-            <x-button.submit sm/>
-            <x-button icon="copy" label="app.label.duplicate" sm wire:click="duplicate()"/>
+            <x-button action="submit" sm/>
+            <x-button action="duplicate" sm/>
         </x-slot:buttons>
+        <x-slot:heading title="app.label.update-popup"></x-slot:heading>
     @else
         <x-slot:heading title="app.label.create-popup"></x-slot:heading>
     @endif
@@ -20,7 +20,7 @@
     </x-group>
 
     <x-group>
-        <x-form.editor label="app.label.content" wire:model.defer="popup.content"/>
+        <x-editor label="app.label.content" wire:model.defer="popup.content"/>
     </x-group>
 @endif
 </x-form.drawer>

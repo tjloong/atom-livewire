@@ -9,7 +9,7 @@
         </x-group>
 
         <x-slot:foot>
-            <x-button.submit block icon="send" label="app.label.send-request"/>
+            <x-button action="submit" block icon="send" label="app.label.send-request"/>
         </x-slot:foot>
     </x-form>
     

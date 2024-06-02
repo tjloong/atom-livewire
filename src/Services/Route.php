@@ -53,7 +53,7 @@ class Route
     public function default() : void
     {
         $this->get('__sitemap', 'SitemapController')->name('__sitemap');
-        $this->get('__locale/{locale}', 'LocaleController@set')->name('__locale');
+        $this->get('__locale/{locale}', 'LocaleController')->withoutMiddleware('web')->name('__locale');
         $this->post('__select', 'SelectController@get')->name('__select');
         $this->post('__share', 'ShareController')->name('__share');
         $this->post('__file/url', 'FileController@url')->name('__file.url');

@@ -13,22 +13,22 @@
         <div class="flex items-center gap-2">
             @if ($attributes->get('archive'))
                 @if ($this->tableShowArchived)
-                    <x-button.restore sm callback="restoreTableRows"/>
+                    <x-button action="restore" sm wire:click="restoreTableRows"/>
                 @elseif (!$this->tableShowTrashed)
-                    <x-button.archive sm callback="archiveTableRows"/>
+                    <x-button action="archive" sm wire:click="archiveTableRows"/>
                 @endif
             @endif
         
             @if ($attributes->get('trash'))
                 @if ($this->tableShowTrashed)
-                    <x-button.restore sm callback="restoreTableRows"/>
+                    <x-button action="restore" sm wire:click="restoreTableRows"/>
                 @elseif (!$this->tableShowArchived)
-                    <x-button.trash sm callback="trashTableRows"/>
+                    <x-button action="trash" sm x-prompt.trash="{ confirm: $wire.trashTableRows }"/>
                 @endif
             @endif
 
             @if ($attributes->get('delete'))
-                <x-button.delete sm callback="deleteTableRows"/>
+                <x-button action="delete" sm x-prompt.delete="{ confirm: $wire.deleteTableRows }"/>
             @endif
         </div>
     </div>

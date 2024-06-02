@@ -1,7 +1,7 @@
 @php
-    $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
-    $show = $attributes->get('show', false);
-    $bgclose = $attributes->get('bg-close', true);
+$id = $attributes->get('id') ?? $this->getName() ?? $this->id;
+$show = $attributes->get('show', false);
+$bgclose = $attributes->get('bg-close', true);
 @endphp
 
 <div
@@ -46,67 +46,14 @@
         <div class="bg-white rounded-l-lg shadow-lg overflow-hidden flex flex-col h-full">
             <div class="shrink-0 bg-white py-3 px-6 flex flex-wrap items-center justify-between gap-3 border-b rounded-t-lg">
                 <div class="cursor-pointer" x-on:click="close()">
-                    <x-icon name="arrow-right-long" class="text-lg"/>
+                    @isset($back) {{ $back }}
+                    @else <x-icon name="arrow-right-long" class="text-lg"/>
+                    @endif
                 </div>
 
-                @if ($slot->isNotEmpty())
-                    <div x-data class="flex flex-wrap items-center gap-2">
-                        @isset($buttons)
-                            @if (!$buttons->attributes->get('blank'))
-                                {{ $buttons }}
-
-                                @if ($buttons->attributes->get('archive'))
-                                    <x-button.archive sm :params="$buttons->attributes->get('archive')"/>
-                                @endif
-
-                                @if ($buttons->attributes->get('restore'))
-                                    <x-button.restore sm :params="$buttons->attributes->get('restore')"/>
-                                @endif
-
-                                @if ($buttons->attributes->get('trash'))
-                                    <x-button.trash sm inverted :params="$buttons->attributes->get('trash')"/>
-                                @endif
-
-                                @if ($buttons->attributes->get('delete'))
-                                    <x-button.delete sm inverted :params="$buttons->attributes->get('delete')"/>
-                                @endif
-                            @endif
-                        @endisset
-
-                        @isset($dropdown)
-                            <x-dropdown placement="bottom-end">
-                                <x-slot:anchor>
-                                    <x-button sm :label="$dropdown->attributes->get('label', 'More')" icon="chevron-down" position="end"/>
-                                </x-slot:anchor>
-
-                                {{ $dropdown }}
-
-                                @if (
-                                    $dropdown->attributes->get('restore')
-                                    || $dropdown->attributes->get('trash')
-                                    || $dropdown->attributes->get('delete')
-                                    || $dropdown->attributes->get('archive')
-                                )
-                                    <div class="border-t">
-                                        @if ($dropdown->attributes->get('archive'))
-                                            <x-dropdown.archive :params="$dropdown->attributes->get('archive')"/>
-                                        @endif
-
-                                        @if ($dropdown->attributes->get('restore'))
-                                            <x-dropdown.restore :params="$dropdown->attributes->get('restore')"/>
-                                        @endif
-        
-                                        @if ($dropdown->attributes->get('trash'))
-                                            <x-dropdown.trash :params="$dropdown->attributes->get('trash')"/>
-                                        @endif
-        
-                                        @if ($dropdown->attributes->get('delete'))
-                                            <x-dropdown.delete :params="$dropdown->attributes->get('delete')"/>
-                                        @endif
-                                    </div>
-                                @endif
-                            </x-dropdown>
-                        @endisset
+                @if ($slot->isNotEmpty() && isset($buttons) && $buttons->isNotEmpty())
+                    <div {{ $buttons->attributes->class([$buttons->attributes->get('class', 'flex items-center gap-3 flex-wrap')]) }}>
+                        {{ $buttons }}
                     </div>
                 @endif
             </div>
@@ -117,14 +64,14 @@
                         'shrink-0 border-b',
                         $heading->attributes->get('class', 'px-5 pt-3'),
                     ])->except(['icon', 'title', 'subtitle', 'status']) }}>
-                        @if ($heading->isNotEmpty())
-                            {{ $heading }}
+                        @if ($heading->isNotEmpty()) {{ $heading }}
                         @else
-                            <x-heading 
+                            <x-heading
                                 :icon="$heading->attributes->get('icon')"
                                 :title="$heading->attributes->get('title')"
                                 :subtitle="$heading->attributes->get('subtitle')"
-                                :status="$heading->attributes->get('status')"/>
+                                :status="$heading->attributes->get('status')">
+                            </x-heading>
                         @endif
                     </div>
                 @endisset
@@ -133,11 +80,11 @@
                     {{ $slot }}
                 </div>
     
-                @isset($foot)
+                @if (isset($foot) && $foot->isNotEmpty())
                     <div class="shrink-0">
                         {{ $foot }}
                     </div>
-                @endisset
+                @endif
             @endif
         </div>
     </div>

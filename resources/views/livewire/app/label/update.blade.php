@@ -1,8 +1,8 @@
 <x-form.drawer class="max-w-screen-sm">
 @if ($label)
     @if ($label->exists)
-        <x-slot:heading title="app.label.update-label"></x-slot:heading>
         <x-slot:buttons :delete="!$label->is_locked"></x-slot:buttons>
+        <x-slot:heading title="app.label.update-label"></x-slot:heading>
     @else
         <x-slot:heading title="app.label.create-label"></x-slot:heading>
     @endif

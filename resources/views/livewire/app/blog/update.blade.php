@@ -5,13 +5,13 @@
             :trash="!$blog->trashed()"
             :delete="$blog->trashed()"
             :restore="$blog->trashed()">
-            <x-button.submit sm/>
+            <x-button action="submit" sm/>
             
-            @if ($blog->status === enum('blog.status', 'DRAFT')) <x-button sm icon="upload" label="app.label.publish" wire:click="publish(true)"/>
-            @else <x-button sm icon="undo" label="app.label.unpublish" wire:click="publish(false)"/>
+            @if ($blog->status === enum('blog.status', 'DRAFT')) <x-button action="publish" wire:click="publish(true)" sm/>
+            @else <x-button action="unpublish" wire:click="publish(false)" sm/>
             @endif
 
-            <x-button sm icon="eye" label="app.label.preview" :href="route('web.blog', $blog->slug)" target="_blank"/>
+            <x-button action="preview" :href="route('web.blog', $blog->slug)" target="_blank" sm/>
         </x-slot:buttons>
     @endif
 
@@ -24,7 +24,7 @@
 
                 <x-group>
                     <x-form.text wire:model.defer="blog.description" label="app.label.excerpt"/>
-                    <x-form.editor wire:model="blog.content" label="app.label.content"/>
+                    <x-editor wire:model="blog.content" label="app.label.content"/>
                 </x-group>
 
                 <x-group heading="SEO">

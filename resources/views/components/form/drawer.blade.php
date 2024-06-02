@@ -1,5 +1,20 @@
 <form wire:submit.prevent="submit">
     <x-modal.drawer {{ $attributes }}>
+        <x-slot:buttons>
+            @isset($buttons)
+                @if ($buttons->isNotEmpty()) {{ $buttons }}
+                @elseif (!$buttons->attributes->get('blank')) <x-button action="submit"/>
+                @endif
+
+                @if ($buttons->attributes->get('archive', false)) <x-button action="archive"/> @endif
+                @if ($buttons->attributes->get('trash', false)) <x-button action="trash" invert no-label x-tooltip.raw="{{ tr('app.label.trash') }}"/> @endif
+                @if ($buttons->attributes->get('delete', false)) <x-button action="delete" invert no-label x-tooltip.raw="{{ tr('app.label.delete') }}"/> @endif
+                @if ($buttons->attributes->get('restore', false)) <x-button action="restore"/> @endif
+            @else
+                <x-button action="submit"/>
+            @endisset
+        </x-slot:buttons>
+
         @isset($heading)
             <x-slot:heading>
                 @if ($heading->attributes->get('title'))
@@ -14,34 +29,6 @@
                     {{ $heading }}
                 @endif
             </x-slot:heading>
-        @endisset
-    
-        @isset($buttons)
-            <x-slot:buttons
-                :archive="$buttons->attributes->get('archive', false)"
-                :trash="$buttons->attributes->get('trash', false)"
-                :delete="$buttons->attributes->get('delete', false)"
-                :restore="$buttons->attributes->get('restore', false)">
-                @if ($buttons->isNotEmpty())
-                    {{ $buttons }}
-                @elseif (!$buttons->attributes->get('blank'))
-                    <x-button.submit sm/>
-                @endif
-            </x-slot:buttons>
-        @else
-            <x-slot:buttons>
-                <x-button.submit sm/>
-            </x-slot:buttons>
-        @endif
-    
-        @isset($dropdown)
-            <x-slot:dropdown
-                :archive="$dropdown->attributes->get('archive', false)"
-                :trash="$dropdown->attributes->get('trash', false)"
-                :delete="$dropdown->attributes->get('delete', false)"
-                :restore="$dropdown->attributes->get('restore', false)">
-                {{ $dropdown }}
-            </x-slot:dropdown>
         @endisset
 
         {{ $slot }}

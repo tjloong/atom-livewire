@@ -3,7 +3,7 @@
     <x-slot:heading title="app.label.send-email"></x-slot:heading>
 
     <x-slot:buttons>
-        <x-button.submit sm label="Send" icon="paper-plane"/>
+        <x-button action="submit" label="Send" icon="paper-plane" sm/>
     </x-slot:buttons>
 
     <x-group cols="2">

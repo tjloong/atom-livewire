@@ -24,6 +24,12 @@ a {
     }
 }
 
+/* button */
+button.is-loading,
+.button.is-loading {
+    @apply pointer-events-none opacity-60;
+}
+
 /* Forms related */
 input:focus, 
 select:focus, 

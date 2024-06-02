@@ -18,7 +18,7 @@
             @isset($foot)
                 {{ $foot }}
             @else
-                <x-button.submit/>
+                <x-button action="submit"/>
             @endif
         </x-slot:foot>
     </x-modal>
