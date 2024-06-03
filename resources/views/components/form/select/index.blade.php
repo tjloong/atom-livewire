@@ -230,7 +230,7 @@
                                                 <div class="flex items-center max-w-[200px]">
                                                     <div x-text="item.label" class="px-2 truncate text-xs font-medium"></div>
                                                     <div x-show="show" class="shrink-0 text-sm flex items-center justify-center px-1">
-                                                        <x-close x-on:click.stop="remove(item)"/>
+                                                        <x-close x-on:click.stop="remove(item.value)"/>
                                                     </div>
                                                 </div>
                                             </div>
