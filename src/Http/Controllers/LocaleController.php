@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Lang;
@@ -13,7 +14,7 @@ class LocaleController extends Controller
     {
         $locale = request()->locale;
 
-        if ($locale === 'all') return $this->getLangJs();
+        if ($locale === 'js') return $this->getLangJs();
 
         // set app locale
         Cookie::queue('locale', $locale, 60 * 24 * 30);
@@ -27,9 +28,11 @@ class LocaleController extends Controller
         $lang = [
             'app' => array_merge_recursive(
                 Lang::get('atom::app'),
-                Lang::get('app'),
+                Lang::has('app') ? Lang::get('app') : [],
             ),
         ];
+
+        Debugbar::disable();
 
         return Blade::render('window.lang = {{ Js::from($lang) }}', ['lang' => $lang]);
     }

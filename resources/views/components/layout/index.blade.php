@@ -125,7 +125,7 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 @endif
 
 @if ($cdnlist->get('lang'))
-<script src="{{ route('__locale', 'all') }}"></script>
+<script src="{{ route('__locale', 'js') }}"></script>
 @endif
 @if ($cdnlist->get('fontawesome'))
 @basset("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js")
