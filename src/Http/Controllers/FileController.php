@@ -6,31 +6,30 @@ use App\Http\Controllers\Controller;
 
 class FileController extends Controller
 {
-    // get
-    public function get($ulid, $size = null) : mixed
+    // invoke
+    public function __invoke()
     {
-        $file = model('file')->withoutGlobalScopes()->findUlidOrFail($ulid);
-        
-        abort_if(!$file->auth(), 403);
+        if (request()->name) {
+            $ulid = request()->query('ulid');
+            $file = model('file')->withoutGlobalScopes()->findUlidOrFail($ulid);
 
-        if ($size) {
-            // TODO get thumbnail for size
-            // return thumbnail response
+            if ($variant = collect(request()->query())->keys()->reject('ulid')->first()) {
+                $file = $file->variants($variant);
+            }
+
+            abort_if(!$file->auth(), 403);
+
+            return $file->response();
         }
-
-        return $file->response();
-    }
-
-    // list
-    public function list() : mixed
-    {
-        $id = request()->id;
-        $page = request()->page;
-        $filters = request()->filters;
-
-        return $id
-            ? model('file')->whereIn('id', (array) $id)->latest('id')->get()->toArray()
-            : model('file')->filter($filters)->latest('id')->toPage($page ?? 1, 100)->items();
+        else {
+            $id = request()->query('id');
+            $page = request()->query('page');
+            $filters = request()->query('filters');
+    
+            return $id
+                ? model('file')->whereIn('id', (array) $id)->latest('id')->get()->toArray()
+                : model('file')->filter($filters)->latest('id')->toPage($page ?? 1, 100)->items();
+        }
     }
 
     // url

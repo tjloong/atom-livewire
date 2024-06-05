@@ -22,8 +22,8 @@
         @foreach ($this->paginator->items() as $file)
             <x-table.tr wire:click="$emit('updateFile', {{ $file->id }})">
                 <x-table.td :checkbox="$file->id"/>
-                <x-table.td :label="$file->name" :image="$file->url" :caption="$file->mime"/>
-                <x-table.td :label="$file->size" align="right"/>
+                <x-table.td :label="$file->name" :image="$file->endpoint.'&sm'" :caption="$file->mime"/>
+                <x-table.td :label="$file->filesize" align="right"/>
                 <x-table.td :date="$file->created_at" align="right"/>
             </x-table.tr>
         @endforeach

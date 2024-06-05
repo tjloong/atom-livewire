@@ -249,20 +249,6 @@ function mask_email($email)
 }
 
 /**
- * Get youtube vid
- */
-function youtube_vid($url)
-{
-    if (!is_string($url)) return;
-    
-    $regex = '/(?<=(?:v|i)=)[a-zA-Z0-9-]+(?=&)|(?<=(?:v|i)\/)[^&\n]+|(?<=embed\/)[^"&\n]+|(?<=(?:v|i)=)[^&\n]+|(?<=youtu.be\/)[^&\n]+/';
-
-    preg_match($regex, $url, $matches);
-
-    return collect($matches)->first();
-}
-
-/**
  * Short number
  */
 function short_number($n, $locale = null)

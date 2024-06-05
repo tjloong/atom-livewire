@@ -4,24 +4,19 @@
     <x-slot:buttons delete></x-slot:buttons>
 
     <x-group>
-        <div class="rounded-lg bg-slate-100 flex flex-col overflow-hidden shadow">
-            @if ($file->is_video || $file->is_image || $file->type === 'youtube')
-                <a href="{{ $file->url }}" target="_blank">
-                    <x-image :src="$file" class="rounded-b-none" height="300"/>
+        <div class="rounded-lg bg-slate-100 flex flex-col divide-y overflow-hidden shadow">
+            @if ($file->is_video || $file->is_image || $file->is_youtube)
+                <a href="{{ $file->endpoint }}" target="_blank">
+                    <x-image :file="$file" class="h-72 bg-gray-100" sm contain/>
                 </a>
             @endif
     
-            @if ($file->type !== 'youtube')
-                <div class="flex flex-col divide-y text-sm">
-                    <x-field label="File Type" :value="$file->mime"/>
-                    @if ($file->size) <x-field label="File Size" :value="$file->size"/> @endif
-                    @if ($dim = $file->data->dimension ?? null) <x-field label="Dimension" :value="$dim"/> @endif
+            @if (!$file->is_youtube)
+                <x-field label="File Type" :value="$file->mime"/>
+                @if ($file->size) <x-field label="File Size" :value="$file->filesize"/> @endif
+                @if ($dim = $file->data->dimension ?? null) <x-field label="Dimension" :value="$dim"/> @endif
 
-                    <div class="flex items-center justify-center p-3">
-                        <x-link label="Download" :href="$file->url" icon="download" target="_blank"/>
-                    </div>
-
-                </div>
+                <x-anchor label="Download" :href="$file->endpoint" icon="download" target="_blank" align="center" class="py-2"/>
             @endif
         </div>
     </x-group>

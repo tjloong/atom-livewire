@@ -56,10 +56,11 @@ class Route
         $this->get('__locale/{locale}', 'LocaleController')->withoutMiddleware('web')->name('__locale');
         $this->post('__select', 'SelectController@get')->name('__select');
         $this->post('__share', 'ShareController')->name('__share');
-        $this->post('__file/url', 'FileController@url')->name('__file.url');
-        $this->post('__file/list', 'FileController@list')->name('__file.list');
-        $this->post('__file/upload', 'FileController@upload')->name('__file.upload');
-        $this->get('__file/{ulid}/{size?}', 'FileController@get')->name('__file.get');    
+
+        $this->prefix('__file')->as('__file')->group(function() {
+            $this->post('upload', 'FileController@upload')->name('.upload');
+            $this->get('{name?}', 'FileController');
+        });
     }
 
     // create auth routes

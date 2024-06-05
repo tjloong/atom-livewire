@@ -5,6 +5,7 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Intervention\Image\ImageManagerStatic as Image;
 use Jiannius\Atom\Jobs\File\CreateThumbnails;
@@ -32,6 +33,7 @@ class File extends Model
         'is_image',
         'is_video',
         'is_audio',
+        'is_youtube',
         'is_file',
     ];
 
@@ -40,24 +42,27 @@ class File extends Model
     {
         static::deleting(function($file) {
             if ($file->path) {
-                $env = data_get($file->data, 'env', 'production');
+                $env = get($file->data, 'env', 'production');
 
                 if ($env === 'production' && !app()->environment('production')) {
                     abort(400, 'Do not delete production file in '.app()->environment().' environment!');
                 }
                 else {
-                    $file->thumbnails->each(fn($tn) => $tn->delete());
-                    
-                    if ($storage = $file->getStorage()) {
-                        $storage->delete($file->path);
-                    }
+                    $file->children->each(fn($child) => $child->delete());
+                    $file->getDisk()->delete($file->path);
                 }
             }
         });
     }
 
-    // get thumbnails for file
-    public function thumbnails() : HasMany
+    // get parent for file
+    public function parent() : BelongsTo
+    {
+        return $this->belongsTo(model('file'), 'parent_id');
+    }
+
+    // get children for file
+    public function children() : HasMany
     {
         return $this->hasMany(model('file'), 'parent_id');
     }
@@ -86,19 +91,27 @@ class File extends Model
         );
     }
 
+    // attribute for is youtube
+    protected function isYoutube() : Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->type === 'youtube',
+        );
+    }
+
     // attribute for is file
     protected function isFile() : Attribute
     {
         return Attribute::make(
-            get: fn() => !$this->is_image && !$this->is_video && !$this->is_audio,
+            get: fn() => !$this->is_image && !$this->is_video && !$this->is_audio && !$this->is_youtube,
         );
     }
 
-    // attribute for size
-    protected function size() : Attribute
+    // attribute for filesize
+    protected function filesize() : Attribute
     {
         return Attribute::make(
-            get: fn($size) => format_filesize($size, 'KB'),
+            get: fn() => format($this->size)->filesize('KB'),
         );
     }
 
@@ -118,22 +131,22 @@ class File extends Model
         );
     }
 
-    // attribute for url
-    protected function url() : Attribute
+    // attribute for endpoint
+    protected function endpoint() : Attribute
     {
         return Attribute::make(
-            get: function($url) {
-                if ($this->mime === 'youtube') return $url;
-                if ($this->ulid) return route('__file.get', $this->ulid);
-            },
-        );
-    }
+            get: function() {
+                if ($this->is_youtube) {
+                    if ($vid = youtube($this->url)->vid() ?? get($this->data, 'vid')) {
+                        return 'https://www.youtube.com/embed/'.$vid;
+                    }
+                }
 
-    // attribute for temporary url
-    protected function temporaryUrl() : Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->getStorage()->temporaryUrl($this->path, now()->addMinutes(5)),
+                return route('__file', [
+                    'name' => $this->name,
+                    'ulid' => $this->ulid,
+                ]);
+            },
         );
     }
 
@@ -141,19 +154,23 @@ class File extends Model
     protected function type() : Attribute
     {
         return Attribute::make(
-            get: fn() => collect([
-                'youtube' => $this->mime === 'youtube',
-                'jsonld' => str($this->mime)->is('*ld+json'),
-                'svg' => str($this->mime)->is('*svg+xml'),
-                'txt' => str($this->mime)->is('*plain'),
-                'word' => str($this->mime)->is('*msword')
-                    || str($this->mime)->is('*vnd.openxmlformats-officedocument.wordprocessingml.document'),
-                'ppt' => str($this->mime)->is('*vnd.ms-powerpoint')
-                    || str($this->mime)->is('*vnd.openxmlformats-officedocument.presentationml.presentation'),
-                'excel' => str($this->mime)->is('*vnd.ms-excel')
-                    || str($this->mime)->is('*vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
-                'file' => true,
-            ])->filter()->keys()->first(),
+            get: function() {
+                $mime = str($this->mime);
+
+                if ($mime->is('image/*')) return (string) $mime->replace('image/', '');
+
+                return pick([
+                    'youtube' => $mime->is('youtube'),
+                    'jsonld' => $mime->is('*ld+json'),
+                    'svg' => $mime->is('*svg+xml'),
+                    'txt' => $mime->is('*plain'),
+                    'word' => $mime->is('*msword') || $mime->is('*vnd.openxmlformats-officedocument.wordprocessingml.document'),
+                    'ppt' => $mime->is('*vnd.ms-powerpoint') || $mime->is('*vnd.openxmlformats-officedocument.presentationml.presentation'),
+                    'excel' => $mime->is('*vnd.ms-excel') || $mime->is('*vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                    'pdf' => $mime->is('*/pdf'),
+                    'file' => true,
+                ]);
+            },
         );
     }
 
@@ -161,38 +178,41 @@ class File extends Model
     protected function icon() : Attribute
     {
         return Attribute::make(
-            get: fn() => collect([
-                'image' => ($this->is_image),
-                'play' => ($this->is_video),
-                'music' => ($this->is_audio),
-                'file-word' => ($this->type === 'word'),
-                'file-excel' => ($this->type === 'excel'),
-                'file-powerpoint' => ($this->type === 'ppt'),
-                'file-pdf' => ($this->type === 'pdf'),
+            get: fn() => pick([
+                'image' => $this->is_image,
+                'play' => $this->is_video,
+                'music' => $this->is_audio,
+                'file-word' => $this->type === 'word',
+                'file-excel' => $this->type === 'excel',
+                'file-powerpoint' => $this->type === 'ppt',
+                'file-pdf' => $this->type === 'pdf',
                 'file' => true,
-            ])->filter()->keys()->first(),
+            ]),
         );
     }
 
-    // attribute for embed
-    protected function embed() : Attribute
+    // get variants
+    public function variants($size = null) : mixed
     {
-        return Attribute::make(
-            get: function() {
-                if ($this->type === 'youtube' && ($vid = data_get($this->data, 'vid') ?? youtube_vid($this->url))) {
-                    $url = 'https://www.youtube.com/embed/'.$vid;
-                    return '<iframe class="w-full h-full" src="'.$url.'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
-                }
-            },
-        );
+        $variants = [
+            'sm' => $this->children->first(fn($child) => str($child->name)->is('*_480w'))
+                ?? $this->children->first(fn($child) => str($child->name)->is('*_512w')),
+            'md' => $this->children->first(fn($child) => str($child->name)->is('*_800w'))
+                ?? $this->children->first(fn($child) => str($child->name)->is('*_1024w')),
+        ];
+
+        if ($size) {
+            if ($variant = get($variants, $size)) return $variant;
+            else return $this;
+        }
+
+        return $variants;
     }
 
     // scope for fussy search
     public function scopeSearch($query, $search) : void
     {
-        $query->where(fn($q) => $q
-            ->where('name', 'like', "%$search%")
-        );
+        $query->where('name', 'like', "%$search%");
     }
 
     // scope for mime
@@ -217,6 +237,18 @@ class File extends Model
         });
     }
 
+    // check is authorized to read file
+    public function auth() : bool
+    {
+        return tier('root') || user('id') === $this->footprint('created.id');
+    }
+
+    // get disk
+    public function getDisk() : mixed
+    {
+        return Storage::disk($this->disk);
+    }
+
     // store file content
     public function store($content, $path = 'uploads', $visibility = 'private')
     {
@@ -226,27 +258,28 @@ class File extends Model
 
         // url
         if (is_string($content)) {
+            // youtube url
             if ($vid = youtube($content)->vid()) {
                 $info = youtube($content)->info();
-
                 $file->fill([
-                    'name' => data_get($info, 'title') ?? $vid,
+                    'name' => get($info, 'title') ?? $vid,
                     'mime' => 'youtube',
                     'url' => $content,
                     'data' => [
                         ...$file->data,
                         'vid' => $vid,
-                        'thumbnail' => data_get($info, 'thumbnail_url'),
+                        'thumbnail' => get($info, 'thumbnail_url'),
                     ],
                 ])->save();
             }
-            else if ($img = rescue(fn() => Image::make($content), null)) {
+            // image url
+            else if ($img = getimagesize($content)) {
                 $file->fill([
                     'name' => $content,
-                    'mime' => $img->mime(),
+                    'mime' => get($img, 'mime'),
                     'url' => $content,
-                    'width' => $img->width(),
-                    'height' => $img->height(),
+                    'width' => get($img, 0),
+                    'height' => get($img, 1),
                 ])->save();
             }
         }
@@ -260,16 +293,26 @@ class File extends Model
                 'disk' => settings('filesystem', 'local'),
             ]);
 
-            $file->putContent($content, $path, $visibility);
+            $disk = $file->getDisk();
+            $config = $disk->getConfig();
+            $dest = collect([get($config, 'folder'), $path])->filter()->join('/');
+            $path = $disk->putFile($dest, $content->path(), $visibility);
+            $url = $file->disk !== 'local' ? $disk->url($path) : null;
+            $img = str($file->mime)->is('image/*') ? getimagesize($content->path()) : null;
+    
+            $file->fill([
+                'url' => $url,
+                'path' => $path,
+                'width' => get($img, 0),
+                'height' => get($img, 1),
+            ])->save();
+    
+            if ($img) {
+                \Jiannius\Atom\Jobs\CreateThumbnails::dispatch($file->fresh());
+            }
         }
 
         return $file;
-    }
-
-    // check is authorized to read file
-    public function auth() : bool
-    {
-        return tier('root') || user('id') === $this->footprint('created.id');
     }
 
     // response
@@ -280,9 +323,10 @@ class File extends Model
                 ? response()->file($this->storage_path)
                 : response()->download($this->storage_path);
         }
-        else if ($url = data_get($this->getAttributes(), 'url')) {
-            if (in_array($this->disk, ['do', 's3'])) return $this->getStorage()->response($this->path);
-            else return redirect()->to($url);
+        else if ($this->url) {
+            if ($this->disk === 'local') return $this->getDisk()->response($this->path);
+            else if (in_array($this->disk, ['do', 's3'])) return $this->getDisk()->temporaryUrl($this->path, now()->addMinutes(5));
+            else return redirect()->to($this->url);
         }
         else return response('File not found', 404);
     }
@@ -291,57 +335,13 @@ class File extends Model
     public function responseInBase64() : mixed
     {
         if ($this->storage_path && file_exists($this->storage_path)) $url = $this->storage_path;
-        elseif (in_array($this->disk, ['do', 's3'])) $url = $this->getStorage()->temporaryUrl($this->path, now()->addHour());
-        else $url = data_get($this->getAttributes(), 'url');
+        elseif (in_array($this->disk, ['do', 's3'])) $url = $this->getDisk()->temporaryUrl($this->path, now()->addHour());
+        else $url = $this->url;
 
         $mime = pathinfo($this->path, PATHINFO_EXTENSION);
         $content = file_get_contents($url);
         $b64 = 'data:image/'.$mime.';base64,'.base64_encode($content);
 
         return $b64;
-    }
-
-    // put content
-    public function putContent($content, $path, $visibility) : mixed
-    {
-        $storage = $this->getStorage();
-        $config = $storage->getConfig();
-        $dest = collect([data_get($config, 'folder'), $path])->filter()->join('/');
-        $path = $storage->putFile($dest, $content->path(), $visibility);
-        $url = $this->disk !== 'local' ? $storage->url($path) : null;
-        $img = str($this->mime)->is('image/*')
-            ? rescue(fn() => Image::make($content->path()), null)
-            : null;
-
-        $this->fill([
-            'url' => $url,
-            'path' => $path,
-            'width' => optional($img)->width(),
-            'height' => optional($img)->height(),
-        ])->save();
-
-        if ($img) CreateThumbnails::dispatch($this->fresh());
-
-        return $this;
-    }
-
-    // get storage
-    public function getStorage() : mixed
-    {
-        // disk configs
-        config([
-            'filesystems.disks.do' => [
-                'driver' => 's3',
-                'key' => settings('do_spaces_key'),
-                'secret' => settings('do_spaces_secret'),
-                'region' => settings('do_spaces_region'),
-                'bucket' => settings('do_spaces_bucket'),
-                'folder' => settings('do_spaces_folder'),
-                'endpoint' => settings('do_spaces_endpoint'),
-                'use_path_style_endpoint' => false,
-            ],
-        ]);
-
-        return Storage::disk($this->disk);
     }
 }

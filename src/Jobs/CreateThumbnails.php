@@ -1,26 +1,16 @@
 <?php
 
-namespace Jiannius\Atom\Jobs\File;
+namespace Jiannius\Atom\Jobs;
  
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Intervention\Image\ImageManagerStatic as Image;
 
 class CreateThumbnails implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    // supported extensions
-    public $extensions = [
-        'jpg', 
-        'jpeg', 
-        'png', 
-        'bmp', 
-        'webp',
-    ];
 
     /**
      * Create a new job instance.
@@ -35,36 +25,33 @@ class CreateThumbnails implements ShouldQueue
      */
     public function handle() : void
     {
-        if (in_array($this->file->extension, $this->extensions)) {
-            foreach ([512, 1024] as $size) {
-                rescue(fn() => $this->putContent($size));
-            }
+        foreach ([480, 800] as $size) {
+            rescue(function() use ($size) {
+                $this->file->children->each(fn($child) => $child->delete());
+                $this->putContent($size);
+            });
         }
     }
 
     // put content
     public function putContent($size) : void
     {
-        $storage = $this->file->getStorage();
+        $storage = $this->file->getDisk();
         $name = $this->file->name.'_'.$size.'w';
         $filename = $this->getFilename($size);
         $path = $this->getPath();
-        $img = Image::make($storage->get($this->file->path))->orientate();
+        $img = app('image')->read($storage->get($this->file->path));
 
         if ($img->width() > $size || $img->height() > $size) {
             $temp = storage_path(str()->random().'.'.$this->file->extension);
-
-            $img->resize($size, $size, function($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })->save($temp, 60);
-
+            $img->scaleDown($size, $size)->save($temp, 60);
             $path = $storage->putFileAs($path, $temp, $filename);
+            $filesize = filesize($temp);
 
-            $this->file->thumbnails()->create([
+            $this->file->children()->create([
                 'name' => $name,
                 'mime' => $this->file->mime,
-                'size' => round($img->filesize()/1024, 5),
+                'size' => round($filesize/1024, 5),
                 'disk' => $this->file->disk,
                 'path' => $path,
                 'url' => $this->file->disk !== 'local' ? $storage->url($path) : null,

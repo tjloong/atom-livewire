@@ -97,7 +97,7 @@
                             <div
                                 x-on:click="checkboxes.length ? select(@js($file->id)) : $wire.emit('updateFile', @js($file->id))"
                                 class="absolute inset-0 cursor-pointer" >
-                                <img src="{{ $file->url }}" class="w-full h-full object-cover">
+                                <img src="{{ $file->endpoint }}&sm" class="w-full h-full object-cover">
                             </div>
 
                             <div
@@ -116,7 +116,7 @@
                     <div
                         x-on:click.stop="$wire.emit('updateFile', @js($files->first()->id))"
                         class="relative w-28 h-28 rounded-md bg-gray-100 shadow overflow-hidden">
-                        <img src="{{ $files->first()->url }}" class="w-full h-full object-cover">
+                        <img src="{{ $files->first()->endpoint }}&sm" class="w-full h-full object-cover">
 
                         <div
                             x-on:click.stop="remove()"
@@ -144,23 +144,21 @@
                         @endif
 
                         <figure class="shrink-0 w-6 h-6 rounded-md bg-white border flex items-center justify-center overflow-hidden">
-                            @if ($file->is_image) <img src="{{ $file->url }}" class="w-full h-full object-cover">
+                            @if ($file->is_image) <img src="{{ $file->endpoint }}&sm" class="w-full h-full object-cover">
                             @else <x-icon name="file" class="text-gray-400 text-sm"/>
                             @endif
                         </figure>
 
-                        <div class="grow truncate cursor-pointer font-medium"
-                            wire:click="$emit('updateFile', {{ $file->id }})">
+                        <div class="grow truncate cursor-pointer font-medium" wire:click="$emit('updateFile', {{ $file->id }})">
                             {{ $file->name }}
                         </div>
 
                         @if ($multiple)
-                            <div class="shrink-0" x-on:click.stop="$dispatch('confirm', {
-                                title: '{{ tr('file.alert.remove.title') }}',
-                                message: '{{ tr('file.alert.remove.message') }}',
-                                type: 'error',
-                                onConfirmed: () => remove({{ $file->id }}),    
-                            })">
+                            <div class="shrink-0" x-prompt.confirm.error="{
+                                title: 'file.alert.remove.title',
+                                message: 'file.alert.remove.message',
+                                confirm: () => remove({{ $file->id }}),
+                            }">
                                 <x-close color="red"/>
                             </div>
                         @else
