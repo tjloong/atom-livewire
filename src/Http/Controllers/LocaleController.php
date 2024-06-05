@@ -34,6 +34,8 @@ class LocaleController extends Controller
 
         Debugbar::disable();
 
-        return Blade::render('window.lang = {{ Js::from($lang) }}', ['lang' => $lang]);
+        $content = Blade::render('window.lang = {{ Js::from($lang) }}', ['lang' => $lang]);
+        
+        return response($content)->header('Content-Type', 'application/javascript');
     }
 }
