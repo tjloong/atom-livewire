@@ -5,6 +5,8 @@ namespace Jiannius\Atom\Providers;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\ComponentAttributeBag;
 
@@ -29,11 +31,11 @@ class AtomServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'atom');
         $this->loadTranslationsFrom(__DIR__.'/../../lang', 'atom');
 
-        $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
-        $this->app->bind('cdn', fn() => new \Jiannius\Atom\Services\CDN);
-
-        // macros
+        $this->bindings();
         $this->macros();
+        $this->configs();
+        $this->gates();
+        $this->blades();
 
         // custom polymorphic types
         if ($morphMap = config('atom.morph_map')) {
@@ -41,14 +43,6 @@ class AtomServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            // basset cache paths
-            config([
-                'backpack.basset.view_paths' => [
-                    resource_path('views'),
-                    atom_path('resources/views'),
-                ],
-            ]);
-
             $this->publishes([
                 __DIR__.'/../../publishes/app' => base_path('app'),
                 __DIR__.'/../../publishes/config' => base_path('config'),
@@ -59,6 +53,115 @@ class AtomServiceProvider extends ServiceProvider
                 __DIR__.'/../../publishes/vite.config.js' => base_path('vite.config.js'),
             ], 'atom');
         }
+    }
+
+    // blades
+    public function blades() : void
+    {
+        Blade::directive('recaptcha', function() {
+            $sitekey = settings('recaptcha_site_key');
+
+            return $sitekey
+                ? "<?php echo '<script src=\"https://www.google.com/recaptcha/api.js?render=$sitekey\"></script>' ?>"
+                : "";
+        });
+
+        Blade::if('route', function() {
+            return current_route(func_get_args());
+        });
+
+        Blade::if('notroute', function() {
+            return !current_route(func_get_args());
+        });
+
+        Blade::if('tier', function($value) {
+            return tier($value);
+        });
+
+        Blade::if('nottier', function($value) {
+            return !tier($value);
+        });
+
+        Blade::if('role', function($value) {
+            return user()->can('role', $value);
+        });
+
+        Blade::if('notrole', function($value) {
+            return !user()->can('role', $value);
+        });
+    }
+
+    // gates
+    public function gates() : void
+    {
+        $policy = find_class('policy');
+
+        Gate::define('tier', [$policy, 'tier']);
+        Gate::define('role', [$policy, 'role']);
+        Gate::define('permission', [$policy, 'permission']);
+        Gate::define('perm', [$policy, 'permission']);
+    }
+
+    // configs
+    public function configs() : void
+    {
+        if (config('atom.static')) return;
+
+        if ($this->app->runningInConsole()) {
+            // basset cache paths
+            config(['backpack.basset.view_paths' => [
+                resource_path('views'),
+                atom_path('resources/views'),
+            ]]);
+        }
+        else {
+            // socialite
+            foreach (model('setting')->getSocialLogins() as $provider) {
+                $id = settings(get($provider, 'name').'_client_id');
+                $secret = settings(get($provider, 'name').'_client_secret');
+                $redirect = url('__auth/'.str()->slug(get($provider, 'name')).'/callback');
+
+                config(['services.'.$provider => [
+                    'client_id' => $id,
+                    'client_secret' => $secret,
+                    'redirect' => $redirect,
+                ]]);
+            }
+        }
+
+        // digital ocean spaces
+        config(['filesystems.disks.do' => [
+            'driver' => 's3',
+            'key' => settings('do_spaces_key'),
+            'secret' => settings('do_spaces_secret'),
+            'region' => settings('do_spaces_region'),
+            'bucket' => settings('do_spaces_bucket'),
+            'folder' => settings('do_spaces_folder'),
+            'endpoint' => settings('do_spaces_endpoint'),
+            'use_path_style_endpoint' => false,
+        ]]);
+
+        // smtp
+        config(['mail.mailers.smtp' => [
+            'host' => settings('smtp_host'),
+            'port' => settings('smtp_port'),
+            'username' => settings('smtp_username'),
+            'password' => settings('smtp_password'),
+            'encryption' => settings('smtp_encryption'),
+        ]]);
+
+        // mailgun
+        config(['services.mailgun' => [
+            'domain' => settings('mailgun_domain'),
+            'secret' => settings('mailgun_secret'),
+        ]]);
+
+        // default mailer
+        config([
+            'mail.default' => settings('mailer'),
+            'mail.from.address' => settings('notify_from'),
+            'mail.from.name' => config('app.name'),
+        ]);
     }
 
     // macros
@@ -122,5 +225,16 @@ class AtomServiceProvider extends ServiceProvider
                 return $this->local()->format($format);
             });
         }
+    }
+
+    // bindings
+    public function bindings() : void
+    {
+        $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
+
+        $this->app->bind('image', function() {
+            if (extension_loaded('imagick')) return new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Imagick\Driver());
+            if (extension_loaded('gd')) return new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+        });
     }
 }
