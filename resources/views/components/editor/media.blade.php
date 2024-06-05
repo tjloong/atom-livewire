@@ -19,7 +19,7 @@
                 },
                 
                 select (files) {
-                    this.url = files[0].url
+                    this.url = files[0].endpoint
                     this.alt = files[0].data?.alt
                     this.save()
                 },

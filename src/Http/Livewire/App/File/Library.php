@@ -48,6 +48,7 @@ class Library extends Component
     public function loadFiles() : void
     {
         $paginator = model('file')
+        ->whereNull('parent_id')
         ->filter($this->filters)
         ->latest()
         ->toPage($this->page, 50);

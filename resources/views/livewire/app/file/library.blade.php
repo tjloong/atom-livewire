@@ -85,7 +85,7 @@
 
                         <figure class="shrink-0 w-10 h-10 rounded-md border overflow-hidden flex text-gray-400">
                             <template x-if="file.is_image">
-                                <img x-bind:src="file.url" class="w-full h-full object-cover">
+                                <img x-bind:src="file.endpoint+'&sm'" class="w-full h-full object-cover">
                             </template>
 
                             <template x-if="!file.is_image">
@@ -94,11 +94,11 @@
                         </figure>
 
                         <div class="grow grid px-2">
-                            <div x-text="file.name" class="font-semibold truncate"></div>
+                            <div x-text="file.name" class="font-medium truncate"></div>
                             <div x-text="[file.type, file.size].filter(Boolean).join(' | ')" class="text-sm font-medium text-gray-500 md:hidden"></div>
                         </div>
 
-                        <div x-text="file.size" class="shrink-0 truncate px-2 w-40 text-right text-gray-500 hidden md:block"></div>
+                        <div x-text="file.filesize" class="shrink-0 truncate px-2 w-40 text-right text-gray-500 hidden md:block"></div>
                         <div x-text="file.mime" class="shrink-0 truncate px-2 w-40 text-right text-gray-500 hidden md:block"></div>
                     </div>
                 </template>

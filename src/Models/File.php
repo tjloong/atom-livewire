@@ -30,11 +30,13 @@ class File extends Model
 
     protected $appends = [
         'type',
+        'filesize',
         'is_image',
         'is_video',
         'is_audio',
         'is_youtube',
         'is_file',
+        'endpoint',
     ];
 
     // booted
