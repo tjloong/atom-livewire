@@ -117,11 +117,12 @@ class AtomServiceProvider extends ServiceProvider
         else {
             // socialite
             foreach (model('setting')->getSocialLogins() as $provider) {
-                $id = settings(get($provider, 'name').'_client_id');
-                $secret = settings(get($provider, 'name').'_client_secret');
-                $redirect = url('__auth/'.str()->slug(get($provider, 'name')).'/callback');
+                $name = get($provider, 'name');
+                $id = settings($name.'_client_id');
+                $secret = settings($name.'_client_secret');
+                $redirect = url('__auth/'.str()->slug($name).'/callback');
 
-                config(['services.'.$provider => [
+                config(['services.'.$name => [
                     'client_id' => $id,
                     'client_secret' => $secret,
                     'redirect' => $redirect,
