@@ -31,7 +31,13 @@ class Banner extends Model
     // booted
     protected static function booted() : void
     {
+        static::creating(function($banner) {
+            $banner->cache(false);
+        });
+
         static::updating(function($banner) {
+            $banner->cache(false);
+
             if ($banner->isDirty('image_id')) {
                 optional(model('file')->find($banner->getOriginal('image_id')))->delete();
             }
@@ -42,6 +48,7 @@ class Banner extends Model
         });
 
         static::deleting(function($banner) {
+            $banner->cache(false);
             optional($banner->image)->delete();
             optional($banner->mobile_image)->delete();
         });
@@ -148,5 +155,21 @@ class Banner extends Model
                 }
             });
         }
+    }
+
+    // cache
+    public function cache($duration = 7) : mixed
+    {
+        if (!$duration) cache()->forget('banners');
+
+        return cache()->remember('banners', now()->addDays($duration), function() {
+            return model('banner')
+            ->with('image')
+            ->has('image')
+            ->status(enum('banner.status', 'ACTIVE'))
+            ->sequence()
+            ->latest('start_at')
+            ->get();
+        });
     }
 }
