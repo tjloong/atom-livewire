@@ -36,6 +36,7 @@ class AtomServiceProvider extends ServiceProvider
         $this->configs();
         $this->gates();
         $this->blades();
+        $this->components();
 
         // custom polymorphic types
         if ($morphMap = config('atom.morph_map')) {
@@ -52,6 +53,45 @@ class AtomServiceProvider extends ServiceProvider
                 __DIR__.'/../../publishes/postcss.config.js' => base_path('postcss.config.js'),
                 __DIR__.'/../../publishes/vite.config.js' => base_path('vite.config.js'),
             ], 'atom');
+
+            $this->commands([
+                \Jiannius\Atom\Console\CkeditorCommand::class,
+                \Jiannius\Atom\Console\FontawesomeCommand::class,
+                \Jiannius\Atom\Console\FootprintCommand::class,
+                \Jiannius\Atom\Console\InitCommand::class,
+                \Jiannius\Atom\Console\MigrateCommand::class,
+                \Jiannius\Atom\Console\PublishCommand::class,
+                \Jiannius\Atom\Console\RefreshCommand::class,
+                \Jiannius\Atom\Console\SettingsCommand::class,
+            ]);
+        }
+    }
+
+    // components
+    public function components() : void
+    {
+        $names = cache()->rememberForever('atom-blade-components', function() {
+            $path = atom_path('resources/views/components/');
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
+            $names = collect();
+
+            foreach ($iterator as $file) {
+                if ($file->isDir()) continue;
+                $name = (string) str($file->getPathname())->replace($path, '')->replace('/', '.')->replace('.blade.php', '');
+                $names->push($name);
+            }
+
+            return $names->reject(fn($name) => view()->exists('components.'.$name))->values();
+        });
+
+        foreach ($names as $name) {
+            $namespace = collect(explode('.', $name))->map(fn($str) => str()->studly($str))->join('\\');
+            
+            if (str($namespace)->is('*\Index')) $name = (string) str($name)->replace('.index', '');
+
+            $class = "Jiannius\Atom\Components\\$namespace";
+
+            Blade::component($name, $class);
         }
     }
 
@@ -169,20 +209,20 @@ class AtomServiceProvider extends ServiceProvider
     public function macros() : void
     {
         if (!Request::hasMacro('portal')) {
-            Request::macro('portal', function() {
+            Request::macro('portal', function($is = null) {
                 $route = $this->route()?->getName();
 
                 if (in_array($route, ['login', 'logout', 'register', 'password.forgot', 'password.reset'])) {
-                    return 'auth';
+                    $portal = 'auth';
                 }
                 else if ($route) {
                     $portal = collect(explode('.', $route))->first();
-
-                    if (str($portal)->startsWith('__') || in_array($portal, ['socialite'])) return null;
-                    else return $portal;
+                    if (str($portal)->startsWith('__') || in_array($portal, ['socialite'])) $portal = null;
                 }
 
-                return null;
+                if ($is && $portal) return $portal === $is;
+
+                return $portal;
             });
         }
 
