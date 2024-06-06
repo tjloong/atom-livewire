@@ -310,7 +310,7 @@ class File extends Model
             ])->save();
     
             if ($img) {
-                \Jiannius\Atom\Jobs\CreateThumbnails::dispatch($file->fresh());
+                \Jiannius\Atom\Jobs\CreateThumbnails::dispatchSync($file->fresh());
             }
         }
 
@@ -325,10 +325,8 @@ class File extends Model
                 ? response()->file($this->storage_path)
                 : response()->download($this->storage_path);
         }
-        else if ($this->url) {
-            if ($this->disk) return $this->getDisk()->response($this->path);
-            else return redirect()->to($this->url);
-        }
+        else if (in_array($this->disk, ['do', 's3'])  && $this->path) return $this->getDisk()->response($this->path);
+        else if ($this->url) return redirect()->to($this->url);
         else return response('File not found', 404);
     }
 

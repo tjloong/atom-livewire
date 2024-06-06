@@ -10,7 +10,7 @@ class FileController extends Controller
     public function __invoke()
     {
         if (request()->name) {
-            $ulid = request()->query('ulid');
+            $ulid = request()->query('ulid') ?? request()->name;
             $file = model('file')->withoutGlobalScopes()->findUlidOrFail($ulid);
 
             if ($variant = collect(request()->query())->keys()->reject('ulid')->first()) {
