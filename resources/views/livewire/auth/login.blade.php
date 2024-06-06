@@ -22,7 +22,7 @@
             
             @if (model('setting')->getSocialLogins()->count())
                 <x-divider label="or"/>
-                <x-button-social/>
+                <x-button-social lg/>
             @endif
         </x-slot:foot>
     </x-form>
