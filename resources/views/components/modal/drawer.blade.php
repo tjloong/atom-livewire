@@ -52,7 +52,7 @@ $bgclose = $attributes->get('bg-close', true);
                 </div>
 
                 @if ($slot->isNotEmpty() && isset($buttons) && $buttons->isNotEmpty())
-                    <div {{ $buttons->attributes->class([$buttons->attributes->get('class', 'flex items-center gap-3 flex-wrap')]) }}>
+                    <div {{ $buttons->attributes->class([$buttons->attributes->get('class', 'flex items-center gap-2 flex-wrap')]) }}>
                         {{ $buttons }}
                     </div>
                 @endif

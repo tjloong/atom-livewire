@@ -1,55 +1,34 @@
-@php
-$label = $attributes->get('label', 'app.label.share');
-$icon = $attributes->get('icon', 'share');
-$entity = $attributes->get('entity');
-$model = get_class($entity);
-@endphp
-
 <div x-data="{
-    show: false,
-    share: null,
-    loading: false,
-    endpoint: {{Js::from(route('__share'))}},
-
-    open () {
-        this.show = true
-        this.fetch()
+    open (payload) {
+        this.$dispatch('show-share', payload)
     },
-
-    close () {
-        this.show = false
-    },
-
-    fetch (payload = {}) {
-        this.loading = true
-        ajax(this.endpoint).post({
-            id: {{Js::from($entity->id)}},
-            model: {{Js::from($model)}},
-            ...payload,
-        }).then(res => this.share = { ...res }).then(() => this.loading = false)
-    },
-}" x-on:click.stop="open()" class="inline-block">
-@if ($slot->isNotEmpty())
+}" class="inline-block">
     {{ $slot }}
-@else
-    <x-button :icon="$icon" :label="$label" x-on:click.stop="open()"/>
-@endif
 
-<template x-teleport="body">
-    <div
-        x-show="show"
-        x-init="$watch('show', show => show && $modal.zindex())"
-        x-transition.opacity.duration.300
-        class="fixed inset-0">
-        <div class="absolute inset-0 bg-black/80" x-on:click.stop="close()"></div>
-        <div class="absolute max-w-screen-sm w-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div class="bg-white rounded-lg border shadow-lg flex flex-col divide-y">
-                <div class="p-4 flex items-center gap-3 text-lg font-semibold">
-                    <x-icon name="share" class="text-gray-400"/> {{ tr('app.label.share') }}
-                </div>
+    <template x-teleport="body">
+        <x-modal id="share-modal-{{ str()->random() }}">
+            <x-slot:heading title="app.label.share" icon="share"></x-slot:heading>
+            <div
+                x-data="{
+                    share: null,
+                    loading: false,
+                    endpoint: {{ Js::from(route('__share')) }},
 
-                <x-box.loading.placeholder x-show="loading && !share"/>
-                <x-box.loading x-show="loading && share"/>
+                    fetch (payload) {
+                        this.loading = true
+                        ajax(this.endpoint)
+                        .post(payload)
+                        .then(res => this.share = { ...res })
+                        .then(() => this.loading = false)                
+                    },
+                }"
+                x-on:show-share.window="() => {
+                    fetch($event.detail)
+                    open()
+                }"
+                class="relative">
+                <x-box.loading.placeholder x-show="loading && !share" class="rounded-b-lg"/>
+                <x-box.loading x-show="loading && share" class="rounded-b-lg"/>
 
                 <template x-if="share">
                     <div class="p-4 flex flex-col gap-4">
@@ -78,7 +57,7 @@ $model = get_class($entity);
                                         </div>
 
                                         <div class="flex items-center gap-4">
-                                            <x-anchor label="Regenerate" icon="refresh" size="sm" x-on:click="fetch({ regen: true })"/>
+                                            <x-anchor label="Regenerate" icon="refresh" size="sm" x-on:click="fetch({ share: { id: share.id }, regen: true })"/>
                                             <x-anchor label="Preview" icon="eye" size="sm" x-bind:href="share.url" target="_blank"/>
                                         </div>
                                     </div>
@@ -123,10 +102,9 @@ $model = get_class($entity);
                                 </a>
                             </template>
                         </div>
-                    </div>            
+                    </div>
                 </template>
             </div>
-        </div>
-    </div>
-</template>
+        </x-modal>
+    </template>
 </div>

@@ -15,9 +15,9 @@ class ShareController extends Controller
         else {
             $entity = app(request()->model)->find(request()->id);
             $share = $entity->share ?? $entity->share()->create(['is_enabled' => true]);
-
-            if (request()->regen) $share->fill(['ulid' => null])->save();
         }
+
+        if (request()->regen) $share->fill(['ulid' => null])->save();
 
         return [
             ...$share->fresh()->toArray(),
