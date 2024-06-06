@@ -129,7 +129,7 @@
                     @if ($image !== false)
                         <div class="shrink-0">
                             <figure class="w-10 h-10 rounded-md border bg-gray-200 flex items-center justify-center overflow-hidden">
-                                @if (!$image) <x-icon name="image" class="text-gray-400 text-lg"/>
+                                @if (!$image) <x-icon name="ban" class="text-gray-400 text-lg"/>
                                 @else <img src="{{ $image }}" class="w-full h-full object-cover">
                                 @endif
                             </figure>

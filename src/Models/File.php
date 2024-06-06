@@ -326,8 +326,7 @@ class File extends Model
                 : response()->download($this->storage_path);
         }
         else if ($this->url) {
-            if ($this->disk === 'local') return $this->getDisk()->response($this->path);
-            else if (in_array($this->disk, ['do', 's3'])) return $this->getDisk()->temporaryUrl($this->path, now()->addMinutes(5));
+            if ($this->disk) return $this->getDisk()->response($this->path);
             else return redirect()->to($this->url);
         }
         else return response('File not found', 404);
