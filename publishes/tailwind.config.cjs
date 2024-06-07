@@ -13,6 +13,22 @@ module.exports = {
         './vendor/jiannius/atom-livewire/resources/**/*.blade.php',
         './vendor/jiannius/atom-livewire/src/Components/**/*.php',
     ],
+
+    safelist: [
+        'text-2xs',
+        'text-xs',
+        'text-sm',
+        'text-md',
+        'text-base',
+        'text-lg',
+        'text-xl',
+        'text-2xl',
+        'text-3xl',
+        'text-4xl',
+        'text-5xl',
+        'text-6xl',
+        'text-7xl',
+    ],
     
     theme: {
         screens: {

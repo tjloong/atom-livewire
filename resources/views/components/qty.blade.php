@@ -2,10 +2,11 @@
 $readonly = $attributes->get('readonly', false);
 $disabled = $attributes->get('disabled', false);
 $placeholder = $attributes->get('placeholder', 'app.label.qty');
+$size = $attributes->size('md');
 $wiremodel = $attributes->wire('model')->value();
 @endphp
 
-<x-input {{ $attributes }}>
+<x-input class="h-px" {{ $attributes->except('class') }}>
     <span
         x-data="{
             value: @if ($wiremodel) @entangle($wiremodel) @else null @endif,
@@ -25,7 +26,10 @@ $wiremodel = $attributes->wire('model')->value();
 
             init () {
                 this.$nextTick(() => this.validate())
-                this.$watch('value', (value, old) => { if (value !== old) this.validate() })
+                this.$watch('value', (value, old) => {
+                    if (value === null || value === undefined) return
+                    if (value !== old) this.validate()
+                })
             },
 
             spin (action) {
@@ -37,22 +41,17 @@ $wiremodel = $attributes->wire('model')->value();
             },
 
             validate () {
-                if (this.value === null) {
-                    this.value = this.min
-                }
-                else {
-                    this.value = +this.value
-                    this.value = this.value.round(this.step.decimalPlaces())
-                    if (this.value > this.max) this.value = this.max
-                    if (this.value < this.min) this.value = this.min
-                }
+                this.value = +this.value
+                this.value = this.value.round(this.step.decimalPlaces())
+                if (this.value > this.max) this.value = this.max
+                if (this.value < this.min) this.value = this.min
             },
         }"
         x-modelable="value"
-        class="inline-flex items-center h-full"
+        class="flex items-center w-full h-full -mx-1"
         {{ $attributes->whereStartsWith('x-') }}>
         @if (!$readonly && !$disabled)
-            <button type="button" class="flex py-1.5 px-3" x-on:click.stop="spin('down')">
+            <button type="button" class="flex p-2 text-{{ $size }}" x-on:click.stop="spin('down')">
                 <x-icon name="minus" class="m-auto"/>
             </button>
         @endif
@@ -71,7 +70,7 @@ $wiremodel = $attributes->wire('model')->value();
             ])->only(['min', 'max', 'step']) }}>
 
         @if (!$readonly && !$disabled)
-            <button type="button" class="flex py-1.5 px-3" x-on:click.stop="spin('up')">
+            <button type="button" class="flex p-2 text-{{ $size }}" x-on:click.stop="spin('up')">
                 <x-icon name="plus" class="m-auto"/>
             </button>
         @endif
