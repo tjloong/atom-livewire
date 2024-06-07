@@ -43,8 +43,29 @@ class Component extends \Livewire\Component
         else $this->dispatchBrowserEvent('close-modal', $id);
     }
 
+    // get view
+    public function getView() : string
+    {
+        $class = static::class;
+
+        $path = str($class)
+            ->replaceFirst('Jiannius\Atom\Http\\', '')
+            ->replaceFirst('App\Http\\', '')
+            ->split('/\\\/')
+            ->map(fn($s) => str()->kebab($s))
+            ->join('.');
+        
+        return view()->exists($path) ? $path : 'atom::'.$path;
+    }
+
+    // get view data
+    public function getViewData() : array
+    {
+        return [];
+    }
+
     // get layout
-    public function layout() : string
+    public function getLayout() : string
     {
         $path = 'layouts.'.request()->portal();
 
@@ -57,19 +78,12 @@ class Component extends \Livewire\Component
         // expose error bag so front end can use
         $this->errors = collect($this->getErrorBag()->toArray())->map(fn($e) => head($e))->toArray();
 
-        $class = static::class;
+        $layout = $this->getLayout();
+        $view = $this->getView();
+        $data = $this->getViewData();
 
-        $path = str($class)
-            ->replaceFirst('Jiannius\Atom\Http\\', '')
-            ->replaceFirst('App\Http\\', '')
-            ->split('/\\\/')
-            ->map(fn($s) => str()->kebab($s))
-            ->join('.');
-        
-        $view = view()->exists($path) ? $path : 'atom::'.$path;
-
-        $layout = $this->layout();
-
-        return empty($layout) ? view($view) : view($view)->layout($layout);
+        return empty($layout)
+            ? view($view, $data)
+            : view($view, $data)->layout($layout);
     }
 }
