@@ -1,3 +1,14 @@
+/* variables */
+:root {
+    --2xs-size: 1.25rem;
+    --xs-size: 1.5rem;
+    --sm-size: 2rem;
+    --md-size: 2.5rem;
+    --lg-size: 3rem;
+    --xl-size: 10rem;
+    --2xl-size: 4.5rem;
+}
+
 /* Reset */
 a {
     @apply cursor-pointer font-medium;
@@ -15,20 +26,33 @@ a {
     @apply ring-1 ring-offset-2 ring-theme rounded;
 }
 
-@media print {
-    @page {
-        margin: 0;
-    }
-    body {
-        margin: 0.6cm;
-    }
-}
-
 /* button */
-button.is-loading,
-.button.is-loading {
-    @apply pointer-events-none opacity-60;
-}
+.button.is-loading { @apply pointer-events-none opacity-60 }
+
+.button-2xs { min-height: var(--2xs-size); @apply text-2xs px-2 }
+.button-xs { min-height: var(--xs-size); @apply text-xs px-2 }
+.button-sm { min-height: var(--sm-size); @apply text-sm px-3 }
+.button-md { min-height: var(--md-size); @apply text-base px-3 }
+.button-lg { min-height: var(--lg-size); @apply text-lg px-4 }
+.button-xl { min-height: var(--xl-size); @apply text-xl px-5 }
+.button-2xl { min-height: var(--2xl-size); @apply text-2xl px-5 }
+
+.button-icon-2xs { width: var(--2xs-size); height: var(--2xs-size); @apply text-2xs }
+.button-icon-xs { width: var(--xs-size); height: var(--xs-size); @apply text-xs }
+.button-icon-sm { width: var(--sm-size); height: var(--sm-size); @apply text-sm }
+.button-icon-md { width: var(--md-size); height: var(--md-size); @apply text-base }
+.button-icon-lg { width: var(--lg-size); height: var(--lg-size); @apply text-lg }
+.button-icon-xl { width: var(--xl-size); height: var(--xl-size); @apply text-xl }
+.button-icon-2xl { width: var(--2xl-size); height: var(--2xl-size); @apply text-2xl }
+
+/* input */
+.input-2xs { min-height: var(--2xs-size); @apply text-2xs }
+.input-xs { min-height: var(--xs-size); @apply text-xs }
+.input-sm { min-height: var(--sm-size); @apply text-sm }
+.input-md { min-height: var(--md-size); @apply text-base }
+.input-lg { min-height: var(--lg-size); @apply text-lg }
+.input-xl { min-height: var(--xl-size); @apply text-xl }
+.input-2xl { min-height: var(--2xl-size); @apply text-2xl }
 
 /* Forms related */
 input:focus, 

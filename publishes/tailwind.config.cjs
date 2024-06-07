@@ -26,8 +26,10 @@ module.exports = {
             'page': { 'raw': 'page' },
         },
         fontSize: {
+            '2xs': '.675rem',
             'xs': '.75rem',
             'sm': '.875rem',
+            'md': '1rem',
             'base': '1rem',
             'lg': '1.125rem',
             'xl': '1.25rem',

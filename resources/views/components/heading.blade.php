@@ -1,3 +1,9 @@
+@php
+$title = $title ?? $attributes->get('title');
+$status = $status ?? $attributes->get('status');
+$subtitle = $subtitle ?? $attributes->get('subtitle');
+@endphp
+
 <div {{ $attributes->class([
     'flex items-center gap-3 flex-wrap',
     $attributes->get('class', collect([
@@ -21,7 +27,7 @@
 
     <div class="grow flex flex-col">
         <div class="flex items-center gap-3">
-            @isset($title)
+            @if ($title instanceof \Illuminate\View\Component)
                 {{ $title }}
             @else
                 <div class="{{ collect([
@@ -32,25 +38,24 @@
                     'text-4xl font-bold' => $attributes->get('4xl'),
                     'text-xl font-semibold' => true,
                 ])->filter()->keys()->first() }}">
-                    {!! tr($attributes->get('title')) !!}
+                    {!! str()->apa(tr($title)) !!}
                 </div>
-            @endisset
+            @endif
 
-            @isset($status)
+            @if($status instanceof \Illuminate\View\Component)
                 {{ $status }}
-            @elseif ($status = $attributes->get('status'))
-                @if (is_string($status)) <x-badge :label="$status"/>
-                @elseif (is_array($status))
-                    @foreach ($status as $key => $val)
-                        <x-badge :label="$val" :color="$key" size="lg"/>
-                    @endforeach
-                @endif
+            @elseif (is_string($status))
+                <x-badge :label="$status"/>
+            @elseif (is_array($status))
+                @foreach ($status as $key => $val)
+                    <x-badge :label="$val" :color="$key" lg/>
+                @endforeach
             @endif
         </div>
 
-        @isset($subtitle)
+        @if($subtitle instanceof \Illuminate\View\Component)
             {{ $subtitle }}
-        @elseif ($subtitle = $attributes->get('subtitle'))
+        @elseif ($subtitle)
             <div class="font-medium text-gray-500 truncate">
                 {!! tr($subtitle) !!}
             </div>

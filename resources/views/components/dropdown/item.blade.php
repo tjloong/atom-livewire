@@ -19,7 +19,7 @@ $noClickAction = !$href
     && !$attributes->hasLike('x-on:click*')
     && !$attributes->hasLike('x-prompt*');
 
-$except = ['icon', 'label', 'action', 'target', 'href', 'count'];
+$except = ['icon', 'label', 'action', 'count'];
 @endphp
 
 @if ($action === 'share' && ($entity = $attributes->get('share')))

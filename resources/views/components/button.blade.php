@@ -9,6 +9,12 @@ $action = $attributes->get('action');
 $label = $attributes->get('label');
 $nolabel = $attributes->get('no-label');
 $tooltip = $attributes->get('tooltip');
+$size = $attributes->size('md');
+$noClickAction = !$href
+    && !$dropdown
+    && !$attributes->hasLike('wire:click*')
+    && !$attributes->hasLike('x-on:click*')
+    && !$attributes->hasLike('x-prompt*');
 
 if (!$nolabel) {
     if (in_array($action, ['google', 'facebook', 'linkedin'])) {
@@ -96,42 +102,6 @@ $palette = [
     ],
 ][$variant];
 
-$size = $attributes->get('size') ?? pick([
-    '2xs' => $attributes->get('2xs'),
-    'xs' => $attributes->get('xs'),
-    'sm' => $attributes->get('sm'),
-    'lg' => $attributes->get('lg'),
-    'xl' => $attributes->get('xl'),
-    '2xl' => $attributes->get('2xl'),
-    'md' => true,
-]);
-
-$size = $icon && !$label && !$iconsuffix
-    ? [
-        '2xs' => 'text-[9px] h-5 w-5',
-        'xs' => 'text-xs h-6 w-6',
-        'sm' => 'text-sm h-8 w-8',
-        'md' => 'text-base h-10 w-10',
-        'lg' => 'text-lg h-12 w-12',
-        'xl' => 'text-xl h-[4rem] w-[4rem]',
-        '2xl' => 'text-2xl h-[4rem] w-[4rem]',
-    ][$size]
-    : [
-        '2xs' => 'text-[9px] h-5 px-2',
-        'xs' => 'text-xs h-6 px-2',
-        'sm' => 'text-sm h-8 px-3',
-        'md' => 'text-base h-10 px-3',
-        'lg' => 'text-lg h-12 px-4',
-        'xl' => 'text-xl h-[4rem] px-5',
-        '2xl' => 'text-2xl h-[4rem] px-5',
-    ][$size];
-
-$noClickAction = !$href
-    && !$dropdown
-    && !$attributes->hasLike('wire:click*')
-    && !$attributes->hasLike('x-on:click*')
-    && !$attributes->hasLike('x-prompt*');
-
 $except = [
     '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', 
     'size', 'color', 'invert', 'inverted', 'outline', 'outlined', 'class',
@@ -185,13 +155,15 @@ $except = [
             wire:target="{{ $attributes->wire('loading')->value() }}"
         @endif
 
+        @disabled($disabled)
+
         {{ $attributes->class(array_filter([
-            'group inline-flex rounded-md transition-colors duration-200 leading-none focus:ring-1 focus:ring-offset-1 focus:outline-none',
+            'group inline-flex rounded-md transition-colors duration-200 leading-none',
+            'focus:ring-1 focus:ring-offset-1 focus:outline-none disabled:pointer-events-none disabled:opacity-60',
             $element === 'a' ? 'button' : null,
             $block ? 'w-full' : null,
-            $disabled ? 'pointer-events-none opacity-60' : null,
             $palette[$color],
-            $size,
+            $icon && !$label && !$iconsuffix ? "button-icon-$size" : "button-$size",
         ]))->only('class') }}
 
         {{ $attributes->merge([
