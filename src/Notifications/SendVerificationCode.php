@@ -1,13 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Notifications\VerificationCode;
+namespace Jiannius\Atom\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class Send extends Notification
+class SendVerificationCode extends Notification
 {
     use Queueable;
 

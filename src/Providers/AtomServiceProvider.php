@@ -184,6 +184,7 @@ class AtomServiceProvider extends ServiceProvider
 
         // smtp
         config(['mail.mailers.smtp' => [
+            'transport' => 'smtp',
             'host' => settings('smtp_host'),
             'port' => settings('smtp_port'),
             'username' => settings('smtp_username'),
