@@ -251,7 +251,7 @@ class AtomServiceProvider extends ServiceProvider
 
         if (!ComponentAttributeBag::hasMacro('size')) {
             ComponentAttributeBag::macro('size', function($default = null) {
-                return pick([
+                return $this->get('size') ?? pick([
                     '2xs' => $this->has('2xs'),
                     'xs' => $this->has('xs'),
                     'sm' => $this->has('sm'),

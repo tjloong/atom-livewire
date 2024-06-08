@@ -13,7 +13,7 @@
     @if (!$nolabel)
         <label class="flex items-center gap-2 flex-wrap">
             <div class="font-medium leading-5 text-gray-400 text-sm uppercase">
-                @if ($label instanceof \Illuminate\View\Component) {{ $label }}
+                @if ($label instanceof \Illuminate\View\ComponentSlot) {{ $label }}
                 @elseif ($label) {!! tr($label) !!}
                 @elseif ($fieldname && str($fieldname)->is('*_id')) {{ str($fieldname)->replaceLast('_id', '') }}
                 @elseif ($fieldname) {{ $fieldname }}

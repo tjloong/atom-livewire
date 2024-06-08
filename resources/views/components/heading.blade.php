@@ -27,7 +27,7 @@ $subtitle = $subtitle ?? $attributes->get('subtitle');
 
     <div class="grow flex flex-col">
         <div class="flex items-center gap-3">
-            @if ($title instanceof \Illuminate\View\Component)
+            @if ($title instanceof \Illuminate\View\ComponentSlot)
                 {{ $title }}
             @else
                 <div class="{{ collect([
@@ -42,18 +42,18 @@ $subtitle = $subtitle ?? $attributes->get('subtitle');
                 </div>
             @endif
 
-            @if($status instanceof \Illuminate\View\Component)
+            @if($status instanceof \Illuminate\View\ComponentSlot)
                 {{ $status }}
             @elseif (is_string($status))
                 <x-badge :label="$status"/>
             @elseif (is_array($status))
                 @foreach ($status as $key => $val)
-                    <x-badge :label="$val" :color="$key" lg/>
+                    <x-badge :label="$val" :color="$key"/>
                 @endforeach
             @endif
         </div>
 
-        @if($subtitle instanceof \Illuminate\View\Component)
+        @if($subtitle instanceof \Illuminate\View\ComponentSlot)
             {{ $subtitle }}
         @elseif ($subtitle)
             <div class="font-medium text-gray-500 truncate">

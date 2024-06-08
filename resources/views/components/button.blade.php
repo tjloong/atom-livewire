@@ -130,7 +130,7 @@ $except = [
         </x-button>
     </x-footprint>
 @elseif ($dropdown && $slot->isNotEmpty())
-    <x-dropdown>
+    <x-dropdown :placement="$dropdown">
         <x-slot:anchor>
             <x-button {{ $attributes }}/>
         </x-slot:anchor>

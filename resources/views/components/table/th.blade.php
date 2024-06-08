@@ -21,7 +21,8 @@
                 this.rows.forEach(row => row.dispatchEvent(new CustomEvent('toggle-checkbox', { bubble: false })))
             },
         }"
-        class="py-1 px-2 bg-slate-100 border-b border-gray-200 w-10 sticky top-0 z-10">
+        class="py-1 px-2 bg-slate-100 border-b border-gray-200 w-10 sticky top-0"
+        style="z-index: 1">
         <div
             x-on:click.stop="selectAll"
             x-bind:class="isSelectedAll ? 'border-theme border-2' : 'border-gray-300'"
@@ -32,7 +33,7 @@
         </div>
     </th>
 @else
-    <th class="py-1 px-2 bg-slate-100 font-medium text-sm border-b border-gray-200 leading-6 tracking-wider sticky top-0 z-10">
+    <th class="py-1 px-2 bg-slate-100 font-medium text-sm border-b border-gray-200 leading-6 tracking-wider sticky top-0" style="z-index: 1">
         @if ($sortBy)
             <div 
                 x-data="{
