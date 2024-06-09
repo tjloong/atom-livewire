@@ -7,7 +7,10 @@ class Route
     // __call
     public function __call($name, $arguments)
     {
-        if (in_array($name, ['get', 'post', 'put', 'patch', 'delete', 'options'])) {
+        if ($name === 'has') {
+            return \Illuminate\Support\Facades\Route::has($arguments);
+        }
+        else if (in_array($name, ['get', 'post', 'put', 'patch', 'delete', 'options'])) {
             $path = $arguments[0];
             $callback = $this->callback($arguments[1]);
             $arguments = [$path, $callback];

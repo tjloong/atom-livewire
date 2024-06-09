@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class EnquiryNotification extends Notification
+class ContactUs extends Notification
 {
     use Queueable;
 
@@ -33,14 +33,14 @@ class EnquiryNotification extends Notification
     public function toMail($notifiable): \Illuminate\Notifications\Messages\MailMessage
     {
         return (new MailMessage)
-            ->subject('['.config('app.name').'] New enquiry from '.data_get($this->enquiry, 'name'))
+            ->subject('['.config('app.name').'] New enquiry from '.get($this->enquiry, 'name'))
             ->greeting('Hello!')
             ->line('You have a new enquiry:')
             ->line('
-                <span style="font-weight: bold">Name:</span> '.data_get($this->enquiry, 'name').'<br>
-                <span style="font-weight: bold">Phone:</span> '.data_get($this->enquiry, 'phone').'<br>
-                <span style="font-weight: bold">Email:</span> '.data_get($this->enquiry, 'email').'<br>
-                <span style="font-weight: bold">Message:</span><br>'.nl2br(data_get($this->enquiry, 'message')).'
+                <span style="font-weight: bold">Name:</span> '.get($this->enquiry, 'name').'<br>
+                <span style="font-weight: bold">Phone:</span> '.get($this->enquiry, 'phone').'<br>
+                <span style="font-weight: bold">Email:</span> '.get($this->enquiry, 'email').'<br>
+                <span style="font-weight: bold">Message:</span><br>'.nl2br(get($this->enquiry, 'message')).'
             ');
     }
 

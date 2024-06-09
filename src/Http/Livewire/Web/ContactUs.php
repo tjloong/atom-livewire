@@ -4,7 +4,6 @@ namespace Jiannius\Atom\Http\Livewire\Web;
 
 use Illuminate\Support\Facades\Notification;
 use Jiannius\Atom\Component;
-use Jiannius\Atom\Notifications\EnquiryNotification;
 use Jiannius\Atom\Rules\Profanity;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
@@ -57,8 +56,9 @@ class ContactUs extends Component
         ]));
 
         if ($to = settings('notify_to')) {
-            Notification::route('mail', $to)
-                ->notify(new EnquiryNotification($enquiry));
+            Notification::route('mail', $to)->notify(
+                new \Jiannius\Atom\Notifications\ContactUs($enquiry)
+            );
         }
         
         return to_route('web.contact-us', 'thank');

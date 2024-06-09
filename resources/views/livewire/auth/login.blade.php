@@ -1,18 +1,23 @@
 <div class="flex flex-col gap-4">
+    @recaptcha
+
     <x-form recaptcha="login">
         <x-group>
-            <x-heading title="auth.label.signin" 2xl/>
+            <div class="text-2xl font-bold">
+                {!! tr('app.label.signin') !!}
+            </div>
 
-            @if ($message = session('message')) <x-alert>{{ $message }}</x-alert> @endif
-            @if ($errors->has('email')) <x-alert.errors/> @endif
+            @if ($message = session('message'))
+                <x-inform :message="$message"/>
+            @endif
 
-            <x-form.text wire:model.defer="inputs.email" label="app.label.email" autofocus/>
+            <x-input type="email" wire:model.defer="inputs.email" label="app.label.email" autofocus/>
 
             <div class="flex flex-col gap-2">
-                <x-form.password wire:model.defer="inputs.password" label="app.label.password"/>
+                <x-input type="password" wire:model.defer="inputs.password" label="app.label.password"/>
     
-                @if (has_route('password.forgot'))
-                    <x-link label="auth.label.forgot-password" :href="route('password.forgot')" class="text-theme text-sm"/>
+                @if (app('route')->has('password.forgot'))
+                    <x-anchor label="app.label.forgot-password" :href="route('password.forgot')" class="text-sm"/>
                 @endif
             </div>
         </x-group>
@@ -27,10 +32,10 @@
         </x-slot:foot>
     </x-form>
 
-    @if (has_route('register'))
+    @if (app('route')->has('register'))
         <div class="inline-flex item-center gap-2 px-4">
-            {{ tr('auth.label.dont-have-account') }} 
-            <x-link label="auth.label.signup-now" :href="route('register', ['utm' => 'page-login'])"/>
+            {{ tr('app.label.dont-have-account') }} 
+            <x-anchor label="app.label.signup-now" :href="route('register', ['utm' => 'page-login'])"/>
         </div>
     @endif
 </div>
