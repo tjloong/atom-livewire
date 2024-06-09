@@ -119,7 +119,7 @@ $size = $attributes->size('md');
                 {{ $caption }}
             @else
                 <div class="text-sm text-gray-500">
-                    {!! $caption !!}
+                    {!! tr($caption) !!}
                 </div>
             @endif
         </div>

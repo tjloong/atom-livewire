@@ -263,6 +263,12 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
+        if (!ComponentAttributeBag::hasMacro('field')) {
+            ComponentAttributeBag::macro('field', function() {
+                return $this->get('field') ?? $this->get('for') ?? $this->wire('model')->value();
+            });
+        }
+
         if (!Carbon::hasMacro('local')) {
             Carbon::macro('local', function() {
                 $tz = optional(user())->settings('timezone') ?? config('atom.timezone');

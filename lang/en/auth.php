@@ -18,7 +18,6 @@ return [
         'password' => 'The provided password is incorrect.',
         'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
         'verification' => 'Incorrect verification code.',
-        'email-verification' => 'We have sent a verification code to your email. Please fill in here.',
         'password-reset-failed' => 'Unable to reset password',
         'password-reset' => 'Your password has been reset!',
         'password-sent' => 'We have emailed your password reset link!',
