@@ -97,7 +97,7 @@
                             <div
                                 x-on:click="checkboxes.length ? select(@js($file->id)) : $wire.emit('updateFile', @js($file->id))"
                                 class="absolute inset-0 cursor-pointer" >
-                                <img src="{{ $file->endpoint }}&sm" class="w-full h-full object-cover">
+                                <img src="{!! $file->endpoint_sm !!}" class="w-full h-full object-cover">
                             </div>
 
                             <div
@@ -116,7 +116,7 @@
                     <div
                         x-on:click.stop="$wire.emit('updateFile', @js($files->first()->id))"
                         class="relative w-28 h-28 rounded-md bg-gray-100 shadow overflow-hidden">
-                        <img src="{{ $files->first()->endpoint }}&sm" class="w-full h-full object-cover">
+                        <img src="{!! $files->first()->endpoint_sm !!}" class="w-full h-full object-cover">
 
                         <div
                             x-on:click.stop="remove()"
@@ -144,7 +144,7 @@
                         @endif
 
                         <figure class="shrink-0 w-6 h-6 rounded-md bg-white border flex items-center justify-center overflow-hidden">
-                            @if ($file->is_image) <img src="{{ $file->endpoint }}&sm" class="w-full h-full object-cover">
+                            @if ($file->is_image) <img src="{!! $file->endpoint_sm !!}" class="w-full h-full object-cover">
                             @else <x-icon name="file" class="text-gray-400 text-sm"/>
                             @endif
                         </figure>

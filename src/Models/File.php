@@ -152,6 +152,22 @@ class File extends Model
         );
     }
 
+    // attribute for endpoint sm
+    protected function endpointSm() : Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->is_image ? $this->endpoint.'&sm' : $this->endpoint,
+        );
+    }
+
+    // attribute for endpoint md
+    protected function endpointMd() : Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->is_image ? $this->endpoint.'&md' : $this->endpoint,
+        );
+    }
+
     // attribute for file type
     protected function type() : Attribute
     {

@@ -130,7 +130,7 @@
                         <div class="shrink-0">
                             <figure class="w-10 h-10 rounded-md border bg-gray-200 flex items-center justify-center overflow-hidden">
                                 @if (!$image) <x-icon name="ban" class="text-gray-400 text-lg"/>
-                                @else <img src="{{ $image }}" class="w-full h-full object-cover">
+                                @else <img src="{!! $image !!}" class="w-full h-full object-cover">
                                 @endif
                             </figure>
                         </div>
@@ -140,7 +140,7 @@
                         <div class="shrink-0">
                             <figure class="w-10 h-10 rounded-full border bg-gray-200 flex items-center justify-center overflow-hidden">
                                 @if ($body) <span class="text-gray-500 font-bold text-sm">{{ format($body)->abbr() }}</span>
-                                @else <img src="{{ $avatar }}" class="w-full h-full object-cover"/>
+                                @else <img src="{!! $avatar !!}" class="w-full h-full object-cover"/>
                                 @endif
                             </figure>
                         </div>

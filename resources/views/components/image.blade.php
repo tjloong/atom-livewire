@@ -16,7 +16,11 @@ $variant = pick([
 ]);
 
 $url = $attributes->get('url') ?? $attributes->get('src') ?? (
-    optional($file)->is_image ? collect([$file->endpoint, $variant])->filter()->join('&') : null
+    optional($file)->is_image ? pick([
+        $file->endpoint_sm => $variant === 'sm',
+        $file->endpoint_md => $variant === 'md',
+        $file->endpoint => true,
+    ]) : null
 );
 
 $except = ['class', 'file', 'variant', 'alt', 'size', 'cover', 'contain', 'fill', 'scale-down', 'url', 'src'];

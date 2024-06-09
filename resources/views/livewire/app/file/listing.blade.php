@@ -26,7 +26,7 @@
                 <x-table.td 
                     :label="$file->name" 
                     limit="50" 
-                    :image="$file->is_image ? $file->endpoint.'&sm' : null"
+                    :image="$file->is_image ? $file->endpoint_sm : null"
                     :caption="$file->mime">
                 </x-table.td>
 
