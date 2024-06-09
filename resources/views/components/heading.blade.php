@@ -30,14 +30,15 @@ $subtitle = $subtitle ?? $attributes->get('subtitle');
             @if ($title instanceof \Illuminate\View\ComponentSlot)
                 {{ $title }}
             @else
-                <div class="{{ collect([
+                <div class="{{ pick([
                     'text-base font-semibold' => $attributes->get('sm'),
                     'text-lg font-semibold' => $attributes->get('lg'),
                     'text-2xl font-bold' => $attributes->get('2xl'),
                     'text-3xl font-bold' => $attributes->get('3xl'),
                     'text-4xl font-bold' => $attributes->get('4xl'),
+                    'text-5xl font-bold' => $attributes->get('5xl'),
                     'text-xl font-semibold' => true,
-                ])->filter()->keys()->first() }}">
+                ]) }}">
                     {!! str()->apa(tr($title)) !!}
                 </div>
             @endif

@@ -6,7 +6,7 @@ $size = $attributes->size('md');
 $wiremodel = $attributes->wire('model')->value();
 @endphp
 
-<x-input class="w-full h-px" {{ $attributes->except('class') }}>
+<x-input class="h-px" {{ $attributes->except('class') }}>
     <span
         x-data="{
             value: @if ($wiremodel) @entangle($wiremodel) @else null @endif,

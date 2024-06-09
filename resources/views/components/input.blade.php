@@ -6,21 +6,24 @@ $type = $attributes->get('type', 'text');
 $label = $attributes->get('label');
 $prefix = $prefix ?? $attributes->get('prefix');
 $suffix = $suffix ?? $attributes->get('suffix');
+$caption = $caption ?? $attributes->get('caption');
+$error = $error ?? $attributes->get('error');
 $transparent = $attributes->get('transparent');
 $placeholder = $attributes->get('placeholder');
 $size = $attributes->size('md');
 @endphp
 
-<div>
+<div class="group w-full">
     @if ($label)
-        <div class="mb-2">
+        <div class="mb-1.5">
             <x-label :label="$label" :for="$field"/>
         </div>
     @endif
 
     <span {{ $attributes
         ->class(array_filter([
-            "inline-block leading-normal input-$size has-[:disabled]:opacity-50",
+            "inline-block leading-normal w-full input-$size has-[:disabled]:opacity-50",
+            'group-has-[.error]:border-red-500 group-has-[.error]:ring-red-300',
 
             $transparent
                 ? 'bg-transparent'
@@ -30,13 +33,13 @@ $size = $attributes->size('md');
                 ? 'has-[:focus]:border-b-2 has-[:focus]:border-gray-300 has-[:focus]:border-dashed has-[input:readonly]:border-0'
                 : 'has-[:focus]:ring-1 has-[:focus]:ring-theme has-[:focus]:ring-offset-1 has-[input:read-only]:ring-0',
 
-            in_array($type, ['text', 'number', 'email']) ? 'h-px' : null,
+            $slot->isEmpty() && in_array($type, ['text', 'number', 'email', 'password']) ? 'h-px' : null,
         ]))
         ->only('class')
     }}>
     @if ($slot->isNotEmpty())
         {{ $slot }}
-    @elseif (in_array($type, ['text', 'number', 'email']))
+    @elseif (in_array($type, ['text', 'number', 'email', 'password']))
         <span
             x-data="{ clearable: false }"
             x-init="clearable = !empty($refs.input.value)"
@@ -55,12 +58,14 @@ $size = $attributes->size('md');
                 <div class="shrink-0 text-gray-500 font-medium">{!! tr($prefix) !!}</div>
             @endif
 
-            <input type="{{ $type }}"
+            <input
+                type="{{ $type }}"
                 x-ref="input"
                 placeholder="{!! tr($placeholder) !!}"
                 class="grow appearance-none w-full bg-transparent peer"
                 {{ $attributes->whereStartsWith('wire:') }}
-                {{ $attributes->whereStartsWith('x-') }}>
+                {{ $attributes->whereStartsWith('x-') }}
+                {{ $attributes->only(['autofocus', 'disabled', 'readonly']) }}>
 
             <div x-show="clearable" x-on:click.stop="() => {
                 $refs.input.value = null
@@ -79,6 +84,18 @@ $size = $attributes->size('md');
                 <div class="shrink-0 text-gray-500 font-medium">{!! tr($suffix) !!}</div>
             @endif
 
+            @if ($type === 'password')
+                <div
+                    x-show="clearable"
+                    x-on:click="() => {
+                        let type = $refs.input.getAttribute('type')
+                        $refs.input.setAttribute('type', type === 'password' ? 'text' : 'password')
+                    }"
+                    class="shrink-0 cursor-pointer text-gray-400 hover:text-black px-1 peer-disabled:hidden peer-read-only:hidden">
+                    <x-icon name="eye"/>
+                </div>
+            @endif
+
             @if(isset($button) && $button instanceof \Illuminate\View\ComponentSlot)
                 <div class="shrink-0" style="margin-right: -12px;">
                     @if ($button->isNotEmpty())
@@ -95,4 +112,24 @@ $size = $attributes->size('md');
         </span>
     @endif
     </span>
+
+    @if ($caption)
+        <div class="mt-2">
+            @if ($caption instanceof \Illuminate\View\ComponentSlot)
+                {{ $caption }}
+            @else
+                <div class="text-sm text-gray-500">
+                    {!! $caption !!}
+                </div>
+            @endif
+        </div>
+    @endif
+
+    @if ($field)
+        <x-error :field="$field" class="mt-2"/>
+    @elseif ($error instanceof \Illuminate\View\ComponentSlot)
+        {{ $error }}
+    @elseif ($error)
+        <x-error :label="$error" class="mt-2"/>
+    @endif
 </div>
