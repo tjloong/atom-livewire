@@ -45,7 +45,7 @@ $size = $attributes->size('md');
             x-init="clearable = !empty($refs.input.value)"
             x-on:input="clearable = !empty($refs.input.value)"
             class="px-1 inline-flex items-center gap-2 w-full h-full"
-            {{ $attributes->only(['wire:clear', 'x-on:clear']) }}>
+            {{ $attributes->only(['wire:clear', 'wire:key', 'x-on:clear']) }}>
             @if ($icon)
                 <div class="shrink-0 text-gray-300">
                     <x-icon :name="$icon"/>
@@ -63,7 +63,7 @@ $size = $attributes->size('md');
                 x-ref="input"
                 placeholder="{!! tr($placeholder) !!}"
                 class="grow appearance-none w-full bg-transparent peer"
-                {{ $attributes->whereStartsWith('wire:') }}
+                {{ $attributes->whereStartsWith('wire:')->except('wire:key') }}
                 {{ $attributes->whereStartsWith('x-') }}
                 {{ $attributes->only(['autofocus', 'disabled', 'readonly']) }}>
 

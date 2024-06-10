@@ -8,11 +8,13 @@ use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Jiannius\Atom\Traits\Models\Footprint;
+use Jiannius\Atom\Traits\Models\HasSequence;
 
 class Role extends Model
 {
     use Footprint;
     use HasFilters;
+    use HasSequence;
     use HasSlug;
     
     protected $guarded = [];
