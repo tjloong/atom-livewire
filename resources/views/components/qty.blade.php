@@ -41,10 +41,11 @@ $wiremodel = $attributes->wire('model')->value();
             },
 
             validate () {
-                this.value = +this.value
-                this.value = this.value.round(this.step.decimalPlaces())
-                if (this.value > this.max) this.value = this.max
-                if (this.value < this.min) this.value = this.min
+                if ((+this.value).decimalPlaces()) {
+                    this.value = (+this.value).round(this.step.decimalPlaces())
+                }
+                if (+this.value > this.max) this.value = this.max
+                if (+this.value < this.min) this.value = this.min
             },
         }"
         x-modelable="value"
