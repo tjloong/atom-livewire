@@ -13,7 +13,7 @@ $placeholder = $attributes->get('placeholder');
 $size = $attributes->size('md');
 @endphp
 
-<div class="group w-full">
+<div class="group">
     @if ($label)
         <div class="mb-1.5">
             <x-label :label="$label" :for="$field"/>
