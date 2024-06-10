@@ -64,8 +64,8 @@
             <div class="flex flex-col gap-3">
                 <x-checkbox wire:model="inputs.agree_tnc" label="app.label.checkbox-privacy">
                     <div class="inline-flex items-center gap-3 flex-wrap text-sm">
-                        <x-anchor label="app.label.terms-of-use"/>
-                        <x-anchor label="app.label.privacy-policy"/>
+                        <x-anchor label="app.label.terms-of-use" href="/terms"/>
+                        <x-anchor label="app.label.privacy-policy" href="/privacy"/>
                     </div>
                 </x-checkbox>
 
