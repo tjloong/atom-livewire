@@ -12,6 +12,7 @@ $tooltip = $attributes->get('tooltip');
 $size = $attributes->size('md');
 $noClickAction = !$href
     && !$dropdown
+    && !in_array($action, ['google', 'facebook', 'linkedin'])
     && !$attributes->hasLike('wire:click*')
     && !$attributes->hasLike('x-on:click*')
     && !$attributes->hasLike('x-prompt*');
