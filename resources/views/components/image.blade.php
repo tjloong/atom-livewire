@@ -2,7 +2,7 @@
 $file = $attributes->get('file');
 $variant = $attributes->get('variant');
 $alt = $attributes->get('alt') ?? $file?->name;
-$size = $attributes->get('size');
+$size = $attributes->size();
 $fit = pick([
     'object-cover' => $attributes->has('cover'),
     'object-contain' => $attributes->has('contain'),
@@ -10,24 +10,24 @@ $fit = pick([
     'object-scale-down' => $attributes->has('scale-down'),
 ]);
 
-$variant = pick([
-    'sm' => $attributes->has('sm'),
-    'md' => $attributes->has('md'),
-]);
-
 $url = $attributes->get('url') ?? $attributes->get('src') ?? (
     optional($file)->is_image ? pick([
-        $file->endpoint_sm => $variant === 'sm',
-        $file->endpoint_md => $variant === 'md',
+        $file->endpoint_sm => $size === 'sm',
+        $file->endpoint_md => $size === 'md',
         $file->endpoint => true,
     ]) : null
 );
 
-$except = ['class', 'file', 'variant', 'alt', 'size', 'cover', 'contain', 'fill', 'scale-down', 'url', 'src'];
+$except = ['file', 'size', 'cover', 'contain', 'fill', 'scale-down', 'url'];
 @endphp
 
 @if ($url)
-<figure class="{{ $attributes->get('class', 'w-full h-full') }}" {{ $attributes->except($except) }}>
-    <img src="{!! $url !!}" alt="{!! $alt !!}" class="w-full h-full {{ $fit }}" {{ $attributes->only(['width', 'height']) }}>
-</figure>
+<img {{ $attributes
+    ->merge([
+        'src' => $url,
+        'alt' => $alt,
+    ])
+    ->class(['w-full h-full', $fit])
+    ->except($except)
+}}>
 @endif
