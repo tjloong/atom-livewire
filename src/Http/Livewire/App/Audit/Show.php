@@ -16,14 +16,8 @@ class Show extends Component
     public function open($id) : void
     {
         if ($this->audit = model('audit')->find($id)) {
-            $this->modal(id: 'audit-show');
+            $this->modal();
+            $this->dispatchBrowserEvent('audit-id', $id);
         }
-    }
-
-    // close
-    public function close() : void
-    {
-        $this->emit('setAuditId');
-        $this->modal(false, 'audit-show');
     }
 }

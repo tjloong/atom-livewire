@@ -1,4 +1,4 @@
-<x-form.drawer wire:close="close()">
+<x-form.drawer x-on:close="$dispatch('audit-id', null)">
 @if (optional($audit)->exists)
     <x-slot:heading title="app.label.audit-trail"></x-slot:heading>
 
