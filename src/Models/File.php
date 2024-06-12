@@ -353,10 +353,14 @@ class File extends Model
         elseif (in_array($this->disk, ['do', 's3'])) $url = $this->getDisk()->temporaryUrl($this->path, now()->addHour());
         else $url = $this->url;
 
-        $mime = pathinfo($this->path, PATHINFO_EXTENSION);
-        $content = file_get_contents($url);
-        $b64 = 'data:image/'.$mime.';base64,'.base64_encode($content);
+        if ($url) {
+            $mime = pathinfo($this->path, PATHINFO_EXTENSION);
+            $content = file_get_contents($url);
+            $b64 = 'data:image/'.$mime.';base64,'.base64_encode($content);
+    
+            return $b64;
+        }
 
-        return $b64;
+        return null;
     }
 }
