@@ -137,6 +137,7 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 @if ($cdnlist->get('dayjs'))
 @basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/dayjs.min.js')
 @basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/utc.js')
+@basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/timezone.js')
 @basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/relativeTime.js')
 @endif
 @if ($cdnlist->get('flatpickr'))

@@ -124,8 +124,9 @@ trait HasFilters
                     if (str($value)->is('* to *')) {
                         $from = head(explode(' to ', $value));
                         $to = last(explode(' to ', $value));
-                        array_push($parsed, ['column' => $column, 'value' => $from, 'operator' => '>=', 'function' => 'date']);
-                        array_push($parsed, ['column' => $column, 'value' => $to, 'operator' => '<=', 'function' => 'date']);
+                        $function = $this->tableColumnType($column, 'date') ? 'date' : null;
+                        array_push($parsed, ['column' => $column, 'value' => $from, 'operator' => '>=', 'function' => $function]);
+                        array_push($parsed, ['column' => $column, 'value' => $to, 'operator' => '<=', 'function' => $function]);
                     }
                     else {
                         if (str($key)->is('from_*')) {

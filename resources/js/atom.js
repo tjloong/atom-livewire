@@ -18,6 +18,7 @@ window.color = (name) => new Color(name)
 window.href = (url) => window.location = url
 
 window.dayjs?.extend(dayjs_plugin_utc)
+window.dayjs?.extend(dayjs_plugin_timezone)
 window.dayjs?.extend(dayjs_plugin_relativeTime)
 
 document.addEventListener('alpine:init', () => {

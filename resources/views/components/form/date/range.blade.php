@@ -1,5 +1,6 @@
 @php
-    $placeholder = $attributes->get('placeholder', 'app.label.select-date-range')
+$utc = $attributes->get('no-utc') ? false : $attributes->get('utc', true);
+$placeholder = $attributes->get('placeholder', 'app.label.select-date-range')
 @endphp
 
 <x-form.field {{ $attributes }}>
@@ -7,6 +8,7 @@
         wire:ignore
         x-cloak
         x-data="{
+            utc: @js($utc),
             value: @entangle($attributes->wire('model')),
             show: false,
             focus: false,
@@ -14,54 +16,58 @@
             calendar: null,
 
             get from () {
-                return this.value?.split(' to ')[0] || null
+                let from = this.value ? dayjs(this.value.split(' to ')[0]) : null
+                if (this.utc && from) from = from.utc(true).tz(dayjs.tz.guess())
+                return from?.isValid() ? from?.format('DD MMM YYYY') : null
             },
 
             get to () {
-                return this.value?.split(' to ')[1] || null
+                let to = this.value ? dayjs(this.value.split(' to ')[1]) : null
+                if (this.utc && to) to = to.utc(true).tz(dayjs.tz.guess())
+                return to?.isValid() ? to?.format('DD MMM YYYY') : null
             },
 
             get options () {
                 return [
                     { 
                         label: @js(tr('app.label.today')),
-                        value: [dayjs(), dayjs()],
+                        value: [dayjs().startOf('day'), dayjs().endOf('day')],
                     },
                     { 
                         label: @js(tr('app.label.yesterday')),
-                        value: [dayjs().subtract(1, 'day'), dayjs().subtract(1, 'day')],
+                        value: [dayjs().subtract(1, 'day').startOf('day'), dayjs().subtract(1, 'day').endOf('day')],
                     },
                     { 
                         label: @js(tr('app.label.this-month')),
-                        value: [dayjs().startOf('month'), dayjs().endOf('month')],
+                        value: [dayjs().startOf('month').startOf('day'), dayjs().endOf('month').endOf('day')],
                     },
                     { 
                         label: @js(tr('app.label.this-year')),
-                        value: [dayjs().startOf('year'), dayjs().endOf('year')],
+                        value: [dayjs().startOf('year').startOf('day'), dayjs().endOf('year').endOf('day')],
                     },
                     { 
                         label: @js(tr('app.label.last-7-days')),
-                        value: [dayjs().subtract(6, 'day'), dayjs()],
+                        value: [dayjs().subtract(6, 'day').startOf('day'), dayjs().endOf('day')],
                     },
                     { 
                         label: @js(tr('app.label.last-30-days')),
-                        value: [dayjs().subtract(29, 'day'), dayjs()],
+                        value: [dayjs().subtract(29, 'day').startOf('day'), dayjs().endOf('day')],
                     },
                     { 
                         label: @js(tr('app.label.last-month')),
-                        value: [dayjs().startOf('month').subtract(1, 'day').startOf('month'), dayjs().startOf('month').subtract(1, 'day').endOf('month')],
+                        value: [dayjs().startOf('month').subtract(1, 'day').startOf('month').startOf('day'), dayjs().startOf('month').subtract(1, 'day').endOf('month').endOf('day')],
                     },
                     { 
                         label: @js(tr('app.label.last-year')),
-                        value: [dayjs().startOf('year').subtract(1, 'day').startOf('year'), dayjs().startOf('year').subtract(1, 'day').endOf('year')],
+                        value: [dayjs().startOf('year').subtract(1, 'day').startOf('year').startOf('day'), dayjs().startOf('year').subtract(1, 'day').endOf('year').endOf('day')],
                     },
                 ].map(opt => {
-                    from = opt.value[0].format('YYYY-MM-DD')
-                    to = opt.value[1].format('YYYY-MM-DD')
+                    from = this.utc ? opt.value[0].utc() : opt.value[0]
+                    to = this.utc ? opt.value[1].utc() : opt.value[1]
 
                     return {
                         label: opt.label,
-                        value: `${from} to ${to}`
+                        value: `${from.format('YYYY-MM-DD HH:mm:ss')} to ${to.format('YYYY-MM-DD HH:mm:ss')}`
                     }
                 })
             },
@@ -96,8 +102,8 @@
                     },
 
                     onChange: (date, str) => {
-                        let from = date[0] ? dayjs(date[0]).format('YYYY-MM-DD') : null
-                        let to = date[1] ? dayjs(date[1]).format('YYYY-MM-DD') : null
+                        let from = date[0] ? dayjs(date[0]).startOf('day').utc().format('YYYY-MM-DD HH:mm:ss') : null
+                        let to = date[1] ? dayjs(date[1]).endOf('day').utc().format('YYYY-MM-DD HH:mm:ss') : null
 
                         if (from && to) {
                             this.value = `${from} to ${to}`
@@ -141,9 +147,9 @@
 
             <template x-if="from && to">
                 <div class="grow flex items-center gap-3">
-                    <div x-text="from?.toDateString()" class="px-3 truncate"></div>
+                    <div x-text="from" class="px-3 truncate"></div>
                     <x-icon name="arrow-right" class="shrink-0 text-gray-400"/>
-                    <div x-text="to?.toDateString()" class="px-3 truncate"></div>
+                    <div x-text="to" class="px-3 truncate"></div>
                 </div>
             </template>
 
