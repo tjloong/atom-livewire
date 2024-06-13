@@ -27,7 +27,7 @@ class CreateThumbnails implements ShouldQueue
     {
         foreach ([480, 800] as $size) {
             rescue(function() use ($size) {
-                $this->file->children->each(fn($child) => $child->delete());
+                $this->file->children?->each(fn($child) => $child->delete());
                 $this->putContent($size);
             });
         }
