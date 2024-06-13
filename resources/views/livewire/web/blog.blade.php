@@ -11,11 +11,10 @@
 
             <div class="max-w-md">
                 <form wire:submit.prevent="$emit('refresh')">
-                    <x-form.text wire:model.defer="filters.search" placeholder="Search Articles" prefix="icon:search" :label="false">
-                        @if (!empty(data_get($filters, 'search')))
-                            <x-slot:button icon="close" wire:click="$set('filters.search', null)"></x-slot:button>
-                        @endif
-                    </x-form.text>
+                    <x-input placeholder="Search Articles" icon="search"
+                        wire:model.defer="filters.search"
+                        wire:clear="$set('filters.search', null)">
+                    </x-input>
                 </form>
             </div>
         </div>

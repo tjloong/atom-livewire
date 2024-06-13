@@ -4,6 +4,8 @@ $blog = $attributes->get('blog');
 
 if (is_numeric($blog)) $blog = model('blog')->find($blog);
 elseif (is_string($blog)) $blog = model('blog')->where('slug', $blog)->first();
+
+$desc = $blog->description ?? format($blog->content)->excerpt(20);
 @endphp
 
 @if ($blog && $size === 'sm')
@@ -20,9 +22,9 @@ elseif (is_string($blog)) $blog = model('blog')->where('slug', $blog)->first();
                     {!! $blog->name !!}
                 </div>
 
-                @if ($desc = $blog->description)
+                @if ($desc)
                     <div class="text-sm text-gray-400 font-medium">
-                        {!! str()->limit($desc, 60) !!}
+                        {!! $desc !!}
                     </div>
                 @endif
             </div>        
@@ -39,9 +41,9 @@ elseif (is_string($blog)) $blog = model('blog')->where('slug', $blog)->first();
                 {!! $blog->name !!}
             </div>
 
-            @if ($desc = $blog->description)
+            @if ($desc)
                 <div class="text-sm text-gray-400 font-medium">
-                    {!! str()->limit($desc, 100) !!}
+                    {!! $desc !!}
                 </div>
             @endif
         </div>
