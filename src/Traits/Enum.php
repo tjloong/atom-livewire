@@ -33,4 +33,16 @@ trait Enum
     {
         return !$this->is($val);
     }
+
+    // snake
+    public function snake() : string
+    {
+        return (string) str($this->name)->lower()->snake();
+    }
+
+    // slug
+    public function slug() : string
+    {
+        return (string) str($this->name)->lower()->slug();
+    }
 }
