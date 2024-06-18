@@ -1,6 +1,9 @@
 @php
+$name = $attributes->get('name');
 $label = $attributes->get('label');
 $value = (string) $attributes->get('value');
+$trend = $attributes->get('trend');
+$chart = $attributes->get('chart');
 $color = $attributes->get('color');
 $callback = $attributes->get('callback');
 @endphp
@@ -9,12 +12,15 @@ $callback = $attributes->get('callback');
     wire:ignore
     x-cloak
     x-data="{
+        name: @js($name),
         loading: false,
         callback: @js($callback),
 
         stats: {
             label: @js(tr($label)),
             value: @js($value),
+            trend: @js($trend),
+            chart: @js($chart),
             color: @js($color),
         },
 
@@ -62,22 +68,18 @@ $callback = $attributes->get('callback');
             if (this.callback) this.fetch()
         },
 
-        fetch () {
+        fetch (filters = null) {
             this.loading = true
-
-            this.$wire.call(this.callback)
-            .then(res => this.stats = res)
-            .then(() => this.loading = false)
+            this.$wire.call(this.callback, filters).then(res => this.stats = res).then(() => this.loading = false)
         },
     }"
-    x-on:refresh-stats.window="fetch()"
-    class="relative bg-white border rounded-xl overflow-hidden py-5 px-6 hover:ring-1 hover:ring-gray-200 hover:ring-offset-2">
+    x-on:filter-stat.window="() => {
+        if (name && $event.detail.name !== name) return
+        if (callback) fetch($event.detail.filters)
+    }"
+    class="relative bg-white border rounded-xl overflow-hidden py-5 px-6 hover:ring-1 hover:ring-gray-200 hover:ring-offset-2 shadow-sm">
     <template x-if="loading || !stats">
-        <div class="flex flex-col gap-4 animate-pulse">
-            <div class="h-4 w-1/2 bg-gray-200 rounded-md"></div>
-            <div class="h-10 w-full bg-gray-200 rounded-md"></div>
-            <div class="h-4 w-1/2 bg-gray-200 rounded-md"></div>
-        </div>
+        <x-skeleton/>
     </template>
 
     <template x-if="!loading">
