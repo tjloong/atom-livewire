@@ -79,6 +79,7 @@ return [
         'cost' => 'Cost',
         'country' => 'Country',
         'cover-image' => 'Cover Image',
+        'create' => 'Create',
         'create-account' => 'Create Account',
         'create-announcement' => 'Create Announcement',
         'create-banner' => 'Create Banner',
