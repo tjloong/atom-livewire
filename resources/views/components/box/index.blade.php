@@ -8,18 +8,11 @@ $heading = $heading ?? $attributes->get('heading');
 $except = ['cover', 'heading'];
 @endphp
 
-<{{ $element }} {{ $attributes
-    ->merge([
-        'href' => $element === 'a' ? $href : null,
-        'target' => $element === 'a' ? $target : null,
-        'rel' => $element === 'a' ? $rel : null,
-    ])
-    ->class([
-        'group relative flex flex-col divide-y bg-white rounded-lg border shadow',
-        '*(:first):rounded-t-lg',
-    ])
-    ->except($except)
-}}>
+<{{ $element }} {{ $attributes->merge([
+    'href' => $element === 'a' ? $href : null,
+    'target' => $element === 'a' ? $target : null,
+    'rel' => $element === 'a' ? $rel : null,
+])->except(['cover', 'heading', 'class']) }} class="group relative flex flex-col divide-y bg-white rounded-xl border shadow-sm *(:first):rounded-t-lg">
     @if ($heading instanceof \Illuminate\View\ComponentSlot)
         <x-heading :attributes="$heading->attributes">
             {{ $heading }}
@@ -44,7 +37,7 @@ $except = ['cover', 'heading'];
     @endisset
 
     @if ($slot->isNotEmpty())
-        <div {{ $attributes->merge(['class' => 'p-px'])->only('class') }}>
+        <div {{ $attributes->only('class') }}>
             {{ $slot }}
         </div>
     @endif
