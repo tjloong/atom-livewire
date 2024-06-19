@@ -1,4 +1,5 @@
 @php
+$noApa = $attributes->get('no-apa', false);
 $title = $title ?? $attributes->get('title');
 $status = $status ?? $attributes->get('status');
 $subtitle = $subtitle ?? $attributes->get('subtitle');
@@ -39,7 +40,7 @@ $subtitle = $subtitle ?? $attributes->get('subtitle');
                     'text-5xl font-bold' => $attributes->get('5xl'),
                     'text-xl font-semibold' => true,
                 ]) }}">
-                    {!! str()->apa(tr($title)) !!}
+                    {!! $noApa ? tr($title) : str()->apa(tr($title)) !!}
                 </div>
             @endif
 
