@@ -20,7 +20,7 @@ $except = ['tab', 'icon', 'label', 'value', 'count', 'class'];
         'target' => $element === 'a' ? $target : null,
     ])->except($except) }}
     x-bind:class="value === {{ Js::from($value) }} ? 'bg-white shadow-sm font-medium whitespace-nowrap w-max' : 'truncate text-gray-400'"
-    class="grow transition-colors duration-200 hover:bg-gray-50">
+    class="transition-colors duration-200 hover:bg-gray-50 md:grow">
     @if ($slot->isNotEmpty())
         {{ $slot }}
     @else

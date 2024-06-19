@@ -36,6 +36,7 @@ $variant = $attributes->get('variant') ?? pick([
     'outline' => $attributes->get('outlined') || $attributes->get('outline'),
     'inverted' => $attributes->get('inverted') || $attributes->get('invert'),
     'ghost' => $attributes->get('ghost'),
+    'invisible' => $attributes->get('invisible'),
     'default' => true,
 ]);
 
@@ -101,10 +102,23 @@ $palette = [
         'facebook' => 'bg-transparent text-blue-600 hover:bg-blue-100 hover:border hover:border-blue-300 focus:ring-blue-300',
         'linkedin' => 'bg-transparent text-sky-600 hover:bg-sky-100 hover:border hover:border-sky-300 focus:ring-sky-300',
     ],
+    'invisible' => [
+        'white' => 'text-gray-800 hover:text-black',
+        'black' => 'text-black',
+        'theme' => 'text-theme hover:text-theme-dark',
+        'green' => 'text-green-500 hover:text-theme-800',
+        'red' => 'text-red-500 hover:text-red-800',
+        'blue' => 'text-blue-500 hover:text-blue-800',
+        'yellow' => 'text-yellow-500 hover:text-yellow-800',
+        'gray' => 'text-gray-500 hover:text-gray-800',
+        'google' => 'text-rose-500 hover:text-rose-800',
+        'facebook' => 'text-blue-600 hover:text-blue-800',
+        'linkedin' => 'text-sky-600 hover:text-sky-800',
+    ],
 ][$variant];
 
 $except = [
-    '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', 
+    '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', 'invisible',
     'size', 'color', 'invert', 'inverted', 'outline', 'outlined', 'class',
     'icon', 'icon-suffix', 'label', 'block', 'recaptcha', 'dropdown', 'action',
     'no-label', 'no-action', 'wire:loading',
@@ -131,7 +145,7 @@ $except = [
         </x-button>
     </x-footprint>
 @elseif ($dropdown && $slot->isNotEmpty())
-    <x-dropdown :placement="$dropdown">
+    <x-dropdown :placement="$dropdown" :close-on-select="$attributes->get('close-on-select')">
         <x-slot:anchor>
             <x-button {{ $attributes }}/>
         </x-slot:anchor>
@@ -163,8 +177,9 @@ $except = [
             'focus:ring-1 focus:ring-offset-1 focus:outline-none disabled:pointer-events-none disabled:opacity-60',
             $element === 'a' ? 'button' : null,
             $block ? 'w-full' : null,
-            $palette[$color],
+            get($palette, $color),
             $icon && !$label && !$iconsuffix ? "button-icon-$size" : "button-$size",
+            $variant === 'invisible' ? 'button-invisible' : null,
         ]))->only('class') }}
 
         {{ $attributes->merge([

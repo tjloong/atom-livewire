@@ -12,7 +12,7 @@ $except = ['cover', 'heading'];
     'href' => $element === 'a' ? $href : null,
     'target' => $element === 'a' ? $target : null,
     'rel' => $element === 'a' ? $rel : null,
-])->except(['cover', 'heading', 'class']) }} class="group relative flex flex-col divide-y bg-white rounded-xl border shadow-sm *(:first):rounded-t-lg">
+])->except(['cover', 'heading', 'class']) }} class="group/box relative flex flex-col divide-y bg-white rounded-xl border shadow-sm *(:first):rounded-t-lg w-full">
     @if ($heading instanceof \Illuminate\View\ComponentSlot)
         <x-heading :attributes="$heading->attributes">
             {{ $heading }}
@@ -25,7 +25,7 @@ $except = ['cover', 'heading'];
         <div class="first:rounded-t-lg last:rounded-b-lg overflow-hidden">
             <figure {{ $figure->attributes->class([
                 'h-72 bg-gray-200 flex items-center justify-center',
-                'group-hover:scale-105 transition-transform duration-200',
+                'group-hover/box:scale-105 transition-transform duration-200',
             ]) }}>
                 @if ($figure->isNotEmpty())
                     {{ $figure }}
@@ -43,7 +43,7 @@ $except = ['cover', 'heading'];
     @endif
 
     @isset ($foot)
-        <div {{ $foot->attributes->merge(['class' => 'py-3 px-4 bg-slate-100 rounded-b-lg']) }}>
+        <div {{ $foot->attributes->merge(['class' => 'py-3 px-4 bg-slate-100 rounded-b-xl']) }}>
             {{ $foot }}
         </div>
     @endisset

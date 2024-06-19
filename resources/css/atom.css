@@ -45,6 +45,22 @@ a {
 .button-icon-xl { width: var(--xl-size); height: var(--xl-size); @apply text-xl }
 .button-icon-2xl { width: var(--2xl-size); height: var(--2xl-size); @apply text-2xl }
 
+.button-2xs.button-invisible { min-height: auto; @apply text-2xs }
+.button-xs.button-invisible { min-height: auto; @apply text-xs }
+.button-sm.button-invisible { min-height: auto; @apply text-sm }
+.button-md.button-invisible { min-height: auto; @apply text-base }
+.button-lg.button-invisible { min-height: auto; @apply text-lg }
+.button-xl.button-invisible { min-height: auto; @apply text-xl }
+.button-2xl.button-invisible { min-height: auto; @apply text-2xl }
+
+.button-icon-2xs.button-invisible { width: auto; height: auto; @apply text-2xs }
+.button-icon-xs.button-invisible { width: auto; height: auto; @apply text-xs }
+.button-icon-sm.button-invisible { width: auto; height: auto; @apply text-sm }
+.button-icon-md.button-invisible { width: auto; height: auto; @apply text-base }
+.button-icon-lg.button-invisible { width: auto; height: auto; @apply text-lg }
+.button-icon-xl.button-invisible { width: auto; height: auto; @apply text-xl }
+.button-icon-2xl.button-invisible { width: auto; height: auto; @apply text-2xl }
+
 /* input */
 .input-2xs { min-height: var(--2xs-size); @apply text-2xs }
 .input-xs { min-height: var(--xs-size); @apply text-xs }

@@ -21,6 +21,8 @@ class Icon extends Component
         'article' => 'feather-pointed',
         'assign' => 'plus',
         'archive' => 'box-archive',
+        'attach' => 'paperclip',
+        'attachment' => 'paperclip',
         'back' => 'arrow-left',
         'billing' => 'credit-card',
         'block' => 'ban',
