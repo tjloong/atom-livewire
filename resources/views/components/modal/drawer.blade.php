@@ -64,14 +64,10 @@ $bgclose = $attributes->get('bg-close', true);
                         'shrink-0 border-b',
                         $heading->attributes->get('class', 'px-5 pt-3'),
                     ])->except(['icon', 'title', 'subtitle', 'status']) }}>
-                        @if ($heading->isNotEmpty()) {{ $heading }}
+                        @if ($heading->isNotEmpty())
+                            {{ $heading }}
                         @else
-                            <x-heading
-                                :icon="$heading->attributes->get('icon')"
-                                :title="$heading->attributes->get('title')"
-                                :subtitle="$heading->attributes->get('subtitle')"
-                                :status="$heading->attributes->get('status')">
-                            </x-heading>
+                            <x-heading :attributes="$heading->attributes"/>
                         @endif
                     </div>
                 @endisset

@@ -18,13 +18,7 @@
         @isset($heading)
             <x-slot:heading>
                 @if ($heading->attributes->get('title'))
-                    <x-heading
-                        icon="{{ $heading->attributes->get('icon') }}"
-                        title="{!! $heading->attributes->get('title') !!}"
-                        subtitle="{!! $heading->attributes->get('subtitle') !!}"
-                        :status="$heading->attributes->get('status')">
-                        {{ $heading }}
-                    </x-heading>
+                    <x-heading :attributes="$heading->attributes"/>
                 @else
                     {{ $heading }}
                 @endif
