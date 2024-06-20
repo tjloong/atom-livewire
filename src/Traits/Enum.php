@@ -23,15 +23,17 @@ trait Enum
     }
 
     // is
-    public function is($val) : bool
+    public function is() : bool
     {
+        $val = func_num_args() > 1 ? func_get_args() : (array) func_get_arg(0);
+
         return in_array($this->value, (array) $val) || in_array($this->name, (array) $val);
     }
 
     // is not
-    public function isNot($val) : bool
+    public function isNot(...$val) : bool
     {
-        return !$this->is($val);
+        return !$this->is(...$val);
     }
 
     // snake

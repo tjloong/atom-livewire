@@ -542,16 +542,19 @@ if (!function_exists('enum')) {
         $enum = new \Jiannius\Atom\Services\Enum($name);
 
         if ($getter !== null) {
-            if (
-                $getter instanceof UnitEnum
-                || $getter instanceof BackedEnum
-            ) {
-                return $getter;
-            }
+            if (is_enum($getter)) return $getter;
             else return $enum->get($getter);
         }
 
         return $enum;
+    }
+}
+
+// is_enum
+if (!function_exists('is_enum')) {
+    function is_enum($value)
+    {
+        return $value instanceof UnitEnum || $value instanceof BackedEnum;
     }
 }
 

@@ -20,9 +20,18 @@ class Enum
     }
 
     // get
-    public function get($getter) : mixed
+    public function get($name) : mixed
     {
-        return $this->ns::tryFrom($getter) ?? constant("{$this->ns}::{$getter}") ?? null;
+        $enum = $this->ns::tryFrom($name);
+
+        if (!$enum) $enum = defined("{$this->ns}::$name") ? constant("{$this->ns}::$name") : null;
+
+        if (!$enum) {
+            $name = (string) str($name)->headline()->snake()->upper();
+            $enum = defined("{$this->ns}::$name") ? constant("{$this->ns}::$name") : null;
+        }
+
+        return $enum;
     }
 
     // all
@@ -38,6 +47,6 @@ class Enum
     // default
     public function default() : mixed
     {
-        return defined("{$this->ns}::__DEFAULT") ? $this->ns::__DEFAULT : null;
+        return $this->get('__DEFAULT');
     }
 }
