@@ -8,9 +8,11 @@
     $disabled = $attributes->get('disabled', false);
     $placeholder = tr($attributes->get('placeholder', 'app.label.select-option'));
 
-    $options = collect($attributes->get('options'))->map(fn($opt) => is_string($opt) ? [
-        'value' => $opt, 'label' => $opt,
-    ] : $opt)->toArray();
+    $options = collect($attributes->get('options'))->map(function($opt) {
+        if (is_string($opt)) return ['value' => $opt, 'label' => $opt];
+        elseif (is_enum($opt)) return ['value' => $opt->value, 'label' => $opt->label(), 'color' => method_exists($opt, 'color') ? $opt->color() : null];
+        else return $opt;
+    })->values()->all();
 
     $except = ['options', 'icon', 'class', 'multiple', 'callback', 'params', 'disabled', 'searchable', 'placeholder', 'wire:model', 'wire:model.defer'];
 @endphp

@@ -1,5 +1,5 @@
 @php
-$total = $attributes->get('total');
+$total = $attributes->get('total') ?? $this->paginator?->total();
 $noSearch = $attributes->get('no-search', false);
 $noMaxRows = $attributes->get('no-max-rows', false);
 @endphp
