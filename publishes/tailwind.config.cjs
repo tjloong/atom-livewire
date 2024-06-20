@@ -78,6 +78,9 @@ module.exports = {
             boxShadow: theme => ({
                 outline: '0 0 0 2px ' + theme('colors.blueGray.500'),
             }),
+            zIndex: {
+                '1': '1',
+            },
             fill: theme => theme('colors'),
         },
     },
