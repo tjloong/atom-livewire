@@ -10,6 +10,7 @@ import SortId from './alpine/magic/sortid.js'
 import Clipboard from './alpine/magic/clipboard.js'
 import Badge from './alpine/directive/badge.js'
 import Prompt from './alpine/directive/prompt.js'
+import Autoresize from './alpine/directive/autoresize.js'
 
 window.dd = console.log.bind(console)
 window.ulid = () => (ULID.ulid())
@@ -27,4 +28,5 @@ document.addEventListener('alpine:init', () => {
     Alpine.magic('clipboard', Clipboard)
     Alpine.directive('badge', Badge)
     Alpine.directive('prompt', Prompt)
+    Alpine.directive('autoresize', Autoresize)
 })

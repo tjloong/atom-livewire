@@ -1,13 +1,17 @@
 @php
-$label = $attributes->get('label');
 $placeholder = $attributes->get('placeholder');
-$except = ['label', 'placeholder'];
+$transparent = $attributes->get('transparent');
 @endphp
 
-<x-input class="w-full pt-2" {{ $attributes->except('class') }}>
+<x-input class="w-full pt-1" {{ $attributes->except('class') }}>
     <textarea
-        class="appearance-none bg-transparent w-full disabled:resize-none"
         placeholder="{!! tr($placeholder) !!}"
-        {{ $attributes->merge(['rows' => 3])->except($except) }}>
+        {{ $attributes
+        ->merge(['rows' => 3])
+        ->class(array_filter([
+            'appearance-none bg-transparent w-full disabled:resize-none read-only:resize-none',
+            $transparent ? 'resize-none hover:resize focus:resize' : null,
+        ]))
+        ->except(['label', 'field', 'for', 'placeholder']) }}>
     </textarea>
 </x-input>
