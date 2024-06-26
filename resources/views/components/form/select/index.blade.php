@@ -29,7 +29,7 @@
             disabled: @js($disabled),
             callback: @js($callback),
             params: @js($params),
-            endpoint: @js(route('__select')),
+            endpoint: @js(route('__select.get')),
             show: false,
             search: null,
             pointer: null,

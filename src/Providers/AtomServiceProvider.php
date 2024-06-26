@@ -277,12 +277,15 @@ class AtomServiceProvider extends ServiceProvider
         }
 
         if (!Carbon::hasMacro('pretty')) {
-            Carbon::macro('pretty', function($option = 'date') {
+            Carbon::macro('pretty', function($option = null) {
+                $option = $option ?? 'date';
+
                 if ($option === 'date') $format = 'd M Y';
-                if ($option === 'datetime') $format = 'd M Y g:iA';
-                if ($option === 'datetime-24') $format = 'd M Y H:i:s';
-                if ($option === 'time') $format = 'g:i A';
-                if ($option === 'time-24') $format = 'H:i:s';
+                elseif ($option === 'datetime') $format = 'd M Y g:iA';
+                elseif ($option === 'datetime-24') $format = 'd M Y H:i:s';
+                elseif ($option === 'time') $format = 'g:i A';
+                elseif ($option === 'time-24') $format = 'H:i:s';
+                else $format = $option;
 
                 return $this->local()->format($format);
             });
@@ -292,7 +295,15 @@ class AtomServiceProvider extends ServiceProvider
     // bindings
     public function bindings() : void
     {
-        $this->app->bind('route', fn() => new \Jiannius\Atom\Services\Route);
+        $this->app->bind('route', function() {
+            $class = find_class('services.route');
+            return new $class;
+        });
+
+        $this->app->bind('select', function() {
+            $class = find_class('services.select');
+            return new $class;
+        });
 
         $this->app->bind('image', function() {
             if (extension_loaded('imagick')) return new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Imagick\Driver());

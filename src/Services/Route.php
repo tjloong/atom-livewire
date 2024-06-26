@@ -57,8 +57,15 @@ class Route
     {
         $this->get('__sitemap', 'SitemapController')->name('__sitemap');
         $this->get('__locale/{locale}', 'LocaleController')->withoutMiddleware('web')->name('__locale');
-        $this->post('__select', 'SelectController@get')->name('__select');
         $this->post('__share', 'ShareController')->name('__share');
+        $this->post('__select/get', 'SelectController@get')->name('__select.get');
+
+        $this->post('__select', function() {
+            return app('select')
+                ->filters(request()->filters)
+                ->selected(request()->selected)
+                ->get(request()->name);
+        })->name('__select');
 
         $this->prefix('__file')->as('__file')->group(function() {
             $this->post('upload', 'FileController@upload')->name('.upload');
