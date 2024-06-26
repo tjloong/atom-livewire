@@ -1,74 +1,64 @@
 @php
-    $icon = $attributes->get('icon');
-    $href = $attributes->get('href');
-    $hover = $attributes->get('hover', false);
-    $tags = $attributes->get('tags') ?? $attributes->get('tag');
-    $badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status');
-    $value = $attributes->get('value');
-    $target = $attributes->get('target', '_self');
-    $truncate = $attributes->get('truncate', true);
-    $hide = $attributes->get('hide-empty', false);
-    $orientation = $attributes->get('col') ? 'col' : 'row';
-    $except = ['label', 'icon', 'href', 'tags', 'value', 'badges', 'status', 'target', 'col', 'row', 'hide-empty'];
+$field = $attributes->field();
+$label = $attributes->get('label');
+$value = $attributes->get('value');
+$date = $attributes->get('date');
+$json = $attributes->get('json', false);
+$inline = $attributes->get('block') ? false : $attributes->get('inline', true);
+$href = $attributes->get('href');
+$rel = $attributes->get('rel', 'noopener noreferrer nofollow');
+$target = $attributes->get('target', '_self');
+
+$badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status');
+$badges = collect(is_string($badges) ? explode(',', $badges) : $badges)->filter()->map(fn($val, $key) => [
+    'label' => trim($val),
+    'color' => is_string($key) ? $key : 'gray',
+]);
+
+$tags = $attributes->get('tags') ?? $attributes->get('tag');
+$tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(fn($val) => [
+    'label' => trim($val),
+    'color' => 'gray',
+]);
 @endphp
 
-@if (!$hide || ($hide && (
-    !empty($value)
-    || !empty($badge)
-    || !empty($tags)
-    || !empty($href)
-)))
-    <div {{ $attributes->class([
-        $orientation === 'col'
-            ? 'flex flex-col gap-1'
-            : 'py-2 px-4 flex flex-col gap-1 md:flex-row md:flex-wrap md:items-center md:justify-between',
-        $hover ? 'hover:bg-slate-50' : null,
-    ])->only('class') }}>
-        <div class="shrink-0">
-            @isset($label) {{ $label }}
-            @else <x-label :label="$attributes->get('label')"/>
-            @endisset
-        </div>
+<div {{ $attributes->class([
+    'group/field grid items-start',
+    $inline ? 'md:grid-cols-3' : null,
+])->only('class') }}>
+    @if($field || $label)
+        <x-label :attributes="$attributes->only(['field', 'for', 'label'])"/>
+    @endif
 
-        @if ($slot->isNotEmpty()) {{ $slot }}
+    <div class="md:col-span-2 mt-1 {{ $inline ? 'md:mt-0' : '' }}">
+        @if($slot->isNotEmpty())
+            {{ $slot }}
         @else
-            <div class="flex flex-col items-end">
-                @if ($badges)
-                    <div class="inline-flex flex-wrap gap-1 items-center md:justify-end">
-                        @foreach (collect(is_string($badges) ? explode(',', $badges) : $badges)->map(fn($val) => trim($val))->filter() as $key => $badge)
-                            <x-badge :color="is_string($key) ? $key : null" label="{!! $badge !!}"/>
-                        @endforeach
-                    </div>
-                @elseif ($tags)
-                    <div class="inline-flex flex-wrap gap-1 items-center md:justify-end">
-                        @foreach (collect(is_string($tags) ? explode(',', $tags) : $tags)->map(fn($val) => trim($val))->filter() as $tag)
-                            <x-badge icon="tag" :label="$tag"/>
-                        @endforeach
-                    </div>
-                @elseif ($href || $attributes->hasLike('wire:*', 'x-*'))
-                    <div class="grid">
-                        <x-link :label="$value ?? $href" :href="$href" :target="$target" class="truncate"
-                            {{ $attributes->except($except) }}/>
-                    </div>
-                @else
-                    <div class="grid">
-                        <div
-                            x-data="{ truncate: @js($truncate) }" 
-                            x-on:click="truncate = !truncate"
-                            x-bind:class="truncate && 'truncate'">
-                            @if (is_array($value)) {!! json_encode($value) !!}
-                            @else {!! $value ?? '--' !!}
-                            @endif
-                        </div>
-                    </div>
-                @endif
-
-                @isset($caption)
-                    <div class="text-sm text-gray-500">{{ $caption }}</div>
-                @elseif ($caption = $attributes->get('caption') ?? $attributes->get('small'))
-                    <div class="text-sm text-gray-500">{!! tr($caption) !!}</div>
-                @endisset
+            <div class="leading-6">
+            @if ($badges->count())
+                <div class="inline-flex flex-wrap gap-1 items-center md:justify-end">
+                    @foreach ($badges as $badge)
+                        <x-badge :badge="$badge"/>
+                    @endforeach
+                </div>
+            @elseif ($tags->count())
+                <div class="inline-flex flex-wrap gap-1 items-center md:justify-end">
+                    @foreach ($tags as $tag)
+                        <x-badge :badge="$tag"/>
+                    @endforeach
+                </div>
+            @elseif ($href || $attributes->hasLike('wire:*', 'x-*'))
+                <div class="grid">
+                    <x-anchor :label="$value ?? $href" :href="$href" :target="$target" :ref="$rel" class="truncate"/>
+                </div>
+            @elseif($json) 
+                @json($json)
+            @elseif($date)
+                <x-carbon :date="$date" :attributes="$attributes->only(['format', 'utc', 'human'])"/>
+            @else
+                {!! $value ?? '--' !!}
+            @endif
             </div>
         @endif
     </div>
-@endif
+</div>

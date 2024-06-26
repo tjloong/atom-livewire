@@ -16,7 +16,7 @@ $except = ['icon', 'label', 'align', 'right', 'center', 'left'];
 @if ($label)
 <label {{ $attributes
     ->class(array_filter([
-        'font-medium leading-5 text-gray-400 uppercase text-sm inline-flex items-center gap-2',
+        'font-medium leading-6 text-gray-400 uppercase text-sm inline-flex items-center gap-2',
         $required ? "after:content-['*'] after:ml-0.5 after:mt-1.5 after:text-red-500 after:text-xl" : null,
         $align,
     ]))

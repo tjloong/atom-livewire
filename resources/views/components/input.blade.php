@@ -1,5 +1,6 @@
 @php
 $field = $attributes->get('for') ?? $attributes->get('field') ?? $attributes->wire('model')->value();
+$inline = $attributes->get('inline', false);
 $size = $attributes->get('size');
 $icon = $attributes->get('icon');
 $type = $attributes->get('type', 'text');
@@ -10,41 +11,37 @@ $caption = $caption ?? $attributes->get('caption');
 $error = $error ?? $attributes->get('error');
 $transparent = $attributes->get('transparent');
 $placeholder = $attributes->get('placeholder');
+$readonly = $attributes->get('readonly');
+$disabled = $attributes->get('disabled');
 $size = $attributes->size('md');
 @endphp
 
-<div class="group">
-    @if ($label)
-        <div class="mb-1.5">
-            <x-label :label="$label" :for="$field"/>
-        </div>
-    @endif
-
+<x-field :inline="$inline" :attributes="$attributes->only(['field', 'for', 'label'])" class="items-center">
     <span {{ $attributes
         ->class(array_filter([
             "inline-block leading-normal w-full input-$size has-[:disabled]:opacity-50",
-            'group-has-[.error]:border-red-500 group-has-[.error]:ring-red-300',
+            'group/input group-has-[.error]:border-red-500 group-has-[.error]:ring-red-300',
 
             $transparent
-                ? 'bg-transparent'
+                ? 'bg-transparent rounded-md border-dashed transition-all hover:border hover:border-gray-200 hover:px-2'
                 : 'px-2 bg-white border border-gray-300 rounded-md hover:ring-1 hover:ring-gray-200',
 
             $transparent
-                ? 'has-[:focus]:border-b-2 has-[:focus]:border-gray-300 has-[:focus]:border-dashed has-[input:readonly]:border-0'
+                ? 'has-[:focus]:bg-white has-[:focus]:px-2 has-[:focus]:border has-[:focus]:border-gray-300 has-[input:readonly]:border-0'
                 : 'has-[:focus]:ring-1 has-[:focus]:ring-theme has-[:focus]:ring-offset-1 has-[input:read-only]:ring-0',
 
             $slot->isEmpty() && in_array($type, ['text', 'number', 'email', 'password']) ? 'h-px' : null,
         ]))
-        ->only('class')
+        ->only(['class', 'x-ref'])
     }}>
     @if ($slot->isNotEmpty())
         {{ $slot }}
     @elseif (in_array($type, ['text', 'number', 'email', 'password']))
         <span
             x-data="{ clearable: false }"
-            x-init="clearable = !empty($refs.input.value)"
-            x-on:input="clearable = !empty($refs.input.value)"
-            class="px-1 inline-flex items-center gap-2 w-full h-full"
+            x-effect="$nextTick(() => clearable = !empty($refs.input.value))"
+            x-on:input="$nextTick(() => clearable = !empty($refs.input.value))"
+            class="inline-flex items-center gap-2 w-full h-full {{ !$transparent ? 'px-1' : '' }}"
             {{ $attributes->only(['wire:clear', 'wire:key', 'x-on:clear']) }}>
             @if ($icon)
                 <div class="shrink-0 text-gray-300">
@@ -61,24 +58,26 @@ $size = $attributes->size('md');
             <input
                 type="{{ $type }}"
                 x-ref="input"
-                placeholder="{!! tr($placeholder) !!}"
-                class="grow appearance-none w-full bg-transparent peer"
+                placeholder="{!! $placeholder === true ? tr($label) : tr($placeholder) !!}"
+                class="grow appearance-none no-spinner w-full bg-transparent peer group-[.text-right]/input:text-right group-[.text-center]/input:text-center"
                 {{ $attributes->whereStartsWith('wire:')->except('wire:key') }}
                 {{ $attributes->whereStartsWith('x-') }}
-                {{ $attributes->only(['autofocus', 'disabled', 'readonly']) }}>
+                {{ $attributes->only(['value', 'autofocus', 'disabled', 'readonly']) }}>
 
-            <div x-show="clearable" x-on:click.stop="() => {
-                $refs.input.value = null
-                $refs.input.dispatchEvent(new Event('input', { bubbles: true }))
-                $nextTick(() => {
-                    $dispatch('clear')
-                    $refs.input.focus()
-                })
-            }" class="shrink-0 cursor-pointer text-gray-400 hover:text-black px-1 peer-disabled:hidden peer-read-only:hidden">
-                <x-icon name="xmark"/>
-            </div>
+            @if($type !== 'number' && !$readonly && !$disabled)
+                <button type="button" x-show="clearable" x-on:click.stop="() => {
+                    $refs.input.value = null
+                    $refs.input.dispatchEvent(new Event('input', { bubbles: true }))
+                    $nextTick(() => {
+                        $dispatch('clear')
+                        $refs.input.focus()
+                    })
+                }" class="shrink-0 text-gray-400 hover:text-black px-1 hidden group-hover/input:block peer-focus:block peer-disabled:hidden peer-read-only:hidden">
+                    <x-icon name="xmark"/>
+                </button>
+            @endif
 
-            @if ($suffix instanceof \Illuminate\View\ComponentSlot)
+            @if($suffix instanceof \Illuminate\View\ComponentSlot)
                 {{ $suffix }}
             @elseif ($suffix)
                 <div class="shrink-0 text-gray-500 font-medium">{!! tr($suffix) !!}</div>
@@ -132,4 +131,4 @@ $size = $attributes->size('md');
     @elseif ($error)
         <x-error :label="$error" class="mt-2"/>
     @endif
-</div>
+</x-field>
