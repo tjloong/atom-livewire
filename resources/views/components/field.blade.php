@@ -27,7 +27,7 @@ $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(f
     $inline ? 'md:grid-cols-3' : null,
 ])->only('class') }}>
     @if($field || $label)
-        <x-label :attributes="$attributes->only(['field', 'for', 'label'])"/>
+        <x-label :field="$field" :attributes="$attributes->only(['for', 'label'])"/>
     @endif
 
     <div class="md:col-span-2 mt-1 {{ $inline ? 'md:mt-0' : '' }}">

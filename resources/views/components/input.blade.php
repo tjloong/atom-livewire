@@ -1,5 +1,5 @@
 @php
-$field = $attributes->get('for') ?? $attributes->get('field') ?? $attributes->wire('model')->value();
+$field = $attributes->field();
 $inline = $attributes->get('inline', false);
 $size = $attributes->get('size');
 $icon = $attributes->get('icon');
@@ -16,15 +16,15 @@ $disabled = $attributes->get('disabled');
 $size = $attributes->size('md');
 @endphp
 
-<x-field :inline="$inline" :attributes="$attributes->only(['field', 'for', 'label'])" class="items-center">
+<x-field :inline="$inline" :field="$field" :attributes="$attributes->only(['for', 'label'])" class="items-center">
     <span {{ $attributes
         ->class(array_filter([
             "inline-block leading-normal w-full input-$size has-[:disabled]:opacity-50",
-            'group/input group-has-[.error]:border-red-500 group-has-[.error]:ring-red-300',
+            'group/input group-has-[.error]/field:border-red-500 group-has-[.error]/field:ring-red-300',
 
             $transparent
                 ? 'bg-transparent rounded-md border-dashed transition-all hover:border hover:border-gray-200 hover:px-2'
-                : 'px-2 bg-white border border-gray-300 rounded-md hover:ring-1 hover:ring-gray-200',
+                : 'bg-white border border-gray-300 rounded-md hover:ring-1 hover:ring-gray-200',
 
             $transparent
                 ? 'has-[:focus]:bg-white has-[:focus]:px-2 has-[:focus]:border has-[:focus]:border-gray-300 has-[input:readonly]:border-0'
@@ -41,7 +41,7 @@ $size = $attributes->size('md');
             x-data="{ clearable: false }"
             x-effect="$nextTick(() => clearable = !empty($refs.input.value))"
             x-on:input="$nextTick(() => clearable = !empty($refs.input.value))"
-            class="inline-flex items-center gap-2 w-full h-full {{ !$transparent ? 'px-1' : '' }}"
+            class="inline-flex items-center gap-2 w-full h-full {{ !$transparent ? 'px-3' : 'px-1.5' }}"
             {{ $attributes->only(['wire:clear', 'wire:key', 'x-on:clear']) }}>
             @if ($icon)
                 <div class="shrink-0 text-gray-300">

@@ -82,8 +82,9 @@ trait HasFilters
     public function tableColumns() : mixed
     {
         $table = $this->getTable();
+        $columns = cache()->remember('table_'.$table.'_columns', now()->addDays(7), fn() => DB::select("show columns from `$table`"));
 
-        return collect(DB::select("show columns from `$table`"))->map(fn($val) => [
+        return collect($columns)->map(fn($val) => [
             'name' => data_get($val, 'Field'),
             'type' => data_get($val, 'Type'),
         ])->values();
@@ -102,7 +103,8 @@ trait HasFilters
     // check table has column
     public function tableHasColumn($column) : bool
     {
-        return Schema::hasColumn($this->getTable(), $column);
+        $columns = $this->tableColumns();
+        return $columns->where('name', $column)->count() > 0;
     }
 
     // parse filters array

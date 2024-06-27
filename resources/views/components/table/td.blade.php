@@ -100,7 +100,10 @@
         </div>
     </td>
 @elseif ($slot->isNotEmpty())
-    <td colspan="{{ $colspan }}" class="{{ $attributes->get('class', 'py-3 px-4 whitespace-nowrap') }}">
+    <td {{ $attributes->merge([
+        'colspan' => $colspan,
+        'class' => 'py-3 px-4 whitespace-nowrap',
+    ])->only(['colspan', 'class']) }}>
         {{ $slot }}
     </td>
 @else

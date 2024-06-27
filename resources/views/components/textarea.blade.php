@@ -3,7 +3,7 @@ $placeholder = $attributes->get('placeholder');
 $transparent = $attributes->get('transparent');
 @endphp
 
-<x-input class="w-full pt-1" {{ $attributes->except('class') }}>
+<x-input class="w-full px-3 py-1.5" {{ $attributes->except('class') }}>
     <textarea
         placeholder="{!! tr($placeholder) !!}"
         {{ $attributes

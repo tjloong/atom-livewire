@@ -1,5 +1,5 @@
 @php
-$field = $attributes->get('field') ?? $attributes->get('for') ?? $attributes->get('id') ?? $attributes->wire('model')->value();
+$field = $attributes->field();
 $icon = $attributes->get('icon');
 $label = $attributes->get('label') ?? ($field ? str()->apa(collect(explode('.', $field))->last()) : null);
 $required = $attributes->get('required') || (get($this, 'form.required', [])[$field] ?? false);

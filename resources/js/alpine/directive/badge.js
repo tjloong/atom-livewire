@@ -18,24 +18,11 @@ function setBadgeStyle(child, badge, modifiers) {
     child.style.border = `1px solid ${color(badge.color).value()}`
 }
 
-export default (el, { modifiers, expression }, { Alpine, evaluate, effect }) => {
-    let params = modifiers.includes('raw') ? expression : evaluate(expression)
-
-    let badges = (Array.isArray(params) ? params : [params]).map(val => {
-        if (typeof val === 'string') return { label: val, color: 'gray' }
-        else if (Object.keys(val).includes('label')) return { label: val.label, color: val.color || 'gray' }
-        else {
-            return Object.keys(val).map(key => ({
-                label: val[key],
-                color: key,
-            }))
-        }
-    }).flat()
-
-    el.innerHTML = ''
+function createBadges(container, badges, modifiers) {
+    container.innerHTML = ''
 
     if (badges.length > 1) {
-        el.addClass('inline-flex items-center gap-2 flex-wrap')
+        container.addClass('inline-flex items-center gap-2 flex-wrap')
     }
 
     badges.forEach(badge => {
@@ -45,6 +32,32 @@ export default (el, { modifiers, expression }, { Alpine, evaluate, effect }) => 
         setBadgeStyle(child, badge, modifiers)
 
         child.textContent = badge.label
-        el.append(child)
+        container.append(child)
     })
+}
+
+export default (el, { modifiers, expression }, { evaluateLater, effect }) => {
+    if (modifiers.includes('raw')) {
+        createBadges(el, [{ label: expression, color: 'gray' }], modifiers)
+    }
+    else {
+        let getBadges = evaluateLater(expression)
+
+        effect(() => {
+            getBadges(res => {
+                let badges = (Array.isArray(res) ? res : [res]).map(val => {
+                    if (typeof val === 'string') return { label: val, color: 'gray' }
+                    else if (Object.keys(val).includes('label')) return { label: val.label, color: val.color || 'gray' }
+                    else {
+                        return Object.keys(val).map(key => ({
+                            label: val[key],
+                            color: key,
+                        }))
+                    }
+                }).flat()
+
+                createBadges(el, badges, modifiers)
+            })
+        })
+    }
 }
