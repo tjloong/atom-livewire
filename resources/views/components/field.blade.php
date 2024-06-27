@@ -1,6 +1,7 @@
 @php
 $field = $attributes->field();
 $label = $attributes->get('label');
+$nolabel = $attributes->get('no-label');
 $value = $attributes->get('value');
 $date = $attributes->get('date');
 $json = $attributes->get('json', false);
@@ -26,7 +27,7 @@ $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(f
     'group/field grid items-start',
     $inline ? 'md:grid-cols-3' : null,
 ])->only('class') }}>
-    @if($field || $label)
+    @if(!$nolabel && ($field || $label))
         <x-label :field="$field" :attributes="$attributes->only(['for', 'label'])"/>
     @endif
 
