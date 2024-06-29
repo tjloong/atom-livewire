@@ -197,7 +197,7 @@ $except = [
         @if ($slot->isNotEmpty())
             {{ $slot }}
         @else
-            <span class="inline-flex items-center justify-center gap-2 m-auto {{ $dropdown && $label && !$iconsuffix ? 'form-input-caret pr-6' : '' }}">
+            <span class="inline-flex items-center justify-center gap-2 m-auto">
                 <div class="group-[:not(.is-loading)]:hidden shrink-0 flex">
                     <svg class="animate-spin h-5 w-5 {{ $color === 'white' ? 'text-gray-400' : 'text-white' }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -221,6 +221,10 @@ $except = [
                     <div class="shrink-0 flex">
                         <x-icon :name="$iconsuffix" class="m-auto"/>
                     </div>
+                @endif
+
+                @if ($dropdown && $label && !$iconsuffix)
+                    <div class="shrink-0 w-3 h-3 select-caret"></div>
                 @endif
             </span>
         @endif

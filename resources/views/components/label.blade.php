@@ -1,8 +1,15 @@
 @php
 $field = $attributes->field();
 $icon = $attributes->get('icon');
-$label = $attributes->get('label') ?? ($field ? str()->apa(collect(explode('.', $field))->last()) : null);
+$label = $attributes->get('label');
 $required = $attributes->get('required') || (get($this, 'form.required', [])[$field] ?? false);
+
+if (!$label && $field) {
+    $label = (string) str(collect(explode('.', $field))->last())
+        ->replaceLast('_id', '')
+        ->replace('_', ' ')
+        ->apa();
+}
 
 $align = pick([
     'justify-end' => $attributes->has('right'),
@@ -17,7 +24,6 @@ $except = ['icon', 'label', 'align', 'right', 'center', 'left'];
 <label {{ $attributes
     ->class(array_filter([
         'font-medium leading-6 text-gray-400 uppercase text-sm inline-flex items-center gap-2',
-        $required ? "after:content-['*'] after:ml-0.5 after:mt-1.5 after:text-red-500 after:text-xl" : null,
         $align,
     ]))
     ->merge([
@@ -27,5 +33,6 @@ $except = ['icon', 'label', 'align', 'right', 'center', 'left'];
 }}>
     @if ($icon) <x-icon :name="$icon"/> @endif
     {!! tr($label) !!}
+    @if ($required) <x-icon name="asterisk" class="text-xs text-red-500"/> @endif
 </label>
 @endif

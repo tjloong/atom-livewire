@@ -16,7 +16,11 @@ $disabled = $attributes->get('disabled');
 $size = $attributes->size('md');
 @endphp
 
-<x-field :inline="$inline" :field="$field" :attributes="$attributes->only(['for', 'no-label', 'label'])" class="items-center">
+<x-field :attributes="$attributes->merge([
+    'field' => $field,
+    'inline' => $inline,
+    'class' => $inline ? 'items-center' : null,
+])->only(['inline', 'field', 'for', 'no-label', 'label'])">
     <span {{ $attributes
         ->class(array_filter([
             "inline-block leading-normal w-full input-$size has-[:disabled]:opacity-50",

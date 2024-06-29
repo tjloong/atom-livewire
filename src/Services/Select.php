@@ -12,6 +12,10 @@ class Select
     {
         return [
             'countries' => $this->countries(),
+            'gender' => [
+                ['value' => 'm', 'label' => 'Male'],
+                ['value' => 'f', 'label' => 'Female'],
+            ],
         ];
     }
 

@@ -255,10 +255,12 @@ class AtomServiceProvider extends ServiceProvider
                     '2xs' => $this->has('2xs'),
                     'xs' => $this->has('xs'),
                     'sm' => $this->has('sm'),
+                    'md' => $this->has('md'),
                     'lg' => $this->has('lg'),
                     'xl' => $this->has('xl'),
                     '2xl' => $this->has('2xl'),
-                    'md' => $this->has('md'),
+                    '3xl' => $this->has('3xl'),
+                    '4xl' => $this->has('4xl'),
                 ]) ?? $default;
             });
         }
@@ -266,6 +268,12 @@ class AtomServiceProvider extends ServiceProvider
         if (!ComponentAttributeBag::hasMacro('field')) {
             ComponentAttributeBag::macro('field', function() {
                 return $this->get('field') ?? $this->get('for') ?? $this->wire('model')->value();
+            });
+        }
+
+        if (!ComponentAttributeBag::hasMacro('getAny')) {
+            ComponentAttributeBag::macro('getAny', function(...$args) {
+                return collect($args)->map(fn($arg) => $this->get($arg))->filter()->first();
             });
         }
 
