@@ -107,6 +107,7 @@ $except = ['label', 'for', 'field', 'utc', 'mode', 'transparent', 'placeholder',
                 this.$nextTick(() => {
                     this.calendar = flatpickr(this.$refs.calendar, {
                         inline: true,
+                        mode: this.mode,
                         dateFormat: 'Y-m-d',
                         defaultDate: this.value,
                         onReady: () => this.$root.querySelector('.flatpickr-calendar').style.boxShadow = 'none',
