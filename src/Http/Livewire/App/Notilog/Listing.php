@@ -17,24 +17,22 @@ class Listing extends Component
     ];
 
     protected $listeners = [
-        'notilogDeleted' => '$refresh',
+        'closeNotilog' => '$refresh',
     ];
 
     // get query property
     public function getQueryProperty() : mixed
     {
-        return model('notilog')
-            ->filter($this->filters)
-            ->when(!$this->tableOrderBy, fn($q) => $q->latest());
+        return model('notilog')->when(!$this->tableOrderBy, fn($q) => $q->latest());
     }
 
     // delete
     public function delete() : void
     {
-        if ($this->checkboxes) {
+        if ($this->tableCheckboxes) {
             model('notilog')->whereIn('id', $this->checkboxes)->delete();
-            $this->reset('checkboxes');
-            $this->emit('notilogDeleted');
         }
+
+        $this->reset('tableCheckboxes');
     }
 }

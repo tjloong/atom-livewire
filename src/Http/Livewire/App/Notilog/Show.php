@@ -13,25 +13,17 @@ class Show extends Component
     ];
 
     // open
-    public function open($ulid) : void
+    public function open($args) : void
     {
-        if ($this->notilog = model('notilog')->where('ulid', $ulid)->first()) {
+        if ($this->notilog = model('notilog')->where('ulid', get($args, 'id'))->first()) {
             $this->modal();
         }
-    }
-
-    // close
-    public function close() : void
-    {
-        $this->emit('setNotilogId');
-        $this->modal(false);
     }
 
     // delete
     public function delete() : void
     {
         $this->notilog->delete();
-        $this->emit('notilogDeleted');
-        $this->close();
+        $this->modal(false);
     }
 }

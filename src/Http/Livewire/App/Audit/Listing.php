@@ -16,7 +16,10 @@ class Listing extends Component
     // mount
     public function mount()
     {
-        $this->filters = array_merge($this->filters, request()->query('filters') ?? []);
+        $this->filters = [
+            ...$this->filters,
+            ...(request()->query('filters') ?? []),
+        ];
     }
 
     // get query property

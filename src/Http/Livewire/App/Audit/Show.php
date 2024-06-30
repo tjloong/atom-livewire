@@ -13,11 +13,10 @@ class Show extends Component
     ];
 
     // open
-    public function open($id) : void
+    public function open($args) : void
     {
-        if ($this->audit = model('audit')->find($id)) {
+        if ($this->audit = model('audit')->find(get($args, 'id'))) {
             $this->modal();
-            $this->dispatchBrowserEvent('audit-id', $id);
         }
     }
 }

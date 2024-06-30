@@ -1,11 +1,14 @@
-<x-modal.drawer wire:close="close()">
+<x-modal.drawer wire:close="$emit('closeNotilog')">
 @if (optional($notilog)->exists)
     <x-slot:heading title="app.label.outbox-log" :status="$notilog->status->badge()"></x-slot:heading>
-    <x-slot:buttons delete></x-slot:buttons>
 
-    <x-group>
+    <x-slot:buttons>
+        <x-button action="delete" invert no-label/>
+    </x-slot:buttons>
+
+    <div class="p-5 flex flex-col gap-5">
         <x-box>
-            <div class="flex flex-col divide-y">
+            <x-fieldset>
                 <x-field label="app.label.channel" :value="$notilog->channel"/>
 
                 @if ($notilog->channel === 'mail')
@@ -28,21 +31,21 @@
                         </x-field>
                     @endif
                 @endif
-            </div>
+            </x-fieldset>
         </x-box>
 
         @if ($error = $notilog->getJson('data.error'))
-            <x-alert type="error" message="{!! $error !!}"/>
+            <x-inform type="error" message="{!! $error !!}"/>
         @endif
-    </x-group>
+    </div>
 
     @if ($notilog->channel === 'mail')
-        <x-group>
-            <x-form.field label="app.label.subject" :value="$notilog->subject"/>
-            <x-form.field label="app.label.body">
+        <x-fieldset no-hover>
+            <x-field label="app.label.subject" :value="$notilog->subject" block/>
+            <x-field label="app.label.body" block>
                 <x-box>{!! $notilog->body !!}</x-box>
-            </x-form.field>
-        </x-group>
+            </x-field>
+        </x-fieldset>
     @endif
 @endif
 </x-modal.drawer>

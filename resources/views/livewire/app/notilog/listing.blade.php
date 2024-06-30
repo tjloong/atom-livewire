@@ -4,7 +4,7 @@
             <x-table.searchbar :total="$this->paginator->total()">
                 <x-table.filters>
                     <x-group>
-                        <x-form.select.enum wire:model="filters.status" label="app.label.status" enum="notilog.status" multiple/>
+                        <x-select wire:model="filters.status" label="app.label.status" options="enum.notilog.status" multiple/>
                     </x-group>
                 </x-table.filters>
             </x-table.searchbar>
@@ -21,7 +21,7 @@
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $row)
-            <x-table.tr wire:click="$emit('showNotilog', '{{ $row->ulid }}')">
+            <x-table.tr wire:click="$emit('showNotilog', { id: '{{ $row->ulid }}' })">
                 <x-table.td :checkbox="$row->id"/>
                 <x-table.td :timestamp="$row->created_at"/>
                 <x-table.td :label="$row->subject"/>

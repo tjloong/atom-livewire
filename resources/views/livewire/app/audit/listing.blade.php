@@ -13,7 +13,7 @@
         </x-slot:thead>
 
         @foreach ($this->paginator->items() as $row)
-            <x-table.tr wire:click="$emit('showAudit', {{ $row->id }})">
+            <x-table.tr wire:click="$emit('showAudit', { id: {{ $row->id }} })">
                 <x-table.td :timestamp="$row->created_at"/>
                 <x-table.td :label="optional($row->user)->name"/>
                 <x-table.td :badges="$row->event->badge()"/>

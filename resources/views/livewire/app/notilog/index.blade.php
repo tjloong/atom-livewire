@@ -1,4 +1,9 @@
-<div x-init="@js($notilogId) && $wire.emit('showNotilog', @js($notilogId))" class="max-w-screen-xl mx-auto">
+<div
+    x-data="{ id: @entangle('notilogId') }"
+    x-init="$wire.emit('showNotilog', { id })"
+    x-wire-on:show-notilog="id = $args.id"
+    x-wire-on:close-notilog="id = null"
+    class="max-w-screen-xl mx-auto">
     <x-heading title="app.label.outbox" 2xl/>
     @livewire('app.notilog.listing', key('listing'))
 </div>
