@@ -8,11 +8,13 @@ $heading = $heading ?? $title ?? $attributes->get('heading') ?? $attributes->get
 $except = ['cover', 'heading'];
 @endphp
 
-<{{ $element }} {{ $attributes->merge([
-    'href' => $element === 'a' ? $href : null,
-    'target' => $element === 'a' ? $target : null,
-    'rel' => $element === 'a' ? $rel : null,
-])->except(['cover', 'heading', 'class']) }} class="group/box relative bg-white rounded-xl border shadow-sm *(:first):rounded-t-lg w-full">
+<{{ $element }}
+    class="group/box relative bg-white rounded-xl border shadow-sm w-full"
+    {{ $attributes->merge([
+        'href' => $element === 'a' ? $href : null,
+        'target' => $element === 'a' ? $target : null,
+        'rel' => $element === 'a' ? $rel : null,
+    ])->except(['cover', 'heading', 'class']) }}>
     @if ($heading instanceof \Illuminate\View\ComponentSlot)
         <x-heading class="py-3 px-4" :attributes="$heading->attributes">
             {{ $heading }}

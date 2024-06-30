@@ -1,11 +1,12 @@
 @php
-    $wire = $attributes->wire('model')->value();
-    $width = $attributes->get('width', 300);
-    $height = $attributes->get('height', 300);
-    $readonly = $attributes->get('readonly', false);
+$field = $attributes->field();
+$wire = $attributes->wire('model')->value();
+$width = $attributes->get('width', 300);
+$height = $attributes->get('height', 300);
+$readonly = $attributes->get('readonly', false);
 @endphp
 
-<x-form.field {{ $attributes }}>
+<x-field :attributes="$attributes->merge(['field' => $field])->only(['field', 'label'])">
     <div x-cloak
         x-data="{
             value: @if ($wire) @entangle($wire) @endif,
@@ -86,4 +87,4 @@
             @endif
         </div>
     </div>
-</x-form.field>
+</x-field>

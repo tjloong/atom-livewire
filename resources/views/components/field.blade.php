@@ -14,13 +14,13 @@ $badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes
 $badges = collect(is_string($badges) ? explode(',', $badges) : $badges)->filter()->map(fn($val, $key) => [
     'label' => trim($val),
     'color' => is_string($key) ? $key : 'gray',
-]);
+])->values();
 
 $tags = $attributes->get('tags') ?? $attributes->get('tag');
 $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(fn($val) => [
     'label' => trim($val),
     'color' => 'gray',
-]);
+])->values();
 @endphp
 
 <div {{ $attributes->class(array_filter([
@@ -41,13 +41,13 @@ $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(f
             @if ($badges->count())
                 <div class="inline-flex flex-wrap gap-1 items-center md:justify-end">
                     @foreach ($badges as $badge)
-                        <x-badge :badge="$badge"/>
+                        <x-badge :label="get($badge, 'label')" :color="get($badge, 'color')"/>
                     @endforeach
                 </div>
             @elseif ($tags->count())
                 <div class="inline-flex flex-wrap gap-1 items-center md:justify-end">
                     @foreach ($tags as $tag)
-                        <x-badge :badge="$tag"/>
+                        <x-badge :label="get($tag, 'label')" :color="get($tag, 'color')"/>
                     @endforeach
                 </div>
             @elseif ($href || $attributes->hasLike('wire:*', 'x-*'))

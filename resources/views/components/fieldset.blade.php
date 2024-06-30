@@ -8,7 +8,7 @@ $relaxed = $attributes->get('relaxed');
 @endphp
 
 <fieldset class="border-t first:border-t-0 {{ $multiple ? 'p-5' : null }}">
-    @if ($title) <x-heading title="{!! tr($title) !!}" md class="mb-5"/> @endif
+    @if ($title) <x-heading title="{!! tr($title) !!}" class="mb-5"/> @endif
 
     <div {{ $attributes->class(array_filter([
         'grid',
