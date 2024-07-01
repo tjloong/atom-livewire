@@ -1,19 +1,22 @@
 <x-form.drawer class="max-w-screen-sm">
 @if ($label)
     @if ($label->exists)
-        <x-slot:buttons :delete="!$label->is_locked"></x-slot:buttons>
         <x-slot:heading title="app.label.update-label"></x-slot:heading>
+        <x-slot:buttons>
+            <x-button action="submit"/>
+            @if (!$label->is_locked) <x-button action="delete" no-label invert/> @endif
+        </x-slot:buttons>
     @else
         <x-slot:heading title="app.label.create-label"></x-slot:heading>
     @endif
 
     <x-group>
         @if ($type = $label->type)
-            <x-form.text :value="str()->headline($type)" label="app.label.type" readonly/>
+            <x-input :value="str()->headline($type)" label="app.label.type" readonly/>
         @endif
 
         @if ($label->is_locked)
-            <x-form.field label="app.label.label">
+            <x-field label="app.label.label" block>
                 <div class="flex flex-col gap-2">
                     @foreach ($this->locales->sort() as $locale)
                         <div class="flex items-center gap-2">
@@ -22,30 +25,29 @@
                         </div>
                     @endforeach
                 </div>
-            </x-form.field>
+            </x-field>
 
             @if ($label->parents->count())
-                <x-form.field label="app.label.parent" :value="$label->parents
-                    ->map(fn($parent) => $parent->locale('name'))
-                    ->join(' / ')"/>
+                <x-field label="app.label.parent"
+                    :value="$label->parents->map(fn($parent) => $parent->locale('name'))->join(' / ')"
+                    block>
+                </x-field>
             @endif
         @else
-            <x-form.field label="app.label.name" required>
+            <x-field label="app.label.name" required block>
                 <div class="flex flex-col gap-2">
                     @foreach ($this->locales->sort() as $locale)
-                        <x-form.text :label="false"
+                        <x-input
                             wire:model.defer="inputs.name.{{ $locale }}"
-                            :prefix="$this->locales->count() > 1 ? $locale : null"/>
+                            :prefix="$this->locales->count() > 1 ? $locale : null"
+                            no-label>
+                        </x-input>
                     @endforeach
                 </div>
-            </x-form.field>
+            </x-field>
 
-            <x-form.text wire:model.defer="label.slug" label="app.label.slug" placeholder="autogen" prefix="/"/>
-
-            <x-form.select.label wire:model="label.parent_id" label="app.label.parent" :type="$type" children>
-                <x-slot:foot></x-slot:foot>
-            </x-form.select.label>
-
+            <x-input wire:model.defer="label.slug" label="app.label.slug" placeholder="autogen" prefix="/"/>
+            <x-select wire:model="label.parent_id" label="app.label.parent" :options="'labels.'.$type"/>
             <x-form.color wire:model="label.color" label="app.label.color"/>
             <x-form.file wire:model="label.image_id" label="app.label.image"/>
         @endif

@@ -12,6 +12,9 @@ class Select
     {
         return [
             'countries' => $this->countries(),
+            'states' => $this->states(),
+            'dialCodes' => $this->dialCodes(),
+            'currencies' => $this->currencies(),
             'gender' => [
                 ['value' => 'm', 'label' => 'Male'],
                 ['value' => 'f', 'label' => 'Female'],
@@ -94,5 +97,56 @@ class Select
             'label' => get($country, 'name'),
             'flag' => get($country, 'flag'),
         ])->values()->all();
+    }
+
+    // states
+    public function states() : array
+    {
+        if ($country = get($this->filters, 'country')) {
+            return collect(countries($country.'.states'))
+            ->sortBy('name')
+            ->map(fn($opt) => [
+                'value' => get($opt, 'name'),
+                'label' => get($opt, 'name')
+            ])
+            ->values()
+            ->all();
+        }
+
+        return [];
+    }
+
+    // dial codes
+    public function dialCodes() : array
+    {
+        return countries()->map(fn($val) => [
+            'value' => get($val, 'dial_code'),
+            'label' => get($val, 'name'),
+            'flag' => get($val, 'flag'),
+        ])->toArray();
+    }
+
+    // currencies
+    public function currencies() : array
+    {
+        $search = (string) str(get($this->filters, 'search'))->upper();
+
+        return currencies()
+        ->filter(fn($val) => !empty(get($val, 'code')) && (
+            ($this->selected && in_array(get($val, 'code'), $this->selected))
+            || get($val, 'code') === $search
+            || str(get($val, 'code'))->is([$search, $search.'*', '*'.$search])
+        ))
+        ->map(fn($currency) => [
+            'value' => get($currency, 'code'),
+            'label' => collect([
+                get($currency, 'code'),
+                get($currency, 'symbol'),
+            ])->filter()->join(' - '),
+        ])
+        ->unique('value')
+        ->sortBy('label')
+        ->values()
+        ->all();
     }
 }

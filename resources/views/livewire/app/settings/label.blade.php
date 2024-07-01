@@ -1,5 +1,5 @@
 <div class="max-w-screen-md">
-    <x-heading title="{!! tr('app.label.label') !!} - {!! str($slug)->headline() !!}">
+    <x-heading title="{!! tr('app.label.label') !!} - {!! str($slug)->headline() !!}" lg>
         <x-button label="app.label.add-new" icon="add" wire:click="$emit('createLabel', {
             type: '{{ $slug }}',
         })"/>

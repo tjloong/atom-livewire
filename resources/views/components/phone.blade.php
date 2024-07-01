@@ -26,7 +26,7 @@ $placeholder = $attributes->get('placeholder', 'app.label.phone-number');
             },
     
             init () {
-                ajax(this.endpoint).post({ callback: 'dial_codes' }).then(data => {
+                ajax(this.endpoint).post({ name: 'dialCodes' }).then(data => {
                     this.options = [...data]
     
                     this.$nextTick(() => {
@@ -78,15 +78,16 @@ $placeholder = $attributes->get('placeholder', 'app.label.phone-number');
         x-modelable="input"
         x-on:focus="$nextTick(() => $refs.tel.focus())"
         x-on:click.away="close()"
-        class="inline-flex items-center w-full h-full"
+        class="px-3 inline-flex items-center w-full h-full"
         {{ $attributes->whereStartsWith('x-') }}
         {{ $attributes->wire('model') }}>
         <div x-ref="anchor" class="grow inline-flex items-center gap-3">
-            <div x-on:click="open()" class="cursor-pointer flex items-center gap-2 form-input-caret pr-6">
+            <div x-on:click="open()" class="cursor-pointer flex items-center gap-2">
                 <div class="w-4 h-4 flex">
                     <img x-bind:src="option?.flag" x-show="option" class="w-full h-full object-contain">
                 </div>
                 <div class="text-gray-500" x-text="code"></div>
+                <div class="shrink-0 w-3 h-3 select-caret"></div>
             </div>
     
             <input 
@@ -102,7 +103,7 @@ $placeholder = $attributes->get('placeholder', 'app.label.phone-number');
             x-show="show"
             x-anchor.bottom-start.offset.4="$refs.anchor"
             x-transition.opacity.duration.300
-            class="bg-white z-10 border border-gray-300 shadow-lg rounded-md overflow-hidden">
+            class="bg-white z-1 border border-gray-300 shadow-lg rounded-md overflow-hidden">
             <div x-on:input.stop class="rounded-t-md border bg-slate-100 py-2 px-4 flex items-center gap-3">
                 <div class="shrink-0 text-gray-400">
                     <x-icon name="search"/>

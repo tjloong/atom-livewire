@@ -1,5 +1,5 @@
 <div class="max-w-screen-xl">
-    <x-heading 
+    <x-heading lg
         title="app.label.files-and-media"
         subtitle="{{ tr('file.label.storage-used', ['size' => $this->storage_used]) }}">
         <x-form.file.uploader :dropzone="false"/>

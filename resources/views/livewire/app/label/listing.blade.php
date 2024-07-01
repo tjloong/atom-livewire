@@ -21,7 +21,7 @@
                     </div>
                 @endif
 
-                <div class="grow flex items-center gap-3 cursor-pointer" wire:click.stop="$emit('updateLabel', {{ $label->id }})">
+                <div class="grow flex items-center gap-3 cursor-pointer" wire:click.stop="$emit('updateLabel', { id: {{ $label->id }} })">
                     <div class="truncate font-medium">{{ $label->locale('name') }}</div>
                     @if ($count) <x-badge :label="$count" color="blue"/> @endif
                 </div>
