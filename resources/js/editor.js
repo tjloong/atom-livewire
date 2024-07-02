@@ -164,12 +164,6 @@ window.Editor = (element, config) => {
             Youtube,
         ],
 
-        editorProps: {
-            attributes: {
-                class: 'editor-content mx-3 focus:outline-none',
-            },
-        },
-
         onFocus ({ editor, event }) {
             element.dispatchEvent(new CustomEvent('editor-focus', { bubbles: true, detail: { editor, event }}))
         },
