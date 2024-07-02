@@ -50,9 +50,9 @@ $sortable = !empty($attributes->wire('sorted')->value());
         @endif
     </div>
 
-    @isset($paginator)
+    @if (isset($paginator) && $paginator instanceof \Illuminate\View\ComponentSlot)
         {{ $paginator }}
-    @else
+    @elseif (isset($this->paginator))
         {{ $this->paginator->links() }}
     @endif
 </div>

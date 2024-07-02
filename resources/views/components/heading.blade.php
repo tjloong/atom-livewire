@@ -1,10 +1,11 @@
 @php
-$noApa = $attributes->get('no-apa', false);
+$apa = $attributes->get('apa', false);
 $title = $title ?? $attributes->get('title');
 $icon = $icon ?? $attributes->get('icon');
 $status = $status ?? $attributes->get('status');
 $subtitle = $subtitle ?? $attributes->get('subtitle');
 $size = $attributes->size('md');
+$except = ['apa', 'title', 'icon', 'status', 'subtitle'];
 @endphp
 
 <div {{ $attributes->class([
@@ -42,7 +43,7 @@ $size = $attributes->size('md');
                     '4xl' => 'text-4xl font-bold',
                     '5xl' => 'text-5xl font-bold',
                 ][$size] }}">
-                    {!! $noApa ? tr($title) : str()->apa(tr($title)) !!}
+                    {!! $apa ? str()->apa(tr($title)) : tr($title) !!}
                 </div>
             @endif
 
@@ -51,8 +52,8 @@ $size = $attributes->size('md');
             @elseif (is_string($status))
                 <x-badge :label="$status"/>
             @elseif (is_array($status))
-                @foreach ($status as $key => $val)
-                    <x-badge :label="$val" :color="$key"/>
+                @foreach ($status as $val)
+                    <x-badge :badge="$val"/>
                 @endforeach
             @endif
         </div>

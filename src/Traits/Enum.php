@@ -19,7 +19,10 @@ trait Enum
     // badge
     public function badge() : array
     {
-        return [$this->color() => $this->value];
+        return [
+            'color' => $this->color(),
+            'label' => $this->label(),
+        ];
     }
 
     // is

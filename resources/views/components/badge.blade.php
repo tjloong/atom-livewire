@@ -1,48 +1,37 @@
 @php
-    $icon = $attributes->get('icon');
-    $active = $attributes->has('active') ? $attributes->get('active') : null;
-    $inverted = $attributes->get('inverted', true);
-    $lowercase = $attributes->get('lowercase', true);
+$icon = $attributes->get('icon');
+$active = $attributes->has('active') ? $attributes->get('active') : null;
+$inverted = $attributes->getAny('invert', 'inverted') ?? true;
+$lowercase = $attributes->getAny('lower', 'lowercase') ?? true;
+$size = $attributes->size('sm');
+$badge = $attributes->get('badge');
 
-    $label = is_bool($active) && !$attributes->get('label')
-        ? tr($active ? 'app.label.active' : 'app.label.inactive')
-        : tr($attributes->get('label'));
+$label = $attributes->get('label')
+    ?? (is_string($badge) ? $badge : get($badge, 'label'))
+    ?? (is_bool($active) ? ($active ? 'app.label.active' : 'app.label.inactive') : null);
 
-    $color = is_bool($active)
-        ? ($active ? 'green' : 'gray')
-        : $attributes->get('color', 'gray');
+    
+$color = $attributes->get('color')
+    ?? get($badge, 'color')
+    ?? (is_bool($active) ? ($active ? 'green' : 'gray') : 'gray');
 
-    $size = collect([
-        'xs' => $attributes->get('xs'),
-        'md' => $attributes->get('md'),
-        'lg' => $attributes->get('lg'),
-        'sm' => true,
-    ])->filter()->keys()->first();
-
-    $icondim = [
-        'xs' => 15,
-        'sm' => 18,
-        'md' => 20,
-        'lg' => 24,
-    ][$size];
+$except = ['icon', 'active', 'invert', 'inverted', 'lower', 'lowercase', 'badge'];
 @endphp
 
-<span style="
-    background-color: {{ $inverted ? color($color)->inverted() : color($color) }};
-    color: {{ $inverted ? color($color) : color($color)->inverted() }};
-    border: 1px solid {{ color($color) }};
-" {{ $attributes->class([
-    'px-2 inline-block font-medium rounded-md',
-    $lowercase ? 'lowercase' : null,
-    [
-        'xs' => 'text-xs',
-        'sm' => 'text-sm',
-        'md' => 'text-base',
-        'lg' => 'text-lg',
-    ][$size],
-]) }}>
-    @if ($slot->isNotEmpty()) {{ $slot }}
-    @elseif ($icon)
+<span
+    style="
+        background-color: {{ $inverted ? color($color)->inverted() : color($color) }};
+        color: {{ $inverted ? color($color) : color($color)->inverted() }};
+        border: 1px solid {{ color($color) }};
+    "
+    {{ $attributes->class([
+        'px-2 inline-block font-medium rounded-md',
+        $lowercase ? 'lowercase' : null,
+        'text-'.($size == 'md' ? 'base' : $size),
+    ])->except($except) }}>
+    @if ($slot->isNotEmpty())
+        {{ $slot }}
+    @elseif ($icon && $label = tr($label))
         <div class="-mx-2 leading-none flex items-center">
             <div class="shrink-0 flex px-2 py-1">
                 <x-icon :name="$icon" class="m-auto"/>
@@ -55,7 +44,7 @@
     @else
         <div class="grid">
             <div class="truncate">
-                {!! $label !!}
+                {!! tr($label) !!}
             </div>
         </div>
     @endif

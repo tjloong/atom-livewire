@@ -1,87 +1,87 @@
 @php
-    $date = $attributes->get('date');
-    $href = $attributes->get('href');
-    $align = $attributes->get('align', 'left');
-    $valign = $attributes->get('valign', 'top');
-    $human = $attributes->get('human');
-    $label = $attributes->get('label');
-    $limit = $attributes->get('limit');
-    $trans = $attributes->get('trans');
-    $caption = $attributes->get('caption') ?? $attributes->get('small');
-    $colspan = $attributes->get('colspan');
-    $sprintf = $attributes->get('sprintf') ?? $attributes->get('printf');
-    $tooltip = $attributes->get('tooltip');
-    $checkbox = $attributes->get('checkbox');
-    $currency = $attributes->get('currency');
-    $datetime = $attributes->get('datetime');
-    $timestamp = $attributes->get('timestamp');
-    $percentage = $attributes->get('percentage');
+$date = $attributes->get('date');
+$href = $attributes->get('href');
+$align = $attributes->get('align', 'left');
+$valign = $attributes->get('valign', 'top');
+$human = $attributes->get('human');
+$label = $attributes->get('label');
+$limit = $attributes->get('limit');
+$trans = $attributes->get('trans');
+$caption = $attributes->get('caption') ?? $attributes->get('small');
+$colspan = $attributes->get('colspan');
+$sprintf = $attributes->get('sprintf') ?? $attributes->get('printf');
+$tooltip = $attributes->get('tooltip');
+$checkbox = $attributes->get('checkbox');
+$currency = $attributes->get('currency');
+$datetime = $attributes->get('datetime');
+$timestamp = $attributes->get('timestamp');
+$percentage = $attributes->get('percentage');
 
-    $tags = $attributes->get('tags') ?? $attributes->get('tag');
-    $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->map(function($val) {
-        if ($val instanceof \UnitEnum || $val instanceof \BackedEnum) return $val->label();
-        else return trim($val);
-    })->filter();
-    
-    $badges = is_bool($attributes->get('active'))
-        ? ($attributes->get('active') ? ['green' => 'active'] : ['gray' => 'inactive'])
-        : ($attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status'));
-    $badges = collect(is_string($badges) ? explode(',', $badges) : $badges)->map(fn($val) => trim($val))->filter();
+$tags = $attributes->get('tags') ?? $attributes->get('tag');
+$tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->map(function($val) {
+    if ($val instanceof \UnitEnum || $val instanceof \BackedEnum) return $val->label();
+    else return trim($val);
+})->filter();
 
-    $image = $attributes->has('image') ? $attributes->get('image') : false;
-    $image = $image instanceof \App\Models\File ? $image->url : $image;
+$badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status');
+$badges = is_string($badges) 
+    ? collect(explode(',', $badges))->map(fn($val) => trim($val))->filter()
+    : collect($badges);
 
-    $avatar = $attributes->has('avatar') ? $attributes->get('avatar') : false;
-    $avatar = $avatar instanceof \App\Models\File ? $avatar->url : $avatar;
+$image = $attributes->has('image') ? $attributes->get('image') : false;
+$image = $image instanceof \App\Models\File ? $image->url : $image;
 
-    $element = $href ? 'a' : 'div';
-    $except = [
-        'active', 
-        'align',
-        'avatar', 
-        'badges', 
-        'checkbox', 
-        'colspan',
-        'date', 
-        'datetime', 
-        'from-now', 
-        'image',
-        'label',
-        'limit',
-        'printf',
-        'small',
-        'sprintf',
-        'status', 
-        'tags', 
-        'tooltip',
-        'trans',
-    ];
+$avatar = $attributes->has('avatar') ? $attributes->get('avatar') : false;
+$avatar = $avatar instanceof \App\Models\File ? $avatar->url : $avatar;
 
-    if ($date && $human) $body = format($date, 'human')->value();
-    elseif ($date) $body = format($date)->value();
-    elseif ($datetime) $body = format($datetime)->value().' <br><span class="text-sm uppercase text-gray-500">'.format($datetime, 'time')->value().'</span>';
-    elseif ($timestamp) $body = format($timestamp, 'datetime')->value();
-    elseif (str($label)->length() > 0) {
-        if ($currency && is_numeric($label)) $body = format($label, $currency)->value();
-        elseif ($percentage && is_numeric($label)) $body = str($label)->finish('%')->toString();
-        elseif (is_numeric($limit)) {
-            $body = str($label)->limit($limit)->toString();
-            if (str($label)->length() > $limit && !$tooltip) $tooltip = $label;
-        }
-        else $body = $label;
+$element = $href ? 'a' : 'div';
+$except = [
+    'active', 
+    'align',
+    'avatar', 
+    'badges', 
+    'checkbox', 
+    'colspan',
+    'date', 
+    'datetime', 
+    'from-now', 
+    'image',
+    'label',
+    'limit',
+    'printf',
+    'small',
+    'sprintf',
+    'status', 
+    'tags', 
+    'tooltip',
+    'trans',
+];
+
+if ($date && $human) $body = format($date, 'human')->value();
+elseif ($date) $body = format($date)->value();
+elseif ($datetime) $body = format($datetime)->value().' <br><span class="text-sm uppercase text-gray-500">'.format($datetime, 'time')->value().'</span>';
+elseif ($timestamp) $body = format($timestamp, 'datetime')->value();
+elseif (str($label)->length() > 0) {
+    if ($currency && is_numeric($label)) $body = format($label, $currency)->value();
+    elseif ($percentage && is_numeric($label)) $body = str($label)->finish('%')->toString();
+    elseif (is_numeric($limit)) {
+        $body = str($label)->limit($limit)->toString();
+        if (str($label)->length() > $limit && !$tooltip) $tooltip = $label;
     }
-    elseif ($trans) {
-        $params = collect($trans);
-        $key = $params->shift();
-        $body = tr($key, ...$params);
-    }
-    elseif ($sprintf) {
-        $params = collect($sprintf);
-        $format = $params->shift();
-        $body = sprintf($format, ...$params);
-    }
-    elseif (!$image && !$avatar && !$tags->count() && !$badges->count()) $body = '--';
-    else $body = null;
+    else $body = $label;
+}
+elseif ($trans) {
+    $params = collect($trans);
+    $key = $params->shift();
+    $body = tr($key, ...$params);
+}
+elseif ($sprintf) {
+    $params = collect($sprintf);
+    $format = $params->shift();
+    $body = sprintf($format, ...$params);
+}
+elseif (!$image && !$avatar && !$tags->count() && !$badges->count()) $body = '--';
+else $body = null;
 @endphp
 
 @if ($checkbox)
@@ -152,8 +152,7 @@
                     @if ($body)
                         <div class="grow flex flex-col text-{{ $align }}">
                             <div
-                                x-data
-                                x-tooltip.raw="{{ $tooltip }}" 
+                                @if ($tooltip) x-tooltip.raw="{!! tr($tooltip) !!}" @endif
                                 class="{{ $href || $caption ? 'font-medium' : '' }}">
                                 {!! $body !!}
                             </div>
@@ -166,7 +165,7 @@
                 </div>
             @endif
 
-            @if ($badges->count() || $tags->count())
+            @if ($badges->count())
                 <div class="grow inline-flex flex-wrap gap-1 items-center {{
                     pick([
                         'justify-start' => $align === 'left' && empty($body),
@@ -174,10 +173,20 @@
                         'justify-end' => $align === 'right' || !empty($body),
                     ])
                 }}">
-                    @foreach ($badges as $key => $badge)
-                        <x-badge :label="$badge" :color="is_string($key) ? $key : null"/>
+                    @foreach ($badges as $badge)
+                        <x-badge :badge="$badge"/>
                     @endforeach
-
+                </div>
+            @endif
+            
+            @if ($tags->count())
+                <div class="grow inline-flex flex-wrap gap-1 items-center {{
+                    pick([
+                        'justify-start' => $align === 'left' && empty($body),
+                        'justify-center' => $align === 'center' && empty($body),
+                        'justify-end' => $align === 'right' || !empty($body),
+                    ])
+                }}">
                     @foreach ($tags->take(2) as $tag)
                         <x-badge label="{!! str()->limit($tag, 30) !!}"/>
                     @endforeach
@@ -188,17 +197,5 @@
                 </div>
             @endif
         </{{ $element }}>
-
-        {{-- @if ($tooltip)
-            <div x-show="tooltip" class="absolute z-30 bottom-full bg-black/80 text-white text-sm rounded-md px-2 py-1 {{
-                pick([
-                    'left-2' => $align === 'left',
-                    'left-1/2 -translate-x-1/2' => $align === 'center',
-                    'right-2' => $align === 'right',
-                ])
-            }}">
-                {!! $tooltip !!}
-            </div>
-        @endif --}}
     </td>
 @endif
