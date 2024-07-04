@@ -10,14 +10,14 @@ $except = ['apa', 'title', 'icon', 'status', 'subtitle'];
 
 <div {{ $attributes->class([
     'flex items-center gap-3 flex-wrap',
-    [
+    !$attributes->get('class') ? [
         'sm' => 'mb-0',
         'md' => 'mb-2',
         'lg' => 'mb-4',
         '2xl' => 'mb-4',
         '3xl' => 'mb-6',
         '4xl' => 'mb-6',
-    ][$size],
+    ][$size] : null,
 ])->only('class') }}>
     @if ($icon instanceof \Illuminate\View\ComponentSlot)
         <div {{ $icon->attributes->merge(['class' => 'shrink-0']) }}>

@@ -16,12 +16,11 @@
         </x-slot:buttons>
 
         @isset($heading)
-            <x-slot:heading>
-                @if ($heading->attributes->get('title'))
-                    <x-heading :attributes="$heading->attributes"/>
-                @else
-                    {{ $heading }}
-                @endif
+            <x-slot:heading
+                :title="$heading->attributes->get('title')"
+                :subtitle="$heading->attributes->get('subtitle')"
+                :status="$heading->attributes->get('status')">
+                {{ $heading }}
             </x-slot:heading>
         @endisset
 

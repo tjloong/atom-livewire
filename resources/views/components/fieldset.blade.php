@@ -6,6 +6,7 @@ $inputs = $attributes->get('inputs', false);
 $hover = !$multiple && !$inputs && !$attributes->get('no-hover');
 $divide = !$multiple && !$inputs && !$attributes->get('no-divide');
 $relaxed = $attributes->get('relaxed');
+$except = ['title', 'heading', 'cols', 'inputs', 'no-hover', 'no-divide', 'relaxed'];
 @endphp
 
 <fieldset class="border-t first:border-t-0 {{ $multiple || $inputs ? 'p-5' : null }}">
@@ -19,7 +20,7 @@ $relaxed = $attributes->get('relaxed');
         ) : null,
         $divide ? 'divide-y' : null,
         $hover ? 'hover:*:bg-slate-50' : null,
-    ])) }}>
+    ]))->except($except) }}>
         {{ $slot }}
     </div>
 </fieldset>

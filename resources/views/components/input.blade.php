@@ -16,10 +16,9 @@ $disabled = $attributes->get('disabled');
 $size = $attributes->size('md');
 @endphp
 
-<x-field :attributes="$attributes->merge([
+<x-field :class="$inline ? 'items-center' : null" :attributes="$attributes->merge([
     'field' => $field,
     'inline' => $inline,
-    'class' => $inline ? 'items-center' : null,
 ])->only(['inline', 'field', 'for', 'no-label', 'label'])">
     <span {{ $attributes
         ->class(array_filter([

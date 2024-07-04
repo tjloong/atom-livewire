@@ -93,6 +93,7 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 <meta name="twitter:description" content="{{ $meta->get('description') }}">
 <meta name="twitter:image" content="{{ $meta->get('image') }}">
 <meta name="twitter:image:alt" content="{{ $meta->get('title') }}">
+@stack('meta')
 @if ($jsonld = $meta->get('jsonld'))
 <script type="application/ld+json">@json($jsonld)</script>
 @endif

@@ -26,7 +26,7 @@ $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->map(function($v
 $badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status');
 $badges = is_string($badges) 
     ? collect(explode(',', $badges))->map(fn($val) => trim($val))->filter()
-    : collect($badges);
+    : collect($badges)->filter();
 
 $image = $attributes->has('image') ? $attributes->get('image') : false;
 $image = $image instanceof \App\Models\File ? $image->url : $image;

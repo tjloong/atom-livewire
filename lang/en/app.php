@@ -394,6 +394,7 @@ return [
         'trashed' => 'Trashed',
         'twitter-url' => 'Twitter URL',
         'type' => 'Type',
+        'unable-to-save' => 'Unable to save',
         'unpublish' => 'Unpublish',
         'upcoming' => 'Upcoming',
         'update-announcement' => 'Update Announcement',

@@ -5,7 +5,7 @@ $target = $attributes->get('target', '_self');
 $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
 $element = $href ? 'a' : 'div';
 $heading = $heading ?? $title ?? $attributes->get('heading') ?? $attributes->get('title');
-$except = ['cover', 'heading'];
+$except = ['cover', 'title', 'heading', 'class'];
 @endphp
 
 <{{ $element }}
@@ -14,13 +14,13 @@ $except = ['cover', 'heading'];
         'href' => $element === 'a' ? $href : null,
         'target' => $element === 'a' ? $target : null,
         'rel' => $element === 'a' ? $rel : null,
-    ])->except(['cover', 'heading', 'class']) }}>
+    ])->except($except) }}>
     @if ($heading instanceof \Illuminate\View\ComponentSlot)
-        <x-heading class="py-3 px-4" :attributes="$heading->attributes">
+        <x-heading class="p-4 mb-0" :attributes="$heading->attributes">
             {{ $heading }}
         </x-heading>
     @elseif ($heading)
-        <x-heading class="py-3 px-4" :title="$heading" :icon="$icon"/>
+        <x-heading class="p-4 mb-0" :title="$heading" :icon="$icon"/>
     @endif
 
     @isset ($figure)

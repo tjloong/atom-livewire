@@ -2,6 +2,7 @@
 $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
 $show = $attributes->get('show', false);
 $bgclose = $attributes->get('bg-close', true);
+$heading = $heading ?? $attributes->getAny('title', 'heading');
 @endphp
 
 <div
@@ -43,35 +44,36 @@ $bgclose = $attributes->get('bg-close', true);
     </div>
 
     <div class="fixed top-1 bottom-1 right-0 z-50 pl-2 w-full {{ $attributes->get('class', 'max-w-screen-sm') }}">
-        <div class="bg-white rounded-l-lg shadow-lg overflow-hidden flex flex-col h-full">
-            <div class="shrink-0 bg-white py-3 px-6 flex flex-wrap items-center justify-between gap-3 border-b rounded-t-lg">
-                <div class="cursor-pointer" x-on:click="close()">
+        <div class="bg-white rounded-l-lg shadow-lg overflow-hidden h-full flex flex-col">
+            <div class="p-5 shrink-0 bg-slate-50 flex flex-col md:flex-row md:items-center gap-4 rounded-t-lg">
+                <div class="shrink-0 cursor-pointer" x-on:click="close()">
                     @isset($back) {{ $back }}
                     @else <x-icon name="arrow-right-long" class="text-lg"/>
                     @endif
                 </div>
 
+                <div class="grow">
+                    @if ($heading)
+                        @if ($heading instanceof \Illuminate\View\ComponentSlot)
+                            @if ($heading->isNotEmpty())
+                                {{ $heading }}
+                            @else
+                                <x-heading :attributes="$heading->attributes" class="mb-0" lg/>
+                            @endif
+                        @elseif ($heading)
+                            <x-heading :title="$heading" class="mb-0" lg/>
+                        @endif
+                    @endif
+                </div>
+
                 @if ($slot->isNotEmpty() && isset($buttons) && $buttons->isNotEmpty())
-                    <div {{ $buttons->attributes->class([$buttons->attributes->get('class', 'flex items-center gap-2 flex-wrap')]) }}>
+                    <div {{ $buttons->attributes->class([$buttons->attributes->get('class', 'shrink-0 flex items-center gap-2 flex-wrap')]) }}>
                         {{ $buttons }}
                     </div>
                 @endif
             </div>
 
             @if ($slot->isNotEmpty())
-                @isset($heading)
-                    <div {{ $heading->attributes->class([
-                        'shrink-0 border-b',
-                        $heading->attributes->get('class', 'px-5 pt-3'),
-                    ])->except(['icon', 'title', 'subtitle', 'status']) }}>
-                        @if ($heading->isNotEmpty())
-                            {{ $heading }}
-                        @else
-                            <x-heading :attributes="$heading->attributes"/>
-                        @endif
-                    </div>
-                @endisset
-
                 <div class="modal-drawer-body grow overflow-auto pb-5">
                     {{ $slot }}
                 </div>
