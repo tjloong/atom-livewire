@@ -1,3 +1,4 @@
+// TODO: deprecate soon
 class Modal
 {
     el

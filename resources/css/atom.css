@@ -70,6 +70,13 @@ a {
 .input-xl { min-height: var(--xl-size); @apply text-xl }
 .input-2xl { min-height: var(--2xl-size); @apply text-2xl }
 
+/* scroll locked */
+.scroll-locked {
+    overflow: hidden !important;
+    overscroll-behavior: contain;
+    position: relative !important;
+}
+
 /* Forms related */
 input:focus, 
 select:focus, 

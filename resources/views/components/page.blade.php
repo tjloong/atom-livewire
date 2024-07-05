@@ -32,45 +32,19 @@
 @else
     @php
         $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
-        $show = $attributes->get('show', false);
     @endphp
 
     <div
         x-cloak
-        x-data="{
-            id: @js($id),
-            nav: null,
-            show: @js($show),
-
-            open () {
-                if (this.show) return
-                this.show = true
-                this.$dispatch('open')
-                $modal.zindex()
-                $modal.lockScroll()
-                this.$el.style.top = document.querySelector('.app-layout-header').offsetHeight+'px'
-            },
-
-            close () {
-                if (!this.show) return
-                this.show = false
-                this.$dispatch('close')
-                if ($modal.isEmpty()) $modal.unlockScroll()
-            },
-        }"
+        x-data="overlay({{ Js::from($id) }})"
         x-show="show"
-        x-transition.opacity.duration.300
-        x-on:open-modal.window="id === $event.detail && open()"
-        x-on:close-modal.window="id === $event.detail && close()"
-        x-on:app-layout-nav-changed.window="nav = $event.detail"
+        x-transition.opacity.duration.200
         x-bind:class="{
             'left-0 lg:left-0': nav === 'hidden',
             'left-0 lg:left-60': !nav || nav === 'lg',
-            'active': show,
         }"
-        data-modal-id="{{ $id }}"
-        class="modal fixed z-40 bottom-0 right-0 overflow-auto bg-gray-50 transition-all duration-200"
-        {{ $attributes->only(['wire:close', 'x-on:close', 'wire:open', 'x-on:open']) }}>
+        class="overlay page fixed z-20 bottom-0 right-0 overflow-auto bg-gray-50"
+        {{ $attributes->merge(['id' => $id])->except('class') }}>
         <div {{ $attributes->class(['min-h-full p-5 pb-20'])->only('class') }}">
             {{ $slot }}
         </div>

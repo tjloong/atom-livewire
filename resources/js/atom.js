@@ -3,11 +3,16 @@ import './prototype/number.js'
 import './prototype/string.js'
 import './prototype/element.js'
 import './helper/function.js'
+
 import Ajax from './helper/ajax.js'
 import Color from './helper/color.js'
-import Modal from './alpine/magic/modal.js'
+
+import Overlay from './alpine/data/overlay.js'
+
+import Modal from './alpine/magic/modal.js' // TODO: deprecate soon
 import SortId from './alpine/magic/sortid.js'
 import Clipboard from './alpine/magic/clipboard.js'
+
 import Badge from './alpine/directive/badge.js'
 import Prompt from './alpine/directive/prompt.js'
 import WireOn from './alpine/directive/wire-on.js'
@@ -24,6 +29,7 @@ window.dayjs?.extend(dayjs_plugin_timezone)
 window.dayjs?.extend(dayjs_plugin_relativeTime)
 
 document.addEventListener('alpine:init', () => {
+    Alpine.data('overlay', Overlay)
     Alpine.magic('modal', Modal)
     Alpine.magic('sortid', SortId)
     Alpine.magic('clipboard', Clipboard)
