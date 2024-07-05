@@ -22,13 +22,11 @@ $noClickAction = !$href
 $except = ['icon', 'label', 'action', 'count'];
 @endphp
 
-@if ($action === 'share' && ($entity = $attributes->get('share')))
-    <x-share>
-        <x-dropdown.item icon="share" label="app.label.share" x-on:click.stop="open({
-            id: {{ Js::from($entity->id) }},
-            model: {{ Js::from(get_class($entity)) }},
-        })"/>
-    </x-share>
+@if ($action === 'share' && ($model = $attributes->get('model')))
+    <x-dropdown.item icon="share" label="app.label.share" x-on:click.stop="$wire.emit('share', {
+        id: {{ Js::from($model->id) }},
+        model: {{ Js::from(get_class($model)) }},
+    })"/>
 @elseif ($action === 'footprint' && (
     ($entity = $attributes->get('footprint'))
     || ($auditable = $attributes->get('auditable'))

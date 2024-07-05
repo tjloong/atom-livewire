@@ -87,6 +87,7 @@ class Icon extends Component
         'stop' => 'ban',
         'submit' => 'check',
         'support' => 'life-ring',
+        'telegram' => 'brands telegram',
         'tenant' => 'house-user',
         'transaction' => 'arrow-right-arrow-left',
         'trash' => 'trash-can',
@@ -96,6 +97,7 @@ class Icon extends Component
         'update' => 'pen-to-square',
         'upload' => 'cloud-arrow-up',
         'vendor' => 'people-carry-box',
+        'whatsapp' => 'brands whatsapp',
         'word' => 'file-word',
     ];
 

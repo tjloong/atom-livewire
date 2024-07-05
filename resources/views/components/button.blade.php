@@ -22,6 +22,9 @@ if (!$nolabel) {
         $label = $label ?? ['app.label.continue-with-social-login', ['provider' => str()->headline($action)]];
         $href = $href ?? route('socialite.redirect', ['provider' => $action, ...request()->query()]);
     }
+    elseif (in_array($action, ['whatsapp', 'telegram'])) {
+        $label = $label ?? str()->headline($action);
+    }
     else if (!$label && $action) {
         if (in_array($action, ['save', 'submit'])) $label = 'app.label.save';
         else $label = 'app.label.'.$action;
@@ -50,6 +53,8 @@ $color = $attributes->get('color') ?? pick([
     'google' => $action === 'google',
     'facebook' => $action === 'facebook',
     'linkedin' => $action === 'linkedin',
+    'whatsapp' => $action === 'whatsapp',
+    'telegram' => $action === 'telegram',
     'white' => true,
 ]);
 
@@ -66,6 +71,8 @@ $palette = [
         'google' => 'bg-rose-500 text-white hover:bg-rose-600 focus:ring-rose-500',
         'facebook' => 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600',
         'linkedin' => 'bg-sky-600 text-white hover:bg-sky-700 focus:ring-sky-600',
+        'whatsapp' => 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-600',
+        'telegram' => 'bg-sky-600 text-white hover:bg-sky-700 focus:ring-sky-600',
     ],
     'outline' => [
         'white' => 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-100 focus:bg-gray-100 focus:ring-gray-200',
@@ -129,13 +136,11 @@ $except = [
 ];
 @endphp
 
-@if ($action === 'share' && ($entity = $attributes->get('share')))
-    <x-share>
-        <x-button icon="share" label="app.label.share" x-on:click.stop="open({
-            id: {{ Js::from($entity->id) }},
-            model: {{ Js::from(get_class($entity)) }},
-        })"/>
-    </x-share>
+@if ($action === 'share' && ($model = $attributes->get('model')))
+    <x-button icon="share" label="app.label.share" x-on:click.stop="$wire.emit('share', {
+        id: {{ Js::from($model->id) }},
+        model: {{ Js::from(get_class($model)) }},
+    })"/>
 @elseif ($action === 'footprint' && (
     ($entity = $attributes->get('footprint'))
     || ($auditable = $attributes->get('auditable'))

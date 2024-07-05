@@ -42,7 +42,9 @@ class Share extends Model
     protected function url(): Attribute
     {
         return Attribute::make(
-            get: fn() => route('share', (string) $this->ulid),
+            get: fn() => app('route')->has('web.share')
+                ? route('web.share', (string) $this->ulid)
+                : url('share/'.((string) $this->ulid)),
         );
     }
 

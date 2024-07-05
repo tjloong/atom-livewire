@@ -7,7 +7,7 @@ use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\WithFileUploads;
 
-class SendMail extends Component
+class Sendmail extends Component
 {
     use WithFileUploads;
     use WithForm;

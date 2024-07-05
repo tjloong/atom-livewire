@@ -57,7 +57,6 @@ class Route
     {
         $this->get('__sitemap', 'SitemapController')->name('__sitemap');
         $this->get('__locale/{locale}', 'LocaleController')->withoutMiddleware('web')->name('__locale');
-        $this->post('__share', 'ShareController')->name('__share');
         $this->post('__select/get', 'SelectController@get')->name('__select.get');
 
         $this->post('__select', function() {
@@ -150,12 +149,6 @@ class Route
             $this->get('/', 'Onboarding');
             $this->get('completed', 'Onboarding\Completed')->name('.completed');
         });
-    }
-
-    // create share route
-    public function share() : void
-    {
-        $this->get('share/{ulid}', 'Share')->name('share');
     }
 
     // create wrapper for app
