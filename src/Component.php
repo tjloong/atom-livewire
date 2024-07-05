@@ -32,6 +32,7 @@ class Component extends \Livewire\Component
         $this->keynonce = uniqid();
     }
 
+    // TODO: deprecate
     // open/close modal
     public function modal($open = true, $id = null)
     {
@@ -41,6 +42,19 @@ class Component extends \Livewire\Component
 
         if ($open) $this->dispatchBrowserEvent('open-modal', $id);
         else $this->dispatchBrowserEvent('close-modal', $id);
+    }
+
+    // open/close overlay
+    public function overlay($open = true, $id = null)
+    {
+        $this->refreshKeynonce();
+
+        $id = $id ?? $this->getName() ?? $this->id;
+
+        $this->dispatchBrowserEvent('overlay', [
+            'id' => $id,
+            'open' => $open,
+        ]);
     }
 
     // get view

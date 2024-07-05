@@ -237,7 +237,7 @@ fbq('track', 'PageView');
 @livewireStyles
 </head>
 
-<body {{ $attributes->merge(['class' => 'font-sans antialiased'])->only('class') }}>
+<body class="font-sans antialiased">
 @if ($gtm)
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtm }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
