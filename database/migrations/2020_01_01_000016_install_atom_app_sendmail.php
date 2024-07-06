@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notilogs', function (Blueprint $table) {
+        Schema::create('sendmails', function (Blueprint $table) {
             $table->id();
             $table->ulid()->unique();
-            $table->string('channel')->nullable();
-            $table->string('subject')->nullable();
-            $table->string('greeting')->nullable();
-            $table->longText('body')->nullable();
-            $table->json('tags')->nullable();
+            $table->text('subject')->nullable();
             $table->json('data')->nullable();
             $table->string('status')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
-            $table->json('footprint')->nullable();
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notilogs');
+        Schema::dropIfExists('sendmails');
     }
 };
