@@ -137,10 +137,11 @@ $except = [
 @endphp
 
 @if ($action === 'share' && ($model = $attributes->get('model')))
-    <x-button icon="share" label="app.label.share" x-on:click.stop="$wire.emit('share', {
-        id: {{ Js::from($model->id) }},
-        model: {{ Js::from(get_class($model)) }},
-    })"/>
+    <x-button icon="share" label="app.label.share" x-on:click.stop="$wire.emit('share', {{ Js::from([
+        'id' => $model->id,
+        'model' => get_class($model),
+        'methods' => $attributes->get('methods', []),
+    ]) }})"/>
 @elseif ($action === 'footprint' && (
     ($entity = $attributes->get('footprint'))
     || ($auditable = $attributes->get('auditable'))
@@ -173,10 +174,7 @@ $except = [
 
         @if ($attributes->has('wire:loading'))
             wire:loading.class="is-loading"
-        @endif
-
-        @if ($attributes->wire('loading')->value())
-            wire:target="{{ $attributes->wire('loading')->value() }}"
+            wire:target="{{ is_string($attributes->wire('loading')->value()) ? $attributes->wire('loading')->value() : $action }}"
         @endif
 
         @disabled($disabled)

@@ -43,6 +43,12 @@ class Share extends Component
     {
         $entity = app(get($data, 'model'))->find(get($data, 'id'));
         $this->share = $entity->share ?? $entity->share()->create(['is_enabled' => true]);
+
+        if ($methods = get($data, 'methods')) {
+            $this->methods = collect($this->methods)->mapWithKeys(fn($enabled, $method) => [
+                $method => in_array($method, $methods),
+            ])->toArray();
+        }
     }
 
     // cleanup

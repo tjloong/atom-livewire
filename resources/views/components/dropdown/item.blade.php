@@ -23,10 +23,11 @@ $except = ['icon', 'label', 'action', 'count'];
 @endphp
 
 @if ($action === 'share' && ($model = $attributes->get('model')))
-    <x-dropdown.item icon="share" label="app.label.share" x-on:click.stop="$wire.emit('share', {
-        id: {{ Js::from($model->id) }},
-        model: {{ Js::from(get_class($model)) }},
-    })"/>
+    <x-dropdown.item icon="share" label="app.label.share" x-on:click.stop="$wire.emit('share', {{ Js::from([
+        'id' => $model->id,
+        'model' => get_class($model),
+        'methods' => $attributes->get('methods', []),
+    ]) }})"/>>
 @elseif ($action === 'footprint' && (
     ($entity = $attributes->get('footprint'))
     || ($auditable = $attributes->get('auditable'))

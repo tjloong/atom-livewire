@@ -17,13 +17,9 @@ $heading = $heading ?? $attributes->getAny('title', 'heading');
         class="bg-black/80 fixed inset-0">
     </div>
 
-    <div 
-        x-ref="body"
-        x-on:keydown.escape.prevent="dd('esc')"
-        tabindex="0"
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg flex flex-col max-h-[95%] h-max w-full md:rounded-xl {{
-            $attributes->get('class', 'md:max-w-[95%]')
-        }}">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg flex flex-col max-h-[95%] h-max w-full md:rounded-xl {{
+        $attributes->get('class', 'md:max-w-[95%]')
+    }}">
         @if ($heading)
             <div class="shrink-0 bg-slate-50 md:rounded-t-xl">
                 @if ($heading instanceof \Illuminate\View\ComponentSlot)
@@ -39,7 +35,7 @@ $heading = $heading ?? $attributes->getAny('title', 'heading');
                 <div class="absolute top-4 right-4">
                     <button type="button"
                         x-on:click="close()"
-                        class="flex items-center justify-center p-2 rounded-md text-xl text-gray-400 hover:text-black hover:bg-gray-200">
+                        class="flex items-center justify-center p-2 text-xl text-gray-400 hover:text-black">
                         <x-icon name="close"/>
                     </button>
                 </div>
