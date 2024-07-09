@@ -27,6 +27,7 @@ if (!$nolabel) {
     }
     else if (!$label && $action) {
         if (in_array($action, ['save', 'submit'])) $label = 'app.label.save';
+        elseif ($action === 'page-back') $label = 'app.label.back';
         else $label = 'app.label.'.$action;
     }
 }
@@ -132,7 +133,7 @@ $except = [
     '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', 'invisible',
     'size', 'color', 'invert', 'inverted', 'outline', 'outlined', 'class',
     'icon', 'icon-suffix', 'label', 'block', 'recaptcha', 'dropdown', 'action',
-    'no-label', 'no-action', 'wire:loading',
+    'no-label', 'no-action', 'wire:loading', 'tooltip',
 ];
 @endphp
 
@@ -142,20 +143,23 @@ $except = [
         'model' => get_class($model),
         'methods' => $attributes->get('methods', []),
     ]) }})"/>
-@elseif ($action === 'footprint' && (
-    ($entity = $attributes->get('footprint'))
-    || ($auditable = $attributes->get('auditable'))
-))
-    <x-footprint>
-        <x-button icon="shoe-prints" tooltip="app.label.footprint" no-label 
-            x-on:click.stop="open({{ Js::from([
-                'footprint' => optional($entity)->footprintTimeline(),
-                'auditable' => $auditable ?? null,
-            ]) }})">
-        </x-button>
-    </x-footprint>
+@elseif ($action === 'footprint' && ($model = $attributes->get('model')))
+    <x-button icon="shoe-prints" tooltip="app.label.footprint" no-label
+        x-on:click.stop="$wire.emit('footprint', {{ Js::from([
+            'id' => $model->id,
+            'model' => get_class($model),
+        ]) }})">
+    </x-button>
+@elseif ($action === 'page-back')
+    <button
+        type="button" 
+        class="bg-gray-200 w-max rounded-full cursor-pointer text-sm py-1 px-3 font-medium flex items-center gap-2 hover:ring-1 hover:ring-offset-2 hover:ring-gray-200"
+        {{ $attributes->merge(['x-on:click' => 'close()'])->except('icon', 'label') }}>
+        @if ($icon) <x-icon :name="$icon"/> @endif
+        {!! tr($label) !!}
+    </button>
 @elseif ($dropdown && $slot->isNotEmpty())
-    <x-dropdown :placement="$dropdown" :close-on-select="$attributes->get('close-on-select')">
+    <x-dropdown :placement="$dropdown" :locked="$attributes->get('locked')">
         <x-slot:anchor>
             <x-button {{ $attributes }}/>
         </x-slot:anchor>

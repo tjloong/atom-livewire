@@ -28,16 +28,11 @@ $except = ['icon', 'label', 'action', 'count'];
         'model' => get_class($model),
         'methods' => $attributes->get('methods', []),
     ]) }})"/>>
-@elseif ($action === 'footprint' && (
-    ($entity = $attributes->get('footprint'))
-    || ($auditable = $attributes->get('auditable'))
-))
-    <x-footprint>
-        <x-dropdown.item icon="shoe-prints" label="app.label.footprint" x-on:click.stop="open({{ Js::from([
-            'footprint' => optional($entity)->footprintTimeline(),
-            'auditable' => $auditable ?? null,
-        ]) }})"/>
-    </x-footprint>
+@elseif ($action === 'footprint' && ($model = $attributes->get('model')))
+    <x-dropdown.item icon="shoe-prints" label="app.label.footprint" x-on:click.stop="$wire.emit('footprint', {{ Js::from([
+        'id' => $model->id,
+        'model' => get_class($model),
+    ]) }})"/>
 @else
     <{{$element}} 
         @if ($noClickAction && $action && !in_array($action, ['delete', 'trash', 'submit']))

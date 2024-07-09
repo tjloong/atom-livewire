@@ -108,19 +108,6 @@ trait Footprint
         return $this->footprint;
     }
 
-    // get footprint timeline
-    public function footprintTimeline() : mixed
-    {
-        return collect($this->footprint)
-        ->map(fn($value, $key) => [
-            'timestamp' => $this->footprint($key.'.timestamp'),
-            'description' => $this->footprint($key.'.description'),
-        ])
-        ->sortByDesc('timestamp')
-        ->map(fn($value) => get($value, 'description'))
-        ->values();
-    }
-
     // get footprint date column - eg. closed_at - date column is optional for footprint to work
     public function getFootprintDateColumn($event) : mixed
     {

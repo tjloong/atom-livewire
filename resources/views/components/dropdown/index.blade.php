@@ -1,8 +1,8 @@
 @php
 $icon = $attributes->get('icon');
 $label = $attributes->get('label');
+$locked = $attributes->get('locked', false);
 $placement = $attributes->get('placement');
-$closeOnSelect = $attributes->get('close-on-select', true);
 $directive = $placement ? 'x-anchor.'.$placement : 'x-anchor';
 @endphp
 
@@ -10,7 +10,7 @@ $directive = $placement ? 'x-anchor.'.$placement : 'x-anchor';
     x-cloak
     x-data="{
         open: false,
-        closeOnSelect: @js($closeOnSelect),
+        locked: @js($locked),
     }"
     x-on:click.away="open = false"
     {{ $attributes->except(['icon', 'label', 'placement']) }}>
@@ -29,7 +29,7 @@ $directive = $placement ? 'x-anchor.'.$placement : 'x-anchor';
         x-show="open"
         {{ $directive }}.offset.4="$refs.anchor"
         x-transition.opacity.duration.300
-        x-on:click.stop="closeOnSelect && (open = false)"
+        x-on:click.stop="!locked && (open = false)"
         class="bg-white z-10 border rounded-md shadow-lg max-w-md min-w-[250px]">
         {{ $slot }}
     </div>
