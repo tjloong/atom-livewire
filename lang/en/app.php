@@ -114,6 +114,7 @@ return [
         'due-date' => 'Due Date',
         'due-in-day' => 'Due in :count day|Due in :count days',
         'duplicate' => 'Duplicate',
+        'duplicated' => 'Duplicated',
         'edit' => 'Edit',
         'email-address' => 'Email Address',
         'email-sent-on' => 'Email Sent on :date',

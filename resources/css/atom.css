@@ -5,8 +5,8 @@
     --sm-size: 2rem;
     --md-size: 2.5rem;
     --lg-size: 3rem;
-    --xl-size: 4rem;
-    --2xl-size: 4.5rem;
+    --xl-size: 3.25rem;
+    --2xl-size: 3.75rem;
 }
 
 /* Reset */
@@ -69,6 +69,11 @@ a {
 .input-lg { min-height: var(--lg-size); @apply text-lg }
 .input-xl { min-height: var(--xl-size); @apply text-xl }
 .input-2xl { min-height: var(--2xl-size); @apply text-2xl }
+
+/* box */
+.box.is-loading {
+    @apply opacity-60 pointer-events-none;
+}
 
 /* scroll locked */
 .scroll-locked {

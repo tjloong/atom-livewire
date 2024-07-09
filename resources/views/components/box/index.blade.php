@@ -9,12 +9,16 @@ $except = ['cover', 'title', 'heading', 'class'];
 @endphp
 
 <{{ $element }}
-    class="group/box relative bg-white rounded-xl border shadow-sm w-full"
+    class="box group/box relative bg-white rounded-xl border shadow-sm w-full"
     {{ $attributes->merge([
         'href' => $element === 'a' ? $href : null,
         'target' => $element === 'a' ? $target : null,
         'rel' => $element === 'a' ? $rel : null,
     ])->except($except) }}>
+    <div class="absolute top-4 right-4 hidden group-[.is-loading]/box:block">
+        <x-spinner size="20" class="text-theme"/>
+    </div>
+
     @if ($heading instanceof \Illuminate\View\ComponentSlot)
         <x-heading class="p-4 mb-0" :attributes="$heading->attributes">
             {{ $heading }}
