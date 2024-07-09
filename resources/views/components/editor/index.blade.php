@@ -129,7 +129,7 @@ $except = ['label', 'enabled', 'readonly', 'placeholder', 'class', 'wire:model',
                     </template>
 
                     <template x-if="isEmpty()">
-                        <input type="text" x-bind:placeholder="placeholder" class="appearance-none w-full" readonly>
+                        <input type="text" x-bind:placeholder="placeholder" class="appearance-none bg-transparent w-full py-2" readonly>
                     </template>
                 </div>
             </template>

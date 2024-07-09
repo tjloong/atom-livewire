@@ -61,6 +61,7 @@ class Icon extends Component
         'logout' => 'arrow-right-from-bracket',
         'new' => 'plus',
         'open' => 'arrow-up-right-from-square',
+        'page-back' => 'arrow-left',
         'powerpoint' => 'file-powerpoint',
         'ppt' => 'file-powerpoint',
         'preference' => 'screwdriver-wrench',

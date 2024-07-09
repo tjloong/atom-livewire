@@ -12,15 +12,15 @@ export default (id) => ({
         return new Promise((resolve, reject) => {
             if (!this.show) {
                 this.show = true
-                
-                if (this.$el.hasClass('page')) {
-                    this.$el.style.top = document.querySelector('.app-layout-header').offsetHeight+'px'
+
+                if (this.$root.hasClass('page')) {
+                    this.$root.style.top = document.querySelector('.app-layout-header').offsetHeight+'px'
                 }
 
-                this.$el.addClass('active')
+                this.$root.addClass('active')
                 this.zIndex()
                 this.scrollLock()
-
+                
                 setTimeout(() => {
                     this.$dispatch('open')
                     resolve()
@@ -34,10 +34,10 @@ export default (id) => ({
         return new Promise((resolve, reject) => {
             if (this.show) {
                 this.show = false
-                this.$el.removeClass('active')
+                this.$root.removeClass('active')
                 this.zIndex(false)
                 this.scrollLock()
-
+                
                 setTimeout(() => {
                     this.$dispatch('close')
                     resolve()
@@ -68,7 +68,7 @@ export default (id) => ({
 
             if (overlays.length) {
                 let max = Math.max(...overlays)
-                if (max > window.getComputedStyle(this.$el).getPropertyValue('z-index')) {
+                if (max >= window.getComputedStyle(this.$el).getPropertyValue('z-index')) {
                     this.$el.style.zIndex = max + 1
                 }
             }

@@ -68,16 +68,16 @@ $size = $attributes->size('md');
                 {{ $attributes->only(['value', 'autofocus', 'disabled', 'readonly']) }}>
 
             @if($type !== 'number' && !$readonly && !$disabled)
-                <button type="button" x-show="clearable" x-on:click.stop="() => {
+                <div x-show="clearable" x-on:click.stop="() => {
                     $refs.input.value = null
                     $refs.input.dispatchEvent(new Event('input', { bubbles: true }))
                     $nextTick(() => {
                         $dispatch('clear')
                         $refs.input.focus()
                     })
-                }" class="shrink-0 text-gray-400 hover:text-black px-1 hidden group-hover/input:block peer-focus:block peer-disabled:hidden peer-read-only:hidden">
+                }" class="shrink-0 text-gray-400 cursor-pointer hover:text-black px-1 hidden group-hover/input:block peer-focus:block peer-disabled:hidden peer-read-only:hidden">
                     <x-icon name="xmark"/>
-                </button>
+                </div>
             @endif
 
             @if($suffix instanceof \Illuminate\View\ComponentSlot)

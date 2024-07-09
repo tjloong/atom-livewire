@@ -25,7 +25,7 @@
 
         <div
             x-show="show"
-            x-transition.opacity
+            x-transition.opacity.duration.300
             class="absolute inset-0 z-20">
             <div x-on:click.away="show = false" 
                 class="absolute top-0 right-0 max-w-md w-full p-2">
