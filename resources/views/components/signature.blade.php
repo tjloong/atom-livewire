@@ -6,7 +6,7 @@ $height = $attributes->get('height', 300);
 $readonly = $attributes->get('readonly', false);
 @endphp
 
-<x-field :attributes="$attributes->merge(['field' => $field])->only(['field', 'label'])">
+<x-field :attributes="$attributes->merge(['field' => $field])->only(['inline', 'block', 'field', 'label'])">
     <div x-cloak
         x-data="{
             value: @if ($wire) @entangle($wire) @endif,

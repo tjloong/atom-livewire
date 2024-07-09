@@ -9,8 +9,8 @@
         </x-slot:buttons>
 
         <x-fieldset inputs>
-            <x-input type="email" wire:model.defer="email.from.email" label="app.label.sender-email"/>
-            <x-input wire:model.defer="email.from.name" label="app.label.sender-name"/>
+            <x-input type="email" wire:model.defer="email.sender_email" label="app.label.sender-email"/>
+            <x-input wire:model.defer="email.sender_name" label="app.label.sender-name"/>
             <x-input type="email" wire:model.defer="email.reply_to" label="app.label.reply-to"/>
             <x-email wire:model.defer="email.to" label="app.label.to" :options="get($email, 'email_options')" multiple/>
             <x-email wire:model.defer="email.cc" label="app.label.cc" :options="get($email, 'email_options')" multiple/>

@@ -24,10 +24,8 @@ String.prototype.fromNow = function() {
 }
 
 String.prototype.camel = function() {
-    return this.toString()
-        .replace('-', ' ')
-        .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => index === 0 ? word.toLowerCase() : word.toUpperCase())
-        .replace(/\s+/g, '');
+    let str = this.toString().toLowerCase().replace(/[-_\s.]+(.)?/g, (_, c) => c ? c.toUpperCase() : '');
+    return str.substring(0, 1).toLowerCase() + str.substring(1)
 }
 
 String.prototype.slug = function() {

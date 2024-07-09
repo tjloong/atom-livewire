@@ -19,8 +19,8 @@ class Sendmail extends Component
     protected function validation() : array
     {
         return [
-            'email.from.name' => ['required' => 'Sender name is required.'],
-            'email.from.email' => [
+            'email.sender_name' => ['required' => 'Sender name is required.'],
+            'email.sender_email' => [
                 'required' => 'Sender email is required.',
                 'email' => 'Invalid sender email.',
             ],
@@ -67,7 +67,7 @@ class Sendmail extends Component
                 ? app($model)->find($id)
                 : model($model)->find($id);
 
-            $data = $model->composeEmail();
+            $data = $model->composeEmail(get($data, 'data'));
         }
         else if (($id = get($data, 'share_id')) && ($share = model('share')->find($id))) {
             $data = $share->parent->composeEmail();
@@ -80,10 +80,8 @@ class Sendmail extends Component
     public function compose($data) : void
     {
         $this->email = [
-            'from' => [
-                'name' => null,
-                'email' => settings('notify_from'),
-            ],
+            'sender_name' => null,
+            'sender_email' => settings('notify_from'),
             'reply_to' => settings('notify_to'),
             'to' => [],
             'cc' => [],

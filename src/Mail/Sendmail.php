@@ -40,8 +40,8 @@ class Sendmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(get($this->email, 'from.email'), get($this->email, 'from.name')),
-            replyTo: [new Address(get($this->email, 'reply_to'))],
+            from: new Address(get($this->email, 'sender_email'), get($this->email, 'sender_name')),
+            replyTo: collect([get($this->email, 'reply_to')])->filter()->map(fn($val) => new Address($val))->values()->all(),
             subject: get($this->email, 'subject'),
             tags: get($this->email, 'tags', []),
             metadata: get($this->email, 'metadata', []),
