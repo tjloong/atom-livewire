@@ -1,17 +1,21 @@
 @php
 $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
+$stacked = $attributes->get('stacked', false);
 $locked = $attributes->get('locked', false);
 $heading = $heading ?? $attributes->getAny('title', 'heading');
+$form = $attributes->hasLike('wire:submit*', 'x-on:submit*');
+$element = $form ? 'form' : 'div';
+$except = ['locked', 'title', 'heading', 'class', 'stacked'];
 @endphp
 
-<div
+<{{ $element }}
     x-cloak
     x-data="overlay({{ Js::from($id) }})"
     x-show="show"
     x-transition.opacity.duration.200
     x-on:keydown.escape.window.stop="close()"
     class="overlay dialog fixed inset-0 overflow-auto z-50"
-    {{ $attributes->merge(['id' => $id])->except('class') }}>
+    {{ $attributes->merge(['id' => $id])->except($except) }}>
     <div
         @if (!$locked) x-on:click="close()" @endif
         class="bg-black/80 fixed inset-0">
@@ -31,10 +35,14 @@ $heading = $heading ?? $attributes->getAny('title', 'heading');
 
             <div class="grow flex gap-3">
                 <div class="grow">
-                    @if (isset($heading) && $heading->isNotEmpty())
-                        {{ $heading }}
-                    @elseif (isset($heading))
-                        <x-heading class="h-full mb-0" :attributes="$heading->attributes" lg/>
+                    @if ($heading instanceof \Illuminate\View\ComponentSlot)
+                        @if ($heading->isNotEmpty())
+                            {{ $heading }}
+                        @else
+                            <x-heading class="h-full mb-0" :attributes="$heading->attributes" lg/>
+                        @endif
+                    @elseif ($heading)
+                        <x-heading :title="$heading" class="h-full mb-0" lg/>
                     @endif
                 </div>
 
@@ -47,7 +55,7 @@ $heading = $heading ?? $attributes->getAny('title', 'heading');
         </div>
 
         <div class="grow overflow-auto md:first:rounded-tl-xl md:last:rounded-bl-xl">
-            @if ($attributes->get('stacked'))
+            @if ($stacked)
                 <div class="flex flex-col divide-y">
                     {{ $slot }}
                 </div>
@@ -56,4 +64,4 @@ $heading = $heading ?? $attributes->getAny('title', 'heading');
             @endif
         </div>
     </div>
-</div>
+</{{ $element }}>

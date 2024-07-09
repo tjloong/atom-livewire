@@ -1,7 +1,7 @@
 @php
 $transparent = $attributes->get('transparent', false);
 $placeholder = $attributes->get('placeholder', 'app.label.select-datetime');
-$except = ['label', 'for', 'field', 'utc', 'transparent', 'placeholder', 'class'];
+$except = ['label', 'for', 'field', 'utc', 'transparent', 'placeholder', 'class', 'wire:model', 'wire:model.defer'];
 @endphp
 
 <x-input class="h-px" :attributes="$attributes->except('class')">
@@ -81,7 +81,7 @@ $except = ['label', 'for', 'field', 'utc', 'transparent', 'placeholder', 'class'
             </template>
 
             <template x-if="!datetime">
-                <input type="text" class="grow appearance-none cursor-pointer" placeholder="{{ tr($placeholder) }}" readonly>
+                <input type="text" class="grow appearance-none bg-transparent cursor-pointer" placeholder="{{ tr($placeholder) }}" readonly>
             </template>
 
             <div class="shrink-0">

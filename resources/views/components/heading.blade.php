@@ -52,7 +52,7 @@ $except = ['apa', 'title', 'icon', 'status', 'subtitle'];
             @elseif (is_string($status))
                 <x-badge :label="$status"/>
             @elseif (is_array($status))
-                @foreach ($status as $val)
+                @foreach (array_filter($status) as $val)
                     <x-badge :badge="$val"/>
                 @endforeach
             @endif

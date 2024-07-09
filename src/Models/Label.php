@@ -110,7 +110,8 @@ class Label extends Model
     public function badge() : array
     {
         return [
-            ($this->color ?? 'gray') => $this->locale('name'),
+            'color' => $this->color ?? 'gray',
+            'label' => $this->locale('name'),
         ];
     }
 

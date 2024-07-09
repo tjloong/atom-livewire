@@ -2,22 +2,16 @@
 
 namespace Jiannius\Atom\Enums\User;
 
+use Jiannius\Atom\Traits\Enum;
+
 enum Status: string
 {
+    use Enum;
+
     case ACTIVE = 'active';
     case INACTIVE = 'inactive';
     case BLOCKED = 'blocked';
     case TRASHED = 'trashed';
-
-    public function label()
-    {
-        return str()->title($this->value);
-    }
-
-    public function option()
-    {
-        return ['value' => $this->value, 'label' => $this->label()];
-    }
 
     public function color()
     {
@@ -27,10 +21,5 @@ enum Status: string
             static::BLOCKED => 'gray',
             static::TRASHED => 'black',
         };
-    }
-
-    public function badge()
-    {
-        return [$this->color() => $this->value];
     }
 }

@@ -1,8 +1,8 @@
 @php
 $icon = $attributes->get('icon');
 $active = $attributes->has('active') ? $attributes->get('active') : null;
-$inverted = $attributes->getAny('invert', 'inverted') ?? true;
-$lowercase = $attributes->getAny('lower', 'lowercase') ?? true;
+$inverted = $attributes->get('invert') ?? $attributes->get('inverted') ?? true;
+$lowercase = $attributes->get('lower') ?? $attributes->get('lowercase') ?? true;
 $size = $attributes->size('sm');
 $badge = $attributes->get('badge');
 
