@@ -11,10 +11,15 @@ $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
 $target = $attributes->get('target', '_self');
 
 $badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status');
-$badges = collect(is_string($badges) ? explode(',', $badges) : $badges)->filter()->map(fn($val, $key) => [
-    'label' => trim($val),
-    'color' => is_string($key) ? $key : 'gray',
-])->values();
+$badges = collect(is_string($badges) ? explode(',', $badges) : $badges)->filter()->map(fn($val, $key) => 
+    is_string($val) ? [
+        'label' => trim($val),
+        'color' => is_string($key) ? $key : 'gray',
+    ] : [
+        'label' => get($val, 'label'),
+        'color' => get($val, 'color'),
+    ]
+)->values();
 
 $tags = $attributes->get('tags') ?? $attributes->get('tag');
 $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(fn($val) => [

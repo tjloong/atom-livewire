@@ -21,6 +21,7 @@ class Audit extends Model
         'new_values' => 'array',
         'request' => 'array',
         'tags' => 'array',
+        'event' => \App\Enums\Audit\Event::class,
     ];
 
     // booted
@@ -47,15 +48,6 @@ class Audit extends Model
     public function user() : BelongsTo
     {
         return $this->belongsTo(model('user'));
-    }
-
-    // attribute for event
-    protected function event() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => enum('audit.event', $value),
-            set: fn($value) => is_string($value) ? $value : optional($value)->value,
-        );
     }
 
     // scope for fussy search

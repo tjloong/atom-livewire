@@ -13,10 +13,17 @@ class Show extends Component
     ];
 
     // open
-    public function open($args) : void
+    public function open($id) : void
     {
-        if ($this->audit = model('audit')->find(get($args, 'id'))) {
-            $this->modal();
+        if ($this->audit = model('audit')->find($id)) {
+            $this->overlay();
         }
+    }
+
+    // cleanup
+    public function cleanup() : void
+    {
+        $this->reset('audit');
+        $this->emit('closeAudit');
     }
 }
