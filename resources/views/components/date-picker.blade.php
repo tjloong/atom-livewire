@@ -18,24 +18,6 @@ $except = ['label', 'for', 'field', 'utc', 'mode', 'transparent', 'placeholder',
             calendar: null,
             transparent: @js($transparent),
 
-            get from () {
-                let from
-
-                if (this.mode === 'range') from = this.value ? dayjs(this.value.split(' to ')[0]) : null
-                if (this.mode === 'single') from = this.value ? dayjs(this.value) : null
-                if (this.utc && from) from = from.utc(true).tz(dayjs.tz.guess())
-
-                return from?.isValid() ? from?.format('DD MMM YYYY') : null
-            },
-
-            get to () {
-                if (this.mode === 'single') return null
-
-                let to = this.value ? dayjs(this.value.split(' to ')[1]) : null
-                if (this.utc && to) to = to.utc(true).tz(dayjs.tz.guess())
-                return to?.isValid() ? to?.format('DD MMM YYYY') : null
-            },
-
             get options () {
                 if (this.mode === 'single') return []
 
@@ -105,11 +87,16 @@ $except = ['label', 'for', 'field', 'utc', 'mode', 'transparent', 'placeholder',
 
             createCalendar () {
                 this.$nextTick(() => {
+                    let from = this.getFrom('YYYY-MM-DD HH:mm:ss')
+                    let to = this.getTo('YYYY-MM-DD HH:mm:ss')
+
                     this.calendar = flatpickr(this.$refs.calendar, {
                         inline: true,
                         mode: this.mode,
                         dateFormat: 'Y-m-d',
-                        defaultDate: this.value,
+                        defaultDate: this.mode === 'single' ? from : (
+                            from && to ? `${from} to ${to}` : null
+                        ),
                         onReady: () => this.$root.querySelector('.flatpickr-calendar').style.boxShadow = 'none',
                         onChange: (date, str) => this.onChange(date, str),
                     })
@@ -148,6 +135,24 @@ $except = ['label', 'for', 'field', 'utc', 'mode', 'transparent', 'placeholder',
                     }
                 }
             },
+
+            getFrom (format = 'DD MMM YYYY') {
+                let from
+
+                if (this.mode === 'range') from = this.value ? dayjs(this.value.split(' to ')[0]) : null
+                if (this.mode === 'single') from = this.value ? dayjs(this.value) : null
+                if (this.utc && from) from = from.utc(true).tz(dayjs.tz.guess())
+
+                return from?.isValid() ? from?.format(format) : null
+            },
+
+            getTo (format = 'DD MMM YYYY') {
+                if (this.mode === 'single') return null
+
+                let to = this.value ? dayjs(this.value.split(' to ')[1]) : null
+                if (this.utc && to) to = to.utc(true).tz(dayjs.tz.guess())
+                return to?.isValid() ? to?.format(format) : null
+            },
         }"
         x-modelable="value"
         class="w-full h-full"
@@ -165,21 +170,21 @@ $except = ['label', 'for', 'field', 'utc', 'mode', 'transparent', 'placeholder',
                 <x-icon name="calendar-days"/>
             </div>
 
-            <template x-if="from && to">
+            <template x-if="getFrom() && getTo()">
                 <div class="grow flex items-center gap-3">
-                    <div x-text="from" class="truncate"></div>
+                    <div x-text="getFrom()" class="truncate"></div>
                     <x-icon name="arrow-right" class="shrink-0 text-gray-400"/>
-                    <div x-text="to" class="truncate"></div>
+                    <div x-text="getTo()" class="truncate"></div>
                 </div>
             </template>
 
-            <template x-if="from && !to">
+            <template x-if="getFrom() && !getTo()">
                 <div class="grow">
-                    <div x-text="from" class="truncate"></div>
+                    <div x-text="getFrom()" class="truncate"></div>
                 </div>
             </template>
 
-            <template x-if="!from && !to">
+            <template x-if="!getFrom() && !getTo()">
                 <input type="text" placeholder="{{ tr($placeholder) }}" readonly class="transparent grow cursor-pointer">
             </template>
 
