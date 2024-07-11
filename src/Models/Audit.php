@@ -55,7 +55,7 @@ class Audit extends Model
     {
         $query->where(fn($q) => $q
             ->where('event', 'like', "%$search%")
-            ->orWhere('ip', 'like', "%$search%")
+            ->orWhere('request->ip', 'like', "%$search%")
             ->orWhere('tags', 'like', "%$search%")
         );
     }

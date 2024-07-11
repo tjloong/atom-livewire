@@ -42,8 +42,11 @@ $except = ['label', 'for', 'field', 'utc', 'transparent', 'placeholder', 'class'
             setDatetime () {
                 let date = this.date || dayjs().format('YYYY-MM-DD')
                 let time = this.time || '12:00 AM'
-                let datetime = `${date} ${time}`
-                this.value = dayjs(datetime).utc().toISOString()
+                let datetime = dayjs(`${date} ${time}`).utc().toISOString()
+                
+                if (!this.value || datetime !== dayjs(this.value).toISOString()) {
+                    this.value = dayjs(datetime).utc().toISOString()
+                }
             },
 
             createCalendar () {
