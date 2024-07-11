@@ -65,7 +65,20 @@ $size = $attributes->size('md');
                 class="grow appearance-none no-spinner w-full bg-transparent peer group-[.text-right]/input:text-right group-[.text-center]/input:text-center"
                 {{ $attributes->whereStartsWith('wire:')->except('wire:key') }}
                 {{ $attributes->whereStartsWith('x-') }}
-                {{ $attributes->only(['value', 'autofocus', 'disabled', 'readonly']) }}>
+                {{ 
+                    $attributes->when(true, fn($attr) => $attr->merge([
+                        'step' => 'any',
+                    ]))->only([
+                        'min',
+                        'max',
+                        'step', 
+                        'maxlength',
+                        'value', 
+                        'autofocus', 
+                        'disabled', 
+                        'readonly',
+                    ])
+                }}>
 
             @if($type !== 'number' && !$readonly && !$disabled)
                 <div x-show="clearable" x-on:click.stop="() => {
