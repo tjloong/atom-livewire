@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\File;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
-class Update extends Component
+class Edit extends Component
 {
     use WithForm;
 
@@ -13,7 +13,7 @@ class Update extends Component
     public $inputs;
 
     protected $listeners = [
-        'updateFile' => 'open',
+        'editFile' => 'open',
     ];
 
     // validation
@@ -33,22 +33,15 @@ class Update extends Component
                 'inputs.description' => data_get($this->file->data, 'description'),
             ]);
 
-            $this->modal();
+            $this->overlay();
         }
-    }
-
-    // close
-    public function close() : void
-    {
-        $this->modal(false);
     }
 
     // delete
     public function delete() : void
     {
         $this->file->delete();
-        $this->emit('fileDeleted');
-        $this->close();
+        $this->overlay(false);
     }
 
     // submit
@@ -57,10 +50,12 @@ class Update extends Component
         $this->validateForm();
         
         $this->file->fill([
-            'data' => array_merge((array) $this->file->data, $this->inputs),
+            'data' => [
+                ...(array) $this->file->data,
+                ...$this->inputs,
+            ],
         ])->save();
 
-        $this->emit('fileUpdated');
-        $this->close();
+        $this->overlay(false);
     }
 }

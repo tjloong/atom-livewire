@@ -6,7 +6,7 @@ use Jiannius\Atom\Component;
 
 class Footprint extends Component
 {
-    public $footprint;
+    public $footprint = [];
 
     // load
     public function load($data) : void
@@ -18,7 +18,7 @@ class Footprint extends Component
         $this->footprint = collect($model->footprint)->map(fn($value, $key) => [
             'timestamp' => $model->footprint($key.'.timestamp')->pretty('datetime'),
             'description' => $model->footprint($key.'.description'),
-        ])->sortByDesc('timestamp')->values();
+        ])->sortByDesc('timestamp')->values()->all();
     }
 
     // cleanup

@@ -1,19 +1,20 @@
-<x-form.drawer class="max-w-screen-sm">
+<x-drawer wire:submit.prevent="submit" wire:close="$emit('closeLabel')">
 @if ($label)
     @if ($label->exists)
-        <x-slot:heading title="app.label.update-label"></x-slot:heading>
+        <x-slot:heading title="app.label.edit-label"></x-slot:heading>
         <x-slot:buttons>
             <x-button action="submit"/>
             @if (!$label->is_locked) <x-button action="delete" no-label invert/> @endif
         </x-slot:buttons>
     @else
         <x-slot:heading title="app.label.create-label"></x-slot:heading>
+        <x-slot:buttons>
+            <x-button action="submit"/>
+        </x-slot:buttons>
     @endif
 
-    <x-group>
-        @if ($type = $label->type)
-            <x-input :value="str()->headline($type)" label="app.label.type" readonly/>
-        @endif
+    <x-fieldset inputs>
+        @if ($label->type) <x-input :value="$label->type" label="app.label.type" apa readonly/> @endif
 
         @if ($label->is_locked)
             <x-field label="app.label.label" block>
@@ -29,7 +30,7 @@
 
             @if ($label->parents->count())
                 <x-field label="app.label.parent"
-                    :value="$label->parents->map(fn($parent) => $parent->locale('name'))->join(' / ')"
+                    :value="$label->parents->map(fn($parent) => $parent->name_locale)->join(' / ')"
                     block>
                 </x-field>
             @endif
@@ -51,7 +52,7 @@
             <x-form.color wire:model="label.color" label="app.label.color"/>
             <x-form.file wire:model="label.image_id" label="app.label.image"/>
         @endif
-    </x-group>
+    </x-fieldset>
 @endif
-</x-form.drawer>
+</x-drawer>
     

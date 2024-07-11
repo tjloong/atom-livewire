@@ -41,7 +41,7 @@ class Library extends Component
     {
         $this->config = [...$this->config, ...$config];
         $this->loadFiles();
-        $this->modal();
+        $this->overlay();
     }
 
     // load files

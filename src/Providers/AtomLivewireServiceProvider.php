@@ -79,13 +79,13 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.notilog.show' => 'App\Notilog\Show',
             'app.notilog.listing' => 'App\Notilog\Listing',
 
-            'app.label.update' => 'App\Label\Update',
+            'app.label.edit' => 'App\Label\Edit',
             'app.label.listing' => 'App\Label\Listing',
             
-            'app.user.update' => 'App\User\Update',
+            'app.user.edit' => 'App\User\Edit',
             'app.user.listing' => 'App\User\Listing',
 
-            'app.file.update' => 'App\File\Update',
+            'app.file.edit' => 'App\File\Edit',
             'app.file.library' => 'App\File\Library',
             'app.file.listing' => 'App\File\Listing',
 

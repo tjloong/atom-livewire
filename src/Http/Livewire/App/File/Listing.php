@@ -15,9 +15,7 @@ class Listing extends Component
     ];
 
     protected $listeners = [
-        'fileUpdated' => '$refresh',
-        'fileDeleted' => '$refresh',
-        'filesUploaded' => '$refresh',
+        'closeFile' => '$refresh',
     ];
 
     // get query property
