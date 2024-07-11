@@ -47,7 +47,7 @@ $except = ['locked', 'title', 'heading', 'class', 'stacked'];
                 </div>
 
                 @if (isset($buttons) && $buttons->isNotEmpty())
-                    <div class="shrink-0 flex items-center gap-2">
+                    <div {{ $buttons->attributes->class(['shrink-0 flex items-center gap-2']) }}>
                         {{ $buttons }}
                     </div>
                 @endif

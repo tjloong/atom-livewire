@@ -116,6 +116,8 @@ return [
         'duplicate' => 'Duplicate',
         'duplicated' => 'Duplicated',
         'edit' => 'Edit',
+        'edit-label' => 'Edit label',
+        'edit-file' => 'Edit file',
         'email-address' => 'Email Address',
         'email-sent-on' => 'Email Sent on :date',
         'email-verification' => 'Email Verification',
