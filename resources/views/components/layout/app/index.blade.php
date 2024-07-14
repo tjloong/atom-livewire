@@ -122,11 +122,12 @@
                         x-ref="anchor"
                         x-on:click.stop="open = true" 
                         x-on:click.away="open = false"
-                        class="flex items-center gap-2 justify-end cursor-pointer font-medium form-input-caret pr-5 w-max max-w-[100px] lg:max-w-[200px]">
+                        class="flex items-center gap-2 justify-end cursor-pointer font-medium w-max max-w-[100px] lg:max-w-[200px]">
                         <div class="shrink-0 w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-sm font-semibold border-4 border-gray-200 text-gray-100">
                             {{ str(user('name'))->substr(0, 1) }}
                         </div>
                         <span class="truncate">{!! user('name') !!}</span>
+                        <div class="shrink-0 select-caret w-4 h-4"></div>
                     </div>
 
                     <div

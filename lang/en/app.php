@@ -254,6 +254,7 @@ return [
         'payment-method' => 'Payment Method',
         'payment-success' => 'Payment Success',
         'payment' => 'Payment|Payments',
+        'pending-invitation-count' => ':count pending invitation|:count pending invitations',
         'period' => 'Period',
         'personal-information' => 'Personal Information',
         'phone' => 'Phone',

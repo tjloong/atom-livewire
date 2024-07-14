@@ -2,12 +2,14 @@
     @recaptcha
 
     <x-form recaptcha="login">
-        <x-group>
+        <x-fieldset inputs>
             <div class="text-2xl font-bold">
                 {!! tr('app.label.signin') !!}
             </div>
 
-            @if ($message = session('message'))
+            @if ($errors->any())
+                <x-inform :message="$errors->first()" type="error"/>
+            @elseif ($message = session('message'))
                 <x-inform :message="$message"/>
             @endif
 
@@ -20,8 +22,8 @@
                     <x-anchor label="app.label.forgot-password" :href="route('password.forgot')" class="text-sm"/>
                 @endif
             </div>
-        </x-group>
-    
+        </x-fieldset>
+
         <x-slot:foot>
             <x-button action="submit" label="app.label.login" icon="login" color="theme" block lg/>
             

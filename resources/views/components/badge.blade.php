@@ -10,12 +10,13 @@ $label = $attributes->get('label')
     ?? (is_string($badge) ? $badge : get($badge, 'label'))
     ?? (is_bool($active) ? ($active ? 'app.label.active' : 'app.label.inactive') : null);
 
-    
+$label = is_array($label) ? tr(...$label) : tr($label);
+
 $color = $attributes->get('color')
     ?? get($badge, 'color')
     ?? (is_bool($active) ? ($active ? 'green' : 'gray') : 'gray');
 
-$except = ['icon', 'active', 'invert', 'inverted', 'lower', 'lowercase', 'badge'];
+$except = ['label', 'icon', 'active', 'invert', 'inverted', 'lower', 'lowercase', 'badge'];
 @endphp
 
 <span
@@ -31,7 +32,7 @@ $except = ['icon', 'active', 'invert', 'inverted', 'lower', 'lowercase', 'badge'
     ])->except($except) }}>
     @if ($slot->isNotEmpty())
         {{ $slot }}
-    @elseif ($icon && $label = tr($label))
+    @elseif ($icon && $label)
         <div class="-mx-2 leading-none flex items-center">
             <div class="shrink-0 flex px-2 py-1">
                 <x-icon :name="$icon" class="m-auto"/>
@@ -44,7 +45,7 @@ $except = ['icon', 'active', 'invert', 'inverted', 'lower', 'lowercase', 'badge'
     @else
         <div class="grid">
             <div class="truncate">
-                {!! tr($label) !!}
+                {!! $label !!}
             </div>
         </div>
     @endif

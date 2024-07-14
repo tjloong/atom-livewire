@@ -1,4 +1,5 @@
 @php
+$apa = $attributes->get('apa');
 $href = $attributes->get('href');
 $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
 $target = $attributes->get('target', '_self');
@@ -218,9 +219,9 @@ $except = [
                     </div>
                 @endif
         
-                @if ($label)
+                @if ($label && ($label = is_array($label) ? tr(...$label) : tr($label)))
                     <div class="grow font-medium tracking-wide">
-                        {!! is_array($label) ? tr(...$label) : tr($label) !!}
+                        {!! $apa ? str()->apa($label) : $label !!}
                     </div>
                 @endif
 
