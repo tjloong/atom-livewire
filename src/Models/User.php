@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Password;
 use Jiannius\Atom\Notifications\Auth\ActivateNotification;
-use Jiannius\Atom\Traits\Models\Cache;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\Settings;
@@ -18,7 +17,6 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Cache;
     use Footprint;
     use HasApiTokens;
     use HasFactory;
@@ -39,25 +37,26 @@ class User extends Authenticatable
     protected $casts = [
         'data' => 'array',
         'login_at' => 'datetime',
+        'blocked_at' => 'datetime',
         'last_active_at' => 'datetime',
         'email_verified_at' => 'datetime',
+        'status' => \Jiannius\Atom\Enums\User\Status::class,
     ];
 
     // boot
     protected static function booted() : void
     {
-        static::created(function($user) {
-            $user->setAttributes()->saveQuietly();
-            $user->resetSettings();
-            $user->sendActivationNotification();
-        });
-        
-        static::updated(function($user) {
-            $user->setAttributes()->saveQuietly();
+        static::saving(function($user) {
+            $user->fillStatus();
         });
 
-        static::deleted(function($user) {
-            if ($user->exists) $user->setAttributes()->saveQuietly();
+        static::deleting(function($user) {
+            $user->fillStatus();
+        });
+
+        static::created(function($user) {
+            $user->resetSettings();
+            $user->sendActivationNotification();
         });
     }
 
@@ -73,25 +72,10 @@ class User extends Authenticatable
         return $this->hasOne(model('signup'));
     }
 
-    // get status attribute
-    public function getStatusAttribute($value) : mixed
-    {
-        return enum('user.status', $value);
-    }
-
-    // get blocked by attribute
-    public function getBlockedByAttribute($id) : mixed
-    {
-        return $id ? model('user')->find($id) : null;
-    }
-
     // scope for search
     public function scopeSearch($query, $search) : void
     {
-        $query->where(fn($q) => $q
-            ->where('name', 'like', "%$search%")
-            ->orWhere('email', 'like', "%$search%")
-        );
+        $query->whereAny(['name', 'email'], 'like', "%$search%");
     }
 
     // scope for with role
@@ -118,10 +102,10 @@ class User extends Authenticatable
     // get user home
     public function home() : string
     {
-        return collect([
+        return pick([
             route('onboarding') => $this->signup?->status?->is('NEW') && !session()->has('onboarding'),
             route('app.dashboard') => true,
-        ])->filter()->keys()->first();
+        ]);
     }
 
     // check user is recently active
@@ -141,16 +125,22 @@ class User extends Authenticatable
         return $this->id === user('id');
     }
 
+    // check user is not authenticated
+    public function isNotAuth() : bool
+    {
+        return !$this->isAuth();
+    }
+
     // check user is tier
-    public function isTier($tiers) : bool
+    public function isTier(...$tiers) : bool
     {
         return collect($tiers)->contains($this->tier);
     }
 
     // check user is role
-    public function isRole($slugs, $strict = false) : bool
+    public function isRole(...$slugs) : bool
     {
-        if (tier('root')) return true;
+        if ($this->isTier('root')) return true;
 
         $roles = collect($slugs)->mapWithKeys(function($slug) {
             $substr = str()->slug(str_replace('*', '', $slug));
@@ -162,8 +152,7 @@ class User extends Authenticatable
             else return [$slug => $roleslug === $slug];
         });
 
-        if ($strict) return !$roles->some(fn($val) => !$val);
-        else return $roles->some(fn($val) => $val);
+        return $roles->some(fn($val) => $val);
     }
 
     // check user is blocked
@@ -207,18 +196,16 @@ class User extends Authenticatable
         }
     }
 
-    // set attributes
-    public function setAttributes() : mixed
+    // fill status
+    public function fillStatus() : mixed
     {
-        $this->fill([
-            'status' => enum('user.status', collect([
+        return $this->fill([
+            'status' => enum('user.status', pick([
                 'TRASHED' => $this->trashed(),
                 'BLOCKED' => $this->isBlocked(),
                 'ACTIVE' => !empty($this->password),
                 'INACTIVE' => empty($this->password),
-            ])->filter()->keys()->first())->value,
+            ]))->value,
         ]);
-
-        return $this;
     }
 }

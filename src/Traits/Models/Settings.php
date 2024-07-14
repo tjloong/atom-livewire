@@ -14,7 +14,9 @@ trait Settings
     // reset settings
     public function resetSettings() : void
     {
-        $this->fill(['settings' => $this->getDefaultSettings()])->saveQuietly();
+        $this->fill([
+            'settings' => $this->getDefaultSettings(),
+        ])->saveQuietly();
     }
 
     // get default settings
@@ -46,6 +48,6 @@ trait Settings
 
             return $settings;
         }
-        else return data_get($this->settings, $name);
+        else return get($this->settings, $name);
     }
 }

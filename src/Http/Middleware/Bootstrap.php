@@ -41,13 +41,9 @@ class Bootstrap
             }
         }
 
-        // load user
-        if ($request->user()) {
-            $request->user()->cache();
-            
-            if ($request->user()->isRecentlyActive('5 minutes')) {
-                $request->user()->ping();
-            }    
+        // ping user
+        if (($user = $request->user()) && $user->isRecentlyActive('5 minutes')) {
+            $user->ping();
         }
 
         return $response;

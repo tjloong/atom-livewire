@@ -18,7 +18,11 @@ class Permission extends Model
     protected static function booted() : void
     {
         static::saved(function($permission) {
-            $permission->user->cache(false);
+            $permission->user->clearPermissionsCache();
+        });
+
+        static::deleted(function($permission) {
+            $permission->user->clearPermissionsCache();
         });
     }
 
@@ -28,8 +32,8 @@ class Permission extends Model
         return $this->belongsTo(model('user'));
     }
     
-    // get permissions
-    public function permissions() : array
+    // actions
+    public function actions() : array
     {
         return [
             //

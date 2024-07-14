@@ -7,6 +7,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 // this trait should be consumed by user model
 trait Permissions
 {
+    // boot
+    protected static function bootPermissions() : void
+    {
+        static::saved(function($user) {
+            $user->clearPermissionsCache();
+        });
+        
+        static::deleted(function($user) {
+            $user->clearPermissionsCache();
+        });
+    }
+
     // get permissions for model
     public function permissions() : HasMany
     {
@@ -14,49 +26,71 @@ trait Permissions
     }
 
     // check model is permitted
-    public function isPermitted($actions)
+    public function isPermitted(...$actions) : bool
     {
-        if ($permissions = $this->cache('permissions', $this->permissions)) {
-            return collect($actions)->contains(fn($action) => !empty($permissions->firstWhere('permission', $action)));
-        }
+        $permittedActions = $this->getPermittedActions();
 
-        return false;
+        return collect($actions)
+            ->filter(fn($action) => $permittedActions->get($action))
+            ->isNotEmpty();
     }
 
     // check model is permitted all
-    public function isPermittedAll($actions) : bool
+    public function isPermittedAll(...$actions)
     {
-        if ($permissions = $this->cache('permissions', $this->permissions)) {
-            return !collect($actions)->contains(fn($action) => empty($permissions->firstWhere('permission', $action)));
-        }
+        $permittedActions = $this->getPermittedActions();
 
-        return false;
+        return collect($actions)
+            ->filter(fn($action) => !$permittedActions->get($action))
+            ->isEmpty();
     }
 
-    // get permissions list
-    public function getPermissionsList() : array
+    // get permitted actions
+    public function getPermittedActions() : mixed
     {
-        return collect(model('permission')->permissions())->mapWithKeys(fn($actions, $module) => [
-            $module => collect($actions)->mapWithKeys(fn($action) => [
-                $action => $this->permissions()
-                    ->where('permission', $module.'.'.$action)
-                    ->count() > 0,
-            ])
-        ])->toArray();
-    }
+        return cache()->remember($this->getPermissionsCacheKey(), now()->addDays(7), function() {
+            $actions = collect();
 
-    // save permissions
-    public function savePermissions($permissions) : void
-    {
-        foreach ($permissions as $module => $actions) {
-            foreach ($actions as $action => $allow) {
-                $key = $module.'.'.$action;
-
-                if (!$allow) $this->permissions()->where('permission', $key)->delete();
-                else if (!$this->permissions()->where('permission', $key)->count()) {
-                    $this->permissions()->create(['permission' => $key]);
+            foreach (model('permission')->actions() as $module => $operations) {
+                foreach ($operations as $operation) {
+                    $actions->put("$module.$operation", false);
                 }
             }
-        }
+
+            $actions = $actions->mapWithKeys(fn($val, $key) => [
+                $key => $this->permissions()->where('permission', $key)->count() > 0,
+            ]);
+
+            return $actions;
+        });
+    }
+
+    // get permissions cache key
+    public function getPermissionsCacheKey() : string
+    {
+        return 'user_permissions_'.$this->id;
+    }
+
+    // clear permissions cache
+    public function clearPermissionsCache() : void
+    {
+        cache()->forget($this->getPermissionsCacheKey());
+    }
+
+    // grant permission
+    public function grantPermission($module, $action) : void
+    {
+        $key = "$module.$action";
+        if ($this->permissions()->where('permission', $key)->count()) return;
+        $this->permissions()->create(['permission' => $key]);
+        $this->touch();
+    }
+
+    // forbid permission
+    public function forbidPermission($module, $action) : void
+    {
+        $key = "$module.$action";
+        $this->permissions()->where('permission', $key)->delete();
+        $this->touch();
     }
 }
