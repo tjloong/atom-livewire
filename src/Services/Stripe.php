@@ -8,9 +8,9 @@ class Stripe
     public $credentials;
 
     // constructor
-    public function __construct()
+    public function __construct($credientials = null)
     {
-        $this->setCredentials();
+        $this->setCredentials($credientials);
         $this->setClient();
     }
 
@@ -30,26 +30,41 @@ class Stripe
         $this->client = new \Stripe\StripeClient($this->credentials->get('secret_key'));
     }
 
-    // get job handler
-    public function getJobHandler($payload = null) : mixed
+    // get webhook status
+    public function getWebhookStatus() : mixed
     {
-        // if payload is from webhook renewal
-        if (in_array(data_get($payload, 'type'), ['invoice.paid', 'invoice.payment_failed'])) {
-            $jobname = data_get($payload, 'data.object.lines.data.0.metadata.job');
-        }
-        else {
-            $jobname = data_get($payload, 'data.object.metadata.job')
-                ?? data_get($payload, 'job')
-                ?? request()->query('job')
-                ?? 'StripeProvision';
-        }
+        $payload = $this->parseWebhookPayload();
+        $event = get($payload, 'type');
 
-        $jobhandler = collect([
-            'App\\Jobs\\'.$jobname,
-            'Jiannius\\Atom\\Jobs\\'.$jobname,
-        ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
+        $isRenew = in_array($event, [
+            'invoice.paid',
+            'invoice.payment_failed',
+        ]) && get($payload, 'data.object.billing_reason') === 'subscription_cycle';
 
-        return $jobhandler;
+        $isFailed = in_array($event, [
+            'checkout.session.expired',
+            'checkout.session.async_payment_failed',
+            'invoice.payment_failed',
+        ]);
+
+        $isSuccess = in_array($event, [
+            'checkout.session.async_payment_succeeded', 
+            'invoice.paid',
+        ]) || (
+            $event === 'checkout.session.completed'
+            && get($payload, 'data.object.payment_status') === 'paid'
+        );
+
+        $isProcessing = $event === 'checkout.session.completed' 
+            && get($payload, 'data.object.payment_status') !== 'paid';
+
+        return pick([
+            'renew-failed' => $isRenew && $isFailed,
+            'renew-success' => $isRenew && $isSuccess,
+            'failed' => $isFailed,
+            'processing' => $isProcessing,
+            'success' => $isSuccess,
+        ]);
     }
 
     // parse webhook payload
@@ -85,14 +100,13 @@ class Stripe
     }
 
     // sample params
-    public function sample()
+    public function sample() : array
     {
         return [
             'customer' => 'cus_NzHqNbIaJ56Juq',
             'customer_email' => 'test@sign.up',
             'mode' => 'subscription',
             'metadata' => [
-                'job' => 'Subscription\Provision',
                 'payment_id' => 1,
             ],
             'line_items' => [
@@ -113,7 +127,6 @@ class Stripe
             ],
             'subscription_data' => [
                 'metadata' => [
-                    'job' => 'Subscription\Provision',
                     'payment_id' => 1,
                 ],
             ],
@@ -123,19 +136,24 @@ class Stripe
     }
 
     // checkout
-    public function checkout($params)
+    public function checkout($params) : mixed
     {
-        // change product amount to proper format (eg. 25.00 -> 2500)
-        $params['line_items'] = collect($params['line_items'])->map(fn($item) =>
-            collect($item)->replaceRecursive([
-                'price_data' => [
-                    'unit_amount' => str(data_get($item, 'price_data.unit_amount'))
-                        ->replace('.', '')
-                        ->replace(',', '')
-                        ->toString(),
-                ],
-            ])->toArray()
-        )->toArray();
+        $params = [
+            ...$params,
+            // change product amount to proper format (eg. 25.00 -> 2500)
+            'line_items' => collect(get($params, 'line_items'))
+                ->map(fn($item) => collect($item)->replaceRecursive([
+                    'price_data' => [
+                        'unit_amount' => str(data_get($item, 'price_data.unit_amount'))
+                            ->replace('.', '')
+                            ->replace(',', '')
+                            ->toString(),
+                    ],
+                ])->toArray())
+                ->toArray(),
+            'success_url' => route('__stripe.success', get($params, 'metadata', [])),
+            'cancel_url' => route('__stripe.cancel', get($params, 'metadata', [])),
+        ];
 
         // create stripe checkout session
         $session = $this->client->checkout->sessions->create($params);
@@ -144,7 +162,7 @@ class Stripe
     }
 
     // cancel
-    public function cancelSubscription($id)
+    public function cancelSubscription($id) : void
     {
         $this->client->subscriptions->cancel($id);
     }

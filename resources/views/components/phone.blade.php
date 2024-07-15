@@ -37,7 +37,7 @@ $placeholder = $attributes->get('placeholder', 'app.label.phone-number');
                         }
                     })
                 })
-    
+
                 this.$watch('code', () => this.format())
                 this.$watch('number', () => this.format())
                 this.$watch('wire', wire => this.initInput(wire))
@@ -56,6 +56,7 @@ $placeholder = $attributes->get('placeholder', 'app.label.phone-number');
                     this.select(find)
                     this.number = val.replace(this.code, '').replace('+', '')
                 }
+                else this.number = val
             },
             
             select (opt) {
