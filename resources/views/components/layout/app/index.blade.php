@@ -133,12 +133,8 @@
                     <div
                         x-show="open"
                         x-anchor.offset.4="$refs.anchor"
-                        x-init="$watch('open', open => open
-                            ? $modal.zindex($el.closest('header'))
-                            : $modal.zindex($el.closest('header'), 20)
-                        )"
                         x-transition.opacity.duration.300
-                        class="bg-white z-10 border rounded-md shadow-lg max-w-md min-w-[250px] overflow-hidden">
+                        class="bg-white border rounded-md shadow-lg max-w-md min-w-[250px] overflow-hidden">
                         @isset($auth) 
                             {{ $auth }}
                         @else

@@ -11,7 +11,7 @@ $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
         'left-0 lg:left-0': nav === 'hidden',
         'left-0 lg:left-60': !nav || nav === 'lg',
     }"
-    class="overlay page fixed z-40 bottom-0 right-0 overflow-auto bg-gray-50"
+    class="overlay page fixed z-1 bottom-0 right-0 overflow-auto bg-gray-50"
     {{ $attributes->merge(['id' => $id])->except('class') }}>
     <div class="min-h-full p-5 pb-20 {{ $attributes->get('class', 'max-w-screen-2xl') }} mx-auto">
         <div class="flex items-center gap-4 flex-wrap mb-5">
