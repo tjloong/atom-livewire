@@ -1,10 +1,12 @@
 @php
-    $submit = $attributes->get('submit', 'submit');
-    $confirm = $attributes->get('confirm');
-    $recaptcha = [
-        'sitekey' => $attributes->get('recaptcha') ? settings('recaptcha_site_key') : null,
-        'action' => is_string($attributes->get('recaptcha')) ? $attributes->get('recaptcha') : 'submit',
-    ];
+$box = $attributes->get('no-box') ? false : $attributes->get('box', true);
+$submit = $attributes->get('submit', 'submit');
+$confirm = $attributes->get('confirm');
+$heading = $title ?? $heading ?? $attributes->get('title') ?? $attributes->get('heading');
+$recaptcha = [
+    'sitekey' => $attributes->get('recaptcha') ? settings('recaptcha_site_key') : null,
+    'action' => is_string($attributes->get('recaptcha')) ? $attributes->get('recaptcha') : 'submit',
+];
 @endphp
 
 <form
@@ -13,9 +15,11 @@
         disabled: false,
         confirm: @js($confirm),
         recaptcha: @js($recaptcha),
+
         autofocus () {
             this.$nextTick(() => this.$el.querySelector('input[autofocus]')?.focus())
         },
+
         submit () {
             if (this.confirm) {
                 $dispatch('confirm', {
@@ -26,6 +30,7 @@
             }
             else this.verify()
         },
+
         verify () {
             if (this.recaptcha.sitekey && !this.$wire.get('form.recaptcha_token') && window.grecaptcha !== undefined) {
                 this.disabled = true
@@ -42,27 +47,36 @@
     }"
     x-init="autofocus"
     x-on:submit.prevent="submit"
-    class="relative">
-    <div x-show="disabled" class="absolute inset-0"></div>
-    <x-box :heading="$attributes->get('heading')" :icon="$attributes->get('icon')">
-        @isset($heading)
-            <x-slot:heading>
+    @if ($attributes->wire('loading')->value())
+    wire:loading.class="is-loading"
+    wire:target="{{ $submit }}"
+    @endif
+    class="group/form relative">
+    <div class="absolute inset-0 hidden group-[.is-loading]/form:block {{ $box ? 'bg-white opacity-30' : '' }}">
+        <div class="absolute top-4 right-4">
+            <x-spinner size="20"/>
+        </div>
+    </div>
+
+    <div class="{{ $box ? 'bg-white border rounded-xl shadow-sm' : null }}">
+        @if ($heading instanceof \Illuminate\View\ComponentSlot)
+            <x-heading class="p-4 mb-0" :attributes="$heading->attributes">
                 {{ $heading }}
-            </x-slot:heading>
-        @endisset
-
-        {{ $slot }}
-
-        @isset($foot)
-            @if ($foot->isNotEmpty())
-                <x-slot:foot>
-                    {{ $foot }}
-                </x-slot:foot>
-            @endif
-        @else
-            <x-slot:foot>
-                <x-button action="submit"/>
-            </x-slot:foot>
+            </x-heading>
+        @elseif ($heading)
+            <x-heading class="p-4 mb-0" :title="$heading"/>
         @endif
-    </x-box>
+
+        <div {{ $attributes->only('class') }}>
+            {{ $slot }}
+        </div>
+
+        <div class="bg-gray-100 p-4 rounded-b-xl">
+            @if (isset($foot) && $foot->isNotEmpty())
+                {{ $foot }}
+            @else
+                <x-button action="submit"/>
+            @endif
+        </div>
+    </div>
 </form>
