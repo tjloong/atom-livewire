@@ -97,7 +97,11 @@ class Register extends Component
             $this->hasValidSignature = request()->hasValidSignature();
             $this->inputs = [
                 ...$this->inputs,
-                ...request()->query('fill', []),
+                ...(
+                    request()->query('email')
+                    ? ['email' => request()->query('email')]
+                    : request()->query('fill', [])
+                ),
             ];
         }
     }
