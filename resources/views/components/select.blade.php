@@ -30,7 +30,7 @@ $options = collect($options)->map(function($opt) {
 $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filters', 'disabled', 'searchable', 'placeholder', 'wire:options', 'wire:model', 'wire:model.defer'];
 @endphp
 
-<x-input class="h-px" {{ $attributes->except('class') }}>
+<x-input class="h-full" {{ $attributes->except('class') }}>
     <div
         wire:ignore
         x-cloak
@@ -227,7 +227,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
             x-on:click="open()"
             x-on:click.away="close()"
             x-bind:disabled="disabled"
-            class="group/button inline-flex items-center gap-3 px-3 w-full h-full text-left">
+            class="group/button inline-flex gap-3 py-1.5 px-3 w-full h-full text-left">
             @if ($icon)
                 <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div>
             @endif
@@ -274,7 +274,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
                 </div>
             </div>
 
-            <div class="shrink-0 w-3 h-full select-caret"></div>
+            <div class="shrink-0 w-3 h-6 select-caret"></div>
         </button>
 
         <div
