@@ -13,7 +13,9 @@ class Policy
     // check role
     public function role($user, $role) : bool
     {
-        return $user->isRole(explode_if(['|', ',', '/'], $role));
+        $role = (array) explode_if(['|', ',', '/'], $role);
+
+        return $user->isRole(...$role);
     }
 
     // check permission
