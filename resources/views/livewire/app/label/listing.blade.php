@@ -26,7 +26,7 @@
                         <div wire:click.stop="$emit('editLabel', {{ Js::from(['id' => $label->id]) }})" class="w-full cursor-pointer">
                             @if ($label->color) <x-badge :badge="$label->badge()" :lower="false"/>
                             @else <div class="truncate font-medium">{{ $label->name_locale }}</div>
-                            @endif        
+                            @endif
                         </div>
                     @endif
 

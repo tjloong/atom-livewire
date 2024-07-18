@@ -1,4 +1,4 @@
-<div class="flex flex-col divide-y md:flex-row md:divide-x md:h-full">
+<div class="flex flex-col divide-y md:flex-row md:divide-x md:divide-y-0 md:h-full">
     <div class="shrink-0 bg-white p-5 md:w-72">
         <x-sidenav wire:model="tab" heading="settings.heading.settings">
             @foreach ($this->tabs as $item)

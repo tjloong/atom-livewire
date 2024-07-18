@@ -13,7 +13,7 @@
         </x-slot:buttons>
     @endif
 
-    <x-fieldset inputs>
+    <x-inputs>
         @if ($label->type) <x-input :value="$label->type" label="app.label.type" apa readonly/> @endif
 
         @if ($label->is_locked)
@@ -52,6 +52,6 @@
             <x-color wire:model="label.color" label="app.label.color"/>
             <x-form.file wire:model="label.image_id" label="app.label.image"/>
         @endif
-    </x-fieldset>
+    </x-inputs>
 @endif
 </x-drawer>

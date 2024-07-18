@@ -5,7 +5,7 @@ $searchable = $attributes->get('searchable', true);
 $clearable = $attributes->get('clearable', true);
 $disabled = $attributes->get('disabled', false);
 $transparent = $attributes->get('transparent', false);
-$placeholder = $attributes->get('placeholder', 'app.label.select-option');
+$placeholder = $attributes->get('placeholder') ?? 'app.label.select-option';
 $callback = $attributes->get('callback');
 $filters = $attributes->get('filters') ?? $attributes->get('filter');
 $wireoptions = $attributes->wire('options');
@@ -30,7 +30,7 @@ $options = collect($options)->map(function($opt) {
 $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filters', 'disabled', 'searchable', 'placeholder', 'wire:options', 'wire:model', 'wire:model.defer'];
 @endphp
 
-<x-input class="h-full" {{ $attributes->except('class') }}>
+<x-input class="h-auto" {{ $attributes->except('class') }}>
     <div
         wire:ignore
         x-cloak
