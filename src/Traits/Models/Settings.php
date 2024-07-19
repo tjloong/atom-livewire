@@ -44,7 +44,7 @@ trait Settings
                 $settings[$key] = $value;
             }
 
-            $this->fill(compact('settings'))->saveQuietly();
+            $this->fill(compact('settings'))->save();
 
             return $settings;
         }

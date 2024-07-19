@@ -16,6 +16,8 @@ class Listing extends Component
             model('label')->where('id', $id)->update(['seq' => $index + 1]);
         }
 
+        $this->labels = model('label')->whereIn('id', $data)->sequence()->get();
+
         $this->popup('app.label.sorted');
     }
 
