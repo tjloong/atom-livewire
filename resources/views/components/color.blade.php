@@ -2,7 +2,7 @@
 $placeholder = $attributes->get('placeholder', 'app.label.select-color');
 @endphp
 
-<x-input class="h-full" {{ $attributes->except('class') }}>
+<x-input class="h-auto" {{ $attributes->except('class') }}>
     <div
         x-data="{
             show: false,
@@ -18,7 +18,7 @@ $placeholder = $attributes->get('placeholder', 'app.label.select-color');
             },
         }"
         x-modelable="value"
-        class="w-full h-full"
+        class="py-1.5"
         {{ $attributes->except('placeholder') }}>
         <button
             type="button"

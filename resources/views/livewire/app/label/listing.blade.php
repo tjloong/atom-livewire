@@ -1,5 +1,4 @@
 <div
-    wire:ignore
     x-sort="() => $wire.sort($sortid)"
     class="flex flex-col divide-y">
     @foreach ($labels as $label)
@@ -29,14 +28,13 @@
                             @endif
                         </div>
                     @endif
-
-                    @if ($count)
-                        <x-badge :label="$count" color="blue"/>
-                    @endif
                 </div>
 
                 @if ($count)
-                    <div class="shrink-0 px-2 cursor-pointer" x-on:click="setChildren(@js($label->id))">
+                    <div
+                        wire:click="setChildren(@js($label->id))"
+                        class="shrink-0 px-2 flex items-center gap-2 text-gray-500 text-sm cursor-pointer">
+                        <div>{{ $count }} sub-label</div>
                         <x-icon :name="get($children, 'parent_id') === $label->id ? 'chevron-down' : 'chevron-right'"/>
                     </div>
                 @endif

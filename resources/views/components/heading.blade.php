@@ -14,9 +14,9 @@ $except = ['apa', 'title', 'icon', 'status', 'subtitle'];
         'sm' => 'mb-0',
         'md' => 'mb-2',
         'lg' => 'mb-4',
-        '2xl' => 'mb-4',
+        'xl' => 'mb-4',
+        '2xl' => 'mb-6',
         '3xl' => 'mb-6',
-        '4xl' => 'mb-6',
     ][$size] : null,
 ])->only('class') }}>
     @if ($icon instanceof \Illuminate\View\ComponentSlot)
@@ -38,10 +38,10 @@ $except = ['apa', 'title', 'icon', 'status', 'subtitle'];
                     'sm' => 'text-base font-semibold',
                     'md' => 'text-lg font-semibold',
                     'lg' => 'text-xl font-semibold',
-                    '2xl' => 'text-2xl font-bold',
-                    '3xl' => 'text-3xl font-bold',
-                    '4xl' => 'text-4xl font-bold',
-                    '5xl' => 'text-5xl font-bold',
+                    'xl' => 'text-2xl font-bold',
+                    '2xl' => 'text-3xl font-bold',
+                    '3xl' => 'text-4xl font-bold',
+                    '4xl' => 'text-5xl font-bold',
                 ][$size] }}">
                     {!! $apa ? str()->apa(tr($title)) : tr($title) !!}
                 </div>

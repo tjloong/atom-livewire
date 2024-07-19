@@ -1,7 +1,7 @@
 <div class="flex flex-col gap-4">
     <x-form>
         <x-group>
-            <x-heading title="app.label.reset-password" 2xl/>
+            <x-heading title="app.label.reset-password" xl/>
     
             <x-form.field label="app.label.email" :value="data_get($inputs, 'email')"/>
     

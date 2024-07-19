@@ -9,7 +9,7 @@
     <x-form recaptcha="register">
         <x-group>
         @if (!$errors->any() && $this->verification)
-            <x-heading title="app.label.email-verification" 2xl/>
+            <x-heading title="app.label.email-verification" xl/>
 
             <div class="flex flex-col gap-1">
                 <x-input wire:model.defer="inputs.verification" label="app.label.verification-code" caption="app.alert.email-verification"/>
@@ -55,7 +55,7 @@
                 </div>
             </div>
         @else
-            <x-heading title="app.label.create-account" 2xl/>
+            <x-heading title="app.label.create-account" xl/>
 
             <x-input wire:model.defer="inputs.name" label="app.label.your-name" autofocus/>
             <x-input type="email" wire:model.defer="inputs.email" label="app.label.login-email"/>
