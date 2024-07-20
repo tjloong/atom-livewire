@@ -7,7 +7,6 @@ use Jiannius\Atom\Component;
 class Listing extends Component
 {
     public $labels;
-    public $children;
 
     // sort
     public function sort($data): void
@@ -19,21 +18,5 @@ class Listing extends Component
         $this->labels = model('label')->whereIn('id', $data)->sequence()->get();
 
         $this->popup('app.label.sorted');
-    }
-
-    // set children
-    public function setChildren($id) : void
-    {
-        if (data_get($this->children, 'parent_id') === $id) $this->children = null;
-        else {
-            $this->children = [
-                'parent_id' => $id,
-                'labels' => model('label')
-                    ->where('parent_id', $id)
-                    ->orderBy('seq')
-                    ->orderBy('id')
-                    ->get(),
-            ];
-        }
     }
 }

@@ -13,45 +13,73 @@
         </x-slot:buttons>
     @endif
 
-    <x-inputs>
-        @if ($label->type) <x-input :value="$label->type" label="app.label.type" apa readonly/> @endif
-
-        @if ($label->is_locked)
-            <x-field label="app.label.label" block>
-                <div class="flex flex-col gap-2">
-                    @foreach ($this->locales->sort() as $locale)
-                        <div class="flex items-center gap-2">
-                            @if ($this->locales->count() > 1) <x-badge :label="$locale"/> @endif
-                            {{ data_get($label->name, $locale) }}
-                        </div>
-                    @endforeach
+    <div class="p-5 flex flex-col gap-5">
+        @if ($parent = $label->parent)
+            <div class="flex items-center gap-3">
+                <x-anchor :label="$parent->name_locale" wire:click="open({{ Js::from(['id' => $parent->id]) }})"/>
+                <x-icon name="chevron-right" class="text-xs"/>
+                <div class="font-medium text-gray-500">
+                    {{ $label->exists ? $label->name_locale : tr('app.label.add-new') }}
                 </div>
-            </x-field>
+            </div>
+        @endif
 
-            @if ($label->parents->count())
-                <x-field label="app.label.parent"
-                    :value="$label->parents->map(fn($parent) => $parent->name_locale)->join(' / ')"
-                    block>
-                </x-field>
-            @endif
-        @else
-            <x-field label="app.label.name" required block>
-                <div class="flex flex-col gap-2">
-                    @foreach ($this->locales->sort() as $locale)
+        <x-box>
+            <x-fieldset>
+                <x-field label="app.label.type" :value="str()->headline($label->type)"/>
+                
+                @if ($parent) <x-field label="app.label.parent" :value="$parent->name_locale"/> @endif
+                
+                @if ($label->is_locked) 
+                    @foreach ($this->locales as $locale)
+                        <x-field
+                            :label="tr('app.label.label').($this->locales->count() > 1 ? ' ('.$locale.')' : '')"
+                            :value="get($label->name, $locale)">
+                        </x-field>
+                    @endforeach
+
+                    <x-field label="app.label.slug" :value="$label->slug"/>
+                    <x-field label="app.label.color" :color="$label->color"/>
+                    <x-field label="app.label.image" :image="$label->image"/>
+                @else
+                    @foreach ($this->locales as $locale)
                         <x-input
+                            :label="tr('app.label.label').($this->locales->count() > 1 ? ' ('.$locale.')' : '')"
                             wire:model.defer="inputs.name.{{ $locale }}"
-                            :prefix="$this->locales->count() > 1 ? $locale : null"
-                            no-label>
+                            inline>
                         </x-input>
                     @endforeach
-                </div>
-            </x-field>
 
-            <x-input wire:model.defer="label.slug" label="app.label.slug" placeholder="autogen" prefix="/"/>
-            <x-select wire:model="label.parent_id" label="app.label.parent" :options="'labels.'.$type"/>
-            <x-color wire:model="label.color" label="app.label.color"/>
-            <x-form.file wire:model="label.image_id" label="app.label.image"/>
+                    <x-input wire:model.defer="label.slug" label="app.label.slug" placeholder="autogen" prefix="/" inline/>
+                    <x-select wire:model="label.parent_id" label="app.label.parent" :options="'labels.'.$type" inline/>
+                    <x-color wire:model="label.color" label="app.label.color" inline/>
+                    <x-form.file wire:model="label.image_id" label="app.label.image" inline/>        
+                @endif
+            </x-fieldset>
+        </x-box>
+
+        @if (!$label->parent_id)
+            <div class="flex flex-col gap-2">
+                <x-heading title="Sub-Labels" sm/>
+                <x-flatbox>
+                    <div class="flex flex-col divide-y">
+                        @if (($children = $label->children()->get()) && $children->count())
+                            <livewire:app.label.listing
+                                :labels="$children"
+                                :wire:key="$this->wirekey('children')">
+                            </livewire:app.label.listing>
+                        @endif
+
+                        <x-anchor label="app.label.add-new" icon="add" align="center" class="py-2"
+                            wire:click="open({{ Js::from([
+                                'type' => $label->type,
+                                'parent_id' => $label->id,
+                            ]) }})">
+                        </x-anchor>
+                    </div>
+                </x-flatbox>
+            </div>
         @endif
-    </x-inputs>
+    </div>
 @endif
 </x-drawer>

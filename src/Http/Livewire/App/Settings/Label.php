@@ -9,9 +9,7 @@ class Label extends Component
     public $slug;
 
     protected $listeners = [
-        'labelCreated' => '$refresh',
-        'labelUpdated' => '$refresh',
-        'labelDeleted' => '$refresh',
+        'closeLabel' => '$refresh',
     ];
 
     // get labels property

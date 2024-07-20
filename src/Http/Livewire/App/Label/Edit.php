@@ -38,7 +38,7 @@ class Edit extends Component
     // get locales property
     public function getLocalesProperty() : mixed
     {
-        return collect(config('atom.locales'));
+        return collect(config('atom.locales'))->sort();
     }
 
     // open
@@ -66,7 +66,7 @@ class Edit extends Component
     public function delete() : void
     {
         $this->label->delete();
-        $this->overlay(false);
+        $this->close();
     }
 
     // submit
@@ -79,7 +79,14 @@ class Edit extends Component
             'slug' => null,
             'data' => get($this->inputs, 'data') ?: null,
         ])->save();
-        
-        $this->overlay(false);
+
+        $this->close();
+    }
+
+    // close
+    public function close() : void
+    {
+        if ($this->label->parent) $this->open(['id' => $this->label->parent->id]);
+        else $this->overlay(false);
     }
 }
