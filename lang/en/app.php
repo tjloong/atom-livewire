@@ -2,6 +2,7 @@
 
 return [
     'label' => [
+        'apps' => 'Apps',
         'accept' => 'Accept',
         'account' => 'Account',
         'active-date' => 'Active Date',
@@ -335,6 +336,7 @@ return [
         'sent-mail' => 'Sent Mail|Sent Mails',
         'settings-updated' => 'Settings Updated',
         'settings' => 'Settings',
+        'setup' => 'Setup',
         'share-link' => 'Share link',
         'share-to' => 'Share to',
         'share' => 'Share',

@@ -19,8 +19,10 @@ $percentage = $attributes->get('percentage');
 
 $tags = $attributes->get('tags') ?? $attributes->get('tag');
 $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->map(function($val) {
-    if ($val instanceof \UnitEnum || $val instanceof \BackedEnum) return $val->label();
-    else return trim($val);
+    $isEnum = $val instanceof \UnitEnum || $val instanceof \BackedEnum;
+    $isLabel = $val instanceof \App\Models\Label || $val instanceof \Jiannius\Atom\Models\Label;
+    if ($isEnum || $isLabel) return $val->badge();
+    else return ['color' => 'gray', 'label' => trim($val)];
 })->filter();
 
 $badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status');
@@ -188,7 +190,11 @@ else $body = null;
                     ])
                 }}">
                     @foreach ($tags->take(2) as $tag)
-                        <x-badge label="{!! str()->limit($tag, 30) !!}"/>
+                        <x-badge
+                            label="{!! str()->limit(get($tag, 'label'), 30) !!}"
+                            :color="get($tag, 'color')"
+                            :lower="false">
+                        </x-badge>
                     @endforeach
 
                     @if ($tags->count() > 2)

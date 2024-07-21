@@ -22,10 +22,12 @@ $badges = collect(is_string($badges) ? explode(',', $badges) : $badges)->filter(
 )->values();
 
 $tags = $attributes->get('tags') ?? $attributes->get('tag');
-$tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(fn($val) => [
-    'label' => trim($val),
-    'color' => 'gray',
-])->values();
+$tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(function ($val) {
+    $isEnum = $val instanceof \UnitEnum || $val instanceof \BackedEnum;
+    $isLabel = $val instanceof \App\Models\Label || $val instanceof \Jiannius\Atom\Models\Label;
+    if ($isEnum || $isLabel) return $val->badge();
+    else return ['color' => 'gray', 'label' => trim($val)];
+})->values();
 @endphp
 
 <div {{ $attributes->class(array_filter([
@@ -52,7 +54,7 @@ $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(f
             @elseif ($tags->count())
                 <div class="inline-flex flex-wrap gap-1 items-center md:justify-end">
                     @foreach ($tags as $tag)
-                        <x-badge :label="get($tag, 'label')" :color="get($tag, 'color')"/>
+                        <x-badge :label="get($tag, 'label')" :color="get($tag, 'color')" :lower="false"/>
                     @endforeach
                 </div>
             @elseif ($href || $attributes->hasLike('wire:*', 'x-*'))
