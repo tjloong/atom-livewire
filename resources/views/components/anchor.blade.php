@@ -16,7 +16,7 @@ $color = pick([
     <x-dropdown :placement="$dropdown">
         <x-slot:anchor>
             <x-anchor :attributes="$attributes->merge([
-                'class' => 'select-caret',
+                'class' => 'select-caret pr-4',
             ])->except('dropdown')"/>
         </x-slot:anchor>
 
