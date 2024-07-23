@@ -101,7 +101,7 @@ $except = ['label', 'enabled', 'readonly', 'placeholder', 'class', 'wire:model',
                     x-on:click.away="sync(); enable(false)"
                     class="editor relative bg-white border border-gray-300 rounded-md hover:ring-1 hover:ring-gray-300">
                     <template x-if="mode !== 'text'">
-                        <div class="sticky -top-5 z-30 flex items-center flex-wrap border-b bg-white m-1">
+                        <div class="sticky -top-5 z-1 flex items-center flex-wrap border-b bg-white m-1">
                             <x-editor.heading/>
                             <x-editor.text/>
                             <x-editor.bullet/>
