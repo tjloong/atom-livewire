@@ -29,6 +29,7 @@ return [
         'attach' => 'Attach',
         'attachment' => 'Attachment|Attachments',
         'audit-trail' => 'Audit Trail|Audit Trails',
+        'autogen' => 'Auto generate',
         'auto-generate' => 'Auto generate',
         'avatar' => 'Avatar',
         'back-to-app' => 'Back to App',

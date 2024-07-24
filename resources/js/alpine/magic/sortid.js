@@ -1,3 +1,6 @@
 export default (el, { Alpine }) => {
-    return Array.from(el.querySelectorAll(':scope > [data-id]')).map(val => (val.getAttribute('data-id')))
+    let els = Array.from(el.querySelectorAll(':scope > [data-sortid]'))
+    if (!els.length) els = Array.from(el.querySelectorAll(':scope > [data-id]'))
+    
+    return els.map(val => (val.getAttribute('data-sortid') || val.getAttribute('data-id')))
 }
