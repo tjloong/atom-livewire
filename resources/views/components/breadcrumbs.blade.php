@@ -32,14 +32,16 @@
                             {!! tr($label) !!}
                         </span>
                     @endif
-                </div>
-            </li>
 
-            @if ($i !== array_key_last($breadcrumbs))
-                <li class="flex shrink-0">
-                    <x-icon name="chevron-right" class="m-auto text-xs text-gray-400"/>
-                </li>
-            @endif
+                    @if ($i !== array_key_last($breadcrumbs))
+                        <div class="shrink-0">
+                            <x-icon name="chevron-right" class="m-auto text-xs text-gray-400"/>
+                        </div>
+                    @endif
+                </div>
+
+                <meta itemprop="position" content="{{ $i + 1 }}" />
+            </li>
         @endforeach
     </ol>
 @endif
