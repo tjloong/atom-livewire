@@ -169,6 +169,7 @@ $except = [
     </x-dropdown>
 @elseif ($action === 'file-upload' && $noClickAction)
     <div x-data="{
+        value: @entangle($attributes->wire('model')),
         button: null,
         buttonText: null,
         config: {
@@ -192,7 +193,7 @@ $except = [
                 progress: (value) => this.progress(value),
             })
                 .then(res => {
-                    this.$dispatch('input', res.id)
+                    this.value = res.id
                     this.$dispatch('uploaded', res.files)
                     Livewire?.emit('uploaded', res.files)
                 })
@@ -216,7 +217,8 @@ $except = [
         progress (value) {
             this.button.querySelector('[data-button-label]').innerHTML = tr('app.label.uploading')+' '+value+'...'
         },
-    }">
+    }"
+    x-modelable="value">
         <input 
             x-ref="fileinput"
             x-on:change="read($event.target.files)"

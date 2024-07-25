@@ -143,6 +143,7 @@ return [
         'fbpixel-id' => 'Facebook Pixel ID',
         'feature' => 'Feature|Features',
         'female' => 'Female',
+        'file' => 'File',
         'file-oversize' => 'File must be :max or smaller',
         'file-type' => 'File type',
         'files-and-media' => 'Files and Media',
