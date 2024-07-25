@@ -10,26 +10,32 @@
     <div class="grow flex items-center justify-between gap-3 flex-wrap">
         {{ $slot }}
 
-        <div class="flex items-center gap-2">
-            @if ($attributes->get('archive'))
-                @if ($this->tableShowArchived)
-                    <x-button action="restore" sm wire:click="restoreTableRows"/>
-                @elseif (!$this->tableShowTrashed)
-                    <x-button action="archive" sm wire:click="archiveTableRows"/>
+        @if (
+            $attributes->get('archive')
+            || $attributes->get('trash')
+            || $attributes->get('delete')
+        )
+            <div class="flex items-center gap-2">
+                @if ($attributes->get('archive'))
+                    @if ($this->tableShowArchived)
+                        <x-button action="restore" wire:click="restoreTableRows"/>
+                    @elseif (!$this->tableShowTrashed)
+                        <x-button action="archive" wire:click="archiveTableRows"/>
+                    @endif
                 @endif
-            @endif
-        
-            @if ($attributes->get('trash'))
-                @if ($this->tableShowTrashed)
-                    <x-button action="restore" sm wire:click="restoreTableRows"/>
-                @elseif (!$this->tableShowArchived)
-                    <x-button action="trash" sm x-prompt.trash="{ confirm: $wire.trashTableRows }"/>
-                @endif
-            @endif
 
-            @if ($attributes->get('delete'))
-                <x-button action="delete" sm x-prompt.delete="{ confirm: $wire.deleteTableRows }"/>
-            @endif
-        </div>
+                @if ($attributes->get('trash'))
+                    @if ($this->tableShowTrashed)
+                        <x-button action="restore" wire:click="restoreTableRows"/>
+                    @elseif (!$this->tableShowArchived)
+                        <x-button action="trash" invert x-prompt.trash="{ confirm: $wire.trashTableRows }"/>
+                    @endif
+                @endif
+
+                @if ($attributes->get('delete'))
+                    <x-button action="delete" invert x-prompt.delete="{ confirm: $wire.deleteTableRows }"/>
+                @endif
+            </div>
+        @endif
     </div>
 </div>

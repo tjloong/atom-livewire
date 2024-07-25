@@ -167,6 +167,76 @@ $except = [
 
         {{ $slot }}
     </x-dropdown>
+@elseif ($action === 'file-upload' && $noClickAction)
+    <div x-data="{
+        button: null,
+        buttonText: null,
+        config: {
+            max: @js($attributes->get('max') ?? config('atom.max_upload_size')),
+            accept: @js($attributes->get('accept')),
+            multiple: @js($attributes->get('multiple')),
+        },
+
+        init () {
+            this.$nextTick(() => {
+                this.button = $root.querySelector('button')
+                this.buttonText = this.button.querySelector('[data-button-label]').innerHTML
+            })
+        },
+
+        read (files) {
+            this.loading()
+
+            upload(files, {
+                ...this.config,
+                progress: (value) => this.progress(value),
+            })
+                .then(res => {
+                    this.$dispatch('input', res.id)
+                    this.$dispatch('uploaded', res.files)
+                    Livewire?.emit('uploaded', res.files)
+                })
+                .catch(({ message }) => $dispatch('alert', { title: tr('app.label.unable-to-upload'), message, type: 'error' }))
+                .finally(() => this.loading(false))
+        },
+
+        loading (bool = true) {
+            if (bool) {
+                this.button.addClass('is-loading')
+                this.button.setAttribute('disabled')
+                this.button.querySelector('[data-button-label]').innerHTML = tr('app.label.uploading')
+            }
+            else {
+                this.button.removeClass('is-loading')
+                this.button.removeAttribute('disabled')
+                this.button.querySelector('[data-button-label]').innerHTML = this.buttonText
+            }
+        },
+
+        progress (value) {
+            this.button.querySelector('[data-button-label]').innerHTML = tr('app.label.uploading')+' '+value+'...'
+        },
+    }">
+        <input 
+            x-ref="fileinput"
+            x-on:change="read($event.target.files)"
+            x-on:input.stop
+            type="file"
+            accept="{{ $attributes->get('accept') }}"
+            @if ($attributes->get('multiple')) multiple @endif
+            class="hidden">
+
+        <x-button x-on:click.stop="$refs.fileinput.click()"
+            action="upload"
+            :attributes="$attributes->except([
+                'multiple',
+                'max',
+                'accept',
+                'action',
+                'class',
+            ])">
+        </x-button>
+    </div>
 @else
     <{{$element}}
         @if ($tooltip)
@@ -220,7 +290,7 @@ $except = [
                 @endif
         
                 @if ($label && ($label = is_array($label) ? tr(...$label) : tr($label)))
-                    <div class="grow font-medium tracking-wide">
+                    <div class="grow font-medium tracking-wide" data-button-label>
                         {!! $apa ? str()->apa($label) : $label !!}
                     </div>
                 @endif

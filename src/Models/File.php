@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Intervention\Image\ImageManagerStatic as Image;
-use Jiannius\Atom\Jobs\File\CreateThumbnails;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasUlid;
@@ -268,8 +266,10 @@ class File extends Model
     }
 
     // store file content
-    public function store($content, $path = 'uploads', $visibility = 'private')
+    public function store($content, $path = null, $visibility = null)
     {
+        $path = $path ?? 'uploads';
+        $visibility = $visibility ?? 'private';
         $file = model('file')->fill([
             'data' => ['env' => app()->environment()],
         ]);
