@@ -1,8 +1,6 @@
 <div class="flex flex-col gap-4">
-    @recaptcha
-
-    <x-form recaptcha="login">
-        <x-fieldset inputs>
+    <x-form x-recaptcha:submit.login.prevent="() => $wire.submit()">
+        <x-inputs>
             <div class="text-2xl font-bold">
                 {!! tr('app.label.signin') !!}
             </div>
@@ -22,7 +20,7 @@
                     <x-anchor label="app.label.forgot-password" :href="route('password.forgot')" class="text-sm"/>
                 @endif
             </div>
-        </x-fieldset>
+        </x-inputs>
 
         <x-slot:foot>
             <x-button action="submit" label="app.label.login" icon="login" color="theme" block lg/>

@@ -3,7 +3,7 @@ $id = $attributes->get('id') ?? $this->getName() ?? $this->id;
 $stacked = $attributes->get('stacked', false);
 $locked = $attributes->get('locked', false);
 $heading = $heading ?? $attributes->getAny('title', 'heading');
-$form = $attributes->hasLike('wire:submit*', 'x-on:submit*');
+$form = $attributes->hasLike('wire:submit*', 'x-on:submit*', 'x-recaptcha:submit*');
 $element = $form ? 'form' : 'div';
 $except = ['locked', 'title', 'heading', 'class', 'stacked'];
 @endphp

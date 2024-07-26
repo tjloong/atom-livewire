@@ -76,6 +76,8 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="description" content="{{ $meta->get('description') }}">
+<meta name="application-meta" content="application-meta"
+    data-recaptcha-sitekey="{{ settings('recaptcha_site_key') }}">
 
 @if ($noindex)
 <meta name="robots" content="noindex">

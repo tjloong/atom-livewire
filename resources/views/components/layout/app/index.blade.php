@@ -64,27 +64,29 @@
         class="app-layout-nav fixed top-0 bottom-0 left-0 z-40 bg-gray-800 overflow-hidden transition-all duration-200">
         <div class="flex flex-col h-full">
             <div class="shrink-0 py-3 px-4">
-            @isset($brand)
-                {{ $brand }}
-            @else
-                <a href="/app" class="flex items-center gap-2">
-                    <div class="shrink-0">
-                        <x-logo class="w-10 h-10" small/>
-                    </div>
-                    
-                    <div x-show="nav === 'lg' || !nav" class="text-white text-xl tracking-wider">
-                        <span class="font-bold">BACK</span><span class="font-light">OFFICE</span>
-                    </div>
-                </a>
-            @endisset
+                @isset ($brand)
+                    {{ $brand }}
+                @else
+                    <a href="/app" class="flex items-center gap-2">
+                        <div class="shrink-0">
+                            <x-logo class="w-10 h-10" small/>
+                        </div>
+                        
+                        <div x-show="nav === 'lg' || !nav" class="text-white text-xl tracking-wider">
+                            <span class="font-bold">BACK</span><span class="font-light">OFFICE</span>
+                        </div>
+                    </a>
+                @endisset
             </div>
 
-            <div {{ $nav->attributes->class([
-                'grow overflow-y-auto overflow-x-hidden pt-4',
-                $nav->attributes->get('class', 'flex flex-col gap-1'),
-            ]) }}>
-                {{ $nav }}
-            </div>
+            @isset ($nav)
+                <div {{ $nav->attributes->class([
+                    'grow overflow-y-auto overflow-x-hidden pt-4',
+                    $nav->attributes->get('class', 'flex flex-col gap-1'),
+                ]) }}>
+                    {{ $nav }}
+                </div>
+            @endisset
         </div>
     </aside>
 

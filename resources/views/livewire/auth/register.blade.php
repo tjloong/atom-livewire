@@ -4,9 +4,7 @@
         <x-divider label="or"/>
     @endif
 
-    @recaptcha
-
-    <x-form recaptcha="register">
+    <x-form  x-recaptcha:submit.register.prevent="() => $wire.submit()">
         <x-group>
         @if (!$errors->any() && $this->verification)
             <x-heading title="app.label.email-verification" xl/>

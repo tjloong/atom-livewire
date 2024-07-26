@@ -19,8 +19,8 @@ export default (el, { modifiers, expression }, { evaluateLater, evaluate }) => {
         else if (modifiers.includes('confirm')) {
             el.dispatchEvent(new CustomEvent('confirm', { bubbles: true, detail: {
                 type,
-                title: tr(params.title || 'Please Confirm'),
-                message: tr(params.message || 'Are you sure to proceed?'),
+                title: tr(params.title || (modifiers.includes('submit') ? 'app.alert.submit.title' : 'Please Confirm')),
+                message: tr(params.message || (modifiers.includes('submit') ? 'app.alert.submit.message' : 'Are you sure to proceed?')),
                 onConfirmed: params.confirm,
             }}))
         }

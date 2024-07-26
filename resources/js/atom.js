@@ -17,6 +17,7 @@ import Clipboard from './alpine/magic/clipboard.js'
 import Badge from './alpine/directive/badge.js'
 import Prompt from './alpine/directive/prompt.js'
 import WireOn from './alpine/directive/wire-on.js'
+import Recaptcha from './alpine/directive/recaptcha.js'
 import Autoresize from './alpine/directive/autoresize.js'
 
 window.dd = console.log.bind(console)
@@ -38,5 +39,6 @@ document.addEventListener('alpine:init', () => {
     Alpine.directive('badge', Badge)
     Alpine.directive('prompt', Prompt)
     Alpine.directive('wire-on', WireOn)
+    Alpine.directive('recaptcha', Recaptcha)
     Alpine.directive('autoresize', Autoresize)
 })

@@ -98,14 +98,6 @@ class AtomServiceProvider extends ServiceProvider
     // blades
     public function blades() : void
     {
-        Blade::directive('recaptcha', function() {
-            $sitekey = settings('recaptcha_site_key');
-
-            return $sitekey
-                ? "<?php echo '<script src=\"https://www.google.com/recaptcha/api.js?render=$sitekey\"></script>' ?>"
-                : "";
-        });
-
         Blade::if('route', function() {
             return current_route(func_get_args());
         });

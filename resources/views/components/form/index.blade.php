@@ -1,57 +1,22 @@
 @php
 $box = $attributes->get('no-box') ? false : $attributes->get('box', true);
-$submit = $attributes->get('submit', 'submit');
-$confirm = $attributes->get('confirm');
 $heading = $title ?? $heading ?? $attributes->get('title') ?? $attributes->get('heading');
-$recaptcha = [
-    'sitekey' => $attributes->get('recaptcha') ? settings('recaptcha_site_key') : null,
-    'action' => is_string($attributes->get('recaptcha')) ? $attributes->get('recaptcha') : 'submit',
-];
+$hasSubmitAction = $attributes->hasLike('wire:submit*', 'x-on:submit*', 'x-recaptcha:submit*');
 @endphp
 
 <form
     x-cloak
-    x-data="{
-        disabled: false,
-        confirm: @js($confirm),
-        recaptcha: @js($recaptcha),
-
-        autofocus () {
-            this.$nextTick(() => this.$el.querySelector('input[autofocus]')?.focus())
-        },
-
-        submit () {
-            if (this.confirm) {
-                $dispatch('confirm', {
-                    title: @js(tr('common.alert.submit.title')),
-                    message: @js(tr('common.alert.submit.message')),
-                    onConfirmed: () => this.verify(),
-                })
-            }
-            else this.verify()
-        },
-
-        verify () {
-            if (this.recaptcha.sitekey && !this.$wire.get('form.recaptcha_token') && window.grecaptcha !== undefined) {
-                this.disabled = true
-
-                grecaptcha.ready(() => {
-                    grecaptcha.execute(this.recaptcha.sitekey, { action: this.recaptcha.action })
-                        .then(token => (this.$wire.set('form.recaptcha_token', token)))
-                        .then(() => (this.$wire.call(@js($submit))))
-                        .then(() => this.disabled = false)
-                })
-            }
-            else this.$wire.call(@js($submit))
-        },
-    }"
-    x-init="autofocus"
-    x-on:submit.prevent="submit"
-    @if ($attributes->wire('loading')->value())
-    wire:loading.class="is-loading"
-    wire:target="{{ $submit }}"
+    x-data
+    x-init="$nextTick(() => $el.querySelector('input[autofocus]')?.focus())"
+    @if (!$hasSubmitAction)
+    wire:submit.prevent="submit"
     @endif
-    class="group/form relative">
+    @if (!$hasSubmitAction && $attributes->wire('loading')->value())
+    wire:loading.class="is-loading"
+    wire:target="submit"
+    @endif
+    class="group/form relative"
+    {{ $attributes->except(['no-box', 'box', 'title', 'heading']) }}>
     <div class="absolute inset-0 hidden group-[.is-loading]/form:block {{ $box ? 'bg-white opacity-30' : '' }}">
         <div class="absolute top-4 right-4">
             <x-spinner size="20"/>

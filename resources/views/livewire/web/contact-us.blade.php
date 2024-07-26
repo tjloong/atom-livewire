@@ -38,15 +38,13 @@
                     {{ str()->apa(tr('app.label.send-us-a-message')) }}
                 </div>
 
-                @recaptcha
-
-                <x-form recaptcha="contact_us">
-                    <x-group>
+                <x-form x-recaptcha:submit.contact-us.prevent="() => $wire.submit()">
+                    <x-inputs>
                         <x-input wire:model.defer="enquiry.name" label="app.label.your-name"/>
                         <x-phone wire:model.defer="enquiry.phone" label="app.label.contact-number"/>
                         <x-input type="email" wire:model.defer="enquiry.email" label="app.label.contact-email"/>
                         <x-textarea wire:model.defer="enquiry.message" label="app.label.your-message"/>
-                    </x-group>
+                    </x-inputs>
 
                     <x-slot:foot>
                         <x-button action="submit" label="app.label.send-enquiry" color="theme" lg block/>
