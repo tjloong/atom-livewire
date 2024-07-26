@@ -50,32 +50,6 @@ function has_component($name)
 }
 
 /**
- * Recaptcha verification
- */
-function verify_recaptcha($token, $secret = null)
-{
-    $secret = $secret ?? settings('recaptcha_secret') ?? env('RECAPTCHA_SECRET');
-
-	$data = http_build_query([
-		'secret' => $secret,
-		'response' => $token,
-		'remoteip' => $_SERVER['REMOTE_ADDR'],
-	]);
-
-	$opts = ['http' => [
-		'method' => 'POST',
-		'header' => 'Content-type: application/x-www-form-urlencoded',
-		'content' => $data,
-	]];
-
-	$context  = stream_context_create($opts);
-	$response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
-	$result = json_decode($response);
-
-	return $result->success;
-}
-
-/**
  * Flatten tabs array
  */
 function tabs($tabs, $value = false)

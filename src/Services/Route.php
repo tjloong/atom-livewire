@@ -57,6 +57,7 @@ class Route
     {
         $this->get('__sitemap', 'SitemapController')->name('__sitemap');
         $this->get('__locale/{locale}', 'LocaleController')->withoutMiddleware('web')->name('__locale');
+        $this->post('__recaptcha', 'RecaptchaController')->withoutMiddleware('web')->name('__recaptcha');
         $this->post('__select/get', 'SelectController@get')->name('__select.get');
 
         $this->post('__select', function() {

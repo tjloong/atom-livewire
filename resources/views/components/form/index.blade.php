@@ -17,8 +17,8 @@ $hasSubmitAction = $attributes->hasLike('wire:submit*', 'x-on:submit*', 'x-recap
     @endif
     class="group/form relative"
     {{ $attributes->except(['no-box', 'box', 'title', 'heading']) }}>
-    <div class="absolute inset-0 hidden group-[.is-loading]/form:block {{ $box ? 'bg-white opacity-30' : '' }}">
-        <div class="absolute top-4 right-4">
+    <div class="absolute inset-0 hidden group-[.is-loading]/form:block">
+        <div class="absolute top-4 right-4 text-theme">
             <x-spinner size="20"/>
         </div>
     </div>
