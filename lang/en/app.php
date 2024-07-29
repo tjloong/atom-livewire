@@ -410,6 +410,7 @@ return [
         'trashed' => 'Trashed',
         'twitter-url' => 'Twitter URL',
         'type' => 'Type',
+        'unable-to-edit' => 'Unable to edit',
         'unable-to-save' => 'Unable to save',
         'unable-to-sendmail' => 'Unable to send email',
         'unable-to-upload' => 'Unable to upload',
