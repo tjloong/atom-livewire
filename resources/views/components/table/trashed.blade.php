@@ -8,18 +8,17 @@
             @if ($this->tableShowTrashed)
                 {{ tr('app.label.showing-trashed', ['count' => $count]) }}
                 
-                <x-link label="app.label.clear" wire:key="table-clear-trashed" x-on:click="$dispatch('confirm', {
-                    title: '{{ tr('app.alert.clear-trashed.title') }}',
-                    message: '{{ tr('app.alert.clear-trashed.message') }}',
-                    type: 'error',
-                    onConfirmed: () => $wire.emptyTrashedTableRows(),
-                })"/>
+                <x-anchor label="app.label.clear" wire:key="table-clear-trashed" x-prompt.confirm.error="{
+                    title: tr('app.alert.clear-trashed.title'),
+                    message: tr('app.alert.clear-trashed.message'),
+                    confirm: () => $wire.emptyTrashedTableRows(),
+                }"/>
 
-                <x-link label="app.label.cancel" wire:key="table-cancel-show-trashed" wire:click="$set('tableShowTrashed', false)"/>
+                <x-anchor label="app.label.cancel" wire:key="table-cancel-show-trashed" wire:click="$set('tableShowTrashed', false)"/>
             @else
                 {{ tr('app.label.trashed-count', ['count' => $count]) }}
 
-                <x-link label="app.label.show" wire:key="table-show-trashed" x-on:click="() => {
+                <x-anchor label="app.label.show" wire:key="table-show-trashed" x-on:click="() => {
                     $wire.set('tableShowTrashed', true);
                     $wire.set('tableShowArchived', false)
                 }"/>

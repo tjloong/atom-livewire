@@ -63,5 +63,11 @@ $except = ['locked', 'title', 'heading', 'class', 'stacked'];
                 {{ $slot }}
             @endif
         </div>
+
+        @if (isset($foot) && $foot->isNotEmpty())
+            <div class="rounded-bl-xl {{ $foot->attributes->get('class', 'shrink-0 bg-gray-100 border-t p-4') }}">
+                {{ $foot }}
+            </div>
+        @endif
     </div>
 </{{ $element }}>

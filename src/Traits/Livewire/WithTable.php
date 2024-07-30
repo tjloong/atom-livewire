@@ -152,16 +152,18 @@ trait WithTable
     // empty trashed
     public function emptyTrashedTableRows() : void
     {
-        (clone $this->query)->onlyTrashed()
-            ->when($this->tableCheckboxes, fn($q) => $q->whereIn($this->query->getModel()->getTable().'.id', $this->tableCheckboxes))
-            ->forceDelete();
+        (clone $this->query)
+        ->onlyTrashed()
+        ->when($this->tableCheckboxes, fn($q) => $q->whereIn($this->query->getModel()->getTable().'.id', $this->tableCheckboxes))
+        ->get()
+        ->each(fn($row) => $row->forceDelete());
 
-            $this->reset([
-                'tableShowArchived',
-                'tableShowTrashed',
-                'tableCheckboxes',
-            ]);
+        $this->reset([
+            'tableShowArchived',
+            'tableShowTrashed',
+            'tableCheckboxes',
+        ]);
 
-            $this->popup('app.alert.trash-cleared');
+        $this->popup('app.alert.trash-cleared');
     }
 }

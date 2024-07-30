@@ -49,7 +49,7 @@ $wiremodel = $attributes->wire('model')->value();
             },
         }"
         x-modelable="value"
-        class="flex items-center w-full h-full -mx-1"
+        class="flex items-center w-full h-full px-1"
         {{ $attributes->whereStartsWith('x-') }}>
         @if (!$readonly && !$disabled)
             <button type="button" class="flex p-2 text-{{ $size }}" x-on:click.stop="spin('down')">
