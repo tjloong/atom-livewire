@@ -38,7 +38,7 @@
                     {{ str()->apa(tr('app.label.send-us-a-message')) }}
                 </div>
 
-                <x-form x-recaptcha:submit.contact-us.prevent="() => $wire.submit()">
+                <x-form x-recaptcha:submit.contact_us.prevent="() => $wire.submit()">
                     <x-inputs>
                         <x-input wire:model.defer="enquiry.name" label="app.label.your-name"/>
                         <x-phone wire:model.defer="enquiry.phone" label="app.label.contact-number"/>

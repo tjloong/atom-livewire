@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4">
-    <x-form x-recaptcha:submit.reset-password.prevent="() => $wire.submit()">
+    <x-form x-recaptcha:submit.reset_password.prevent="() => $wire.submit()">
         <x-inputs>
             <x-heading title="app.label.reset-password" xl/>
     

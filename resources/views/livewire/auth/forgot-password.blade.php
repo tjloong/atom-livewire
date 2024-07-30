@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4">
-    <x-form  x-recaptcha:submit.forgot-password.prevent="() => $wire.submit()">
+    <x-form  x-recaptcha:submit.forgot_password.prevent="() => $wire.submit()">
         <x-group>
             <div class="text-2xl font-bold">
                 {{ tr('auth.label.send-reset-password-request') }}
