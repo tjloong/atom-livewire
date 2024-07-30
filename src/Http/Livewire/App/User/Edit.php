@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\User;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
-class Update extends Component
+class Edit extends Component
 {
     use WithForm;
 
@@ -13,8 +13,7 @@ class Update extends Component
     public $inputs;
 
     protected $listeners = [
-        'createUser' => 'create',
-        'updateUser' => 'update',
+        'editUser' => 'open',
     ];
 
     // validation
@@ -41,25 +40,16 @@ class Update extends Component
         ];
     }
 
-    // create
-    public function create() : void
-    {
-        $this->user = model('user');
-        $this->open();
-    }
-
-    // update
-    public function update($id) : void
-    {
-        $this->user = model('user')->withTrashed()->find($id);
-        $this->open();
-    }
-
-
     // open
-    public function open() : void
+    public function open($data = []) : void
     {
-        if ($this->user) {
+        $id = get($data, 'id');
+
+        if (
+            $this->user = $id
+            ? model('user')->withTrashed()->find($id)
+            : model('user')->fill($data)
+        ) {
             $this->resetValidation();
 
             $this->fill([
@@ -69,14 +59,8 @@ class Update extends Component
                 'inputs.permissions' => $this->user->getPermissionsList(),
             ]);
 
-            $this->modal(id: 'user-update');
+            $this->overlay();
         }
-    }
-
-    // close
-    public function close() : void
-    {
-        $this->modal(false, 'user-update');
     }
 
     // trash
@@ -90,8 +74,7 @@ class Update extends Component
         }
         else {
             $this->user->delete();
-            $this->emit('userDeleted');
-            $this->close();
+            $this->overlay(false);
         }
     }
 
@@ -99,16 +82,14 @@ class Update extends Component
     public function delete() : void
     {
         $this->user->forceDelete();
-        $this->emit('userDeleted');
-        $this->close();
+        $this->overlay(false);
     }
 
     // restore
     public function restore() : void
     {
         $this->user->restore();
-        $this->emit('userUpdated');
-        $this->close();
+        $this->overlay(false);
     }
 
     // submit
@@ -128,11 +109,6 @@ class Update extends Component
         }
         
         $this->user->save();
-        $this->user->savePermissions(data_get($this->inputs, 'permissions'));
-
-        if ($this->user->wasRecentlyCreated) $this->emit('userCreated');
-        else $this->emit('userUpdated');
-
-        $this->close();
+        $this->overlay(false);
     }
 }

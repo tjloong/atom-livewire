@@ -33,7 +33,7 @@ $except = ['locked', 'title', 'heading', 'class', 'stacked'];
                 </button>
             </div>
 
-            <div class="grow flex gap-3">
+            <div class="grow flex flex-wrap gap-3">
                 <div class="grow">
                     @if ($heading instanceof \Illuminate\View\ComponentSlot)
                         @if ($heading->isNotEmpty())
@@ -47,7 +47,7 @@ $except = ['locked', 'title', 'heading', 'class', 'stacked'];
                 </div>
 
                 @if (isset($buttons) && $buttons->isNotEmpty())
-                    <div {{ $buttons->attributes->class(['shrink-0 flex items-center gap-2']) }}>
+                    <div {{ $buttons->attributes->class(['flex flex-wrap items-center gap-2']) }}>
                         {{ $buttons }}
                     </div>
                 @endif

@@ -15,9 +15,7 @@ class Listing extends Component
     ];
 
     protected $listeners = [
-        'userCreated' => '$refresh',
-        'userUpdated' => '$refresh',
-        'userDeleted' => '$refresh',
+        'closeUser' => '$refresh',
     ];
 
     // mount

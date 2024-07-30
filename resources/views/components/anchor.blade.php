@@ -1,5 +1,6 @@
 @php
-$label = $attributes->get('label') ?? $attributes->get('href');
+$href = $attributes->get('href');
+$label = $attributes->get('label') ?? $href;
 $icon = $attributes->get('icon');
 $iconsuffix = $attributes->get('icon-suffix');
 $align = $attributes->get('align');

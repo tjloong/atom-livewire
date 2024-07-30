@@ -15,7 +15,7 @@ export default (el, { value, expression, modifiers }, { evaluate, evaluateLater 
     let action = modifiers.filter(val => !['prevent', 'stop'].includes(val))[0]
     let handler = evaluateLater(expression)
 
-    loadRecaptchaScript(sitekey)
+    if (sitekey) loadRecaptchaScript(sitekey)
 
     el.addEventListener(value, (e) => {
         if (modifiers.includes('prevent')) e.preventDefault()
