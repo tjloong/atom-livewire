@@ -384,6 +384,7 @@ return [
         'subscription' => 'Subscriptions',
         'subtotal' => 'Subtotal',
         'sync' => 'Sync',
+        'syncing' => 'Syncing',
         'system' => 'System',
         'tag' => 'Tags',
         'task' => 'Task|Tasks',
