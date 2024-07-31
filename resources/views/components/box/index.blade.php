@@ -3,18 +3,28 @@ $icon = $attributes->get('icon');
 $href = $attributes->get('href');
 $target = $attributes->get('target', '_self');
 $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
-$element = $href ? 'a' : 'div';
+$hasSubmitAction = $attributes->hasLike('wire:submit*', 'x-on:submit*', 'x-recaptcha:submit*') || is_string($attributes->get('submit'));
+$element = pick([
+    'a' => !empty($href),
+    'form' => $attributes->get('form') || $attributes->get('submit') || $hasSubmitAction,
+    'div' => true,
+]);
 $heading = $heading ?? $title ?? $attributes->get('heading') ?? $attributes->get('title');
-$except = ['cover', 'title', 'heading', 'class'];
+$except = ['cover', 'title', 'heading', 'href', 'target', 'rel', 'submit', 'class'];
 @endphp
 
 <{{ $element }}
+    @if ($element === 'a')
+    href="{{ $href }}"
+    target="{{ $target }}"
+    rel="{{ $rel }}"
+    @elseif ($element === 'form' && !$hasSubmitAction)
+    wire:submit.prevent="submit"
+    @elseif ($element === 'form' && $hasSubmitAction)
+    wire:submit.prevent="{{ $attributes->get('submit') }}"
+    @endif
     class="box group/box relative bg-white rounded-xl border shadow-sm w-full"
-    {{ $attributes->merge([
-        'href' => $element === 'a' ? $href : null,
-        'target' => $element === 'a' ? $target : null,
-        'rel' => $element === 'a' ? $rel : null,
-    ])->except($except) }}>
+    {{ $attributes->except($except) }}>
     <div class="absolute top-4 right-4 hidden group-[.is-loading]/box:block">
         <x-spinner size="20" class="text-theme"/>
     </div>

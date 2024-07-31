@@ -21,6 +21,6 @@
     style="z-index: 999">
     <x-spinner size="18" class="text-theme"/>
     <div class="font-medium text-white">
-        {{ tr('app.label.syncing') }}...
+        {{ tr('app.label.working-on-it') }}...
     </div>
 </div>
