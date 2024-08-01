@@ -38,10 +38,9 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'auth.reset-password' => 'Auth\ResetPassword',
             'auth.forgot-password' => 'Auth\ForgotPassword',
 
+            'app.share' => 'App\Share',
             'app.dashboard' => 'App\Dashboard',
             'app.footprint' => 'App\Footprint',
-            'app.sendmail' => 'App\Sendmail',
-            'app.share' => 'App\Share',
 
             'app.signup' => 'App\Signup\Index',
             'app.signup.listing' => 'App\Signup\Listing',
@@ -75,9 +74,10 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.audit.show' => 'App\Audit\Show',
             'app.audit.listing' => 'App\Audit\Listing',
 
-            'app.notilog' => 'App\Notilog\Index',
-            'app.notilog.show' => 'App\Notilog\Show',
-            'app.notilog.listing' => 'App\Notilog\Listing',
+            'app.sendmail' => 'App\Sendmail\Index',
+            'app.sendmail.edit' => 'App\Sendmail\Edit',
+            'app.sendmail.listing' => 'App\Sendmail\Listing',
+            'app.sendmail.composer' => 'App\Sendmail\Composer',
 
             'app.label.edit' => 'App\Label\Edit',
             'app.label.listing' => 'App\Label\Listing',

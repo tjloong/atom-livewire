@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App\Notilog;
+namespace Jiannius\Atom\Http\Livewire\App\Sendmail;
 
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithTable;
@@ -11,26 +11,25 @@ class Listing extends Component
 
     public $filters = [
         'search' => null,
-        'channel' => [],
         'status' => [],
         'tags' => [],
     ];
 
     protected $listeners = [
-        'closeNotilog' => '$refresh',
+        'closeSendmail' => '$refresh',
     ];
 
     // get query property
     public function getQueryProperty() : mixed
     {
-        return model('notilog')->when(!$this->tableOrderBy, fn($q) => $q->latest());
+        return model('sendmail')->when(!$this->tableOrderBy, fn($q) => $q->latest());
     }
 
     // delete
     public function delete() : void
     {
         if ($this->tableCheckboxes) {
-            model('notilog')->whereIn('id', $this->checkboxes)->delete();
+            model('sendmail')->whereIn('id', $this->checkboxes)->delete();
         }
 
         $this->reset('tableCheckboxes');

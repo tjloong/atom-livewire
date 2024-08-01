@@ -1,13 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App;
+namespace Jiannius\Atom\Http\Livewire\App\Sendmail;
 
 use Illuminate\Support\Facades\Mail;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Livewire\WithFileUploads;
 
-class Sendmail extends Component
+class Composer extends Component
 {
     use WithFileUploads;
     use WithForm;
