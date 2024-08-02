@@ -1,5 +1,5 @@
 <div class="relative max-w-screen-xl">
-    <x-dropzone multiple/>
+    <x-file-dropzone multiple/>
 
     <x-heading lg
         title="app.label.files-and-media"

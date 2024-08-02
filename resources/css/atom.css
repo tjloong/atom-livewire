@@ -82,6 +82,11 @@ a {
     position: relative !important;
 }
 
+/* file dropzone */
+.file-dropzone {
+    min-height: 200px;
+}
+
 /* Forms related */
 input:focus, 
 select:focus, 
