@@ -3,14 +3,13 @@ $icon = $attributes->get('icon');
 $href = $attributes->get('href');
 $target = $attributes->get('target', '_self');
 $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
-$hasSubmitAction = $attributes->hasLike('wire:submit*', 'x-on:submit*', 'x-recaptcha:submit*') || is_string($attributes->get('submit'));
 $element = pick([
     'a' => !empty($href),
-    'form' => $attributes->get('form') || $attributes->get('submit') || $hasSubmitAction,
+    'form' => !empty($attributes->submitAction()),
     'div' => true,
 ]);
 $heading = $heading ?? $title ?? $attributes->get('heading') ?? $attributes->get('title');
-$except = ['cover', 'title', 'heading', 'href', 'target', 'rel', 'submit', 'class'];
+$except = ['cover', 'title', 'heading', 'href', 'target', 'rel', 'submit', 'form', 'class'];
 @endphp
 
 <{{ $element }}
@@ -18,10 +17,8 @@ $except = ['cover', 'title', 'heading', 'href', 'target', 'rel', 'submit', 'clas
     href="{{ $href }}"
     target="{{ $target }}"
     rel="{{ $rel }}"
-    @elseif ($element === 'form' && !$hasSubmitAction)
-    wire:submit.prevent="submit"
-    @elseif ($element === 'form' && $hasSubmitAction)
-    wire:submit.prevent="{{ $attributes->get('submit') }}"
+    @elseif (is_string($attributes->submitAction()))
+    wire:submit.prevent="{{ $attributes->submitAction() }}"
     @endif
     class="box group/box relative bg-white rounded-xl border shadow-sm w-full"
     {{ $attributes->except($except) }}>

@@ -263,6 +263,17 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
+        if (!ComponentAttributeBag::hasMacro('submitAction')) {
+            ComponentAttributeBag::macro('submitAction', function() {
+                if ($this->hasLike('wire:submit*', 'x-on:submit*', 'x-recaptcha:submit*')) return true;
+                if (is_string($this->get('submit'))) return $this->get('submit');
+                if (is_string($this->get('form'))) return $this->get('form');
+                if ($this->has('submit') || $this->has('form')) return 'submit';
+
+                return false;
+            });
+        }
+
         if (!ComponentAttributeBag::hasMacro('getAny')) {
             ComponentAttributeBag::macro('getAny', function(...$args) {
                 return collect($args)->map(fn($arg) => $this->get($arg))->filter()->first();
