@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Page;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
-class Update extends Component
+class Edit extends Component
 {
     use WithForm;
 
@@ -13,7 +13,7 @@ class Update extends Component
     public $autosavedAt;
 
     protected $listeners = [
-        'updatePage' => 'update',
+        'editPage' => 'open',
     ];
 
     // validation
@@ -44,36 +44,19 @@ class Update extends Component
         $this->autosavedAt = now();
     }
 
-    // update
-    public function update($id) : void
-    {
-        $this->page = model('page')->find($id);
-        $this->open();
-    }
-
     // open
-    public function open() : void
+    public function open($id) : void
     {
-        if ($this->page) {
-            $this->modal();
+        if ($this->page = model('page')->find($id)) {
+            $this->overlay();
         }
-    }
-
-    // close
-    public function close(): void
-    {
-        $this->emit('setPageId');
-        $this->modal(false);
     }
 
     // submit
     public function submit() : void
     {
         $this->validateForm();
-
         $this->page->save();
-
-        $this->emit('pageUpdated');
-        $this->close();
+        $this->overlay(false);
     }
 }

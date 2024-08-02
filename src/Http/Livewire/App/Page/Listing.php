@@ -14,9 +14,7 @@ class Listing extends Component
     ];
 
     protected $listeners = [
-        'pageCreated' => '$refresh',
-        'pageUpdated' => '$refresh',
-        'pageDeleted' => '$refresh',
+        'closePage' => '$refresh',
     ];
 
     // get query property
