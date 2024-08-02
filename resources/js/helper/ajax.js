@@ -11,9 +11,12 @@ export default class
     }
 
     get (payload) {
-        return fetch(this.url, {
+        let url = !empty(payload)
+            ? this.url+'?'+new URLSearchParams(payload).toString()
+            : this.url
+
+        return fetch(url, {
             method: 'GET',
-            body: JSON.stringify(payload),
             headers: {
                 'Content-Type': 'application/json', 
                 ...this.headers,

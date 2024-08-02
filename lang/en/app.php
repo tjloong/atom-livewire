@@ -446,6 +446,8 @@ return [
         'your-message' => 'Your message',
         'your-name' => 'Your name',
         'youtube-url' => 'Youtube URL',
+        'remove-selected-records' => 'Remove selected records',
+        'are-you-sure-to-remove-selected-records' => 'Are you sure to remove the selected records?',
     ],
 
     'alert' => [
