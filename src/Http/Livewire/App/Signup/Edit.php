@@ -4,26 +4,19 @@ namespace Jiannius\Atom\Http\Livewire\App\Signup;
 
 use Jiannius\Atom\Component;
 
-class Update extends Component
+class Edit extends Component
 {
     public $signup;
 
     protected $listeners = [
-        'updateSignup' => 'open',
+        'editSignup' => 'open',
     ];
 
     // open
     public function open($id) : void
     {
         if ($this->signup = model('signup')->find($id)) {
-            $this->modal(id: 'signup-update');
+            $this->overlay();
         }
-    }
-
-    // close
-    public function close() : void
-    {
-        $this->emit('setSignupId');
-        $this->modal(false, 'signup-update');
     }
 }
