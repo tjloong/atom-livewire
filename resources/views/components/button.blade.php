@@ -181,7 +181,7 @@ $except = [
         init () {
             this.$nextTick(() => {
                 this.button = $root.querySelector('button')
-                this.buttonText = this.button.querySelector('[data-button-label]').innerHTML
+                if (this.button) this.buttonText = this.button.querySelector('[data-button-label]').innerHTML
             })
         },
 
@@ -202,6 +202,8 @@ $except = [
         },
 
         loading (bool = true) {
+            if (!this.button) return
+
             if (bool) {
                 this.button.addClass('is-loading')
                 this.button.setAttribute('disabled')
@@ -215,6 +217,7 @@ $except = [
         },
 
         progress (value) {
+            if (!this.button) return
             this.button.querySelector('[data-button-label]').innerHTML = tr('app.label.uploading')+' '+value+'...'
         },
     }"
@@ -228,16 +231,22 @@ $except = [
             @if ($attributes->get('multiple')) multiple @endif
             class="hidden">
 
-        <x-button x-on:click.stop="$refs.fileinput.click()"
-            action="upload"
-            :attributes="$attributes->except([
-                'multiple',
-                'max',
-                'accept',
-                'action',
-                'class',
-            ])">
-        </x-button>
+        @if ($slot->isNotEmpty())
+            <div class="cursor-pointer" x-on:click.stop="$refs.fileinput.click()">
+                {{ $slot }}
+            </div>
+        @else
+            <x-button x-on:click.stop="$refs.fileinput.click()"
+                action="upload"
+                :attributes="$attributes->except([
+                    'multiple',
+                    'max',
+                    'accept',
+                    'action',
+                    'class',
+                ])">
+            </x-button>
+        @endif
     </div>
 @else
     <{{$element}}
