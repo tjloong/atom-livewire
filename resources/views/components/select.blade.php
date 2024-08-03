@@ -215,10 +215,10 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
             },
         }"
         x-modelable="value"
-        x-on:keydown.down.stop="navigate('down')"
-        x-on:keydown.up.stop="navigate('up')"
-        x-on:keydown.esc.prevent="close()"
-        x-on:keydown.enter.stop="autoselect()"
+        x-on:keydown.down.stop.prevent="navigate('down')"
+        x-on:keydown.up.stop.prevent="navigate('up')"
+        x-on:keydown.esc.stop.prevent="close()"
+        x-on:keydown.enter.stop.prevent="autoselect()"
         class="w-full h-full"
         {{ $attributes->except($except)}}>
         <button

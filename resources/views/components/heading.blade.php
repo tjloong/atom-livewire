@@ -6,19 +6,28 @@ $status = $status ?? $attributes->get('status');
 $subtitle = $subtitle ?? $attributes->get('subtitle');
 $size = $attributes->size('md');
 $except = ['apa', 'title', 'icon', 'status', 'subtitle'];
+
+$margin = $attributes->get('no-margin') ? null : [
+    'sm' => 'mb-0',
+    'md' => 'mb-2',
+    'lg' => 'mb-4',
+    'xl' => 'mb-5',
+    '2xl' => 'mb-6',
+    '3xl' => 'mb-6',
+][$size];
+
+$fontsize = [
+    'sm' => 'text-base font-semibold',
+    'md' => 'text-lg font-semibold',
+    'lg' => 'text-xl font-semibold',
+    'xl' => 'text-2xl font-bold',
+    '2xl' => 'text-3xl font-bold',
+    '3xl' => 'text-4xl font-bold',
+    '4xl' => 'text-5xl font-bold',
+][$size]
 @endphp
 
-<div {{ $attributes->class([
-    'flex items-center gap-3 flex-wrap',
-    !$attributes->get('class') ? [
-        'sm' => 'mb-0',
-        'md' => 'mb-2',
-        'lg' => 'mb-4',
-        'xl' => 'mb-4',
-        '2xl' => 'mb-6',
-        '3xl' => 'mb-6',
-    ][$size] : null,
-])->only('class') }}>
+<div {{ $attributes->class(['flex items-center gap-3 flex-wrap', $margin])->only('class') }}>
     @if ($icon instanceof \Illuminate\View\ComponentSlot)
         <div {{ $icon->attributes->merge(['class' => 'shrink-0']) }}>
             {{ $icon }}
@@ -34,15 +43,7 @@ $except = ['apa', 'title', 'icon', 'status', 'subtitle'];
             @if ($title instanceof \Illuminate\View\ComponentSlot)
                 {{ $title }}
             @else
-                <div class="{{ [
-                    'sm' => 'text-base font-semibold',
-                    'md' => 'text-lg font-semibold',
-                    'lg' => 'text-xl font-semibold',
-                    'xl' => 'text-2xl font-bold',
-                    '2xl' => 'text-3xl font-bold',
-                    '3xl' => 'text-4xl font-bold',
-                    '4xl' => 'text-5xl font-bold',
-                ][$size] }}">
+                <div class="{{ $fontsize }}">
                     {!! $apa ? str()->apa(tr($title)) : tr($title) !!}
                 </div>
             @endif

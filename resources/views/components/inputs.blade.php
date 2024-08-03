@@ -5,12 +5,23 @@ $nopadding = $attributes->get('no-padding');
 $except = ['title', 'heading', 'cols'];
 @endphp
 
-<fieldset class="border-t first:border-t-0 {{ $nopadding ? '' : 'p-5' }}">
-    @if ($title) <x-heading title="{!! tr($title) !!}" class="mb-5"/> @endif
+<div>
+    @if ($title instanceof \Illuminate\View\ComponentSlot)
+        {{ $title }}
+    @elseif ($title)
+        <div class="py-3 flex items-center gap-3 {{ $nopadding ? '' : 'px-5' }}">
+            <div class="shrink-0 font-medium">
+                {!! tr($title) !!}
+            </div>
 
-    <div {{ $attributes->class(array_filter([
+            <div class="grow h-px bg-gray-200"></div>
+        </div>
+    @endif
+
+    <div {{ $attributes->class([
         "grid gap-5 md:grid-cols-$cols",
-    ]))->except($except) }}>
+        $nopadding ? '' : 'p-5',
+    ])->except($except) }}>
         {{ $slot }}
     </div>
-</fieldset>
+</div>

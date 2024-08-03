@@ -8,8 +8,8 @@ $element = pick([
     'form' => !empty($attributes->submitAction()),
     'div' => true,
 ]);
-$heading = $heading ?? $title ?? $attributes->get('heading') ?? $attributes->get('title');
-$except = ['cover', 'title', 'heading', 'href', 'target', 'rel', 'submit', 'form', 'class'];
+$title = $title ?? $heading ?? $attributes->getAny('title', 'heading');
+$except = ['cover', 'title', 'heading', 'href', 'target', 'rel', 'submit', 'form'];
 @endphp
 
 <{{ $element }}
@@ -20,18 +20,19 @@ $except = ['cover', 'title', 'heading', 'href', 'target', 'rel', 'submit', 'form
     @elseif (is_string($attributes->submitAction()))
     wire:submit.prevent="{{ $attributes->submitAction() }}"
     @endif
-    class="box group/box relative bg-white rounded-xl border shadow-sm w-full"
-    {{ $attributes->except($except) }}>
+    {{ $attributes->merge([
+        'class' => 'box group/box relative bg-white rounded-lg border shadow-sm w-full',
+    ])->except($except) }}>
     <div class="absolute top-4 right-4 hidden group-[.is-loading]/box:block">
         <x-spinner size="20" class="text-theme"/>
     </div>
 
-    @if ($heading instanceof \Illuminate\View\ComponentSlot)
-        <x-heading class="p-4 mb-0" :attributes="$heading->attributes">
-            {{ $heading }}
+    @if ($title instanceof \Illuminate\View\ComponentSlot)
+        <x-heading no-margin :attributes="$title->attributes->merge(['class' => 'p-4 rounded-t-lg'])">
+            {{ $title }}
         </x-heading>
-    @elseif ($heading)
-        <x-heading class="p-4 mb-0" :title="$heading" :icon="$icon"/>
+    @elseif ($title)
+        <x-heading no-margin :title="$title" :icon="$icon" class="p-4 rounded-t-lg"/>
     @endif
 
     @isset ($figure)
@@ -50,13 +51,11 @@ $except = ['cover', 'title', 'heading', 'href', 'target', 'rel', 'submit', 'form
     @endisset
 
     @if ($slot->isNotEmpty())
-        <div {{ $attributes->only('class') }}>
-            {{ $slot }}
-        </div>
+        {{ $slot }}
     @endif
 
     @isset ($foot)
-        <div {{ $foot->attributes->merge(['class' => 'py-3 px-4 bg-slate-100 rounded-b-xl']) }}>
+        <div {{ $foot->attributes->merge(['class' => 'p-4 border-t bg-slate-100 rounded-b-lg']) }}>
             {{ $foot }}
         </div>
     @endisset
