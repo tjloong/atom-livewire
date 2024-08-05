@@ -8,7 +8,7 @@
             <x-button action="send" color="green" wire:loading/>
         </x-slot:buttons>
 
-        <x-fieldset inputs>
+        <x-inputs>
             <x-input type="email" wire:model.defer="email.sender_email" label="app.label.sender-email"/>
             <x-input wire:model.defer="email.sender_name" label="app.label.sender-name"/>
             <x-input type="email" wire:model.defer="email.reply_to" label="app.label.reply-to"/>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </x-field>
-        </x-fieldset>
+        </x-inputs>
     @else
         <div class="p-5">
             <x-skeleton/>

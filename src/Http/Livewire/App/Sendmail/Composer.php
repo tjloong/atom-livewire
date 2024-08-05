@@ -12,6 +12,7 @@ class Composer extends Component
     use WithFileUploads;
     use WithForm;
 
+    public $model;
     public $email = [];
     public $uploads = [];
 
@@ -63,11 +64,11 @@ class Composer extends Component
     public function load($data = []) : void
     {
         if (($id = get($data, 'id')) && ($model = get($data, 'model'))) {
-            $model = str($model)->startsWith('App\\Models')
+            $this->model = str($model)->startsWith('App\\Models')
                 ? app($model)->find($id)
                 : model($model)->find($id);
 
-            $data = $model->composeEmail(get($data, 'data'));
+            $data = $this->model->composeEmail(get($data, 'data'));
         }
         else if (($id = get($data, 'share_id')) && ($share = model('share')->find($id))) {
             $data = $share->parent->composeEmail();
@@ -199,7 +200,11 @@ class Composer extends Component
                 ->cc($cc)
                 ->bcc($bcc)
                 ->send(new \Jiannius\Atom\Mail\Sendmail($this->email));
-    
+
+            if (method_exists($this->model, 'emailSent')) {
+                $this->model->emailSent();
+            }
+
             $this->popup(tr('app.alert.email-sent'));
             $this->overlay(false);
         }
