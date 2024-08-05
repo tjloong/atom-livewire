@@ -1,6 +1,4 @@
-<x-drawer
-    x-wire-on:sendmail="(data) => open()?.then(() => $wire.load(data))"
-    x-on:close="$wire.cleanup()">
+<x-drawer wire:close="cleanup">
     <x-slot:heading title="app.label.send-email"></x-slot:heading>
     
     @if ($email)
@@ -12,8 +10,8 @@
             <x-input type="email" wire:model.defer="email.sender_email" label="app.label.sender-email"/>
             <x-input wire:model.defer="email.sender_name" label="app.label.sender-name"/>
             <x-input type="email" wire:model.defer="email.reply_to" label="app.label.reply-to"/>
-            <x-email wire:model.defer="email.to" label="app.label.to" :options="get($email, 'email_options')" multiple/>
-            <x-email wire:model.defer="email.cc" label="app.label.cc" :options="get($email, 'email_options')" multiple/>
+            <x-email wire:model.defer="email.to" label="app.label.to" :options="get($email, 'email_options', [])" multiple/>
+            <x-email wire:model.defer="email.cc" label="app.label.cc" :options="get($email, 'email_options', [])" multiple/>
             <x-email wire:model.defer="email.bcc" label="app.label.bcc" multiple/>
             <x-input wire:model.defer="email.subject" label="app.label.subject"/>
             <x-textarea wire:model.defer="email.body" label="app.label.body" rows="10"/>
@@ -51,9 +49,5 @@
                 </div>
             </x-field>
         </x-inputs>
-    @else
-        <div class="p-5">
-            <x-skeleton/>
-        </div>
     @endif
 </x-drawer>

@@ -16,6 +16,10 @@ class Composer extends Component
     public $email = [];
     public $uploads = [];
 
+    protected $listeners = [
+        'sendmail' => 'open',
+    ];
+
     // validation
     protected function validation() : array
     {
@@ -60,9 +64,11 @@ class Composer extends Component
         $this->email = [...$this->email, 'attachments' => $attachments->values()->all()];
     }
 
-    // load
-    public function load($data = []) : void
+    // open
+    public function open($data = []) : void
     {
+        $this->cleanup();
+
         if (($id = get($data, 'id')) && ($model = get($data, 'model'))) {
             $this->model = str($model)->startsWith('App\\Models')
                 ? app($model)->find($id)
@@ -75,6 +81,7 @@ class Composer extends Component
         }
 
         $this->compose($data);
+        $this->overlay();
     }
 
     // compose
@@ -92,13 +99,13 @@ class Composer extends Component
             'body' => null,
             'tags' => [],
             'placeholders' => [],
+            'attachments' => [],
             ...$data,
         ];
 
         $this->sanitizeEmailAddress();
         $this->setPlaceholders();
         $this->setAttachments();
-
     }
 
     // sanitize email address
@@ -138,25 +145,23 @@ class Composer extends Component
     // set attachments
     public function setAttachments() : void
     {
-        $this->email = [...$this->email,
-            'attachments' => collect(get($this->email, 'attachments'))->map(function($attachment) {
-                $id = (string) str()->ulid();
-                $pdf = get($attachment, 'pdf');
-                $path = get($attachment, 'path');
-                $filename = get($attachment, 'filename', $id);
-                
-                if ($pdf) {
-                    $path = storage_path('app/mail/'.$filename);
-                    $pdf->save($path);
-                }
+        $this->email['attachments'] = collect(get($this->email, 'attachments'))->map(function($attachment) {
+            $id = (string) str()->ulid();
+            $pdf = get($attachment, 'pdf');
+            $path = get($attachment, 'path');
+            $filename = get($attachment, 'filename', $id);
+            
+            if ($pdf) {
+                $path = storage_path('app/mail/'.$filename);
+                $pdf->save($path);
+            }
 
-                return [
-                    'id' => $id,
-                    'path' => $path,
-                    'filename' => $filename,
-                ];
-            })->toArray(),
-        ];
+            return [
+                'id' => $id,
+                'path' => $path,
+                'filename' => $filename,
+            ];
+        })->toArray();
     }
 
     // cleanup
@@ -165,9 +170,10 @@ class Composer extends Component
         collect(get($this->email, 'attachments'))
             ->filter(fn($attachment) => str(get($attachment, 'path'))->is('*/storage/app/mail/*'))
             ->map(fn($attachment) => get($attachment, 'path'))
+            ->filter(fn($path) => file_exists($path))
             ->each(fn($path) => unlink($path));
 
-        $this->reset('email', 'uploads');
+        $this->reset('model', 'email', 'uploads');
     }
 
     // detach

@@ -28,7 +28,7 @@ $except = ['prefix', 'suffix', 'icon', 'multiple', 'placeholder', 'options'];
                 .filter(opt => {
                     let text = this.multiple ? this.search : this.value
                     let search = text ? (opt.email.includes(text) || opt.name.includes(text)) : true
-                    let exists = this.multiple ? this.value.some(val => (val.email === opt.email)) : this.value === opt.email
+                    let exists = this.multiple ? (this.value || []).some(val => (val.email === opt.email)) : this.value === opt.email
                     return !exists && search
                 })
             },
