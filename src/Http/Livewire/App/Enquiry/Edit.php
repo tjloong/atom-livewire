@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
-class Update extends Component
+class Edit extends Component
 {
     use WithForm;
 
@@ -13,7 +13,7 @@ class Update extends Component
     public $enquiry;
 
     protected $listeners = [
-        'updateEnquiry' => 'open',
+        'editEnquiry' => 'open',
     ];
 
     // validation
@@ -26,27 +26,19 @@ class Update extends Component
     }
 
     // open
-    public function open($id = null) : void
+    public function open($id) : void
     {
         if ($this->enquiry = model('enquiry')->find($id)) {
             $this->fill(['inputs.status' => $this->enquiry->status->value]);
-            $this->modal();
+            $this->overlay();
         }
-    }
-
-    // close
-    public function close() : void
-    {
-        $this->emit('setEnquiryId');
-        $this->modal(false);
     }
 
     // delete
     public function delete() : void
     {
         $this->enquiry->delete();
-        $this->emit('enquiryDeleted');
-        $this->close();
+        $this->overlay(false);
     }
 
     // submit
@@ -58,9 +50,6 @@ class Update extends Component
             'status' => data_get($this->inputs, 'status'),
         ])->save();
 
-        if ($this->enquiry->wasRecentlyCreated) $this->emit('enquiryCreated');
-        else $this->emit('enquiryUpdated');
-        
-        $this->close();
+        $this->overlay(false);
     }
 }

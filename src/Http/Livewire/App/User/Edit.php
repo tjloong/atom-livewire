@@ -56,7 +56,6 @@ class Edit extends Component
                 'inputs.password' => null,
                 'inputs.is_root' => $this->user->exists ? $this->user->isTier('root') : tier('root'),
                 'inputs.is_blocked' => !empty($this->user->blocked_at),
-                'inputs.permissions' => $this->user->getPermissionsList(),
             ]);
 
             $this->overlay();
@@ -68,8 +67,8 @@ class Edit extends Component
     {
         if ($this->user->id === user('id')) {
             $this->popup([
-                'title' => 'atom::settings.user.delete.failed.self.title',
-                'message' => 'atom::settings.user.delete.failed.self.message',
+                'title' => 'app.label.unable-to-delete-user',
+                'message' => 'app.label.you-cannot-delete-yourself',
             ], 'alert', 'error');
         }
         else {

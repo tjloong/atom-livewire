@@ -16,8 +16,7 @@ class Listing extends Component
     ];
 
     protected $listeners = [
-        'enquiryUpdated' => '$refresh',
-        'enquiryDeleted' => '$refresh',
+        'closeEnquiry' => '$refresh',
     ];
 
     // get query property
