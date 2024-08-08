@@ -2,6 +2,7 @@
 $field = $attributes->field();
 $icon = $attributes->get('icon');
 $label = $attributes->get('label');
+$align = $attributes->get('align');
 $required = $attributes->get('required') || (get($this, 'form.required', [])[$field] ?? false);
 
 if (!$label && $field) {
@@ -12,8 +13,8 @@ if (!$label && $field) {
 }
 
 $align = pick([
-    'justify-end' => $attributes->has('right'),
-    'justify-center' => $attributes->has('center'),
+    'justify-end' => $align === 'right',
+    'justify-center' => $align === 'center',
     'justify-start' => true,
 ]);
 

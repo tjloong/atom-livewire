@@ -87,6 +87,29 @@ a {
     min-height: 200px;
 }
 
+/* sortable ghost */
+[x-sort\.ghost] .sortable-ghost > div {
+    opacity: 0;
+}
+
+[x-sort\.ghost] .sortable-ghost {
+    overflow: hidden;
+    border: 2px dashed #d1d5db;
+    background: repeating-linear-gradient(
+        45deg,
+        white,
+        white 2px,
+        #eee 2px,
+        #eee 4px
+    );
+}
+
+[x-sort\.ghost] .sortable-drag > div {
+    background-color: white;
+    border: 1px solid #d1d5db;
+    transform: rotate(-2deg);
+}
+
 /* Forms related */
 input:focus, 
 select:focus, 

@@ -9,6 +9,7 @@ $inline = $attributes->get('block') ? false : $attributes->get('inline', true);
 $href = $attributes->get('href');
 $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
 $target = $attributes->get('target', '_self');
+$address = $attributes->get('address');
 
 $badges = $attributes->get('badges') ?? $attributes->get('badge') ?? $attributes->get('status');
 $badges = collect(is_string($badges) ? explode(',', $badges) : $badges)->filter()->map(fn($val, $key) => 
@@ -61,6 +62,15 @@ $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(f
                 <div class="grid">
                     <x-anchor :label="$value ?? $href" :href="$href" :target="$target" :ref="$rel" class="truncate"/>
                 </div>
+            @elseif ($address)
+                <address class="not-italic">
+                    @if (is_string($address)) {!! $address !!}
+                    @else
+                        @if ($name = get($address, 'name')) {!! $name !!}<br> @endif
+                        @if ($company = get($address, 'company')) {!! $company !!}<br> @endif
+                        {!! get($address, 'address') !!}
+                    @endif
+                </address>
             @elseif($json) 
                 @json($json)
             @elseif($date)
