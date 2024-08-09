@@ -9,25 +9,17 @@
             <x-checkbox wire:model="share.is_enabled" label="app.label.enable-sharing"/>
 
             @if ($share->is_enabled)
-                <div
-                    x-data="{ copied: false }"
-                    x-init="$watch('copied', () => {
-                        if (!copied) return
+                <div x-data="{
+                    select () {
                         $el.querySelector('input').focus()
                         $el.querySelector('input').select()
-                        setTimeout(() => copied = false, 300)
-                    })"
-                    class="relative flex flex-col gap-2">
+                    },
+                }" class="flex flex-col gap-2">
                     <x-input :value="$share->url" label="app.label.share-link" readonly>
                         <x-slot:button label="app.label.copy" icon="copy"
-                            x-on:click="$clipboard({{ Js::from($share->url )}}).finally(() => copied = true)">
+                            x-on:click="$clipboard({{ Js::from($share->url )}}).then(() => select())">
                         </x-slot:button>
                     </x-input>
-
-                    <div x-show="copied" x-transition class="absolute -top-1 right-2 bg-black/50 py-1 px-2 rounded-md flex items-center gap-2 text-xs">
-                        <x-icon name="check" class="text-green-500"/>
-                        <div class="text-white">{{ tr('app.label.copied') }}</div>
-                    </div>
 
                     <div class="flex items-center gap-4">
                         <x-anchor label="Regenerate" icon="refresh" class="text-sm" wire:click="regenerate"/>

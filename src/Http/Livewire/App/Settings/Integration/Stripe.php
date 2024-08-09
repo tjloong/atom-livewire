@@ -33,12 +33,36 @@ class Stripe extends Component
         }
     }
 
+    // test
+    public function test() : bool
+    {
+        $test = app('stripe', [
+            'public_key' => get($this->settings, 'stripe_public_key'),
+            'secret_key' => get($this->settings, 'stripe_secret_key'),
+        ])->test();
+
+        if ($e = get($test, 'error')) $this->popup($e, 'alert', 'error');
+        else $this->popup(tr('app.label.connection-ok'), 'alert', 'success');
+
+        return get($test, 'success');
+    }
+
     public function submit()
     {
         $this->validateForm();
 
-        settings($this->settings);
+        if ($this->test()) {
+            $this->settings = [
+                ...$this->settings,
+                'stripe_webhook_signing_secret' => app('stripe', [
+                    'public_key' => get($this->settings, 'stripe_public_key'),
+                    'secret_key' => get($this->settings, 'stripe_secret_key'),
+                ])->createWebhook()
+            ];
 
-        $this->popup('app.alert.updated');
+            settings($this->settings);
+
+            $this->popup('app.alert.updated');
+        }
     }
 }

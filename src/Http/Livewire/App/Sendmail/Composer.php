@@ -77,7 +77,8 @@ class Composer extends Component
             $data = $this->model->composeEmail(get($data, 'data'));
         }
         else if (($id = get($data, 'share_id')) && ($share = model('share')->find($id))) {
-            $data = $share->parent->composeEmail();
+            $this->model = $share->parent;
+            $data = $this->model->composeEmail();
         }
 
         $this->compose($data);

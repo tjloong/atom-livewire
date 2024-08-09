@@ -8,16 +8,16 @@ class Stripe
     public $credentials;
 
     // constructor
-    public function __construct($credientials = null)
+    public function __construct($credentials = [])
     {
-        $this->setCredentials($credientials);
+        $this->setCredentials($credentials);
         $this->setClient();
     }
 
     // set credentials
-    public function setCredentials($credentials = null) : void
+    public function setCredentials($credentials = []) : void
     {
-        $this->credentials = collect($credentials ?? [
+        $this->credentials = collect($credentials ?: [
             'public_key' => settings('stripe_public_key'),
             'secret_key' => settings('stripe_secret_key'),
             'webhook_signing_secret' => settings('stripe_webhook_signing_secret'),
@@ -165,5 +165,46 @@ class Stripe
     public function cancelSubscription($id) : void
     {
         $this->client->subscriptions->cancel($id);
+    }
+
+    // create webhook
+    public function createWebhook() : mixed
+    {
+        $url = route('__stripe.webhook');
+        $webhooks = $this->client->webhookEndpoints->all();
+        
+        if ($webhook = collect($webhooks->data)->where('url', $url)->first()) {
+            $this->client->webhookEndpoints->delete(get($webhook, 'id'));
+        }
+
+        $webhook = $this->client->webhookEndpoints->create([
+            'url' => $url,
+            'enabled_events' => [
+                'checkout.session.async_payment_failed',
+                'checkout.session.async_payment_succeeded',
+                'checkout.session.completed',
+                'checkout.session.expired',
+            ],
+        ]);
+
+        return get($webhook, 'secret');
+    }
+
+    // test
+    public function test() : array
+    {
+        try {
+            $this->client->accounts->all();
+
+            return [
+                'success' => true,
+                'error' => null,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 }

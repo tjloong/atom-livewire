@@ -1,6 +1,6 @@
 function showTooltip(el) {
     let tooltip = document.createElement('div')
-    tooltip.addClass('clipboard-tooltip absolute -top-6 right-2 bg-black/50 py-1 px-2 rounded-md text-xs text-white')
+    tooltip.addClass('clipboard-tooltip absolute -top-6 right-2 bg-black shadow py-1.5 px-3 rounded text-sm text-white')
     tooltip.innerHTML = tr('app.label.copied')
 
     el.addClass('relative')
@@ -15,7 +15,12 @@ function hideTooltip(el) {
 export default (el) => {
     return (subject, tooltip = true) => {
         return (new Promise((resolve, reject) => {
-            navigator.clipboard.writeText(subject)
+            try {
+                navigator.clipboard.writeText(subject)
+            } catch (error) {
+                console.error('Unable to copy to clipboard.')
+            }
+
             resolve()
         })).then(() => {
             if (!tooltip) return

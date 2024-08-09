@@ -70,6 +70,7 @@ return [
         'completion-date' => 'Completion Date',
         'confirm-new-password' => 'Confirm New Password',
         'confirm-password' => 'Confirm Password',
+        'connection-ok' => 'Connection OK',
         'contact-email' => 'Contact email',
         'contact-information' => 'Contact information',
         'contact-number' => 'Contact Number',
