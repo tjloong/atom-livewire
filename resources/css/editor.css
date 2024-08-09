@@ -34,6 +34,9 @@
     p {
         @apply py-2;
     }
+    a {
+        @apply text-sky-500 underline decoration-dashed;
+    }
     h1 {
         @apply text-3xl font-bold mb-2;
     }

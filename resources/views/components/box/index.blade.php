@@ -36,7 +36,7 @@ $except = ['cover', 'title', 'heading', 'href', 'target', 'rel', 'submit', 'form
     @endif
 
     @isset ($figure)
-        <div class="first:rounded-t-lg last:rounded-b-lg overflow-hidden">
+        <div class="rounded-t-lg overflow-hidden">
             <figure {{ $figure->attributes->class([
                 'h-72 bg-gray-200 flex items-center justify-center',
                 'group-hover/box:scale-105 transition-transform duration-200',
