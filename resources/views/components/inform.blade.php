@@ -1,4 +1,5 @@
 @php
+$apa = $attributes->get('apa');
 $type = $attributes->get('type', 'default');
 $close = $attributes->get('close', false);
 $title = $attributes->get('title');
@@ -27,7 +28,7 @@ $body = $attributes->get('body') ?? $attributes->get('message');
         @if ($slot->isNotEmpty()) {{ $slot }}
         @else
             <div class="grow flex flex-col">
-            @if ($title) <h5 class="pb-1 font-medium leading-none tracking-tight text-lg">{!! tr($title) !!}</h5> @endif
+            @if ($title) <h5 class="pb-1 font-medium leading-none tracking-tight text-lg">{!! $apa ? str()->apa(tr($title)) : tr($title) !!}</h5> @endif
             @if ($body) <div class="-mt-px leading-tight opacity-80">{!! tr($body) !!}</div> @endif
             </div>
         @endif

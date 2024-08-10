@@ -71,7 +71,7 @@ class Stripe
     public function parseWebhookPayload() : mixed
     {
         $input = @file_get_contents('php://input');
-        
+
         if ($this->validateWebhookInput($input)) {
             return json_decode($input, true);
         }
