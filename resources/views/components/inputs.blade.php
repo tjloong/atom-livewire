@@ -9,12 +9,10 @@ $except = ['title', 'heading', 'cols'];
     @if ($title instanceof \Illuminate\View\ComponentSlot)
         {{ $title }}
     @elseif ($title)
-        <div class="py-3 flex items-center gap-3 {{ $nopadding ? '' : 'px-5' }}">
+        <div class="pt-5 {{ $nopadding ? '' : 'px-5' }}">
             <div class="shrink-0 font-medium">
                 {!! tr($title) !!}
             </div>
-
-            <div class="grow h-px bg-gray-200"></div>
         </div>
     @endif
 
