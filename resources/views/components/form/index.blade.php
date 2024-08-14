@@ -28,11 +28,11 @@ $submit = $attributes->submitAction();
     @if ($box)
         <x-box>
             @if ($title instanceof \Illuminate\View\ComponentSlot)
-                <x-heading no-margin :attributes="$title->attributes->merge(['class' => 'p-5 rounded-t-lg'])">
+                <x-heading no-margin :attributes="$title->attributes->merge(['class' => 'py-4 px-5 rounded-t-lg'])">
                     {{ $title }}
                 </x-heading>
             @elseif ($title)
-                <x-heading no-margin :title="$title" :icon="$icon" class="p-5 rounded-t-lg"/>
+                <x-heading no-margin :title="$title" :icon="$icon" class="py-4 px-5 rounded-t-lg"/>
             @endif
 
             {{ $slot }}

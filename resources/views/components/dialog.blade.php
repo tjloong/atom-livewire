@@ -28,12 +28,12 @@ $element = $attributes->submitAction() ? 'form' : 'div';
             <div class="shrink-0 bg-gray-50 border-b md:rounded-t-xl">
                 @if ($title instanceof \Illuminate\View\ComponentSlot)
                     @if ($title->isEmpty())
-                        <x-heading class="p-5" :attributes="$title->attributes" no-margin lg/>
+                        <x-heading class="py-4 px-5" :attributes="$title->attributes" no-margin lg/>
                     @else
                         {{ $title }}
                     @endif
                 @else
-                    <x-heading class="p-5" :title="$title" no-margin lg/>
+                    <x-heading class="py-4 px-5" :title="$title" no-margin lg/>
                 @endif
 
                 <div class="absolute top-4 right-4">

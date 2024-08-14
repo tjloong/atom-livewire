@@ -215,6 +215,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
             },
         }"
         x-modelable="value"
+        x-on:click.away="close()"
         x-on:keydown.down.stop.prevent="navigate('down')"
         x-on:keydown.up.stop.prevent="navigate('up')"
         x-on:keydown.esc.stop.prevent="close()"
@@ -224,8 +225,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
         <button
             type="button"
             x-ref="anchor"
-            x-on:click="open()"
-            x-on:click.away="close()"
+            x-on:click.stop="show ? close() : open()"
             x-bind:disabled="disabled"
             class="group/button inline-flex gap-3 py-1.5 px-3 w-full h-full text-left">
             @if ($icon)
@@ -322,25 +322,40 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
                         <li
                             x-bind:class="{
                                 'hidden': opt.hidden,
-                                'bg-gray-50 focus': pointer === i,
-                                'hover:bg-gray-50': pointer !== i,
+                                'bg-slate-50 focus': pointer === i,
+                                'hover:bg-slate-50': pointer !== i,
                             }"
                             x-on:mouseover="pointer = null"
-                            x-on:click.stop="select(opt.value)"
-                            class="cursor-pointer border-b last:border-0">
+                            class="border-b last:border-0">
                             @if (isset($option) && $option->isNotEmpty())
                                 {{ $option }}
                             @else
-                                <div class="px-4 py-2 flex items-center gap-3 hover:bg-slate-50">
-                                    <template x-if="opt.color">
-                                        <div class="shrink-0 w-4 h-4 rounded-full shadow" x-bind:style="{ backgroundColor: opt.color }"></div>
-                                    </template>
+                                <template x-if="opt.is_group">
+                                    <div x-text="opt.label" class="py-2 px-4 text-sm uppercase text-gray-500 bg-gray-50 font-medium pointer-events-none"></div>
+                                </template>
 
-                                    <div class="grow">
-                                        <div x-text="opt.label"></div>
-                                        <div x-text="opt.small || opt.caption" class="text-sm text-gray-500 truncate"></div>
+                                <template x-if="opt.badge">
+                                    <div
+                                        x-badge="opt.badge"
+                                        x-on:click.stop="select(opt.value)"
+                                        class="py-2 px-4 cursor-pointer">
                                     </div>
-                                </div>
+                                </template>
+
+                                <template x-if="!opt.is_group && !opt.badge">
+                                    <div
+                                        x-on:click.stop="select(opt.value)"
+                                        class="py-2 px-4 flex gap-3 cursor-pointer">
+                                        <template x-if="opt.color">
+                                            <div class="shrink-0 w-4 h-4 rounded shadow my-1" x-bind:style="{ backgroundColor: opt.color }"></div>
+                                        </template>
+
+                                        <div class="grow">
+                                            <div x-text="opt.label"></div>
+                                            <div x-text="opt.small || opt.caption" class="text-sm text-gray-500 truncate"></div>
+                                        </div>
+                                    </div>
+                                </template>
                             @endif
                         </li>
                     </template>
