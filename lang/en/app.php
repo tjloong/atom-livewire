@@ -103,6 +103,9 @@ return [
         'date-range' => 'Date range',
         'date' => 'Date|Dates',
         'day-count' => ':count day|:count days',
+        'week-count' => ':count week|:count weeks',
+        'month-count' => ':count month|:count months',
+        'year-count' => ':count year|:count years',
         'decline' => 'Decline',
         'decrease' => 'Decrease',
         'default' => 'Default',
@@ -199,7 +202,8 @@ return [
         'increase' => 'Increase',
         'instagram-url' => 'Instagram URL',
         'integration' => 'Integration',
-        'ip-address' => 'IP Address',
+        'ip-address' => 'IP address',
+        'ip-country' => 'IP country',
         'issued-date' => 'Issued Date',
         'join-date' => 'Joined Date',
         'label-type' => 'Label Type',
@@ -468,6 +472,13 @@ return [
         'your-message' => 'Your message',
         'your-name' => 'Your name',
         'youtube-url' => 'Youtube URL',
+
+        'daily' => 'Daily',
+        'weekly' => 'Weekly',
+        'monthly' => 'Monthly',
+        'quarterly' => 'Quarterly',
+        'half-yearly' => 'Half yearly',
+        'yearly' => 'Yearly',
     ],
 
     'alert' => [

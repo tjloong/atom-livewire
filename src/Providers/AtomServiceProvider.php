@@ -8,6 +8,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
 use Illuminate\View\ComponentAttributeBag;
 
 class AtomServiceProvider extends ServiceProvider
@@ -201,6 +203,7 @@ class AtomServiceProvider extends ServiceProvider
     // macros
     public function macros() : void
     {
+        // request macros
         if (!Request::hasMacro('portal')) {
             Request::macro('portal', function($is = null) {
                 $route = $this->route()?->getName();
@@ -219,6 +222,7 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
+        // componet attribute macros
         if (!ComponentAttributeBag::hasMacro('hasLike')) {
             ComponentAttributeBag::macro('hasLike', function() {
                 $value = func_get_args();
@@ -280,6 +284,7 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
+        // carbon marcros
         if (!Carbon::hasMacro('local')) {
             Carbon::macro('local', function() {
                 $tz = optional(user())->settings('timezone') ?? config('atom.timezone');
@@ -299,6 +304,36 @@ class AtomServiceProvider extends ServiceProvider
                 else $format = $option;
 
                 return $this->local()->format($format);
+            });
+        }
+
+        // string macros
+        if (!Str::hasMacro('interval')) {
+            Str::macro('interval', function($string) {
+                $count = trim(head(explode(' ', $string)));
+                $interval = trim(last(explode(' ', $string)));
+                $interval = pick([
+                    'day' => in_array($interval, ['day', 'days']),
+                    'week' => in_array($interval, ['week', 'weeks']),
+                    'month' => in_array($interval, ['month', 'months']),
+                    'year' => in_array($interval, ['year', 'years']),
+                ]);
+
+                if ($count == 1 && $interval === 'day') return tr('app.label.daily');
+                if ($count == 1 && $interval === 'month') return tr('app.label.monthly');
+                if ($count == 3 && $interval === 'month') return tr('app.label.quarterly');
+                if ($count == 6 && $interval === 'month') return tr('app.label.half-yearly');
+                if ($count == 1 && $interval === 'week') return tr('app.label.weekly');
+                if ($count == 1 && $interval === 'year') return tr('app.label.yearly');
+
+                if ($interval === 'day') return tr('app.label.day-count', $count);
+                if ($interval === 'week') return tr('app.label.week-count', $count);
+                if ($interval === 'month') return tr('app.label.month-count', $count);
+                if ($interval === 'year') return tr('app.label.year-count', $count);
+            });
+
+            Stringable::macro('interval', function (string $delimiter = '') {
+                return new Stringable (Str::interval($this->value));
             });
         }
     }
