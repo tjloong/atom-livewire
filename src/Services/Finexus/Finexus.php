@@ -393,6 +393,8 @@ class Finexus
             'MerchRefNo' => 'TESTING-'.time(),
         ]);
 
+        logger($query);
+
         return get($query, 'QueryStatus') === '12'; // status 12 = transaction not found
     }
 
