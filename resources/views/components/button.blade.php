@@ -37,7 +37,7 @@ if ($tooltip === true) {
     $tooltip = $label ?? 'app.label.'.$action;
 }
 
-$element = $href ? 'a' : 'button';
+$element = $attributes->get('element') ?? ($href ? 'a' : 'button');
 $icon = $attributes->get('icon') ?? $action ?? null;
 $iconsuffix = $attributes->get('icon-suffix');
 

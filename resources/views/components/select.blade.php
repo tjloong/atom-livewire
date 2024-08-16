@@ -30,7 +30,7 @@ $options = collect($options)->map(function($opt) {
 $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filters', 'disabled', 'searchable', 'placeholder', 'wire:options', 'wire:model', 'wire:model.defer'];
 @endphp
 
-<x-input class="h-auto" {{ $attributes->except('class') }}>
+<x-input class="flex flex-col" {{ $attributes->except('class') }}>
     <div
         wire:ignore
         x-cloak
@@ -180,7 +180,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
             },
 
             autoselect () {
-                let li = this.$refs.options.querySelector('li.focus')
+                let li = this.$refs.options.querySelector('li.focus > [data-option]')
 
                 if (li) li.click()
                 else {
@@ -215,66 +215,66 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
             },
         }"
         x-modelable="value"
-        x-on:click.away="close()"
         x-on:keydown.down.stop.prevent="navigate('down')"
         x-on:keydown.up.stop.prevent="navigate('up')"
         x-on:keydown.esc.stop.prevent="close()"
         x-on:keydown.enter.stop.prevent="autoselect()"
-        class="w-full h-full"
+        class="grow flex flex-col"
         {{ $attributes->except($except)}}>
         <button
             type="button"
             x-ref="anchor"
-            x-on:click.stop="show ? close() : open()"
+            x-on:click="show ? close() : open()"
             x-bind:disabled="disabled"
-            class="group/button inline-flex gap-3 py-1.5 px-3 w-full h-full text-left">
-            @if ($icon)
-                <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div>
-            @endif
+            class="grow w-full focus:outline-none">
+            <div class="grow group/button inline-flex gap-3 py-1.5 px-3 w-full text-left">
+                @if ($icon)
+                    <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div>
+                @endif
 
-            <template x-if="noSelection" hidden>
-                <input type="text"
-                    class="grow transparent w-full cursor-pointer" 
-                    placeholder="{!! tr($placeholder) !!}"
-                    readonly>
-            </template>
+                <template x-if="noSelection" hidden>
+                    <div class="grow cursor-pointer text-gray-400">
+                        {!! tr($placeholder) !!}
+                    </div>
+                </template>
 
-            <template x-if="!noSelection" hidden>
-                @if ($slot->isNotEmpty())
-                    {{ $slot }}
-                @else
-                    <div class="grow">
-                        <template x-if="multiple" hidden>
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <template x-for="item in selection">
-                                    <div class="bg-slate-200 rounded border border-gray-200">
-                                        <div class="flex items-center max-w-[200px]">
-                                            <div x-text="item.label" class="px-2 truncate text-xs font-medium"></div>
-                                            <div x-show="show" class="shrink-0 text-sm flex items-center justify-center px-1">
-                                                <x-close x-on:click.stop="remove(item.value)"/>
+                <template x-if="!noSelection" hidden>
+                    @if ($slot->isNotEmpty())
+                        {{ $slot }}
+                    @else
+                        <div class="grow">
+                            <template x-if="multiple" hidden>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <template x-for="item in selection">
+                                        <div class="bg-slate-200 rounded border border-gray-200 py-[1.5px]">
+                                            <div class="flex items-center max-w-[200px]">
+                                                <div x-text="item.label" class="px-2 truncate text-xs font-medium"></div>
+                                                <div x-show="show" class="shrink-0 text-xs flex items-center justify-center px-1">
+                                                    <x-close x-on:click.stop="remove(item.value)"/>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </template>
-                            </div>
-                        </template>
+                                    </template>
+                                </div>
+                            </template>
 
-                        <template x-if="!multiple" hidden>
-                            <div class="grid">
-                                <div x-text="selection?.label" class="truncate"></div>
-                            </div>
-                        </template>
+                            <template x-if="!multiple" hidden>
+                                <div class="grid">
+                                    <div x-text="selection?.label" class="truncate"></div>
+                                </div>
+                            </template>
+                        </div>
+                    @endif
+                </template>
+
+                <div class="shrink-0">
+                    <div x-show="isClearable" x-on:click.stop="remove()" class="cursor-pointer text-gray-400 hover:text-gray-600">
+                        <x-icon name="xmark"/>
                     </div>
-                @endif
-            </template>
-
-            <div class="shrink-0">
-                <div x-show="isClearable" x-on:click.stop="remove()" class="cursor-pointer text-gray-400 hover:text-gray-600">
-                    <x-icon name="xmark"/>
                 </div>
-            </div>
 
-            <div class="shrink-0 w-3 h-6 select-caret"></div>
+                <div class="shrink-0 w-3 h-6 select-caret"></div>
+            </div>
         </button>
 
         <div
@@ -282,6 +282,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
             x-show="show"
             x-transition.opacity.duration.300
             x-anchor.offset.4="$refs.anchor"
+            x-on:click.away="close()"
             class="bg-white shadow-lg rounded-md border border-gray-300 overflow-hidden z-10">
             <template x-if="!options?.length && loading">
                 <div class="flex flex-col divide-y animate-pulse">
@@ -295,7 +296,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
             </template>
 
             <template x-if="isSearchable">
-                <div x-on:input.stop class="rounded-t-md border bg-slate-100 py-2 px-4 flex items-center gap-3">
+                <div x-on:input.stop class="rounded-t-md border-b bg-slate-100 py-2 px-4 flex items-center gap-3">
                     <div class="shrink-0 text-gray-400"><x-icon name="search"/></div>
 
                     <input type="text"
@@ -317,8 +318,8 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
             </template>
 
             <div class="flex flex-col divide-y">
-                <ul x-ref="options" class="max-h-[250px] overflow-auto">
-                    <template x-for="(opt, i) in options" x-bind:key="`${random()}_${opt.value}`">
+                <ul x-ref="options" class="max-h-[250px] overflow-auto flex flex-col divide-y">
+                    <template x-for="(opt, i) in options" x-bind:key="`${random()}_${opt.value}`" hidden>
                         <li
                             x-bind:class="{
                                 'hidden': opt.hidden,
@@ -326,7 +327,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
                                 'hover:bg-slate-50': pointer !== i,
                             }"
                             x-on:mouseover="pointer = null"
-                            class="border-b last:border-0">
+                            class="last:rounded-b-md">
                             @if (isset($option) && $option->isNotEmpty())
                                 {{ $option }}
                             @else
@@ -336,6 +337,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
 
                                 <template x-if="opt.badge">
                                     <div
+                                        data-option
                                         x-badge="opt.badge"
                                         x-on:click.stop="select(opt.value)"
                                         class="py-2 px-4 cursor-pointer">
@@ -344,6 +346,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
 
                                 <template x-if="!opt.is_group && !opt.badge">
                                     <div
+                                        data-option
                                         x-on:click.stop="select(opt.value)"
                                         class="py-2 px-4 flex gap-3 cursor-pointer">
                                         <template x-if="opt.color">

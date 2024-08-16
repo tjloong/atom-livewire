@@ -165,7 +165,7 @@ $except = ['label', 'for', 'field', 'utc', 'mode', 'transparent', 'placeholder',
             x-on:keydown.up="navigate"
             x-on:keydown.down="navigate"
             x-on:keydown.enter.prevent="selectOption()"
-            class="group/button inline-flex items-center gap-3 px-3 w-full h-full text-left">
+            class="group/button inline-flex items-center gap-3 px-3 w-full h-full text-left focus:outline-none">
             <div class="shrink-0 text-gray-400 {{ $transparent ? 'hidden group-hover/button:block group-focus/button:block' : '' }}">
                 <x-icon name="calendar-days"/>
             </div>
