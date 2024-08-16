@@ -64,13 +64,7 @@ if ($id = (array) get($this, $wire)) {
         class="relative bg-gray-100 rounded-lg border overflow-hidden ring-offset-1 focus-within:ring-1 group-has-[.error]/field:border-red-500 group-has-[.error]/field:ring-red-300">
         <x-file-dropzone x-on:input.stop="value = $event.detail"/>
 
-        @if ($files->count() > 1)
-            <div class="bg-white border-b flex flex-col divide-y">
-                @foreach ($files as $file)
-                    <x-file :file="$file"/>
-                @endforeach
-            </div>
-        @elseif ($files->count() === 1)
+        @if ($files->count() === 1 && $files->first()->is_image)
             <div class="bg-white border-b p-4">
                 <div class="group w-24 relative">
                     <x-file :file="$files->first()" no-label lg/>
@@ -80,6 +74,22 @@ if ($id = (array) get($this, $wire)) {
                         <x-icon name="xmark"/>
                     </div>
                 </div>
+            </div>
+        @else
+            <div class="group bg-white border-b flex flex-col divide-y">
+                @foreach ($files as $file)
+                    <div class="p-4 flex gap-3 cursor-pointer">
+                        <div class="grow" wire:click="$emit('editFile', {{ $file->id }})">
+                            <x-file :file="$file"/>
+                        </div>
+
+                        <div
+                            x-on:click.stop="remove({{ $file->id }})"
+                            class="shrink-0 text-red-500 hidden group-hover:block">
+                            <x-icon name="xmark"/>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         @endif
 
