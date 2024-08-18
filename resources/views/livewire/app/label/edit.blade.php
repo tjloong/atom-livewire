@@ -24,39 +24,37 @@
             </div>
         @endif
 
-        <x-box>
-            <x-fieldset>
-                <x-field label="app.label.type" :value="str()->headline($label->type)"/>
-                
-                @if ($parent) <x-field label="app.label.parent" :value="$parent->name_locale"/> @endif
-                
-                @if ($label->is_locked) 
-                    @foreach ($this->locales as $locale)
-                        <x-field
-                            :label="tr('app.label.label').($this->locales->count() > 1 ? ' ('.$locale.')' : '')"
-                            :value="get($label->name, $locale)">
-                        </x-field>
-                    @endforeach
+        <x-fieldset>
+            <x-field label="app.label.type" :value="str()->headline($label->type)"/>
+            
+            @if ($parent) <x-field label="app.label.parent" :value="$parent->name_locale"/> @endif
+            
+            @if ($label->is_locked) 
+                @foreach ($this->locales as $locale)
+                    <x-field
+                        :label="tr('app.label.label').($this->locales->count() > 1 ? ' ('.$locale.')' : '')"
+                        :value="get($label->name, $locale)">
+                    </x-field>
+                @endforeach
 
-                    <x-field label="app.label.slug" :value="$label->slug"/>
-                    <x-field label="app.label.color" :color="$label->color"/>
-                    <x-field label="app.label.image" :image="$label->image"/>
-                @else
-                    @foreach ($this->locales as $locale)
-                        <x-input
-                            :label="tr('app.label.label').($this->locales->count() > 1 ? ' ('.$locale.')' : '')"
-                            wire:model.defer="inputs.name.{{ $locale }}"
-                            inline>
-                        </x-input>
-                    @endforeach
+                <x-field label="app.label.slug" :value="$label->slug"/>
+                <x-field label="app.label.color" :color="$label->color"/>
+                <x-field label="app.label.image" :image="$label->image"/>
+            @else
+                @foreach ($this->locales as $locale)
+                    <x-input
+                        :label="tr('app.label.label').($this->locales->count() > 1 ? ' ('.$locale.')' : '')"
+                        wire:model.defer="inputs.name.{{ $locale }}"
+                        inline>
+                    </x-input>
+                @endforeach
 
-                    <x-input wire:model.defer="label.slug" label="app.label.slug" placeholder="autogen" prefix="/" inline/>
-                    <x-select wire:model="label.parent_id" label="app.label.parent" :options="'labels.'.$type" inline/>
-                    <x-color wire:model="label.color" label="app.label.color" inline/>
-                    <x-form.file wire:model="label.image_id" label="app.label.image" inline/>        
-                @endif
-            </x-fieldset>
-        </x-box>
+                <x-input wire:model.defer="label.slug" label="app.label.slug" placeholder="autogen" prefix="/" inline/>
+                <x-select wire:model="label.parent_id" label="app.label.parent" :options="'labels.'.$type" inline/>
+                <x-color wire:model="label.color" label="app.label.color" inline/>
+                <x-form.file wire:model="label.image_id" label="app.label.image" inline/>        
+            @endif
+        </x-fieldset>
 
         @if (!$label->parent_id)
             <div class="flex flex-col gap-2">

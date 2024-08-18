@@ -58,9 +58,13 @@ $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(f
                         <x-badge :label="get($tag, 'label')" :color="get($tag, 'color')" :lower="false"/>
                     @endforeach
                 </div>
-            @elseif ($href || $attributes->hasLike('wire:*', 'x-*'))
+            @elseif ($href)
                 <div class="grid">
                     <x-anchor :label="$value ?? $href" :href="$href" :target="$target" :ref="$rel" class="truncate"/>
+                </div>
+            @elseif ($attributes->hasLike('wire:*', 'x-*'))
+                <div class="grid">
+                    <x-anchor :label="$value ?? $href" :attributes="$attributes->whereStartsWith('wire:', 'x-')"/>
                 </div>
             @elseif ($address)
                 <address class="not-italic">

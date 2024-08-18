@@ -8,6 +8,7 @@ return [
         'active' => 'Active',
         'add-new' => 'Add New',
         'add' => 'Add',
+        'add-tags' => 'Add tags',
         'additional-information' => 'Additional Information',
         'address-line-1' => 'Address Line 1',
         'address-line-2' => 'Address Line 2',
