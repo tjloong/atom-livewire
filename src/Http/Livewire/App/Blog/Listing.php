@@ -15,9 +15,7 @@ class Listing extends Component
     ];
 
     protected $listeners = [
-        'blogCreated' => '$refresh',
-        'blogUpdated' => '$refresh',
-        'blogDeleted' => '$refresh',
+        'closeBlog' => '$refresh',
     ];
 
     // get query property

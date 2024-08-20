@@ -1,4 +1,4 @@
-<x-drawer wire:submit.prevent="submit" wire:close="$emit('closeLabel')">
+<x-drawer submit wire:close="$emit('closeLabel')">
 @if ($label)
     @if ($label->exists)
         <x-slot:heading title="app.label.edit-label"></x-slot:heading>

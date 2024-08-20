@@ -1,4 +1,4 @@
-<x-drawer wire:submit.prevent="submit" wire:close="$emit('closeUser')">
+<x-drawer submit wire:close="$emit('closeUser')">
 @if ($user)
     @if ($user->exists)
         <x-slot:heading

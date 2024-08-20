@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Blog;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
-class Update extends Component
+class Edit extends Component
 {
     use WithForm;
 
@@ -13,8 +13,7 @@ class Update extends Component
     public $inputs;
 
     protected $listeners = [
-        'createBlog' => 'create',
-        'updateBlog' => 'update',
+        'editBlog' => 'open',
     ];
 
     // validation
@@ -35,24 +34,19 @@ class Update extends Component
         ];
     }
 
-    // create
-    public function create() : void
-    {
-        $this->blog = model('blog');
-        $this->open();
-    }
-
-    // update
-    public function update($id) : void
-    {
-        $this->blog = model('blog')->withTrashed()->find($id);
-        $this->open();
-    }
-
     // open
-    public function open() : void
+    public function open($data = []) : void
     {
-        if ($this->blog) {
+        $id = get($data, 'id');
+
+        if (
+            $this->blog = $id
+            ? model('blog')->withTrashed()->find($id)
+            : model('blog')->fill([
+                'status' => enum('blog.status', 'DRAFT'),
+                ...$data,
+            ])
+        ) {
             $this->fill([
                 'inputs.labels' => $this->blog->labels->pluck('id')->toArray(),
                 'inputs.seo' => [
@@ -62,39 +56,29 @@ class Update extends Component
                 ],
             ]);
 
-            $this->modal(id: 'blog-update');
+            $this->overlay();
         }
-    }
-
-    // close
-    public function close() : void
-    {
-        $this->emit('setBlogId');
-        $this->modal(false, 'blog-update');
     }
 
     // trash
     public function trash() : void
     {
         $this->blog->delete();
-        $this->emit('blogDeleted');
-        $this->close();
+        $this->overlay(false);
     }
 
     // delete
     public function delete() : void
     {
         $this->blog->forceDelete();
-        $this->emit('blogDeleted');
-        $this->close();
+        $this->overlay(false);
     }
 
     // restore
     public function restore() : void
     {
         $this->blog->restore();
-        $this->emit('blogUpdated');
-        $this->close();
+        $this->overlay(false);
     }
 
     // publish
@@ -103,8 +87,6 @@ class Update extends Component
         $this->blog->fill([
             'published_at' => $bool ? now() : null,
         ])->save();
-
-        $this->emit('blogUpdated');
     }
 
     // submit
@@ -118,9 +100,6 @@ class Update extends Component
         
         $this->blog->labels()->sync(data_get($this->inputs, 'labels'));
 
-        if ($this->blog->wasRecentlyCreated) $this->emit('blogCreated');
-        else $this->emit('blogUpdated');
-
-        $this->close();
+        $this->overlay(false);
     }
 }
