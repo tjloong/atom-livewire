@@ -24,17 +24,21 @@ class SocialiteController extends Controller
     public function callback() : mixed
     {
         $provider = request()->provider;
-        
+
         $this->enabled($provider);
 
-        $user = Socialite::driver($provider)->user();
-        $token = $user->token;
-        $route = model('user')->where('email', $user->getEmail())->count() ? 'login' : 'register';
-        $query = session('socialite-query', []);
-
-        session()->forget('socialite-query');
-
-        return to_route($route, array_merge(compact('token', 'provider'), $query));
+        try {
+            $user = Socialite::driver($provider)->user();
+            $token = $user->token;
+            $route = model('user')->where('email', $user->getEmail())->count() ? 'login' : 'register';
+            $query = session('socialite-query', []);
+    
+            session()->forget('socialite-query');
+    
+            return to_route($route, array_merge(compact('token', 'provider'), $query));
+        } catch (\Exception $e) {
+            return to_route('web.home');
+        }
     }
 
     // check is enabled
