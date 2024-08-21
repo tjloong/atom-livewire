@@ -6,11 +6,42 @@ export default class {
     constructor (files, config) {
         this.files = files
         this.config = config
-        this.queue = config.multiple
-            ? Array.from(this.files).map(file => ({ file, completed: false }))
-            : [{ file: this.files[0], completed: false }]
 
-        return this.upload()
+        if (this.files.some(file => typeof file === 'string')) {
+            return this.url()
+        }
+        else {
+            this.queue = config.multiple
+                ? Array.from(this.files).map(file => ({ file, completed: false }))
+                : [{ file: this.files[0], completed: false }]
+    
+            return this.upload()
+        }
+    }
+
+    url () {
+        let url = this.files.filter(file => {
+            let pattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // validate OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
+            '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
+
+            return !!pattern.test(file);
+        })
+
+        if (!url.length) return new Promise((resolve, reject) => reject(new Error(tr('app.label.invalid-url'))))
+        if (!this.config.multiple) url = [url[0]]
+
+        return ajax('/__file/upload').post({ url }).then(files => {
+            let id = files.pluck('id')
+
+            return {
+                files: this.config.multiple ? [...files] : files[0],
+                id: this.config.multiple ? [...id] : id[0],
+            }
+        })
     }
 
     upload () {

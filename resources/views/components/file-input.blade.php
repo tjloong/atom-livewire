@@ -39,6 +39,7 @@ if ($id = (array) get($this, $wire)) {
                     progress: (value) => this.progress = value,
                 })
                     .then(res => {
+                        dd(res)
                         this.value = res.id
                         this.$dispatch('uploaded', res.files)
                         Livewire?.emit('uploaded', res.files)
@@ -47,19 +48,26 @@ if ($id = (array) get($this, $wire)) {
                     .finally(() => this.loading = false)
             },
 
-            paste (items) {
-                let files = Array.from(items).filter(item => (item.kind === 'file')).map(item => (item.getAsFile()))
+            paste (e) {
+                let clipboard = e.clipboardData
+                let files = Array.from(clipboard.items).filter(item => (item.kind === 'file')).map(item => (item.getAsFile()))
+
                 if (files.length) this.read(files)
+                else {
+                    let str = clipboard.getData('Text')
+                    if (str) this.read(str.split(`\n`))
+                }
             },
 
             remove (id) {
                 if (this.config.multiple) {
-
+                    let index = this.value.indexOf(id)
+                    if (index > -1) this.value.splice(index, 1)
                 }
                 else this.value = null
             },
         }"
-        x-on:paste.stop="paste($event.clipboardData.items)"
+        x-on:paste.stop="paste($event)"
         tabindex="0"
         class="relative bg-gray-100 rounded-lg border overflow-hidden ring-offset-1 focus-within:ring-1 group-has-[.error]/field:border-red-500 group-has-[.error]/field:ring-red-300">
         <x-file-dropzone x-on:input.stop="value = $event.detail"/>
@@ -112,11 +120,7 @@ if ($id = (array) get($this, $wire)) {
             </div>
 
             <div class="font-medium text-gray-500">
-                {{ tr('app.label.or-drop-to-upload', ['max' => $max.'MB']) }}
-            </div>
-
-            <div class="font-medium text-gray-400">
-                {{ tr('app.label.or-paste-to-upload') }}
+                {{ tr('app.label.or-drop-paste-to-upload', ['max' => $max.'MB']) }}
             </div>
 
             <input type="file" class="hidden"

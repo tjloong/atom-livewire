@@ -32,26 +32,23 @@ class FileController extends Controller
         }
     }
 
-    // url
-    public function url() : mixed
-    {
-        $url = request()->url;
-
-        return collect($url)
-            ->map(fn($url) => model('file')->store($url))
-            ->values()
-            ->all();
-    }
-
     // upload
     public function upload() : mixed
     {
-        $path = request()->path;
-        $visibility = request()->visibility;
-        $uploads = request()->file('files');
+        if ($url = request()->url) {
+            return collect($url)
+                ->map(fn($url) => model('file')->store($url))
+                ->values()
+                ->all();
+        }
+        else {
+            $path = request()->path;
+            $visibility = request()->visibility;
+            $uploads = request()->file('files');
 
-        return collect($uploads)
-            ->map(fn($upload) => model('file')->store($upload, $path, $visibility))
-            ->toArray();
+            return collect($uploads)
+                ->map(fn($upload) => model('file')->store($upload, $path, $visibility))
+                ->toArray();
+        }
     }
 }
