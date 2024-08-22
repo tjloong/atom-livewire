@@ -33,13 +33,12 @@ if ($id = (array) get($this, $wire)) {
 
             read (files) {
                 this.loading = true
-    
+
                 upload(files, {
                     ...this.config,
                     progress: (value) => this.progress = value,
                 })
                     .then(res => {
-                        dd(res)
                         this.value = res.id
                         this.$dispatch('uploaded', res.files)
                         Livewire?.emit('uploaded', res.files)
@@ -125,7 +124,7 @@ if ($id = (array) get($this, $wire)) {
 
             <input type="file" class="hidden"
                 x-ref="fileinput"
-                x-on:change="read($event.target.files)"
+                x-on:change="read(Array.from($event.target.files))"
                 {{ $attributes->only(['accept', 'multiple']) }}>
 
             <div x-show="loading" class="absolute inset-0 bg-white/70 flex items-center justify-center p-2">
