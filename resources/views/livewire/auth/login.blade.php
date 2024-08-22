@@ -37,7 +37,7 @@
     @if (app('route')->has('register'))
         <div class="inline-flex item-center gap-2 px-4">
             {{ tr('app.label.dont-have-account') }} 
-            <x-anchor label="app.label.signup-now" :href="route('register', ['utm' => 'page-login'])"/>
+            <x-anchor label="app.label.signup-now" :href="route('register', ['utm_source' => 'page-login'])"/>
         </div>
     @endif
 </div>

@@ -302,6 +302,7 @@ return [
         'recaptcha' => 'reCaptcha',
         'recommended-meta-description-length' => 'Recommended description length is 155 ~ 160 characters',
         'recommended-meta-title-length' => 'Recommended title length is 50 ~ 60 characters',
+        'referral-link' => 'Referral link',
         'reference' => 'Reference',
         'refunded-on' => 'Refunded on :date',
         'register' => 'Register',

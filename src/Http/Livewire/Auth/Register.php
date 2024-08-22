@@ -3,7 +3,6 @@
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Cookie;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 use Laravel\Socialite\Facades\Socialite;
@@ -12,11 +11,8 @@ class Register extends Component
 {
     use WithForm;
 
-    public $ref;
     public $utm;
-    public $plan;
-    public $token;
-    public $provider;
+    public $refcode;
     public $redirect;
     public $verification;
     public $hasValidSignature;
@@ -29,8 +25,6 @@ class Register extends Component
         'agree_promo' => true,
     ];
 
-    protected $queryString = ['ref', 'utm', 'token', 'provider', 'plan'];
-    
     // validation
     protected function validation() : array
     {
@@ -59,17 +53,15 @@ class Register extends Component
     {
         $this->redirect = request()->query('redirect');
 
-        if (!$this->ref && !$this->utm && !$this->token && !$this->provider) {
-            return redirect('/');
-        }
-        else if (
-            $this->token && $this->provider
-            && ($socialite = rescue(fn() => Socialite::driver($this->provider)->userFromToken($this->token)))
-        ) {
+        $token = request()->query('token');
+        $provider = request()->query('provider');
+        $socialite = $token && $provider ? rescue(fn() => optional(Socialite::driver($provider))->userFromToken($token)) : null;
+
+        if ($socialite) {
             if (model('user')->firstWhere('email', $socialite->getEmail())) {
                 return to_route('login', array_merge([
-                    'token' => $this->token,
-                    'provider' => $this->provider,
+                    'token' => $token,
+                    'provider' => $provider,
                 ], request()->query()));
             }
             else {
@@ -81,7 +73,7 @@ class Register extends Component
                     'agree_tnc' => true,
                     'agree_promo' => true,
                     'data' => ['oauth' => [
-                        'provider' => $this->provider,
+                        'provider' => $provider,
                         'id' => $socialite->getId(),
                         'nickname' => $socialite->getNickname(),
                         'avatar' => $socialite->getAvatar(),
@@ -94,7 +86,16 @@ class Register extends Component
             }
         }
         else {
+            $this->refcode = request()->query('refcode') ?? request()->query('ref');
+
+            $this->utm = [
+                'campaign' => request()->query('utm_campaign'),
+                'medium' => request()->query('utm_medium'),
+                'source' => request()->query('utm_source'),
+            ];
+
             $this->hasValidSignature = request()->hasValidSignature();
+
             $this->inputs = [
                 ...$this->inputs,
                 ...(
@@ -189,7 +190,8 @@ class Register extends Component
         $user->save();
 
         $user->signup()->create([
-            'channel' => $this->utm ?? $this->ref ?? 'direct',
+            'refcode' => $this->refcode,
+            'utm' => $this->utm,
             'geo' => geoip()->getLocation()->toArray(),
             'agree_tnc' => get($data, 'agree_tnc'),
             'agree_promo' => get($data, 'agree_promo'),
@@ -202,8 +204,6 @@ class Register extends Component
     public function registered($user) : mixed
     {
         auth()->login($user);
-
-        Cookie::forget('_ref');
 
         event(new Registered($user->fresh()));
 

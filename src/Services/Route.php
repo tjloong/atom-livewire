@@ -152,6 +152,20 @@ class Route
         });
     }
 
+    // create referral route
+    public function referral() : void
+    {
+        $this->get('referral/{code}', function($code) {
+            return to_route('register', [
+                'refcode' => $code,
+                'utm_campaign' => 'Referral_Invite',
+                'utm_medium' => 'Referral_Program',
+                'utm_source' => 'CopyPaste',
+                ...request()->query(),
+            ]);
+        })->name('referral');
+    }
+
     // create wrapper for app
     public function app($closure) : mixed
     {

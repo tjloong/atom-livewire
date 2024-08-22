@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('signups', function (Blueprint $table) {
             $table->id();
-            $table->string('channel')->nullable();
+            $table->string('refcode')->nullable();
+            $table->json('utm')->nullable();
             $table->json('geo')->nullable();
             $table->string('status')->nullable();
             $table->boolean('agree_tnc')->nullable();

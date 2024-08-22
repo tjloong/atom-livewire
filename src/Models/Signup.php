@@ -2,7 +2,6 @@
 
 namespace Jiannius\Atom\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,17 +15,19 @@ class Signup extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'utm' => 'array',
         'geo' => 'array',
         'agree_tnc' => 'boolean',
         'agree_promo' => 'boolean',
         'onboarded_at' => 'datetime',
+        'status' => \Jiannius\Atom\Enums\Signup\Status::class,
     ];
 
     // booted
     protected static function booted() : void
     {
-        static::saved(function($signup) {
-            $signup->setAttributes()->saveQuietly();
+        static::saving(function($signup) {
+            $signup->fillStatus();
         });
     }
 
@@ -34,15 +35,6 @@ class Signup extends Model
     public function user() : BelongsTo
     {
         return $this->belongsTo(model('user'));
-    }
-
-    // attribute for status
-    protected function status() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => enum('signup.status', $value),
-            set: fn($status) => is_string($status) ? $status : optional($status)->value,
-        );
     }
 
     // scope for search
@@ -59,18 +51,16 @@ class Signup extends Model
         }
     }
 
-    // set attributes
-    public function setAttributes() : mixed
+    // fill status
+    public function fillStatus() : mixed
     {
-        $this->fill([
-            'status' => enum('signup.status', collect([
+        return $this->fill([
+            'status' => enum('signup.status', pick([
                 'TRASHED' => optional($this->user)->trashed(),
                 'BLOCKED' => optional($this->user)->isBlocked(),
                 'ONBOARDED' => !empty($this->onboarded_at),
                 'NEW' => empty($this->onboarded_at),
-            ])->filter()->keys()->first())->value,
+            ])),
         ]);
-
-        return $this;
     }
 }
