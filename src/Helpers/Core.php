@@ -575,3 +575,20 @@ if (!function_exists('tr')) {
         else return trans_choice($key, $count, $params);
     }
 }
+
+// worker
+if (!function_exists('worker')) {
+    function worker($name)
+    {
+        $name = str($name)->singular()->studly()->toString();
+
+        if (
+            $class = collect([
+                'App\\Workers\\'.$name,
+                'Jiannius\\Atom\\Workers\\'.$name,
+            ])->first(fn($ns) => file_exists(atom_ns_path($ns)))
+        ) {
+            return app($class);
+        }
+    }
+}

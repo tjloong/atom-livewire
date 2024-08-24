@@ -27,7 +27,15 @@ a {
 }
 
 /* button */
-.button.is-loading { @apply pointer-events-none opacity-60 }
+.button-2xs.is-loading,
+.button-xs.is-loading,
+.button-sm.is-loading,
+.button-md.is-loading,
+.button-lg.is-loading,
+.button-xl.is-loading,
+.button-2xl.is-loading { 
+    @apply pointer-events-none opacity-60;
+}
 
 .button-2xs { min-height: var(--2xs-size); @apply text-2xs px-2 }
 .button-xs { min-height: var(--xs-size); @apply text-xs px-2 }
