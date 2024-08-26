@@ -224,7 +224,7 @@ $except = [
     x-modelable="value">
         <input 
             x-ref="fileinput"
-            x-on:change="read($event.target.files)"
+            x-on:change="read(Array.from($event.target.files))"
             x-on:input.stop
             type="file"
             accept="{{ $attributes->get('accept') }}"
