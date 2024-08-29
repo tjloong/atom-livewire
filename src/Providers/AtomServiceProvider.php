@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
@@ -148,7 +150,8 @@ class AtomServiceProvider extends ServiceProvider
                 atom_path('resources/views'),
             ]]);
         }
-        else {
+
+        if (!$this->app->runningInConsole() || ($this->app->runningInConsole() && Schema::hasTable('settings'))) {
             // socialite
             foreach (model('setting')->getSocialLogins() as $provider) {
                 $name = get($provider, 'name');
@@ -162,42 +165,42 @@ class AtomServiceProvider extends ServiceProvider
                     'redirect' => $redirect,
                 ]]);
             }
+
+            // digital ocean spaces
+            config(['filesystems.disks.do' => [
+                'driver' => 's3',
+                'key' => settings('do_spaces_key'),
+                'secret' => settings('do_spaces_secret'),
+                'region' => settings('do_spaces_region'),
+                'bucket' => settings('do_spaces_bucket'),
+                'folder' => settings('do_spaces_folder'),
+                'endpoint' => settings('do_spaces_endpoint'),
+                'use_path_style_endpoint' => false,
+            ]]);
+
+            // smtp
+            config(['mail.mailers.smtp' => [
+                'transport' => 'smtp',
+                'host' => settings('smtp_host'),
+                'port' => settings('smtp_port'),
+                'username' => settings('smtp_username'),
+                'password' => settings('smtp_password'),
+                'encryption' => settings('smtp_encryption'),
+            ]]);
+
+            // mailgun
+            config(['services.mailgun' => [
+                'domain' => settings('mailgun_domain'),
+                'secret' => settings('mailgun_secret'),
+            ]]);
+
+            // default mailer
+            config([
+                'mail.default' => settings('mailer'),
+                'mail.from.address' => settings('notify_from'),
+                'mail.from.name' => config('app.name'),
+            ]);
         }
-
-        // digital ocean spaces
-        config(['filesystems.disks.do' => [
-            'driver' => 's3',
-            'key' => settings('do_spaces_key'),
-            'secret' => settings('do_spaces_secret'),
-            'region' => settings('do_spaces_region'),
-            'bucket' => settings('do_spaces_bucket'),
-            'folder' => settings('do_spaces_folder'),
-            'endpoint' => settings('do_spaces_endpoint'),
-            'use_path_style_endpoint' => false,
-        ]]);
-
-        // smtp
-        config(['mail.mailers.smtp' => [
-            'transport' => 'smtp',
-            'host' => settings('smtp_host'),
-            'port' => settings('smtp_port'),
-            'username' => settings('smtp_username'),
-            'password' => settings('smtp_password'),
-            'encryption' => settings('smtp_encryption'),
-        ]]);
-
-        // mailgun
-        config(['services.mailgun' => [
-            'domain' => settings('mailgun_domain'),
-            'secret' => settings('mailgun_secret'),
-        ]]);
-
-        // default mailer
-        config([
-            'mail.default' => settings('mailer'),
-            'mail.from.address' => settings('notify_from'),
-            'mail.from.name' => config('app.name'),
-        ]);
     }
 
     // macros
@@ -205,7 +208,7 @@ class AtomServiceProvider extends ServiceProvider
     {
         // request macros
         if (!Request::hasMacro('portal')) {
-            Request::macro('portal', function($is = null) {
+            Request::macro('portal', function ($is = null) {
                 $route = $this->route()?->getName();
 
                 if (in_array($route, ['login', 'logout', 'register', 'password.forgot', 'password.reset'])) {
@@ -219,6 +222,12 @@ class AtomServiceProvider extends ServiceProvider
                 if ($is && $portal) return $portal === $is;
 
                 return $portal;
+            });
+        }
+
+        if (!Request::hasMacro('hostWithoutSubdomain')) {
+            Request::macro('hostWithoutSubdomain', function () {
+                return collect(explode('.', $this->host()))->sortKeysDesc()->take(2)->sortKeys()->join('.');
             });
         }
 

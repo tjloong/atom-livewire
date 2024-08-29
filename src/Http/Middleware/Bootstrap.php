@@ -26,25 +26,7 @@ class Bootstrap
             }
         }
 
-        // track referral code
-        if (current_route('web.*')) {
-            $referralCode = request()->query('referral-code');
-            $cachedReferralCode = cache('referral_code_'.$referralCode);
-    
-            if ($referralCode && $referralCode !== $cachedReferralCode) {
-                cache()->remember('referral_code_'.$referralCode, now()->addDays(7), fn() => $referralCode);
-            }
-            else if ($cachedReferralCode && !$referralCode) {
-                return redirect($request->fullUrlWithQuery(
-                    array_merge($request->query(), ['referral-code' => $cachedReferralCode])
-                ));
-            }
-        }
-
-        // ping user
-        if (($user = $request->user()) && $user->isRecentlyActive('5 minutes')) {
-            $user->ping();
-        }
+        optional($request->user())->ping();
 
         return $response;
     }
@@ -58,6 +40,7 @@ class Bootstrap
             ->map(fn($host) => str($host)->replaceFirst('http://', '')->toString())
             ->map(fn($host) => str($host)->replaceFirst('https://', '')->toString())
         ) {
+            if ($allowedHosts->contains('*') && !str($request->host())->is('*.'.config('app.url'))) abort(400);
             if (!$allowedHosts->contains($request->host())) abort(400);
         }
     }

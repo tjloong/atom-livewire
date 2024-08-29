@@ -47,6 +47,7 @@ class User extends Authenticatable
     protected static function booted() : void
     {
         static::saving(function($user) {
+            $user->fillTier();
             $user->fillStatus();
         });
 
@@ -91,12 +92,13 @@ class User extends Authenticatable
     }
 
     // ping
-    public function ping($login = false) : void
+    public function ping($login = false, $interval = 5) : void
     {
         if ($login) $this->fill(['login_at' => now()]);
 
-        $this->fill(['last_active_at' => now()]);
-        $this->saveQuietly();
+        if ($this->isRecentlyActive($interval.' minutes')) {
+            $this->fill(['last_active_at' => now()])->saveQuietly();
+        }
     }
 
     // get user home
@@ -194,6 +196,14 @@ class User extends Authenticatable
         if (!$this->password && $this->email) {
             $this->notify(new ActivateNotification());
         }
+    }
+
+    // fill tier
+    public function fillTier() : mixed
+    {
+        return $this->fill([
+            'tier' => $this->tier ?? 'normal',
+        ]);
     }
 
     // fill status
