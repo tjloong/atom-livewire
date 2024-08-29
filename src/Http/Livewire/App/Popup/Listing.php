@@ -15,9 +15,7 @@ class Listing extends Component
     ];
 
     protected $listeners = [
-        'popupCreated' => '$refresh',
-        'popupUpdated' => '$refresh',
-        'popupDeleted' => '$refresh',
+        'closePopup' => '$refresh',
     ];
 
     // get query property

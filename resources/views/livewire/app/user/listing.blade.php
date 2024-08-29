@@ -3,7 +3,7 @@
         <x-table.searchbar :total="$this->paginator->total()">
             <x-table.filters>
                 <x-inputs>
-                    <x-select options="enum.user.status" wire:model="filters.status"/>
+                    <x-select wire:model="filters.status" options="enum.user-status"/>
                 </x-inputs>
             </x-table.filters>
         </x-table.searchbar>
@@ -15,11 +15,11 @@
         <x-table.th/>
     </x-slot:thead>
 
-    @foreach ($this->paginator->items() as $user)
-        <x-table.tr wire:click="$emit('editUser', { id: {{ $user->id }} })">
-            <x-table.td :label="$user->name" class="font-medium"/>
-            <x-table.td :label="$user->email"/>
-            <x-table.td :badges="[$user->status->badge()]" align="right"/>
+    @foreach ($this->paginator->items() as $row)
+        <x-table.tr wire:click="$emit('editUser', {{ Js::from(['id' => $row->id]) }})">
+            <x-table.td :label="$row->name" class="font-medium"/>
+            <x-table.td :label="$row->email"/>
+            <x-table.td :badges="[$row->status->badge()]" align="right"/>
         </x-table.tr>
     @endforeach
 </x-table>

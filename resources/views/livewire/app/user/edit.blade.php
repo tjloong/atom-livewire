@@ -1,23 +1,21 @@
 <x-drawer submit wire:close="$emit('closeUser')">
 @if ($user)
-    @if ($user->exists)
-        <x-slot:heading
-            title="{!! $user->name !!}"
-            subtitle="{{ $user->email }}">
-        </x-slot:heading>
-
-        <x-slot:buttons>
-            @if ($user->trashed() && !$user->isAuth())
-                <x-button action="restore"/>
-                <x-button action="delete" no-label invert/>
-            @else
-                <x-button action="submit"/>
-                @if (!$user->isAuth()) <x-button action="trash" no-label invert/> @endif
-            @endif
-        </x-slot:buttons>
-    @else
-        <x-slot:heading title="Create User"></x-slot:heading>
+    @if ($user->exists) <x-slot:heading label="app.label.edit-user"></x-slot:heading>
+    @else <x-slot:heading title="app.label.create-user"></x-slot:heading>
     @endif
+
+    <x-slot:buttons>
+        @if ($user->exists && $user->trashed() && !$user->isAuth())
+            <x-button action="restore"/>
+            <x-button action="delete" no-label invert/>
+        @else
+            <x-button action="submit"/>
+
+            @if ($user->exists && !$user->isAuth())
+                <x-button action="trash" no-label invert/>
+            @endif
+        @endif
+    </x-slot:buttons>
 
     <x-inputs>
         <x-input wire:model.defer="user.name"/>

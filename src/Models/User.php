@@ -40,7 +40,7 @@ class User extends Authenticatable
         'blocked_at' => 'datetime',
         'last_active_at' => 'datetime',
         'email_verified_at' => 'datetime',
-        'status' => \Jiannius\Atom\Enums\User\Status::class,
+        'status' => \Jiannius\Atom\Enums\UserStatus::class,
     ];
 
     // boot
@@ -210,7 +210,7 @@ class User extends Authenticatable
     public function fillStatus() : mixed
     {
         return $this->fill([
-            'status' => enum('user.status', pick([
+            'status' => enum('user-status', pick([
                 'TRASHED' => $this->trashed(),
                 'BLOCKED' => $this->isBlocked(),
                 'ACTIVE' => !empty($this->password),

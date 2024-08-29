@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Announcement;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
-class Update extends Component
+class Edit extends Component
 {
     use WithForm;
 
@@ -13,8 +13,7 @@ class Update extends Component
     public $announcement;
 
     protected $listeners = [
-        'createAnnouncement' => 'create',
-        'updateAnnouncement' => 'update',
+        'editAnnouncement' => 'open',
     ];
 
     // validation
@@ -40,25 +39,16 @@ class Update extends Component
         ];
     }
 
-    // create
-    public function create() : void
-    {
-        $this->announcement = model('announcement')->fill(['start_at' => now()]);
-        $this->open();
-    }
-
-    // update
-    public function update($id = null) : void
-    {
-        if ($this->announcement = model('announcement')->find($id)) {
-            $this->open();
-        }
-    }
-
     // open
-    public function open() : void
+    public function open($data = []) : void
     {
-        if ($this->announcement) {
+        $id = get($data, 'id');
+
+        if (
+            $this->announcement = $id
+            ? model('announcement')->find($id)
+            : model('announcement')->fill(['start_at' => now(), ...$data])
+        ) {
             $this->resetValidation();
     
             $this->fill(['inputs.seo' => [
@@ -67,15 +57,8 @@ class Update extends Component
                 'image' => data_get($this->announcement->seo, 'image'),
             ]]);
     
-            $this->modal(id: 'announcement-update');
+            $this->overlay();
         }
-    }
-
-    // close
-    public function close() : void
-    {
-        $this->emit('setAnnouncementId');
-        $this->modal(false, 'announcement-update');
     }
 
     // duplicate
@@ -90,28 +73,21 @@ class Update extends Component
             'seo' => $this->announcement->seo,
         ]);
 
-        $this->emit('announcementCreated');
-        $this->close();
+        $this->overlay(false);
     }
 
     // delete
     public function delete() : void
     {
         $this->announcement->delete();
-        $this->emit('announcementDeleted');
-        $this->close();
+        $this->overlay(false);
     }
 
     // submit
     public function submit() : void
     {
         $this->validateForm();
-
         $this->announcement->fill(['seo' => data_get($this->inputs, 'seo')])->save();
-
-        if ($this->announcement->wasRecentlyCreated) $this->emit('announcementCreated');
-        else $this->emit('announcementUpdated');
-
-        $this->close();
+        $this->overlay(false);
     }
 }

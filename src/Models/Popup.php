@@ -43,11 +43,11 @@ class Popup extends Model
     protected function status() : Attribute
     {
         return Attribute::make(
-            get: fn() => enum('popup.status', collect([
+            get: fn() => enum('popup-status', pick([
                 'EXPIRED' => $this->end_at && $this->end_at->isPast(),
                 'UPCOMING' => $this->start_at && $this->start_at->isFuture(),
                 'PUBLISHED' => true,
-            ])->filter()->keys()->first()),
+            ])),
         );
     }
 
@@ -62,15 +62,15 @@ class Popup extends Model
     {
         $query->where(function ($q) use ($status) {
             foreach ((array) $status as $val) {
-                if (is_string($val)) $val = enum('popup.status', $val);
+                $val = enum('popup-status', $val);
 
-                if ($val === enum('popup.status', 'EXPIRED')) {
+                if ($val->is('EXPIRED')) {
                     $q->orWhereRaw('(popups.end_at is not null and popups.end_at < now())');
                 }
-                else if ($val === enum('popup.status', 'UPCOMING')) {
+                else if ($val->is('UPCOMING')) {
                     $q->orWhereRaw('(popups.start_at is not null and popups.start_at > now())');
                 }
-                else if ($val === enum('popup.status', 'PUBLISHED')) {
+                else if ($val->is('PUBLISHED')) {
                     $q->orWhereRaw('(
                         (popups.start_at is null and popups.end_at is null)
                         or (popups.start_at is not null and popups.end_at is null and popups.start_at <= now())

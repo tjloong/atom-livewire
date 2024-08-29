@@ -43,11 +43,11 @@ class Announcement extends Model
     protected function status() : Attribute
     {
         return Attribute::make(
-            get: fn() => enum('announcement.status', collect([
+            get: fn() => enum('announcement-status', pick([
                 'EXPIRED' => $this->end_at && $this->end_at->isPast(),
                 'UPCOMING' => $this->start_at && $this->start_at->isFuture(),
                 'PUBLISHED' => true,
-            ])->filter()->keys()->first()),
+            ])),
         );
     }
 
@@ -62,15 +62,15 @@ class Announcement extends Model
     {
         $query->where(function ($q) use ($status) {
             foreach ((array) $status as $val) {
-                if (is_string($val)) $val = enum('announcement.status', $val);
+                $val = enum('announcement-status', $val);
 
-                if ($val === enum('announcement.status', 'EXPIRED')) {
+                if ($val->is('EXPIRED')) {
                     $q->orWhereRaw('(announcements.end_at is not null and announcements.end_at < now())');
                 }
-                else if ($val === enum('announcement.status', 'UPCOMING')) {
+                else if ($val->is('UPCOMING')) {
                     $q->orWhereRaw('(announcements.start_at is not null and announcements.start_at > now())');
                 }
-                else if ($val === enum('announcement.status', 'PUBLISHED')) {
+                else if ($val->is('PUBLISHED')) {
                     $q->orWhereRaw('(
                         (announcements.start_at is null and announcements.end_at is null)
                         or (announcements.start_at is not null and announcements.end_at is null and announcements.start_at <= now())

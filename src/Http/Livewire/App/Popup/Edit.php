@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Http\Livewire\App\Popup;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
-class Update extends Component
+class Edit extends Component
 {
     use WithForm;
 
@@ -13,8 +13,7 @@ class Update extends Component
     public $inputs;
 
     protected $listeners = [
-        'createPopup' => 'create',
-        'updatePopup' => 'update',
+        'editPopup' => 'open',
     ];
 
     // validation
@@ -31,34 +30,19 @@ class Update extends Component
         ];
     }
 
-    // create
-    public function create() : void
-    {
-        $this->popup = model('popup')->fill(['start_at' => now()]);
-        $this->open();
-    }
-
-    // update
-    public function update($id = null) : void
-    {
-        $this->popup = model('popup')->find($id);
-        $this->open();
-    }
-
     // open
-    public function open() : void
+    public function open($data = []) : void
     {
-        if ($this->popup) {
-            $this->resetValidation();
-            $this->modal(id: 'popup-update');
-        }
-    }
+        $id = get($data, 'id');
 
-    // close
-    public function close() : void
-    {
-        $this->emit('setPopupId');
-        $this->modal(false, 'popup-update');
+        if (
+            $this->popup = $id
+            ? model('popup')->find($id)
+            : model('popup')->fill(['start_at' => now(), ...$data])
+        ) {
+            $this->resetValidation();
+            $this->overlay();
+        }
     }
 
     // duplicate
@@ -72,28 +56,21 @@ class Update extends Component
             'image_id' => $this->popup->image_id,
         ]);
 
-        $this->emit('popupCreated');
-        $this->close();
+        $this->overlay(false);
     }
 
     // delete
     public function delete() : void
     {
         $this->popup->delete();
-        $this->emit('popupDeleted');
-        $this->close();
+        $this->overlay(false);
     }
 
     // submit
     public function submit() : void
     {
         $this->validateForm();
-
         $this->popup->save();
-
-        if ($this->popup->wasRecentlyCreated) $this->emit('popupCreated');
-        else $this->emit('popupUpdated');
-
-        $this->close();
+        $this->overlay(false);
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Enums\User;
+namespace Jiannius\Atom\Enums;
 
 use Jiannius\Atom\Traits\Enum;
 
-enum Status: string
+enum UserStatus: string
 {
     use Enum;
 

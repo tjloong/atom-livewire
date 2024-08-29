@@ -41,7 +41,7 @@ class Blog extends Model
     protected function status() : Attribute
     {
         return Attribute::make(
-            get: fn() => enum('blog.status', pick([
+            get: fn() => enum('blog-status', pick([
                 'UPCOMING' => $this->published_at && $this->published_at->gt(now()),
                 'PUBLISHED' => !empty($this->published_at),
                 'DRAFT' => true,
@@ -79,7 +79,7 @@ class Blog extends Model
         if ($status) {
             $query->where(function($q) use ($status) {
                 foreach ((array) $status as $value) {
-                    $value = enum('blog.status', $value);
+                    $value = enum('blog-status', $value);
 
                     if ($value->is('DRAFT')) {
                         $q->orWhereNull('blogs.published_at');

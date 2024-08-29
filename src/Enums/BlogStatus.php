@@ -1,22 +1,22 @@
 <?php
 
-namespace Jiannius\Atom\Enums\Popup;
+namespace Jiannius\Atom\Enums;
 
 use Jiannius\Atom\Traits\Enum;
 
-enum Status : string
+enum BlogStatus : string
 {
     use Enum;
 
-    case EXPIRED = 'expired';
+    case DRAFT = 'draft';
     case UPCOMING = 'upcoming';
     case PUBLISHED = 'published';
 
     public function color()
     {
         return match($this) {
-            static::EXPIRED => 'gray',
-            static::UPCOMING => 'blue',
+            static::DRAFT => 'gray',
+            static::UPCOMING => 'yellow',
             static::PUBLISHED => 'green',
         };
     }

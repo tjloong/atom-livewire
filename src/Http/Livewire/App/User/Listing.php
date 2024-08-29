@@ -21,7 +21,7 @@ class Listing extends Component
     // mount
     public function mount() : void
     {
-        $this->fill(['filters.status' => enum('user.status', 'ACTIVE')->value]);
+        $this->fill(['filters.status' => enum('user-status', 'ACTIVE')->value]);
     }
 
     // get query property

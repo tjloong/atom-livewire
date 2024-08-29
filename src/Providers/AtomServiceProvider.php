@@ -225,6 +225,15 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
+        if (!Request::hasMacro('subdomain')) {
+            Request::macro('subdomain', function () {
+                $segments = collect(explode('.', $this->host()));
+                $segments->pop(2);
+
+                return $segments->join('.') ?: null;
+            });
+        }
+
         if (!Request::hasMacro('hostWithoutSubdomain')) {
             Request::macro('hostWithoutSubdomain', function () {
                 return collect(explode('.', $this->host()))->sortKeysDesc()->take(2)->sortKeys()->join('.');

@@ -1,7 +1,10 @@
-<div x-init="@js($popupId) && $wire.emit('updatePopup', @js($popupId))" class="max-w-screen-xl mx-auto">
-    <x-heading title="popup.heading.popup" xl>
-        <x-button icon="add" label="popup.button.new" 
-            wire:click="$emit('createPopup')"/>
+<div
+    x-init="$nextTick(() => id && $wire.emit('editPopup', { id }))"
+    x-wire-on:edit-popup="id = $args?.id"
+    x-wire-on:close-popup="id = null"
+    class="max-w-screen-xl mx-auto">
+    <x-heading title="app.label.popup" xl>
+        <x-button icon="add" label="app.label.new-popup" wire:click="$emit('editPopup')"/>
     </x-heading>
-    @livewire('app.popup.listing', key('listing'))
+    <livewire:app.popup.listing wire:key="listing"/>
 </div>
