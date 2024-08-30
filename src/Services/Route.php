@@ -97,10 +97,18 @@ class Route
     }
 
     // create integration routes
-    public function integration($finexus = false, $stripe = false, $ipay = false, $gkash = false, $ozopay = false) : void
+    public function integration($senangpay = false, $finexus = false, $stripe = false, $ipay = false, $gkash = false, $ozopay = false) : void
     {
+        if ($senangpay) {
+            $this->prefix('__senangpay')->as('__senangpay')->withoutMiddleware('web')->group(function () {
+                $this->get('redirect', 'SenangpayController@redirect')->name('.redirect');
+                $this->get('recurring', 'SenangpayController@recurring')->name('.recurring');
+                $this->post('webhook', 'SenangpayController@webhook')->name('.webhook');
+            });
+        }
+
         if ($finexus) {
-            $this->prefix('__finexus')->as('__finexus')->withoutMiddleware('web')->group(function() {
+            $this->prefix('__finexus')->as('__finexus')->withoutMiddleware('web')->group(function () {
                 $this->get('success', 'FinexusController@success')->name('.success');
                 $this->get('failed', 'FinexusController@failed')->name('.failed');
                 $this->get('cancel', 'FinexusController@cancel')->name('.cancel');
@@ -109,7 +117,7 @@ class Route
         }
 
         if ($stripe) {
-            $this->prefix('__stripe')->as('__stripe')->withoutMiddleware('web')->group(function() {
+            $this->prefix('__stripe')->as('__stripe')->withoutMiddleware('web')->group(function () {
                 $this->get('success', 'StripeController@success')->name('.success');
                 $this->get('cancel', 'StripeController@cancel')->name('.cancel');
                 $this->post('webhook', 'StripeController@webhook')->name('.webhook');
@@ -117,17 +125,17 @@ class Route
         }
 
         if ($ipay) {
-            $this->prefix('__ipay')->as('__ipay')->withoutMiddleware('web')->group(function() {
+            $this->prefix('__ipay')->as('__ipay')->withoutMiddleware('web')->group(function () {
                 $this->post('redirect', 'IpayController@redirect')->name('.redirect');
                 $this->post('webhook', 'IpayController@webhook')->name('.webhook');
-                $this->get('checkout', function() {
+                $this->get('checkout', function () {
                     return \Jiannius\Atom\Services\Ipay::getCheckoutForm();
                 })->name('.checkout');
             });
         }
 
         if ($gkash) {
-            $this->prefix('__gkash')->as('__gkash')->withoutMiddleware('web')->group(function() {
+            $this->prefix('__gkash')->as('__gkash')->withoutMiddleware('web')->group(function () {
                 $this->get('checkout', 'GkashController@checkout')->name('.checkout');
                 $this->post('redirect', 'GkashController@redirect')->name('.redirect');
                 $this->post('webhook', 'GkashController@webhook')->name('.webhook');
@@ -135,7 +143,7 @@ class Route
         }
 
         if ($ozopay) {
-            $this->prefix('__ozopay')->as('__ozopay')->withoutMiddleware('web')->group(function() {
+            $this->prefix('__ozopay')->as('__ozopay')->withoutMiddleware('web')->group(function () {
                 $this->get('checkout', 'OzopayController@checkout')->name('.checkout');
                 $this->post('redirect', 'OzopayController@redirect')->name('.redirect');
                 $this->post('webhook', 'OzopayController@webhook')->name('.webhook');

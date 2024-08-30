@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Enumm;
+namespace Jiannius\Atom\Enums;
 
 use Jiannius\Atom\Traits\Enum;
 
