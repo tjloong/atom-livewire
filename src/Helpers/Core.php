@@ -580,7 +580,7 @@ if (!function_exists('tr')) {
 if (!function_exists('worker')) {
     function worker($name)
     {
-        $name = str($name)->singular()->studly()->toString();
+        $name = str($name)->studly()->toString();
 
         if (
             $class = collect([

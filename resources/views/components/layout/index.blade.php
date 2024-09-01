@@ -29,7 +29,7 @@ $favicon = collect([
     ['mime' => 'image/svg+xml', 'file' => 'favicon.svg'],
 ])->first(fn($val) => file_exists(storage_path('app/public/img/'.get($val, 'file'))));
 
-$gfont = $attributes->get('gfont') ?? (
+$gfont = $gfont ?? $attributes->get('gfont') ?? (
     str(app()->currentLocale())->is('zh*') 
     ? 'Noto+Sans+SC:wght@100;300;400;500;700;900'
     : 'Inter:wght@100;300;400;500;700;900'
@@ -65,7 +65,9 @@ $cdnlist = collect([
     'alpinejs/tooltip' => true,
     'alpinejs' => true,
 ]);
-collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->put($val, true));
+collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) => 
+    is_string($key) ? $cdnlist->put($key, $val) : $cdnlist->put($val, true)
+);
 @endphp
 
 <!DOCTYPE html>
@@ -111,7 +113,9 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val) => $cdnlist->p
 <link rel="icon" type="{{ get($favicon, 'mime') }}" href="{{ url('storage/img/'.get($favicon, 'file')) }}">
 @endif
 
-@if ('gfont')
+@if ($gfont instanceof \Illuminate\View\ComponentSlot)
+{{ $gfont }}
+@else
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ $gfont }}&display=swap">
