@@ -5,8 +5,8 @@
                 {!! tr('app.label.signin') !!}
             </div>
 
-            @if ($errors->any())
-                <x-inform :message="$errors->first()" type="error"/>
+            @if ($errors->first('failed'))
+                <x-inform :message="$errors->first('failed')" type="error"/>
             @elseif ($message = session('message'))
                 <x-inform :message="$message"/>
             @endif

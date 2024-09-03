@@ -75,26 +75,27 @@ class Login extends Component
     // submit
     public function submit($user = null) : mixed
     {
-        if ($user) Auth::login($user);
-        else {
+        if (!$user) {
             $this->validateForm();
-
-            if ($user = $this->getUser()) {
-                if (app()->environment('local')) Auth::login($user);
-                else if ($err = $this->tooManyAttempts()) return $this->addError('email', $err);
-                else if (!$this->login($user)) return $this->addError('email', tr('auth.alert.failed'));
-            }
-            else return $this->addError('email', tr('auth.alert.failed'));
+            $user = $this->getUser();
+            if (!$user) return $this->failed();
         }
 
-        $this->loggedIn($user);
-        
-        return redirect()->intended($this->redirectTo($user));        
+        return $this->login($user);        
     }
 
-    // attempt login
-    public function login($user = null) : mixed
+    // login
+    public function login($user): mixed
     {
+        if ($err = $this->tooManyAttempts()) return $this->failed($err);
+
+        if (app()->environment('local')) {
+            Auth::login($user);
+            $user->ping(true);
+            request()->session()->regenerate();
+            return $this->success($user);
+        }
+
         $email = get($this->inputs, 'email');
         $password = get($this->inputs, 'password');
         $remember = get($this->inputs, 'remember');
@@ -102,17 +103,14 @@ class Login extends Component
 
         $this->throttlekey = str()->lower($email).'|'.request()->ip();
 
-        if ($attempt) RateLimiter::clear($this->throttlekey);
-        else RateLimiter::hit($this->throttlekey);
+        if ($attempt) {
+            RateLimiter::clear($this->throttlekey);
+            $user->ping(true);
+            request()->session()->regenerate();
+            return $this->success($user);
+        }
 
-        return $attempt;
-    }
-
-    // logged in
-    public function loggedIn($user) : void
-    {
-        $user->ping(true);
-        request()->session()->regenerate();
+        RateLimiter::hit($this->throttlekey);
     }
 
     // check has too many attempts
@@ -130,9 +128,17 @@ class Login extends Component
         ]);
     }
 
-    // redirection
-    public function redirectTo($user) : string
+    // success
+    public function success($user) : mixed
     {
-        return $this->redirect ?? $user->home();
+        return redirect()->intended(
+            $this->redirect ?? $user->home()
+        );
+    }
+
+    // failed
+    public function failed($e = null) : mixed
+    {
+        return $this->addError('failed', $e ?? tr('auth.alert.failed'));
     }
 }
