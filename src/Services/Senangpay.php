@@ -33,10 +33,17 @@ class Senangpay
     public function test() : array
     {
         try {
-            $response = $this->queryOrderStatus('testing-123');
+            $mid = get($this->credentials, 'merchant_id');
+            $sk = get($this->credentials, 'secret_key');
+    
+            $response = Http::get($this->endpoint('query_order_status'), [
+                'merchant_id' => $mid,
+                'order_id' => 'testing-123',
+                'hash' => hash_hmac('sha256', collect([$mid, $sk, 'testing-123'])->join(''), $sk),
+            ]);
 
             throw_if(!get($response, 'status'), \Exception::class, get($response, 'msg'));
-            
+
             return [
                 'success' => true,
                 'error' => null,
@@ -44,7 +51,7 @@ class Senangpay
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'error' => $e->getMessage(),
+                'error' => 'Connection failed',
             ];
         }
     }
@@ -111,7 +118,7 @@ class Senangpay
         $status = get($payload, 'status_id') ?? get($payload, 'payment_info.status');
 
         return pick([
-            'failed' => $status === '0',
+            'failed' => in_array($status, ['0', 'failed']),
             'success' => in_array($status, ['1', 'paid']),
             'pending' => $status === '2',
         ]);
