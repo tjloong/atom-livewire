@@ -10,15 +10,16 @@ class Index extends Component
     public $redirect;
 
     protected $listeners = ['next'];
-    protected $queryString = ['redirect'];
 
     // mount
     public function mount()
     {
-        if (!$this->tabs) return $this->reload();
-        if (!session()->has('onboarding')) session(['onboarding' => 0]);
+        $this->redirect = request()->query('redirect');
 
-        $this->tab = collect($this->tabs)->pluck('slug')->filter()->values()->get(session('onboarding'));
+        if (!$this->tabs) return $this->next();
+        if (!session()->has('onboarding')) $this->setSession();
+
+        $this->setTab();
     }
 
     // get tabs property
@@ -35,33 +36,40 @@ class Index extends Component
             : null;
     }
 
-    // get is completed property
-    public function getIsCompletedProperty() : bool
-    {
-        return !$this->tabs || session('onboarding') >= count($this->tabs);
-    }
-
     // updated tab
-    public function updatedTab($val) : mixed
+    public function updatedTab($val) : void
     {
-        session(['onboarding' => collect($this->tabs)->where('slug', $val)->keys()->first()]);
-
-        return $this->reload();
+        $this->setSession($val);
     }
 
     // next
     public function next() : mixed
     {
-        session()->increment('onboarding');
+        if ($this->tabs) $this->setSession();
 
-        return $this->reload();
+        // completed
+        if (!$this->tabs || session('onboarding') >= count($this->tabs)) {
+            $this->setSession(false);
+            return to_route('onboarding.completed', ['redirect' => $this->redirect]);
+        }
+        else {
+            $this->setTab();
+        }
     }
 
-    // reload
-    public function reload() : mixed
+    // set tab
+    public function setTab() : void
     {
-        return $this->isCompleted
-            ? to_route('onboarding.completed', ['redirect' => $this->redirect])
-            : to_route('onboarding', ['redirect' => $this->redirect]);
+        $tabs = collect($this->tabs)->pluck('slug')->filter()->values();
+        $this->tab = session('onboarding') ? $tabs->get(session('onboarding')) : $tabs->first();
+    }
+
+    // set session
+    public function setSession($tab = null) : void
+    {
+        if ($tab === false) session()->forget('onboarding');
+        else if ($tab) session(['onboarding' => collect($this->tabs)->where('slug', $tab)->keys()->first()]);
+        else if (is_numeric(session('onboarding'))) session()->increment('onboarding');
+        else session(['onboarding' => 0]);
     }
 }
