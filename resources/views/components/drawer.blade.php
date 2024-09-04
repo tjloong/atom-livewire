@@ -17,7 +17,7 @@ $except = ['locked', 'title', 'heading', 'class', 'stacked', 'submit', 'form'];
         @if (is_string($attributes->submitAction()))
         wire:submit.prevent="{{ $attributes->submitAction() }}"
         @endif
-        class="overlay dialog fixed inset-0 overflow-auto z-50"
+        class="overlay drawer fixed inset-0 overflow-auto z-50"
         {{ $attributes->merge(['id' => $id])->except($except) }}>
         <div
             @if (!$locked) x-on:click="close()" @endif
@@ -57,7 +57,7 @@ $except = ['locked', 'title', 'heading', 'class', 'stacked', 'submit', 'form'];
                 </div>
             </div>
 
-            <div class="grow overflow-auto md:first:rounded-tl-xl md:last:rounded-bl-xl">
+            <div class="drawer-body grow overflow-auto md:first:rounded-tl-xl md:last:rounded-bl-xl">
                 @if ($stacked)
                     <div class="flex flex-col divide-y">
                         {{ $slot }}
