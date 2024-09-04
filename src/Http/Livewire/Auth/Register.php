@@ -12,9 +12,12 @@ class Register extends Component
     use WithForm;
 
     public $utm;
+    public $user;
+    public $signup;
     public $refcode;
     public $redirect;
     public $verification;
+    public $socialiteUser;
     public $hasValidSignature;
 
     public $inputs = [
@@ -23,6 +26,7 @@ class Register extends Component
         'password' => null,
         'agree_tnc' => false,
         'agree_promo' => true,
+        'verification' => null,
     ];
 
     // validation
@@ -37,7 +41,9 @@ class Register extends Component
             'inputs.email' => [
                 'required' => 'Login email is required.',
                 'email' => 'Invalid email.',
-                'unique:users,email' => 'Email is taken.',
+                function ($attr, $value, $fail) {
+                    if ($this->user) $fail('Email is taken');
+                },
             ],
             'inputs.password' => [
                 'required' => 'Login password is required.',
@@ -53,70 +59,90 @@ class Register extends Component
     {
         $this->redirect = request()->query('redirect');
 
-        $token = request()->query('token');
-        $provider = request()->query('provider');
-        $socialite = $token && $provider ? rescue(fn() => optional(Socialite::driver($provider))->userFromToken($token)) : null;
-
-        if ($socialite) {
-            if (model('user')->firstWhere('email', $socialite->getEmail())) {
-                return to_route('login', array_merge([
-                    'token' => $token,
-                    'provider' => $provider,
-                ], request()->query()));
-            }
-            else {
-                return $this->register([
-                    'name' => $socialite->getName(),
-                    'email' => $socialite->getEmail(),
-                    'password' => str()->snake($socialite->getName()).'_oauth',
+        if (
+            ($token = request()->query('token'))
+            && ($provider = request()->query('provider'))
+            && ($user = rescue(fn() => optional(Socialite::driver($provider))->userFromToken($token)))
+        ) {
+            $this->fill([
+                'socialiteUser' => $user,
+                'inputs' => [
+                    'name' => $user->getName(),
+                    'email' => $user->getEmail(),
+                    'password' => str()->snake($user->getName()).'_oauth',
                     'email_verified_at' => now(),
                     'agree_tnc' => true,
                     'agree_promo' => true,
                     'data' => ['oauth' => [
                         'provider' => $provider,
-                        'id' => $socialite->getId(),
-                        'nickname' => $socialite->getNickname(),
-                        'avatar' => $socialite->getAvatar(),
-                        'token' => $socialite->token,
-                        'token_secret' => $socialite->tokenSecret,
-                        'refresh_token' => $socialite->refreshToken,
-                        'expires_in' => $socialite->expiresIn,
+                        'id' => $user->getId(),
+                        'nickname' => $user->getNickname(),
+                        'avatar' => $user->getAvatar(),
+                        'token' => $user->token,
+                        'token_secret' => $user->tokenSecret,
+                        'refresh_token' => $user->refreshToken,
+                        'expires_in' => $user->expiresIn,
                     ]],
-                ]);
-            }
+                ],
+            ]);
+
+            return $this->submit();
         }
         else {
-            $this->refcode = request()->query('refcode') ?? request()->query('ref');
-
-            $this->utm = [
-                'campaign' => request()->query('utm_campaign'),
-                'medium' => request()->query('utm_medium'),
-                'source' => request()->query('utm_source'),
-            ];
-
-            $this->hasValidSignature = request()->hasValidSignature();
-
-            $this->inputs = [
-                ...$this->inputs,
-                ...(
-                    request()->query('email')
-                    ? ['email' => request()->query('email')]
-                    : request()->query('fill', [])
-                ),
-            ];
+            $this->fill([
+                'refcode' => request()->query('refcode') ?? request()->query('ref'),
+                'utm' => [
+                    'campaign' => request()->query('utm_campaign'),
+                    'medium' => request()->query('utm_medium'),
+                    'source' => request()->query('utm_source'),
+                ],
+                'hasValidSignature' => request()->hasValidSignature(),
+                'inputs' => [
+                    ...$this->inputs,
+                    ...(
+                        request()->query('email')
+                        ? ['email' => request()->query('email')]
+                        : request()->query('fill', [])
+                    ),
+                ],
+            ]);
         }
+    }
+
+    // get user
+    public function getUser() : void
+    {
+        $this->user = model('user')
+            ->where('email', get($this->inputs, 'email'))
+            ->first();
     }
 
     // submit
     public function submit() : mixed
     {
-        $this->validateForm();
+        $this->getUser();
 
-        if ($this->verify()) {
-            return $this->register();
+        if ($this->socialiteUser) {
+            if ($this->user) return to_route('login', request()->query());
+            else {
+                $this->createUser();
+                $this->createSignup();
+
+                return $this->registered();
+            }
         }
+        else {
+            $this->validateForm();
 
-        return null;
+            if ($this->verify()) {
+                $this->createUser();
+                $this->createSignup();
+
+                return $this->registered();
+            }
+
+            return null;
+        }
     }
 
     // verified
@@ -125,21 +151,19 @@ class Register extends Component
         if (!config('atom.auth.verify')) return true;
         if ($this->hasValidSignature) return true;
 
-        if ($this->verification = model('verification')
-            ->where('email', get($this->inputs, 'email'))
-            ->where(fn($q) => $q
-                ->whereNull('expired_at')
-                ->orWhere('expired_at', '>', now())
-            )
-            ->first()
-        ) {
-            if ($this->verification->code === get($this->inputs, 'verification')) {
+        if ($code = get($this->inputs, 'verification')) {
+            $verified = model('verification')
+                ->where('email', get($this->inputs, 'email'))
+                ->where('code', $code)
+                ->where(fn($q) => $q->whereNull('expired_at')->orWhere('expired_at', '>', now()))
+                ->count() > 0;
+
+            if ($verified) {
                 $this->clearVerificationCode();
                 return true;
             }
-            else if (get($this->inputs, 'verification')) {
-                $this->popup('auth.alert.verification', 'alert', 'error');
-            }
+            
+            $this->popup('auth.alert.verification', 'alert', 'error');
         }
         else {
             $this->sendVerificationCode();
@@ -170,43 +194,45 @@ class Register extends Component
         model('verification')
             ->where('email', get($this->inputs, 'email'))
             ->delete();
+
+        $this->fill(['inputs.verification' => null]);
     }
 
-    // register
-    public function register($data = null) : mixed
+    // create user
+    public function createUser() : void
     {
-        $data = $data ?? $this->inputs;
-
-        $user = model('user')->forceFill([
-            'name' => get($data, 'name'),
-            'email' => get($data, 'email'),
-            'password' => bcrypt(get($data, 'password')),
+        $this->user = model('user')->forceFill([
+            'name' => get($this->inputs, 'name'),
+            'email' => get($this->inputs, 'email'),
+            'password' => bcrypt(get($this->inputs, 'password')),
             'tier' => 'signup',
-            'data' => get($data, 'data'),
+            'data' => get($this->inputs, 'data'),
             'email_verified_at' => now(),
             'login_at' => now(),
         ]);
 
-        $user->save();
+        $this->user->save();
+    }
 
-        $user->signup()->create([
+    // create signup
+    public function createSignup() : void
+    {
+        $this->signup = $this->user->signup()->create([
             'refcode' => $this->refcode,
             'utm' => $this->utm,
             'geo' => geoip()->getLocation()->toArray(),
-            'agree_tnc' => get($data, 'agree_tnc'),
-            'agree_promo' => get($data, 'agree_promo'),
+            'agree_tnc' => get($this->inputs, 'agree_tnc'),
+            'agree_promo' => get($this->inputs, 'agree_promo'),
         ]);
-
-        return $this->registered($user->fresh());
     }
 
     // post registration
-    public function registered($user) : mixed
+    public function registered() : mixed
     {
-        auth()->login($user);
+        auth()->login($this->user);
 
-        event(new Registered($user->fresh()));
+        event(new Registered($this->user->fresh()));
 
-        return redirect($this->redirect ?? $user->home());
+        return redirect($this->redirect ?? $this->user->home());
     }
 }

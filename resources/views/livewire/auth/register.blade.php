@@ -49,7 +49,8 @@
                         <span 
                             x-show="!show && (minutes || seconds)"
                             x-text="`${minutes}:${seconds}`"
-                            class="text-gray-500 font-medium"></span>
+                            class="text-gray-500 font-medium">
+                        </span>
                     </div>
                 </div>
             @else

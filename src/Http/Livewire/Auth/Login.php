@@ -12,8 +12,10 @@ class Login extends Component
 {
     use WithForm;
 
+    public $user;
     public $redirect;
     public $throttlekey;
+    public $socialiteUser;
 
     public $inputs = [
         'email' => null,
@@ -36,25 +38,20 @@ class Login extends Component
         if (user()) {
             return redirect(user()->home());
         }
-        else {    
-            // login using app key (root login)
-            if (
-                ($appkey = request()->query('appkey'))
-                && $appkey === config('app.key')
-                && ($user = model('user')->oldest()->firstWhere('tier', 'root'))
-            ) {
-                return $this->submit($user);
-            }
-            // socialite login (skip error from socialite)
-            else if (
-                ($token = request()->query('token'))
-                && ($provider = request()->query('provider'))
-                && ($socialite = rescue(fn() => Socialite::driver($provider)->userFromToken($token)))
-                && ($user = model('user')->firstWhere('email', $socialite->getEmail()))
-            ) {
-                return $this->submit($user);
-            }
+        // socialite login (skip error from socialite)
+        else if (
+            ($token = request()->query('token'))
+            && ($provider = request()->query('provider'))
+            && ($user = rescue(fn() => optional(Socialite::driver($provider))->userFromToken($token)))
+        ) {
+            $this->fill([
+                'socialiteUser' => $user,
+                'inputs.email' => $user->getEmail()
+            ]);
 
+            return $this->submit();
+        }
+        else {
             $this->fill([
                 'redirect' => request()->query('redirect'),
                 'inputs.email' => request()->query('email') ?? request()->query('fill.email'),
@@ -63,9 +60,9 @@ class Login extends Component
     }
 
     // get user
-    public function getUser() : mixed
+    public function getUser() : void
     {
-        return model('user')
+        $this->user = model('user')
             ->whereNotNull('password')
             ->whereNull('blocked_at')
             ->where('email', get($this->inputs, 'email'))
@@ -73,27 +70,35 @@ class Login extends Component
     }
 
     // submit
-    public function submit($user = null) : mixed
+    public function submit() : mixed
     {
-        if (!$user) {
-            $this->validateForm();
-            $user = $this->getUser();
-            if (!$user) return $this->failed();
+        if ($this->socialiteUser) {
+            $this->getUser();
+            
+            if (!$this->user) return to_route('register', request()->query());
+            
+            return $this->login();
         }
+        else {
+            $this->validateForm();
+            $this->getUser();
 
-        return $this->login($user);        
+            if (!$this->user) return $this->failed();
+
+            return $this->login();
+        }
     }
 
     // login
-    public function login($user): mixed
+    public function login(): mixed
     {
         if ($err = $this->tooManyAttempts()) return $this->failed($err);
 
         if (app()->environment('local')) {
-            Auth::login($user);
-            $user->ping(true);
+            Auth::login($this->user);
+            $this->user->ping(true);
             request()->session()->regenerate();
-            return $this->success($user);
+            return $this->success();
         }
 
         $email = get($this->inputs, 'email');
@@ -105,9 +110,9 @@ class Login extends Component
 
         if ($attempt) {
             RateLimiter::clear($this->throttlekey);
-            $user->ping(true);
+            $this->user->ping(true);
             request()->session()->regenerate();
-            return $this->success($user);
+            return $this->success();
         }
 
         RateLimiter::hit($this->throttlekey);
@@ -129,10 +134,10 @@ class Login extends Component
     }
 
     // success
-    public function success($user) : mixed
+    public function success() : mixed
     {
         return redirect()->intended(
-            $this->redirect ?? $user->home()
+            $this->redirect ?? $this->user->home()
         );
     }
 
