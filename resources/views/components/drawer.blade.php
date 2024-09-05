@@ -57,7 +57,7 @@ $except = ['locked', 'title', 'heading', 'class', 'stacked', 'submit', 'form'];
                 </div>
             </div>
 
-            <div class="drawer-body grow overflow-auto md:first:rounded-tl-xl md:last:rounded-bl-xl">
+            <div class="drawer-body grow overflow-auto pb-10 md:first:rounded-tl-xl md:last:rounded-bl-xl">
                 @if ($stacked)
                     <div class="flex flex-col divide-y">
                         {{ $slot }}
