@@ -82,7 +82,7 @@
         </x-slot:foot>
     </x-form>
     
-    <div class="text-center">
+    <div class="mt-5 text-center">
         {{ tr('auth.label.have-account') }} <x-anchor label="auth.label.signin" :href="route('login')"/>
     </div>
 </div>

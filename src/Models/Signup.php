@@ -20,7 +20,7 @@ class Signup extends Model
         'agree_tnc' => 'boolean',
         'agree_promo' => 'boolean',
         'onboarded_at' => 'datetime',
-        'status' => \Jiannius\Atom\Enums\Signup\Status::class,
+        'status' => \Jiannius\Atom\Enums\SignupStatus::class,
     ];
 
     // booted
@@ -55,7 +55,7 @@ class Signup extends Model
     public function fillStatus() : mixed
     {
         return $this->fill([
-            'status' => enum('signup.status', pick([
+            'status' => enum('signup-status', pick([
                 'TRASHED' => optional($this->user)->trashed(),
                 'BLOCKED' => optional($this->user)->isBlocked(),
                 'ONBOARDED' => !empty($this->onboarded_at),
