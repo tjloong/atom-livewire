@@ -13,7 +13,7 @@ $divide = !$attributes->get('no-divide');
 @elseif ($box)
     <x-box>
         @if ($title instanceof \Illuminate\View\ComponentSlot)
-            <x-heading no-margin :attributes="$title->attributes->merge(['class' => 'p-5 rounded-t-lg'])">
+            <x-heading no-margin :attributes="$title->attributes->merge(['class' => 'py-3 px-5 rounded-t-lg'])">
                 {{ $title }}
             </x-heading>
         @elseif ($title)

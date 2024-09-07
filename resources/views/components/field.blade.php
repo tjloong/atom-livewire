@@ -68,11 +68,14 @@ $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(f
                 </div>
             @elseif ($address)
                 <address class="not-italic">
-                    @if (is_string($address)) {!! $address !!}
+                    @if (is_string($address)) {!! tr($address) !!}
                     @else
                         @if ($name = get($address, 'name')) {!! $name !!}<br> @endif
                         @if ($company = get($address, 'company')) {!! $company !!}<br> @endif
-                        {!! get($address, 'address') !!}
+
+                        @if (is_string(get($address, 'address'))) {!! get($address, 'address') !!}
+                        @else {!! format($address)->address() !!}
+                        @endif
                     @endif
                 </address>
             @elseif($json) 
