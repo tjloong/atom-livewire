@@ -91,6 +91,8 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
                         this.$watch('search', () => this.filter())
                     }
                 })
+
+                this.$el.getSelectedValue = () => (this.value)
             },
 
             open () {
@@ -141,8 +143,19 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
 
                 let payload = {
                     name: this.callback.name,
-                    filters: { ...this.callback.filters, search: this.search },
+                    filters: { search: this.search },
                     selected: this.value,
+                }
+
+                if (typeof this.callback.filters === 'string') {
+                    let dependant = this.$el.closest('.group\\/field').parentNode.querySelector(`[data-field-name=${this.callback.filters}]`)
+                    if (dependant) payload.filters[this.callback.filters] = dependant.getSelectedValue()
+                }
+                else {
+                    payload.filters = {
+                        ...payload.filters,
+                        ...this.callback.filters,
+                    }
                 }
 
                 return ajax(this.endpoint).post(payload)
