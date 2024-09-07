@@ -40,10 +40,7 @@ class UserActivation extends Mailable
         return new Content(
             markdown: 'atom::mail.user-activation',
             with: [
-                'url' => url(route('password.reset', [
-                    'token' => app(PasswordBroker::class)->createToken($this->user),
-                    'email' => $this->user->email,
-                ])),
+                'url' => $this->getUrl(),
             ],
         );
     }
@@ -56,5 +53,20 @@ class UserActivation extends Mailable
     public function attachments(): array
     {
         return [];
+    }
+
+    // get activation url
+    public function getUrl() : string
+    {
+        return url(route('password.reset', [
+            'token' => $this->createToken(),
+            'email' => $this->user->email,
+        ]));
+    }
+
+    // create token
+    public function createToken() : string
+    {
+        return app(PasswordBroker::class)->createToken($this->user);
     }
 }
