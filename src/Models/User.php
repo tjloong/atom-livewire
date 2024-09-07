@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
-use Jiannius\Atom\Notifications\Auth\ActivateNotification;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\Settings;
@@ -57,7 +57,7 @@ class User extends Authenticatable
 
         static::created(function($user) {
             $user->resetSettings();
-            $user->sendActivationNotification();
+            $user->sendActivationMail();
         });
     }
 
@@ -190,12 +190,18 @@ class User extends Authenticatable
         else return false;
     }
 
-    // send activation notification
-    public function sendActivationNotification() : void
+    // send activation mail
+    public function sendActivationMail() : void
     {
-        if (!$this->password && $this->email) {
-            $this->notify(new ActivateNotification());
-        }
+        if ($this->status->isNot('INACTIVE')) return;
+        if (!$this->email) return;
+
+        $mail = collect([
+            'App\Mail\UserActivation',
+            'Jiannius\Atom\Mail\UserActivation',
+        ])->first(fn($ns) => file_exists(atom_ns_path($ns)));
+
+        Mail::to($this->email)->send(new $mail($this));
     }
 
     // fill tier
