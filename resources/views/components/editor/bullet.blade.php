@@ -1,17 +1,14 @@
 <div class="group">
-    <button type="button" x-tooltip.raw="Bullet List" x-on:click="commands().toggleBulletList()">
-        <x-icon name="list-ul"/>
-    </button>
-    
-    <button type="button" x-tooltip.raw="Ordered List" x-on:click="commands().toggleOrderedList()">
-        <x-icon name="list-ol"/>
-    </button>
-    
-    <button type="button" x-tooltip.raw="Sink List Item" x-on:click="commands().sinkListItem('listItem')">
-        <x-icon name="indent"/>
-    </button>
-    
-    <button type="button" x-tooltip.raw="Lift List Item" x-on:click="commands().liftListItem('listItem')">
-        <x-icon name="outdent"/>
-    </button>
+    @foreach ([
+        ['icon' => 'list-ul', 'label' => 'app.label.bullet-list', 'command' => 'toggleBulletList()'],    
+        ['icon' => 'list-ol', 'label' => 'app.label.ordered-list', 'command' => 'toggleOrderedList()'],    
+        ['icon' => 'indent', 'label' => 'app.label.sink-list-item', 'command' => 'sinkListItem("listItem")'],    
+        ['icon' => 'outdent', 'label' => 'app.label.lift-list-item', 'command' => 'liftListItem("listItem")'],
+    ] as $btn)
+        <x-editor.button
+            :label="get($btn, 'label')"
+            :icon="get($btn, 'icon')"
+            x-on:click="commands().{{ get($btn, 'command') }}">
+        </x-editor.button>
+    @endforeach
 </div>

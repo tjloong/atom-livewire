@@ -11,20 +11,20 @@ $tooltip = $attributes->get('tooltip');
         close () { this.show = false },
     }"
     x-on:click.away="close()">
-    <button type="button" 
+    <div
         x-ref="anchor"
-        x-tooltip.raw="{!! $tooltip !!}" 
-        x-bind:class="show && 'bg-slate-100'"
-        x-on:click="open()">
+        x-tooltip.raw="{!! tr($tooltip) !!}"
+        x-on:click="open()"
+        class="py-1 px-2 cursor-pointer hover:bg-slate-100">
         <x-icon :name="$icon"/>
-    </button>
+    </div>
     
     <div
         x-ref="dropdown"
         x-show="show"
         x-anchor.offset.6="$refs.anchor"
         x-transition.opacity.duration.100
-        class="z-10 bg-white border border-gray-300 shadow-md rounded-md">
+        class="z-10 bg-white border border-gray-300 shadow-lg rounded-lg">
         {{ $slot }}
     </div>
 </div>

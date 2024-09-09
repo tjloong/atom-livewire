@@ -38,7 +38,7 @@ $tags = collect(is_string($tags) ? explode(',', $tags) : $tags)->filter()->map(f
     ) : null,
 ]))->only('class') }}>
     @if(!$nolabel && ($field || $label))
-        <x-label :field="$field" :attributes="$attributes->only(['for', 'label'])"/>
+        <x-label :field="$field" :attributes="$attributes->only(['for', 'label', 'required'])"/>
     @endif
 
     <div class="{{ $inline ? 'md:col-span-2' : null }}">

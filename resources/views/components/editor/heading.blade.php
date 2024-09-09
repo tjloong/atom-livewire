@@ -1,16 +1,19 @@
 <div class="group">
-    <x-editor.dropdown icon="heading" tooltip="Heading">
-        <div class="flex flex-col items-center justify-center p-2">
-            <template x-for="n in [1, 2, 3, 4]" hidden>
+    <x-editor.dropdown icon="heading" tooltip="app.label.heading">
+        <div class="flex flex-col divide-y first:*:rounded-t-lg last:*:rounded-b-lg">
+            @foreach ([1, 2, 3, 4] as $n)
                 <div
-                    x-text="`H${n}`"
-                    x-tooltip="`Heading ${n}`"
-                    x-on:click="commands().toggleHeading({ level: n }); close()"
-                    class="cursor-pointer p-1 font-bold">
-                </div>
-            </template>
+                    x-tooltip.raw="{{ tr('app.label.heading-'.$n) }}"
+                    x-on:click="commands().toggleHeading({ level: @js($n) }); close()"
+                    class="py-1.5 px-3 cursor-pointer font-bold hover:bg-slate-50">
+                    H{{ $n }}
+                </div>                
+            @endforeach
 
-            <div class="cursor-pointer p-1" x-tooltip.raw="Paragraph" x-on:click="commands().setParagraph(); close()">
+            <div
+                class="py-1.5 px-3 cursor-pointer hover:bg-slate-50"
+                x-tooltip.raw="{{ tr('app.label.paragraph') }}"
+                x-on:click="commands().setParagraph(); close()">
                 <x-icon name="paragraph"/>
             </div>
         </div>

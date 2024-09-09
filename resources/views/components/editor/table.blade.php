@@ -1,15 +1,18 @@
 <div class="group">
-    <x-editor.dropdown icon="table" tooltip="Table">
+    <x-editor.dropdown icon="table" tooltip="app.label.table">
         <div x-data="{
             mode: null,
             exists: false,
+
             init () {
                 this.$watch('show', (show) => show && this.start())
             },
+
             start () {
                 editor().chain().focus()
                 this.exists = editor().isActive('table')
             },
+
             back () {
                 this.mode = null
             },
@@ -37,49 +40,49 @@
                 </div>
             </div>
 
-            <div x-show="exists && !mode" class="flex items-center flex-wrap p-1 w-max">
-                <button type="button" x-tooltip.raw="Add Column" x-on:click="mode = 'column'">
+            <div x-show="exists && !mode" class="flex flex-col divide-y *:text-center *:py-1.5 *:px-3 *:cursor-pointer hover:*:bg-slate-50 first:*:rounded-t-lg last:*:rounded-b-lg">
+                <div x-tooltip.raw="{{ tr('app.label.add-column') }}" x-on:click="mode = 'column'">
                     <x-icon name="up-down"/>
-                </button>
+                </div>
 
-                <button type="button" x-tooltip.raw="Add Row" x-on:click="mode = 'row'">
+                <div x-tooltip.raw="{{ tr('app.label.add-row') }}" x-on:click="mode = 'row'">
                     <x-icon name="left-right"/>
-                </button>
+                </div>
 
-                <button type="button" x-tooltip.raw="Merge Cells" x-on:click="commands().mergeCells(); close()">
+                <div x-tooltip.raw="{{ tr('app.label.merge-cells') }}" x-on:click="commands().mergeCells(); close()">
                     <x-icon name="object-group"/>
-                </button>
+                </div>
 
-                <button type="button" x-tooltip.raw="Split Cell" x-on:click="commands().splitCell(); close()">
+                <div x-tooltip.raw="{{ tr('app.label.split-cell') }}" x-on:click="commands().splitCell(); close()">
                     <x-icon name="arrows-left-right-to-line"/>
-                </button>
+                </div>
 
-                <button type="button" x-tooltip.raw="Delete Table" x-on:click="commands().deleteTable(); close()">
+                <div x-tooltip.raw="{{ tr('app.label.delete-table') }}" x-on:click="commands().deleteTable(); close()">
                     <x-icon name="trash"/>
-                </button>
-            </div>
-
-            <div x-show="mode === 'column'" class="flex flex-col divide-y w-max text-sm">
-                <div x-on:click="back()" class="font-semibold flex items-center gap-3 p-3 cursor-pointer">
-                    <x-icon name="arrow-left"/> Add Column
-                </div>
-                <div class="cursor-pointer p-3" x-on:click="commands().addColumnBefore(); back()">
-                    Add column before
-                </div>
-                <div class="cursor-pointer p-3" x-on:click="commands().addColumnAfter(); back()">
-                    Add column after
                 </div>
             </div>
 
-            <div x-show="mode === 'row'" class="flex flex-col divide-y w-max text-sm">
+            <div x-show="mode === 'column'" class="flex flex-col divide-y *:py-1.5 *:px-3 *:cursor-pointer hover:*:bg-slate-50 first:*:rounded-t-lg last:*:rounded-b-lg">
                 <div x-on:click="back()" class="font-semibold flex items-center gap-3 p-3 cursor-pointer">
-                    <x-icon name="arrow-left"/> Add Row
+                    <x-icon name="arrow-left"/> {{ tr('app.label.add-column') }}
                 </div>
-                <div class="cursor-pointer p-3" x-on:click="commands().addRowBefore(); back()">
-                    Add row before
+                <div x-on:click="commands().addColumnBefore(); back()">
+                    {{ tr('app.label.add-column-before') }}
                 </div>
-                <div class="cursor-pointer p-3" x-on:click="commands().addRowAfter(); back()">
-                    Add row after
+                <div x-on:click="commands().addColumnAfter(); back()">
+                    {{ tr('app.label.add-column-after') }}
+                </div>
+            </div>
+
+            <div x-show="mode === 'row'" class="flex flex-col divide-y *:py-1.5 *:px-3 *:cursor-pointer hover:*:bg-slate-50 first:*:rounded-t-lg last:*:rounded-b-lg">
+                <div x-on:click="back()" class="font-semibold flex items-center gap-3 p-3 cursor-pointer">
+                    <x-icon name="arrow-left"/> {{ tr('app.label.add-row') }}
+                </div>
+                <div x-on:click="commands().addRowBefore(); back()">
+                    {{ tr('app.label.add-row-before') }}
+                </div>
+                <div x-on:click="commands().addRowAfter(); back()">
+                    {{ tr('app.label.add-row-after') }}
                 </div>
             </div>
         </div>

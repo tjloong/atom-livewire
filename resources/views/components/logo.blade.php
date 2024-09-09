@@ -3,7 +3,7 @@ $href = $attributes->get('href');
 $name = $attributes->get('name')
     ?? collect($attributes->getAttributes())
         ->keys()
-        ->reject(fn($key) => in_array($key, ['class', 'style']))
+        ->reject(fn($key) => in_array($key, ['class', 'style', 'size']))
         ->first()
     ?? 'logo';
 

@@ -1,26 +1,26 @@
 <div class="p-1">
     <div class="bg-slate-100 rounded-md flex items-center justify-end">
-        <button type="button" 
-            x-tooltip.raw="Undo" 
+        <x-editor.button 
+            label="app.label.undo"
+            icon="rotate-left"
             x-show="can().undo()" 
             x-on:click="commands().undo()">
-            <x-icon name="rotate-left"/>
-        </button>
+        </x-editor.button>
     
-        <button type="button" 
-            x-tooltip.raw="Redo" 
+        <x-editor.button 
+            label="app.label.redo"
+            icon="rotate-right"
             x-show="can().redo()" 
             x-on:click="commands().redo()">
-            <x-icon name="rotate-right"/>
-        </button>
+        </x-editor.button>
 
-        <button type="button"
-            x-tooltip.raw="Remove Formatting"
+        <x-editor.button
+            label="app.label.remove-formatting"
+            icon="text-slash"
             x-on:click="
                 commands().unsetAllMarks();
                 commands().clearNodes();
             ">
-            <x-icon name="text-slash"/>
-        </button>
+        </x-editor.button>
     </div>
 </div>

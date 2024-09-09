@@ -19,7 +19,7 @@ $size = $attributes->size('md');
 <x-field :class="$inline ? 'items-center' : null" :attributes="$attributes->merge([
     'field' => $field,
     'inline' => $inline,
-])->only(['inline', 'field', 'for', 'no-label', 'label'])">
+])->only(['inline', 'field', 'for', 'no-label', 'label', 'required'])">
     <span {{ $attributes
         ->class(array_filter([
             "inline-block leading-normal w-full input-$size has-[:disabled]:opacity-50",

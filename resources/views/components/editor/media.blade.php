@@ -1,5 +1,5 @@
 <div class="group">
-    <x-editor.dropdown icon="image" tooltip="Image">
+    <x-editor.dropdown icon="image" tooltip="app.label.image">
         <div
             x-data="{
                 url: null,
@@ -94,12 +94,19 @@
         </div>
     </x-editor.dropdown>
 
-    <x-editor.dropdown icon="brands youtube" tooltip="Youtube Video">
+    <x-editor.dropdown icon="brands youtube" tooltip="app.label.youtube-video">
         <div
             x-data="{
                 url: null,
-                width: 640,
-                height: 480,
+                width: null,
+                height: null,
+
+                init () {
+                    this.url = null
+                    this.width = 640
+                    this.height = 480
+                },
+
                 save () {
                     if (!this.url) return
 
@@ -108,22 +115,18 @@
                         width: this.width,
                         height: this.height,
                     })
-                    
+
+                    this.init()
                     close()
                 }
             }" 
-            class="w-80 flex flex-col divide-y">
-            <div class="p-3 flex flex-col gap-3">
-                <x-form.text label="Youtube URL" x-model="url"/>
-                <x-form.number label="Width" x-model="width"/>
-                <x-form.number label="Height" x-model="height"/>
+            class="w-80 p-3 flex flex-col gap-3">
+            <x-input x-model.lazy="url" placeholder="app.label.youtube-url"/>
+            <div class="flex items-center gap-2">
+                <x-input type="number" x-model="width" prefix="W"/>
+                <x-input type="number" x-model="height" prefix="H"/>
             </div>
-
-            <div class="p-3">
-                <x-button color="green" icon="add" outlined sm
-                    label="Add Youtube Video"
-                    x-on:click="save()"/>
-            </div>
+            <x-button label="app.label.insert" icon="add" x-on:click.stop="save()"/>
         </div>
     </x-editor.dropdown>
 </div>
