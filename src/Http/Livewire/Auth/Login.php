@@ -116,6 +116,8 @@ class Login extends Component
         }
 
         RateLimiter::hit($this->throttlekey);
+
+        return $this->failed();
     }
 
     // check has too many attempts
