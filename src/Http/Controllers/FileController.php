@@ -45,10 +45,11 @@ class FileController extends Controller
             $path = request()->path;
             $visibility = request()->visibility;
             $uploads = request()->file('files');
-
-            return collect($uploads)
+            $files = collect($uploads)
                 ->map(fn($upload) => model('file')->store($upload, $path, $visibility))
-                ->toArray();
+                ->map(fn($file) => $file->toArray());
+
+            return $files->toArray();
         }
     }
 }

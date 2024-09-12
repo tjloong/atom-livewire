@@ -1,9 +1,11 @@
 import { Editor, Extension, mergeAttributes } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
+import BubbleMenu from '@tiptap/extension-bubble-menu'
 import { Color } from '@tiptap/extension-color'
 import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
+import Mention from '@tiptap/extension-mention'
 import Placeholder from '@tiptap/extension-placeholder'
 import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
@@ -137,45 +139,148 @@ const ImageExtended = Image.extend({
     },
 })
 
+const linkMenuConfiguration = (element) => {
+    return {
+        pluginKey: 'linkMenu',
+        element,
+        shouldShow: ({ editor }) => {
+            if (editor.isActive('link')) element.dispatchEvent(new CustomEvent('link-menu-active', { bubbles: true, detail: editor }))
+            else element.dispatchEvent(new CustomEvent('link-menu-inactive', { bubbles: true, detail: editor }))
+            return editor.isActive('link')
+        },
+        tippyOptions: {
+            arrow: false,
+            theme: 'editor-menu',
+        }
+    }
+}
+
+const tableMenuConfiguration = (element) => {
+    return {
+        pluginKey: 'tableMenu',
+        element,
+        shouldShow: ({ editor }) => (editor.isActive('table')),
+        tippyOptions: {
+            arrow: false,
+            theme: 'editor-menu',
+        }
+    }
+}
+
+const imageMenuConfiguration = (element) => {
+    return {
+        pluginKey: 'imageMenu',
+        element,
+        shouldShow: ({ editor }) => (editor.isActive('image')),
+        tippyOptions: {
+            arrow: false,
+            theme: 'editor-menu',
+        }
+    }
+}
+
+const youtubeMenuConfiguration = (element) => {
+    return {
+        pluginKey: 'youtubeMenu',
+        element,
+        shouldShow: ({ editor }) => (editor.isActive('youtube')),
+        tippyOptions: {
+            arrow: false,
+            theme: 'editor-menu',
+        },
+    }
+}
+
+const mentionConfiguration = (element) => {
+    return {
+        HTMLAttributes: {
+            class: 'mention',
+        },
+        suggestion: {
+            items: ({ query }) => {
+                return element.fetch(query)
+            },
+
+            render: () => {
+                return {
+                    onStart: props => {
+                        if (!props.clientRect) return
+                        element.start(props)
+                    },
+
+                    onUpdate: props => {
+                        if (!props.clientRect) return
+                        element.update(props)
+                    },
+
+                    onKeyDown: props => {
+                        return element.keydown(props)
+                    },
+                
+                    onExit() {
+                        element.exit()
+                    },
+                }
+            },
+        }
+    }
+}
+
 window.Editor = (element, config) => {
     let editor
 
+    let extensions = [
+        Color,
+        FontSize,
+        Highlight.configure({ multicolor: true }),
+        ImageExtended,
+        Link.configure({ openOnClick: false }),
+        Placeholder.configure({ placeholder: config.placeholder }),
+        Subscript,
+        Superscript,
+        StarterKit,
+        TableExtended.configure({ resizable: true }),
+        TableCellExtended,
+        TableRow,
+        TableHeader,
+        TextAlign.configure({ types: ['heading', 'paragraph'] }),
+        TextStyle,
+        Underline,
+        Youtube,
+    ]
+
+    let suggestionElement = element.closest('.editor').querySelector('.editor-suggestion')
+    if (suggestionElement) extensions = [...extensions, Mention.configure(mentionConfiguration(suggestionElement))]
+
+    let linkMenuElement = element.closest('.editor').querySelector('.editor-menu .link-menu')
+    if (linkMenuElement) extensions = [...extensions, BubbleMenu.configure(linkMenuConfiguration(linkMenuElement))]
+
+    let tableMenuElement = element.closest('.editor').querySelector('.editor-menu .table-menu')
+    if (tableMenuElement) extensions = [...extensions, BubbleMenu.configure(tableMenuConfiguration(tableMenuElement))]
+
+    let imageMenuElement = element.closest('.editor').querySelector('.editor-menu .image-menu')
+    if (imageMenuElement) extensions = [...extensions, BubbleMenu.configure(imageMenuConfiguration(imageMenuElement))]
+
+    let youtubeMenuElement = element.closest('.editor').querySelector('.editor-menu .youtube-menu')
+    if (youtubeMenuElement) extensions = [...extensions, BubbleMenu.configure(youtubeMenuConfiguration(youtubeMenuElement))]
+
     editor = new Editor({
         element,
-        autofocus: 'end',
-    
-        extensions: [
-            Color,
-            FontSize,
-            Highlight.configure({ multicolor: true }),
-            ImageExtended.configure({ allowBase64: true }),
-            Link.configure({ openOnClick: false }),
-            Placeholder.configure({ placeholder: config.placeholder }),
-            Subscript,
-            Superscript,
-            StarterKit,
-            TableExtended.configure({ resizable: true }),
-            TableCellExtended,
-            TableRow,
-            TableHeader,
-            TextAlign.configure({ types: ['heading', 'paragraph'] }),
-            TextStyle,
-            Underline,
-            Youtube,
-        ],
+        autofocus: false,
+        extensions,
 
         onFocus ({ editor, event }) {
             element.dispatchEvent(new CustomEvent('editor-focus', { bubbles: true, detail: { editor, event }}))
         },
-    
+
         onBlur ({ editor, event }) {
             element.dispatchEvent(new CustomEvent('editor-blur', { bubbles: true, detail: { editor, event }}))
         },
-    
+
         onCreate ({ editor }) {
             element.dispatchEvent(new CustomEvent('editor-create', { bubbles: true, detail: { editor }}))
         },
-    
+
         onUpdate ({ editor }) {
             element.dispatchEvent(new CustomEvent('editor-update', { bubbles: true, detail: { editor }}))
         },

@@ -144,10 +144,7 @@ class File extends Model
 
                 if (!$this->disk && !$this->path) return $this->url;
 
-                return route('__file', [
-                    'name' => $this->name,
-                    'ulid' => $this->ulid,
-                ]);
+                return route('__file', $this->name).'?ulid='.$this->ulid;
             },
         );
     }
