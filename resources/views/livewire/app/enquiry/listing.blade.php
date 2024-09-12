@@ -1,6 +1,6 @@
 <x-table>
     <x-slot:header>
-        <x-table.searchbar :total="$this->paginator->total()">
+        <x-table.searchbar>
             <x-table.filters>
                 <x-inputs>
                     <x-select wire:model="filters.status" label="app.label.status" options="enum.enquiry.status" multiple/>
@@ -21,7 +21,7 @@
     </x-slot:thead>
 
     @foreach ($this->paginator->items() as $row)
-        <x-table.tr wire:click="$emit('editEnquiry', {{ $row->id }})">
+        <x-table.tr wire:click="$emit('editEnquiry', {{ $row->ulid }})">
             <x-table.td :date="$row->created_at"/>
             <x-table.td :label="$row->name" class="font-medium"/>
             <x-table.td :label="$row->phone"/>

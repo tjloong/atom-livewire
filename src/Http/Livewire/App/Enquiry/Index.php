@@ -6,5 +6,5 @@ use Jiannius\Atom\Component;
 
 class Index extends Component
 {
-    public $enquiryId;
+    public $ulid;
 }

@@ -26,9 +26,9 @@ class Edit extends Component
     }
 
     // open
-    public function open($id) : void
+    public function open($ulid) : void
     {
-        if ($this->enquiry = model('enquiry')->find($id)) {
+        if ($this->enquiry = model('enquiry')->where('ulid', $ulid)->first()) {
             $this->fill(['inputs.status' => $this->enquiry->status->value]);
             $this->overlay();
         }

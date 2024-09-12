@@ -1,24 +1,25 @@
-<x-drawer submit wire:close="$emit('closeEnquiry')">
+<x-page wire:close="$emit('closeEnquiry')">
 @if ($enquiry)
-    <x-slot:heading title="{!! $enquiry->name !!}"></x-slot:heading>
-
     <x-slot:buttons>
-        <x-button action="submit"/>
-        <x-button action="delete" invert no-label/>
+        <x-button action="delete" invert/>
     </x-slot:buttons>
 
-    <div class="p-5 flex flex-col gap-5">
-        <x-fieldset>
-            <x-field label="app.label.name" :value="$enquiry->name"/>
-            <x-field label="app.label.phone" :value="$enquiry->phone"/>
-            <x-field label="app.label.email" :value="$enquiry->email"/>
-            <x-field label="app.label.message" block>
-                {!! nl2br($enquiry->message) !!}
-            </x-field>
-        </x-fieldset>
+    <x-form>
+        <x-slot:title title="{!! $enquiry->name !!}"></x-slot:title>
 
-        <x-textarea wire:model.defer="enquiry.notes" label="app.label.remark"/>
-        <x-select wire:model.defer="inputs.status" label="app.label.status" options="enum.enquiry.status"/>
-    </div>
+        <div class="p-5 flex flex-col gap-5">
+            <x-fieldset>
+                <x-field label="app.label.name" :value="$enquiry->name"/>
+                <x-field label="app.label.phone" :value="$enquiry->phone"/>
+                <x-field label="app.label.email" :value="$enquiry->email"/>
+                <x-field label="app.label.message" block>
+                    {!! nl2br($enquiry->message) !!}
+                </x-field>
+            </x-fieldset>
+
+            <x-textarea wire:model.defer="enquiry.notes" label="app.label.remark"/>
+            <x-select wire:model.defer="inputs.status" label="app.label.status" options="enum.enquiry.status"/>
+        </div>
+    </x-form>
 @endif
-</x-drawer>
+</x-page>
