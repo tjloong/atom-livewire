@@ -17,9 +17,7 @@ class Listing extends Component
     ];
 
     protected $listeners = [
-        'bannerCreated' => '$refresh',
-        'bannerUpdated' => '$refresh',
-        'bannerDeleted' => '$refresh',
+        'closeBanner' => '$refresh',
     ];
 
     // get query property
@@ -35,7 +33,7 @@ class Listing extends Component
             model('banner')->find($id)->fill(['seq' => $seq])->save();
         }
 
-        $this->popup('app.alert.sorted');
+        $this->popup('app.label.sorted');
     }
 
     // delete

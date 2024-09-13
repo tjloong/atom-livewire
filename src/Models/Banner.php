@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasSequence;
+use Jiannius\Atom\Traits\Models\HasUlid;
 
 class Banner extends Model
 {
@@ -18,6 +19,7 @@ class Banner extends Model
     use HasFilters;
     use HasSlug;
     use HasSequence;
+    use HasUlid;
 
     protected $guarded = [];
 
@@ -70,7 +72,7 @@ class Banner extends Model
     protected function status() : Attribute
     {
         return Attribute::make(
-            get: fn() => enum('banner.status', pick([
+            get: fn() => enum('banner-status', pick([
                 'INACTIVE' => !$this->is_active,
                 'ENDED' => $this->end_at && $this->end_at->isPast(),
                 'UPCOMING' => $this->start_at && $this->start_at->isFuture(),
@@ -83,7 +85,7 @@ class Banner extends Model
     protected function type() : Attribute
     {
         return Attribute::make(
-            get: fn($value) => $value ? enum('banner.type', $value) : null,
+            get: fn($value) => $value ? enum('banner-type', $value) : null,
             set: fn($value) => is_string($value) ? $value : optional($value)->value,
         );
     }
@@ -92,7 +94,7 @@ class Banner extends Model
     protected function placement() : Attribute
     {
         return Attribute::make(
-            get: fn($value) => collect(json_decode($value))->map(fn($val) => enum('banner.placement', $val))->toArray(),
+            get: fn($value) => collect(json_decode($value))->map(fn($val) => enum('banner-placement', $val))->toArray(),
             set: fn($value) => collect($value)->map(fn($val) => is_string($val) ? $val : optional($val)->value),
         );
     }
@@ -131,7 +133,7 @@ class Banner extends Model
         if ($status) {
             $query->where(function($q) use ($status) {
                 foreach ((array) $status as $value) {
-                    $value = enum('banner.status', $value);
+                    $value = enum('banner-status', $value);
 
                     if ($value->is('INACTIVE')) {
                         $q->orWhere('banners.is_active', false);
@@ -166,7 +168,7 @@ class Banner extends Model
             return model('banner')
             ->with('image')
             ->has('image')
-            ->status(enum('banner.status', 'ACTIVE'))
+            ->status(enum('banner-status', 'ACTIVE'))
             ->sequence()
             ->latest('start_at')
             ->get();

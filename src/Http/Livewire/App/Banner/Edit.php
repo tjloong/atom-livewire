@@ -5,15 +5,14 @@ namespace Jiannius\Atom\Http\Livewire\App\Banner;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
-class Update extends Component
+class Edit extends Component
 {
     use WithForm;
 
     public $banner;
 
     protected $listeners = [
-        'createBanner' => 'create',
-        'updateBanner' => 'update',
+        'editBanner' => 'open',
     ];
 
     // validation
@@ -40,53 +39,32 @@ class Update extends Component
         ];
     }
 
-    // create
-    public function create() : void
-    {
-        $this->banner = model('banner')->fill(['is_active' => true]);
-        $this->open();
-    }
-
-    // update
-    public function update($id) : void
-    {
-        $this->banner = model('banner')->find($id);
-        $this->open();
-    }
-
     // open
-    public function open() : void
+    public function open($data = []) : void
     {
-        if ($this->banner) {
+        $ulid = get($data, 'ulid');
+
+        if (
+            $this->banner = $ulid
+            ? model('banner')->where('ulid', $ulid)->first()
+            : model('banner')->fill(['is_active' => true, ...$data])
+        ) {
             $this->modal(id: 'banner-update');
         }
-    }
-
-    // close
-    public function close() : void
-    {
-        $this->emit('setBannerId');
-        $this->modal(false, 'banner-update');
     }
 
     // delete
     public function delete() : void
     {
         $this->banner->delete();
-        $this->emit('bannerDeleted');
-        $this->close();
+        $this->overlay(false);
     }
 
     // submit
     public function submit() : void
     {
         $this->validateForm();
-
         $this->banner->save();
-
-        if ($this->banner->wasRecentlyCreated) $this->emit('bannerCreated');
-        else $this->emit('bannerUpdated');
-
-        $this->close();
+        $this->overlay(false);
     }
 }

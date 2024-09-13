@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
+            $table->ulid()->unique();
             $table->string('type')->nullable();
             $table->string('name')->nullable();
             $table->string('slug')->nullable();

@@ -1,10 +1,10 @@
 <?php
 
-namespace Jiannius\Atom\Enums\Banner;
+namespace Jiannius\Atom\Enums;
 
 use Jiannius\Atom\Traits\Enum;
 
-enum Placement : string
+enum BannerPlacement : string
 {
     use Enum;
 
