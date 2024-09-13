@@ -18,7 +18,7 @@
             </x-fieldset>
 
             <x-textarea wire:model.defer="enquiry.notes" label="app.label.remark"/>
-            <x-select wire:model.defer="inputs.status" label="app.label.status" options="enum.enquiry.status"/>
+            <x-select wire:model.defer="inputs.status" label="app.label.status" options="enum.enquiry-status"/>
         </div>
     </x-form>
 @endif

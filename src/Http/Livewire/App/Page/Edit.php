@@ -45,9 +45,9 @@ class Edit extends Component
     }
 
     // open
-    public function open($id) : void
+    public function open($ulid) : void
     {
-        if ($this->page = model('page')->find($id)) {
+        if ($this->page = model('page')->where('ulid', $ulid)->first()) {
             $this->overlay();
         }
     }

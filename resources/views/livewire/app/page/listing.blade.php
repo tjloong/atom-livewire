@@ -1,6 +1,6 @@
 <x-table>
     <x-slot:header>
-        <x-table.searchbar :total="$this->paginator->total()"/>
+        <x-table.searchbar/>
     </x-slot:header>
 
     <x-slot:thead>
@@ -9,7 +9,7 @@
     </x-slot:thead>
 
     @foreach ($this->paginator->items() as $row)
-        <x-table.tr wire:click="$emit('editPage', {{ Js::from($row->id) }})">
+        <x-table.tr wire:click="$emit('editPage', {{ Js::from($row->ulid) }})">
             <x-table.td :label="$row->name" :badges="$row->locale" class="font-medium"/>
             <x-table.td :label="$row->title"/>
         </x-table.tr>

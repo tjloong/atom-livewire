@@ -3,7 +3,7 @@
         <x-table.searchbar>
             <x-table.filters>
                 <x-inputs>
-                    <x-select wire:model="filters.status" label="app.label.status" options="enum.enquiry.status" multiple/>
+                    <x-select wire:model="filters.status" label="app.label.status" options="enum.enquiry-status" multiple/>
                     <x-date-picker mode="range" wire:model="filters.created_at" label="app.label.created-date"/>
                 </x-inputs>
             </x-table.filters>

@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\HasUlid;
 
 class Page extends Model
 {
     use HasFactory;
     use HasFilters;
     use HasSlug;
+    use HasUlid;
 
     protected $guarded = [];
 

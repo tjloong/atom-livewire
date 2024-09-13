@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
+            $table->ulid()->unique();
             $table->string('name');
             $table->string('title')->nullable();
             $table->string('slug')->nullable();
@@ -28,11 +29,13 @@ return new class extends Migration
             ['name' => 'Privacy', 'title' => 'Privacy Policy', 'slug' => 'privacy'],
             ['name' => 'Terms', 'title' => 'Terms and Conditions', 'slug' => 'terms'],
         ] as $page) {
-            DB::table('pages')->insert(array_merge($page, [
+            DB::table('pages')->insert([
+                ...$page,
+                'ulid' => (string) str()->ulid(),
                 'locale' => 'en',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]));
+            ]);
         }
     }
 

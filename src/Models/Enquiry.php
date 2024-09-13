@@ -24,7 +24,7 @@ class Enquiry extends Model
     protected static function booted() : void
     {
         static::saving(function ($enquiry) {
-            $enquiry->status = $enquiry->status ?? enum('enquiry.status', 'PENDING');
+            $enquiry->status = $enquiry->status ?? enum('enquiry-status', 'PENDING');
         });
     }
 
@@ -33,8 +33,8 @@ class Enquiry extends Model
     {
         return Attribute::make(
             get: fn($value) => $value
-                ? enum('enquiry.status', $value)
-                : enum('enquiry.status', 'PENDING'),
+                ? enum('enquiry-status', $value)
+                : enum('enquiry-status', 'PENDING'),
             set: fn($status) => is_string($status) ? $status : optional($status)->value,
         );
     }
