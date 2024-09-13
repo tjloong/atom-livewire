@@ -237,7 +237,6 @@ return [
         'meta-title' => 'Meta Title',
         'mode' => 'Mode',
         'more-articles' => 'More articles',
-        'my-profile' => 'My Profile',
         'name' => 'Name',
         'nationality' => 'Nationality',
         'navigation' => 'Navigation',
@@ -418,7 +417,6 @@ return [
         'task' => 'Task|Tasks',
         'tax' => 'Tax|Taxes',
         'terms-of-use' => 'Terms of use',
-        'test-connection' => 'Test Connection',
         'text-color' => 'Text Color',
         'thank-you-for-signing-up-with-us' => 'Thank you for signing up with us',
         'thank-you' => 'Thank you',
@@ -479,6 +477,23 @@ return [
         'your-name' => 'Your name',
         'youtube-url' => 'Youtube URL',
 
+        // alert
+        'no-results' => 'No Results',
+        'we-could-not-find-anything' => 'We could not find anything.',
+
+        // settings
+        'merchant-id' => 'Merchant ID',
+        'secret-key' => 'Secret Key',
+        'public-key' => 'Public Key',
+        'webhook-signing-secret' => 'Webhook Signing Secret',
+        'stripe-settings' => 'Stripe Settings',
+        'senangpay-settings' => 'SenangPay Settings',
+        'test-connection' => 'Test Connection',
+
+        // profile
+        'my-profile' => 'My Profile',
+
+        // interval
         'daily' => 'Daily',
         'weekly' => 'Weekly',
         'monthly' => 'Monthly',
@@ -486,6 +501,7 @@ return [
         'half-yearly' => 'Half yearly',
         'yearly' => 'Yearly',
 
+        // editor
         'text-formatting' => 'Text Formatting',
         'bold' => 'Bold',
         'italic' => 'Italic',
@@ -560,10 +576,6 @@ return [
         'submit' => [
             'title' => 'Submit Form',
             'message' => 'Are you sure to submit?',    
-        ],
-        'no-result' => [
-            'title' => 'No Results',
-            'message' => 'We could not find anything.',
         ],
         'email-verification' => 'We have sent a verification code to your email. Please fill in here.',        
         'connection-ok' => 'Connection OK',

@@ -1,7 +1,8 @@
 @php
+$apa = $attributes->get('apa');
 $icon = $attributes->get('icon', 'folder-open');
-$title = $attributes->get('title', 'app.alert.no-result.title');
-$message = $attributes->get('message') ?? $attributes->get('subtitle') ?? 'app.alert.no-result.message';
+$title = $attributes->get('title', 'app.label.no-results');
+$message = $attributes->get('message') ?? $attributes->get('subtitle') ?? 'app.label.we-could-not-find-anything';
 $size = $attributes->size('md');
 @endphp
 
@@ -31,7 +32,7 @@ $size = $attributes->size('md');
                 'sm' => '',
                 'md' => 'text-lg',
             ][$size] }}">
-                {!! str()->apa(tr($title)) !!}
+                {!! $apa ? str()->apa(tr($title)) : tr($title) !!}
             </div>
 
             @if ($message)
