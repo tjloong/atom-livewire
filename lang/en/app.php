@@ -489,6 +489,7 @@ return [
         'stripe-settings' => 'Stripe Settings',
         'senangpay-settings' => 'SenangPay Settings',
         'test-connection' => 'Test Connection',
+        'payment-gateway' => 'Payment Gateway',
 
         // profile
         'my-profile' => 'My Profile',
