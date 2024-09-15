@@ -17,8 +17,8 @@
         <x-input label="app.label.slug" wire:model.defer="announcement.slug"/>
         <x-datetime-picker label="app.label.start-date" wire:model.defer="announcement.start_at"/>
         <x-datetime-picker label="app.label.end-date" wire:model.defer="announcement.end_at"/>
-        <x-color label="app.label.bg-color" wire:model.defer="announcement.bg_color"/>
-        <x-color label="app.label.text-color" wire:model.defer="announcement.text_color"/>
+        <x-color-picker label="app.label.bg-color" wire:model.defer="announcement.bg_color"/>
+        <x-color-picker label="app.label.text-color" wire:model.defer="announcement.text_color"/>
     </x-inputs>
 
     <x-inputs>

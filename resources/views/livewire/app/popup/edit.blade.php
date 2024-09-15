@@ -17,7 +17,7 @@
         <x-input label="app.label.href" wire:model.defer="popup.href"/>
         <x-datetime-picker label="app.label.start-date" wire:model.defer="popup.start_at"/>
         <x-datetime-picker label="app.label.end-date" wire:model.defer="popup.end_at"/>
-        <x-color label="app.label.bg-color" wire:model.defer="popup.bg_color"/>
+        <x-color-picker label="app.label.bg-color" wire:model.defer="popup.bg_color"/>
         <x-file-input label="app.label.bg-image" wire:model="popup.image_id" accept="image/*"/>
     </x-inputs>
 

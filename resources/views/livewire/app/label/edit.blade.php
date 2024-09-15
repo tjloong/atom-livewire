@@ -51,8 +51,8 @@
 
                 <x-input wire:model.defer="label.slug" label="app.label.slug" placeholder="autogen" prefix="/" inline/>
                 <x-select wire:model="label.parent_id" label="app.label.parent" :options="'labels.'.$type" inline/>
-                <x-color wire:model="label.color" label="app.label.color" inline/>
-                <x-form.file wire:model="label.image_id" label="app.label.image" inline/>        
+                <x-color-picker wire:model="label.color" label="app.label.color" inline/>
+                <x-file-input wire:model="label.image_id" label="app.label.image" inline/>        
             @endif
         </x-fieldset>
 
