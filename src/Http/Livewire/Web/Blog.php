@@ -24,7 +24,7 @@ class Blog extends Component
     {
         $this->preview = user() && request()->query('preview');
 
-        if ($this->blog) seo($this->blog->seo);
+        if ($this->blog) seo($this->blog->getSeo());
 
         if (!$this->filters) {
             $this->fill([

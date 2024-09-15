@@ -122,13 +122,15 @@ $except = ['name', 'size'];
 
 @if ($type === 'svg')
     <div {{ $attributes->merge([
-        'style' => "display: inline-block; width: $size; height: $size;",
+        'class' => 'inline-flex items-center justify-center',
+        'style' => "width: $size; height: $size;",
     ])->except($except) }}>
         {!! $icon !!}
     </div>
 @elseif ($type === 'image')
     <div {{ $attributes->merge([
-        'style' => "display: inline-block; width: $size; height: $size;",
+        'class' => 'inline-flex items-center justify-center',
+        'style' => "width: $size; height: $size;",
     ])->except($except) }}>
         <img src="{{ $icon }}" class="w-full h-full object-contain object-center">
     </div>
@@ -141,21 +143,3 @@ $except = ['name', 'size'];
         'style' => "width: $size; height: $size;",
     ])->except($except) }}></i>
 @endif
-
-{{-- @if (isset($svg) && $svg->isNotEmpty())
-    <i {{ $attributes
-        ->class(['inline-block'])
-        ->merge(['style' => 'width: '.$size.'px; height:'.$size.'px'])
-        ->except(['name', 'size']) }}>
-        {{ $svg }}
-    </i>
-@elseif (str($icon)->startsWith('<svg '))
-    <i {{ $attributes
-        ->class(['inline-block'])
-        ->merge(['style' => 'width: '.$size.'px; height:'.$size.'px'])
-        ->except(['name', 'size']) }}>
-        {!! $icon !!}
-    </i>
-@else
-    <i {{ $attributes->merge(['class' => $icon]) }}></i>
-@endif --}}

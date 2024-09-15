@@ -34,9 +34,7 @@
                         <x-editor wire:model="blog.content" label="app.label.content"/>
                     </x-inputs>
 
-                    <x-inputs title="SEO">
-                        <x-form.seo wire:model.defer="inputs.seo"/>
-                    </x-inputs>
+                    <x-seo-input wire:model.defer="inputs.seo" title="SEO"/>
                 </div>
             </x-box>
         </div>

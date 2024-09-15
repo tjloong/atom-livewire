@@ -10,18 +10,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Jiannius\Atom\Traits\Models\Footprint;
+use Jiannius\Atom\Traits\Models\Seo;
 
 class Blog extends Model
 {
     use Footprint;
     use HasFilters;
     use HasSlug;
+    use Seo;
     use SoftDeletes;
 
     protected $guarded = [];
 
     protected $casts = [
-        'seo' => 'array',
         'published_at' => 'datetime',
     ];
 
@@ -46,19 +47,6 @@ class Blog extends Model
                 'PUBLISHED' => !empty($this->published_at),
                 'DRAFT' => true,
             ])),
-        );
-    }
-
-    // attribute for seo
-    protected function seo() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => [
-                'title' => data_get($value, 'title') ?? $this->name,
-                'description' => data_get($value, 'description') 
-                    ?? str($this->description ?? strip_tags($this->content))->limit(255)->toString(),
-                'image' => data_get($value, 'image') ?? optional($this->cover)->url,
-            ],
         );
     }
 

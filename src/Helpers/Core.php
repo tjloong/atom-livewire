@@ -179,19 +179,6 @@ function excelsheets($sheets, $config = [])
 }
 
 /**
- * Set the SEO
- */
-function seo($seo)
-{
-    if ($title = data_get($seo, 'title')) config(['atom.meta_title' => $title]);
-    if ($description = data_get($seo, 'description')) config(['atom.meta_description' => $description]);
-    if ($image = data_get($seo, 'image')) config(['atom.meta_image' => $image]);
-    if ($hreflang = data_get($seo, 'hreflang')) config(['atom.hreflang' => $hreflang]);
-    if ($canonical = data_get($seo, 'canonical')) config(['atom.canonical' => $canonical]);
-    if ($jsonld = data_get($seo, 'jsonld')) config(['atom.jsonld' => $jsonld]);
-}
-
-/**
  * Make model instance
  */
 function model($name)
@@ -590,5 +577,18 @@ if (!function_exists('worker')) {
         ) {
             return app($class);
         }
+    }
+}
+
+// seo
+if (!function_exists('seo')) {
+    function seo($seo)
+    {
+        if ($title = get($seo, 'title')) config(['atom.meta_title' => $title]);
+        if ($description = get($seo, 'description')) config(['atom.meta_description' => $description]);
+        if ($image = get($seo, 'image')) config(['atom.meta_image' => $image]);
+        if ($hreflang = get($seo, 'hreflang')) config(['atom.hreflang' => $hreflang]);
+        if ($canonical = get($seo, 'canonical')) config(['atom.canonical' => $canonical]);
+        if ($jsonld = get($seo, 'jsonld')) config(['atom.jsonld' => $jsonld]);
     }
 }

@@ -26,8 +26,6 @@
         <x-editor label="app.label.content" wire:model.defer="announcement.content"/>
     </x-inputs>
 
-    <x-inputs title="SEO">
-        <x-form.seo wire:model.defer="inputs.seo"/>
-    </x-inputs>
+    <x-seo-input wire:model.defer="inputs.seo" title="SEO"/>
 @endif
 </x-drawer>

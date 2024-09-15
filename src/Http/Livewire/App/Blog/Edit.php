@@ -49,11 +49,7 @@ class Edit extends Component
         ) {
             $this->fill([
                 'inputs.labels' => $this->blog->labels->pluck('id')->toArray(),
-                'inputs.seo' => [
-                    'title' => data_get($this->blog->seo, 'title'),
-                    'description' => data_get($this->blog->seo, 'description'),
-                    'image' => data_get($this->blog->seo, 'image'),
-                ],
+                'inputs.seo' => $this->blog->getSeo(),
             ]);
 
             $this->overlay();

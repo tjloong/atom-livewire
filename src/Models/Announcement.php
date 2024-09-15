@@ -8,6 +8,7 @@ use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\Models\Footprint;
+use Jiannius\Atom\Traits\Models\Seo;
 
 class Announcement extends Model
 {
@@ -15,29 +16,14 @@ class Announcement extends Model
     use HasFactory;
     use HasFilters;
     use HasSlug;
+    use Seo;
 
     protected $guarded = [];
 
     protected $casts = [
-        'seo' => 'array',
         'start_at' => 'datetime',
         'end_at' => 'datetime',
     ];
-
-    // attribute for seo
-    protected function seo() : Attribute
-    {
-        return Attribute::make(
-            get: fn($seo) => [
-                'title' => data_get($seo, 'title') ?? $this->name,
-                'description' => data_get($seo, 'description')
-                    ?? format($this->content)
-                    ?? data_get($seo, 'title')
-                    ?? $this->name,
-                'image' => data_get($seo, 'image'),
-            ],
-        );
-    }
 
     // attribute for status
     protected function status() : Attribute
