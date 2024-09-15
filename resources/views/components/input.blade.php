@@ -26,12 +26,11 @@ $size = $attributes->size('md');
             'group/input group-has-[.error]/field:border-red-500 group-has-[.error]/field:ring-red-300',
 
             $transparent
-                ? 'bg-transparent rounded-md border-dashed transition-all hover:border hover:border-gray-200 hover:px-2'
-                : 'bg-white border border-gray-300 rounded-md hover:ring-1 hover:ring-gray-200',
-
-            $transparent
-                ? 'has-[:focus]:bg-white has-[:focus]:px-2 has-[:focus]:border has-[:focus]:border-gray-300 has-[input:readonly]:border-0'
-                : 'has-[:focus]:ring-1 has-[:focus]:ring-theme has-[:focus]:ring-offset-1 has-[input:read-only]:ring-0',
+                ? 'bg-transparent'
+                : '
+                    bg-white border border-gray-300 rounded-md hover:ring-1 hover:ring-gray-200
+                    has-[:focus]:ring-1 has-[:focus]:ring-theme has-[:focus]:ring-offset-1 has-[input:read-only]:ring-0
+                ',
 
             $slot->isEmpty() && in_array($type, ['text', 'number', 'email', 'password']) ? 'h-px' : null,
         ]))

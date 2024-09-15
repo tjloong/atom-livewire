@@ -1,7 +1,7 @@
 <div
     x-data="{ value: @entangle($attributes->wire('model')) }"
     x-modelable="value">
-    <x-inputs>
+    <x-inputs :title="$attributes->get('title', 'SEO')">
         <x-input 
             x-model="value.title"
             label="app.label.meta-title"

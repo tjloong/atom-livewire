@@ -9,20 +9,22 @@ $suggestion = $attributes->get('suggestion', false);
 $lazy = $attributes->modifier('lazy');
 $placeholder = $attributes->get('placeholder', 'Write something...');
 
-$buttons = collect($attributes->get('buttons') ?? [
-    'heading',
-    'text',
-    'font-size',
-    'text-align',
-    'text-color',
-    'text-highlight',
-    'horizontal-rule',
-    'bullet',
-    'link',
-    'table',
-    'image',
-    'youtube',
-]);
+$buttons = $attributes->get('no-buttons') ? false : (
+    collect($attributes->get('buttons') ?? [
+        'heading',
+        'text',
+        'font-size',
+        'text-align',
+        'text-color',
+        'text-highlight',
+        'horizontal-rule',
+        'bullet',
+        'link',
+        'table',
+        'image',
+        'youtube',
+    ])
+);
 
 $except = ['label', 'enabled', 'readonly', 'placeholder', 'class', 'buttons', 'suggestion', 'wire:model', 'wire:model.defer', 'wire:model.lazy'];
 @endphp
@@ -38,6 +40,7 @@ $except = ['label', 'enabled', 'readonly', 'placeholder', 'class', 'buttons', 's
             content: @entangle($attributes->wire('model')),
             mode: @js($mode),
             lazy: @js($lazy),
+            showButtons: @js($transparent ? false : true),
 
             init () {
                 this.$watch('content', value => {
@@ -95,25 +98,33 @@ $except = ['label', 'enabled', 'readonly', 'placeholder', 'class', 'buttons', 's
                 else return empty(this.content)
             },
         }"
+        x-on:editor-focus="showButtons = true"
+        @if ($transparent)
+        x-on:click.away="showButtons = false"
+        @endif
         x-modelable="content"
         {{ $attributes->except($except) }}>
         <div class="editor {{ $transparent ? 'editor-transparent' : '' }}">
-            @if ($buttons->count() && !$readonly && $mode !== 'text')
-                <div class="editor-buttons">
-                    <div class="editor-buttons-container">
-                        @foreach ($buttons as $button)
-                            <x-dynamic-component :component="'editor.button.'.$button"/>
-                        @endforeach
+            @if ($buttons)
+                @if ($buttons->count() && !$readonly && $mode !== 'text')
+                    <div
+                        x-show="showButtons"
+                        class="editor-buttons">
+                        <div class="editor-buttons-container">
+                            @foreach ($buttons as $button)
+                                <x-dynamic-component :component="'editor.button.'.$button"/>
+                            @endforeach
+                        </div>
                     </div>
+                @endif
+
+                <div class="editor-menu">
+                    @if ($buttons->contains('link')) <x-editor.menu.link/> @endif
+                    @if ($buttons->contains('table')) <x-editor.menu.table/> @endif
+                    @if ($buttons->contains('image')) <x-editor.menu.image/> @endif
+                    @if ($buttons->contains('youtube')) <x-editor.menu.youtube/> @endif
                 </div>
             @endif
-
-            <div class="editor-menu">
-                @if ($buttons->contains('link')) <x-editor.menu.link/> @endif
-                @if ($buttons->contains('table')) <x-editor.menu.table/> @endif
-                @if ($buttons->contains('image')) <x-editor.menu.image/> @endif
-                @if ($buttons->contains('youtube')) <x-editor.menu.youtube/> @endif
-            </div>
 
             @if ($suggestion)
                 <x-editor.suggestion

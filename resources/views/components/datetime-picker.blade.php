@@ -72,7 +72,7 @@ $except = ['label', 'for', 'field', 'utc', 'transparent', 'placeholder', 'class'
             x-ref="anchor"
             x-on:click="open()"
             x-on:keydown.esc="close()"
-            class="group/button inline-flex items-center gap-3 px-3 w-full h-full text-left">
+            class="group/button inline-flex items-center gap-3 w-full h-full text-left {{ $transparent ? '' : 'px-3' }}">
             <div class="shrink-0 text-gray-400 {{ $transparent ? 'hidden group-hover/button:block group-focus/button:block' : '' }}">
                 <x-icon name="calendar-minus"/>
             </div>

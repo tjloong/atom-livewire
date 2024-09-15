@@ -478,7 +478,11 @@ return [
         'youtube-url' => 'Youtube URL',
 
         // alert
+        'created' => 'Created',
+        'deleted' => 'Deleted',
         'no-results' => 'No Results',
+        'sorted' => 'Sorted.',
+        'updated' => 'Updated',
         'we-could-not-find-anything' => 'We could not find anything.',
 
         // settings
@@ -586,10 +590,6 @@ return [
         'notification-sent' => ':channel Sent.',
         'unsupported-upload-file-type' => 'Unsupported upload file type',
         'trash-cleared' => 'Trash Cleared',
-        'sorted' => 'Sorted.',
-        'created' => 'Created',
-        'updated' => 'Updated',
-        'deleted' => 'Deleted',
         'user-delete-self' => [
             'title' => 'Unable To Delete User',
             'message' => 'You cannot delete yourself.',

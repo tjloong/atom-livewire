@@ -36,7 +36,7 @@
         }
 
         .editor-content {
-            @apply mx-3;
+            @apply m-3;
 
             &:focus {
                 @apply outline-none;

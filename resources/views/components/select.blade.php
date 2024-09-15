@@ -240,7 +240,7 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
             x-on:click="show ? close() : open()"
             x-bind:disabled="disabled"
             class="grow w-full focus:outline-none">
-            <div class="grow group/button inline-flex gap-3 py-1.5 px-3 w-full text-left">
+            <div class="grow group/button inline-flex gap-3 w-full text-left py-1.5 {{ $transparent ? '' : 'px-3' }}">
                 @if ($icon)
                     <div class="shrink-0 text-gray-400"><x-icon :name="$icon"/></div>
                 @endif
@@ -262,8 +262,11 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
                                         <div class="bg-slate-200 rounded border border-gray-200 py-[1.5px]">
                                             <div class="flex items-center max-w-[200px]">
                                                 <div x-text="item.label" class="px-2 truncate text-xs font-medium"></div>
-                                                <div x-show="show" class="shrink-0 text-xs flex items-center justify-center px-1">
-                                                    <x-close x-on:click.stop="remove(item.value)"/>
+                                                <div
+                                                    x-show="show"
+                                                    x-on:click.stop="remove(item.value)"
+                                                    class="shrink-0 text-xs flex items-center justify-center px-1 cursor-pointer">
+                                                    <x-icon xmark size="12"/>
                                                 </div>
                                             </div>
                                         </div>

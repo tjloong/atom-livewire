@@ -62,6 +62,7 @@ $cdnlist = collect([
     'alpinejs/anchor' => true,
     'alpinejs/collapse' => true,
     'alpinejs/intersect' => false,
+    'alpinejs/autosize' => true,
     'alpinejs/tooltip' => true,
     'alpinejs' => true,
 ]);
@@ -191,6 +192,9 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) =>
 @endif
 @if ($cdnlist->get('alpinejs/intersect'))
 @basset('https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.13.10/dist/cdn.min.js', true, ['defer' => true])
+@endif
+@if ($cdnlist->get('alpinejs/autosize'))
+@basset('https://cdn.jsdelivr.net/npm/@marcreichel/alpine-autosize@latest/dist/alpine-autosize.min.js', true, ['defer' => true])
 @endif
 @if ($cdnlist->get('alpinejs/tooltip'))
 @basset('https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-tooltip@2.0.0/dist/cdn.min.js', true, ['defer' => true])
