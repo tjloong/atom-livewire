@@ -1,4 +1,4 @@
-<div class="table-menu">
+<div class="table-menu" x-init="$el.shouldShow = (editor) => (editor?.isActive('table'))">
     <div class="flex items-center gap-1 flex-wrap p-1">
         @foreach ([
             [

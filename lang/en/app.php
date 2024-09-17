@@ -565,6 +565,7 @@ return [
         'medium' => 'Medium',
         'large' => 'Large',
         'extra-large' => 'Extra Large',
+        'line-break' => 'Line Break',
     ],
 
     'alert' => [

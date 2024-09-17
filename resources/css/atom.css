@@ -27,14 +27,6 @@ a {
     @apply ring-1 ring-offset-2 ring-theme rounded;
 }
 
-/* tooltip */
-.tippy-box[data-theme~='editor-menu'] {
-    @apply bg-white text-black rounded-lg shadow-lg border border-gray-300 text-base;
-}
-.tippy-box[data-theme~='editor-menu'] .tippy-content {
-    @apply p-0 text-base;
-}
-
 /* button */
 .button-2xs.is-loading,
 .button-xs.is-loading,

@@ -1,14 +1,32 @@
 <div
     x-data="{
-        show: false,
         link: null,
-        href: null,
-        newtab: null,
+        isEditing: false,
+
+        init () {
+            this.$el.shouldShow = (editor) => this.shouldShow(editor)
+        },
+
+        shouldShow (editor) {
+            if (editor?.isActive('link')) this.getLink(editor)
+            return editor?.isActive('link')
+        },
+
+        getLink (editor) {
+            this.$nextTick(() => {
+                editor.chain().focus().extendMarkRange('link').run()
+
+                this.link = {
+                    href: editor.getAttributes('link').href,
+                    target: editor.getAttributes('link').target,
+                }
+            })
+        },
 
         edit () {
             this.href = this.link?.href
             this.newtab = this.link?.target === '_blank'
-            this.show = true
+            this.isEditing = true
         },
 
         remove () {
@@ -17,7 +35,7 @@
         },
 
         save () {
-            if (!this.href.startsWith('https://')) {
+            if (!this.href.startsWith('https://') && !this.href.startsWith('http://')) {
                 this.$dispatch('alert', {
                     message: tr('app.label.invalid-url'),
                     type: 'error'
@@ -30,26 +48,19 @@
                 editor().chain().focus().extendMarkRange('link').setLink(link).run()
 
                 this.link = link
-                this.show = false
+                this.isEditing = false
             }
         },
     }"
-    x-on:link-menu-active="link = {
-        href: $event.detail.getAttributes('link').href,
-        target: $event.detail.getAttributes('link').target,
-    }"
-    x-on:link-menu-inactive="link = null"
-    x-on:link-menu-edit="edit()"
     class="link-menu">
-    <template x-if="link && !show">
-        <div class="py-2 px-3 flex items-center gap-4 cursor-pointer max-w-80">
+    <template x-if="link && !isEditing">
+        <div class="py-2 px-3 flex items-center gap-4 cursor-pointer max-w-xl">
             <div class="grow flex items-center gap-2">
                 <div class="shrink-0 text-gray-400">
-                    <x-icon name="link"/>
+                    <x-icon link/>
                 </div>
-                <div
-                    x-text="link.href"
-                    class="grow font-medium text-blue-500 truncate" x-on:click="window.open(link.href, '_blank')">
+                <div class="grow grid">
+                    <div x-text="link.href" class="font-medium truncate text-blue-500"></div>
                 </div>
             </div>
             <div class="shrink-0 text-gray-500" x-on:click="edit()">
@@ -61,7 +72,7 @@
         </div>
     </template>
 
-    <template x-if="show">
+    <template x-if="isEditing">
         <div
             x-on:keydown.enter.prevent="save()"
             class="p-4 flex flex-col gap-2 w-80">

@@ -4,10 +4,10 @@ namespace Jiannius\Atom\Components\Editor;
 
 use Illuminate\View\Component;
 
-class Suggestion extends Component
+class Mention extends Component
 {
     public function render()
     {
-        return view('atom::components.editor.suggestion');
+        return view('atom::components.editor.mention');
     }
 }

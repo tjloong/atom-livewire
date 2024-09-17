@@ -43,6 +43,13 @@
             }
         }
     }
+
+    .tippy-box[data-theme~='editor-menu'] {
+        @apply bg-white text-black rounded-lg shadow-lg border border-gray-300 text-base;
+    }
+    .tippy-box[data-theme~='editor-menu'] .tippy-content {
+        @apply p-0 text-base;
+    }
 }
 
 .editor-transparent {

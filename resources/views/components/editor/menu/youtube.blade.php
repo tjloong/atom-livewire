@@ -1,4 +1,4 @@
-<div class="youtube-menu">
+<div class="youtube-menu" x-init="$el.shouldShow = (editor) => (editor?.isActive('youtube'))">
     <div class="p-1 flex items-center gap-1 flex-wrap">
         @foreach ([
             '320x240' => [320, 240],

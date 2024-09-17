@@ -1,4 +1,4 @@
-<div class="image-menu">
+<div class="image-menu" x-init="$el.shouldShow = (editor) => (editor?.isActive('image'))">
     <div class="flex items-center flex-wrap p-1">
         @foreach ([
             [

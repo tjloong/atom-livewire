@@ -2,6 +2,7 @@ import { Editor, Extension, mergeAttributes } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
 import BubbleMenu from '@tiptap/extension-bubble-menu'
 import { Color } from '@tiptap/extension-color'
+import FloatingMenu from '@tiptap/extension-floating-menu'
 import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
@@ -139,51 +140,11 @@ const ImageExtended = Image.extend({
     },
 })
 
-const linkMenuConfiguration = (element) => {
+const BubbleMenuConfiguration = (element, key) => {
     return {
-        pluginKey: 'linkMenu',
+        pluginKey: key,
         element,
-        shouldShow: ({ editor }) => {
-            if (editor.isActive('link')) element.dispatchEvent(new CustomEvent('link-menu-active', { bubbles: true, detail: editor }))
-            else element.dispatchEvent(new CustomEvent('link-menu-inactive', { bubbles: true, detail: editor }))
-            return editor.isActive('link')
-        },
-        tippyOptions: {
-            arrow: false,
-            theme: 'editor-menu',
-        }
-    }
-}
-
-const tableMenuConfiguration = (element) => {
-    return {
-        pluginKey: 'tableMenu',
-        element,
-        shouldShow: ({ editor }) => (editor.isActive('table')),
-        tippyOptions: {
-            arrow: false,
-            theme: 'editor-menu',
-        }
-    }
-}
-
-const imageMenuConfiguration = (element) => {
-    return {
-        pluginKey: 'imageMenu',
-        element,
-        shouldShow: ({ editor }) => (editor.isActive('image')),
-        tippyOptions: {
-            arrow: false,
-            theme: 'editor-menu',
-        }
-    }
-}
-
-const youtubeMenuConfiguration = (element) => {
-    return {
-        pluginKey: 'youtubeMenu',
-        element,
-        shouldShow: ({ editor }) => (editor.isActive('youtube')),
+        shouldShow: ({ editor }) => (element.shouldShow(editor)),
         tippyOptions: {
             arrow: false,
             theme: 'editor-menu',
@@ -191,7 +152,7 @@ const youtubeMenuConfiguration = (element) => {
     }
 }
 
-const mentionConfiguration = (element) => {
+const MentionConfiguration = (element) => {
     return {
         HTMLAttributes: {
             class: 'mention',
@@ -226,7 +187,22 @@ const mentionConfiguration = (element) => {
     }
 }
 
-window.Editor = (element, config) => {
+const DisableEnterKeyExtention = Extension.create({
+    name: 'disableEnter',
+    addKeyboardShortcuts() {
+        return {
+            'Enter': ({ editor }) => (true)
+        };
+    },
+})
+
+window.Editor = ({
+    element,
+    tiptapConfig,
+    bubbleMenus = {},
+    mentionTemplate,
+    disableEnterKey = false,
+}) => {
     let editor
 
     let extensions = [
@@ -235,7 +211,7 @@ window.Editor = (element, config) => {
         Highlight.configure({ multicolor: true }),
         ImageExtended,
         Link.configure({ openOnClick: false }),
-        Placeholder.configure({ placeholder: config.placeholder }),
+        Placeholder.configure({ placeholder: tiptapConfig.placeholder }),
         Subscript,
         Superscript,
         StarterKit,
@@ -249,20 +225,17 @@ window.Editor = (element, config) => {
         Youtube,
     ]
 
-    let suggestionElement = element.closest('.editor').querySelector('.editor-suggestion')
-    if (suggestionElement) extensions = [...extensions, Mention.configure(mentionConfiguration(suggestionElement))]
+    Object.keys(bubbleMenus || {}).forEach(key => {
+        extensions.push(BubbleMenu.configure(BubbleMenuConfiguration(bubbleMenus[key])))
+    })
 
-    let linkMenuElement = element.closest('.editor').querySelector('.editor-menu .link-menu')
-    if (linkMenuElement) extensions = [...extensions, BubbleMenu.configure(linkMenuConfiguration(linkMenuElement))]
+    if (mentionTemplate) {
+        extensions.push(Mention.configure(MentionConfiguration(mentionTemplate)))
+    }
 
-    let tableMenuElement = element.closest('.editor').querySelector('.editor-menu .table-menu')
-    if (tableMenuElement) extensions = [...extensions, BubbleMenu.configure(tableMenuConfiguration(tableMenuElement))]
-
-    let imageMenuElement = element.closest('.editor').querySelector('.editor-menu .image-menu')
-    if (imageMenuElement) extensions = [...extensions, BubbleMenu.configure(imageMenuConfiguration(imageMenuElement))]
-
-    let youtubeMenuElement = element.closest('.editor').querySelector('.editor-menu .youtube-menu')
-    if (youtubeMenuElement) extensions = [...extensions, BubbleMenu.configure(youtubeMenuConfiguration(youtubeMenuElement))]
+    if (disableEnterKey) {
+        extensions.push(DisableEnterKeyExtention)
+    }
 
     editor = new Editor({
         element,
@@ -285,7 +258,11 @@ window.Editor = (element, config) => {
             element.dispatchEvent(new CustomEvent('editor-update', { bubbles: true, detail: { editor }}))
         },
 
-        ...config,
+        onSelectionUpdate ({ editor }) {
+            element.dispatchEvent(new CustomEvent('editor-selection-update', { bubbles: true, detail: { editor }}))
+        },
+
+        ...tiptapConfig,
     })
 
     element.editor = editor

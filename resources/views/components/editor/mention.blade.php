@@ -104,24 +104,28 @@ $filters = $attributes->get('filters') ?? [];
             this.exit()
         },
     }"
-    class="editor-suggestion">
+    class="editor-mention">
     <template x-teleport="body">
         <div
             x-ref="dropdown"
             x-on:keydown.up.prevent="arrowUp()"
             x-on:keydown.down.prevent="arrowDown()"
             class="absolute top-0 left-0 max-w-40 rounded-lg border shadow-lg z-10 bg-white">
-            <div class="flex flex-col divide-y">
-                <template x-for="(item, i) in items" hidden>
-                    <div
-                        x-on:mouseover="pointer = i"
-                        x-on:click="select(item)"
-                        x-bind:class="pointer === i && 'bg-slate-100'"
-                        class="py-2 px-4">
-                        <div x-text="item"></div>
-                    </div>
-                </template>
-            </div>
+            @if ($slot->isNotEmpty())
+                {{ $slot }}
+            @else
+                <div class="flex flex-col divide-y">
+                    <template x-for="(item, i) in items" hidden>
+                        <div
+                            x-on:mouseover="pointer = i"
+                            x-on:click="select(item)"
+                            x-bind:class="pointer === i && 'bg-slate-100'"
+                            class="py-2 px-4">
+                            <div x-text="item"></div>
+                        </div>
+                    </template>
+                </div>
+            @endif
         </div>
     </template>
 </div>
