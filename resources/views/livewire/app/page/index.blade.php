@@ -1,9 +1,9 @@
 <div
-    x-data="{ ulid: @entangle('ulid') }"
-    x-init="$nextTick(() => ulid && $wire.emit('editPage', ulid))"
-    x-wire-on:edit-page="ulid = $args"
-    x-wire-on:close-page="ulid = null"
+    x-data="{ id: @entangle('ulid') }"
+    x-init="$nextTick(() => id && $wire.emit('editPage', id))"
+    x-wire-on:edit-page="id = $args"
+    x-wire-on:close-page="id = null"
     class="max-w-screen-xl mx-auto">
     <x-heading title="app.label.page" xl/>
-    <livewire:app.page.listing wire:key="listing"/>
+    <livewire:root.page.listing wire:key="listing"/>
 </div>

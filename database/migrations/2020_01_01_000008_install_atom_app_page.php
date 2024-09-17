@@ -13,8 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pages', function (Blueprint $table) {
-            $table->id();
-            $table->ulid()->unique();
+            $table->ulid()->primary();
             $table->string('name');
             $table->string('title')->nullable();
             $table->string('slug')->nullable();
@@ -31,7 +30,7 @@ return new class extends Migration
         ] as $page) {
             DB::table('pages')->insert([
                 ...$page,
-                'ulid' => (string) str()->ulid(),
+                'ulid' => strtolower((string) str()->ulid()),
                 'locale' => 'en',
                 'created_at' => now(),
                 'updated_at' => now(),

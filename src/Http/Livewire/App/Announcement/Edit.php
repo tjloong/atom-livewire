@@ -9,7 +9,6 @@ class Edit extends Component
 {
     use WithForm;
 
-    public $inputs;
     public $announcement;
 
     protected $listeners = [
@@ -33,7 +32,10 @@ class Edit extends Component
             'announcement.content' => ['nullable'],
             'announcement.bg_color' => ['nullable'],
             'announcement.text_color' => ['nullable'],
-            'announcement.seo' => ['nullable'],
+            'announcement.seo.title' => ['nullable'],
+            'announcement.seo.description' => ['nullable'],
+            'announcement.seo.image' => ['nullable'],
+            'announcement.seo.canonical' => ['nullable'],
             'announcement.start_at' => ['nullable'],
             'announcement.end_at' => ['nullable'],
         ];
@@ -42,21 +44,12 @@ class Edit extends Component
     // open
     public function open($data = []) : void
     {
-        $id = get($data, 'id');
+        $this->resetValidation();
 
-        if (
-            $this->announcement = $id
-            ? model('announcement')->find($id)
-            : model('announcement')->fill(['start_at' => now(), ...$data])
-        ) {
-            $this->resetValidation();
-    
-            $this->fill(['inputs.seo' => [
-                'title' => data_get($this->announcement->seo, 'title'),
-                'description' => data_get($this->announcement->seo, 'description'),
-                'image' => data_get($this->announcement->seo, 'image'),
-            ]]);
-    
+        if ($this->announcement = model('announcement')->firstOrNew(
+            ['id' => get($data, 'id')],
+            ['start_at' => now(), ...$data],
+        )) {
             $this->overlay();
         }
     }
@@ -87,7 +80,7 @@ class Edit extends Component
     public function submit() : void
     {
         $this->validateForm();
-        $this->announcement->fill(['seo' => data_get($this->inputs, 'seo')])->save();
+        $this->announcement->save();
         $this->overlay(false);
     }
 }

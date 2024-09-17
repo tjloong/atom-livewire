@@ -8,7 +8,7 @@ $transparent = $attributes->get('transparent');
         placeholder="{!! tr($placeholder) !!}"
         {{ $attributes
         ->merge([
-            'rows' => 3,
+            'rows' => $transparent ? 1 : 3,
             'x-autosize' => $transparent ? true : false,
         ])
         ->class(array_filter([

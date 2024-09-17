@@ -19,7 +19,6 @@ return [
         'all' => 'All',
         'allow-all' => 'Allow All',
         'amount' => 'Amount',
-        'announcement' => 'Announcement|Announcements',
         'approved-on' => 'Approved on :date',
         'apps' => 'Apps',
         'archive' => 'Archive',
@@ -240,7 +239,6 @@ return [
         'name' => 'Name',
         'nationality' => 'Nationality',
         'navigation' => 'Navigation',
-        'new-announcement' => 'New Announcement',
         'new-article' => 'New Article',
         'new-banner' => 'New Banner',
         'new-option' => 'New Option',
@@ -447,7 +445,6 @@ return [
         'unsupported-file-type' => 'Unsupported file type.',
         'upcoming' => 'Upcoming',
         'update' => 'Update',
-        'update-announcement' => 'Update Announcement',
         'update-label' => 'Update Label',
         'update-popup' => 'Update Pop-Up',
         'updated-on' => 'Updated on :date',
@@ -476,6 +473,11 @@ return [
         'your-message' => 'Your message',
         'your-name' => 'Your name',
         'youtube-url' => 'Youtube URL',
+
+        // announcement
+        'announcement' => 'Announcement|Announcements',
+        'edit-announcement' => 'Edit Announcement',
+        'create-announcement' => 'Create Announcement',
 
         // alert
         'created' => 'Created',

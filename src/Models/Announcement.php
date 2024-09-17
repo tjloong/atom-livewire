@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasFilters;
@@ -16,6 +17,7 @@ class Announcement extends Model
     use HasFactory;
     use HasFilters;
     use HasSlug;
+    use HasUlids;
     use Seo;
 
     protected $guarded = [];
@@ -46,25 +48,30 @@ class Announcement extends Model
     // scope for status
     public function scopeStatus($query, $status) : void
     {
-        $query->where(function ($q) use ($status) {
-            foreach ((array) $status as $val) {
-                $val = enum('announcement-status', $val);
+        if (!$status) return;
 
-                if ($val->is('EXPIRED')) {
-                    $q->orWhereRaw('(announcements.end_at is not null and announcements.end_at < now())');
-                }
-                else if ($val->is('UPCOMING')) {
-                    $q->orWhereRaw('(announcements.start_at is not null and announcements.start_at > now())');
-                }
-                else if ($val->is('PUBLISHED')) {
-                    $q->orWhereRaw('(
-                        (announcements.start_at is null and announcements.end_at is null)
-                        or (announcements.start_at is not null and announcements.end_at is null and announcements.start_at <= now())
-                        or (announcements.start_at is null and announcements.end_at is not null and announcements.end_at > now())
-                        or (announcements.start_at is not null and announcements.end_at is not null and announcements.start_at <= now() and announcements.end_at >= now())
-                    )');
-                }
-            }
-        });
+        $status = is_array($status)
+            ? collect($status)->map(fn($val) => enum('announcement-status', $val))->toArray()
+            : enum('announcement-status', $status);
+
+        if (is_array($status)) {
+            $query->where(fn($q) => collect($status)->each(fn($val, $i) => 
+                $i === 0 ? $query->status($val) : $query->orWhere(fn($q) => $q->status($val))
+            ));
+        }
+        elseif ($status->is('EXPIRED')) {
+            $query->whereRaw('(announcements.end_at is not null and announcements.end_at < now())');
+        }
+        else if ($status->is('UPCOMING')) {
+            $query->whereRaw('(announcements.start_at is not null and announcements.start_at > now())');
+        }
+        else if ($status->is('PUBLISHED')) {
+            $query->whereRaw('(
+                (announcements.start_at is null and announcements.end_at is null)
+                or (announcements.start_at is not null and announcements.end_at is null and announcements.start_at <= now())
+                or (announcements.start_at is null and announcements.end_at is not null and announcements.end_at > now())
+                or (announcements.start_at is not null and announcements.end_at is not null and announcements.start_at <= now() and announcements.end_at >= now())
+            )');
+        }
     }
 }

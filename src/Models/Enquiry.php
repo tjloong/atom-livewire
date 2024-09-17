@@ -3,16 +3,16 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\Models\HasFilters;
-use Jiannius\Atom\Traits\Models\HasUlid;
 
 class Enquiry extends Model
 {
     use HasFactory;
     use HasFilters;
-    use HasUlid;
+    use HasUlids;
 
     protected $guarded = [];
 

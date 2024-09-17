@@ -9,7 +9,7 @@
     </x-slot:thead>
 
     @foreach ($this->paginator->items() as $row)
-        <x-table.tr wire:click="$emit('editPage', {{ Js::from($row->ulid) }})">
+        <x-table.tr wire:click="$emit('editPage', {{ Js::from($row->id) }})">
             <x-table.td :label="$row->name" :badges="$row->locale" class="font-medium"/>
             <x-table.td :label="$row->title"/>
         </x-table.tr>
