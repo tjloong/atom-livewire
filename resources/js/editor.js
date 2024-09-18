@@ -157,11 +157,21 @@ const MentionConfiguration = (element) => {
         HTMLAttributes: {
             class: 'mention',
         },
+        renderHTML({ options, node }) {
+            return [
+                'span',
+                mergeAttributes(
+                    { 
+                        'x-on:click': `$dispatch('mention-click', { id: ${node.attrs.id} })`,
+                        'x-on:mouseover': `$dispatch('mention-hover', { id: ${node.attrs.id} })`,
+                        'x-on:mouseout': `$dispatch('mention-blur', { id: ${node.attrs.id} })`,
+                    },
+                    options.HTMLAttributes
+                ),
+                `${options.suggestion.char} ${node.attrs.label ?? node.attrs.id}`,
+            ]
+        },
         suggestion: {
-            items: ({ query }) => {
-                return element.fetch(query)
-            },
-
             render: () => {
                 return {
                     onStart: props => {
@@ -178,8 +188,8 @@ const MentionConfiguration = (element) => {
                         return element.keydown(props)
                     },
                 
-                    onExit() {
-                        element.exit()
+                    onExit: props => {
+                        element.exit(props)
                     },
                 }
             },
@@ -187,21 +197,11 @@ const MentionConfiguration = (element) => {
     }
 }
 
-const DisableEnterKeyExtention = Extension.create({
-    name: 'disableEnter',
-    addKeyboardShortcuts() {
-        return {
-            'Enter': ({ editor }) => (true)
-        };
-    },
-})
-
 window.Editor = ({
     element,
     tiptapConfig,
     bubbleMenus = {},
     mentionTemplate,
-    disableEnterKey = false,
 }) => {
     let editor
 
@@ -231,10 +231,6 @@ window.Editor = ({
 
     if (mentionTemplate) {
         extensions.push(Mention.configure(MentionConfiguration(mentionTemplate)))
-    }
-
-    if (disableEnterKey) {
-        extensions.push(DisableEnterKeyExtention)
     }
 
     editor = new Editor({

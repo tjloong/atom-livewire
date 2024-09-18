@@ -11,16 +11,20 @@ $label = $attributes->get('label');
         close () { this.show = false },
     }"
     x-on:click.away="close()">
-    <x-editor.button
-        :label="$label"
-        x-ref="anchor"
-        x-on:click="open()">
-        @if ($icon instanceof \Illuminate\View\ComponentSlot)
-            {!! $icon !!}
-        @else
-            <x-icon :name="$icon"/>
-        @endif
-    </x-editor.button>
+    @isset ($anchor)
+        {{ $anchor }}
+    @else
+        <x-editor.button
+            :label="$label"
+            x-ref="anchor"
+            x-on:click="open()">
+            @if ($icon instanceof \Illuminate\View\ComponentSlot)
+                {!! $icon !!}
+            @else
+                <x-icon :name="$icon"/>
+            @endif
+        </x-editor.button>
+    @endisset
 
     <div
         x-ref="dropdown"

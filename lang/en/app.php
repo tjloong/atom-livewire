@@ -406,6 +406,7 @@ return [
         'stripe-webhook-secret' => 'Stripe webhook secret',
         'stripe' => 'Stripe',
         'subject' => 'Subject',
+        'submit' => 'Submit',
         'subscribe' => 'Subscribe',
         'subscription' => 'Subscriptions',
         'subtotal' => 'Subtotal',
@@ -566,6 +567,8 @@ return [
         'large' => 'Large',
         'extra-large' => 'Extra Large',
         'line-break' => 'Line Break',
+        'say-something' => 'Say something...',
+        'write-something' => 'Write something...',
     ],
 
     'alert' => [

@@ -8,11 +8,11 @@ $label = $attributes->get('label');
     $attributes->hasLike('x-on:click*') ? 'cursor-pointer hover:bg-slate-50' : null,
 ])->except(['icon', 'label']) }}>
     @if ($icon instanceof \Illuminate\View\ComponentSlot)
-        <div class="shrink-0" {{ $icon->attributes }}>
+        <div {{ $icon->attributes->merge(['class' => 'shrink-0']) }}>
             {{ $icon }}
         </div>
     @elseif ($icon)
-        <div class="shrink-0">
+        <div class="shrink-0 flex items-center justify-center">
             <x-icon :name="$icon"/>
         </div>
     @endif
