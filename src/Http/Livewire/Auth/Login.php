@@ -102,6 +102,13 @@ class Login extends Component
             request()->session()->regenerate();
             return $this->success();
         }
+        else if ($this->socialiteUser) {
+            RateLimiter::clear($this->throttlekey);
+            Auth::login($this->user);
+            $this->user->ping(true);
+            request()->session()->regenerate();
+            return $this->success();
+        }
 
         $email = get($this->inputs, 'email');
         $password = get($this->inputs, 'password');
