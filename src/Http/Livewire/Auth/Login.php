@@ -15,13 +15,14 @@ class Login extends Component
     public $user;
     public $redirect;
     public $throttlekey;
-    public $socialiteUser;
-
+    
     public $inputs = [
         'email' => null,
         'password' => null,
         'remember' => false,
     ];
+    
+    private $socialiteUser;
 
     // validation
     protected function validation() : array
@@ -44,8 +45,9 @@ class Login extends Component
             && ($provider = request()->query('provider'))
             && ($user = rescue(fn() => optional(Socialite::driver($provider))->userFromToken($token)))
         ) {
+            $this->socialiteUser = $user;
+
             $this->fill([
-                'socialiteUser' => $user,
                 'inputs.email' => $user->getEmail()
             ]);
 

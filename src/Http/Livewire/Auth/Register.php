@@ -17,9 +17,8 @@ class Register extends Component
     public $refcode;
     public $redirect;
     public $verification;
-    public $socialiteUser;
     public $hasValidSignature;
-
+    
     public $inputs = [
         'name' => null,
         'email' => null,
@@ -28,6 +27,8 @@ class Register extends Component
         'agree_promo' => true,
         'verification' => null,
     ];
+
+    private $socialiteUser;
 
     // validation
     protected function validation() : array
@@ -64,8 +65,9 @@ class Register extends Component
             && ($provider = request()->query('provider'))
             && ($user = rescue(fn() => optional(Socialite::driver($provider))->userFromToken($token)))
         ) {
+            $this->socialiteUser = $user;
+
             $this->fill([
-                'socialiteUser' => $user,
                 'inputs' => [
                     'name' => $user->getName(),
                     'email' => $user->getEmail(),
