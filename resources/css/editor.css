@@ -71,7 +71,7 @@
         @apply mb-4;
     }
     a {
-        @apply text-sky-500 underline decoration-dashed;
+        @apply text-sky-500 underline decoration-dashed break-all;
     }
     h1 {
         @apply text-3xl font-bold mb-2;
@@ -102,7 +102,7 @@
     }
 
     .mention {
-        @apply bg-sky-100 text-sky-800 font-medium rounded-md text-sm;
+        @apply bg-sky-100 text-sky-800 font-medium rounded-md text-sm cursor-default;
         padding: 2px 4px;
     }
 
@@ -145,7 +145,7 @@
 
 .editor-chat-content {
     a {
-        @apply text-sky-500 underline decoration-dashed;
+        @apply text-sky-500 underline decoration-dashed break-all;
     }
     h1 {
         @apply text-3xl font-bold mb-2;
@@ -176,7 +176,7 @@
     }
 
     .mention {
-        @apply bg-sky-100 text-sky-800 font-medium rounded-md text-sm cursor-pointer;
+        @apply bg-sky-100 text-sky-800 font-medium rounded-md text-sm cursor-default;
         padding: 2px 4px;
     }
 }

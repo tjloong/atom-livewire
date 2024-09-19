@@ -31,7 +31,6 @@ else {
         },
 
         start (props) {
-            this.show = true
             this.props = props
             this.pointer = 0
             this.fetch()
@@ -74,17 +73,47 @@ else {
 
         arrowUp () {
             this.pointer = ((this.pointer + this.filteredOptions.length) - 1) % this.filteredOptions.length
+            this.scroll()
         },
 
         arrowDown () {
             this.pointer = (this.pointer + 1) % this.filteredOptions.length
+            this.scroll()
         },
 
         align () {
+            let editor = this.$el.closest('.editor')
+            let anchor = this.props.decorationNode
             let dropdown = this.$refs.dropdown
-            let anchor = this.props.clientRect()
-            dropdown.style.left = `${+anchor.left}px`
-            dropdown.style.top = `${+anchor.top - dropdown.clientHeight - 10}px`
+
+            this.$nextTick(() => {
+                let left = anchor.getBoundingClientRect().left - editor.getBoundingClientRect().left
+                let top = anchor.getBoundingClientRect().top - editor.getBoundingClientRect().top - dropdown.getBoundingClientRect().height
+
+                dropdown.style.left = `${left}px`
+                dropdown.style.top = `${top}px`
+
+                this.show = true
+            })
+        },
+
+        scroll () {
+            let ul = this.$refs.dropdown.querySelector('ul')
+            let li = Array.from(this.$refs.dropdown.querySelectorAll('li'))[this.pointer]
+
+            if (this.pointer === 0) ul.scrollTop = 0
+            else if (this.pointer === this.filteredOptions.length - 1) ul.scrollTop = ul.scrollHeight
+            else {
+                let top = li.getBoundingClientRect().top - ul.getBoundingClientRect().top
+                let height = li.getBoundingClientRect().height
+                let ceiling = 0
+                let floor = ul.getBoundingClientRect().height
+
+                // li sinked below floor, scroll down
+                if (top > floor) ul.scrollTop = ul.scrollTop + height
+                // li above scroll ceiling, scroll up
+                else if (top < 0) ul.scrollTop = ul.scrollTop + top
+            }
         },
 
         fetch () {
@@ -99,19 +128,19 @@ else {
                             filters: { ...this.filters, search: this.props.query },
                         })
                         .then(res => this.filteredOptions = [...res])
-                        .then(() => this.$nextTick(() => this.align()))
+                        .then(() => this.align())
                 }, 300)
             }
             else {
-                this.filteredOptions = options.filter(opt => {
+                this.filteredOptions = this.options.filter(opt => {
                     let searchable = typeof opt === 'object'
                         ? opt.searchable || `${opt.label} ${opt.small} ${opt.caption}`.trim().toLowerCase()
                         : opt.toString()
-    
+
                     return searchable.includes(this.props.query.toLowerCase())
                 })
 
-                this.$nextTick(() => this.align())
+                this.align()
             }
         },
 
@@ -128,27 +157,28 @@ else {
         },
     }"
     class="editor-mention">
-    <template x-teleport="body">
-        <div
-            x-ref="dropdown"
-            x-on:keydown.up.prevent="arrowUp()"
-            x-on:keydown.down.prevent="arrowDown()"
-            class="absolute top-0 left-0 max-w-lg rounded-lg border shadow-lg z-10 bg-white">
-            <div class="flex flex-col divide-y max-h-[300px] overflow-auto">
-                <template x-for="(opt, i) in filteredOptions" hidden>
-                    <div
-                        x-on:mouseover="pointer = i"
-                        x-on:click="select(opt)"
-                        x-bind:class="pointer === i && 'bg-slate-100'"
-                        class="py-2 px-4 cursor-pointer">
+    <div
+        x-ref="dropdown"
+        x-on:keydown.up.prevent="arrowUp()"
+        x-on:keydown.down.prevent="arrowDown()"
+        x-bind:class="(!show || !filteredOptions.length) && 'invisible'"
+        class="absolute max-w-lg min-w-72 rounded-lg border shadow-lg z-10 bg-white">
+        <ul class="flex flex-col max-h-[300px] overflow-auto p-2">
+            <template x-for="(opt, i) in filteredOptions" hidden>
+                <li
+                    x-on:mouseover="pointer = i"
+                    x-on:click="select(opt)"
+                    x-bind:class="pointer === i && '*:bg-slate-100 *:border-slate-200'"
+                    class="cursor-pointer">
+                    <div class="rounded-md p-3 border border-transparent">
                         @if ($slot->isNotEmpty())
                             {{ $slot }}
                         @else
                             <div x-text="opt"></div>
                         @endif
                     </div>
-                </template>
-            </div>
-        </div>
-    </template>
+                </li>
+            </template>
+        </ul>
+    </div>
 </div>

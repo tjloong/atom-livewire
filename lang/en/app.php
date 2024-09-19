@@ -567,8 +567,9 @@ return [
         'large' => 'Large',
         'extra-large' => 'Extra Large',
         'line-break' => 'Line Break',
-        'say-something' => 'Say something...',
+        'write-comments' => 'Write comments...',
         'write-something' => 'Write something...',
+        'suggestion' => 'Suggestion',
     ],
 
     'alert' => [

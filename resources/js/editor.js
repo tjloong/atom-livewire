@@ -162,9 +162,9 @@ const MentionConfiguration = (element) => {
                 'span',
                 mergeAttributes(
                     { 
-                        'x-on:click': `$dispatch('mention-click', { id: ${node.attrs.id} })`,
-                        'x-on:mouseover': `$dispatch('mention-hover', { id: ${node.attrs.id} })`,
-                        'x-on:mouseout': `$dispatch('mention-blur', { id: ${node.attrs.id} })`,
+                        'x-on:click': `$dispatch('mention-click', { id: ${JSON.stringify(node.attrs.id)} })`,
+                        'x-on:mouseover': `$dispatch('mention-hover', { id: ${JSON.stringify(node.attrs.id)} })`,
+                        'x-on:mouseout': `$dispatch('mention-blur', { id: ${JSON.stringify(node.attrs.id)} })`,
                     },
                     options.HTMLAttributes
                 ),
@@ -201,6 +201,7 @@ window.Editor = ({
     element,
     tiptapConfig,
     bubbleMenus = {},
+    disableEnterKey = false,
     mentionTemplate,
 }) => {
     let editor
@@ -223,6 +224,13 @@ window.Editor = ({
         TextStyle,
         Underline,
         Youtube,
+        Extension.create({
+            addKeyboardShortcuts () {
+                return {
+                    'Enter': () => disableEnterKey,
+                }
+            },
+        })
     ]
 
     Object.keys(bubbleMenus || {}).forEach(key => {

@@ -5,7 +5,7 @@ $transparent = $attributes->get('transparent', false);
 $mention = $mention ?? $attributes->get('mention', false);
 $content = $attributes->get('content');
 $submit = $attributes->submitAction() ?: 'submit';
-$placeholder = $attributes->get('placeholder', 'app.label.say-something');
+$placeholder = $attributes->get('placeholder', 'app.label.write-comments');
 $except = ['label', 'transparent', 'content', 'mention', 'placeholder'];
 @endphp
 
@@ -20,29 +20,19 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder'];
             editor () {
                 return this.$refs.editor?.editor
             },
-
-            isEmpty () {
-                let content = this.editor().getHTML()
-                if (typeof content === 'string') return empty(content.striptags())
-                else return empty(content)
-            },
-
+            
             submit () {
-                if (this.isEmpty()) return
+                let content = this.editor().getHTML()
+                content = content.replace(new RegExp('<p></p>$'), '');
 
+                if (empty(content)) return
+                
                 this.$wire
-                    .call({{ Js::from($submit) }}, {
-                        content: this.editor().getHTML(),
-                    })
+                    .call({{ Js::from($submit) }}, { content })
                     .then(() => this.editor().chain().setContent('', false).focus().run())
             },
         }"
-        x-on:keydown.enter.prevent="() => {
-            if (!$event.shiftKey) {
-                editor().commands.undo()
-                submit()
-            }
-        }"
+        x-on:keydown.enter.prevent="!$event.shiftKey && submit()"
         {{ $attributes->except($except) }}>
         <div class="{{ pick([
             'editor' => !$transparent,
@@ -71,8 +61,13 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder'];
                             attributes: {
                                 class: {{ Js::from(collect(['editor-chat-content', $attributes->get('class')])->filter()->join(' ')) }}
                             },
+                            // disabled paste image
+                            transformPastedHTML(html) {
+                                return html.replace(/<img.*?>/g, '')
+                            },
                         },
                     },
+                    disableEnterKey: true,
                     mentionTemplate: $root.querySelector('.editor-mention'),
                 })"
                 class="editor-container flex">
@@ -125,12 +120,12 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder'];
                             @endforeach            
                         </x-editor.dropdown>
 
-                        <button
+                        {{-- <button
                             type="button"
                             x-tooltip.raw="{{ tr('app.label.attach') }}"
                             class="p-1.5 flex items-center justify-center">
                             <x-icon attach/>
-                        </button>
+                        </button> --}}
     
                         <button
                             type="button"
