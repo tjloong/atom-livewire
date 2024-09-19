@@ -26,7 +26,6 @@ $alias = [
     'buy' => 'bag-shopping',
     'cancel' => 'ban',
     'client' => 'address-book',
-    'close' => 'xmark',
     'company' => 'building',
     'config' => 'gear',
     'contacts' => 'address-book',
