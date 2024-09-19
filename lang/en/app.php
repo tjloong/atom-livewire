@@ -355,6 +355,7 @@ return [
         'send-request' => 'Send Request',
         'send-us-a-message' => 'Send us a message',
         'send' => 'Send',
+        'sending' => 'Sending',
         'sender-email' => 'Sender Email',
         'sender-name' => 'Sender Name',
         'sent-mail' => 'Sent Mail|Sent Mails',

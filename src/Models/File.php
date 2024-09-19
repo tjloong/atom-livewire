@@ -28,6 +28,7 @@ class File extends Model
 
     protected $appends = [
         'type',
+        'icon',
         'filesize',
         'is_image',
         'is_video',
@@ -35,6 +36,8 @@ class File extends Model
         'is_youtube',
         'is_file',
         'endpoint',
+        'endpoint_sm',
+        'endpoint_md',
     ];
 
     // booted

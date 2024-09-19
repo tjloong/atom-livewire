@@ -143,40 +143,8 @@
     }
 }
 
-.editor-chat-content {
-    a {
-        @apply text-sky-500 underline decoration-dashed break-all;
-    }
-    h1 {
-        @apply text-3xl font-bold mb-2;
-    }
-    h2 {
-        @apply text-2xl font-bold mb-2;
-    }
-    h3 {
-        @apply text-lg font-semibold mb-2;
-    }
-    h4 {
-        @apply text-base font-semibold mb-2;
-    }
-    blockquote {
-        @apply text-gray-500 italic p-2;
-    }
-    ul {
-        @apply list-disc list-outside px-4;
-    }
-    ol {
-        @apply list-decimal list-outside px-4;
-    }
-    hr {
-        @apply border-t border-gray-400 my-4;
-    }
-    img {
-        @apply block max-w-full h-auto my-4;
-    }
-
-    .mention {
-        @apply bg-sky-100 text-sky-800 font-medium rounded-md text-sm cursor-default;
-        padding: 2px 4px;
+.editor-content.editor-chat-content {
+    p {
+        @apply m-0;
     }
 }

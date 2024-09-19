@@ -18,12 +18,12 @@ $margin = $attributes->get('no-margin') ? null : [
 
 $fontsize = [
     'sm' => 'text-base font-semibold',
-    'md' => 'text-lg font-semibold',
+    'md' => 'text-lg font-medium',
     'lg' => 'text-xl font-semibold',
     'xl' => 'text-2xl font-bold',
     '2xl' => 'text-3xl font-bold',
-    '3xl' => 'text-4xl font-bold',
-    '4xl' => 'text-5xl font-bold',
+    '3xl' => 'text-4xl font-extrabold',
+    '4xl' => 'text-5xl font-black',
 ][$size]
 @endphp
 
