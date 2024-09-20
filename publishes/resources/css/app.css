@@ -1,6 +1,0 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import '@atom/resources/css/atom.css';
-
-html { font-size: 14px; scroll-behavior: smooth; }

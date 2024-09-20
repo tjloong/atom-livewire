@@ -16,16 +16,24 @@ class InitCommand extends Command
 
     protected $node = [
         'devDependencies' => [
+            '@alpinejs/anchor' => '^3',
             '@alpinejs/collapse' => '^3',
             '@alpinejs/intersect' => '^3',
+            '@alpinejs/mask' => '^3',
+            '@alpinejs/sort' => '^3',
+            '@marcreichel/alpine-autosize' => '^1',
             '@ryangjchandler/alpine-hooks' => '^1',
+            '@ryangjchandler/alpine-tooltip' => '^2',
             '@tailwindcss/typography' => '^0.5',
             '@tiptap/core' => '^2',
+            '@tiptap/extension-bubble-menu' => '^2',
             '@tiptap/extension-color' => '^2',
+            '@tiptap/extension-floating-menu' => '^2',
             '@tiptap/extension-highlight' => '^2',
             '@tiptap/extension-horizontal-rule' => '^2',
             '@tiptap/extension-image' => '^2',
             '@tiptap/extension-link' => '^2',
+            '@tiptap/extension-mention' => '^2',
             '@tiptap/extension-placeholder' => '^2',
             '@tiptap/extension-subscript' => '^2',
             '@tiptap/extension-superscript' => '^2',
@@ -39,11 +47,15 @@ class InitCommand extends Command
             '@tiptap/extension-youtube' => '^2',
             '@tiptap/pm' => '^2',
             '@tiptap/starter-kit' => '^2',
+            '@tiptap/suggestion' => '^2',
             'alpinejs' => '^3',
             'autoprefixer' => '^10',
+            'dayjs' => '^1',
             'flatpickr' => '^4',
+            'laravel-echo' => '^1',
             'postcss' => '^8',
             'postcss-import' => '^14',
+            'pusher-js' => '^8',
             'tailwindcss' => '^3',
             'ulid' => '^2',
         ],
@@ -101,7 +113,7 @@ class InitCommand extends Command
         });
 
         $routes = base_path('routes/web.php');
-        file_put_contents($routes, "<?php\n\n\$route = app('route');\n");
+        file_put_contents($routes, '<?php\n\n\$route = app('route');\n');
     }
 
     // update package.json

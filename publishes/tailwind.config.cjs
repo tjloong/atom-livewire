@@ -8,8 +8,8 @@ module.exports = {
     
     content: [
         './resources/**/*.blade.php',
-        './resources/**/*.js',
-        './vendor/jiannius/atom-livewire/resources/**/*.js',
+        './resources/js/**/*.js',
+        './vendor/jiannius/atom-livewire/resources/js/**/*.js',
         './vendor/jiannius/atom-livewire/resources/**/*.blade.php',
         './vendor/jiannius/atom-livewire/src/Components/**/*.php',
     ],

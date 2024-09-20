@@ -45,8 +45,6 @@ $fbp = $analytics ? (settings('fbp_id') ?? config('atom.fbp_id')) : null;
 $cdnlist = collect([
     'lang' => true,
     'fontawesome' => true,
-    'apexcharts' => false,
-    'dayjs' => false,
     'flatpickr' => false,
     'ulid' => false,
     'sharer' => false,
@@ -57,14 +55,6 @@ $cdnlist = collect([
     'keen-slider' => false,
     'fullcalendar' => false,
     'fullcalendar/google-calendar' => false,
-    'alpinejs/mask' => false,
-    'alpinejs/sort' => false,
-    'alpinejs/anchor' => true,
-    'alpinejs/collapse' => true,
-    'alpinejs/intersect' => false,
-    'alpinejs/autosize' => true,
-    'alpinejs/tooltip' => true,
-    'alpinejs' => true,
 ]);
 collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) => 
     is_string($key) ? $cdnlist->put($key, $val) : $cdnlist->put($val, true)
@@ -122,11 +112,11 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) =>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ $gfont }}&display=swap">
 @endif
 
-@isset ($vite)
-{{ $vite }}
-@else
-@vite(['resources/js/app.js', 'resources/css/app.css'])
-@endisset
+@vite ([
+    'resources/js/base.js',
+    'resources/css/base.css',
+    ...(isset($vite) ? $vite->attributes->get('scripts', []) : []),
+])
 
 @if (($cdn ?? null)?->isNotEmpty())
 {{ $cdn }}
@@ -141,12 +131,6 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) =>
 @endif
 @if ($cdnlist->get('ckeditor'))
 @basset(atom_path('resources/ckeditor/build/ckeditor.js'))
-@endif
-@if ($cdnlist->get('dayjs'))
-@basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/dayjs.min.js')
-@basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/utc.js')
-@basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/timezone.js')
-@basset('https://cdn.jsdelivr.net/npm/dayjs@1.11.4/plugin/relativeTime.js')
 @endif
 @if ($cdnlist->get('flatpickr'))
 @basset('https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js')
@@ -177,31 +161,6 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) =>
 @endif
 @if ($cdnlist->get('ulid'))
 @basset('https://cdn.jsdelivr.net/npm/ulid@2.3.0/dist/index.umd.min.js')
-@endif
-@if ($cdnlist->get('alpinejs/mask'))
-@basset('https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.13.10/dist/cdn.min.js', true, ['defer' => true])
-@endif
-@if ($cdnlist->get('alpinejs/sort'))
-@basset('https://cdn.jsdelivr.net/npm/@alpinejs/sort@3.13.10/dist/cdn.min.js', true, ['defer' => true])
-@endif
-@if ($cdnlist->get('alpinejs/anchor'))
-@basset('https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.13.10/dist/cdn.min.js', true, ['defer' => true])
-@endif
-@if ($cdnlist->get('alpinejs/collapse'))
-@basset('https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.13.10/dist/cdn.min.js', true, ['defer' => true])
-@endif
-@if ($cdnlist->get('alpinejs/intersect'))
-@basset('https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.13.10/dist/cdn.min.js', true, ['defer' => true])
-@endif
-@if ($cdnlist->get('alpinejs/autosize'))
-@basset('https://cdn.jsdelivr.net/npm/@marcreichel/alpine-autosize@latest/dist/alpine-autosize.min.js', true, ['defer' => true])
-@endif
-@if ($cdnlist->get('alpinejs/tooltip'))
-@basset('https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-tooltip@2.0.0/dist/cdn.min.js', true, ['defer' => true])
-@basset('https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.min.css')
-@endif
-@if ($cdnlist->get('alpinejs'))
-@basset('https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js', true, ['defer' => true])
 @endif
 
 @if ($gtm)

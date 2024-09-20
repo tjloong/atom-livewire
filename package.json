@@ -6,6 +6,13 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@alpinejs/anchor": "^3",
+        "@alpinejs/collapse": "^3",
+        "@alpinejs/intersect": "^3",
+        "@alpinejs/mask": "^3",
+        "@alpinejs/sort": "^3",
+        "@marcreichel/alpine-autosize": "^1",
+        "@ryangjchandler/alpine-hooks": "^1",
         "@ryangjchandler/alpine-tooltip": "^2",
         "@tiptap/core": "^2",
         "@tiptap/extension-bubble-menu": "^2",
@@ -30,7 +37,10 @@
         "@tiptap/pm": "^2",
         "@tiptap/starter-kit": "^2",
         "@tiptap/suggestion": "^2",
+        "dayjs": "^1",
+        "laravel-echo": "^1",
         "laravel-vite-plugin": "^1.0.2",
+        "pusher-js": "^8",
         "tippy.js": "^6",
         "vite": "^5.2.10"
     }

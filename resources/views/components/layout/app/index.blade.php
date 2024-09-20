@@ -1,11 +1,8 @@
 <x-layout :noindex="true" :analytics="false">
-<x-slot:vite>
-@isset($vite)
-{{ $vite }}
-@else
-@vite(['resources/js/app.js', 'resources/css/app.css'])
+
+@isset ($vite)
+<x-slot:vite :scripts="$vite->attributes->get('scripts') ?? []"></x-slot:vite>
 @endisset
-</x-slot:vite>
 
 <x-slot:cdn :list="[
     'dayjs', 
@@ -27,14 +24,7 @@
 <div 
     x-cloak 
     x-data="{ nav: null }"
-    x-init="$watch('nav', nav => {
-        if (nav === 'lg') {
-            $modal.zindex($refs.overlay)
-            $modal.zindex($refs.nav)
-        }
-
-        $dispatch('app-layout-nav-changed', nav)
-    })"
+    x-init="$watch('nav', nav => $dispatch('app-layout-nav-changed', nav))"
     class="app-layout min-h-screen h-px">
     @if ($flash = session('flash'))
         <div class="fixed top-0 left-1/2 -translate-x-1/2 z-50 max-w-screen-md w-full flex flex-col gap-3 p-4">

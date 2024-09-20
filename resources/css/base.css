@@ -10,6 +10,11 @@
 }
 
 /* Reset */
+html {
+    font-size: 14px;
+    scroll-behavior: smooth;
+}
+
 a {
     @apply cursor-pointer font-medium;
 }
@@ -20,11 +25,6 @@ a {
 
 [disabled] {
     @apply cursor-not-allowed;
-}
-
-/* sortable */
-.sortable-ghost {
-    @apply ring-1 ring-offset-2 ring-theme rounded;
 }
 
 /* button */
@@ -96,29 +96,6 @@ a {
     min-height: 200px;
 }
 
-/* sortable ghost */
-[x-sort\.ghost] .sortable-ghost > div {
-    opacity: 0;
-}
-
-[x-sort\.ghost] .sortable-ghost {
-    overflow: hidden;
-    border: 2px dashed #d1d5db;
-    background: repeating-linear-gradient(
-        45deg,
-        white,
-        white 2px,
-        #eee 2px,
-        #eee 4px
-    );
-}
-
-[x-sort\.ghost] .sortable-drag > div {
-    background-color: white;
-    border: 1px solid #d1d5db;
-    transform: rotate(-2deg);
-}
-
 /* Forms related */
 input:focus, 
 select:focus, 
@@ -140,7 +117,7 @@ input.no-spinner::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
 
-.form-label {
+/* .form-label {
     @apply flex items-center gap-2 font-medium leading-5 text-gray-400 uppercase text-sm;
 }
 
@@ -182,7 +159,7 @@ select.transparent {
 
 .form-input[disabled] {
     @apply bg-gray-100;
-}
+} */
 
 .field {
     @apply w-full;
@@ -206,16 +183,6 @@ label.radio.active .radio-box {
 }
 label.radio.active .radio-container {
     @apply border-theme;
-}
-
-/* Flatpickr */
-.flatpickr-calendar {
-    @apply border-0 shadow-none;
-}
-
-/* tippy */
-.tippy-content {
-    @apply text-sm;
 }
 
 /* file uploader loader */

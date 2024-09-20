@@ -22,7 +22,8 @@
         "laravel/pail": "^1.0",
         "phpoffice/phpword": "^1.1",
         "consoletvs/profanity": "^3.3",
-        "calebporzio/sushi": "^2"
+        "calebporzio/sushi": "^2",
+        "laravel/reverb": "^1"
     },
     "require-dev": {
         "orchestra/testbench": "^8.0"
