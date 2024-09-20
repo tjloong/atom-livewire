@@ -102,24 +102,10 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder', 'upload'
                         .then(() => this.loading = false)
                 })
             },
-
-            onEnter (event) {
-                if (event.shiftKey) {
-                    this.editor().commands.insertContent('<p></p>')
-                    return true
-                }
-                else if (this.editor().isActive('listItem')) {
-                    return false
-                }
-                else {
-                    this.submit()
-                    return true
-                }
-            },
         }"
         x-on:drop.prevent="drop($event)"
         x-on:paste.stop="paste($event)"
-        {{-- x-on:keydown.enter.prevent="!$event.shiftKey && submit()" --}}
+        x-on:editor-enter="submit()"
         {{ $attributes->except($except) }}>
         <div class="{{ pick([
             'editor' => !$transparent,
@@ -159,14 +145,9 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder', 'upload'
                             handleDrop () {
                                 return true
                             },
-                            // override enter key
-                            handleKeyDown (view, event) {
-                                if (event.key === 'Enter') {
-                                    return onEnter(event)
-                                }
-                            },
                         },
                     },
+                    disableEnterKey: true,
                     mentionTemplate: $root.querySelector('.editor-mention'),
                 })"
                 class="editor-container flex">

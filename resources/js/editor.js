@@ -197,6 +197,23 @@ const MentionConfiguration = (element) => {
     }
 }
 
+const DisableEnterKeyExtension = Extension.create({
+    addKeyboardShortcuts () {
+        return {
+            'Enter': () => {
+                if (!this.editor.isActive('listItem')) {
+                    this.editor.options.element.dispatchEvent(new CustomEvent('editor-enter', { bubbles: true, detail: this.editor }))
+                    return true
+                }
+            },
+            'Shift-Enter': () => {
+                this.editor.commands.insertContent('<p></p>')
+                return true
+            },
+        }
+    },
+})
+
 window.Editor = ({
     element,
     tiptapConfig,
@@ -224,13 +241,7 @@ window.Editor = ({
         TextStyle,
         Underline,
         Youtube,
-        Extension.create({
-            addKeyboardShortcuts () {
-                return {
-                    'Enter': () => disableEnterKey,
-                }
-            },
-        })
+        disableEnterKey ? DisableEnterKeyExtension : null,
     ]
 
     Object.keys(bubbleMenus || {}).forEach(key => {

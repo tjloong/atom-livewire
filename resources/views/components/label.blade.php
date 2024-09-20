@@ -34,6 +34,6 @@ $except = ['icon', 'label', 'align', 'right', 'center', 'left'];
 }}>
     @if ($icon) <x-icon :name="$icon"/> @endif
     {!! tr($label) !!}
-    @if ($required) <x-icon name="asterisk" class="text-xs text-red-500"/> @endif
+    @if ($required) <x-icon asterisk size="12" class="text-red-500"/> @endif
 </label>
 @endif
