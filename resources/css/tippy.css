@@ -1,4 +1,5 @@
-/* tippy */
+@import 'tippy.js/dist/tippy.css';
+
 .tippy-content {
     @apply text-sm;
 }
