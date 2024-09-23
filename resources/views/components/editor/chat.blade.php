@@ -37,7 +37,10 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder', 'upload'
             paste (e) {
                 let clipboard = e.clipboardData
                 let files = Array.from(clipboard.items).filter(item => (item.kind === 'file')).map(item => (item.getAsFile()))
-                this.attach(files)
+                let text = clipboard.getData('text')
+
+                if (files.length) this.attach(files)
+                else if (text) this.editor().chain().focus().insertContent(text).run()
             },
 
             drop (e) {

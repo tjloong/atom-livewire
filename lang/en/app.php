@@ -24,7 +24,6 @@ return [
         'archive' => 'Archive',
         'archived-count' => ':count Archived',
         'archived-on' => 'Archived on :date',
-        'archived' => 'Archived',
         'are-you-sure-to-remove-selected-records' => 'Are you sure to remove the selected records?',
         'assigned-to' => 'Assigned To',
         'attach' => 'Attach',
@@ -256,6 +255,7 @@ return [
         'none' => 'None',
         'not-default' => 'Not Default',
         'note' => 'Notes',
+        'notifications' => 'Notifications',
         'number' => 'Number',
         'old-value' => 'Old Value',
         'option' => 'Option|Options',
@@ -480,6 +480,13 @@ return [
         'announcement' => 'Announcement|Announcements',
         'edit-announcement' => 'Edit Announcement',
         'create-announcement' => 'Create Announcement',
+
+        // statuses
+        'archived' => 'Archived',
+        'read' => 'Read',
+        'unread' => 'Unread',
+        'mark-read' => 'Mark Read',
+        'mark-unread' => 'Mark Unread',
 
         // alert
         'created' => 'Created',

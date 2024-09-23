@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
+use Jiannius\Atom\Traits\Models\PushNotifiable;
 use Jiannius\Atom\Traits\Models\Settings;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -22,6 +23,7 @@ class User extends Authenticatable
     use HasFactory;
     use HasFilters;
     use Notifiable;
+    use PushNotifiable;
     use Settings;
     use SoftDeletes;
 

@@ -156,8 +156,7 @@ $except = [
         type="button" 
         class="bg-gray-200 w-max rounded-full cursor-pointer text-sm py-1 px-3 font-medium flex items-center gap-2 hover:ring-1 hover:ring-offset-2 hover:ring-gray-200"
         {{ $attributes->merge(['x-on:click' => 'close()'])->except('icon', 'label') }}>
-        @if ($icon) <x-icon :name="$icon"/> @endif
-        {!! tr($label) !!}
+        <x-icon back/> {!! tr($label) !!}
     </button>
 @elseif ($dropdown && $slot->isNotEmpty())
     <x-dropdown :placement="$dropdown" :locked="$attributes->get('locked')">

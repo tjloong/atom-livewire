@@ -1,53 +1,51 @@
 @php
 $apa = $attributes->get('apa');
-$icon = $attributes->get('icon', 'folder-open');
+$icon = $attributes->get('icon', 'empty');
 $title = $attributes->get('title', 'app.label.no-results');
 $message = $attributes->get('message') ?? $attributes->get('subtitle') ?? 'app.label.we-could-not-find-anything';
 $size = $attributes->size('md');
 @endphp
 
-<div class="flex justify-center {{ [
-    'xs' => 'gap-3 py-4',
-    'sm' => 'flex-col items-center gap-3 py-8',
-    'md' => 'flex-col items-center gap-3 py-8',
-][$size] }}">
-    @if ($icon)
-        <div class="shrink-0 rounded-full bg-white shadow flex border {{ [
-            'xs' => 'w-8 h-8 text-sm',
-            'sm' => 'w-12 h-12',
-            'md' => 'w-20 h-20 text-3xl',
-        ][$size] }}">
-            <x-icon :name="$icon" class="text-gray-400 m-auto"/>
+@if ($size === 'sm')
+    <div class="flex justify-center self-center gap-3 py-5">
+        <div class="shrink-0 flex justify-center text-gray-400">
+            <x-icon :name="$icon" size="24"/>
         </div>
-    @endisset
 
-    <div class="flex flex-col gap-4">
-        <div class="{{ [
-            'xs' => '',
-            'sm' => 'text-center',
-            'md' => 'text-center',
-        ][$size] }}">
-            <div class="font-semibold text-gray-800 {{ [
-                'xs' => '',
-                'sm' => '',
-                'md' => 'text-lg',
-            ][$size] }}">
+        <div class="grow flex flex-col gap-3 self-center">
+            <div>
+                <div class="font-semibold">
+                    {!! $apa ? str()->apa(tr($title)) : tr($title) !!}
+                </div>
+
+                @if ($message)
+                    <div class="text-gray-400 font-medium text-sm">
+                        {!! tr($message) !!}
+                    </div> 
+                @endif
+            </div>
+
+            {{ $slot }}
+        </div>
+    </div>
+@else
+    <div class="flex flex-col items-center justify-center gap-3 py-8">
+        <div class="text-gray-300">
+            <x-icon :name="$icon" size="45"/>
+        </div>
+
+        <div class="flex flex-col items-center justify-center">
+            <div class="text-lg font-semibold">
                 {!! $apa ? str()->apa(tr($title)) : tr($title) !!}
             </div>
 
             @if ($message)
-                <div class="text-gray-400 font-medium {{ [
-                    'xs' => 'text-sm',
-                    'sm' => 'text-sm',
-                    'md' => '',
-                ][$size] }}">
+                <div class="text-gray-400 font-medium">
                     {!! tr($message) !!}
                 </div> 
             @endif
         </div>
 
-        @if ($slot->isNotEmpty())
-            {{ $slot }}
-        @endif
+        {{ $slot }}
     </div>
-</div>
+@endif
