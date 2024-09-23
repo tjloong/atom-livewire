@@ -10,16 +10,16 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PushNotificationCreated implements ShouldBroadcast
+class NotificationCreated implements ShouldBroadcast
 {
     use SerializesModels;
 
-    public $queue = 'push-notifications';
+    public $queue = 'notifications';
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public $message)
+    public function __construct(public $notification)
     {
         //
     }
@@ -32,7 +32,7 @@ class PushNotificationCreated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('push-notifications.'.$this->message->receiver_id),
+            new PrivateChannel('notification-center.'.$this->notification->receiver_id),
         ];
     }
 
@@ -41,7 +41,7 @@ class PushNotificationCreated implements ShouldBroadcast
      */
     public function broadcastAs(): string
     {
-        return 'push-notification-created';
+        return 'notification-created';
     }
 
     /**
@@ -51,6 +51,6 @@ class PushNotificationCreated implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
-        return $this->message->load(['sender', 'receiver'])->toArray();
+        return $this->notification->load(['sender', 'receiver'])->toArray();
     }
 }

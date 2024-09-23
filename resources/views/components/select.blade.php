@@ -289,7 +289,9 @@ $except = ['options', 'icon', 'class', 'multiple', 'callback', 'filter', 'filter
                     </div>
                 </div>
 
-                <div class="shrink-0 w-3 h-6 select-caret"></div>
+                <div class="shrink-0 w-3 h-6 flex items-center justify-center">
+                    <x-icon dropdown/>
+                </div>
             </div>
         </button>
 

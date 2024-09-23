@@ -6,13 +6,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
-use Jiannius\Atom\Traits\Models\PushNotifiable;
 use Jiannius\Atom\Traits\Models\Settings;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -23,7 +23,6 @@ class User extends Authenticatable
     use HasFactory;
     use HasFilters;
     use Notifiable;
-    use PushNotifiable;
     use Settings;
     use SoftDeletes;
 
@@ -73,6 +72,12 @@ class User extends Authenticatable
     public function signup(): HasOne
     {
         return $this->hasOne(model('signup'));
+    }
+
+    // get notifications for user
+    public function notifications() : HasMany
+    {
+        return $this->hasMany(model('notification'), 'receiver_id');
     }
 
     // scope for search

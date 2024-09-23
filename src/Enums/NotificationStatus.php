@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Enums;
 
 use Jiannius\Atom\Traits\Enum;
 
-enum PushNotificationStatus : string
+enum NotificationStatus : string
 {
     use Enum;
 

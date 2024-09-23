@@ -255,7 +255,7 @@ return [
         'none' => 'None',
         'not-default' => 'Not Default',
         'note' => 'Notes',
-        'notifications' => 'Notifications',
+        'notification-center' => 'Notification Center',
         'number' => 'Number',
         'old-value' => 'Old Value',
         'option' => 'Option|Options',

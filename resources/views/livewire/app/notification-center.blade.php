@@ -1,5 +1,5 @@
-<x-drawer wire:close="$emit('closePushNotifications')">
-    <x-slot:heading title="app.label.notifications"></x-slot:heading>
+<x-drawer wire:close="$emit('closeNotificationCenter')">
+    <x-slot:heading title="app.label.notification-center"></x-slot:heading>
 
     <div class="p-5 flex flex-col gap-5">
         <x-tabs wire:model="tab">
@@ -20,22 +20,6 @@
                     wire:key="notification-{{ get($row, 'id') }}"
                     class="group relative -mx-2 p-4 flex flex-col gap-2 rounded-lg hover:bg-slate-50 cursor-pointer">
                     <div class="absolute top-4 right-4 items-center border rounded-md divide-x bg-white hidden group-hover:flex">
-                        @if (get($row, 'read_at'))
-                            <div
-                                x-tooltip.raw="{{ tr('app.label.mark-unread') }}"
-                                wire:click.stop="read({{ Js::from(get($row, 'id')) }}, false)"
-                                class="shrink-0 p-2 flex items-center justify-center cursor-pointer">
-                                <x-icon chat-unread/>
-                            </div>
-                        @else
-                            <div
-                                x-tooltip.raw="{{ tr('app.label.mark-read') }}"
-                                wire:click.stop="read({{ Js::from(get($row, 'id')) }})"
-                                class="shrink-0 p-2 flex items-center justify-center cursor-pointer">
-                                <x-icon double-check/>
-                            </div>
-                        @endif
-
                         @if (get($row, 'archived_at'))
                             <div
                                 x-tooltip.raw="{{ tr('app.label.restore') }}"
@@ -44,6 +28,22 @@
                                 <x-icon unarchive/>
                             </div>
                         @else
+                            @if (get($row, 'read_at'))
+                                <div
+                                    x-tooltip.raw="{{ tr('app.label.mark-unread') }}"
+                                    wire:click.stop="read({{ Js::from(get($row, 'id')) }}, false)"
+                                    class="shrink-0 p-2 flex items-center justify-center cursor-pointer">
+                                    <x-icon chat-unread/>
+                                </div>
+                            @else
+                                <div
+                                    x-tooltip.raw="{{ tr('app.label.mark-read') }}"
+                                    wire:click.stop="read({{ Js::from(get($row, 'id')) }})"
+                                    class="shrink-0 p-2 flex items-center justify-center cursor-pointer">
+                                    <x-icon double-check/>
+                                </div>
+                            @endif
+
                             <div
                                 x-tooltip.raw="{{ tr('app.label.archive') }}"
                                 wire:click.stop="archive({{ Js::from(get($row, 'id')) }})"

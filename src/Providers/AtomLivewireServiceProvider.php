@@ -41,7 +41,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.share' => 'App\Share',
             'app.dashboard' => 'App\Dashboard',
             'app.footprint' => 'App\Footprint',
-            'app.push-notification' => 'App\PushNotification',
+            'app.notification-center' => 'App\NotificationCenter',
 
             'app.signup' => 'App\Signup\Index',
             'app.signup.edit' => 'App\Signup\Edit',

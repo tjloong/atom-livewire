@@ -4,14 +4,14 @@ namespace Jiannius\Atom\Http\Livewire\App;
 
 use Jiannius\Atom\Component;
 
-class PushNotification extends Component
+class NotificationCenter extends Component
 {
     public $tab = 'unread';
     public $page = 1;
     public $notifications = [];
 
     protected $listeners = [
-        'showPushNotifications' => 'open',
+        'showNotificationCenter' => 'open',
     ];
 
     // updated tab
@@ -32,7 +32,7 @@ class PushNotification extends Component
     // get notifications
     public function getNotifications() : void
     {
-        $query = model('push-notification')
+        $query = model('notification')
             ->with('sender')
             ->where('receiver_id', user('id'))
             ->status($this->tab)
@@ -54,14 +54,14 @@ class PushNotification extends Component
     // mark read
     public function read($id, $bool = true) : void
     {
-        model('push-notification')->find($id)->read($bool);
+        model('notification')->find($id)->read($bool);
         $this->remove($id);
     }
 
     // archive
     public function archive($id, $bool = true) : void
     {
-        model('push-notification')->find($id)->archive($bool);
+        model('notification')->find($id)->archive($bool);
         $this->remove($id);
     }
 

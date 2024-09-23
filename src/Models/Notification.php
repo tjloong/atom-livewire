@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Jiannius\Atom\Events\NotificationCreated;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
 
-class PushNotification extends Model
+class Notification extends Model
 {
     use Footprint;
     use HasFactory;
@@ -23,6 +24,14 @@ class PushNotification extends Model
         'read_at' => 'datetime',
         'archived_at' => 'datetime',
     ];
+
+    // booted
+    protected static function booted() : void
+    {
+        static::created(function ($notification) {
+            event(new NotificationCreated($notification));
+        });
+    }
 
     // get sender for notification
     public function sender(): BelongsTo
@@ -55,7 +64,7 @@ class PushNotification extends Model
     protected function status() : Attribute
     {
         return Attribute::make(
-            get: fn() => enum('push-notification-status', pick([
+            get: fn() => enum('notification-status', pick([
                 'ARCHIVED' => !empty($this->archived_at),
                 'READ' => !empty($this->read_at),
                 'UNREAD' => true,
@@ -69,20 +78,20 @@ class PushNotification extends Model
         if (!$status) return;
 
         $status = is_array($status)
-            ? collect($status)->map(fn($val) => enum('push-notification-status', $val))->toArray()
-            : enum('push-notification-status', $status);
+            ? collect($status)->map(fn($val) => enum('notification-status', $val))->toArray()
+            : enum('notification-status', $status);
 
         if (is_array($status)) {
             $query->where(fn($q) => collect($status)->each(fn($val, $i) => 
                 $i === 0 ? $query->status($val) : $query->orWhere(fn($q) => $q->status($val))
             ));
         }
-        elseif ($status->is('ARCHIVED')) $query->whereRaw('push_notifications.archived_at is not null');
+        elseif ($status->is('ARCHIVED')) $query->whereRaw('notifications.archived_at is not null');
         else {
-            $query->whereRaw('push_notifications.archived_at is null');
+            $query->whereRaw('notifications.archived_at is null');
 
-            if ($status->is('READ')) $query->whereRaw('push_notifications.read_at is not null');
-            else if ($status->is('UNREAD')) $query->whereRaw('push_notifications.read_at is null');
+            if ($status->is('READ')) $query->whereRaw('notifications.read_at is not null');
+            else if ($status->is('UNREAD')) $query->whereRaw('notifications.read_at is null');
         }
     }
 
