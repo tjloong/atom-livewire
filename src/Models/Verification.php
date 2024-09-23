@@ -4,8 +4,8 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Notification;
-use Jiannius\Atom\Notifications\SendVerificationCode;
+use Illuminate\Support\Facades\Mail;
+use Jiannius\Atom\Mail\RegisterVerification;
 
 class Verification extends Model
 {
@@ -33,8 +33,7 @@ class Verification extends Model
     public function notify() : void
     {
         if ($this->email) {
-            Notification::route('mail', $this->email)
-                ->notify(new SendVerificationCode($this));
+            Mail::to($this->email)->send(new RegisterVerification($this));
         }
         else if ($this->phone) {
             //
