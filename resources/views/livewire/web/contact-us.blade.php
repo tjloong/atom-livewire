@@ -47,7 +47,7 @@
                     </x-inputs>
 
                     <x-slot:foot>
-                        <x-button action="submit" label="app.label.send-enquiry" color="theme" lg block/>
+                        <x-button action="submit" label="app.label.send-enquiry" color="theme" wire:loading lg block/>
                     </x-slot:foot>
                 </x-form>
             </div>

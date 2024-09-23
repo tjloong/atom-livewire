@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\Web;
 
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Mail;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Rules\Profanity;
 use Jiannius\Atom\Traits\Livewire\WithForm;
@@ -11,8 +11,6 @@ class ContactUs extends Component
 {
     use WithForm;
 
-    public $ref;
-    public $utm;
     public $slug;
     public $thank;
     public $enquiry;
@@ -34,8 +32,6 @@ class ContactUs extends Component
     // mount
     public function mount()
     {
-        $this->ref = request()->query('ref');
-        $this->utm = request()->query('utm');
         $this->thank = $this->slug === 'thank';
         $this->enquiry = [
             'name' => null,
@@ -50,15 +46,10 @@ class ContactUs extends Component
     {
         $this->validateForm();
 
-        $enquiry = model('enquiry')->create(array_merge($this->enquiry, [
-            'ref' => $this->ref,
-            'utm' => $this->utm,
-        ]));
+        $enquiry = model('enquiry')->create($this->enquiry);
 
         if ($to = settings('notify_to')) {
-            Notification::route('mail', $to)->notify(
-                new \Jiannius\Atom\Notifications\ContactUs($enquiry)
-            );
+            Mail::to($to)->send(new \Jiannius\Atom\Mail\ReceiveEnquiry($enquiry));
         }
         
         return to_route('web.contact-us', 'thank');
