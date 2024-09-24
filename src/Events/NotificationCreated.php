@@ -15,8 +15,6 @@ class NotificationCreated implements ShouldBroadcast
 {
     use SerializesModels;
 
-    public $queue = 'notifications';
-
     /**
      * Create a new event instance.
      */
