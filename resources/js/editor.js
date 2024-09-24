@@ -157,19 +157,8 @@ const MentionConfiguration = (element) => {
         HTMLAttributes: {
             class: 'mention',
         },
-        renderHTML({ options, node }) {
-            return [
-                'span',
-                mergeAttributes(
-                    { 
-                        'x-on:click': `$dispatch('mention-click', { id: ${JSON.stringify(node.attrs.id)} })`,
-                        'x-on:mouseover': `$dispatch('mention-hover', { id: ${JSON.stringify(node.attrs.id)} })`,
-                        'x-on:mouseout': `$dispatch('mention-blur', { id: ${JSON.stringify(node.attrs.id)} })`,
-                    },
-                    options.HTMLAttributes
-                ),
-                `${options.suggestion.char} ${node.attrs.label ?? node.attrs.id}`,
-            ]
+        renderText({ options, node }) {
+            return `${options.suggestion.char} ${node.attrs.label ?? node.attrs.id}`
         },
         suggestion: {
             render: () => {

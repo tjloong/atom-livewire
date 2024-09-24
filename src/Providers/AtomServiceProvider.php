@@ -218,6 +218,7 @@ class AtomServiceProvider extends ServiceProvider
                     $portal = collect(explode('.', $route))->first();
                     if (str($portal)->startsWith('__') || in_array($portal, ['socialite'])) $portal = null;
                 }
+                else $portal = null;
 
                 if ($is && $portal) return $portal === $is;
 

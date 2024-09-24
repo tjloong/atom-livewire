@@ -137,7 +137,7 @@ $except = ['name', 'size'];
         ])->except($except) }}></i>
     @endif
 
-    @if (isset($badge) && $badge->isNotEmpty())
+    @if (isset($badge))
         <span {{ $badge->attributes->merge([
             'class' => 'inline-flex items-center justify-center rounded-full min-w-5 w-max px-1 h-5 text-xs font-medium leading-none -ml-2',
         ]) }}>

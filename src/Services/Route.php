@@ -10,6 +10,9 @@ class Route
         if ($name === 'has') {
             return \Illuminate\Support\Facades\Route::has($arguments);
         }
+        else if ($name === 'broadcast') {
+            return $this->broadcast();
+        }
         else if (in_array($name, ['get', 'post', 'put', 'patch', 'delete', 'options'])) {
             $path = $arguments[0];
             $callback = $this->callback($arguments[1]);
@@ -50,6 +53,14 @@ class Route
             }
         }
         else return $name;
+    }
+
+    // broadcast routes
+    public function broadcast()
+    {
+        \Illuminate\Support\Facades\Broadcast::channel('notification-center.{userId}', function ($user) {
+            return true;
+        });
     }
 
     // create default route

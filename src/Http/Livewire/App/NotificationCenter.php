@@ -41,6 +41,8 @@ class NotificationCenter extends Component
 
         $result = collect($query->items())->map(fn($row) => [
             ...$row->toArray(),
+            'title' => str()->limit($row->title, 100),
+            'content' => str()->limit(strip_tags($row->content), 100),
             'href' => $row->href,
             'action' => $row->action,
             'timestamp' => $row->timestamp,
@@ -73,5 +75,14 @@ class NotificationCenter extends Component
         $notifications->splice($index, 1);
 
         $this->notifications = $notifications->values()->all();
+    }
+
+    // count
+    public function count() : int
+    {
+        return model('notification')
+            ->where('receiver_id', user('id'))
+            ->status('UNREAD')
+            ->count();
     }
 }

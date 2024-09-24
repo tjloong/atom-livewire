@@ -7,10 +7,11 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NotificationCreated implements ShouldBroadcast
+class NotificationCreated implements ShouldBroadcastNow
 {
     use SerializesModels;
 
@@ -51,6 +52,12 @@ class NotificationCreated implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
-        return $this->notification->load(['sender', 'receiver'])->toArray();
+        return [
+            'title' => str()->limit($this->notification->title, 80),
+            'content' => str()->limit(strip_tags($this->notification->content), 80),
+            'href' => $this->notification->href,
+            'timestamp' => $this->notification->timestamp,
+            'sender' => $this->notification->sender?->name ?? tr('app.label.system'),
+        ];
     }
 }
