@@ -116,7 +116,7 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) =>
     'resources/js/base.js',
     'resources/css/base.css',
     ...(isset($vite) ? $vite->attributes->get('scripts', []) : []),
-    'resources/js/alpine',
+    'resources/js/alpine.js',
 ])
 
 @if (($cdn ?? null)?->isNotEmpty())
