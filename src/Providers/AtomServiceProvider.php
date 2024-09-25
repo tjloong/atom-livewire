@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -25,54 +24,104 @@ class AtomServiceProvider extends ServiceProvider
     // boot
     public function boot() : void
     {
-        // helpers
+        $this->registerHelpers();
+        $this->registerViews();
+        $this->registerTranslation();
+        $this->registerBindings();
+        $this->registerMacros();
+        $this->registerConfigs();
+        $this->registerGates();
+        $this->registerBladeIfs();
+        $this->registerBladeComponents();
+        $this->registerMorphMap();
+        $this->registerPublishes();
+        $this->registerCommands();
+    }
+
+    // register publishes
+    public function registerPublishes()
+    {
+        if (!$this->app->runningInConsole()) return;
+
+        $this->publishes([
+            __DIR__.'/../../publishes/app' => base_path('app'),
+            __DIR__.'/../../publishes/config' => base_path('config'),
+            __DIR__.'/../../publishes/resources' => base_path('resources'),
+            __DIR__.'/../../publishes/routes' => base_path('routes'),
+            __DIR__.'/../../publishes/tailwind.config.js' => base_path('tailwind.config.js'),
+            __DIR__.'/../../publishes/postcss.config.js' => base_path('postcss.config.js'),
+            __DIR__.'/../../publishes/vite.config.js' => base_path('vite.config.js'),
+        ], 'atom');
+    }
+
+    // register commands
+    public function registerCommands()
+    {
+        if (!$this->app->runningInConsole()) return;
+
+        $this->commands([
+            \Jiannius\Atom\Console\CkeditorCommand::class,
+            \Jiannius\Atom\Console\FontawesomeCommand::class,
+            \Jiannius\Atom\Console\FootprintCommand::class,
+            \Jiannius\Atom\Console\InitCommand::class,
+            \Jiannius\Atom\Console\MigrateCommand::class,
+            \Jiannius\Atom\Console\PublishCommand::class,
+            \Jiannius\Atom\Console\RefreshCommand::class,
+            \Jiannius\Atom\Console\SettingsCommand::class,
+        ]);
+    }
+
+    // register helpers
+    public function registerHelpers()
+    {
         require_once __DIR__.'/../Helpers/Core.php';
         require_once __DIR__.'/../Helpers/Atom.php';
         require_once __DIR__.'/../Helpers/Component.php';
         require_once __DIR__.'/../Helpers/Database.php';
         require_once __DIR__.'/../Helpers/Route.php';
+    }
 
+    // register views
+    public function registerViews()
+    {
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'atom');
+    }
+
+    // register translation
+    public function registerTranslation()
+    {
         $this->loadTranslationsFrom(__DIR__.'/../../lang', 'atom');
+    }
 
-        $this->bindings();
-        $this->macros();
-        $this->configs();
-        $this->gates();
-        $this->blades();
-        $this->components();
+    // register bindings
+    public function registerBindings()
+    {
+        $this->app->bind('route', function() {
+            $class = find_class('services.route');
+            return new $class;
+        });
 
-        // custom polymorphic types
+        $this->app->bind('select', function() {
+            $class = find_class('services.select');
+            return new $class;
+        });
+
+        $this->app->bind('image', function() {
+            if (extension_loaded('imagick')) return new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Imagick\Driver());
+            if (extension_loaded('gd')) return new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+        });
+    }
+
+    // register morph map
+    public function registerMorphMap()
+    {
         if ($morphMap = config('atom.morph_map')) {
             Relation::enforceMorphMap($morphMap);
         }
-
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__.'/../../publishes/app' => base_path('app'),
-                __DIR__.'/../../publishes/config' => base_path('config'),
-                __DIR__.'/../../publishes/resources' => base_path('resources'),
-                __DIR__.'/../../publishes/routes' => base_path('routes'),
-                __DIR__.'/../../publishes/tailwind.config.js' => base_path('tailwind.config.js'),
-                __DIR__.'/../../publishes/postcss.config.js' => base_path('postcss.config.js'),
-                __DIR__.'/../../publishes/vite.config.js' => base_path('vite.config.js'),
-            ], 'atom');
-
-            $this->commands([
-                \Jiannius\Atom\Console\CkeditorCommand::class,
-                \Jiannius\Atom\Console\FontawesomeCommand::class,
-                \Jiannius\Atom\Console\FootprintCommand::class,
-                \Jiannius\Atom\Console\InitCommand::class,
-                \Jiannius\Atom\Console\MigrateCommand::class,
-                \Jiannius\Atom\Console\PublishCommand::class,
-                \Jiannius\Atom\Console\RefreshCommand::class,
-                \Jiannius\Atom\Console\SettingsCommand::class,
-            ]);
-        }
     }
 
-    // components
-    public function components() : void
+    // register blade components
+    public function registerBladeComponents()
     {
         $names = cache()->rememberForever('atom-blade-components', function() {
             $path = atom_path('resources/views/components/');
@@ -97,10 +146,14 @@ class AtomServiceProvider extends ServiceProvider
 
             Blade::component($name, $class);
         }
+
+        Blade::anonymousComponentPath(__DIR__.'/../../components', 'atom');
+
+        $this->callAfterResolving('toast', \Jiannius\Atom\Services\Toast::relayToLivewire());
     }
 
-    // blades
-    public function blades() : void
+    // register blade ifs
+    public function registerBladeIfs()
     {
         Blade::if('route', function() {
             return current_route(func_get_args());
@@ -127,8 +180,8 @@ class AtomServiceProvider extends ServiceProvider
         });
     }
 
-    // gates
-    public function gates() : void
+    // register gates
+    public function registerGates()
     {
         $policy = find_class('policy');
 
@@ -138,8 +191,8 @@ class AtomServiceProvider extends ServiceProvider
         Gate::define('perm', [$policy, 'permission']);
     }
 
-    // configs
-    public function configs() : void
+    // register configs
+    public function registerConfigs()
     {
         if (config('atom.static')) return;
 
@@ -203,8 +256,8 @@ class AtomServiceProvider extends ServiceProvider
         }
     }
 
-    // macros
-    public function macros() : void
+    // register macros
+    public function registerMacros() : void
     {
         // request macros
         if (!Request::hasMacro('portal')) {
@@ -355,24 +408,5 @@ class AtomServiceProvider extends ServiceProvider
                 return new Stringable (Str::interval($this->value));
             });
         }
-    }
-
-    // bindings
-    public function bindings() : void
-    {
-        $this->app->bind('route', function() {
-            $class = find_class('services.route');
-            return new $class;
-        });
-
-        $this->app->bind('select', function() {
-            $class = find_class('services.select');
-            return new $class;
-        });
-
-        $this->app->bind('image', function() {
-            if (extension_loaded('imagick')) return new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Imagick\Driver());
-            if (extension_loaded('gd')) return new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
-        });
     }
 }

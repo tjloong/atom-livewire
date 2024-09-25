@@ -86,7 +86,7 @@ class Notification
     public function broadcast()
     {
         if (get($this->config, 'receiver')) {
-            $message = $this->notification();
+            $message = $this->message($this->notification());
 
             return atom('broadcast')
                 ->name('notification-created')
@@ -97,7 +97,7 @@ class Notification
         return atom('broadcast')
             ->name('notification-created')
             ->public('notification')
-            ->with($this->config);
+            ->with($this->mesasge($this->config));
     }
 
     // create notification
@@ -124,6 +124,16 @@ class Notification
             'timestamp' => $notification->created_at->toDatetimeString(),
             'sender' => $notification->sender->toArray(),
             'receiver' => $notification->receiver->toArray(),
+        ];
+    }
+
+    // make message
+    public function message($message)
+    {
+        return [
+            ...$message,
+            'title' => str()->limit(get($message, 'title'), 80),
+            'content' => str()->limit(strip_tags(get($message, 'content')), 100),
         ];
     }
 }

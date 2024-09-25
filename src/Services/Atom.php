@@ -15,6 +15,12 @@ class Atom
     {
         $name = str()->studly($name);
         $class = "\Jiannius\Atom\Services\\$name";
+        $singleton = defined("$class::SINGLETON") ? $class::SINGLETON : false;
+
+        if ($singleton) {
+            if (!collect(app()->getBindings())->has($class)) app()->singleton($class);
+            return app($class);
+        }
 
         return new $class($args);
     }

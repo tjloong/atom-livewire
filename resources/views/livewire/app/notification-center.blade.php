@@ -18,18 +18,18 @@
             listen () {
                 Echo
                 .private(`notification.{{ Js::from(user('id')) }}`)
-                .listen('.notification-created', (notification) => this.toast(notification))
+                .listen('.notification-created', (notification) => {
+                    this.count()
+                    this.toast(notification)
+                })
             },
 
             toast (notification) {
-                this.count()
-                if (this.bubbles.length >= 4) this.bubbles.pop()
-                this.bubbles.prepend(notification)
-
-                setTimeout(() => {
-                    let index = this.bubbles.findIndex(item => (item.id === notification.id))
-                    this.bubbles.splice(index, 1)
-                }, 4000)
+                Toast.make({
+                    title: notification.title,
+                    message: notification.content,
+                    user: notification.sender,
+                })
             },
         }"
         x-init="count()"
@@ -48,24 +48,6 @@
                         class="text-red-100 bg-red-500">
                     </x-slot:badge>
                 </x-icon>
-            </div>
-        </template>
-
-        <template x-teleport="body">
-            <div x-show="bubbles.length" class="fixed bottom-10 right-5 max-w-sm w-full flex flex-col gap-2" style="z-index: 999">
-                <template x-for="item in bubbles" hidden>
-                    <div
-                        x-on:click.stop="item.href && window.href(item.href)"
-                        x-bind:class="item.href && 'cursor-pointer'"
-                        class="py-3 px-4 rounded-lg shadow-lg bg-black/80 text-sm">
-                        <div class="flex items-center gap-2">
-                            <div x-text="item.sender" class="grow font-medium text-gray-100 truncate"></div>
-                            <div x-text="item.timestamp" class="shrink-0 text-gray-300"></div>
-                        </div>
-                        <div x-text="item.title" x-show="item.title" class="font-medium text-gray-100"></div>
-                        <div x-text="item.content" class="text-gray-300"></div>
-                    </div>
-                </template>
             </div>
         </template>
     </div>
@@ -107,13 +89,13 @@
             dispatch () {
                 $el.dispatchEvent(new CustomEvent('notification-center-count', { bubbles: true }))
             },
-        }" class="flex flex-col">
+        }" class="space-y-4">
             @forelse ($notifications as $row)
                 <div
                     wire:key="notification-{{ get($row, 'id') }}"
                     x-on:click.stop="select({{ Js::from($row) }})"
-                    class="group relative -mx-2 p-4 flex flex-col gap-2 rounded-lg hover:bg-slate-50 cursor-pointer">
-                    <div class="absolute top-4 right-4 items-center border rounded-md divide-x bg-white hidden group-hover:flex">
+                    class="group relative py-2 px-4 space-y-2 bg-slate-50 border rounded-lg cursor-pointer">
+                    <div class="absolute top-2 right-2 items-center border rounded-md divide-x bg-white hidden group-hover:flex">
                         @if (get($row, 'archived_at'))
                             <div
                                 x-tooltip.raw="{{ tr('app.label.restore') }}"
@@ -149,10 +131,10 @@
 
                     <div class="flex items-center gap-2">
                         <div class="grow flex items-center gap-2">
-                            <div class="shrink-0">
-                                <x-avatar-bullets :avatars="[get($row, 'sender')]"/>
+                            <div class="shrink-0 w-5 h-5 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center text-xs leading-none border">
+                                {{ substr(get($row, 'sender.name'), 0, 1) }}
                             </div>
-                            <div class="grow font-medium">
+                            <div class="grow font-medium text-sm text-gray-500">
                                 {{ get($row, 'sender.name') }}
                             </div>
                         </div>
@@ -162,14 +144,16 @@
                         </div>
                     </div>
 
-                    @if ($title = get($row, 'title'))
-                        <div class="font-medium">
-                            {!! $title !!}
+                    <div>
+                        @if ($title = get($row, 'title'))
+                            <div class="font-medium">
+                                {!! str()->limit($title, 80) !!}
+                            </div>
+                        @endif
+    
+                        <div class="text-gray-500">
+                            {!! str()->limit(strip_tags(get($row, 'content')), 100) !!}
                         </div>
-                    @endif
-
-                    <div class="text-gray-500 editor-content editor-chat-content">
-                        {!! get($row, 'content') !!}
                     </div>
                 </div>
             @empty
