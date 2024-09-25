@@ -64,10 +64,10 @@ $except = ['icon', 'label', 'route', 'href', 'can', 'active'];
                         {{ tr($label) }}
                     </div>
 
-                    <div class="shrink-0 text-xs">
-                        <x-icon name="chevron-right"
-                            x-bind:class="(active || open) && 'rotate-90'"
-                            class="transition-transform"/>
+                    <div
+                        x-bind:class="(active || open) && 'rotate-90'"
+                        class="shrink-0 text-xs transition-transform">
+                        <x-icon right/>
                     </div>
                 </div>
             </div>

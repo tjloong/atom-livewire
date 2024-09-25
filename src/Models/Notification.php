@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Jiannius\Atom\Events\NotificationCreated;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
 
@@ -24,14 +23,6 @@ class Notification extends Model
         'read_at' => 'datetime',
         'archived_at' => 'datetime',
     ];
-
-    // booted
-    protected static function booted() : void
-    {
-        static::created(function ($notification) {
-            event(new NotificationCreated($notification));
-        });
-    }
 
     // get sender for notification
     public function sender(): BelongsTo

@@ -11,14 +11,14 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NotificationCreated implements ShouldBroadcast
+class SendBroadcastNow implements ShouldBroadcastNow
 {
     use SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public $notification)
+    public function __construct(public $config)
     {
         //
     }
@@ -30,9 +30,10 @@ class NotificationCreated implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return [
-            new PrivateChannel('notification-center.'.$this->notification->receiver_id),
-        ];
+        $private = collect(get($this->config, 'private'))->map(fn ($channel) => new PrivateChannel($channel));
+        $public = collect(get($this->config, 'public'))->map(fn ($channel) => new Channel($channel));
+
+        return $private->concat($public)->values()->all();
     }
 
     /**
@@ -40,7 +41,15 @@ class NotificationCreated implements ShouldBroadcast
      */
     public function broadcastAs(): string
     {
-        return 'notification-created';
+        return get($this->config, 'name');
+    }
+
+    /**
+     * The name of the queue on which to place the broadcasting job.
+     */
+    public function broadcastQueue(): string
+    {
+        return get($this->config, 'queue');
     }
 
     /**
@@ -50,12 +59,6 @@ class NotificationCreated implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
-        return [
-            'title' => str()->limit($this->notification->title, 80),
-            'content' => str()->limit(strip_tags($this->notification->content), 80),
-            'href' => $this->notification->href,
-            'timestamp' => $this->notification->timestamp,
-            'sender' => $this->notification->sender?->name ?? tr('app.label.system'),
-        ];
+        return get($this->config, 'with');
     }
 }

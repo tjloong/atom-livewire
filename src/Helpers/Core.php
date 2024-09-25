@@ -592,3 +592,17 @@ if (!function_exists('seo')) {
         if ($jsonld = get($seo, 'jsonld')) config(['atom.jsonld' => $jsonld]);
     }
 }
+
+// atom
+if (!function_exists('atom')) {
+    function atom(...$args)
+    {
+        if ($args) {
+            $name = head($args);
+            array_unshift($args);
+            return atom()->$name($args);
+        }
+
+        return new \Jiannius\Atom\Services\Atom();
+    }
+}

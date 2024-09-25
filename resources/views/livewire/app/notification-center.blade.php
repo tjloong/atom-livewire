@@ -17,7 +17,7 @@
 
             listen () {
                 Echo
-                .private(`notification-center.{{ Js::from(user('id')) }}`)
+                .private(`notification.{{ Js::from(user('id')) }}`)
                 .listen('.notification-created', (notification) => this.toast(notification))
             },
 

@@ -7,7 +7,10 @@ class Route
     // __call
     public function __call($name, $arguments)
     {
-        if ($name === 'has') {
+        if ($name === 'channel') {
+            return $this->channel($name, $arguments);
+        }
+        else if ($name === 'has') {
             return \Illuminate\Support\Facades\Route::has($arguments);
         }
         else if (in_array($name, ['get', 'post', 'put', 'patch', 'delete', 'options'])) {
@@ -50,6 +53,19 @@ class Route
             }
         }
         else return $name;
+    }
+
+    // broadcast channel
+    public function channel($name, $arguments = null)
+    {
+        if ($name === 'notification' && !$arguments) {
+            return \Illuminate\Support\Facades\Broadcast::channel('notification.{id}', function ($user, $id) {
+                return $user && $user->id === model('user')->find($id)?->id;
+            });
+        }
+        else {
+            return \Illuminate\Support\Facades\Broadcast::channel($name, $arguments);
+        }
     }
 
     // create default route
