@@ -13,9 +13,9 @@ function setBadgeClass(child, badge, modifiers) {
 function setBadgeStyle(child, badge, modifiers) {
     let solid = modifiers.includes('solid')
 
-    child.style.backgroundColor = solid ? color(badge.color).value() : color(badge.color).inverted().value()
-    child.style.color = solid ? color(badge.color).inverted().value() : color(badge.color).value()
-    child.style.border = `1px solid ${color(badge.color).value()}`
+    child.style.backgroundColor = solid ? atom.color(badge.color).value() : atom.color(badge.color).inverted().value()
+    child.style.color = solid ? atom.color(badge.color).inverted().value() : atom.color(badge.color).value()
+    child.style.border = `1px solid ${atom.color(badge.color).value()}`
 }
 
 function createBadges(container, badges, modifiers) {

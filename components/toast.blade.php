@@ -21,7 +21,7 @@ $position = [
                 let toast = typeof value.message === 'string' ? { message: value.message } : { ...value.message }
 
                 toast = {
-                    id: ulid(),
+                    id: atom.ulid(),
                     type: value.type,
                     visible: false,
                     variant: 'dark',

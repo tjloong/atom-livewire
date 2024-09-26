@@ -1,1 +1,0 @@
-export default (name, data) => dispatchEvent(new CustomEvent(name, { bubbles: true, detail: data }))

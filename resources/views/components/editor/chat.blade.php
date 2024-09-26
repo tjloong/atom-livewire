@@ -66,7 +66,7 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder', 'upload'
                     else {
                         this.uploading = true
 
-                        upload(this.files, {
+                        atom.upload(this.files, {
                             ...{{ Js::from($upload) }},
                             progress: (value) => this.uploadProgress = value,
                         })

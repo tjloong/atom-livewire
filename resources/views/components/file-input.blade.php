@@ -34,7 +34,7 @@ if ($id = (array) get($this, $wire)) {
             read (files) {
                 this.loading = true
 
-                upload(files, {
+                atom.upload(files, {
                     ...this.config,
                     progress: (value) => this.progress = value,
                 })

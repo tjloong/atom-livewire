@@ -42,6 +42,7 @@
         "laravel-vite-plugin": "^1.0.2",
         "pusher-js": "^8",
         "tippy.js": "^6",
+        "ulid": "^2",
         "vite": "^5.2.10"
     }
 }

@@ -50,7 +50,7 @@ $multiple = $attributes->get('multiple', false);
 
             this.loading = true
 
-            upload(files, {
+            atom.upload(files, {
                 ...this.config,
                 progress: (val) => this.progress = val,
             })

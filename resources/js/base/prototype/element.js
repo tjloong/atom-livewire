@@ -22,3 +22,7 @@ Element.prototype.toggleClass = function(...names) {
         )
     })
 }
+
+Element.prototype.dispatch = function(name, data) {
+    this.dispatchEvent(new CustomEvent(name, { bubbles: true, detail: data }))
+}

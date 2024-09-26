@@ -1,4 +1,6 @@
-let dispatch = (message, type = null) => Dispatch('toast-received', { message, type })
+let dispatch = (message, type = null) => {
+    document.dispatchEvent(new CustomEvent('toast-received', { bubbles: true, detail: { message, type } }))
+}
 
 export default {
     info: (message) => dispatch(message, 'info'),

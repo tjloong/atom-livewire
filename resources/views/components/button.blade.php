@@ -187,7 +187,7 @@ $except = [
         read (files) {
             this.loading()
 
-            upload(files, {
+            atom.upload(files, {
                 ...this.config,
                 progress: (value) => this.progress(value),
             })
