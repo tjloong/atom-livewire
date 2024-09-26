@@ -223,6 +223,5 @@ fbq('track', 'PageView');
 
 <x-notify.alert/>
 <x-notify.confirm/>
-<x-notify.toast/>
 <x-loader/>
 </html>

@@ -23,15 +23,11 @@ $position = [
         },
 
         build (toast) {
-            toast = typeof toast.message === 'string' ? toast : { ...toast.message, type: toast.type }
-
             return {
                 id: atom.ulid(),
                 visible: false,
-                variant: 'dark',
+                theme: 'dark',
                 ...toast,
-                title: toast.title ? tr(toast.title) : null,
-                message: toast.message ? tr(toast.message) : null,
             }
         },
 
@@ -68,9 +64,9 @@ $position = [
                     x-show="toast.visible"
                     x-transition.duration.200
                     x-bind:class="{
-                        'bg-white border text-zinc-800': toast.variant === 'light',
-                        'bg-black/80 text-gray-100': toast.variant === 'dark',
-                        'bg-red-500 text-gray-100': toast.variant === 'destructive',
+                        'bg-white border text-zinc-800': toast.theme === 'light',
+                        'bg-black/80 text-gray-100': toast.theme === 'dark',
+                        'bg-red-500 text-gray-100': toast.theme === 'destructive',
                     }"
                     class="rounded-lg shadow w-full relative transition ease-in-out">
                     <div x-bind:class="{
@@ -92,9 +88,9 @@ $position = [
                                     <div class="flex items-center gap-2">
                                         <div
                                             x-bind:class="{
-                                                'bg-gray-200 text-gray-400 border': toast.variant === 'light',
-                                                'bg-gray-400 text-gray-200': toast.variant === 'dark',
-                                                'bg-red-100 text-red-500': toast.variant === 'destructive',
+                                                'bg-gray-200 text-gray-400 border': toast.theme === 'light',
+                                                'bg-gray-400 text-gray-200': toast.theme === 'dark',
+                                                'bg-red-100 text-red-500': toast.theme === 'destructive',
                                             }"
                                             class="w-5 h-5 rounded-full relative overflow-hidden">
                                             <template x-if="toast.user.avatar">

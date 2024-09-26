@@ -49,7 +49,19 @@ class Toast
     // make
     public function make($message, $type = null)
     {
-        $this->toasts[] = ['message' => $message, 'type' => $type];
+        $toast = ['type' => $type];
+
+        if (is_string($message)) $toast['message'] = str()->limit(tr($message), 100);
+        else {
+            $toast = [
+                ...$toast,
+                ...$message,
+                'title' => str()->limit(tr(get($message, 'title')), 80),
+                'message' => str()->limit(tr(get($message, 'message')), 100),
+            ];
+        }
+
+        $this->toasts[] = $toast;
 
         if (!request()->isLivewireRequest()) {
             session()->put('__toasts', $this->toasts);
