@@ -7,4 +7,4 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.extend(relativeTime)
 
-window.dayjs = dayjs.default
+window.dayjs = dayjs

@@ -194,7 +194,9 @@ $except = ['label', 'for', 'field', 'utc', 'mode', 'transparent', 'placeholder',
                 </div>
             </div>
 
-            <div class="shrink-0 w-3 h-full select-caret"></div>
+            <div class="shrink-0 w-3 h-full flex items-center justify-center">
+                <x-icon dropdown/>
+            </div>
         </button>
 
         <div 
