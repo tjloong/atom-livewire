@@ -28,12 +28,15 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerTranslation();
         $this->registerBindings();
-        $this->registerMacros();
         $this->registerConfigs();
         $this->registerGates();
         $this->registerBladeIfs();
         $this->registerBladeComponents();
         $this->registerMorphMap();
+        $this->registerRequestMacros();
+        $this->registerComponentMacros();
+        $this->registerStringMacros();
+        $this->registerCarbonMacros();
         $this->registerPublishes();
         $this->registerCommands();
     }
@@ -149,7 +152,7 @@ class AtomServiceProvider extends ServiceProvider
 
         Blade::anonymousComponentPath(__DIR__.'/../../components', 'atom');
 
-        $this->callAfterResolving('toast', \Jiannius\Atom\Services\Toast::relayToLivewire());
+        \Jiannius\Atom\Services\Toast::boot();
     }
 
     // register blade ifs
@@ -256,10 +259,9 @@ class AtomServiceProvider extends ServiceProvider
         }
     }
 
-    // register macros
-    public function registerMacros() : void
+    // register request macros
+    public function registerRequestMacros()
     {
-        // request macros
         if (!Request::hasMacro('portal')) {
             Request::macro('portal', function ($is = null) {
                 $route = $this->route()?->getName();
@@ -294,7 +296,16 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
-        // componet attribute macros
+        if (!Request::hasMacro('isLivewireRequest')) {
+            Request::macro('isLivewireRequest', function () {
+                return app(\Livewire\LivewireManager::class)->isLivewireRequest();
+            });
+        }
+    }
+
+    // register component macros
+    public function registerComponentMacros()
+    {
         if (!ComponentAttributeBag::hasMacro('hasLike')) {
             ComponentAttributeBag::macro('hasLike', function() {
                 $value = func_get_args();
@@ -306,7 +317,7 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
-        if (!ComponentAttributeBag::hasMacro('modifiers')) {
+        if (!ComponentAttributeBag::hasMacro('modifier')) {
             ComponentAttributeBag::macro('modifier', function($name = null) {
                 $attribute = collect($this->whereStartsWith('wire:model')->getAttributes())->keys()->first()
                     ?? collect($this->whereStartsWith('x-model')->getAttributes())->keys()->first();
@@ -355,17 +366,20 @@ class AtomServiceProvider extends ServiceProvider
                 return collect($args)->map(fn($arg) => $this->get($arg))->filter()->first();
             });
         }
+    }
 
-        // carbon marcros
+    // register carbon macros
+    public function registerCarbonMacros()
+    {
         if (!Carbon::hasMacro('local')) {
-            Carbon::macro('local', function() {
+            Carbon::macro('local', function () {
                 $tz = optional(user())->settings('timezone') ?? config('atom.timezone');
                 return $tz ? $this->timezone($tz) : $this;
             });
         }
 
         if (!Carbon::hasMacro('pretty')) {
-            Carbon::macro('pretty', function($option = null) {
+            Carbon::macro('pretty', function ($option = null) {
                 $option = $option ?? 'date';
 
                 if ($option === 'date') $format = 'd M Y';
@@ -379,7 +393,19 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
-        // string macros
+        if (!Carbon::hasMacro('recent')) {
+            Carbon::macro('recent', function ($days = 1) {
+                if ($this->isToday()) return $this->pretty('time');
+                if ($this->gte(now()->subDays($days))) return $this->local()->fromNow();
+
+                return $this->pretty('datetime');
+            });
+        }
+    }
+
+    // register string macros
+    public function registerStringMacros()
+    {
         if (!Str::hasMacro('interval')) {
             Str::macro('interval', function($string) {
                 $count = trim(head(explode(' ', $string)));

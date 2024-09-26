@@ -1,4 +1,6 @@
 @php
+$toasts = session()->pull('__toasts') ?? [];
+
 $position = [
     'top-end' => 'top-0 left-0 right-0 p-5 md:top-10 md:right-5 md:left-auto md:p-0',
     'top-start' => 'top-0 left-0 right-0 p-5 md:top-10 md:right-auto md:left-5 md:p-0',
@@ -11,37 +13,50 @@ $position = [
 
 <div
     x-data="{
-        toasts: [],
+        toasts: @js($toasts),
+
+        init () {
+            this.$nextTick(() => {
+                this.toasts = this.toasts.map(toast => (this.build(toast)))
+                this.toasts.forEach(toast => this.show(toast))
+            })
+        },
+
+        build (toast) {
+            toast = typeof toast.message === 'string' ? toast : { ...toast.message, type: toast.type }
+
+            return {
+                id: atom.ulid(),
+                visible: false,
+                variant: 'dark',
+                ...toast,
+                title: toast.title ? tr(toast.title) : null,
+                message: toast.message ? tr(toast.message) : null,
+            }
+        },
+
+        show (toast) {
+            if (toast.visible) return
+            setTimeout(() => toast.visible = true, 100)
+            if (!toast.permanent) setTimeout(() => this.close(toast), toast.delay || 3500)
+        },
+
+        close (toast) {
+            toast.visible = false
+
+            setTimeout(() => {
+                let index = this.toasts.findIndex(item => (item.id === toast.id))
+                this.toasts.splice(index, 1)
+            }, 100)
+        },
 
         push (value) {
             if (Array.isArray(value)) value.forEach(item => this.push(item))
             else {
-                if (this.toasts.length >= 4) this.toasts.pop()
-
-                let toast = typeof value.message === 'string' ? { message: value.message } : { ...value.message }
-
-                toast = {
-                    id: atom.ulid(),
-                    type: value.type,
-                    visible: false,
-                    variant: 'dark',
-                    ...toast,
-                    title: toast.title ? tr(toast.title) : null,
-                    message: toast.message ? tr(toast.message) : null,
-                }
-
-                this.toasts.push(toast)
-                
-                setTimeout(() => this.toasts.find(item => (item.id === toast.id)).visible = true, 100)
-
-                if (!toast.permanent) setTimeout(() => this.close(toast), toast.delay || 3500)
+                if (this.toasts.length >= 4) this.toasts.shift()
+                this.toasts.push(this.build(value))
+                this.toasts.forEach(toast => this.show(toast))
             }
-        },
-
-        close (toast) {
-            let index = this.toasts.findIndex(item => (item.id === toast.id))
-            this.toasts[index].visible = false
-            setTimeout(() => this.toasts.splice(index, 1), 100)
         },
     }"
     x-on:toast-received.window="push($event.detail)"

@@ -2,18 +2,16 @@
 
 namespace Jiannius\Atom\Services;
 
-use Livewire\Livewire;
-
 class Toast
 {
     public const SINGLETON = true;
 
     public $toasts = [];
 
-    // relay to livewire
-    public static function relayToLivewire()
+    // to be register in service provider user $this->callAfterResolving
+    public static function boot()
     {
-        Livewire::listen('component.dehydrate', function ($component, $response) {
+        \Livewire\Livewire::listen('component.dehydrate', function ($component, $response) {
             $response->effects['dispatches'] ??= [];
 
             if ($toasts = atom()->toast()->toasts) {
@@ -52,6 +50,10 @@ class Toast
     public function make($message, $type = null)
     {
         $this->toasts[] = ['message' => $message, 'type' => $type];
+
+        if (!request()->isLivewireRequest()) {
+            session()->put('__toasts', $this->toasts);
+        }
 
         return $this;
     }

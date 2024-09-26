@@ -45,7 +45,7 @@ class NotificationCenter extends Component
             'content' => str()->limit(strip_tags($row->content), 100),
             'href' => $row->href,
             'action' => $row->action,
-            'timestamp' => $row->timestamp,
+            'timestamp' => $row->created_at->recent(),
         ]);
 
         $this->notifications = $this->page === 1

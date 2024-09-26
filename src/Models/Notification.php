@@ -36,21 +36,6 @@ class Notification extends Model
         return $this->belongsTo(model('user'), 'receiver_id');
     }
 
-    // attribute for timestamp
-    protected function timestamp() : Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                $ts = $this->created_at->local();
-
-                if ($ts->isToday()) return $ts->pretty('time');
-                if ($ts->isYesterday()) return $ts->fromNow();
-
-                return $ts->pretty('datetime');
-            }
-        );
-    }
-
     // attribute for status
     protected function status() : Attribute
     {
