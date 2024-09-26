@@ -606,3 +606,11 @@ if (!function_exists('atom')) {
         return new \Jiannius\Atom\Services\Atom();
     }
 }
+
+// carbon
+if (!function_exists('carbon')) {
+    function carbon(...$args)
+    {
+        return new \Carbon\Carbon(...$args);
+    }
+}
