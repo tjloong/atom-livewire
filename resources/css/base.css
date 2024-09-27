@@ -20,7 +20,7 @@ html {
 }
 
 dialog::backdrop {
-    @apply bg-zinc-500/30;
+    @apply bg-black/20;
 }
 
 a {
