@@ -11,7 +11,7 @@
         endpoint: @js(route('__file.url')),
 
         submit () {
-            atom.ajax(this.endpoint).post({ url: this.text.split(`\n`) }).then(res => {
+            Atom.ajax(this.endpoint).post({ url: this.text.split(`\n`) }).then(res => {
                 this.$dispatch('files-created', res)
                 this.text = null
             })

@@ -127,7 +127,7 @@
                     value: this.value,
                 }
 
-                return atom.ajax(this.endpoint).post(payload)
+                return Atom.ajax(this.endpoint).post(payload)
                 .then(res => this.options = [...res])
                 .then(() => this.filter())
                 .then(() => this.loading = false)

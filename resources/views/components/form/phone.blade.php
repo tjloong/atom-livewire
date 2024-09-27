@@ -28,7 +28,7 @@
             },
 
             init () {
-                atom.ajax(this.endpoint).post({ callback: 'dial_codes' }).then(data => {
+                Atom.ajax(this.endpoint).post({ callback: 'dial_codes' }).then(data => {
                     this.options = [...data]
 
                     this.$nextTick(() => {

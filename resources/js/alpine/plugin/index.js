@@ -1,6 +1,8 @@
 import Alpine from 'alpinejs'
 
 // data
+import Modal from './data/modal.js'
+import Toast from './data/toast.js'
 import Overlay from './data/overlay.js'
 
 // magic
@@ -16,6 +18,8 @@ import Recaptcha from './directive/recaptcha.js'
 import Autoresize from './directive/autoresize.js'
 
 export default function (Alpine) {
+    Alpine.data('modal', Modal)
+    Alpine.data('toast', Toast)
     Alpine.data('overlay', Overlay)
     Alpine.magic('sortid', SortId)
     Alpine.magic('clipboard', Clipboard)

@@ -122,7 +122,7 @@ else {
             if (this.callback) {
                 clearTimeout(this.timer)
                 this.timer = setTimeout(() => {
-                    return atom.ajax('/__select')
+                    return Atom.ajax('/__select')
                         .post({
                             name: this.callback,
                             filters: { ...this.filters, search: this.props.query },

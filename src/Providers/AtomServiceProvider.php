@@ -17,7 +17,7 @@ class AtomServiceProvider extends ServiceProvider
 {
     // register
     public function register() : void
-    {        
+    {
         //
     }
 
@@ -153,6 +153,7 @@ class AtomServiceProvider extends ServiceProvider
         Blade::anonymousComponentPath(__DIR__.'/../../components', 'atom');
 
         \Jiannius\Atom\Services\Toast::boot();
+        \Jiannius\Atom\Services\Modal::boot();
     }
 
     // register blade ifs

@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Services;
 
+use Jiannius\Atom\Atom;
+
 class Notification
 {
     public $config = [
@@ -88,16 +90,16 @@ class Notification
         if (get($this->config, 'receiver')) {
             $message = $this->message($this->notification());
 
-            return atom('broadcast')
+            return Atom::broadcast()
                 ->name('notification-created')
                 ->private('notification.'.get($message, 'receiver.id'))
                 ->with($message);
         }
 
-        return atom('broadcast')
+        return Atom::broadcast()
             ->name('notification-created')
             ->public('notification')
-            ->with($this->mesasge($this->config));
+            ->with($this->message($this->config));
     }
 
     // create notification

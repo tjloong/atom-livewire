@@ -26,7 +26,7 @@ $placeholder = $attributes->get('placeholder', 'app.label.phone-number');
             },
     
             init () {
-                atom.ajax(this.endpoint).post({ name: 'dialCodes' }).then(data => {
+                Atom.ajax(this.endpoint).post({ name: 'dialCodes' }).then(data => {
                     this.options = [...data]
     
                     this.$nextTick(() => {

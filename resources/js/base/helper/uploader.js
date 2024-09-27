@@ -34,7 +34,7 @@ export default class {
         if (!url.length) return new Promise((resolve, reject) => reject(new Error(tr('app.label.invalid-url'))))
         if (!this.config.multiple) url = [url[0]]
 
-        return atom.ajax('/__file/upload').post({ url }).then(files => {
+        return Atom.ajax('/__file/upload').post({ url }).then(files => {
             let id = files.pluck('id')
 
             return {
@@ -57,7 +57,7 @@ export default class {
             if (this.config.path) formdata.append('path', this.config.path)
             if (this.config.visibility) formdata.append('visibility', this.config.visibility)
 
-            return atom.ajax('/__file/upload').post(formdata).then(res => {
+            return Atom.ajax('/__file/upload').post(formdata).then(res => {
                 job.res = res
                 job.completed = true
                 this.progress()

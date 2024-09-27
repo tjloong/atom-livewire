@@ -25,7 +25,7 @@
             },
 
             toast (notification) {
-                atom.toast.make({
+                Atom.toast({
                     title: notification.title,
                     message: notification.content,
                     user: notification.sender,
@@ -83,7 +83,7 @@
 
             openUrl (url) {
                 if (!url) return
-                atom.goto(url)
+                Atom.goto(url)
             },
 
             dispatch () {

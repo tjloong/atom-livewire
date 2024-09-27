@@ -600,10 +600,10 @@ if (!function_exists('atom')) {
         if ($args) {
             $name = head($args);
             array_unshift($args);
-            return atom()->$name($args);
+            return \Jiannius\Atom\Atom::$name(...$args);
         }
 
-        return new \Jiannius\Atom\Services\Atom();
+        return new \Jiannius\Atom\Atom();
     }
 }
 

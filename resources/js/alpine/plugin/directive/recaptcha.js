@@ -29,7 +29,7 @@ export default (el, { value, expression, modifiers }, { evaluate, evaluateLater 
                 window.grecaptcha
                 .execute(sitekey, { action: action || value })
                 .then(token => {
-                    atom.ajax('/__recaptcha').post({ token }).then(valid => {
+                    Atom.ajax('/__recaptcha').post({ token }).then(valid => {
                         el.removeClass('is-loading')
 
                         if (valid) handler()

@@ -27,7 +27,7 @@
                 formdata.append('path', @js($path))
                 formdata.append('visibility', @js($visibility))
     
-                atom.ajax(this.endpoint).post(formdata).then(res => {
+                Atom.ajax(this.endpoint).post(formdata).then(res => {
                     job.res = res
                     job.completed = true
                     this.upload()
