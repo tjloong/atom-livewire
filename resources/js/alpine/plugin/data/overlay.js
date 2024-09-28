@@ -1,3 +1,4 @@
+// TODO: obselete this
 export default (id) => ({
     id,
     nav: null,

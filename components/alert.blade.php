@@ -3,25 +3,7 @@ $alert = session()->pull('__alert') ?? [];
 @endphp
 
 <dialog
-    x-data="{
-        alert: @js($alert),
-        visible: false,
-
-        init () {
-            if (!empty(this.alert)) this.show()
-        },
-
-        show (alert = null) {
-            if (alert) this.alert = alert
-            this.$root.showModal()
-            this.$nextTick(() => this.visible = true)
-        },
-
-        close () {
-            this.visible = false
-            setTimeout(() => this.$root.close(), 200)
-        },
-    }"
+    x-data="alert(@js($alert))"
     x-on:alert.window="show($event.detail)"
     x-show="visible"
     x-transition:enter="transition ease-in-out duration-150"
@@ -52,7 +34,7 @@ $alert = session()->pull('__alert') ?? [];
             <button
                 type="button"
                 x-on:click="close()"
-                class="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-white text-black border shadow hover:bg-zinc-50 h-9 px-4 py-2">
+                class="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-white text-black border hover:bg-zinc-50 h-9 px-4 py-2">
                 <div class="shrink-0 flex items-center justify-center -ml-1">
                     <x-icon close/>
                 </div>

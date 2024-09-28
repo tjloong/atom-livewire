@@ -146,4 +146,8 @@
         </div>
     </div>
 </div>
+
+<x-atom::alert/>
+<x-atom::confirm/>
+<x-atom::toast/>
 </x-layout>

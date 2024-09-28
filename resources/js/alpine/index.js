@@ -21,4 +21,3 @@ Alpine.plugin(Plugin)
 
 window.Alpine = Alpine
 Alpine.start()
-

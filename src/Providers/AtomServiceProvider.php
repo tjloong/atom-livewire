@@ -154,8 +154,9 @@ class AtomServiceProvider extends ServiceProvider
         Blade::anonymousComponentPath(__DIR__.'/../../components', 'atom');
 
         \Jiannius\Atom\Services\Alert::boot();
-        \Jiannius\Atom\Services\Toast::boot();
         \Jiannius\Atom\Services\Modal::boot();
+        \Jiannius\Atom\Services\Toast::boot();
+        \Jiannius\Atom\Services\Confirm::boot();
     }
 
     // register blade ifs

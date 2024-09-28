@@ -8,6 +8,7 @@ import { ulid } from 'ulid'
 import Ajax from './helper/ajax.js'
 import Color from './helper/color.js'
 import Alert from './helper/alert.js'
+import Confirm from './helper/confirm.js'
 import Modal from './helper/modal.js'
 import Toast from './helper/toast.js'
 import Uploader from './helper/uploader.js'
@@ -19,6 +20,7 @@ window.Atom = {
     alert: Alert,
     modal: Modal,
     toast: Toast,
+    confirm: Confirm,
     ajax: (url) => (new Ajax(url)),
     goto: (url) => window.location = url,
     color: (name) => new Color(name),

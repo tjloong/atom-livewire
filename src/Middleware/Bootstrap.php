@@ -1,6 +1,6 @@
 <?php
 
-namespace Jiannius\Atom\Http\Middleware;
+namespace Jiannius\Atom\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

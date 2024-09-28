@@ -1,6 +1,8 @@
 import Alpine from 'alpinejs'
 
 // data
+import Alert from './data/alert.js'
+import Confirm from './data/confirm.js'
 import Modal from './data/modal.js'
 import Toast from './data/toast.js'
 import Overlay from './data/overlay.js'
@@ -18,6 +20,8 @@ import Recaptcha from './directive/recaptcha.js'
 import Autoresize from './directive/autoresize.js'
 
 export default function (Alpine) {
+    Alpine.data('alert', Alert)
+    Alpine.data('confirm', Confirm)
     Alpine.data('modal', Modal)
     Alpine.data('toast', Toast)
     Alpine.data('overlay', Overlay)

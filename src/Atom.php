@@ -3,6 +3,7 @@
 namespace Jiannius\Atom;
 
 use Jiannius\Atom\Services\Alert;
+use Jiannius\Atom\Services\Confirm;
 use Jiannius\Atom\Services\Modal;
 use Jiannius\Atom\Services\Toast;
 
@@ -12,6 +13,12 @@ class Atom
     public static function alert($message, $type = null)
     {
         return app(Alert::class)->make($message, $type);
+    }
+
+    // confirm
+    public static function confirm($message, $type = null)
+    {
+        return app(Confirm::class)->make($message, $type);
     }
 
     // toast
