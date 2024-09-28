@@ -31,6 +31,7 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerConfigs();
         $this->registerGates();
         $this->registerBladeIfs();
+        $this->registerBladeDirectives();
         $this->registerBladeComponents();
         $this->registerMorphMap();
         $this->registerRequestMacros();
@@ -152,6 +153,7 @@ class AtomServiceProvider extends ServiceProvider
 
         Blade::anonymousComponentPath(__DIR__.'/../../components', 'atom');
 
+        \Jiannius\Atom\Services\Alert::boot();
         \Jiannius\Atom\Services\Toast::boot();
         \Jiannius\Atom\Services\Modal::boot();
     }
@@ -181,6 +183,15 @@ class AtomServiceProvider extends ServiceProvider
 
         Blade::if('notrole', function($value) {
             return !user()->can('role', $value);
+        });
+    }
+
+    // register blade directives
+    public function registerBladeDirectives()
+    {
+        // @t() - short hand for translation
+        Blade::directive('t', function ($expression) {
+            return "<?php echo t($expression); ?>";
         });
     }
 

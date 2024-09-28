@@ -188,6 +188,7 @@ return [
         'gtm-id' => 'Google Tag Manager ID',
         'have-account?' => 'Have account?',
         'have-account' => 'Have account?',
+        'heads-up' => 'Heads-Up',
         'hi' => 'Hi',
         'hidden' => 'Hidden',
         'hide' => 'Hide',

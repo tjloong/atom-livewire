@@ -2,9 +2,9 @@
 
 namespace Jiannius\Atom\Services;
 
-class Toast
+class Alert
 {
-    public $toasts = [];
+    public $alert;
 
     // to be register in service provider
     public static function boot()
@@ -14,34 +14,35 @@ class Toast
         \Livewire\Livewire::listen('component.dehydrate', function ($component, $response) {
             $response->effects['dispatches'] ??= [];
 
-            foreach (app(self::class)->toasts as $toast) {
-                $response->effects['dispatches'][] = ['event' => 'toast-received', 'data' => $toast];
+            if ($alert = app(self::class)->alert) {
+                $response->effects['dispatches'][] = ['event' => 'alert', 'data' => $alert];
             }
         });
     }
 
-    // make toast
     public function make($message, $type = null)
     {
-        $toast = ['type' => $type];
+        $alert = ['type' => $type];
 
         if (is_array($message)) {
-            $toast = [
-                ...$toast,
+            $alert = [
+                ...$alert,
                 ...$message,
-                'title' => str()->limit(tr(get($message, 'title')), 80),
-                'message' => str()->limit(tr(get($message, 'message')), 100),
+                'title' => t(get($message, 'title')),
+                'message' => t(get($message, 'message')),
             ];
         }
         else {
             $message = (string) $message;
-            $toast['message'] = str()->limit(tr($message), 100);
+            $alert['message'] = t($message);
         }
 
-        $this->toasts[] = $toast;
+        if (!get($alert, 'title')) $alert['title'] = t('app.label.heads-up');
+
+        $this->alert = $alert;
 
         if (!request()->isLivewireRequest()) {
-            session()->put('__toasts', $this->toasts);
+            session()->put('__alert', $this->alert);
         }
     }
 }

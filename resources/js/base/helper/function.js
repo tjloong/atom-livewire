@@ -120,3 +120,5 @@ window.tr = (...args) => {
         return singular
     }
 }
+
+window.t = (...args) => window.tr(...args)

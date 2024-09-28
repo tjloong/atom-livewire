@@ -536,8 +536,8 @@ if (!function_exists('get')) {
 }
 
 // translate
-if (!function_exists('tr')) {
-    function tr($key, $count = 1, $params = [])
+if (!function_exists('t')) {
+    function t($key, $count = 1, $params = [])
     {
         if (empty($key)) return '';
 
@@ -560,6 +560,13 @@ if (!function_exists('tr')) {
 
         if (is_array($count)) return __($key, $count);
         else return trans_choice($key, $count, $params);
+    }
+}
+
+// alias for t()
+if (!function_exists('tr')) {
+    function tr(...$args) {
+        return t(...$args);
     }
 }
 
