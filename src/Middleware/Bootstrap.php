@@ -26,6 +26,10 @@ class Bootstrap
             }
         }
 
+        if ($lang = session()->get('__lang') ?? user()?->settings('locale')) {
+            app()->setLocale($lang);
+        }
+
         optional($request->user())->ping();
 
         return $response;

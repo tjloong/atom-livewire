@@ -1,4 +1,4 @@
-<x-layout :noindex="true" :analytics="false">
+<x-layout :noindex="true" :analytics="false" lang>
 
 @isset ($vite)
 <x-slot:vite :scripts="$vite->attributes->get('scripts') ?? []"></x-slot:vite>

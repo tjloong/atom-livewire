@@ -1,6 +1,5 @@
 @php
-$lang = (string) str(app()->currentLocale())->replace('_', '-');
-
+$lang = $attributes->get('lang', false);
 $noindex = $attributes->has('noindex')
     ? $attributes->get('noindex')
     : !app()->environment('production') && !current_route('web.*', 'register');
@@ -43,7 +42,6 @@ $ga = $analytics ? (settings('ga_id') ?? config('atom.ga_id')) : null;
 $fbp = $analytics ? (settings('fbp_id') ?? config('atom.fbp_id')) : null;
 
 $cdnlist = collect([
-    'lang' => true,
     'fontawesome' => true,
     'flatpickr' => false,
     'ulid' => false,
@@ -62,7 +60,7 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) =>
 @endphp
 
 <!DOCTYPE html>
-<html lang="{{ $lang }}">
+<html lang="{{ (string) str(app()->currentLocale())->replace('_', '-') }}">
 <head>
 <title>{{ $meta->get('title') }}</title>
 <meta charset="utf-8">
@@ -119,13 +117,14 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) =>
     'resources/js/alpine.js',
 ])
 
+@if ($lang)
+<script src="{{ route('__lang.js') }}"></script>
+@endif
+
 @if (($cdn ?? null)?->isNotEmpty())
 {{ $cdn }}
 @endif
 
-@if ($cdnlist->get('lang'))
-<script src="{{ route('__locale', 'js') }}"></script>
-@endif
 @if ($cdnlist->get('fontawesome'))
 @basset("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js")
 @basset("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css")
