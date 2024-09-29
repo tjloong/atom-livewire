@@ -65,11 +65,10 @@
             </div>
 
             <div class="shrink-0">
-                <x-button action="remove" sm invert x-prompt.confirm.error="{
+                <x-button action="remove" sm invert x-on-click="Atom.confirm({
                     title: 'app.alert.remove-file.title',
-                    message: 'app.alert.remove-file.message',
-                    confirm: () => remove(),
-                }"/>
+                    message: 'app.alert.remove-file.message',                    
+                }, 'error').then(() => remove())"/>
             </div>
         </div>
 
@@ -154,11 +153,10 @@
                         </div>
 
                         @if ($multiple)
-                            <div class="shrink-0" x-prompt.confirm.error="{
+                            <div class="shrink-0" x-on:click.stop="Atom.confirm({
                                 title: 'file.alert.remove.title',
                                 message: 'file.alert.remove.message',
-                                confirm: () => remove({{ $file->id }}),
-                            }">
+                            }, 'error').then(() => remove({{ $file->id }}))">
                                 <x-close color="red"/>
                             </div>
                         @else

@@ -113,7 +113,7 @@ class Senangpay
     }
 
     // parse status
-    public function parseStatus($payload) : string
+    public function parseStatus($payload) : mixed
     {
         $status = get($payload, 'status_id') ?? get($payload, 'payment_info.status');
 

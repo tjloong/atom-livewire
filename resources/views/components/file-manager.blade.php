@@ -64,11 +64,10 @@ if ($values = (array) get($this, $wire)) {
                 </div>
 
                 <div class="shrink-0 flex items-center gap-2">
-                    <x-button action="remove" invert sm x-prompt.delete="{
+                    <x-button action="remove" invert sm x-on:click="Atom.confirm({
                         title: 'app.label.remove-selected-records',
                         message: 'app.label.are-you-sure-to-remove-selected-records',
-                        confirm: () => remove(),
-                    }"/>
+                    }, 'error').then(() => remove())"/>
                 </div>
             </div>
         </template>

@@ -279,8 +279,9 @@ $except = [
             'rel' => $element === 'a' ? $rel : null,
             'target' => $element === 'a' ? $target : null,
             'href' => $href,
-            'x-prompt.delete' => $action === 'delete' ? '{ confirm: $wire.delete }' : null,
-            'x-prompt.trash' => $action === 'trash' ? '{ confirm: $wire.trash }' : null,
+            'x-on:click' => in_array($action, ['delete', 'trash'])
+                ? "Atom.confirm({ type: '$action' }).then(() => \$wire.{$action}())"
+                : null,
         ])->except($except) }}>
         @if ($slot->isNotEmpty())
             {{ $slot }}

@@ -65,18 +65,15 @@ if (($sess = session('__modals')) && isset($sess[$name])) {
     x-on:backdrop-click="close()"
     @endif
 
-    @if ($type === 'default')
-    data-atom-modal
-    @elseif ($type === 'slide')
-    data-atom-modal-slide
-    @elseif ($type === 'full')
-    data-atom-modal-full
-    @endif
-    
     {{
         $attributes
         ->whereDoesntStartWith('x-on:submit')
         ->whereDoesntStartWith('wire:submit')
+        ->merge([
+            'data-atom-modal' => $type === 'default',
+            'data-atom-modal-slide' => $type === 'slide',
+            'data-atom-modal-full' => $type === 'full',
+        ])
         ->except(['class', 'locked', 'submit'])
     }}>
     <form

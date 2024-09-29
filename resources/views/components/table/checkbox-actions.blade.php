@@ -28,12 +28,12 @@
                     @if ($this->tableShowTrashed)
                         <x-button action="restore" wire:click="restoreTableRows"/>
                     @elseif (!$this->tableShowArchived)
-                        <x-button action="trash" invert x-prompt.trash="{ confirm: $wire.trashTableRows }"/>
+                        <x-button action="trash" invert x-on:click="Atom.confirm({ type: 'trash' }).then(() => $wire.trashTableRows())"/>
                     @endif
                 @endif
 
                 @if ($attributes->get('delete'))
-                    <x-button action="delete" invert x-prompt.delete="{ confirm: $wire.deleteTableRows }"/>
+                    <x-button action="delete" invert x-on:click="Atom.confirm({ type: 'delete' }).then(() => $wire.deleteTableRows())"/>
                 @endif
             </div>
         @endif
