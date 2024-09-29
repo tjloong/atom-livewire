@@ -33,6 +33,7 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerBladeIfs();
         $this->registerBladeDirectives();
         $this->registerBladeComponents();
+        $this->registerTagCompiler();
         $this->registerMorphMap();
         $this->registerRequestMacros();
         $this->registerComponentMacros();
@@ -124,9 +125,28 @@ class AtomServiceProvider extends ServiceProvider
         }
     }
 
+    // register tag compiler
+    // this will make <atom:component/>
+    public function registerTagCompiler()
+    {
+        $compiler = new \Jiannius\Atom\AtomTagCompiler(
+            app('blade.compiler')->getClassComponentAliases(),
+            app('blade.compiler')->getClassComponentNamespaces(),
+            app('blade.compiler')
+        );
+
+        app()->bind('atom.compiler', fn () => $compiler);
+
+        app('blade.compiler')->precompiler(function ($in) use ($compiler) {
+            return $compiler->compile($in);
+        });        
+    }
+
     // register blade components
     public function registerBladeComponents()
     {
+        Blade::anonymousComponentPath(__DIR__.'/../../components', 'atom');
+
         $names = cache()->rememberForever('atom-blade-components', function() {
             $path = atom_path('resources/views/components/');
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
@@ -150,8 +170,6 @@ class AtomServiceProvider extends ServiceProvider
 
             Blade::component($name, $class);
         }
-
-        Blade::anonymousComponentPath(__DIR__.'/../../components', 'atom');
 
         \Jiannius\Atom\Services\Alert::boot();
         \Jiannius\Atom\Services\Modal::boot();
@@ -363,6 +381,7 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
+        // TODO: deprecate this
         if (!ComponentAttributeBag::hasMacro('submitAction')) {
             ComponentAttributeBag::macro('submitAction', function() {
                 if ($this->hasLike('wire:submit*', 'x-on:submit*', 'x-recaptcha:submit*')) return true;
@@ -374,9 +393,66 @@ class AtomServiceProvider extends ServiceProvider
             });
         }
 
+        if (!ComponentAttributeBag::hasMacro('submit')) {
+            ComponentAttributeBag::macro('submit', function() {
+                $attrs = collect(
+                    $this->filter(fn ($value, $key) => 
+                        str($key)->is('wire:submit*')
+                        || str($key)->is('x-on:submit*')
+                        || str($key)->is('x-recaptcha:submit*')
+                    )->getAttributes()
+                );
+
+                $attr = $attrs->keys()->first();
+                $value = $attrs->values()->first();
+
+                return $attr ? (object) compact('attr', 'value') : false;
+            });
+        }
+
         if (!ComponentAttributeBag::hasMacro('getAny')) {
             ComponentAttributeBag::macro('getAny', function(...$args) {
                 return collect($args)->map(fn($arg) => $this->get($arg))->filter()->first();
+            });
+        }
+
+        if (!ComponentAttributeBag::hasMacro('classes')) {
+            ComponentAttributeBag::macro('classes', function () {
+                return new class
+                {
+                    public $pending = [];
+
+                    public function add($classes)
+                    {
+                        $this->pending[] = $classes;
+                        return $this;
+                    }
+
+                    public function __toString()
+                    {
+                        return collect($this->pending)->join(' ');
+                    }
+                };
+            });
+        }
+
+        if (!ComponentAttributeBag::hasMacro('styles')) {
+            ComponentAttributeBag::macro('styles', function () {
+                return new class
+                {
+                    public $pending = [];
+
+                    public function add($prop, $value)
+                    {
+                        $this->pending[$prop] = $value;
+                        return $this;
+                    }
+
+                    public function __toString()
+                    {
+                        return collect($this->pending)->map(fn($value, $prop) => "$prop: $value")->join('; ');
+                    }
+                };
             });
         }
     }
