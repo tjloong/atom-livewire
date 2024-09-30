@@ -86,6 +86,10 @@ class Route
             $this->post('upload', 'FileController@upload')->name('.upload');
             $this->get('{name?}', 'FileController');
         });
+
+        $this->get('__icons.js', function () {
+            return \Jiannius\Atom\Services\Icon::jsResponse();
+        })->name('__icons.js');
     }
 
     // create lang routes
@@ -98,7 +102,7 @@ class Route
         })->name('__lang');
 
         $this->get('__lang.js', function () {
-            return \Jiannius\Atom\Atom::lang()->jsResponse();
+            return \Jiannius\Atom\Services\Lang::jsResponse();
         })->withoutMiddleware('web')->name('__lang.js');
     }
 

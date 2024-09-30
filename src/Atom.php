@@ -4,6 +4,7 @@ namespace Jiannius\Atom;
 
 use Jiannius\Atom\Services\Alert;
 use Jiannius\Atom\Services\Confirm;
+use Jiannius\Atom\Services\Icon;
 use Jiannius\Atom\Services\Modal;
 use Jiannius\Atom\Services\Toast;
 
@@ -31,6 +32,12 @@ class Atom
     public static function modal($name = null)
     {
         return app(Modal::class)->name($name);
+    }
+
+    // icon
+    public static function icon($name)
+    {
+        return Icon::get($name);
     }
 
     // call

@@ -121,6 +121,10 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) =>
 <script src="{{ route('__lang.js') }}"></script>
 @endif
 
+@if (atom('route')->has('__icons.js'))
+<script src="{{ route('__icons.js') }}"></script>
+@endif
+
 @if (($cdn ?? null)?->isNotEmpty())
 {{ $cdn }}
 @endif
