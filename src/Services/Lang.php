@@ -4,19 +4,29 @@ namespace Jiannius\Atom\Services;
 
 class Lang
 {
+    // get atom lang definition
+    public static function atom()
+    {
+        return \Illuminate\Support\Facades\Lang::get('atom::app');
+    }
+
+    // get app lang definition
+    public static function app()
+    {
+        return \Illuminate\Support\Facades\Lang::has('app')
+            ? \Illuminate\Support\Facades\Lang::get('app')
+            : [];
+    }
+
     // get all lang definition
     public static function all()
     {
-        $atom = \Illuminate\Support\Facades\Lang::get('atom::app');
-        $app = \Illuminate\Support\Facades\Lang::has('app')
-            ? \Illuminate\Support\Facades\Lang::get('app')
-            : [];
+        $atom = self::atom();
+        $app = self::app();
 
-        $lang = [
+        return [
             'app' => array_merge_recursive($atom, $app),
         ];
-
-        return $lang;
     }
 
     // get js response
@@ -28,5 +38,28 @@ class Lang
         $content = \Illuminate\Support\Facades\Blade::render('window.lang = {{ Js::from($lang) }}', ['lang' => $lang]);
 
         return response($content)->header('Content-Type', 'application/javascript');
+    }
+
+    // translate
+    public static function translate($str, $count = null, $params = [])
+    {
+        if (empty($str)) return '';
+
+        $atom = ['app' => self::atom()];
+        $app = ['app' => self::app()];
+        $key = null;
+
+        if (str($str)->is('app.*')) {
+            if (get($app, $str)) $key = $str;
+            else if (get($atom, $str)) $key = 'atom::'.$str;
+        }
+        else if (get($app, 'app.label.'.$str)) $key = 'app.label.'.$str;
+        else if (get($atom, 'app.label.'.$str)) $key = 'atom::app.label.'.$str;
+
+        if (!$key) return $str;
+        if (is_array($count)) return __($key, $count);
+        if (!$count) return __($key, $params);
+
+        return trans_choice($key, $count, $params);
     }
 }

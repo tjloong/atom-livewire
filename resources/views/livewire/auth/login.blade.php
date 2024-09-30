@@ -1,7 +1,19 @@
 <div class="space-y-6">
+    @if ($this->socialLogins->count())
+        <div class="space-y-3">
+            @foreach ($this->socialLogins as $item)
+                <atom:_button variant="default" :social="$item" block>
+                    @t('continue-with-social-login', ['provider' => get($item, 'label')])
+                </atom:_button>
+            @endforeach
+        </div>
+
+        <atom:separator>OR</atom:separator>
+    @endif
+
     <atom:card>
         <atom:_form x-recaptcha:submit.login.prevent="() => $wire.submit()">
-            <atom:_heading size="18" level="2">@t('app.label.signin')</atom:_heading>
+            <atom:_heading size="20" level="2">@t('signin')</atom:_heading>
 
             @if ($errors->first('failed'))
                 <x-inform :message="$errors->first('failed')" type="error"/>
@@ -19,18 +31,13 @@
                 @endif
             </div>
 
-            <x-button action="submit" label="app.label.login" icon="login" color="theme" block lg/>
-
-            @if (model('setting')->getSocialLogins()->count())
-                <atom:separator>OR</atom:separator>
-                <x-button-social lg/>
-            @endif
+            <atom:_button action="submit" variant="primary" icon="login" block>@t('login')</atom:_button>
         </atom:_form>
     </atom:card>
 
     @if (app('route')->has('register'))
         <div class="inline-flex item-center gap-2 px-4">
-            @t('app.label.dont-have-account')
+            @t('dont-have-account')
             <x-anchor label="app.label.signup-now" :href="route('register', ['utm_source' => 'page-login'])"/>
         </div>
     @endif

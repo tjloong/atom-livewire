@@ -112,36 +112,34 @@ $size = $size ? (string) str($size)->finish('px') : null;
 $except = ['name', 'size'];
 @endphp
 
-<span class="inline-flex items-center justify-center">
-    @if ($type === 'svg')
-        <div {{ $attributes->merge([
-            'class' => 'inline-flex items-center justify-center',
-            'style' => "width: $size; height: $size;",
-        ])->except($except) }}>
-            {!! $icon !!}
-        </div>
-    @elseif ($type === 'image')
-        <div {{ $attributes->merge([
-            'class' => 'inline-flex items-center justify-center',
-            'style' => "width: $size; height: $size;",
-        ])->except($except) }}>
-            <img src="{{ $icon }}" class="w-full h-full object-contain object-center">
-        </div>
-    @else
-        <i {{ $attributes->merge([
-            'class' => collect(explode(' ', $icon))
-                ->map(fn($value) => (string) str($value)->start('fa-'))
-                ->prepend('fa-solid')
-                ->join(' '),
-            'style' => "width: $size; height: $size;",
-        ])->except($except) }}></i>
-    @endif
+@if ($type === 'svg')
+    <div {{ $attributes->merge([
+        'class' => 'inline-flex items-center justify-center',
+        'style' => "width: $size; height: $size;",
+    ])->except($except) }}>
+        {!! $icon !!}
+    </div>
+@elseif ($type === 'image')
+    <div {{ $attributes->merge([
+        'class' => 'inline-flex items-center justify-center',
+        'style' => "width: $size; height: $size;",
+    ])->except($except) }}>
+        <img src="{{ $icon }}" class="w-full h-full object-contain object-center">
+    </div>
+@else
+    <i {{ $attributes->merge([
+        'class' => collect(explode(' ', $icon))
+            ->map(fn($value) => (string) str($value)->start('fa-'))
+            ->prepend('fa-solid')
+            ->join(' '),
+        'style' => "width: $size; height: $size;",
+    ])->except($except) }}></i>
+@endif
 
-    @if (isset($badge))
-        <span {{ $badge->attributes->merge([
-            'class' => 'inline-flex items-center justify-center rounded-full min-w-5 w-max px-1 h-5 text-xs font-medium leading-none -ml-2',
-        ]) }}>
-            {{ $badge }}
-        </span>
-    @endif
-</span>
+@if (isset($badge))
+    <span {{ $badge->attributes->merge([
+        'class' => 'inline-flex items-center justify-center rounded-full min-w-5 w-max px-1 h-5 text-xs font-medium leading-none -ml-2',
+    ]) }}>
+        {{ $badge }}
+    </span>
+@endif

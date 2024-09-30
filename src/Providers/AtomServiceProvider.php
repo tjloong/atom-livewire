@@ -430,7 +430,7 @@ class AtomServiceProvider extends ServiceProvider
 
                     public function __toString()
                     {
-                        return collect($this->pending)->join(' ');
+                        return collect($this->pending)->filter()->join(' ');
                     }
                 };
             });
@@ -450,7 +450,7 @@ class AtomServiceProvider extends ServiceProvider
 
                     public function __toString()
                     {
-                        return collect($this->pending)->map(fn($value, $prop) => "$prop: $value")->join('; ');
+                        return collect($this->pending)->map(fn($value, $prop) => "$prop: $value")->filter()->join('; ');
                     }
                 };
             });

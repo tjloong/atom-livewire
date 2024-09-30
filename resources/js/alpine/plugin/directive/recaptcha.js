@@ -33,12 +33,7 @@ export default (el, { value, expression, modifiers }, { evaluate, evaluateLater 
                         el.removeClass('is-loading')
 
                         if (valid) handler()
-                        else {
-                            el.dispatchEvent(new CustomEvent('alert', { bubbles: true, detail: {
-                                type: 'error',
-                                message: tr('app.alert.recaptcha'),
-                            }}))
-                        }
+                        else Atom.alert('app.label.recaptcha', 'error')
                     })
                 })
             })
