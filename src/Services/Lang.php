@@ -56,7 +56,8 @@ class Lang
         else if (get($app, 'app.label.'.$str)) $key = 'app.label.'.$str;
         else if (get($atom, 'app.label.'.$str)) $key = 'atom::app.label.'.$str;
 
-        if (!$key) return $str;
+        if (!$key) $key = $str;
+
         if (is_array($count)) return __($key, $count);
         if (!$count) return __($key, $params);
 
