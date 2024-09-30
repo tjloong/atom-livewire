@@ -117,7 +117,7 @@ collect(($cdn ?? null)?->attributes?->get('list'))->each(fn($val, $key) =>
     'resources/js/alpine.js',
 ])
 
-@if ($lang)
+@if (atom('route')->has('__lang.js'))
 <script src="{{ route('__lang.js') }}"></script>
 @endif
 

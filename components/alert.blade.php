@@ -27,7 +27,9 @@ $alert = session()->pull('__alert') ?? [];
 
         <div class="grow space-y-4">
             <div class="space-y-2">
-                <div x-text="alert.title" class="grow self-center text-lg font-semibold"></div>
+                <template x-if="alert.title" hidden>
+                    <div x-text="alert.title" class="grow self-center text-lg font-semibold"></div>
+                </template>
                 <div x-text="alert.message" class="text-gray-500"></div>
             </div>
 

@@ -22,7 +22,7 @@ $except = ['icon', 'label', 'route', 'href', 'can', 'active'];
 @endphp
 
 @if ($divider && $label)
-    <label class="text-sm normal-case text-gray-500 py-2 px-6">{{ tr($label) }}</label>
+    <label class="text-sm normal-case text-gray-500 py-2 px-6">@t($label)</label>
 @elseif ($divider)
     <div class="h-px bg-gray-100 w-full"></div>
 @elseif ($permitted)
@@ -37,7 +37,7 @@ $except = ['icon', 'label', 'route', 'href', 'can', 'active'];
                     @endif
 
                     <div x-show="nav === 'lg' || !nav" class="grow leading-none">
-                        {{ tr($label) }}
+                        @t($label)
                     </div>
                 </div>
 
@@ -61,7 +61,7 @@ $except = ['icon', 'label', 'route', 'href', 'can', 'active'];
                     </div>
 
                     <div x-show="nav === 'lg' || !nav" class="grow leading-none">
-                        {{ tr($label) }}
+                        @t($label)
                     </div>
 
                     <div

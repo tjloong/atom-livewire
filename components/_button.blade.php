@@ -112,7 +112,9 @@ if ($attributes->has('wire:loading')) {
     $merges = [
         ...$merges,
         'wire:loading.class' => 'opacity-50 pointer-events-none is-loading',
-        'wire:target' => $attributes->wire('loading')->value(),
+        'wire:target' => is_string($attributes->wire('loading')->value())
+            ? $attributes->wire('loading')->value()
+            : $action,
     ];
 }
 
@@ -142,7 +144,7 @@ if (!$attributes->hasLike('wire:click*', 'x-on:click*') && $action && $action !=
 $attrs = $attributes
     ->class($classes)
     ->merge($merges)
-    ->except(['variant', 'size', 'icon', 'icon-end', 'block', 'newtab', 'action', 'tooltip', 'inverted', 'social'])
+    ->except(['variant', 'size', 'icon', 'icon-end', 'block', 'newtab', 'action', 'tooltip', 'inverted', 'social', 'wire:loading'])
     ;
 @endphp
 

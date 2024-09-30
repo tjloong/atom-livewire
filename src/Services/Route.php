@@ -72,17 +72,6 @@ class Route
     public function default() : void
     {
         $this->get('__sitemap', 'SitemapController')->name('__sitemap');
-
-        // lang
-        $this->get('__lang/{lang?}', function ($lang = null) {
-            session()->put('__lang', $lang ?? user()?->settings('locale') ?? config('atom.locale') ?? 'en');
-            return redirect(user()?->home() ?? '/');
-        })->name('__lang');
-
-        $this->get('__lang.js', function () {
-            return \Jiannius\Atom\Atom::lang()->jsResponse();
-        })->withoutMiddleware('web')->name('__lang.js');
-
         $this->post('__recaptcha', 'RecaptchaController')->withoutMiddleware('web')->name('__recaptcha');
         $this->post('__select/get', 'SelectController@get')->name('__select.get');
 
@@ -97,6 +86,20 @@ class Route
             $this->post('upload', 'FileController@upload')->name('.upload');
             $this->get('{name?}', 'FileController');
         });
+    }
+
+    // create lang routes
+    public function lang()
+    {
+        // lang
+        $this->get('__lang/{lang?}', function ($lang = null) {
+            session()->put('__lang', $lang ?? user()?->settings('locale') ?? config('atom.locale') ?? 'en');
+            return redirect(user()?->home() ?? '/');
+        })->name('__lang');
+
+        $this->get('__lang.js', function () {
+            return \Jiannius\Atom\Atom::lang()->jsResponse();
+        })->withoutMiddleware('web')->name('__lang.js');
     }
 
     // create auth routes

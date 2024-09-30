@@ -1,13 +1,19 @@
-<div class="flex flex-col">
-    @if (!$this->verification && model('setting')->getSocialLogins()->count())
-        <x-button-social lg/>
-        <x-divider label="or"/>
+<div class="space-y-6">
+    @if (!$this->verification && $this->socialLogins->count())
+        <div class="space-y-3">
+            @foreach ($this->socialLogins as $item)
+                <atom:_button variant="default" :social="$item" block>
+                    @t('continue-with-social-login', ['provider' => get($item, 'label')])
+                </atom:_button>
+            @endforeach
+        </div>
+        <atom:separator>OR</atom:separator>
     @endif
 
-    <x-form x-recaptcha:submit.register.prevent="() => $wire.submit()">
-        <x-inputs>
+    <atom:card>
+        <atom:_form x-recaptcha:submit.register.prevent="() => $wire.submit()">
             @if (!$errors->any() && $this->verification)
-                <x-heading title="app.label.email-verification" no-margin xl/>
+                <atom:_heading size="20">@t('email-verification')</atom:_heading>
 
                 <div class="flex flex-col gap-1">
                     <x-input wire:model.defer="inputs.verification" label="app.label.verification-code" caption="app.alert.email-verification"/>
@@ -54,36 +60,30 @@
                     </div>
                 </div>
             @else
-                <x-heading title="app.label.create-account" no-margin xl/>
+                <atom:_heading size="20">@t('create-account')</atom:_heading>
 
                 <x-input wire:model.defer="inputs.name" label="app.label.your-name" autofocus/>
                 <x-input type="email" wire:model.defer="inputs.email" label="app.label.login-email"/>
                 <x-input type="password" wire:model.defer="inputs.password" label="app.label.login-password"/>
 
-                <div class="flex flex-col gap-3">
-                    <x-checkbox wire:model="inputs.agree_tnc" label="app.label.checkbox-privacy">
-                        <div class="inline-flex items-center gap-3 flex-wrap text-sm">
-                            <x-anchor label="app.label.terms-of-use" href="/terms"/>
-                            <x-anchor label="app.label.privacy-policy" href="/privacy"/>
-                        </div>
-                    </x-checkbox>
+                <x-checkbox wire:model="inputs.agree_tnc" label="app.label.checkbox-privacy">
+                    <div class="inline-flex items-center gap-3 flex-wrap text-sm">
+                        <x-anchor label="app.label.terms-of-use" href="/terms"/>
+                        <x-anchor label="app.label.privacy-policy" href="/privacy"/>
+                    </div>
+                </x-checkbox>
 
-                    <x-checkbox wire:model="inputs.agree_promo" label="app.label.checkbox-marketing"/>
-                </div>
+                <x-checkbox wire:model="inputs.agree_promo" label="app.label.checkbox-marketing"/>
             @endif
-        </x-inputs>
 
-        <x-slot:foot>
-            <x-button action="submit"
-                label="app.label.create-account"
-                wire:loading
-                block md>
-            </x-button>
-        </x-slot:foot>
-    </x-form>
-    
-    <div class="mt-5 text-center">
-        {{ tr('auth.label.have-account') }} <x-anchor label="auth.label.signin" :href="route('login')"/>
+            <atom:_button action="submit" variant="primary" wire:loading block>
+                @t('create-account')
+            </atom:_button>
+        </atom:_form>
+    </atom:card>
+
+    <div class="text-center">
+        @t('have-account')
+        <x-anchor label="app.label.signin" :href="route('login')"/>
     </div>
 </div>
-

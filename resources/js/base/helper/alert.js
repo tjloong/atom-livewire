@@ -6,7 +6,7 @@ export default (message, type = null) => {
 
     detail = {
         ...detail,
-        title: t(detail.title || 'app.label.heads-up'),
+        title: detail.title ? t(detail.title) : null,
         message: t(detail.message),
     }
 

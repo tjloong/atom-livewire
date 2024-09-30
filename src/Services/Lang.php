@@ -41,7 +41,7 @@ class Lang
     }
 
     // translate
-    public static function translate($str, $count = null, $params = [])
+    public static function translate($str, $count = 1, $params = [])
     {
         if (empty($str)) return '';
 

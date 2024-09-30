@@ -315,7 +315,7 @@ return [
         'remove-selected-records' => 'Remove selected records',
         'remove' => 'Remove',
         'reply-to' => 'Reply To',
-        'report' => 'Report|Reports',
+        'report' => 'Report',
         'requested-on' => 'Requested on :date',
         'resend' => 'Resend',
         'resend-activation-email' => 'Resend activation email',
