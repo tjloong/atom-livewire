@@ -1,6 +1,4 @@
-<x-drawer wire:close="$emit('closeNotificationCenter')">
-    <x-slot:heading title="app.label.notification-center"></x-slot:heading>
-
+<atom:modal type="slide" class="max-w-lg" wire:close="$emit('closeNotificationCenter')">
     <div
         x-data="{
             total: 0,
@@ -52,7 +50,9 @@
         </template>
     </div>
 
-    <div class="p-5 flex flex-col gap-5">
+    <div class="space-y-6">
+        <atom:_heading size="lg">@t('notification-center')</atom:_heading>
+
         <x-tabs wire:model="tab">
             <x-tab value="unread" label="app.label.unread"/>
             <x-tab value="read" label="app.label.read"/>
@@ -161,4 +161,4 @@
             @endforelse
         </div>
     </div>
-</x-drawer>
+</atom:modal>

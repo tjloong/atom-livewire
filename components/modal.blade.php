@@ -55,7 +55,7 @@ if (($sess = session('__modals')) && isset($sess[$name])) {
         $type === 'default' ? 'rounded-xl shadow-lg w-full' : null,
         $type === 'slide' ? 'fixed shadow-lg w-full m-0 ml-auto min-h-dvh max-h-dvh' : null,
         $type === 'full' ? 'fixed m-0 min-h-dvh min-w-full' : null,
-        in_array($type, ['default', 'slide']) ? $attributes->get('class', 'max-w-screen-md') : null,
+        in_array($type, ['default', 'slide']) ? $attributes->get('class', 'max-w-xl') : null,
     ])->filter()->join(' ') }}"
     
     @if ($attributes->hasLike('x-on:backdrop-click', 'wire:backdrop-click'))

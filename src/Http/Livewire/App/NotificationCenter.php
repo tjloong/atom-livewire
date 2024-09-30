@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App;
 
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Component;
 
 class NotificationCenter extends Component
@@ -26,7 +27,7 @@ class NotificationCenter extends Component
     {
         $this->reset('tab', 'page', 'notifications');
         $this->getNotifications();
-        $this->overlay();
+        Atom::modal()->show();
     }
 
     // get notifications
