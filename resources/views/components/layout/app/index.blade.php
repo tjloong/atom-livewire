@@ -45,7 +45,7 @@
         }"
         class="app-layout-nav fixed top-0 bottom-0 left-0 z-40 bg-gray-800 overflow-hidden transition-all duration-200">
         <div class="flex flex-col h-full">
-            <div class="shrink-0 py-3 px-4">
+            <div class="shrink-0 px-4 h-16 flex items-center">
                 @isset ($brand)
                     {{ $brand }}
                 @else

@@ -92,13 +92,6 @@ a {
     @apply opacity-60 pointer-events-none;
 }
 
-/* scroll locked */
-.scroll-locked {
-    overflow: hidden !important;
-    overscroll-behavior: contain;
-    position: relative !important;
-}
-
 /* file dropzone */
 .file-dropzone {
     min-height: 200px;
@@ -177,20 +170,6 @@ select.transparent {
 }
 .field > label {
     @apply  mb-2;
-}
-
-label.radio .radio-box {
-    @apply hidden;
-}
-label.radio .radio-container {
-    @apply border-gray-300;
-}
-
-label.radio.active .radio-box {
-    @apply block;
-}
-label.radio.active .radio-container {
-    @apply border-theme;
 }
 
 /* file uploader loader */

@@ -1,6 +1,6 @@
 /* sortable */
 .sortable-ghost {
-    @apply ring-1 ring-offset-2 ring-theme rounded;
+    @apply ring-1 ring-offset-2 ring-zinc-100 rounded;
 }
 
 /* sortable ghost */
