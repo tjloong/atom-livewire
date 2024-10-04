@@ -4,6 +4,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Js;
 
 // get app version
 function version()
@@ -547,6 +548,13 @@ if (!function_exists('t')) {
 if (!function_exists('tr')) {
     function tr(...$args) {
         return t(...$args);
+    }
+}
+
+// short for Js::from()
+if (!function_exists('js')) {
+    function js($value) {
+        return Js::from($value);
     }
 }
 

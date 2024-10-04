@@ -90,7 +90,7 @@ window.get = (haystack, needle) => {
 
 // tr
 window.tr = (...args) => {
-    if (!window.lang) return args.length === 1 ? args[0] : args
+    if (!window.lang) return args[0]
 
     let key = args.shift()
     let lang = get(window.lang, key)

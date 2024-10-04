@@ -1,25 +1,26 @@
-<div class="flex flex-col divide-y md:flex-row md:divide-x md:divide-y-0 md:h-full">
-    <div class="shrink-0 bg-white p-5 md:w-72">
-        <x-sidenav wire:model="tab" heading="settings.heading.settings">
-            @foreach ($this->tabs as $item)
-                <x-sidenav.group :label="get($item, 'group')"/>
+<atom:sheet name="settings" wire:open="">
+    <atom:_heading size="xl">Settings</atom:_heading>
 
-                @if ($children = get($item, 'tabs', []))
-                    @foreach ($children as $child)
-                        <x-sidenav.item :value="get($child, 'slug')" :icon="get($child, 'icon')" :label="get($child, 'label')"/>
-                    @endforeach
-                @else
-                    <x-sidenav.item :value="get($item, 'slug')" :icon="get($item, 'icon')" :label="get($item, 'label')"/>
-                @endif
-            @endforeach
-        </x-sidenav>
+    <div class="flex flex-col gap-6 md:flex-row">
+        <div class="shrink-0 md:w-72">
+            <atom:menu wire:model="tab">
+                <atom:menu-item value="profile" icon="profile">Profile</atom:menu-item>
+                <atom:menu-item value="user" icon="users">Users</atom:menu-item>
+                <atom:menu-item value="file" icon="image">Files and Media</atom:menu-item>
+                <atom:subheading size="sm">SYSTEM</atom:subheading>
+                <atom:menu-item value="integration/email" icon="email">Email</atom:menu-item>
+                <atom:menu-item value="integration/storage" icon="database">Storage</atom:menu-item>
+            </atom:menu>
+        </div>
+    
+        <div class="grow">
+            @if ($this->component)
+                @livewire(
+                    $this->component->path,
+                    $this->component->params ?? [],
+                    key($this->component->key)
+                )
+            @endif
+        </div>
     </div>
-
-    <div class="grow p-6">
-        @livewire(
-            get($this->livewire, 'name'),
-            get($this->livewire, 'params'),
-            key($tab)
-        )
-    </div>
-</div>
+</atom:sheet>

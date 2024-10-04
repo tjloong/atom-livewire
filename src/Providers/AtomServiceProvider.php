@@ -212,6 +212,11 @@ class AtomServiceProvider extends ServiceProvider
         Blade::directive('t', function ($expression) {
             return "<?php echo t($expression); ?>";
         });
+
+        // @e() - short hand for echo
+        Blade::directive('e', function ($expression) {
+            return "<?php echo e($expression); ?>";
+        });
     }
 
     // register gates
@@ -338,8 +343,7 @@ class AtomServiceProvider extends ServiceProvider
     public function registerComponentMacros()
     {
         if (!ComponentAttributeBag::hasMacro('hasLike')) {
-            ComponentAttributeBag::macro('hasLike', function() {
-                $value = func_get_args();
+            ComponentAttributeBag::macro('hasLike', function (...$value) {
                 $keys = collect($this->getAttributes())->keys();
 
                 return !empty(
@@ -495,6 +499,35 @@ class AtomServiceProvider extends ServiceProvider
     // register string macros
     public function registerStringMacros()
     {
+        if (!Str::hasMacro('namespace')) {
+            Str::macro('namespace', function ($string) {
+                $string = str($string)->replace('.', '\\')->replace('/', '\\');
+
+                return collect(explode('\\', $string))
+                    ->map(fn ($value) => str()->studly($value))
+                    ->join('\\');
+            });
+
+            Stringable::macro('namespace', function () {
+                return new Stringable (Str::namespace($this->value));
+            });
+        }
+
+        if (!Str::hasMacro('dotpath')) {
+            Str::macro('dotpath', function ($string) {
+                return str($string)
+                    ->replace('/', '.')
+                    ->replace('\\', '.')
+                    ->replace(' ', '.')
+                    ->toString()
+                    ;
+            });
+
+            Stringable::macro('dotpath', function () {
+                return new Stringable (Str::dotpath($this->value));
+            });
+        }
+
         if (!Str::hasMacro('interval')) {
             Str::macro('interval', function($string) {
                 $count = trim(head(explode(' ', $string)));

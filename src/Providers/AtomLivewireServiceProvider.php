@@ -88,6 +88,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.user.permission' => 'App\User\Permission',
 
             'app.file.edit' => 'App\File\Edit',
+            'app.file.listing' => 'App\File\Listing',
             'app.file.library' => 'App\File\Library',
 
             'app.settings.index' => 'App\Settings\Index',

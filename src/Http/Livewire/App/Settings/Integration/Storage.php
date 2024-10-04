@@ -2,15 +2,14 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
-use Jiannius\Atom\Traits\Livewire\WithPopupNotify;
 
 class Storage extends Component
 {
     use WithForm;
-    use WithPopupNotify;
-    
+
     public $settings;
 
     // validation
@@ -50,6 +49,6 @@ class Storage extends Component
 
         settings($this->settings);
 
-        $this->popup('Storage Configurations Updated.');
+        Atom::toast('updated', 'success');
     }
 }

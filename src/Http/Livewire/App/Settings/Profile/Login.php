@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Profile;
 
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
@@ -41,9 +42,7 @@ class Login extends Component
     public function submit() : void
     {
         $this->validateForm();
-
         $this->user->save();
-        
-        $this->popup('app.alert.updated');
+        Atom::toast('updated', 'success');
     }
 }

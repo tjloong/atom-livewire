@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
@@ -52,7 +53,7 @@ class Email extends Component
         $this->validateForm();
 
         settings($this->settings);
-        
-        $this->popup('settings.alert.email-updated');
+
+        Atom::toast('updated', 'success');
     }
 }

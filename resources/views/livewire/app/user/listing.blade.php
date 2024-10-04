@@ -1,25 +1,23 @@
-<x-table>
-    <x-slot:header>
-        <x-table.searchbar :total="$this->paginator->total()">
-            <x-table.filters>
-                <x-inputs>
-                    <x-select wire:model="filters.status" options="enum.user-status"/>
-                </x-inputs>
-            </x-table.filters>
-        </x-table.searchbar>
-    </x-slot:header>
+<atom:_table :paginate="$this->users" :trashed="$this->trashed">
+    @slot ('filters')
+        <x-select wire:model="filters.status" options="enum.user-status"/>
+    @endslot
 
-    <x-slot:thead>
-        <x-table.th label="app.label.name" sort="name"/>
-        <x-table.th label="app.label.email"/>
-        <x-table.th/>
-    </x-slot:thead>
+    <atom:columns>
+        <atom:column sort="name">@t('name')</atom:column>
+        <atom:column>@t('email')</atom:column>
+        <atom:column/>
+    </atom:columns>
 
-    @foreach ($this->paginator->items() as $row)
-        <x-table.tr wire:click="$emit('editUser', {{ Js::from(['id' => $row->id]) }})">
-            <x-table.td :label="$row->name" class="font-medium"/>
-            <x-table.td :label="$row->email"/>
-            <x-table.td :badges="[$row->status->badge()]" align="right"/>
-        </x-table.tr>
-    @endforeach
-</x-table>
+    <atom:rows>
+        @foreach ($this->users as $row)
+            <atom:row x-on:click="Atom.modal('edit-user').show({ id: {{js($row->id)}} })">
+                <atom:cell class="font-medium">@e($row->name)</atom:cell>
+                <atom:cell>@e($row->email)</atom:cell>
+                <atom:cell align="right">
+                    <atom:_badge :status="$row->status"/>
+                </atom:cell>
+            </atom:row>
+        @endforeach
+    </atom:rows>
+</atom:_table>

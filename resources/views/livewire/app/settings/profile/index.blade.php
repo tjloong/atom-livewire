@@ -1,8 +1,5 @@
-<div class="max-w-screen-md">
-    <x-heading title="app.label.my-profile" lg/>
-
-    <div class="flex flex-col gap-8">
-        @livewire('app.settings.profile.login', key('login'))
-        @livewire('app.settings.profile.password', key('password'))
-    </div>
+<div class="lg:max-w-xl space-y-5">
+    <atom:_heading size="lg">Profile</atom:_heading>
+    <livewire:app.settings.profile.login wire:key="login"/>
+    <livewire:app.settings.profile.password wire:key="password"/>
 </div>

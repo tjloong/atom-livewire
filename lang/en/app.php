@@ -326,7 +326,7 @@ return [
         'restore' => 'Restore',
         'revenue' => 'Revenue',
         'role' => 'Role|Roles',
-        'row' => 'row|rows',
+        'row-count' => ':count row|:count rows',
         'sales' => 'Sales',
         'save-and-continue' => 'Save and Continue',
         'save' => 'Save',
@@ -455,6 +455,7 @@ return [
         'updated-on' => 'Updated on :date',
         'upload' => 'Upload',
         'uploading' => 'Uploading',
+        'uploading-count' => 'Uploading :count',
         'url' => 'URL',
         'user-agent' => 'User Agent',
         'user' => 'User|Users',
@@ -478,6 +479,10 @@ return [
         'your-message' => 'Your message',
         'your-name' => 'Your name',
         'youtube-url' => 'Youtube URL',
+
+        // user
+        'edit-user' => 'Edit User',
+        'create-user' => 'Create User',
 
         // announcement
         'announcement' => 'Announcement|Announcements',

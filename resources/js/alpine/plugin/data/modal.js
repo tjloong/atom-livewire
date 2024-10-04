@@ -11,9 +11,9 @@ export default (config) => {
             this.$watch('entangle', val => val ? this.show() : this.close())
         },
 
-        show () {
+        show (data = null) {
             this.$root.showModal()
-            this.$dispatch('show')
+            this.$dispatch('open', data)
             this.$nextTick(() => this.visible = true)
         },
 

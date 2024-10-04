@@ -1,28 +1,33 @@
-<x-drawer submit wire:close="$emit('closeUser')">
+<atom:modal name="edit-user" variant="slide" wire:open="open">
 @if ($user)
-    @if ($user->exists) <x-slot:heading label="app.label.edit-user"></x-slot:heading>
-    @else <x-slot:heading title="app.label.create-user"></x-slot:heading>
-    @endif
+    <atom:_form>
+        <div class="space-y-6">
+            <div class="flex items-center gap-3">
+                @if ($user->exists && $user->trashed() && !$user->isAuth())
+                    <atom:_button action="restore">@t('restore')</atom:_button>
+                    <atom:_button action="delete" inverted>@t('delete')</atom:_button>
+                @else
+                    <atom:_button action="submit">@t('save')</atom:_button>
 
-    <x-slot:buttons>
-        @if ($user->exists && $user->trashed() && !$user->isAuth())
-            <x-button action="restore"/>
-            <x-button action="delete" no-label invert/>
-        @else
-            <x-button action="submit"/>
+                    @if ($user->exists && !$user->isAuth())
+                        <atom:_button action="trash" inverted>@t('trash')</atom:_button>
+                    @endif
+                @endif
+            </div>
 
-            @if ($user->exists && !$user->isAuth())
-                <x-button action="trash" no-label invert/>
-            @endif
-        @endif
-    </x-slot:buttons>
+            <atom:separator/>
 
-    <x-inputs>
-        <x-input wire:model.defer="user.name"/>
-        <x-input type="email" wire:model.defer="user.email" label="Login Email"/>
-        <x-input type="password" wire:model.defer="inputs.password"/>
-        <x-checkbox wire:model="inputs.is_blocked" label="Blocked"/>
-        @tier('root') <x-checkbox wire:model="inputs.is_root" label="Root"/> @endtier
-    </x-inputs>
+            <atom:_heading size="lg">
+                @if ($user->exists) @t('edit-user')
+                @else @t('create-user')
+                @endif
+            </atom:_heading>
+
+            <x-input wire:model.defer="user.name"/>
+            <x-input type="email" wire:model.defer="user.email" label="Login Email"/>
+            <x-input type="password" wire:model.defer="inputs.password"/>
+            <x-checkbox wire:model="inputs.is_blocked" label="Blocked"/>
+        </div>
+    </atom:_form>
 @endif
-</x-drawer>
+</atom:modal>

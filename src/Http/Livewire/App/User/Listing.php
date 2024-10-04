@@ -2,20 +2,18 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithTable;
 
 class Listing extends Component
 {
-    use WithTable;
-
     public $filters = [
         'search' => null,
         'status' => null,
     ];
 
     protected $listeners = [
-        'closeUser' => '$refresh',
+        'userSaved' => '$refresh',
     ];
 
     // mount
@@ -24,9 +22,41 @@ class Listing extends Component
         $this->fill(['filters.status' => enum('user-status', 'ACTIVE')->value]);
     }
 
-    // get query property
     public function getQueryProperty() : mixed
     {
-        return model('user')->when(!$this->tableOrderBy, fn($q) => $q->latest());
+        return model('user');
+    }
+
+    // get users property
+    public function getUsersProperty() : mixed
+    {
+        return $this->getTable(
+            query: $this->query,
+        );
+    }
+
+    // get trashed property
+    public function getTrashedProperty() : mixed
+    {
+        return $this->query->onlyTrashed()->count();
+    }
+
+    // empty trashed
+    public function emptyTrashed() : void
+    {
+        $id = get($this->table, 'checkboxes');
+
+        $this->query
+            ->onlyTrashed()
+            ->when($id, fn($q) => $q->whereIn('id', $id))
+            ->get()
+            ->each(fn($user) => $user->forceDelete());
+
+        $this->fill([
+            'table.trashed' => false,
+            'table.checkboxes' => [],
+        ]);
+
+        Atom::alert('trash-cleared');
     }
 }

@@ -6,19 +6,23 @@ import './helper/function.js'
 
 import { ulid } from 'ulid'
 import Ajax from './helper/ajax.js'
+import Util from './helper/util.js'
 import Color from './helper/color.js'
 import Alert from './helper/alert.js'
-import Confirm from './helper/confirm.js'
 import Modal from './helper/modal.js'
+import Sheet from './helper/sheet.js'
 import Toast from './helper/toast.js'
+import Confirm from './helper/confirm.js'
 import Uploader from './helper/uploader.js'
 
 window.dd = console.log.bind(console)
 
 window.Atom = {
     ulid: ulid,
+    util: Util,
     alert: Alert,
     modal: Modal,
+    sheet: Sheet,
     toast: Toast,
     confirm: Confirm,
     ajax: (url) => (new Ajax(url)),

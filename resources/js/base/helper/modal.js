@@ -4,7 +4,7 @@ export default (name = 'modal') => {
     }
 
     return {
-        show: () => dispatch('modal-show', { name }),
+        show: (data = null) => dispatch('modal-show', { name, data }),
         close: () => dispatch('modal-close', { name }),
     }
 }

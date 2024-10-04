@@ -1,4 +1,4 @@
-Array.prototype.pluck = function(attr) {
+Array.prototype.pluck = function (attr) {
     if (!Array.isArray(this)) return
 
     return this.map(val => (val[attr]))
@@ -36,7 +36,7 @@ Array.prototype.sum = function (attr = null) {
     }, 0)
 }
 
-Array.prototype.toggle = function(value) {
+Array.prototype.toggle = function (value) {
     if (!Array.isArray(this)) return
 
     const index = this.indexOf(value)
@@ -47,7 +47,7 @@ Array.prototype.toggle = function(value) {
     return this
 }
 
-Array.prototype.take = function(n) {
+Array.prototype.take = function (n) {
     if (!Array.isArray(this)) return
 
     let array = [...this]
@@ -55,8 +55,40 @@ Array.prototype.take = function(n) {
     return array.slice(0, n)
 }
 
-Array.prototype.prepend = function(value) {
+Array.prototype.prepend = function (value) {
     if (!Array.isArray(this)) return
 
     this.unshift(value)
+}
+
+Array.prototype.last = function (n = 1) {
+    if (!Array.isArray(this)) return
+    if (!this.length) return
+
+    let index = this.length - n
+
+    return this[index]
+}
+
+Array.prototype.lastIndex = function (n = 1) {
+    if (!Array.isArray(this)) return
+    if (!this.length) return -1
+
+    let index = this.length - n
+
+    return index
+}
+
+Array.prototype.where = function (key, value) {
+    if (!Array.isArray(this)) return
+
+    let index = this.findIndex(item => (item[key] === value))
+
+    return this[index]
+}
+
+Array.prototype.findIndexWhere = function (key, value) {
+    if (!Array.isArray(this)) return
+
+    return this.findIndex(item => (item[key] === value))
 }

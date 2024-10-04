@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
@@ -11,10 +12,6 @@ class Edit extends Component
 
     public $user;
     public $inputs;
-
-    protected $listeners = [
-        'editUser' => 'open',
-    ];
 
     // validation
     protected function validation() : array
@@ -50,30 +47,34 @@ class Edit extends Component
             ? model('user')->withTrashed()->find($id)
             : model('user')->fill($data)
         ) {
-            $this->resetValidation();
-
             $this->fill([
                 'inputs.password' => null,
                 'inputs.is_root' => $this->user->exists ? $this->user->isTier('root') : tier('root'),
                 'inputs.is_blocked' => !empty($this->user->blocked_at),
             ]);
-
-            $this->overlay();
         }
+    }
+
+    // close
+    public function close() : void
+    {
+        $this->resetValidation();
+        $this->emit('userSaved');
+        Atom::modal('edit-user')->close();
     }
 
     // trash
     public function trash() : void
     {
         if ($this->user->id === user('id')) {
-            $this->popup([
-                'title' => 'app.label.unable-to-delete-user',
-                'message' => 'app.label.you-cannot-delete-yourself',
-            ], 'alert', 'error');
+            Atom::alert([
+                'title' => 'unable-to-delete-user',
+                'message' => 'you-cannot-delete-yourself',
+            ], 'error');
         }
         else {
             $this->user->delete();
-            $this->overlay(false);
+            $this->close();
         }
     }
 
@@ -81,14 +82,14 @@ class Edit extends Component
     public function delete() : void
     {
         $this->user->forceDelete();
-        $this->overlay(false);
+        $this->close();
     }
 
     // restore
     public function restore() : void
     {
         $this->user->restore();
-        $this->overlay(false);
+        $this->close();
     }
 
     // submit
@@ -97,17 +98,16 @@ class Edit extends Component
         $this->validateForm();
 
         $this->user->fill([
-            'tier' => data_get($this->inputs, 'is_root') ? 'root' : 'normal',
-            'blocked_at' => data_get($this->inputs, 'is_blocked')
+            'blocked_at' => get($this->inputs, 'is_blocked')
                 ? ($this->user->blocked_at ?? now())
                 : null,
         ]);
 
-        if ($password = data_get($this->inputs, 'password')) {
+        if ($password = get($this->inputs, 'password')) {
             $this->user->forceFill(['password' => bcrypt($password)]);
         }
         
         $this->user->save();
-        $this->overlay(false);
+        $this->close();
     }
 }

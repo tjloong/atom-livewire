@@ -7,9 +7,16 @@ $el = $level ? "h{$level}" : 'div';
 $classes = $attributes->classes();
 $styles = $attributes->styles();
 
-if ($subheading) $classes->add('text-zinc-500 text-base');
+if ($subheading) {
+    $classes->add('text-zinc-500 group-[]/menu:my-2 group-[]/menu:mx-3');
+
+    if ($size === 'sm') $classes->add('text-sm');
+    else if ($size === 'xs') $classes->add('text-xs');
+}
 else {
-    $classes->add('[&:has(+[data-atom-subheading])]:mb-1.5 [[data-atom-subheading]+&]:mt-1.5');
+    $classes
+        ->add('[&:has(+[data-atom-subheading])]:mb-1.5 [[data-atom-subheading]+&]:mt-1.5')
+        ->add('[[data-atom-sheet]>&]:mb-5');
 
     if ($size === 'default') $classes->add('font-medium text-base');
     else if ($size === 'lg') $classes->add('font-medium text-lg');
@@ -17,7 +24,7 @@ else {
     else $classes->add('font-medium');
 }
 
-if (!in_array($size, ['default', 'lg', 'xl']) && $size) {
+if (!in_array($size, ['default', 'lg', 'xl', 'sm', 'xs']) && $size) {
     $styles->add('font-size', str($size)->finish('px'));
 }
 

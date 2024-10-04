@@ -1,15 +1,11 @@
 @php
-if (!$attributes->submit()) {
-    $attributes->setAttributes([
-        'wire:submit.prevent' => 'submit',
-        'wire:target' => 'submit',
-        'wire:loading.class' => 'is-loading',
-    ]);
-}
-
-$attrs = $attributes->merge([
-    'x-init' => "\$nextTick(() => \$el.querySelector('input[autofocus]')?.focus())",
-])->except('class');
+$attrs = $attributes
+    ->merge([
+        'x-init' => "\$nextTick(() => \$el.querySelector('input[autofocus]')?.focus())",
+        'wire:submit.prevent' => $attributes->submit() ? null : 'submit',
+    ])
+    ->except('class')
+    ;
 @endphp
 
 <form {{ $attrs }} class="group/form relative" data-atom-form>

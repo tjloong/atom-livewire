@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Profile;
 
 use Illuminate\Auth\Events\PasswordReset;
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
@@ -45,6 +46,7 @@ class Password extends Component
         event(new PasswordReset(user()));
 
         $this->reset('password');
-        $this->popup('app.alert.updated');
+
+        Atom::toast('updated', 'success');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\File;
 
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
@@ -11,10 +12,6 @@ class Edit extends Component
 
     public $file;
     public $inputs;
-
-    protected $listeners = [
-        'editFile' => 'open',
-    ];
 
     // validation
     protected function validation(): array
@@ -32,16 +29,22 @@ class Edit extends Component
                 'inputs.alt' => data_get($this->file->data, 'alt'),
                 'inputs.description' => data_get($this->file->data, 'description'),
             ]);
-
-            $this->overlay();
         }
+    }
+
+    // close
+    public function close() : void
+    {
+        $this->resetValidation();
+        $this->emit('fileSaved');
+        Atom::modal('edit-file')->close();
     }
 
     // delete
     public function delete() : void
     {
         $this->file->delete();
-        $this->overlay(false);
+        $this->close();
     }
 
     // submit
@@ -56,6 +59,6 @@ class Edit extends Component
             ],
         ])->save();
 
-        $this->overlay(false);
+        $this->close();
     }
 }

@@ -13,6 +13,12 @@ class Route
         else if ($name === 'has') {
             return \Illuminate\Support\Facades\Route::has($arguments);
         }
+        else if ($name === 'is') {
+            return $this->isCurrentRoute(...$arguments);
+        }
+        else if ($name === 'current') {
+            return optional(request()->route())->getName();
+        }
         else if (in_array($name, ['get', 'post', 'put', 'patch', 'delete', 'options'])) {
             $path = $arguments[0];
             $callback = $this->callback($arguments[1]);
@@ -68,6 +74,17 @@ class Route
         }
     }
 
+    // check is current route
+    public function isCurrentRoute(...$name)
+    {
+        $routes = count($name) > 1 ? $name : head($name);
+        $currentRoute = optional(request()->route())->getName();
+    
+        return $routes
+            ? collect($routes)->contains(fn($val) => str($currentRoute)->is($val))
+            : false;
+    }
+
     // create default route
     public function default() : void
     {
@@ -87,20 +104,17 @@ class Route
             $this->get('{name?}', 'FileController');
         });
 
+        // icons
         $this->get('__icons.js', function () {
             return \Jiannius\Atom\Services\Icon::jsResponse();
         })->name('__icons.js');
-    }
 
-    // create lang routes
-    public function lang()
-    {
         // lang
         $this->get('__lang/{lang?}', function ($lang = null) {
             session()->put('__lang', $lang ?? user()?->settings('locale') ?? config('atom.locale') ?? 'en');
             return redirect(user()?->home() ?? '/');
         })->name('__lang');
-
+    
         $this->get('__lang.js', function () {
             return \Jiannius\Atom\Services\Lang::jsResponse();
         })->withoutMiddleware('web')->name('__lang.js');

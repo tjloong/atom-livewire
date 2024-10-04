@@ -59,7 +59,7 @@ class Lang
         if (!$key) $key = $str;
 
         if (is_array($count)) return __($key, $count);
-        if (!$count) return __($key, $params);
+        if (!is_numeric($count)) return __($key, $params);
 
         return trans_choice($key, $count, $params);
     }

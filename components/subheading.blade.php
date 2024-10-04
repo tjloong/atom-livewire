@@ -1,3 +1,5 @@
-<atom:_heading data-atom-subheading>
+<atom:_heading
+    {{ $attributes }}
+    data-atom-subheading>
     {{ $slot }}
 </atom:_heading>

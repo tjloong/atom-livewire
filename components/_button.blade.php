@@ -8,7 +8,12 @@ $action = $attributes->get('action');
 $tooltip = $attributes->get('tooltip');
 $inverted = $attributes->get('inverted');
 $social = $attributes->get('social');
-$variant = $attributes->get('variant') ?? get($social, 'name') ?? 'default';
+
+$variant = $attributes->get('variant') ?? get($social, 'name') ?? match ($action) {
+    'submit', 'save' => 'primary',
+    'delete', 'trash', 'remove' => 'danger',
+    default => 'default',
+};
 
 $icon = [
     'start' => $attributes->get('icon') ?? get($social, 'name') ?? $action ?? null,
@@ -22,9 +27,9 @@ $icon = [
 ];
 
 $classes = $attributes->classes()
-    ->add('group/button items-center justify-center')
+    ->add('group/button relative items-center justify-center')
     ->add($block ? 'flex w-full' : 'inline-flex')
-    ->add('whitespace-nowrap rounded-md font-medium transition-colors shadow-sm')
+    ->add('whitespace-nowrap rounded-md font-medium transition-colors')
     ->add('focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring active:translate-y-px')
     ->add('disabled:pointer-events-none disabled:cursor-default disabled:opacity-50')
     ->add('group-[]/buttons:-ml-[1px] group-[]/buttons:first:ml-0')
@@ -32,12 +37,14 @@ $classes = $attributes->classes()
 
 if (in_array($variant, ['subtle', 'ghost', 'link'])) {
     match ($variant) {
-        'subtle' => $classes->add('bg-zinc-800/5 text-zinc-800 border border-transparent hover:bg-zinc-800/10'),
-        'ghost' => $classes->add('bg-transparent text-zinc-800 border border-transparent shadow-none hover:bg-zinc-800/10 hover:shadow-sm'),
-        'link' => $classes->add('bg-tranparent text-zinc-800 border border-transparent shadow-none'),
+        'subtle' => $classes->add('bg-zinc-800/5 text-zinc-800 border border-transparent shadow-sm hover:bg-zinc-800/10'),
+        'ghost' => $classes->add('bg-transparent text-zinc-800 border border-transparent hover:bg-zinc-800/10 hover:shadow-sm'),
+        'link' => $classes->add('bg-tranparent text-zinc-800 border border-transparent'),
     };
 }
 else if ($inverted) {
+    $classes->add('shadow-sm');
+
     match ($variant) {
         'primary' => $classes->add('bg-primary-100 text-primary border border-transparent hover:bg-primary hover:text-primary-100'),
         'warning' => $classes->add('bg-yellow-100 text-yellow-500 border border-transparent hover:bg-yellow-500 hover:text-yellow-100'),
@@ -51,6 +58,8 @@ else if ($inverted) {
     };
 }
 else {
+    $classes->add('shadow-sm');
+
     match ($variant) {
         'primary' => $classes->add('bg-primary text-primary-100 border border-transparent hover:bg-primary-600'),
         'warning' => $classes->add('bg-yellow-500 text-yellow-100 border border-transparent hover:bg-yellow-600'),
@@ -74,10 +83,10 @@ if ($slot->isEmpty() && get($icon, 'start')) {
 }
 else {
     match ($size) {
-        'lg' => $classes->add('text-lg h-12 px-5 py-3 gap-2'),
-        'sm' => $classes->add('text-sm h-8 px-3 py-2 gap-1'),
-        'xs' => $classes->add('text-xs h-6 px-2 py-3 gap-1'),
-        default => $classes->add('h-10 px-4 py-2 gap-2'),
+        'lg' => $classes->add('text-lg h-12 px-5 gap-2'),
+        'sm' => $classes->add('text-sm h-8 px-3 gap-1'),
+        'xs' => $classes->add('text-xs h-6 px-2 gap-1'),
+        default => $classes->add('h-10 px-4 gap-2'),
     };
 }
 
@@ -108,7 +117,7 @@ else {
     $merges = ['type' => $action === 'submit' ? 'submit' : 'button'];
 }
 
-if ($attributes->has('wire:loading')) {
+if ($attributes->has('wire:loading') || $action) {
     $merges = [
         ...$merges,
         'wire:loading.class' => 'opacity-50 pointer-events-none is-loading',
@@ -121,13 +130,13 @@ if ($attributes->has('wire:loading')) {
 if ($tooltip) {
     $merges = [
         ...$merges,
-        'x-tooltip.raw' => t($tooltip),
+        'x-tooltip' => js(t($tooltip)),
     ];
 }
 else if ($slot->isEmpty() && $action && $tooltip !== false) {
     $merges = [
         ...$merges,
-        'x-tooltip.raw' => t('app.label.'.$action),
+        'x-tooltip' => js(t($action)),
     ];
 }
 
@@ -149,15 +158,19 @@ $attrs = $attributes
 @endphp
 
 <{{ $el }} {{ $attrs }}>
-    <x-icon name="loading" :size="get($icon, 'size')" class="shrink-0 hidden group-[.is-loading]/button:block"/>
+    <div class="absolute inset-0 items-center justify-center hidden group-[.is-loading]/button:flex">
+        <x-icon name="loading" :size="get($icon, 'size')"/>
+    </div>
 
-    @if (get($icon, 'start'))
-        <x-icon :name="get($icon, 'start')" :size="get($icon, 'size')" class="shrink-0 group-[.is-loading]/button:hidden"/>
-    @endif
+    <div class="inline-flex items-center justify-center gap-2 group-[.is-loading]/button:opacity-0">
+        @if (get($icon, 'start'))
+            <x-icon :name="get($icon, 'start')" :size="get($icon, 'size')" class="shrink-0"/>
+        @endif
 
-    {{ $slot }}
+        {{ $slot }}
 
-    @if (get($icon, 'end'))
-        <x-icon :name="get($icon, 'end')" :size="get($icon, 'size')" class="shrink-0 -ml-0.5"/>
-    @endif
+        @if (get($icon, 'end'))
+            <x-icon :name="get($icon, 'end')" :size="get($icon, 'size')" class="shrink-0 -ml-0.5"/>
+        @endif
+    </div>
 </{{ $el }}>
