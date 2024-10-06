@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Providers;
 
+use \Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -33,12 +34,10 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerBladeIfs();
         $this->registerBladeDirectives();
         $this->registerBladeComponents();
+        $this->registerServices();
         $this->registerTagCompiler();
         $this->registerMorphMap();
-        $this->registerRequestMacros();
-        $this->registerComponentMacros();
-        $this->registerStringMacros();
-        $this->registerCarbonMacros();
+        $this->registerMacros();
         $this->registerPublishes();
         $this->registerCommands();
     }
@@ -142,6 +141,16 @@ class AtomServiceProvider extends ServiceProvider
         });        
     }
 
+    // register services
+    public function registerServices()
+    {
+        \Jiannius\Atom\Services\Alert::boot();
+        \Jiannius\Atom\Services\Modal::boot();
+        \Jiannius\Atom\Services\Sheet::boot();
+        \Jiannius\Atom\Services\Toast::boot();
+        \Jiannius\Atom\Services\Confirm::boot();
+    }
+
     // register blade components
     public function registerBladeComponents()
     {
@@ -170,11 +179,6 @@ class AtomServiceProvider extends ServiceProvider
 
             Blade::component($name, $class);
         }
-
-        \Jiannius\Atom\Services\Alert::boot();
-        \Jiannius\Atom\Services\Modal::boot();
-        \Jiannius\Atom\Services\Toast::boot();
-        \Jiannius\Atom\Services\Confirm::boot();
     }
 
     // register blade ifs
@@ -295,266 +299,14 @@ class AtomServiceProvider extends ServiceProvider
         }
     }
 
-    // register request macros
-    public function registerRequestMacros()
+    // register macros
+    public function registerMacros()
     {
-        if (!Request::hasMacro('portal')) {
-            Request::macro('portal', function ($is = null) {
-                $route = $this->route()?->getName();
-
-                if (in_array($route, ['login', 'logout', 'register', 'password.forgot', 'password.reset'])) {
-                    $portal = 'auth';
-                }
-                else if ($route) {
-                    $portal = collect(explode('.', $route))->first();
-                    if (str($portal)->startsWith('__') || in_array($portal, ['socialite'])) $portal = null;
-                }
-                else $portal = null;
-
-                if ($is && $portal) return $portal === $is;
-
-                return $portal;
-            });
-        }
-
-        if (!Request::hasMacro('subdomain')) {
-            Request::macro('subdomain', function () {
-                $segments = collect(explode('.', $this->host()));
-                $segments->pop(2);
-
-                return $segments->join('.') ?: null;
-            });
-        }
-
-        if (!Request::hasMacro('hostWithoutSubdomain')) {
-            Request::macro('hostWithoutSubdomain', function () {
-                return collect(explode('.', $this->host()))->sortKeysDesc()->take(2)->sortKeys()->join('.');
-            });
-        }
-
-        if (!Request::hasMacro('isLivewireRequest')) {
-            Request::macro('isLivewireRequest', function () {
-                return app(\Livewire\LivewireManager::class)->isLivewireRequest();
-            });
-        }
-    }
-
-    // register component macros
-    public function registerComponentMacros()
-    {
-        if (!ComponentAttributeBag::hasMacro('hasLike')) {
-            ComponentAttributeBag::macro('hasLike', function (...$value) {
-                $keys = collect($this->getAttributes())->keys();
-
-                return !empty(
-                    $keys->first(fn($key) => str($key)->is($value))
-                );
-            });
-        }
-
-        if (!ComponentAttributeBag::hasMacro('modifier')) {
-            ComponentAttributeBag::macro('modifier', function($name = null) {
-                $attribute = collect($this->whereStartsWith('wire:model')->getAttributes())->keys()->first()
-                    ?? collect($this->whereStartsWith('x-model')->getAttributes())->keys()->first();
-
-                $modifier = (string) str($attribute)->replace('x-model', '')->replace('wire:model', '');
-
-                return $name ? str($modifier)->is('*'.$name.'*') : $modifier;
-            });
-        }
-
-        if (!ComponentAttributeBag::hasMacro('size')) {
-            ComponentAttributeBag::macro('size', function($default = null) {
-                return $this->get('size') ?? pick([
-                    '2xs' => $this->has('2xs'),
-                    'xs' => $this->has('xs'),
-                    'sm' => $this->has('sm'),
-                    'md' => $this->has('md'),
-                    'lg' => $this->has('lg'),
-                    'xl' => $this->has('xl'),
-                    '2xl' => $this->has('2xl'),
-                    '3xl' => $this->has('3xl'),
-                    '4xl' => $this->has('4xl'),
-                ]) ?? $default;
-            });
-        }
-
-        if (!ComponentAttributeBag::hasMacro('field')) {
-            ComponentAttributeBag::macro('field', function() {
-                return $this->get('field') ?? $this->get('for') ?? $this->wire('model')->value();
-            });
-        }
-
-        // TODO: deprecate this
-        if (!ComponentAttributeBag::hasMacro('submitAction')) {
-            ComponentAttributeBag::macro('submitAction', function() {
-                if ($this->hasLike('wire:submit*', 'x-on:submit*', 'x-recaptcha:submit*')) return true;
-                if (is_string($this->get('submit'))) return $this->get('submit');
-                if (is_string($this->get('form'))) return $this->get('form');
-                if ($this->has('submit') || $this->has('form')) return 'submit';
-
-                return false;
-            });
-        }
-
-        if (!ComponentAttributeBag::hasMacro('submit')) {
-            ComponentAttributeBag::macro('submit', function() {
-                $attrs = collect(
-                    $this->filter(fn ($value, $key) => 
-                        str($key)->is('wire:submit*')
-                        || str($key)->is('x-on:submit*')
-                        || str($key)->is('x-recaptcha:submit*')
-                    )->getAttributes()
-                );
-
-                $attr = $attrs->keys()->first();
-                $value = $attrs->values()->first();
-
-                return $attr ? (object) compact('attr', 'value') : false;
-            });
-        }
-
-        if (!ComponentAttributeBag::hasMacro('getAny')) {
-            ComponentAttributeBag::macro('getAny', function(...$args) {
-                return collect($args)->map(fn($arg) => $this->get($arg))->filter()->first();
-            });
-        }
-
-        if (!ComponentAttributeBag::hasMacro('classes')) {
-            ComponentAttributeBag::macro('classes', function () {
-                return new class
-                {
-                    public $pending = [];
-
-                    public function add($classes)
-                    {
-                        $this->pending[] = $classes;
-                        return $this;
-                    }
-
-                    public function __toString()
-                    {
-                        return collect($this->pending)->filter()->join(' ');
-                    }
-                };
-            });
-        }
-
-        if (!ComponentAttributeBag::hasMacro('styles')) {
-            ComponentAttributeBag::macro('styles', function () {
-                return new class
-                {
-                    public $pending = [];
-
-                    public function add($prop, $value)
-                    {
-                        $this->pending[$prop] = $value;
-                        return $this;
-                    }
-
-                    public function __toString()
-                    {
-                        return collect($this->pending)->map(fn($value, $prop) => "$prop: $value")->filter()->join('; ');
-                    }
-                };
-            });
-        }
-    }
-
-    // register carbon macros
-    public function registerCarbonMacros()
-    {
-        if (!Carbon::hasMacro('local')) {
-            Carbon::macro('local', function () {
-                $tz = optional(user())->settings('timezone') ?? config('atom.timezone');
-                return $tz ? $this->timezone($tz) : $this;
-            });
-        }
-
-        if (!Carbon::hasMacro('pretty')) {
-            Carbon::macro('pretty', function ($option = null) {
-                $option = $option ?? 'date';
-
-                if ($option === 'date') $format = 'd M Y';
-                elseif ($option === 'datetime') $format = 'd M Y g:iA';
-                elseif ($option === 'datetime-24') $format = 'd M Y H:i:s';
-                elseif ($option === 'time') $format = 'g:i A';
-                elseif ($option === 'time-24') $format = 'H:i:s';
-                else $format = $option;
-
-                return $this->local()->format($format);
-            });
-        }
-
-        if (!Carbon::hasMacro('recent')) {
-            Carbon::macro('recent', function ($days = 1) {
-                if ($this->isToday()) return $this->pretty('time');
-                if ($this->gte(now()->subDays($days))) return $this->local()->fromNow();
-
-                return $this->pretty('datetime');
-            });
-        }
-    }
-
-    // register string macros
-    public function registerStringMacros()
-    {
-        if (!Str::hasMacro('namespace')) {
-            Str::macro('namespace', function ($string) {
-                $string = str($string)->replace('.', '\\')->replace('/', '\\');
-
-                return collect(explode('\\', $string))
-                    ->map(fn ($value) => str()->studly($value))
-                    ->join('\\');
-            });
-
-            Stringable::macro('namespace', function () {
-                return new Stringable (Str::namespace($this->value));
-            });
-        }
-
-        if (!Str::hasMacro('dotpath')) {
-            Str::macro('dotpath', function ($string) {
-                return str($string)
-                    ->replace('/', '.')
-                    ->replace('\\', '.')
-                    ->replace(' ', '.')
-                    ->toString()
-                    ;
-            });
-
-            Stringable::macro('dotpath', function () {
-                return new Stringable (Str::dotpath($this->value));
-            });
-        }
-
-        if (!Str::hasMacro('interval')) {
-            Str::macro('interval', function($string) {
-                $count = trim(head(explode(' ', $string)));
-                $interval = trim(last(explode(' ', $string)));
-                $interval = pick([
-                    'day' => in_array($interval, ['day', 'days']),
-                    'week' => in_array($interval, ['week', 'weeks']),
-                    'month' => in_array($interval, ['month', 'months']),
-                    'year' => in_array($interval, ['year', 'years']),
-                ]);
-
-                if ($count == 1 && $interval === 'day') return tr('app.label.daily');
-                if ($count == 1 && $interval === 'month') return tr('app.label.monthly');
-                if ($count == 3 && $interval === 'month') return tr('app.label.quarterly');
-                if ($count == 6 && $interval === 'month') return tr('app.label.half-yearly');
-                if ($count == 1 && $interval === 'week') return tr('app.label.weekly');
-                if ($count == 1 && $interval === 'year') return tr('app.label.yearly');
-
-                if ($interval === 'day') return tr('app.label.day-count', $count);
-                if ($interval === 'week') return tr('app.label.week-count', $count);
-                if ($interval === 'month') return tr('app.label.month-count', $count);
-                if ($interval === 'year') return tr('app.label.year-count', $count);
-            });
-
-            Stringable::macro('interval', function (string $delimiter = '') {
-                return new Stringable (Str::interval($this->value));
-            });
-        }
+        Builder::mixin(new \Jiannius\Atom\Macros\Builder());
+        Carbon::mixin(new \Jiannius\Atom\Macros\Carbon());
+        ComponentAttributeBag::mixin(new \Jiannius\Atom\Macros\ComponentAttributeBag());
+        Request::mixin(new \Jiannius\Atom\Macros\Request());
+        Str::mixin(new \Jiannius\Atom\Macros\Str());
+        Stringable::mixin(new \Jiannius\Atom\Macros\Stringable());
     }
 }
