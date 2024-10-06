@@ -75,7 +75,7 @@ $attrs = $attributes
 
                 @if (!get($this->table, 'trashed') && !get($this->table, 'archived'))
                     <div class="flex flex-wrap items-center gap-1">
-                        @if ($filters)
+                        @isset ($filters)
                             <div
                                 x-data="{ visible: false, filters: null }"
                                 x-init="filters = $wire.get('filters')"
@@ -103,7 +103,7 @@ $attrs = $attributes
                                     {{ $filters }}
                                 </div>
                             </div>
-                        @endif
+                        @endisset
 
                         @isset ($bar)
                             {{ $bar }}

@@ -14,10 +14,8 @@ $size = $attributes->get('size');
                 @if ($slot->isNotEmpty())
                     {{ $slot }}
                 @else
-                    <div class="space-y-3">
-                        <atom:_heading>@t('no-results')</atom:_heading>
-                        <atom:subheading>@t('we-could-not-find-anything')</atom:subheading>
-                    </div>
+                    <div class="font-medium">@t('no-results')</div>
+                    <div class="text-zinc-400 font-medium">@t('we-could-not-find-anything')</div>
                 @endif
             </div>
         </div>
@@ -31,9 +29,9 @@ $size = $attributes->get('size');
         @if ($slot->isNotEmpty())
             {{ $slot }}
         @else
-            <div class="flex flex-col items-center justify-center">
-                <atom:_heading size="lg">@t('no-results')</atom:_heading>
-                <atom:subheading>@t('we-could-not-find-anything')</atom:subheading>
+            <div class="flex flex-col items-center justify-center gap-1">
+                <div class="text-lg font-medium">@t('no-results')</div>
+                <div class="text-zinc-400 font-medium">@t('we-could-not-find-anything')</div>
             </div>
         @endif
     </div>

@@ -66,10 +66,6 @@
             </nav>
         @endisset
 
-        <div class="mt-12 mb-2 lg:ml-64 lg:group-has-[[data-atom-panel-sidebar-show]]/panel:ml-0 transition-all duration-200">
-            <atom:breadcrumb/>
-        </div>
-
         <div class="relative min-h-dvh lg:ml-64 lg:group-has-[[data-atom-panel-sidebar-show]]/panel:ml-0 transition-all duration-200">
             {{ $slot }}
         </div>

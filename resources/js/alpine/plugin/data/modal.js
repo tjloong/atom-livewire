@@ -13,7 +13,7 @@ export default (config) => {
 
         show (data = null) {
             this.$root.showModal()
-            this.$dispatch('open', data)
+            this.$root.dispatch('open', data, false)
             this.$nextTick(() => this.visible = true)
         },
 

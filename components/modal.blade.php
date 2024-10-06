@@ -4,16 +4,8 @@ $variant = $attributes->get('variant', 'default');
 $locked = $attributes->get('locked', false);
 $entangle = $attributes->wire('model')->value();
 $inset = $attributes->get('inset', false);
-$closeable = $attributes->get('closeable', true);
-
 $visible = $attributes->get('visible', false);
-if (($sess = session('__modals')) && isset($sess[$name])) {
-    $visible = $sess[$name] === 'show';
-
-    unset($sess[$name]);
-    if ($sess) session()->put('__modals', $sess);
-    else session()->forget('__modals');
-}
+$closeable = $attributes->get('closeable', true);
 
 $classes = $attributes->classes()
     ->add('bg-white focus:outline-none')
@@ -42,11 +34,11 @@ $merges = match ($variant) {
         'x-transition:leave' => 'transition ease-in-out duration-150',
         'x-transition:leave-start' => 'opacity-100 translate-y-0',
         'x-transition:leave-end' => 'opacity-0 translate-y-full',
-        'data-atom-modal-full' => $type === 'full',
+        'data-atom-modal-full' => $variant === 'full',
     ],
     default => [
-        'x-transition.duration.200' => true,
-        'data-atom-modal' => $type === 'default',
+        'x-transition.duration.200' => '',
+        'data-atom-modal' => $variant === 'default',
     ],
 };
 

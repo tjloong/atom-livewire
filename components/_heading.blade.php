@@ -16,7 +16,10 @@ if ($subheading) {
 else {
     $classes
         ->add('[&:has(+[data-atom-subheading])]:mb-1.5 [[data-atom-subheading]+&]:mt-1.5')
-        ->add('[[data-atom-sheet]>&]:mb-5');
+        ->add('[[data-atom-sheet]>&]:mb-5')
+        ->add('[&:has([data-atom-breadcrumb])]:flex [&:has([data-atom-breadcrumb])]:flex-wrap')
+        ->add('[&:has([data-atom-breadcrumb])]:items-center [&:has([data-atom-breadcrumb])]:justify-between')
+        ;
 
     if ($size === 'default') $classes->add('font-medium text-base');
     else if ($size === 'lg') $classes->add('font-medium text-lg');

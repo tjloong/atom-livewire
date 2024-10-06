@@ -8,6 +8,7 @@ import Sheet from './data/sheet.js'
 import Confirm from './data/confirm.js'
 import Uploader from './data/uploader.js'
 import Dropdown from './data/dropdown.js'
+import Breadcrumb from './data/breadcrumb.js'
 import Overlay from './data/overlay.js'
 
 // magic
@@ -28,6 +29,7 @@ export default function (Alpine) {
     Alpine.data('confirm', Confirm)
     Alpine.data('overlay', Overlay)
     Alpine.data('dropdown', Dropdown)
+    Alpine.data('breadcrumb', Breadcrumb)
     Alpine.data('uploader', Uploader)
 
     Alpine.magic('sortid', SortId)

@@ -8,8 +8,8 @@ use Jiannius\Atom\Services\Icon;
 use Jiannius\Atom\Services\Logo;
 use Jiannius\Atom\Services\Html;
 use Jiannius\Atom\Services\Modal;
+use Jiannius\Atom\Services\Sheet;
 use Jiannius\Atom\Services\Toast;
-use Livewire\LivewireComponentsFinder;
 
 class Atom
 {
@@ -35,6 +35,12 @@ class Atom
     public static function modal($name = null)
     {
         return app(Modal::class)->name($name);
+    }
+
+    // sheet
+    public static function sheet($name = null)
+    {
+        return app(Sheet::class)->name($name);
     }
 
     // icon

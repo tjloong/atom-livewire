@@ -4,21 +4,14 @@ $traces = collect($attributes->get('traces', []))
     ->map(fn ($trace) => (object) $trace)
     ;
 
-$classes = $attributes->classes()
-    ->add('flex flex-wrap items-center gap-2 py-3 px-6 overflow-hidden')
-    ;
-
-$attrs = $attributes
-    ->class($classes)
-    ->except(['traces'])
-    ;
+$attrs = $attributes->except(['traces']);
 @endphp
 
 @if ($traces->count() > 1)
     <ol
         itemscope
         itemtype="https://schema.org/BreadcrumbList"
-        {{ $attrs }}>
+        {{ $attrs->class(['flex flex-wrap items-center gap-2 py-3 px-6 overflow-hidden']) }}>
         @foreach ($traces as $i => $trace)
             <li
                 itemscope 
@@ -53,11 +46,11 @@ $attrs = $attributes
     </ol>
 @else
     <ol
-        x-data="{ traces: [] }"
-        x-show="traces.length > 1"
-        x-on:refresh="traces = window.sheet?.active?.map(({ name, label }) => ({ name, label }))"
+        wire:ignore
+        x-data="breadcrumb()"
+        x-on:sheet-changed.window="build()"
         data-atom-breadcrumb
-        {{ $attrs }}>
+        {{ $attrs->class(['flex flex-wrap items-center gap-2 py-3 overflow-hidden']) }}>
         <template x-for="(trace, i) in traces" hidden>
             <li class="shrink-0 max-w-40 lg:max-w-64">
                 <div class="flex items-center gap-2">

@@ -37,7 +37,8 @@ export default (config) => {
                 window.sheet.active.push({ ...sheet, label: label || sheet.label })
                 this.layering()
                     .then(() => sheet.el.dispatch('open', data))
-                    .then(() => this.breadcrumb())
+                    .then(() => Atom.dispatch('sheet-changed', data))
+                    .then(() => Livewire.emit('sheetChanged', data))
             }
         },
 
@@ -55,7 +56,7 @@ export default (config) => {
                         .then(() => removables.splice(i, 1))
                         .then(() => {
                             if (!removables.length) {
-                                this.breadcrumb()
+                                Atom.dispatch('sheet-changed')
                                 resolve()
                             }
                         })
@@ -70,7 +71,7 @@ export default (config) => {
             let sheet = window.sheet.active.last()
             this.remove(sheet)
                 .then(() => sheet.el.dispatch('close'))
-                .then(() => this.breadcrumb())
+                .then(() => Atom.dispatch('sheet-changed'))
                 .then(() => this.layering())
         },
 
@@ -105,9 +106,9 @@ export default (config) => {
             })
         },
 
-        breadcrumb () {
-            let breadcrumb = document.querySelector('[data-atom-breadcrumb]')
-            if (breadcrumb) breadcrumb.dispatch('refresh')
-        },
+        // breadcrumb () {
+        //     let breadcrumb = window.sheet.active.last()?.el?.querySelector('[data-atom-breadcrumb]')
+        //     if (breadcrumb) breadcrumb.dispatch('refresh')
+        // },
     }
 }

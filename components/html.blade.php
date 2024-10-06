@@ -117,6 +117,30 @@ fbq('track', 'PageView');
 <!-- End Facebook Pixel Code -->
 @endif
 
+@if (($modals = session()->pull('__modals'))) {
+<script>
+document.addEventListener('alpine:initialized', () => {
+    let modals = {{ js($modals) }}
+    Object.keys(modals).forEach(name => {
+        let action = modals[name].action
+        let data = modals[name].data
+        Atom.modal(name)[action](data)
+    })
+})
+</script>
+@endif
+
+@if ($sheet = session()->pull('__sheet'))
+<script>
+document.addEventListener('alpine:initialized', () => {
+    let name = {{ js($sheet['name']) }}
+    let action = {{ js($sheet['action']) }}
+    let data = {{ js($sheet['data']) }}
+    Atom.sheet(name)[action](data)
+})
+</script>
+@endif
+
 @stack('scripts')
 @livewireScripts
 @livewireStyles

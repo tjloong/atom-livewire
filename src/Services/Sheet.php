@@ -2,10 +2,10 @@
 
 namespace Jiannius\Atom\Services;
 
-class Modal
+class Sheet
 {
     public $name;
-    public $modals = [];
+    public $sheet;
 
     // to be register in service provider
     public static function boot()
@@ -15,13 +15,10 @@ class Modal
         \Livewire\Livewire::listen('component.dehydrate', function ($component, $response) {
             $response->effects['dispatches'] ??= [];
 
-            foreach (app(self::class)->modals as $name => $modal) {
-                $action = get($modal, 'action');
-                $data = get($modal, 'data');
-
-                $response->effects['dispatches'][] = $action === 'show'
-                    ? ['event' => 'modal-show', 'data' => ['name' => $name, 'data' => $data,]]
-                    : ['event' => 'modal-close', 'data' => ['name' => $name]];
+            if ($sheet = app(self::class)->sheet) {
+                $response->effects['dispatches'][] = get($sheet, 'action') === 'show'
+                    ? ['event' => 'sheet-show', 'data' => ['name' => get($sheet, 'name'), 'label' => get($sheet, 'label'), 'data' => get($sheet, 'data')]]
+                    : ['event' => 'sheet-back'];
             }
         });
     }
@@ -35,27 +32,28 @@ class Modal
     }
 
     // show
-    public function show($data = [])
+    public function show($data = null)
     {
         return $this->make('show', $data);
     }
 
-    // close
-    public function close()
+    // back
+    public function back()
     {
-        return $this->make('close');
+        return $this->make('back');
     }
 
     // make modal
-    public function make($action, $data = [])
+    public function make($action, $data = null)
     {
-        $this->modals[$this->name] = [
+        $this->sheet = [
+            'name' => $this->name,
             'action' => $action,
             'data' => $data,
         ];
 
         if (!request()->isLivewireRequest()) {
-            session()->put('__modals', $this->modals);
+            session()->put('__sheet', $this->sheet);
         }
     }
 }
