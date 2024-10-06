@@ -41,6 +41,7 @@
         "laravel-echo": "^1",
         "laravel-vite-plugin": "^1.0.2",
         "pusher-js": "^8",
+        "sharer.js": "^0.5.2",
         "tether": "^2.0.0",
         "tippy.js": "^6",
         "ulid": "^2",

@@ -59,9 +59,6 @@ class Html
                 'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js',
                 'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css',
             ],
-            'sharer' => [
-                'https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js',
-            ],
             'shuffle' => [
                 'https://cdn.jsdelivr.net/npm/shufflejs@6.1.0/dist/shuffle.min.js',
             ],
