@@ -11,6 +11,6 @@ $value = $human ? $carbon->copy()->fromNow() : $carbon->copy()->pretty($format);
 $tooltip = $human ? $carbon->copy()->pretty($format) : $carbon->copy()->fromNow();
 @endphp
 
-<span x-tooltip.raw="{{ $tooltip }}">
+<span x-tooltip="{{ $tooltip }}">
     {{ $value }}
 </span>

@@ -41,7 +41,7 @@
                     <div
                         x-data
                         x-on:click="$refs.file.click()"
-                        x-tooltip.raw="{{ tr('app.label.attach') }}"
+                        x-tooltip="{{ js(t('attach')) }}"
                         class="cursor-pointer h-10 w-10 rounded-md border-2 border-dashed border-gray-500 flex items-center justify-center">
                         <x-icon name="attachment"/>
                         <input type="file" x-ref="file" wire:model="uploads" class="hidden" multiple>

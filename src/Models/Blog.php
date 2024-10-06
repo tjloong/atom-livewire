@@ -29,7 +29,7 @@ class Blog extends Model
     // get cover for blog
     public function cover() : BelongsTo
     {
-        return $this->belongsTo(model('file'), 'cover_id');
+        return $this->belongsTo(model('file'), 'cover_id')->withoutGlobalScopes();
     }
 
     // get labels for blog

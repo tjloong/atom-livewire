@@ -250,7 +250,7 @@ $except = [
 @else
     <{{$element}}
         @if ($tooltip)
-            x-tooltip.raw="{!! tr($tooltip) !!}"
+            x-tooltip="{!! js($tooltip) !!}"
         @endif
 
         @if ($noClickAction && $action && !in_array($action, ['delete', 'trash', 'submit']))

@@ -8,7 +8,6 @@
             if (editor().isActive('link')) $el.querySelector('.link-menu').dispatchEvent(new CustomEvent('link-menu-on', { bubbles: true, detail: editor() }))
             else $el.querySelector('.link-menu').dispatchEvent(new CustomEvent('link-menu-edit'))
         }
-        else $el.querySelector('.link-menu').dispatchEvent(new CustomEvent('link-menu-off'))
     })">
         <x-editor.menu.link/>
     </div>

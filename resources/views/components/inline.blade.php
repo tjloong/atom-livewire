@@ -8,7 +8,7 @@ $except = ['label', 'icon', 'gap', 'wrap', 'tooltip'];
 @endphp
 
 <div 
-    @if($tooltip) x-tooltip.raw="{!! tr($tooltip) !!}" @endif
+    @if($tooltip) x-tooltip="{!! js(t($tooltip)) !!}" @endif
     {{ $attributes->class(array_filter([
         'inline-flex items-center',
         $wrap ? 'flex-wrap' : null,

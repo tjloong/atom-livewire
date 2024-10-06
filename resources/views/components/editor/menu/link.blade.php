@@ -52,6 +52,7 @@
             }
         },
     }"
+    x-on:link-menu-edit="link = null; edit()"
     class="link-menu">
     <template x-if="link && !isEditing">
         <div class="py-2 px-3 flex items-center gap-4 cursor-pointer max-w-xl">

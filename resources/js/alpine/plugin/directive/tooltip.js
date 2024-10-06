@@ -8,7 +8,16 @@ function createTooltip (content, modifiers) {
     else if (modifiers.includes('left')) div.addClass('right-full top-1/2 -translate-y-1/2')
     else if (modifiers.includes('right')) div.addClass('left-full top-1/2 -translate-y-1/2')
 
-    div.style.zIndex = 999
+    div.show = () => {
+        div.addClass('opacity-100')
+        div.style.zIndex = 999
+    }
+
+    div.hide = () => {
+        div.removeClass('opacity-100')
+        div.style.zIndex = 0
+    }
+
     div.innerHTML = content
 
     return div
@@ -23,6 +32,6 @@ export default (el, { modifiers, expression }, { evaluate, evaluateLater }) => {
     el.addClass('relative')
     el.append(tooltip)
 
-    el.addEventListener('mouseover', () => tooltip.addClass('opacity-100'))
-    el.addEventListener('mouseout', () => tooltip.removeClass('opacity-100'))
+    el.addEventListener('mouseover', () => tooltip.show())
+    el.addEventListener('mouseout', () => tooltip.hide())
 }

@@ -1,4 +1,4 @@
-<atom:modal type="slide" class="max-w-lg" wire:close="$emit('closeNotificationCenter')">
+<atom:modal variant="slide" class="max-w-lg">
     <div
         x-data="{
             total: 0,
@@ -39,13 +39,8 @@
                     $dispatch('notification-center-count')
                 }"
                 class="flex items-center justify-center cursor-pointer">
-                <x-icon notification size="18">
-                    <x-slot:badge
-                        x-text="total"
-                        x-show="total > 0"
-                        class="text-red-100 bg-red-500">
-                    </x-slot:badge>
-                </x-icon>
+                <atom:icon notification size="18"/>
+                <span x-text="total" x-show="total > 0" class="bg-red-500 text-red-100 text-xs w-5 h-5 rounded-full flex items-center justify-center -ml-2"></span>
             </div>
         </template>
     </div>
@@ -98,7 +93,7 @@
                     <div class="absolute top-2 right-2 items-center border rounded-md divide-x bg-white hidden group-hover:flex">
                         @if (get($row, 'archived_at'))
                             <div
-                                x-tooltip.raw="{{ tr('app.label.restore') }}"
+                                x-tooltip="{{ js(t('restore')) }}"
                                 x-on:click.stop="unarchive({{ Js::from($row) }})"
                                 class="shrink-0 p-2 flex items-center justify-center cursor-pointer">
                                 <x-icon unarchive/>
@@ -106,14 +101,14 @@
                         @else
                             @if (get($row, 'read_at'))
                                 <div
-                                    x-tooltip.raw="{{ tr('app.label.mark-unread') }}"
+                                    x-tooltip="{{ js(t('mark-unread')) }}"
                                     x-on:click.stop="unread({{ Js::from($row) }})"
                                     class="shrink-0 p-2 flex items-center justify-center cursor-pointer">
                                     <x-icon chat-unread/>
                                 </div>
                             @else
                                 <div
-                                    x-tooltip.raw="{{ tr('app.label.mark-read') }}"
+                                    x-tooltip="{{ js(t('mark-read')) }}"
                                     x-on:click.stop="read({{ Js::from($row) }})"
                                     class="shrink-0 p-2 flex items-center justify-center cursor-pointer">
                                     <x-icon double-check/>
@@ -121,7 +116,7 @@
                             @endif
 
                             <div
-                                x-tooltip.raw="{{ tr('app.label.archive') }}"
+                                x-tooltip="{{ js(t('archive')) }}"
                                 x-on:click.stop="archive({{ Js::from($row) }})"
                                 class="shrink-0 p-2 flex items-center justify-center cursor-pointer">
                                 <x-icon archive/>

@@ -40,7 +40,7 @@ $text = [
     @foreach ($avatars->take($max) as $avatar)
         <div 
             x-data
-            x-tooltip.raw="{{ get($avatar, 'name') }}"
+            x-tooltip="{{ js(get($avatar, 'name')) }}"
             class="-ml-2 first:-ml-0 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center font-semibold border border-gray-300 {{ $text }} hover:ring-1 hover:ring-offset-1 hover:ring-gray-300"
             style="width: {{ $dimension }}px; height: {{ $dimension }}px; z-index: 1;">
             {{ str(get($avatar, 'name'))->substr(0, 1) }}

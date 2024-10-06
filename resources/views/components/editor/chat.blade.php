@@ -181,7 +181,7 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder', 'upload'
                                     type="button"
                                     x-ref="anchor"
                                     x-on:click="open()"
-                                    x-tooltip.raw="{{ tr('app.label.text-formatting') }}"
+                                    x-tooltip="{{ js(t('text-formatting')) }}"
                                     class="p-1.5 flex items-center justify-center">
                                     <x-icon bold/>
                                 </button>
@@ -239,7 +239,7 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder', 'upload'
 
                             <button
                                 type="button"
-                                x-tooltip.raw="{{ tr('app.label.attach') }}"
+                                x-tooltip="{{ js(t('attach')) }}"
                                 x-on:click="$el.parentNode.querySelector('input').click()"
                                 class="p-1.5 flex items-center justify-center">
                                 <x-icon attach/>
@@ -248,7 +248,7 @@ $except = ['label', 'transparent', 'content', 'mention', 'placeholder', 'upload'
     
                         <button
                             type="button"
-                            x-tooltip.raw="{{ tr('app.label.submit') }}"
+                            x-tooltip="{{ js(t('submit')) }}"
                             x-on:click="submit()"
                             class="p-1.5 flex items-center justify-center">
                             <x-icon line-break/>

@@ -24,16 +24,14 @@ $attrs = $attributes
     ->except(['name', 'size', 'badge', $name]);
 @endphp
 
-@if ($badge)
+@if (optional($badge)->isNotEmpty())
     <span class="inline-flex items-center justify-center">
         <span {{ $attrs }}>
             {!! $content !!}
         </span>
 
         <span class="inline-flex items-center justify-center rounded-full min-w-5 w-max px-1 h-5 text-xs font-medium leading-none -ml-2 {{
-            $badge instanceof \Illuminate\View\ComponentSlot
-            ? $badge->attributes->get('class')
-            : 'bg-primary-100 text-primary border shadow-sm'
+            optional($badge?->attributes)->get('class') ?? 'bg-primary-100 text-primary border shadow-sm'
         }}">
             {{ $badge }}
         </span>

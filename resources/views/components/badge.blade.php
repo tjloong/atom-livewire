@@ -38,7 +38,7 @@ $except = ['label', 'icon', 'active', 'invert', 'inverted', 'lower', 'lowercase'
                 <x-icon :name="$icon" class="m-auto"/>
             </div>
 
-            <div class="pr-2" x-tooltip.raw="{!! strlen($label) > 25 ? $label : null !!}">
+            <div class="pr-2" x-tooltip="{!! js(strlen($label) > 25 ? $label : null) !!}">
                 {!! str($label)->limit(25) !!}
             </div>
         </div>

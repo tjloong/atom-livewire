@@ -7,8 +7,8 @@
                 @endif
 
                 @if ($buttons->attributes->get('archive', false)) <x-button action="archive"/> @endif
-                @if ($buttons->attributes->get('trash', false)) <x-button action="trash" invert no-label x-tooltip.raw="{{ tr('app.label.trash') }}"/> @endif
-                @if ($buttons->attributes->get('delete', false)) <x-button action="delete" invert no-label x-tooltip.raw="{{ tr('app.label.delete') }}"/> @endif
+                @if ($buttons->attributes->get('trash', false)) <x-button action="trash" invert no-label x-tooltip="{{ js(t('trash')) }}"/> @endif
+                @if ($buttons->attributes->get('delete', false)) <x-button action="delete" invert no-label x-tooltip="{{ js(t('delete')) }}"/> @endif
                 @if ($buttons->attributes->get('restore', false)) <x-button action="restore"/> @endif
             @else
                 <x-button action="submit"/>

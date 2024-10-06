@@ -154,7 +154,7 @@ else $body = null;
                     @if ($body)
                         <div class="grow flex flex-col text-{{ $align }}">
                             <div
-                                @if ($tooltip) x-tooltip.raw="{!! tr($tooltip) !!}" @endif
+                                @if ($tooltip) x-tooltip="{!! js(t($tooltip)) !!}" @endif
                                 class="{{ $href || $caption ? 'font-medium' : '' }}">
                                 {!! $body !!}
                             </div>
