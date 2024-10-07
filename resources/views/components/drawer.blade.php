@@ -31,8 +31,8 @@ $except = ['locked', 'title', 'heading', 'class', 'stacked', 'submit', 'form'];
                 <div class="shrink-0">
                     <button type="button"
                         x-on:click="close()"
-                        class="w-5 h-10 flex items-center justify-center p-2 text-xl text-gray-400 hover:text-black">
-                        <x-icon name="back"/>
+                        class="w-10 h-10 flex items-center justify-center text-xl text-gray-400 hover:text-black">
+                        <atom:icon back/>
                     </button>
                 </div>
 

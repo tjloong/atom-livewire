@@ -1,10 +1,10 @@
 function createTooltip (content, modifiers) {
     let div = document.createElement('div')
 
-    div.addClass('absolute bg-black/80 text-zinc-100 rounded-md px-3 py-1 shadow text-sm opacity-0 transition-opacity duration-100 delay-100')
+    div.addClass('absolute bg-black/80 text-zinc-100 w-max whitespace-nowrap rounded-md px-3 py-1 shadow text-sm opacity-0 transition-opacity duration-100 delay-100')
 
-    if (!modifiers.length || modifiers.includes('top')) div.addClass('bottom-full')
-    else if (modifiers.includes('bottom')) div.addClass('top-full')
+    if (!modifiers.length || modifiers.includes('top')) div.addClass('bottom-full left-1/2 -translate-x-1/2')
+    else if (modifiers.includes('bottom')) div.addClass('top-full left-1/2 -translate-x-1/2')
     else if (modifiers.includes('left')) div.addClass('right-full top-1/2 -translate-y-1/2')
     else if (modifiers.includes('right')) div.addClass('left-full top-1/2 -translate-y-1/2')
 

@@ -19,10 +19,10 @@ $icon = [
     'start' => $attributes->get('icon') ?? get($social, 'name') ?? $action ?? null,
     'end' => $attributes->get('icon-end'),
     'size' => match ($size) {
-        'lg' => 20,
-        'sm' => 12,
-        'xs' => 11,
-        default => 15,
+        'lg' => 22,
+        'sm' => 15,
+        'xs' => 12,
+        default => 18,
     },
 ];
 
