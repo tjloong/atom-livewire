@@ -4,11 +4,11 @@
     <div class="flex flex-col gap-6 md:flex-row">
         <div class="shrink-0 md:w-72">
             <atom:menu wire:model="tab">
-                <atom:menu-item value="profile" icon="profile">Profile</atom:menu-item>
+                <atom:menu-item value="profile" icon="member">Profile</atom:menu-item>
                 <atom:menu-item value="user" icon="users">Users</atom:menu-item>
                 <atom:menu-item value="file" icon="image">Files and Media</atom:menu-item>
                 <atom:subheading size="sm">SYSTEM</atom:subheading>
-                <atom:menu-item value="integration/email" icon="email">Email</atom:menu-item>
+                <atom:menu-item value="integration/email" icon="at">Email</atom:menu-item>
                 <atom:menu-item value="integration/storage" icon="database">Storage</atom:menu-item>
             </atom:menu>
         </div>

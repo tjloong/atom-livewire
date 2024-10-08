@@ -1,5 +1,5 @@
 @php
-$icon = $attributes->get('icon', 'empty');
+$icon = $attributes->get('icon', 'inbox');
 $size = $attributes->get('size');
 @endphp
 

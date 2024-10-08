@@ -58,7 +58,7 @@ $attrs = $attributes
                     <div
                         x-data="{ text: '' }"
                         class="flex items-center justify-center gap-2">
-                        <x-icon search size="14" class="shrink-0 text-zinc-400"/>
+                        <x-icon search class="shrink-0 text-zinc-400"/>
                         <input type="text"
                             x-model="text"
                             x-on:keydown.enter.prevent="$wire.set('filters.search', text)"

@@ -51,11 +51,7 @@
                             type="button"
                             class="w-10 h-10 flex items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-100"
                             x-on:click="$dispatch('toggle-sidebar')">
-                            <div class="hidden lg:block">
-                                <x-icon expand-right size="18" class="hidden group-has-[[data-atom-panel-sidebar-show]]/panel:block"/>
-                                <x-icon expand-left size="18" class="group-has-[[data-atom-panel-sidebar-show]]/panel:hidden"/>
-                            </div>
-                            <x-icon menu size="18" class="lg:hidden"/>
+                            <x-icon menu size="18"/>
                         </button>
                     </div>
 

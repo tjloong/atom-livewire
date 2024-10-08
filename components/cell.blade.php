@@ -17,7 +17,7 @@ $attrs = $attributes
     ;
 @endphp
 
-<td {{ $attributes->only('colspan') }}>
+<td {{ $attributes->only('colspan') }} valign="{{ $attributes->get('valign', 'top') }}">
     <div {{ $attrs }}>
         @if ($checkbox)
             <div

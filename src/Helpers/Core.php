@@ -211,18 +211,6 @@ function mask_email($email)
 }
 
 /**
- * Short number
- */
-function short_number($n, $locale = null)
-{
-    if ($n > 999999999) return round(($n/1000000000), 2).'B';
-    if ($n > 999999) return round(($n/1000000), 2).'M';
-    if ($n > 999) return round(($n/1000), 2).'K';
-
-    return $n;
-}
-
-/**
  * Get countries
  */
 function countries($key = false)
@@ -292,53 +280,6 @@ function currencies($country = false)
     }
 
     return $currencies;
-}
-
-// short currency
-function short_currency($num, $symbol = null, $bracket = true)
-{
-    $num = (float) $num ?: 0;
-    $short = short_number($num);
-    $currency = $symbol ? "$symbol $short" : $short;
-
-    if ($bracket && $num < 0) $currency = '('.str_replace('-', '', $currency).')';
-
-    return $currency;
-}
-
-/**
- * Format number to currency
- *
- * @return string
- */
-function currency($num, $symbol = null, $rounding = false, $bracket = true)
-{
-    if (!is_numeric($num)) return $num;
-
-    $num = (float)$num ?: 0;
-    $round = $rounding ? (round($num * 2, 1)/2) : $num;
-    $currency = number_format($round, 2);
-
-    if ($symbol) $currency = "$symbol $currency";
-    if ($bracket && $num < 0) $currency = '(' . str_replace('-', '', $currency) . ')';
-
-    return $currency;
-}
-
-/**
- * Format currency string to number
- */
-function uncurrency($string)
-{
-    $cleanString = preg_replace('/([^0-9\.,])/i', '', $string);
-    $onlyNumbersString = preg_replace('/([^0-9])/i', '', $string);
-
-    $separatorsCountToBeErased = strlen($cleanString) - strlen($onlyNumbersString) - 1;
-
-    $stringWithCommaOrDot = preg_replace('/([,\.])/', '', $cleanString, $separatorsCountToBeErased);
-    $removedThousandSeparator = preg_replace('/(\.|,)(?=[0-9]{3,}$)/', '',  $stringWithCommaOrDot);
-
-    return (float) str_replace(',', '.', $removedThousandSeparator);
 }
 
 /**
@@ -494,6 +435,21 @@ if (!function_exists('format')) {
     function format($value, $options = null)
     {
         return new \Jiannius\Atom\Services\Format($value, $options);
+    }
+}
+
+// util
+if (!function_exists('util')) {
+    function util($value = null)
+    {
+        return new class ($value) {
+            public function __construct(public $value) {}
+
+            public function __call($name, $args) {
+                if ($this->value) $args['value'] = $this->value;
+                return \Jiannius\Atom\Services\Util::$name(...$args);
+            }
+        };
     }
 }
 
