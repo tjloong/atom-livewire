@@ -98,7 +98,7 @@ a {
 }
 
 /* Forms related */
-input:focus, 
+/* input:focus, 
 select:focus, 
 textarea:focus, 
 input:active, 
@@ -107,7 +107,7 @@ textarea:active {
     outline: 0 !important;
     box-shadow: none;
     border: none;
-}
+} */
 
 input.no-spinner {
     -moz-appearance: textfield;
