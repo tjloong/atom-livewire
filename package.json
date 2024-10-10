@@ -11,6 +11,7 @@
         "@alpinejs/intersect": "^3",
         "@alpinejs/mask": "^3",
         "@alpinejs/sort": "^3",
+        "@floating-ui/dom": "^1.6.11",
         "@marcreichel/alpine-autosize": "^1",
         "@ryangjchandler/alpine-hooks": "^1",
         "@ryangjchandler/alpine-tooltip": "^2",

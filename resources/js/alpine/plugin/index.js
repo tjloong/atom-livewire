@@ -5,6 +5,7 @@ import Alert from './data/alert.js'
 import Modal from './data/modal.js'
 import Toast from './data/toast.js'
 import Sheet from './data/sheet.js'
+import Select from './data/select.js'
 import Confirm from './data/confirm.js'
 import Uploader from './data/uploader.js'
 import Dropdown from './data/dropdown.js'
@@ -26,6 +27,7 @@ export default function (Alpine) {
     Alpine.data('modal', Modal)
     Alpine.data('toast', Toast)
     Alpine.data('sheet', Sheet)
+    Alpine.data('select', Select)
     Alpine.data('confirm', Confirm)
     Alpine.data('overlay', Overlay)
     Alpine.data('dropdown', Dropdown)

@@ -1,5 +1,5 @@
 @php
-$align = $attributes->get('align', 'bottom left');
+$align = $attributes->get('align', 'left');
 
 $classes = $attributes->classes()
     ->add('group/dropdown relative cursor-pointer')
@@ -16,6 +16,7 @@ $attrs = $attributes
     x-data="dropdown(@js($align))"
     x-on:click="open()"
     x-on:click.away="close()"
+    data-atom-dropdown
     {{ $attrs }}>
     {{ $slot }}
 </div>

@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Traits\Livewire;
 
+use Jiannius\Atom\Atom;
+
 trait AtomComponent
 {
     public $errors;
@@ -18,6 +20,8 @@ trait AtomComponent
         'trashed' => false,
         'checkboxes' => [],
     ];
+
+    public $options = [];
 
     // validation rules
     protected function rules() : array
@@ -60,6 +64,11 @@ trait AtomComponent
     public function mountAtomComponent()
     {
         $this->setForm();
+    }
+
+    public function updated($name, $value)
+    {
+        if (is_string($value) && trim($value) === '') $this->fill([$name => null]);
     }
 
     // set form
@@ -106,6 +115,12 @@ trait AtomComponent
         $max = $max ?? get($this->table, 'max');
 
         return $query->paginate($max);
+    }
+
+    // get options
+    public function getOptions($id, $name, $filters = [])
+    {
+        $this->options[$id] = Atom::options($name, $filters);
     }
 
     // ask parent to execute something

@@ -1,19 +1,26 @@
 @php
 $classes = $attributes->classes()
-    ->add('block')
-    ->add('[&>[data-atom-label]]:mb-2')
-    ->add('[&>[data-atom-label]:has(+[data-atom-caption])]:mb-2')
-    ->add('[&>[data-atom-label]+[data-atom-caption]]:mt-0')
-    ->add('[&>[data-atom-label]+[data-atom-caption]]:mb-3')
-    ->add('[&>*:not([data-atom-label])+[data-atom-caption]]:mt-3')
+    ->add('group/field block space-y-2')
+    // ->add('[&>[data-atom-label]+[data-atom-input]]:mt-2')
+    // ->add('[&>[data-atom-label]+[data-atom-input]+[data-atom-caption]]:mt-2')
+    // ->add('[&>[data-atom-label]+[data-atom-input]+[data-atom-error]]:mt-2')
+    // ->add('[&>[data-atom-label]+[data-atom-input]+[data-atom-error]+[data-atom-caption]]:mt-1.5')
+    // ->add('[&>[data-atom-label]+[data-atom-textarea]]:mt-2')
+    // ->add('[&>[data-atom-label]+[data-atom-textarea]+[data-atom-caption]]:mt-2')
+    // ->add('[&>[data-atom-label]+[data-atom-textarea]+[data-atom-error]]:mt-2')
+    // ->add('[&>[data-atom-label]+[data-atom-textarea]+[data-atom-error]+[data-atom-caption]]:mt-1.5')
+    // ->add('[&>[data-atom-label]+[data-atom-caption]]:mt-2')
+    // ->add('[&>[data-atom-label]+[data-atom-error]]:mt-2')
+    // ->add('[&>[data-atom-label]]:mb-3')
+    // ->add('[&>[data-atom-input]+[data-atom-caption]]:mt-3')
+    // ->add('[&>[data-atom-input]+[data-atom-error]+[data-atom-caption]]:mt-2')
+    // ->add('[&>[data-atom-input]+[data-atom-error]]:mt-3')
+    // ->add('[&>*:not([data-atom-label])+[data-atom-caption]]:mt-3')
     ;
 
-$attrs = $attributes
-    ->class($classes)
-    ->except(['badge'])
-    ;
+$attrs = $attributes->class($classes);
 @endphp
 
-<div {{ $attrs }}>
+<div {{ $attrs }} data-atom-field>
     {{ $slot }}
 </div>

@@ -1,26 +1,39 @@
 @php
 $type = $attributes->get('type');
-$size = $attributes->get('size');
 $label = $attributes->get('label');
+$prefix = $prefix ?? $attributes->get('prefix');
+$suffix = $suffix ?? $attributes->get('suffix');
 $caption = $attributes->get('caption');
+$invalid = $attributes->get('invalid');
 $viewable = $attributes->get('viewable', $type === 'password');
 $copyable = $attributes->get('copyable');
 $clearable = $attributes->get('clearable');
 $placeholder = $attributes->get('placeholder');
+$transparent = $attributes->get('transparent');
 
 $icon = [
     'start' => $attributes->get('icon'),
     'end' => $attributes->get('icon-end'),
 ];
 
+$field = $attributes->get('field') ?? $attributes->wire('model')->value();
+$required = $attributes->get('required') ?? $this->form['required'][$field] ?? false;
+$error = $attributes->get('error') ?? $this->errors[$field] ?? null;
+
+$size = $attributes->get('size');
+$size = $size === 'sm' ? 'h-8 text-sm' : 'h-10';
+
 $classes = $attributes->classes()
     ->add('w-full py-2 text-zinc-700')
     ->add('border border-zinc-200 border-b-zinc-300/80 rounded-lg shadow-sm bg-white')
     ->add('focus:outline-none focus:border-primary group-focus/input:border-primary hover:border-primary-300')
+    ->add($invalid ? 'border-red-400' : 'group-has-[[data-atom-error]]/field:border-red-400')
     ->add($type === 'number' ? 'no-spinner' : '')
     ->add(get($icon, 'start') ? 'pl-10' : 'pl-3')
     ->add(get($icon, 'end') ? 'pr-10' : 'pr-3')
-    ->add($size === 'sm' ? 'h-8 text-sm' : 'h-10')
+    ->add($size)
+    ->add('[[data-atom-input-prefix]+[data-atom-input]>&]:rounded-l-none')
+    ->add('[[data-atom-input-suffix]+[data-atom-input]>&]:rounded-r-none')
     ;
 
 $attrs = $attributes
@@ -28,25 +41,65 @@ $attrs = $attributes
     ->merge([
         'type' => 'text',
         'step' => $type === 'number' ? 'any' : null,
+        'required' => $required,
     ])
-    ->except(['label', 'caption', 'size', 'icon', 'icon-end', 'placeholder', 'viewable', 'copyable', 'clearable'])
+    ->except([
+        'label', 'caption', 'size', 'icon', 'icon-end',
+        'field', 'error', 'placeholder', 'invalid', 'transparent',
+        'viewable', 'copyable', 'clearable',
+    ])
     ;
 @endphp
 
 @if ($label || $caption)
     <atom:_field>
         @if ($label)
-            <atom:_label>@t($label)</atom:_label>
+            <atom:_label>
+                <div class="inline-flex items-center justify-center gap-2">
+                    @t($label)
+                    @if ($required)
+                        <atom:icon asterisk size="12" class="text-red-500 shrink-0"/>
+                    @endif
+                </div>
+            </atom:_label>
         @endif
 
         <atom:_input :attributes="$attributes->except(['label', 'caption'])"/>
-
+        <atom:_error>@t($error)</atom:_error>
         <atom:caption>@t($caption)</atom:caption>
     </atom:_field>
 @elseif ($type === 'file')
-    <atom:_input.file :attributes="$attributes">
-        {{ $slot }}
-    </atom:_input.file>
+    <div>
+        file input
+    </div>
+@elseif ($prefix || $suffix)
+    <div class="flex items-center">
+        @if ($prefix)
+            <div class="rounded-l-lg border border-zinc-200 border-b-zinc-300/80 border-r-0 shadow-sm overflow-hidden {{ $size }}" data-atom-input-prefix>
+                @if ($prefix instanceof \Illuminate\View\ComponentSlot)
+                    {{ $prefix }}
+                @else
+                    <div class="px-6 flex items-center justify-center bg-zinc-100 w-full h-full">
+                        {{ t($prefix) }}
+                    </div>
+                @endif
+            </div>
+        @endif
+
+        @if ($suffix)
+            <div class="order-last rounded-r-lg border border-zinc-200 border-b-zinc-300/80 border-l-0 shadow-sm overflow-hidden {{ $size }}" data-atom-input-suffix>
+                @if ($suffix instanceof \Illuminate\View\ComponentSlot)
+                    {{ $suffix }}
+                @else
+                    <div class="px-6 flex items-center justify-center bg-zinc-100 w-full h-full">
+                        {{ t($suffix) }}
+                    </div>
+                @endif
+            </div>
+        @endif
+
+        <atom:_input :attributes="$attributes->except(['prefix', 'suffix'])"/>
+    </div>
 @elseif ($type === 'button')
     <button class="group/input relative w-full block focus:outline-none" data-atom-input>
         @if (get($icon, 'start'))
@@ -127,7 +180,7 @@ $attrs = $attributes
                             $nextTick(() => input.focus())
                         }"
                         class="w-full h-full flex items-center justify-center cursor-pointer">
-                        <atom:icon close/>
+                        <atom:icon close size="14"/>
                     </div>
                 @else
                     <div class="w-full h-full flex items-center justify-center pointer-events-none">

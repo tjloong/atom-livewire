@@ -1,5 +1,15 @@
 @php
-$classes = $attributes->classes()->add('w-full');
+$size = $attributes->get('size');
+
+$classes = $attributes->classes()
+    ->add('w-full')
+    ->add(match ($size) {
+        'lg' => 'py-4 text-lg',
+        'xl' => 'py-8 text-xl',
+        default => 'py-0',
+    })
+    ;
+
 if ($slot->isNotEmpty()) $classes->add('flex items-center');
 @endphp
 
@@ -7,7 +17,7 @@ if ($slot->isNotEmpty()) $classes->add('flex items-center');
     <div class="border-0 bg-zinc-800/15 h-px w-full"></div>
 
     @if ($slot->isNotEmpty())
-        <span class="shrink mx-4 font-medium text-sm text-zinc-400 whitespace-nowrap">{{ $slot }}</span>
+        <span class="shrink mx-4 font-medium text-zinc-400 whitespace-nowrap text-center">{{ $slot }}</span>
         <div class="border-0 bg-zinc-800/15 h-px w-full"></div>
     @endif
 </div>
