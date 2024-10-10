@@ -10,6 +10,8 @@ import Confirm from './data/confirm.js'
 import Uploader from './data/uploader.js'
 import Dropdown from './data/dropdown.js'
 import Breadcrumb from './data/breadcrumb.js'
+import Datepicker from './data/datepicker.js'
+import Timepicker from './data/timepicker.js'
 import Overlay from './data/overlay.js'
 
 // magic
@@ -32,6 +34,8 @@ export default function (Alpine) {
     Alpine.data('overlay', Overlay)
     Alpine.data('dropdown', Dropdown)
     Alpine.data('breadcrumb', Breadcrumb)
+    Alpine.data('datepicker', Datepicker)
+    Alpine.data('timepicker', Timepicker)
     Alpine.data('uploader', Uploader)
 
     Alpine.magic('sortid', SortId)

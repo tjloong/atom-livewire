@@ -149,15 +149,15 @@ $attrs = $attributes
         x-on:keydown.space.prevent="keyEnter()"
         x-on:keydown.esc.prevent="close()"
         x-on:click.away="close()"
-        class="group/input w-full">
+        data-atom-select-listbox
+        class="group/select w-full">
         <div class="relative block">            
             <button
                 wire:ignore
                 type="button"
                 x-ref="trigger"
                 x-on:click="open()"
-                {{ $attrs }}
-                data-atom-select-listbox>
+                {{ $attrs }}>
                 @if ($icon)
                     <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
                         <atom:icon :name="$icon"/>

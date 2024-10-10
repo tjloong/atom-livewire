@@ -100,30 +100,6 @@ $attrs = $attributes
 
         <atom:_input :attributes="$attributes->except(['prefix', 'suffix'])"/>
     </div>
-@elseif ($type === 'button')
-    <button class="group/input relative w-full block focus:outline-none" data-atom-input>
-        @if (get($icon, 'start'))
-            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
-                <atom:icon :name="get($icon, 'start')"/>
-            </div>
-        @endif
-
-        <div {{ $attrs }}>
-            @if ($slot->isEmpty())
-                <div class="text-zinc-400 text-left">
-                    {{ t($placeholder) }}
-                </div>
-            @else
-                {{ $slot }}
-            @endif
-        </div>
-
-        @if (get($icon, 'end'))
-            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pr-3 right-0">
-                <atom:icon :name="get($icon, 'end')"/>
-            </div>
-        @endif
-    </button>
 @else
     <div class="group/input relative w-full block" data-atom-input>
         @if (get($icon, 'start'))
