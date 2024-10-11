@@ -123,13 +123,21 @@ trait AtomComponent
         $this->options[$id] = Atom::options($name, $filters);
     }
 
-    // ask parent to execute something
-    public function parent($action, ...$args)
+    // ask other component to execute action
+    public function ask($component, $action, ...$args)
     {
-        $this->emitUp('execute', [
-            'action' => $action,
-            'args' => $args,
-        ]);
+        if ($component === 'parent') {
+            $this->emitUp('execute', [
+                'action' => $action,
+                'args' => $args,
+            ]);
+        }
+        else {
+            $this->emitTo($component, 'execute', [
+                'action' => $action,
+                'args' => $args,
+            ]);
+        }
     }
 
     // execute an action with arguments

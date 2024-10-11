@@ -23,10 +23,10 @@
                 @endif
             </atom:_heading>
 
-            <x-input wire:model.defer="user.name"/>
-            <x-input type="email" wire:model.defer="user.email" label="Login Email"/>
-            <x-input type="password" wire:model.defer="inputs.password"/>
-            <x-checkbox wire:model="inputs.is_blocked" label="Blocked"/>
+            <atom:_input wire:model.defer="user.name" label="Name"/>
+            <atom:_input type="email" wire:model.defer="user.email" label="Login Email"/>
+            <atom:_input type="password" wire:model.defer="inputs.password" label="Password"/>
+            <atom:_checkbox wire:model="inputs.is_blocked" label="Blocked"/>
         </div>
     </atom:_form>
 @endif

@@ -40,6 +40,7 @@ $attrs = $attributes
     ->class($classes)
     ->merge([
         'required' => $required,
+        'wire:key' => $id,
     ])
     ->except([
         'label', 'caption', 'size', 'icon', 'icon-end',
@@ -65,6 +66,7 @@ $attrs = $attributes
         <atom:_select
             :placeholder="$placeholder"
             :attributes="$attributes->except(['label', 'caption', 'placeholder'])">
+            {{ $slot }}
         </atom:_select>
 
         <atom:_error>@t($error)</atom:_error>
@@ -100,8 +102,9 @@ $attrs = $attributes
     </div>
 @elseif ($variant === 'native')
     <div
-        x-data
-        x-init="$wire.getOptions({{ js($id) }}, {{ js($options) }})"
+        wire:ignore.self
+        x-data="{ name: {{ js($options) }} }"
+        x-init="name && $wire.getOptions({{ js($id) }}, name)"
         class="group/input relative w-full block"
         data-atom-select-native>
         @if ($icon)

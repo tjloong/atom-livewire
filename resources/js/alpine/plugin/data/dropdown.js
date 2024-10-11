@@ -10,7 +10,7 @@ export default (align = 'left') => {
             let children = this.$root.querySelectorAll(':scope > *')
             this.trigger = children[0]
             this.menu = children[1]
-            this.$nextTick(() => this.close())
+            this.close()
         },
 
         open () {

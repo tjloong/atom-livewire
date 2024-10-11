@@ -2,29 +2,29 @@
     <atom:_heading size="lg">Email Configuration</atom:_heading>
     <atom:card>
         <atom:_form>
-            <x-select label="app.label.email-provider" wire:model="settings.mailer" :options="[
-                ['value' => 'smtp', 'label' => 'SMTP'],
-                ['value' => 'mailgun', 'label' => 'Mailgun'],
-            ]"/>
+            <atom:_select wire:model="settings.mailer" label="email-provider">
+                <atom:option value="smtp">SMTP</atom:option>
+                <atom:option value="mailgun">Mailgun</atom:option>
+            </atom:_select>
 
             @if ($settings['mailer'] === 'smtp')
-                <x-input wire:model.defer="settings.smtp_host" label="app.label.smtp-host"/>
-                <x-input wire:model.defer="settings.smtp_port" label="app.label.smtp-port"/>
-                <x-input wire:model.defer="settings.smtp_username" label="app.label.smtp-username"/>
-                <x-input wire:model.defer="settings.smtp_password" label="app.label.smtp-password"/>
-                <x-select wire:model.defer="settings.smtp_encryption" label="app.label.smtp-encryption" :options="[
-                    ['value' => 'ssl', 'label' => 'SSL'],
-                    ['value' => 'tls', 'label' => 'TLS'],
-                ]"/>
+                <atom:_input wire:model.defer="settings.smtp_host" label="smtp-host"/>
+                <atom:_input wire:model.defer="settings.smtp_port" label="smtp-port"/>
+                <atom:_input wire:model.defer="settings.smtp_username" label="smtp-username"/>
+                <atom:_input wire:model.defer="settings.smtp_password" label="smtp-password"/>
+                <atom:_select wire:model.defer="settings.smtp_encryption" label="smtp-encryption">
+                    <atom:option value="ssl">SSL</atom:option>
+                    <atom:option value="tls">TLS</atom:option>
+                </atom:_select>
             @elseif ($settings['mailer'] === 'mailgun')
-                <x-input wire:model.defer="settings.mailgun_domain" label="app.label.mailgun-domain"/>
-                <x-input wire:model.defer="settings.mailgun_secret" label="app.label.mailgun-secret"/>
+                <atom:_input wire:model.defer="settings.mailgun_domain" label="mailgun-domain"/>
+                <atom:_input wire:model.defer="settings.mailgun_secret" label="mailgun-secret"/>
             @endif
 
             <atom:separator/>
 
-            <x-input wire:model.defer="settings.notify_from" label="app.label.email-notify-from"/>
-            <x-input wire:model.defer="settings.notify_to" label="app.label.email-notify-to"/>
+            <atom:_input wire:model.defer="settings.notify_from" label="email-notify-from"/>
+            <atom:_input wire:model.defer="settings.notify_to" label="email-notify-to"/>
 
             <atom:_button action="submit">Save</atom:_button>
         </atom:_form>

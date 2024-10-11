@@ -2,6 +2,7 @@
 $max = $attributes->get('max') ?? config('atom.max_upload_size');
 $accept = $attributes->get('accept');
 $multiple = $attributes->get('multiple');
+$attrs = $attributes->except(['max', 'accept', 'multiple']);
 @endphp
 
 <div
@@ -14,7 +15,8 @@ $multiple = $attributes->get('multiple');
         accept: @js($accept),
         multiple: @js($multiple),
     })"
-    x-modelable="value">
+    x-modelable="value"
+    {{ $attrs }}>
     <input 
         type="file"
         x-ref="input"
