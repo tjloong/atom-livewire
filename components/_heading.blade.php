@@ -17,8 +17,9 @@ else {
     $classes
         ->add('[&:has(+[data-atom-subheading])]:mb-1.5 [[data-atom-subheading]+&]:mt-1.5')
         ->add('[[data-atom-sheet]>&]:mb-5')
-        ->add('[&:has([data-atom-breadcrumb])]:flex [&:has([data-atom-breadcrumb])]:flex-wrap')
-        ->add('[&:has([data-atom-breadcrumb])]:items-center [&:has([data-atom-breadcrumb])]:justify-between')
+        ->add('[[data-atom-card]>&]:mb-4')
+        ->add('[&:has([data-atom-heading-actions])]:flex [&:has([data-atom-heading-actions])]:flex-wrap')
+        ->add('[&:has([data-atom-heading-actions])]:items-center [&:has([data-atom-heading-actions])]:justify-between')
         ;
 
     if ($size === 'default') $classes->add('font-medium text-base');
@@ -42,4 +43,10 @@ $attrs = $attributes
 
 <{{ $el }} {{ $attrs }}>
     {{ $slot }}
+
+    @isset ($actions)
+        <div class="flex items-center gap-2 flex-wrap" data-atom-heading-actions>
+            {{ $actions }}
+        </div>
+    @endisset
 </{{ $el }}>

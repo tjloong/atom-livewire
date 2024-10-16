@@ -12,6 +12,7 @@ $attrs = $attributes
 @endphp
 
 <div
+    wire:ignore.self
     x-cloak
     x-data="dropdown(@js($align))"
     x-on:click="open()"

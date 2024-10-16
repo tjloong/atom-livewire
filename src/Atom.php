@@ -4,6 +4,7 @@ namespace Jiannius\Atom;
 
 use Jiannius\Atom\Services\Alert;
 use Jiannius\Atom\Services\Confirm;
+use Jiannius\Atom\Services\Country;
 use Jiannius\Atom\Services\Icon;
 use Jiannius\Atom\Services\Logo;
 use Jiannius\Atom\Services\Html;
@@ -70,6 +71,13 @@ class Atom
         ])->first(fn($s) => class_exists($s));
 
         return app($class)->filter($filters)->$name();
+    }
+
+    // country
+    public static function country($name = null, $field = null)
+    {
+        $country = app(Country::class);
+        return $name ? $country->get($name, $field) : $country->all();
     }
 
     // call

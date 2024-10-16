@@ -16,9 +16,26 @@ class Sheet
             $response->effects['dispatches'] ??= [];
 
             if ($sheet = app(self::class)->sheet) {
-                $response->effects['dispatches'][] = get($sheet, 'action') === 'show'
-                    ? ['event' => 'sheet-show', 'data' => ['name' => get($sheet, 'name'), 'label' => get($sheet, 'label'), 'data' => get($sheet, 'data')]]
-                    : ['event' => 'sheet-back'];
+                $response->effects['dispatches'][] = match (get($sheet, 'action')) {
+                    'show' => [
+                        'event' => 'sheet-show',
+                        'data' => [
+                            'name' => get($sheet, 'name'),
+                            'label' => get($sheet, 'label'),
+                            'data' => get($sheet, 'data'),
+                        ],
+                    ],
+                    'label' => [
+                        'event' => 'sheet-label',
+                        'data' => [
+                            'name' => get($sheet, 'name'),
+                            'label' => get($sheet, 'label'),
+                        ],
+                    ],
+                    'back' => [
+                        'event' => 'sheet-back',
+                    ],
+                };
             }
         });
     }
@@ -32,9 +49,15 @@ class Sheet
     }
 
     // show
-    public function show($data = null)
+    public function show($data = null, $label = null)
     {
-        return $this->make('show', $data);
+        return $this->make('show', $data, $label);
+    }
+
+    // label
+    public function label($label)
+    {
+        return $this->make('label', null, $label);
     }
 
     // back
@@ -44,10 +67,11 @@ class Sheet
     }
 
     // make modal
-    public function make($action, $data = null)
+    public function make($action, $data = null, $label = null)
     {
         $this->sheet = [
             'name' => $this->name,
+            'label' => $label,
             'action' => $action,
             'data' => $data,
         ];

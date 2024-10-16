@@ -5,6 +5,7 @@ export default (name, label = null) => {
 
     return {
         show: (data) => dispatch('sheet-show', { name, label, data }),
+        label: (label) => dispatch('sheet-label', { name, label }),
         back: () => dispatch('sheet-back'),
     }
 }

@@ -6,11 +6,9 @@ $html = atom()->html()
     ->get()
     ;
 
-$vite = [
-    'resources/js/base.js',
-    'resources/css/base.css',
-    ...$attributes->get('vite', []),
-    'resources/js/alpine.js',
+$vite = $attributes->get('vite') ?: [
+    'resources/js/'.request()->portal().'.js',
+    'resources/css/'.request()->portal().'.css',
 ];
 
 $attrs = $attributes
@@ -47,9 +45,9 @@ $attrs = $attributes
 <meta name="twitter:image:alt" content="{{ $html->title }}">
 @stack('meta')
 
-@if ($html->jsonld)<script type="application/ld+json">@json($jsonld)</script>@endif
-@if ($html->hreflang)<link rel="alternate" href="{{ url()->current() }}" hreflang="{{ $hreflang }}"/>@endif
-@if ($html->canonical)<link rel="canonical" href="{{ $canonical }}" />@endif
+@if ($html->jsonld)<script type="application/ld+json">@json($html->jsonld)</script>@endif
+@if ($html->hreflang)<link rel="alternate" href="{{ url()->current() }}" hreflang="{{ $html->hreflang }}"/>@endif
+@if ($html->canonical)<link rel="canonical" href="{{ $html->canonical }}" />@endif
 @endif
 
 @if ($html->favicon)
@@ -67,7 +65,6 @@ $attrs = $attributes
 @if (atom('route')->has('__lang.js'))
 <script src="{{ route('__lang.js') }}"></script>
 @endif
-
 @if (atom('route')->has('__icons.js'))
 <script src="{{ route('__icons.js') }}"></script>
 @endif

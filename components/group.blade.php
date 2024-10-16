@@ -2,12 +2,10 @@
 $type = $attributes->get('type');
 
 $classes = $attributes->classes()
-    ->add('grid')
     ->add(match ($type) {
-        'checkbox' => 'gap-2',
-        default => 'gap-6',
+        'checkbox' => 'grid gap-2 [&>[data-atom-heading]]:mb-1',
+        default => 'grid gap-6 [&>[data-atom-heading]]:-mb-3',
     })
-    ->add('[&>[data-atom-heading]]:-mb-3')
     ;
 
 $attrs = $attributes

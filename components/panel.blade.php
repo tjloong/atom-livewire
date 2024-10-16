@@ -1,7 +1,7 @@
 <atom:html
     :analytics="false"
     :vite="$attributes->get('vite', [])"
-    :cdn="['flatpickr', ...$attributes->get('cdn', [])]"
+    :cdn="$attributes->get('cdn', [])"
     noindex>
     <div class="group/panel min-h-screen">
         <aside

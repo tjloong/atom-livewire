@@ -13,7 +13,6 @@ $attrs = $attributes->class($classes)->except(['label', 'caption']);
 <label {{ $attrs }} data-atom-checkbox>
     <div class="group shrink-0 {{ $label && $caption ? 'pt-0.5' : '' }}">
         <input
-            x-ref="checkbox"
             type="checkbox"
             class="hidden peer" 
             {{ $attributes->except('class') }}>

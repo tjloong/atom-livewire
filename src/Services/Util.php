@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Services;
 
 use Illuminate\Support\Number;
+use Jiannius\Atom\Atom;
 
 class Util
 {
@@ -54,5 +55,32 @@ class Util
         if ($value > 999) return round(($value/1000), 2).'K';
     
         return $value;
+    }
+
+    public static function address($value, $nl2br = true) : mixed
+    {
+        $l1 = get($value, 'address_1') ?? get($value, 'addr_1');
+        if ($l1) $l1 = preg_replace('/,$/im', '', $l1);
+
+        $l2 = get($value, 'address_2') ?? get($value, 'addr_2');
+        if ($l2) $l2 = preg_replace('/,$/im', '', $l2);
+
+        $zip = get($value, 'zip') ?? get($value, 'postcode');
+        $city = get($value, 'city');
+        $l3 = collect([$zip, $city])->filter()->join(' ');
+
+        $state = get($value, 'state');
+        $country = get($value, 'country');
+        $country = Atom::country($country, 'name');
+        $l4 = collect([$state, $country])->filter()->join(' ');
+
+        $name = get($value, 'name');
+        $company = get($value, 'company');
+        $lines = collect([$l1, $l2, $l3, $l4])->filter()->join(', ');
+
+        $address = collect([$name, $company, $lines])->filter();
+        $address = $nl2br ? $address->join('<br>') : $address->join(', ');
+
+        return empty($address) ? null : $address;
     }
 }

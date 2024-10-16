@@ -48,9 +48,10 @@ $attrs = $attributes->except(['traces']);
     <ol
         wire:ignore
         x-data="breadcrumb()"
+        x-show="traces.length > 1"
         x-on:sheet-changed.window="build()"
         data-atom-breadcrumb
-        {{ $attrs->class(['flex flex-wrap items-center gap-2 py-3 overflow-hidden']) }}>
+        {{ $attrs->class(['flex flex-wrap items-center gap-2 py-3 overflow-hidden first:mb-4']) }}>
         <template x-for="(trace, i) in traces" hidden>
             <li class="shrink-0 max-w-40 lg:max-w-64">
                 <div class="flex items-center gap-2">

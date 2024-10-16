@@ -16,7 +16,9 @@
                 <atom:_heading size="20">@t('email-verification')</atom:_heading>
 
                 <div class="flex flex-col gap-1">
-                    <x-input wire:model.defer="inputs.verification" label="app.label.verification-code" caption="app.alert.email-verification"/>
+                    <atom:_input wire:model.defer="inputs.verification" caption="app.alert.email-verification">
+                        @t('verification-code')
+                    </atom:_input>
 
                     <div x-data="{
                         show: true,
@@ -50,7 +52,7 @@
                             }, 1000)
                         },
                     }" class="text-sm">
-                        <x-anchor label="app.label.resend" x-show="show" x-on:click.stop="resend()"/>
+                        <atom:link x-show="show" x-on:click.stop="resend()">@t('resend')</atom:link>
 
                         <span 
                             x-show="!show && (minutes || seconds)"
@@ -62,18 +64,23 @@
             @else
                 <atom:_heading size="20">@t('create-account')</atom:_heading>
 
-                <x-input wire:model.defer="inputs.name" label="app.label.your-name" autofocus/>
-                <x-input type="email" wire:model.defer="inputs.email" label="app.label.login-email"/>
-                <x-input type="password" wire:model.defer="inputs.password" label="app.label.login-password"/>
+                <atom:_input wire:model.defer="inputs.name" label="your-name" autofocus/>
+                <atom:_input type="email" wire:model.defer="inputs.email" label="login-email"/>
+                <atom:_input type="password" wire:model.defer="inputs.password" label="login-password"/>
 
-                <x-checkbox wire:model="inputs.agree_tnc" label="app.label.checkbox-privacy">
-                    <div class="inline-flex items-center gap-3 flex-wrap text-sm">
-                        <x-anchor label="app.label.terms-of-use" href="/terms"/>
-                        <x-anchor label="app.label.privacy-policy" href="/privacy"/>
+                <atom:_checkbox wire:model="inputs.agree_tnc">
+                    <div class="space-y-1">
+                        <div>
+                            @t('checkbox-privacy')
+                        </div>
+                        <div class="inline-flex items-center gap-3 flex-wrap text-sm">
+                            <atom:link label="app.label.terms-of-use" href="/terms"/>
+                            <atom:link label="app.label.privacy-policy" href="/privacy"/>
+                        </div>
                     </div>
-                </x-checkbox>
+                </atom:_checkbox>
 
-                <x-checkbox wire:model="inputs.agree_promo" label="app.label.checkbox-marketing"/>
+                <atom:_checkbox wire:model="inputs.agree_promo">@t('checkbox-marketing')</atom:_checkbox>
             @endif
 
             <atom:_button action="submit" variant="primary" wire:loading block>
@@ -84,6 +91,6 @@
 
     <div class="text-center">
         @t('have-account')
-        <x-anchor label="app.label.signin" :href="route('login')"/>
+        <atom:link :href="route('login')">@t('signin')</atom:link>
     </div>
 </div>

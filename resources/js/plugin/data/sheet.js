@@ -15,6 +15,18 @@ export default (config) => {
             if (!window.sheet.active.length) this.show(config.name)
         },
 
+        setLabel (args) {
+            if (args.name !== config.name) return
+
+            let index = window.sheet.all.findIndexWhere('name', args.name)
+            if (index > -1) window.sheet.all[index].label = args.label
+
+            let activeIndex = window.sheet.active.findIndexWhere('name', args.name)
+            if (activeIndex > -1) window.sheet.active[activeIndex].label = args.label
+
+            Atom.dispatch('sheet-changed')
+        },
+
         show (args) {
             let name = typeof args === 'string' ? args : args.name
             let label = typeof args === 'string' ? null : args.label

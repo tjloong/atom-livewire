@@ -34,6 +34,7 @@ $classes = $attributes->classes()
     ->add($size)
     ->add('[[data-atom-input-prefix]+[data-atom-input]>&]:rounded-l-none')
     ->add('[[data-atom-input-suffix]+[data-atom-input]>&]:rounded-r-none')
+    ->add('[[data-atom-input-tel]>&]:rounded-l-none')
     ;
 
 $attrs = $attributes
@@ -71,6 +72,49 @@ $attrs = $attributes
 @elseif ($type === 'file')
     <div>
         file input
+    </div>
+@elseif ($type === 'tel')
+    <div
+        x-data="tel({
+            code: {{ js($attributes->get('code', '+60')) }},
+            @if ($attributes->wire('model')->value())
+            value: @entangle($attributes->wire('model')),
+            @endif
+        })"
+        class="group/input">
+        <input
+            type="hidden"
+            x-ref="hidden"
+            {{ $attrs->whereStartsWith('wire:model') }}
+            {{ $attrs->whereStartsWith('x-model') }}>
+
+        <div class="flex items-center" data-atom-input-tel>
+            <div class="relative">
+                <select
+                    x-ref="options"
+                    x-model="code"
+                    x-on:change="format()"
+                    x-on:input.stop
+                    class="appearance-none rounded-l-lg pr-10 pl-3 border border-zinc-200 border-b-zinc-300/80 border-r-0 shadow-sm focus:outline-1 focus:outline-primary {{ $size }}">
+                    @foreach (atom()->country()->sortBy('iso_code') as $country)
+                        <option value="{{ get($country, 'dial_code') }}">
+                            {{ get($country, 'iso_code') }} ({{ get($country, 'dial_code') }})
+                        </option>
+                    @endforeach
+                </select>
+
+                <div class="pointer-events-none absolute top-0 bottom-0 right-0 pr-2 flex items-center justify-center">
+                    <atom:icon dropdown/>
+                </div>
+            </div>
+
+            <input
+                type="tel"
+                x-model="tel"
+                x-on:input.stop="format()"
+                placeholder="{{ t($placeholder) }}"
+                {{ $attrs->whereDoesntStartWith('wire:model')->whereDoesntStartWith('x-model') }}>
+        </div>
     </div>
 @elseif ($prefix || $suffix)
     <div class="flex items-center">

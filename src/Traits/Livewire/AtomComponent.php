@@ -66,9 +66,27 @@ trait AtomComponent
         $this->setForm();
     }
 
-    public function updated($name, $value)
+    public function updated($attr, $value)
     {
-        if (is_string($value) && trim($value) === '') $this->fill([$name => null]);
+        // sanitize empty string value to null
+        if (is_string($value) && trim($value) === '') {
+            $split = collect(explode('.', $attr));
+
+            if ($split->count() > 1) {
+                $key = $split->first();
+                $field = $split->forget(0)->join('.');
+
+                if ($this->$key instanceof \Illuminate\Database\Eloquent\Model) {
+                    $this->$key->fill([$field => null]);
+                }
+                else {
+                    $this->fill([$attr => null]);
+                }
+            }
+            else {
+                $this->fill([$attr => null]);
+            }
+        }
     }
 
     // set form
@@ -117,38 +135,36 @@ trait AtomComponent
         return $query->paginate($max);
     }
 
-    // get options
+    // get select options
     public function getOptions($id, $name, $filters = [])
     {
         $this->options[$id] = Atom::options($name, $filters);
     }
 
-    // ask other component to execute action
-    public function ask($component, $action, ...$args)
+    // fill properties into other component
+    public function fillTo($component, $props)
     {
-        if ($component === 'parent') {
-            $this->emitUp('execute', [
-                'action' => $action,
-                'args' => $args,
-            ]);
-        }
-        else {
-            $this->emitTo($component, 'execute', [
-                'action' => $action,
-                'args' => $args,
-            ]);
-        }
+        $this->commandTo($component, 'fill', ['values' => $props]);
+    }
+
+    // command to other component to perform action
+    public function commandTo($component, $action, $props = [])
+    {
+        $data = [
+            'action' => $action,
+            'props' => $props,
+        ];
+
+        if ($component === 'parent') $this->emitUp('execute', $data);
+        else $this->emitTo($component, 'execute', $data);
     }
 
     // execute an action with arguments
-    public function execute($args)
+    public function execute($props)
     {
-        $action = get($args, 'action');
-        unset($args['action']);
-
-        $args = get($args, 'args');
-
-        $this->$action(...$args);
+        $action = get($props, 'action');
+        $props = get($props, 'props');
+        $this->$action(...$props);
     }
 
     // refresh component

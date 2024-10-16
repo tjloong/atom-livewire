@@ -2,6 +2,7 @@
 $name = $attributes->get('name');
 $label = $attributes->get('label') ?? str()->headline($name);
 $inset = $attributes->get('inset');
+$breadcrumb = $attributes->get('breadcrumb', true);
 $transparent = $attributes->get('transparent');
 
 $classes = $attributes->classes()
@@ -24,8 +25,13 @@ $attrs = $attributes
     x-data="sheet({ name: @js($name), label: @js($label) })"
     x-transition.opacity.duration.200
     x-on:sheet-show.window="show($event.detail)"
+    x-on:sheet-label.window="setLabel($event.detail)"
     x-on:sheet-back.window="back()"
     data-atom-sheet="{{ $name }}"
     {{ $attrs }}>
+    @if ($breadcrumb)
+        <atom:breadcrumb/>
+    @endif
+
     {{ $slot }}
 </div>

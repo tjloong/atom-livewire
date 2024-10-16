@@ -21,13 +21,13 @@
                 <x-inform :message="$message"/>
             @endif
 
-            <x-input type="email" wire:model.defer="inputs.email" label="app.label.email" autofocus/>
+            <atom:_input type="email" wire:model.defer="inputs.email" label="email" autofocus/>
 
             <div class="space-y-3">
-                <x-input type="password" wire:model.defer="inputs.password" label="app.label.password"/>
+                <atom:_input type="password" wire:model.defer="inputs.password" label="password"/>
 
                 @if (app('route')->has('password.forgot'))
-                    <x-anchor label="app.label.forgot-password" :href="route('password.forgot')" class="text-sm"/>
+                    <atom:link :href="route('password.forgot')" class="text-sm">@t('forgot-password')?</atom:link>
                 @endif
             </div>
 
@@ -38,7 +38,7 @@
     @if (app('route')->has('register'))
         <div class="text-center">
             @t('dont-have-account')
-            <x-anchor label="app.label.signup-now" :href="route('register', ['utm_source' => 'page-login'])"/>
+            <atom:link :href="route('register', ['utm_source' => 'page-login'])">@t('signup-now')</atom:link>
         </div>
     @endif
 </div>

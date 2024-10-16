@@ -64,7 +64,7 @@ $attrs = $attributes
                             x-on:keydown.enter.prevent="$wire.set('filters.search', text)"
                             placeholder="@t('search')"
                             x-bind:class="text ? 'w-40' : 'w-14'"
-                            class="focus:w-40 transition-all duration-100">
+                            class="focus:outline-none focus:w-40 transition-all duration-100">
                         <x-icon close
                             x-show="text"
                             x-on:click="$wire.set('filters.search', null); text = ''"

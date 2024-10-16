@@ -103,8 +103,11 @@ $attrs = $attributes
 @elseif ($variant === 'native')
     <div
         wire:ignore.self
-        x-data="{ name: {{ js($options) }} }"
-        x-init="name && $wire.getOptions({{ js($id) }}, name)"
+        {{ $attrs->only('wire:key') }}
+        @if ($options)
+        x-data
+        x-init="$wire.getOptions({{ js($id) }}, {{ js($options) }}, {{ js($filters) }})"
+        @endif
         class="group/input relative w-full block"
         data-atom-select-native>
         @if ($icon)
@@ -113,7 +116,7 @@ $attrs = $attributes
             </div>
         @endif
 
-        <select {{ $attrs }}>
+        <select {{ $attrs->except('wire:key') }}>
             @if ($placeholder)
                 <atom:option value="" selected class="placeholder">
                     {{ t($placeholder) }}
@@ -136,6 +139,7 @@ $attrs = $attributes
 @elseif ($variant === 'listbox')
     <div
         wire:ignore.self
+        {{ $attrs->only('wire:key') }}
         x-data="select({
             id: {{ js($id) }},
             name: {{ js($options) }},
@@ -160,7 +164,7 @@ $attrs = $attributes
                 type="button"
                 x-ref="trigger"
                 x-on:click="open()"
-                {{ $attrs }}>
+                {{ $attrs->except('wire:key') }}>
                 @if ($icon)
                     <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
                         <atom:icon :name="$icon"/>

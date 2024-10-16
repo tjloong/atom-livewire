@@ -1,12 +1,21 @@
 @php
 $inset = $attributes->get('inset', false);
 
-$classes = $attributes->classes()->add('rounded-lg bg-white border border-zinc-200 shadow-sm');
-if (!$inset) $classes->add('p-6');
+$classes = $attributes->classes()
+    ->add('relative rounded-lg bg-white border border-zinc-200 shadow-sm')
+    ->add($inset ? '' : 'p-6')
+    ;
 
-$attrs = $attributes->class($classes)->except('inset');
+$attrs = $attributes
+    ->class($classes)
+    ->merge([
+        'data-atom-card' => true,
+        'data-atom-card-inset' => $inset ? true : null,
+    ])
+    ->except('inset')
+    ;
 @endphp
 
-<div {{ $attrs }} data-atom-card>
+<div {{ $attrs }}>
     {{ $slot }}
 </div>

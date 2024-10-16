@@ -221,6 +221,11 @@ class AtomServiceProvider extends ServiceProvider
         Blade::directive('e', function ($expression) {
             return "<?php echo e($expression); ?>";
         });
+
+        // @ee() - short hand for echo (without double encode)
+        Blade::directive('ee', function ($expression) {
+            return "<?php echo $expression; ?>";
+        });
     }
 
     // register gates

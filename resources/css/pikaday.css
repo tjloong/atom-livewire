@@ -49,6 +49,7 @@
 
         td {
             padding: 1px;
+            text-align: center;
 
             button {
                 @apply w-10 h-10 text-center text-zinc-600 rounded-md;

@@ -17,7 +17,11 @@ export default (align = 'left') => {
             if (this.menu.hasClass('hidden')) {
                 this.menu.removeClass('hidden')
                 this.menu.addClass('opacity-100')
-                this.$nextTick(() => this.positioning())
+
+                this.$nextTick(() => {
+                    this.positioning()
+                    this.$root.dispatch('open', null, false)
+                })
             }
             else this.close()
         },
@@ -26,7 +30,11 @@ export default (align = 'left') => {
             if (this.menu.hasClass('hidden')) return
             this.menu.addClass('opacity-0')
             this.menu.removeClass('opacity-100')
-            setTimeout(() => this.menu.addClass('hidden'), 75)
+
+            setTimeout(() => {
+                this.menu.addClass('hidden')
+                this.$root.dispatch('close', null, false)
+            }, 75)
         },
 
         positioning () {

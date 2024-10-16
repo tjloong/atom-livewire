@@ -3,11 +3,11 @@
 @php
 $value = $attributes->get('value');
 $label = $attributes->get('label');
+$attrs = $attributes->except(['value', 'label']);
 @endphp
 
 @if ($variant === 'listbox')
     <li
-        wire:key="option-{{ $value }}"
         x-on:click="select({{ js($value) }})"
         x-on:mouseover="focus($el)"
         x-on:mouseout="blur($el)"
@@ -15,7 +15,8 @@ $label = $attributes->get('label');
         x-bind:data-option-selected="isSelected({{ js($value) }})"
         data-option-value="{{ $value }}"
         data-option-label="{{ $label }}"
-        data-atom-option>
+        data-atom-option
+        {{ $attrs }}>
         <div class="shrink-0 w-6 h-6 flex items-center justify-center text-transparent [[data-option-selected]>&]:text-zinc-400">
             <atom:icon check/>
         </div>
@@ -28,9 +29,10 @@ $label = $attributes->get('label');
         </div>
     </li>
 @else
-    <option {{ $attributes->merge([
-        'wire:key' => $value ? 'option-'.$value : null
-    ]) }} data-atom-option>
+    <option
+        value="{{ $value }}"
+        data-atom-option
+        {{ $attrs }}>
         @if ($slot->isNotEmpty())
             {{ $slot }}
         @else

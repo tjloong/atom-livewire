@@ -86,7 +86,7 @@ else {
         'lg' => $classes->add('text-lg h-12 px-5 gap-2'),
         'sm' => $classes->add('text-sm h-8 px-3 gap-1'),
         'xs' => $classes->add('text-xs h-6 px-2 gap-1'),
-        default => $classes->add('h-10 px-4 gap-2'),
+        default => $classes->add('text-base h-10 px-4 gap-2'),
     };
 }
 
