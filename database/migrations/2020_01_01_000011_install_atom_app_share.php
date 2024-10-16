@@ -12,14 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('shares', function(Blueprint $table) {
-            $table->id();
-            $table->ulid()->nullable();
+            $table->ulid('id')->primary();
             $table->integer('valid_for')->nullable();
             $table->json('data')->nullable();
             $table->boolean('is_enabled')->nullable();
             $table->string('parent_type')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->timestamp('expired_at')->nullable();
+            $table->datetime('expired_at')->nullable();
             $table->timestamps();
         });
     }

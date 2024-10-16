@@ -5,28 +5,16 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                // base
-                'resources/js/base.js',
-                'resources/css/base.css',
+                'resources/js/app.js',
+                'resources/js/web.js',
+                'resources/js/auth.js',
+                'resources/js/onboarding.js',
 
-                // app portal
-                // 'resources/js/app.js',
-                // 'resources/css/app.css', 
-                
-                // auth
-                // 'resources/js/auth.js',
-                // 'resources/css/auth.css', 
-
-                // web
-                // 'resources/js/web.js',
-                // 'resources/css/web.css', 
-
-                // onboarding
-                // 'resources/js/onboarding.js',
-                // 'resources/css/onboarding.css', 
-
-                // pdf
-                // 'resources/css/pdf.css', 
+                'resources/css/app.css', 
+                'resources/css/pdf.css',
+                'resources/css/web.css', 
+                'resources/css/auth.css', 
+                'resources/css/onboarding.css', 
             ],
             refresh: true,
         }),

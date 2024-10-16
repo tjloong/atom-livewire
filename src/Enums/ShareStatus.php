@@ -1,9 +1,13 @@
 <?php
 
-namespace Jiannius\Atom\Enums\Share;
+namespace Jiannius\Atom\Enums;
 
-enum Status: string
+use Jiannius\Atom\Traits\Enum;
+
+enum ShareStatus: string
 {
+    use Enum;
+
     case ACTIVE = 'active';
     case DISABLED = 'disabled';
     case EXPIRED = 'expired';
@@ -15,15 +19,5 @@ enum Status: string
             static::DISABLED => 'gray',
             static::EXPIRED => 'gray',
         };
-    }
-
-    public function option()
-    {
-        return ['value' => $this->value, 'label' => $this->label()];
-    }
-
-    public function label()
-    {
-        return str()->headline($this->value);
     }
 }

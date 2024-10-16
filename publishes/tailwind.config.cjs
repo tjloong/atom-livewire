@@ -58,16 +58,20 @@ module.exports = {
         },
         extend: {
             colors: {
-                'theme': {
-                    light: '#ede0ff',
-                    DEFAULT: '#9f5afd',
-                    dark: '#3b028a',
+                'primary': {
+                    50: '#f4f7fb',
+                    100: '#e8eef6',
+                    200: '#ccdceb',
+                    300: '#9fc0da',
+                    400: '#6b9ec5',
+                    500: '#558eb9',
+                    600: '#366893',
+                    700: '#2d5477',
+                    800: '#284864',
+                    900: '#263e54',
+                    950: '#192838',
+                    DEFAULT: '#558eb9',
                 },
-                'theme-inverted': {
-                    light: '#ffffff',
-                    DEFAULT: '#ffffff',
-                    dark: '#ffffff',
-                }
             },
             borderColor: theme => ({
                 DEFAULT: theme('colors.gray.200', 'currentColor'),
