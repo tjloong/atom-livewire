@@ -2,11 +2,19 @@ import Ajax from './ajax.js'
 
 export default {
     ajax: (url) => (new Ajax(url)),
-    goto: (url) => window.location = url,
     json: (...args) => (JSON.stringify(...args)),
-    newtab: (url) => window.open(url, '_blank'),
     random: () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
     dispatch: (name, detail) => dispatchEvent(new CustomEvent(name, { bubbles: true, detail })),
+
+    goto: (url = null) => {
+        if (!url) return
+        window.location = url
+    },
+
+    newtab: (url = null) => {
+        if (!url) return
+        window.open(url, '_blank')
+    },
 
     // get highest zindex
     highestZIndex: () => {

@@ -36,6 +36,7 @@ $attrs = $attributes
         'href' => $href,
         'type' => $href ? null : 'button',
         'data-active' => $active,
+        'data-atom-menu-item' => true,
         'x-on:click' => $value ? "\$dispatch('input', '$value')" : null,
     ])
     ->except(['icon', 'route', 'can', 'value', 'active'])
@@ -43,14 +44,13 @@ $attrs = $attributes
 @endphp
 
 @if ($permitted)
-    <{{ $el }} {{ $attrs }} data-atom-menu-item>
+    <{{ $el }} {{ $attrs }}>
         @if (get($icon, 'start'))
-            <x-icon
+            <atom:icon
                 :name="get($icon, 'start')"
                 size="18"
-                class="shrink-0 opacity-40"
-                data-atom-menu-item-icon>
-            </x-icon>
+                class="shrink-0 opacity-40">
+            </atom:icon>
         @endif
 
         <div class="grow font-medium leading-tight whitespace-nowrap truncate">
@@ -64,11 +64,11 @@ $attrs = $attributes
         @endif
 
         @if (get($icon, 'end'))
-            <x-icon
+            <atom:icon
                 :name="get($icon, 'end')"
                 size="18"
                 class="shrink-0 opacity-40">
-            </x-icon>
+            </atom:icon>
         @endif
     </{{ $el }}>
 @endif

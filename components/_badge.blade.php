@@ -7,9 +7,9 @@ $color = $attributes->get('color') ?? (atom()->isEnum($status) ? $status->color(
 $classes = $attributes->classes()
     ->add('inline-flex items-center justify-center font-medium whitespace-nowrap border max-w-xs')
     ->add(match ($size) {
-        'xs' => 'text-xs px-2 rounded',
-        'lg' => 'text-base px-3 rounded',
-        default => 'text-sm px-2 rounded',
+        'xs' => 'text-xs px-2 py-0.5 rounded',
+        'lg' => 'text-base px-3 py-1 rounded',
+        default => 'text-sm px-2 py-0.5 rounded',
     })
     ->add(match ($color) {
         'red' => 'bg-red-100 text-red-500 border-red-300',

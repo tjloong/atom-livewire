@@ -2,35 +2,38 @@
 
 namespace Jiannius\Atom\Http\Livewire\App;
 
-use Jiannius\Atom\Atom;
-use Jiannius\Atom\Component;
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
+use Livewire\Component;
 
 class NotificationCenter extends Component
 {
+    use AtomComponent;
+
     public $tab = 'unread';
     public $page = 1;
+    public $count = 0;
     public $notifications = [];
 
-    protected $listeners = [
-        'showNotificationCenter' => 'open',
-    ];
-
-    // updated tab
     public function updatedTab() : void
     {
         $this->reset('page');
         $this->getNotifications();
     }
 
-    // open
     public function open() : void
     {
         $this->reset('tab', 'page', 'notifications');
         $this->getNotifications();
-        Atom::modal()->show();
     }
 
-    // get notifications
+    public function getCount() : void
+    {
+        $this->count = model('notification')
+            ->where('receiver_id', user('id'))
+            ->status('UNREAD')
+            ->count();
+    }
+
     public function getNotifications() : void
     {
         $query = model('notification')
@@ -38,7 +41,8 @@ class NotificationCenter extends Component
             ->where('receiver_id', user('id'))
             ->status($this->tab)
             ->latest()
-            ->toPage($this->page, 100);
+            ->toPage($this->page, 100)
+            ;
 
         $result = collect($query->items())->map(fn($row) => [
             ...$row->toArray(),
@@ -52,23 +56,22 @@ class NotificationCenter extends Component
         $this->notifications = $this->page === 1
             ? $result->toArray()
             : collect($this->notifications)->concat($result)->toArray();
+
+        $this->getCount();
     }
 
-    // mark read
     public function read($id, $bool = true) : void
     {
         model('notification')->find($id)->read($bool);
         $this->remove($id);
     }
 
-    // archive
     public function archive($id, $bool = true) : void
     {
         model('notification')->find($id)->archive($bool);
         $this->remove($id);
     }
 
-    // remove
     public function remove($id) : void
     {
         $notifications = collect($this->notifications);
@@ -76,14 +79,7 @@ class NotificationCenter extends Component
         $notifications->splice($index, 1);
 
         $this->notifications = $notifications->values()->all();
-    }
 
-    // count
-    public function count() : int
-    {
-        return model('notification')
-            ->where('receiver_id', user('id'))
-            ->status('UNREAD')
-            ->count();
+        $this->getCount();
     }
 }

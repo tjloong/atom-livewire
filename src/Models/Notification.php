@@ -8,13 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Jiannius\Atom\Traits\Models\Footprint;
-use Jiannius\Atom\Traits\Models\HasFilters;
 
 class Notification extends Model
 {
     use Footprint;
     use HasFactory;
-    use HasFilters;
     use HasUlids;
 
     protected $guarded = [];
@@ -74,14 +72,14 @@ class Notification extends Model
     // mark as read
     public function read($bool = true) : void
     {
-        $this->read_at = $bool ? now() : null;
-        $this->save();
+        if ($bool && !$this->read_at) $this->fill(['read_at' => now()])->save();
+        if (!$bool && $this->read_at) $this->fill(['read_at' => null])->save();
     }
 
     // mark as archived
     public function archive($bool = true) : void
     {
-        $this->archived_at = $bool ? now() : null;
-        $this->save();
+        if ($bool && !$this->archived_at) $this->fill(['archived_at' => now()])->save();
+        if (!$bool && $this->archived_at) $this->fill(['archived_at' => null])->save();
     }
 }

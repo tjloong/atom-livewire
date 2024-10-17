@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\DB;
 
 class Builder
 {
+    public function toPage()
+    {
+        return function ($page = 1, $rows = 50) {
+            return $this->paginate($rows, ['*'], 'page', $page);
+        };
+    }
+
     public function tableColumns()
     {
         return function () {

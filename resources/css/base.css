@@ -35,6 +35,13 @@ a {
     @apply cursor-not-allowed;
 }
 
+.text-muted {
+    @apply text-zinc-500;
+}
+.text-muted-more {
+    @apply text-zinc-400;
+}
+
 /* button */
 .button-2xs.is-loading,
 .button-xs.is-loading,
