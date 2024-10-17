@@ -13,7 +13,21 @@ export default (toasts) => {
             return {
                 id: Atom.ulid(),
                 visible: false,
-                theme: 'dark',
+                theme: 'light',
+                icon: {
+                    svg: {
+                        success: icons['check-circle'],
+                        error: icons['close-circle'],
+                        warning: icons['warning'],
+                        info: icons['info'],
+                    }[toast.type] || null,
+                    color: {
+                        success: 'text-green-500',
+                        error: 'text-red-500',
+                        warning: 'text-yellow-500',
+                        info: 'text-sky-500',
+                    }[toast.type] || 'text-muted',
+                },
                 ...toast,
             }
         },
@@ -40,6 +54,11 @@ export default (toasts) => {
                 this.toasts.push(this.build(value))
                 this.toasts.forEach(toast => this.show(toast))
             }
+        },
+
+        click (toast) {
+            if (typeof toast.click === 'function') toast.click()
+            else if (toast.href) Atom.goto(toast.href, toast.newtab)
         },
     }
 }

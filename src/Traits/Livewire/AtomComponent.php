@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Traits\Livewire;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Jiannius\Atom\Atom;
 
 trait AtomComponent
 {
+    use AuthorizesRequests;
+
     public $errors;
     public $keyhash;
 

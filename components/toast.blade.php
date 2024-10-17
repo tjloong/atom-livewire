@@ -20,25 +20,28 @@ $position = [
             <template x-for="toast in toasts" hidden>
                 <div
                     x-show="toast.visible"
-                    x-transition.duration.200
+                    x-transition:enter="transition ease-in-out duration-150"
+                    x-transition:enter-start="opacity-0 translate-y-full"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in-out duration-150"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 translate-y-full"
+                    x-on:click="click(toast)"
                     x-bind:class="{
                         'bg-white border text-zinc-800': toast.theme === 'light',
                         'bg-black/80 text-gray-100': toast.theme === 'dark',
                         'bg-red-500 text-gray-100': toast.theme === 'destructive',
+                        'cursor-pointer': !empty(toast.href),
                     }"
-                    class="rounded-lg shadow w-full relative transition ease-in-out">
-                    <div x-bind:class="{
-                        'flex gap-3 py-3 pl-3 pr-5': toast.type,
-                        'flex gap-3 py-3 px-5': !toast.type,
-                    }">
-                        <template x-if="toast.type" hidden>
-                            <div class="shrink-0 w-8 h-8 flex items-center justify-center">
-                                <x-icon check-circle size="24" x-show="toast.type === 'success'" class="text-green-500"/>
-                                <x-icon close-circle size="24" x-show="toast.type === 'error'" class="text-red-500"/>
-                                <x-icon warning size="24" x-show="toast.type === 'warning'" class="text-yellow-500"/>
-                                <x-icon info size="24" x-show="toast.type === 'info'" class="text-sky-500"/>
-                            </div>
-                        </template>
+                    class="rounded-lg shadow-lg w-full relative">
+                    <div class="flex gap-4 py-4 px-5">
+                        <div x-show="toast.icon.svg" class="shrink-0 w-8 h-8 flex items-center justify-center">
+                            <atom:icon
+                                x-html="toast.icon.svg"
+                                x-bind:class="toast.icon.color"
+                                size="24">
+                            </atom:icon>
+                        </div>
 
                         <div class="grow flex min-h-8">
                             <div class="self-center space-y-1">
@@ -81,8 +84,8 @@ $position = [
                     <button
                         type="button"
                         x-on:click="close(toast)"
-                        class="appearance-none absolute top-0.5 right-0.5 p-2 flex items-center justify-center">
-                        <x-icon close/>
+                        class="appearance-none absolute top-4 right-4 flex items-center justify-center">
+                        <atom:icon close/>
                     </button>
                 </div>
             </template>

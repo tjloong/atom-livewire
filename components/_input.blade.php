@@ -182,6 +182,7 @@ $attrs = $attributes
                         }"
                         class="w-full h-full flex items-center justify-center cursor-pointer">
                         <atom:icon copy x-show="!copied"/>
+                        <atom:icon check x-show="copied"/>
                     </div>
                 @elseif ($clearable)
                     <div

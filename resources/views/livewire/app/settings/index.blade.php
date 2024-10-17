@@ -17,7 +17,7 @@
             @if ($this->component)
                 @livewire(
                     $this->component->path,
-                    $this->component->params ?? [],
+                    $this->component->props ?? [],
                     key($this->component->key)
                 )
             @endif

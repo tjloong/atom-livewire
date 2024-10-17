@@ -6,9 +6,10 @@ export default {
     random: () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
     dispatch: (name, detail) => dispatchEvent(new CustomEvent(name, { bubbles: true, detail })),
 
-    goto: (url = null) => {
+    goto: (url = null, newtab = false) => {
         if (!url) return
-        window.location = url
+        if (newtab) Atom.newtab(url)
+        else window.location = url
     },
 
     newtab: (url = null) => {
