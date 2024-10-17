@@ -14,6 +14,27 @@ use Jiannius\Atom\Services\Toast;
 
 class Atom
 {
+    // call
+    public function __call($name, $args)
+    {
+        return $this->resolve($name, $args);
+    }
+
+    // call static
+    public static function __callStatic($name, $args)
+    {
+        return (new self())->resolve($name, $args);
+    }
+
+    // resolve
+    public function resolve($name, $args)
+    {
+        $name = str()->studly($name);
+        $class = "\Jiannius\Atom\Services\\$name";
+
+        return new $class(...$args);
+    }
+
     // alert
     public static function alert($message, $type = null)
     {
@@ -80,44 +101,21 @@ class Atom
         return $name ? $country->get($name, $field) : $country->all();
     }
 
-    // call
-    public function __call($name, $args)
+    public static function hasLivewireComponent($path)
     {
-        return $this->resolve($name, $args);
+        $namespace = str($path)->namespace()->replace('\\', '/');
+
+        $paths = [
+            app_path("Http/Livewire/$namespace.php"),
+            atom_path("src/Http/Livewire/$namespace.php"),
+        ];
+
+        return collect($paths)
+            ->filter(fn($val) => file_exists($val))
+            ->isNotEmpty();
     }
 
-    // call static
-    public static function __callStatic($name, $args)
-    {
-        return (new self())->resolve($name, $args);
-    }
-    
-    // resolve
-    public function resolve($name, $args)
-    {
-        $name = str()->studly($name);
-        $class = "\Jiannius\Atom\Services\\$name";
-
-        return new $class(...$args);
-    }
-
-    // check has livewire component
-    public function hasLivewireComponent($path)
-    {
-        $class = str($path)->namespace();
-
-        return !empty(
-            collect([
-                "App\Http\Livewire\\$class",
-                "App\Http\Livewire\\$class\\Index",
-                "Jiannius\Atom\Http\Livewire\\$class",
-                "Jiannius\Atom\Http\Livewire\\$class\\Index",
-            ])->first(fn($s) => class_exists($s))
-        );
-    }
-
-    // check variable is enum
-    public function isEnum($value)
+    public static function isEnum($value)
     {
         return $value instanceof \UnitEnum
             || $value instanceof \BackedEnum;
