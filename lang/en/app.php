@@ -262,7 +262,7 @@ return [
         'old-value' => 'Old Value',
         'option' => 'Option|Options',
         'or-browse-library' => 'Or browse library',
-        'or-drop-paste-to-upload' => 'Or drop / paste here to upload (Max :max)',
+        'or-drop-paste-to-upload' => 'Or drop / paste here to upload',
         'or-login-with' => 'Or Login With',
         'or-paste-to-upload' => 'Or paste here to upload',
         'or-share-to' => 'Or share to',

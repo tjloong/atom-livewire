@@ -15,8 +15,8 @@ $classes = $attributes->classes()
     ;
 
 $styles = $attributes->styles()
-    ->add('width', str($size)->finish('px'))
-    ->add('height', str($size)->finish('px'));
+    ->add('width', str($size)->endsWith('%') ? $size : str($size)->finish('px'))
+    ->add('height', str($size)->endsWith('%') ? $size : str($size)->finish('px'));
 
 $attrs = $attributes
     ->class($classes)

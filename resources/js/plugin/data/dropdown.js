@@ -16,10 +16,10 @@ export default (align = 'left') => {
         open () {
             if (this.menu.hasClass('hidden')) {
                 this.menu.removeClass('hidden')
-                this.menu.addClass('opacity-100')
-
+                
                 this.$nextTick(() => {
                     this.positioning()
+                    this.menu.addClass('opacity-100')
                     this.$root.dispatch('open', null, false)
                 })
             }
@@ -28,13 +28,14 @@ export default (align = 'left') => {
 
         close () {
             if (this.menu.hasClass('hidden')) return
+
             this.menu.addClass('opacity-0')
             this.menu.removeClass('opacity-100')
 
             setTimeout(() => {
                 this.menu.addClass('hidden')
                 this.$root.dispatch('close', null, false)
-            }, 75)
+            }, 200)
         },
 
         positioning () {

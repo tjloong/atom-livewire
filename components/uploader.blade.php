@@ -22,6 +22,7 @@ $attrs = $attributes->except(['max', 'accept', 'multiple']);
         x-ref="input"
         x-on:change="read(Array.from($event.target.files))"
         x-on:input.stop
+        x-on:click.stop
         accept="{{ $accept }}"
         @if ($multiple)
         multiple
