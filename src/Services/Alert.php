@@ -29,7 +29,9 @@ class Alert
                 ...$alert,
                 ...$message,
                 'title' => t(get($message, 'title')),
-                'message' => t(get($message, 'message')),
+                'message' => is_array(get($message, 'message'))
+                    ? collect(get($message, 'message'))->map(fn ($val) => t($val))->toArray()
+                    : t(get($message, 'message')),
             ];
         }
         else {

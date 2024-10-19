@@ -8,7 +8,7 @@ use Jiannius\Atom\Atom;
 class Util
 {
     public static function currency(
-        $value,
+        $value = 0,
         $symbol = null,
         $rounding = false,
         $bracket = false,
@@ -82,5 +82,20 @@ class Util
         $address = $nl2br ? $address->join('<br>') : $address->join(', ');
 
         return empty($address) ? null : $address;
+    }
+
+    public static function filesize($value = 0, $unit = 'MB') : mixed
+    {
+        if (!is_numeric($value)) return $value;
+
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $index = array_search($unit, $units);
+
+        while ($value > 1024) {
+            $value = $value/1024;
+            $index = $index + 1;
+        }
+
+        return round($value, 2).' '.$units[$index];
     }
 }

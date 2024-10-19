@@ -30,7 +30,16 @@ $alert = session()->pull('__alert') ?? [];
                 <template x-if="alert.title" hidden>
                     <div x-text="alert.title" class="grow self-center text-lg font-semibold"></div>
                 </template>
-                <div x-text="alert.message" class="text-gray-500"></div>
+                <template x-if="Array.isArray(alert.message)">
+                    <ul class="list-disc list-inside">
+                        <template x-for="item in alert.message" hidden>
+                            <li x-text="item"></li>
+                        </template>
+                    </ul>
+                </template>
+                <template x-if="typeof alert.message === 'string'" hidden>
+                    <div x-text="alert.message" class="text-gray-500"></div>
+                </template>
             </div>
 
             <button
