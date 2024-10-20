@@ -1,9 +1,11 @@
 @php
 $inset = $attributes->get('inset', false);
+$subtle = $attributes->get('subtle', false);
 
 $classes = $attributes->classes()
-    ->add('relative rounded-lg bg-white border border-zinc-200 shadow-sm')
+    ->add('relative rounded-lg bg-white border shadow-sm')
     ->add($inset ? '' : 'p-6')
+    ->add($subtle ? 'bg-zinc-100 border-transparent' : 'border-zinc-200')
     ;
 
 $attrs = $attributes

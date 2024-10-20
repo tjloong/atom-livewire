@@ -2,13 +2,15 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\User;
 
-use Jiannius\Atom\Component;
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
+use Livewire\Component;
 
 class Permission extends Component
 {
+    use AtomComponent;
+
     public $user;
 
-    // get permissions property
     public function getPermissionsProperty() : mixed
     {
         return collect(model('permission')->actions())->mapWithKeys(fn($actions, $module) => [
@@ -18,7 +20,6 @@ class Permission extends Component
         ]);
     }
 
-    // toggle
     public function toggle($module, $action) : void
     {
         if ($this->user->isPermitted("$module.$action")) {
