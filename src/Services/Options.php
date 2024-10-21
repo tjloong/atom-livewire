@@ -41,4 +41,28 @@ class Options
             'label' => get($state, 'name'),
         ])->toArray();
     }
+
+    public function currencies() : array
+    {
+        $search = (string) str(get($this->filters, 'search'))->upper();
+
+        return Atom::country()
+            ->map(fn ($country) => get($country, 'currency'))
+            ->filter(fn ($val) => !empty(get($val, 'code')) && (
+                ($this->selected && in_array(get($val, 'code'), $this->selected))
+                || get($val, 'code') === $search
+                || str(get($val, 'code'))->is([$search, $search.'*', '*'.$search])
+            ))
+            ->map(fn($currency) => [
+                'value' => get($currency, 'code'),
+                'label' => collect([
+                    get($currency, 'code'),
+                    get($currency, 'symbol'),
+                ])->filter()->join(' - '),
+            ])
+            ->unique('value')
+            ->sortBy('label')
+            ->values()
+            ->all();
+    }
 }

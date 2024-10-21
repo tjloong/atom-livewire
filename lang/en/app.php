@@ -361,6 +361,7 @@ return [
         'sending' => 'Sending',
         'sender-email' => 'Sender Email',
         'sender-name' => 'Sender Name',
+        'sent' => 'Sent',
         'sent-mail' => 'Sent Mail|Sent Mails',
         'settings-updated' => 'Settings Updated',
         'settings' => 'Settings',

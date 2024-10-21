@@ -6,17 +6,17 @@ $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
 $attrs = $attributes->except(['label', 'caption', 'error', 'field']);
 @endphp
 
-<label class="group/checkbox inline-block space-y-2" data-atom-checkbox>
+<label class="group/toggle inline-block space-y-2" data-atom-toggle>
     <div class="inline-flex gap-3">
         <div class="shrink-0 pt-0.5">
             <input type="checkbox" class="hidden peer" {{ $attrs }}>
 
-            <div
-                tabindex="0"
-                role="checkbox"
-                class="w-5 h-5 bg-white rounded-md border border-zinc-300 shadow-sm flex items-center justify-center ring-offset-1 focus:outline-none focus:ring-1 focus:ring-primary peer-checked:bg-primary peer-checked:border-primary group-has-[.error]/checkbox:ring-1 group-has-[.error]/checkbox:ring-red-500">
-                <atom:icon check size="13" class="text-zinc-300 group-has-[:checked]:text-white"/>
-            </div>
+            <button
+                type="button"
+                class="group h-5 w-8 relative inline-flex items-center rounded-full transition bg-zinc-800/15 peer-disabled:bg-zinc-800/10 peer-checked:bg-primary-800 peer-disabled:peer-checked:bg-zinc-500 peer-checked:border-0 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-primary group-has-[.error]/toggle:ring-1 group-has-[.error]/toggle:ring-red-500"
+                x-on:click.stop="$el.parentNode.querySelector('input').click()">
+                <span class="size-3.5 rounded-full transition translate-x-[3px] bg-white group-has-[:disabled]:bg-white/90 group-has-[:checked]:translate-x-[13px] group-has-[:checked]:bg-white"></span>
+            </button>
         </div>
 
         @if ($slot->isNotEmpty())
