@@ -1,6 +1,6 @@
 <atom:_table :paginate="$this->files">
     @slot ('filters')
-        <x-select wire:model="filters.mime" label="app.label.file-type" options="enum.file.type"/>
+        <atom:_select wire:model="filters.mime" label="file-type" options="enum.file-type"/>
     @endslot
 
     @slot ('actions')
@@ -16,7 +16,7 @@
 
     <atom:rows>
         @foreach ($this->files as $file)
-            <atom:row x-on:click="Atom.modal('edit-file').show({{ $file->id }})">
+            <atom:row x-on:click="Atom.modal('app.file.edit').show({{ $file->id }})">
                 <atom:cell :checkbox="$file->id"></atom:cell>
 
                 <atom:cell>

@@ -18,7 +18,18 @@ $classes = $attributes->classes()
         </div>
     @endif
 
-    <div class="grow [[data-atom-input-prefix]+&>[data-atom-input]>input]:rounded-l-none [[data-atom-input-prefix]+&>[data-atom-input]>input]:-ml-px [&:has(+[data-atom-input-suffix])>[data-atom-input]>input]:rounded-r-none">
+    <div class="{{ collect([
+        'grow',
+        '[[data-atom-input-prefix]+&>[data-atom-input]>input]:rounded-l-none',
+        '[[data-atom-input-prefix]+&>[data-atom-input]>input]:-ml-px',
+        '[&:has(+[data-atom-input-suffix])>[data-atom-input]>input]:rounded-r-none',
+        '[[data-atom-input-prefix]+&>[data-atom-select-native]>select]:rounded-l-none',
+        '[[data-atom-input-prefix]+&>[data-atom-select-native]>select]:-ml-px',
+        '[&:has(+[data-atom-input-suffix])>[data-atom-select-native]>select]:rounded-r-none',
+        '[[data-atom-input-prefix]+&>[data-atom-select-listbox-trigger]>button]:rounded-l-none',
+        '[[data-atom-input-prefix]+&>[data-atom-select-listbox-trigger]>button]:-ml-px',
+        '[&:has(+[data-atom-input-suffix])>[data-atom-select-listbox-trigger]>button]:rounded-r-none',
+    ])->filter()->join(' ') }}">
         {{ $slot }}
     </div>
 

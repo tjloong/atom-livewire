@@ -1,14 +1,18 @@
 <?php
 
-namespace Jiannius\Atom\Enums\File;
+namespace Jiannius\Atom\Enums;
 
-enum Type
+use Jiannius\Atom\Traits\Enum;
+
+enum FileType : string
 {
-    case IMAGE;
-    case VIDEO;
-    case AUDIO;
-    case FILE;
-    case YOUTUBE;
+    use Enum;
+
+    case IMAGE = 'image';
+    case VIDEO = 'video';
+    case AUDIO = 'audio';
+    case FILE = 'file';
+    case YOUTUBE = 'youtube';
 
     public function mime()
     {
@@ -19,11 +23,6 @@ enum Type
             static::FILE => 'file',
             static::YOUTUBE => 'youtube',
         };
-    }
-
-    public function label()
-    {
-        return str()->title($this->name);
     }
 
     public function option()

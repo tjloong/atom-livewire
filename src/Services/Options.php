@@ -10,6 +10,12 @@ class Options
     public $selected = [];
     public $options = [];
 
+    public function __call($name, $arguments)
+    {
+        if (str($name)->startsWith('enum.')) return $this->getEnums($name);
+        elseif (str($name)->startsWith(['label', 'labels'])) return $this->getLabels($name);
+    }
+
     public function filter($filters)
     {
         $filters = collect($filters);
@@ -64,5 +70,34 @@ class Options
             ->sortBy('label')
             ->values()
             ->all();
+    }
+
+    public function getEnums($name) : array
+    {
+        $name = (string) str($name)->replaceFirst('enum.', '');
+        
+        return enum($name)->all()
+            ->map(fn ($val) => $val->option())
+            ->toArray();
+    }
+
+    public function getLabels($name) : array
+    {
+        $name = (string) str($name)->replaceFirst('labels.', '')->replaceFirst('label.', '');
+
+        return model('label')->whereIn('id', $this->selected)->union(
+            model('label')
+                ->whereNotIn('id', $this->selected)
+                ->where('type', $name)
+                ->when(get($this->filters, 'parent_id'),
+                    fn($q, $id) => $q->whereIn('parent_id', (array) $id),
+                    fn($q) => $q->whereNull('parent_id'),
+                )
+                ->when(get($this->filters, 'search'), fn($q, $search) => $q->search($search))
+        )->sequence()->get()->map(fn($label) => [
+            'value' => $label->id,
+            'label' => (string) $label,
+            'color' => $label->color,
+        ])->toArray();
     }
 }

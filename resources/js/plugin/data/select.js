@@ -5,7 +5,6 @@ export default (config) => {
         value: config.value,
         multiple: config.multiple,
         text: null,
-        tether: null,
         visible: false,
 
         get options () {

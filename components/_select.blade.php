@@ -2,13 +2,13 @@
 $id = $attributes->wire('key')->value() ?: $attributes->wire('model')->value();
 $icon = $attributes->get('icon');
 $label = $attributes->get('label');
-$variant = $attributes->get('variant', 'native');
-$prefix = $prefix ?? $attributes->get('prefix');
-$suffix = $suffix ?? $attributes->get('suffix');
 $caption = $attributes->get('caption');
+$variant = $attributes->get('variant', 'native');
+$prefix = $attributes->get('prefix');
+$suffix = $attributes->get('suffix');
 $invalid = $attributes->get('invalid');
 $multiple = $attributes->get('multiple');
-$clearable = $attributes->get('clearable');
+$clearable = $attributes->get('clearable', true);
 $searchable = $attributes->get('searchable', false);
 $placeholder = $attributes->get('placeholder', 'Please select...');
 $transparent = $attributes->get('transparent');
@@ -16,6 +16,7 @@ $transparent = $attributes->get('transparent');
 $field = $attributes->get('field') ?? $attributes->wire('model')->value();
 $required = $attributes->get('required') ?? $this->form['required'][$field] ?? false;
 $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
+$enum = $attributes->get('enum');
 $options = $attributes->get('options');
 $filters = $attributes->get('filters');
 
@@ -51,55 +52,23 @@ $attrs = $attributes
 @endphp
 
 @if ($label || $caption)
-    <atom:_field>
-        @if ($label)
-            <atom:_label>
-                <div class="inline-flex items-center justify-center gap-2">
-                    @t($label)
-                    @if ($required)
-                        <atom:icon asterisk size="12" class="text-red-500 shrink-0"/>
-                    @endif
-                </div>
-            </atom:_label>
-        @endif
-
+    <atom:_input.field
+        :label="$label"
+        :caption="$caption"
+        :required="$required"
+        :error="$error">
         <atom:_select
             :placeholder="$placeholder"
             :attributes="$attributes->except(['label', 'caption', 'placeholder'])">
             {{ $slot }}
         </atom:_select>
-
-        <atom:_error>@t($error)</atom:_error>
-        <atom:caption>@t($caption)</atom:caption>
-    </atom:_field>
+    </atom:_input.field>
 @elseif ($prefix || $suffix)
-    <div class="flex items-center">
-        @if ($prefix)
-            <div class="rounded-l-lg border border-zinc-200 border-b-zinc-300/80 border-r-0 shadow-sm overflow-hidden {{ $size }}" data-atom-input-prefix>
-                @if ($prefix instanceof \Illuminate\View\ComponentSlot)
-                    {{ $prefix }}
-                @else
-                    <div class="px-6 flex items-center justify-center bg-zinc-100 w-full h-full">
-                        {{ t($prefix) }}
-                    </div>
-                @endif
-            </div>
-        @endif
-
-        @if ($suffix)
-            <div class="order-last rounded-r-lg border border-zinc-200 border-b-zinc-300/80 border-l-0 shadow-sm overflow-hidden {{ $size }}" data-atom-input-suffix>
-                @if ($suffix instanceof \Illuminate\View\ComponentSlot)
-                    {{ $suffix }}
-                @else
-                    <div class="px-6 flex items-center justify-center bg-zinc-100 w-full h-full">
-                        {{ t($suffix) }}
-                    </div>
-                @endif
-            </div>
-        @endif
-
-        <atom:_select :attributes="$attributes->except(['prefix', 'suffix'])"/>
-    </div>
+    <atom:_input.prefix :prefix="$prefix" :suffix="$suffix">
+        <atom:_select :attributes="$attributes->except(['prefix', 'suffix'])">
+            {{ $slot }}
+        </atom:_select>
+    </atom:_input.prefix>
 @elseif ($variant === 'native')
     <div
         wire:ignore.self
@@ -132,9 +101,31 @@ $attrs = $attributes
             @endforelse
         </select>
 
-        <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
-            <atom:icon dropdown/>
-        </div>
+        @if ($clearable)
+            <div
+                x-cloak
+                x-data="{
+                    show: false,
+                    select: null,
+                }"
+                x-init="() => {
+                    select = $el.parentNode.querySelector('select')
+                    select.addEventListener('change', (e) => show = !empty(e.target.value))
+                }"
+                x-on:click.stop="() => {
+                    select.value = ''
+                    select.dispatch('change')
+                }"
+                x-bind:class="!show && 'pointer-events-none'"
+                class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
+                <atom:icon close x-show="show"/>
+                <atom:icon dropdown x-show="!show"/>
+            </div>
+        @else
+            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
+                <atom:icon dropdown/>
+            </div>
+        @endif
     </div>
 @elseif ($variant === 'listbox')
     <div
@@ -158,7 +149,7 @@ $attrs = $attributes
         x-on:click.away="close()"
         data-atom-select-listbox
         class="group/select w-full">
-        <div class="relative block">            
+        <div class="relative block" data-atom-select-listbox-trigger>
             <button
                 wire:ignore
                 type="button"
@@ -222,7 +213,8 @@ $attrs = $attributes
         <div
             x-ref="options"
             x-show="visible"
-            class="absolute z-10 opacity-0 transition-opacity duration-75 rounded-lg bg-white w-full shadow-sm border border-zinc-200">
+            class="absolute z-10 opacity-0 transition-opacity duration-75 rounded-lg bg-white w-full shadow-sm border border-zinc-200"
+            data-atom-select-listbox-options>
             @if ($options && $searchable)
                 <div class="py-3 px-4 flex items-center gap-2 border-b">
                     <atom:icon search class="text-zinc-400 shrink-0"/>

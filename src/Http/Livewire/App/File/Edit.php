@@ -3,62 +3,56 @@
 namespace Jiannius\Atom\Http\Livewire\App\File;
 
 use Jiannius\Atom\Atom;
-use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
+use Livewire\Component;
 
 class Edit extends Component
 {
-    use WithForm;
+    use AtomComponent;
 
     public $file;
-    public $inputs;
 
-    // validation
     protected function validation(): array
     {
         return [
             'file.name' => ['required' => 'File name is required.'],
+            'file.data' => ['nullable'],
+            'file.data.alt' => ['nullable'],
+            'file.data.description' => ['nullable'],
         ];
     }
 
-    // open
     public function open($id) : void
     {
-        if ($this->file = model('file')->find($id)) {
-            $this->fill([
-                'inputs.alt' => data_get($this->file->data, 'alt'),
-                'inputs.description' => data_get($this->file->data, 'description'),
-            ]);
-        }
+        $this->resetValidation();
+
+        $this->file = model('file')->find($id);
+
+        $this->file->fill([
+            'data' => [
+                'alt' => null,
+                'description' => null,
+                ...$this->file->data ?? [],
+            ],
+        ]);
     }
 
-    // close
     public function close() : void
     {
-        $this->resetValidation();
-        $this->emit('fileSaved');
-        Atom::modal('edit-file')->close();
+        $this->commandTo('app.file.listing', 'refresh');
+        Atom::modal('app.file.edit')->close();
     }
 
-    // delete
     public function delete() : void
     {
         $this->file->delete();
         $this->close();
     }
 
-    // submit
     public function submit() : void
     {
-        $this->validateForm();
-        
-        $this->file->fill([
-            'data' => [
-                ...(array) $this->file->data,
-                ...$this->inputs,
-            ],
-        ])->save();
-
+        $this->validate();
+        $this->file->save();
         $this->close();
     }
 }

@@ -19,5 +19,14 @@ $attrs = $attributes
 @endphp
 
 <div {{ $attrs }}>
+    @isset($cover)
+        <figure {{ $cover->attributes->class([
+            'first:rounded-t-lg last:rounded-b-lg bg-zinc-100 overflow-hidden',
+            '[&>*:not(video)]:transistion-transform [&>*:not(video)]:duration-200 [&>*:not(video):hover]:scale-105',
+        ]) }}>
+            {{ $cover }}
+        </figure>
+    @endisset
+
     {{ $slot }}
 </div>

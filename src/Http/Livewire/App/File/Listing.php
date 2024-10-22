@@ -2,10 +2,13 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\File;
 
-use Jiannius\Atom\Component;
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
+use Livewire\Component;
 
 class Listing extends Component
 {
+    use AtomComponent;
+
     public $filters = [
         'mime' => null,
         'search' => null,
@@ -13,10 +16,8 @@ class Listing extends Component
 
     protected $listeners = [
         'uploaded' => '$refresh',
-        'fileSaved' => '$refresh',
     ];
 
-    // get files property
     public function getFilesProperty()
     {
         return $this->getTable(
@@ -24,7 +25,6 @@ class Listing extends Component
         );
     }
 
-    // delete
     public function delete() : void
     {
         if ($id = get($this->table, 'checkboxes')) {

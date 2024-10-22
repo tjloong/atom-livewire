@@ -17,9 +17,11 @@ $attrs = $attributes
     ;
 @endphp
 
-<td {{ $attributes->only('colspan') }} valign="{{ $attributes->get('valign', 'top') }}">
-    <div {{ $attrs }}>
-        @if ($checkbox)
+@if ($checkbox)
+    <td
+        x-on:click.stop
+        valign="{{ $attributes->get('valign', 'top') }}">
+        <div {{ $attrs }}>
             <div
                 x-on:click="checkboxes.toggle(@js($checkbox))"
                 x-on:select="checkboxes.push(@js($checkbox))"
@@ -29,8 +31,12 @@ $attrs = $attributes
                 class="w-6 h-6 rounded-md border flex items-center justify-center cursor-pointer">
                 <x-icon check size="14" class="text-white"/>
             </div>
-        @else
+        </div>
+    </td>
+@else
+    <td {{ $attributes->only('colspan') }} valign="{{ $attributes->get('valign', 'top') }}">
+        <div {{ $attrs }}>
             {{ $slot }}
-        @endif
-    </div>
-</td>
+        </div>
+    </td>
+@endif

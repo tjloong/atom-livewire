@@ -79,7 +79,7 @@ $attrs = $attributes
                             <div
                                 x-data="{ visible: false, filters: null }"
                                 x-init="filters = $wire.get('filters')"
-                                x-on:click.away="visible = false">
+                                x-on:click.away="setTimeout(() => visible = false, 200)">
                                 @if ($filtered)
                                     <div class="flex items-center bg-red-100 border border-red-100 text-red-500 font-medium text-sm rounded-md">
                                         <div x-on:click="visible = true" class="pl-2 cursor-pointer">
@@ -87,20 +87,21 @@ $attrs = $attributes
                                         </div>
         
                                         <div x-on:click="$wire.filters = filters" class="shrink-0 px-1 cursor-pointer text-red-400 hover:text-red-600 flex items-center justify-center">
-                                            <x-icon close/>
+                                            <atom:icon close/>
                                         </div>
                                     </div>
                                 @else
                                     <atom:_button icon="filter" variant="link" :tooltip="@t('filter')" x-on:click="visible = true"></atom:_button>
                                 @endif
-        
+
                                 <div
                                     wire:key="filters"
                                     x-show="visible"
-                                    x-transition
-                                    class="bg-white rounded-lg border shadow-sm p-4 w-80 absolute top-1 right-1 z-10 space-y-4">
-                                    <atom:_heading>@t('filter')</atom:_heading>
-                                    {{ $filters }}
+                                    x-transition.duration.200
+                                    class="absolute top-1 right-1 w-80 z-10">
+                                    <atom:menu class="p-5">
+                                        {{ $filters }}
+                                    </atom:menu>
                                 </div>
                             </div>
                         @endisset
