@@ -9,13 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasSlug;
 use Jiannius\Atom\Traits\Models\HasLocale;
-use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\HasSequence;
 
 class Label extends Model
 {
     use Footprint;
-    use HasFilters;
     use HasLocale;
     use HasSlug;
     use HasSequence;
@@ -104,6 +102,12 @@ class Label extends Model
             ->whereRaw('lower(`name`) like ?', ['%'.str()->lower($search).'%'])
             ->orWhereRaw('`slug` like ?', ['%'.str()->lower($search).'%'])
         );
+    }
+
+    // to string
+    public function __toString()
+    {
+        return get($this->name, app()->currentLocale());
     }
 
     // get the badge

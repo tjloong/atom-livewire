@@ -29,6 +29,8 @@ $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
     </atom:_input.file>
 @elseif ($type === 'tel')
     <atom:_input.tel :required="$required" :attributes="$attributes->except(['type', 'required'])"/>
+@elseif ($type === 'color')
+    <atom:_input.color :required="$required" :attributes="$attributes->except(['type', 'required'])"/>
 @else
     @php
     $size = $attributes->get('size');
