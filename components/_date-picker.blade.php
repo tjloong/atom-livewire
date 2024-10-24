@@ -5,7 +5,6 @@ $time = $attributes->get('time');
 $label = $attributes->get('label');
 $caption = $attributes->get('caption');
 $variant = $attributes->get('variant', 'date');
-$required = $attributes->get('required');
 $placeholder = $attributes->get('placeholder', 'Select date');
 
 $field = $attributes->get('field') ?? $attributes->wire('model')->value();
@@ -27,22 +26,13 @@ $attrs = $attributes
 @endphp
 
 @if ($label || $caption)
-    <atom:_field>
-        @if ($label)
-            <atom:_label>
-                <div class="inline-flex items-center justify-center gap-2">
-                    @t($label)
-                    @if ($required)
-                        <atom:icon asterisk size="12" class="text-red-500 shrink-0"/>
-                    @endif
-                </div>
-            </atom:_label>
-        @endif
-
-        <atom:_date-picker :attributes="$attributes->except(['label', 'caption'])"/>
-        <atom:_error>@t($error)</atom:_error>
-        <atom:caption>@t($caption)</atom:caption>
-    </atom:_field>
+    <atom:_input.field
+        :label="$label"
+        :caption="$caption"
+        :required="$required"
+        :error="$error">
+        <atom:_date-picker :attributes="$attributes->except(['label', 'caption', 'error'])"/>
+    </atom:_input.field>
 @else
     <div
         wire:ignore
@@ -78,7 +68,8 @@ $attrs = $attributes
                             return config.range
                                 ? `${sel[0].format(format)} - ${sel[1].format(format)}`
                                 : sel[0].format(format)
-                        }">
+                        }"
+                        class="truncate">
                     </div>
                 </template>
 
@@ -106,34 +97,52 @@ $attrs = $attributes
         <div
             x-ref="calendar"
             x-show="visible"
-            class="absolute z-10 rounded-lg shadow-sm border border-zinc-200 bg-white opacity-0 transition-opacity duration-75 overflow-auto w-full md:w-auto">
-            @if ($variant === 'range')
-                <div class="flex items-center justify-center divide-x">
-                    <div>
-                        <div x-ref="from" class="w-[300px]"></div>
+            x-transition.duration.200
+            class="absolute z-10 rounded-lg">
+            <atom:menu>
+                @if ($variant === 'range')
+                    <div class="md:flex md:divide-x">
+                        <div class="md:w-40 md:pr-1">
+                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('day'), dayjs().endOf('day'))">@t('today')</atom:menu-item>
+                            <atom:menu-item x-on:click="selectCustomRange(dayjs().subtract(1, 'day').startOf('day'), dayjs().subtract(1, 'day').endOf('day'))">@t('yesterday')</atom:menu-item>
+                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('month').startOf('day'), dayjs().endOf('month').endOf('day'))">@t('this-month')</atom:menu-item>
+                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('year').startOf('day'), dayjs().endOf('year').endOf('day'))">@t('this-year')</atom:menu-item>
+                            <atom:menu-item x-on:click="selectCustomRange(dayjs().subtract(6, 'day').startOf('day'), dayjs().endOf('day'))">@t('last-7-days')</atom:menu-item>
+                            <atom:menu-item x-on:click="selectCustomRange(dayjs().subtract(29, 'day').startOf('day'), dayjs().endOf('day'))">@t('last-30-days')</atom:menu-item>
+                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('month').subtract(1, 'day').startOf('month').startOf('day'), dayjs().startOf('month').subtract(1, 'day').endOf('month').endOf('day'))">@t('last-month')</atom:menu-item>
+                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('year').subtract(1, 'day').startOf('year').startOf('day'), dayjs().startOf('year').subtract(1, 'day').endOf('year').endOf('day'))">@t('last-year')</atom:menu-item>
+                        </div>
 
-                        @if ($time)
-                            <div class="border-t p-2">
-                                <atom:_time-picker x-model="time[0]"/>
+                        <atom:separator class="mt-2 md:hidden">@t('custom-date-range')</atom:separator>
+
+                        <div class="divide-y md:flex md:divide-x md:divide-y-0">
+                            <div>
+                                <div x-ref="from" class="w-[300px]"></div>
+
+                                @if ($time)
+                                    <div class="border-t p-2">
+                                        <atom:_time-picker x-model="time[0]"/>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
-                    </div>
 
-                    <div>
-                        <div x-ref="to" class="w-[300px]"></div>
+                            <div>
+                                <div x-ref="to" class="w-[300px]"></div>
 
-                        @if ($time)
-                            <div class="border-t p-2">
-                                <atom:_time-picker x-model="time[1]"/>
+                                @if ($time)
+                                    <div class="border-t p-2">
+                                        <atom:_time-picker x-model="time[1]"/>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
+                        </div>
                     </div>
-                </div>
-            @elseif ($time)
-                <div class="border-t p-2">
-                    <atom:_time-picker x-model="time[0]"/>
-                </div>
-            @endif
+                @elseif ($time)
+                    <div class="border-t p-2">
+                        <atom:_time-picker x-model="time[0]"/>
+                    </div>
+                @endif
+            </atom:menu>
         </div>
     </div>
 @endif

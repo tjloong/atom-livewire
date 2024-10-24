@@ -26,27 +26,23 @@ export default (config) => {
             this.visible = true
 
             this.$nextTick(() => {
+                this.positioning()
                 this.initPikaday()
-                this.$refs.calendar.addClass('opacity-100')
-
-                setTimeout(() => {
-                    this.positioning()
-                    this.setRange()
-                }, 50)
+                setTimeout(() => this.setRange(), 50)
             })
         },
 
         close () {
-            this.$refs.calendar.removeClass('opacity-100')
+            if (!this.visible) return
 
-            setTimeout(() => {
-                this.visible = false
+            this.visible = false
 
+            this.$nextTick(() => {
                 if (this.picker) {
                     this.picker[0]?.destroy()
                     this.picker[1]?.destroy()
                 }
-            }, 75)
+            })
         },
 
         select () {
@@ -73,6 +69,15 @@ export default (config) => {
                     this.$refs.trigger.dispatch('input', one)
                 }
             }
+        },
+
+        selectCustomRange (from, to) {
+            let format = 'YYYY-MM-DD HH:mm:ss'
+
+            from = this.config.utc ? from.utc().format(format) : from.format(format)
+            to = this.config.utc ? to.utc().format(format) : to.format(format)
+
+            this.$refs.trigger.dispatch('input', `${from} to ${to}`)
         },
 
         clear () {
