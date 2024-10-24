@@ -6,13 +6,13 @@ $classes = $attributes->classes()
     ->add('inline-flex flex-wrap items-center gap-1 select-none p-1 bg-zinc-100 md:flex-nowrap')
     ->add(match ($size) {
         'sm' => 'rounded *:rounded-sm *:text-sm *:py-1 *:px-3',
-        default => 'rounded-md *:rounded *:py-1.5 *:px-4',
+        default => 'rounded-lg *:rounded-md *:py-1.5 *:px-4',
     })
     ;
 
 $attrs = $attributes
     ->class($classes)
-    ->except('x-data')
+    ->except(['tabs', 'x-data'])
     ;
 @endphp
 

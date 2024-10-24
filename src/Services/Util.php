@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Services;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
 use Jiannius\Atom\Atom;
 
@@ -44,7 +45,7 @@ class Util
         return (float) str_replace(',', '.', $removedThousandSeparator);
     }
 
-    public static function short($value, $locale = null) : string
+    public static function short($value = 0, $locale = null) : string
     {
         if (!is_numeric($value)) return $value;
 
@@ -97,5 +98,101 @@ class Util
         }
 
         return round($value, 2).' '.$units[$index];
+    }
+
+    public static function daterange($range) : array
+    {
+        $range = $range ?? '1970-01-01 00:00:00 to '.now()->toDateTimeString();
+
+        $from = carbon(head(explode(' to ', $range)));
+        $to = carbon(last(explode(' to ', $range)));
+
+        $diff = [
+            'd' => $from->diffInDays($to),
+            'm' => $from->diffInMonths($to),
+            'y' => $from->diffInYears($to),
+        ];
+
+        $past = get($diff, 'd') > 0 ? [
+            'from' => $from->copy()->subDays(get($diff, 'd')),
+            'to' => $to->copy()->subDays(get($diff, 'd')),
+        ] : null;
+
+        $tz = now()->timezone(
+            optional(user())->settings('timezone') ?? config('atom.timezone')
+        )->format('P');
+
+        return [
+            'range' => $range,
+            'from' => $from,
+            'to' => $to,
+            'diff' => $diff,
+            'past' => $past,
+            'tz' => $tz,
+        ];
+    }
+
+    public static function queryBreakdown(
+        $query,
+        $diff,
+        $start,
+        $dateColumn = 'date',
+        $totalColumn = 'total'
+    ) : mixed
+    {
+        $breakdown = collect();
+
+        if ($diff['y'] > 1) {
+            $grouped = DB::query()->fromSub($query, 'data')
+                ->selectRaw("
+                    year(`$dateColumn`) AS `year`,
+                    sum(`$totalColumn`) AS `total`
+                ")
+                ->groupBy('year')
+                ->get();
+
+            foreach (range(0, $diff['y']) as $n) {
+                $carbon = $start->copy()->local()->addYears($n);
+                $label = $carbon->year;
+                $value = $grouped->where('year', $carbon->year)->first();
+                $breakdown->put($label, get($value, 'total', 0));
+            }
+        }
+        else if ($diff['m'] > 1) {
+            $grouped = DB::query()->fromSub($query, 'data')
+                ->selectRaw("
+                    date_format(`$dateColumn`, \"%c\") AS `month`,
+                    year(`$dateColumn`) AS `year`,
+                    sum(`$totalColumn`) AS `total`
+                ")
+                ->groupBy(['month', 'year'])
+                ->get();
+
+            foreach (range(0, $diff['m']) as $n) {
+                $carbon = $start->copy()->local()->addMonths($n);
+                $label = $carbon->shortEnglishMonth.' '.$carbon->format('y');
+                $value = $grouped->where('month', $carbon->month)->where('year', $carbon->year)->first();
+                $breakdown->put($label, get($value, 'total', 0));
+            }
+        }
+        else {
+            $grouped = DB::query()->fromSub($query, 'data')
+                ->selectRaw("
+                    day(`$dateColumn`) as `day`,
+                    date_format(`$dateColumn`, \"%c\") AS `month`,
+                    sum(`$totalColumn`) as `total`
+                ")
+                ->groupBy(['day', 'month'])
+                ->get();
+
+            foreach (range(0, $diff['d']) as $n) {
+                $carbon = $start->copy()->local()->addDays($n);
+                $label = $carbon->day;
+                $value = $grouped->where('month', $carbon->month)->where('day', $carbon->day)->first();
+                $breakdown->put($label, get($value, 'total', 0));
+            }
+        }
+
+        return $breakdown;
     }
 }

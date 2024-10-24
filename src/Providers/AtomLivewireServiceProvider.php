@@ -39,7 +39,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'auth.forgot-password' => 'Auth\ForgotPassword',
 
             'app.share' => 'App\Share',
-            'app.dashboard' => 'App\Dashboard',
             'app.footprint' => 'App\Footprint',
             'app.notification-center' => 'App\NotificationCenter',
 

@@ -98,6 +98,7 @@ return [
         'currency' => 'Currency|Currencies',
         'current-password' => 'Current Password',
         'custom-date' => 'Custom Date',
+        'custom-date-range' => 'Custom Date Range',
         'dashboard' => 'Dashboard',
         'date-range' => 'Date range',
         'date' => 'Date|Dates',

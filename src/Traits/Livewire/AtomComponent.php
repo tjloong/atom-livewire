@@ -173,6 +173,7 @@ trait AtomComponent
     // refresh component
     public function refresh()
     {
+        $this->renewWirekey();
         $this->emit('$refresh');
     }
 

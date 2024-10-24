@@ -38,6 +38,7 @@
         "@tiptap/pm": "^2",
         "@tiptap/starter-kit": "^2",
         "@tiptap/suggestion": "^2",
+        "apexcharts": "^3",
         "dayjs": "^1",
         "laravel-echo": "^1",
         "laravel-vite-plugin": "^1.0.2",

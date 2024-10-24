@@ -92,3 +92,15 @@ Array.prototype.findIndexWhere = function (key, value) {
 
     return this.findIndex(item => (item[key] === value))
 }
+
+Array.prototype.max = function (key = null) {
+    if (key) return Math.max(...this.pluck(key))
+
+    return Math.max(...this)
+}
+
+Array.prototype.min = function (key = null) {
+    if (key) return Math.min(...this.pluck(key))
+
+    return Math.min(...this)
+}

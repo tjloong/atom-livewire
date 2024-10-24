@@ -21,6 +21,7 @@ import Clipboard from './plugin/magic/clipboard.js'
 
 // directive
 import Badge from './plugin/directive/badge.js'
+import Chart from './plugin/directive/chart.js'
 import WireOn from './plugin/directive/wire-on.js'
 import Tooltip from './plugin/directive/tooltip.js'
 
@@ -43,6 +44,7 @@ Alpine.magic('sortid', SortId)
 Alpine.magic('clipboard', Clipboard)
 
 Alpine.directive('badge', Badge)
+Alpine.directive('chart', Chart)
 Alpine.directive('wire-on', WireOn)
 Alpine.directive('tooltip', Tooltip)
 
