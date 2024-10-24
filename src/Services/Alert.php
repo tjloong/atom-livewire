@@ -39,8 +39,6 @@ class Alert
             $alert['message'] = t($message);
         }
 
-        if (!get($alert, 'title')) $alert['title'] = t('app.label.heads-up');
-
         $this->alert = $alert;
 
         if (!request()->isLivewireRequest()) {
