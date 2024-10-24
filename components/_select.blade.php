@@ -21,7 +21,7 @@ $options = $attributes->get('options');
 $filters = $attributes->get('filters');
 
 $size = $attributes->get('size');
-$size = $multiple
+$size = $multiple || $variant === 'listbox'
     ? ($size === 'sm' ? 'min-h-8 text-sm' : 'min-h-10')
     : ($size === 'sm' ? 'h-8 text-sm' : 'h-10');
 
@@ -44,9 +44,9 @@ $attrs = $attributes
         'wire:key' => $id,
     ])
     ->except([
-        'label', 'caption', 'size', 'icon', 'icon-end',
+        'variant', 'label', 'caption', 'size', 'icon', 'icon-end',
         'field', 'error', 'placeholder', 'invalid', 'transparent',
-        'options', 'filters',
+        'options', 'filters', 'searchable',
     ])
     ;
 @endphp
@@ -81,7 +81,7 @@ $attrs = $attributes
         data-atom-select-native>
         @if ($icon)
             <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
-                <atom:icon :name="$icon"/>
+                <atom:icon :name="$icon" size="16"/>
             </div>
         @endif
 
@@ -130,7 +130,6 @@ $attrs = $attributes
 @elseif ($variant === 'listbox')
     <div
         wire:ignore.self
-        {{ $attrs->only('wire:key') }}
         x-data="select({
             id: {{ js($id) }},
             name: {{ js($options) }},
@@ -148,14 +147,15 @@ $attrs = $attributes
         x-on:keydown.esc.prevent="close()"
         x-on:click.away="close()"
         data-atom-select-listbox
-        class="group/select w-full">
+        class="group/select w-full"
+        {{ $attrs->whereDoesntStartWith('wire:model')->except('class') }}>
         <div class="relative block" data-atom-select-listbox-trigger>
             <button
                 wire:ignore
                 type="button"
                 x-ref="trigger"
-                x-on:click="open()"
-                {{ $attrs->except('wire:key') }}>
+                x-on:click="options.length ? open() : search().then(() => open())"
+                {{ $attrs->only('class') }}>
                 @if ($icon)
                     <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
                         <atom:icon :name="$icon"/>
@@ -175,76 +175,92 @@ $attrs = $attributes
                         <div>
                             <template x-if="multiple" hidden>
                                 <div class="-ml-1 w-full flex flex-wrap items-center gap-2">
-                                    <template x-for="item in getSelected()" hidden>
+                                    <template x-for="item in selected" hidden>
                                         <div class="max-w-40 text-sm bg-zinc-100 border rounded pl-2 inline-flex items-center">
                                             <div x-text="item.label" class="truncate"></div>
                                             <div
                                                 x-on:click.stop="deselect(item.value)"
                                                 class="px-2 shrink-0 flex items-center justify-center cursor-pointer">
-                                                <x-icon close size="12"/>
+                                                <atom:icon close size="12"/>
                                             </div>
                                         </div>
                                     </template>
                                 </div>
                             </template>
 
-                            <template x-if="!multiple && getSelected()" hidden>
-                                <div x-html="getSelected()"></div>
+                            <template x-if="!multiple" hidden>
+                                <div x-html="selected"></div>
                             </template>
                         </div>
                     @endisset
                 </template>
 
-                <div class="z-1 absolute top-0 bottom-0 pr-3 right-0">
-                    <div
-                        x-show="!isEmpty"
-                        x-on:click.stop="clear()"
-                        class="w-full h-full flex justify-center cursor-pointer {{ $multiple ? 'mt-3' : 'items-center' }}">
-                        <atom:icon close size="14"/>
+                <template x-if="!visible && loading">
+                    <div class="z-1 absolute top-0 bottom-0 pr-3 right-0 text-primary py-3">
+                        <atom:icon loading/>
                     </div>
+                </template>
 
-                    <div x-show="isEmpty" class="w-full h-full pointer-events-none flex items-center justify-center">
-                        <atom:icon dropdown/>
+                <template x-if="!(!visible && loading)">
+                    <div class="z-1 absolute top-0 bottom-0 pr-3 right-0">
+                        <div
+                            x-show="!isEmpty"
+                            x-on:click.stop="clear()"
+                            class="w-full h-full flex justify-center cursor-pointer py-3">
+                            <atom:icon close size="14"/>
+                        </div>
+
+                        <div x-show="isEmpty" class="w-full h-full pointer-events-none py-3">
+                            <atom:icon dropdown/>
+                        </div>
                     </div>
-                </div>
+                </template>
             </button>
         </div>
 
         <div
             x-ref="options"
             x-show="visible"
-            class="absolute z-10 opacity-0 transition-opacity duration-75 rounded-lg bg-white w-full shadow-sm border border-zinc-200"
-            data-atom-select-listbox-options>
-            @if ($options && $searchable)
-                <div class="py-3 px-4 flex items-center gap-2 border-b">
-                    <atom:icon search class="text-zinc-400 shrink-0"/>
-                    <input
-                        type="text"
-                        x-ref="search"
-                        x-model.debounce.300="text"
-                        x-on:input.stop=""
-                        class="appearance-none grow w-full focus:outline-none"
-                        placeholder="{{ t('search') }}">
-                    <div
-                        x-show="text"
-                        x-on:click.stop="text = null"
-                        class="shrink-0 flex items-center justify-center text-zinc-400 hover:text-zinc-800 cursor-pointer">
-                        <x-icon close/>
+            x-transition.duration.200
+            data-atom-select-listbox-options
+            class="absolute z-10 w-full">
+            <atom:menu>
+                @if ($options && $searchable)
+                    <div class="py-3 px-4 flex items-center gap-2 border-b">
+                        <atom:icon search class="text-zinc-400 shrink-0"/>
+                        <input
+                            type="text"
+                            x-ref="search"
+                            x-model.debounce.300="text"
+                            x-on:input.stop=""
+                            class="appearance-none grow w-full focus:outline-none"
+                            placeholder="{{ t('search') }}">
+                        <div
+                            x-show="!loading && text"
+                            x-on:click.stop="text = null"
+                            class="shrink-0 flex items-center justify-center text-zinc-400 hover:text-zinc-800 cursor-pointer">
+                            <atom:icon close/>
+                        </div>
+                        <div
+                            x-show="loading"
+                            class="shrink-0 flex items-center justify-center text-primary">
+                            <atom:icon loading/>
+                        </div>
                     </div>
-                </div>
-            @endif
-
-            <ul class="p-1 max-h-[300px] overflow-auto">
-                @if ($slot->isNotEmpty())
-                    {{ $slot }}
-                @else
-                    @forelse ($this->options[$id] ?? [] as $item)
-                        <atom:option :value="get($item, 'value')" :label="get($item, 'label')"/>
-                    @empty
-                        <atom:empty size="sm"/>
-                    @endforelse
                 @endif
-            </ul>
+
+                <ul class="p-1 max-h-[300px] overflow-auto">
+                    @if ($slot->isNotEmpty())
+                        {{ $slot }}
+                    @else
+                        @forelse ($this->options[$id] ?? [] as $item)
+                            <atom:option :option="$item"/>
+                        @empty
+                            <atom:empty size="sm"/>
+                        @endforelse
+                    @endif
+                </ul>
+            </atom:menu>
         </div>
     </div>
 @endif

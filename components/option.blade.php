@@ -1,9 +1,14 @@
 @aware(['variant'])
 
 @php
-$value = $attributes->get('value');
-$label = $attributes->get('label');
-$attrs = $attributes->except(['value', 'label']);
+$option = $attributes->get('option');
+$value = $attributes->get('value') ?? get($option, 'value');
+$label = $attributes->get('label') ?? get($option, 'label');
+$caption = $attributes->get('caption') ?? get($option, 'caption');
+$note = $attributes->get('note') ?? get($option, 'note');
+$badge = $attributes->get('badge') ?? get($option, 'badge');
+$badgeColor = $attributes->get('badge-color') ?? get($option, 'badge_color');
+$attrs = $attributes->except(['option', 'value', 'label', 'badge', 'badge-color']);
 @endphp
 
 @if ($variant === 'listbox')
@@ -24,7 +29,24 @@ $attrs = $attributes->except(['value', 'label']);
             @if ($slot->isNotEmpty())
                 {{ $slot }}
             @else
-                {{ t($label) }}
+                <div class="flex gap-2">
+                    <div class="grow">
+                        <div class="truncate">@t($label)</div>
+                        @if ($caption)
+                            <div class="text-sm text-muted truncate">@t($caption)</div>
+                        @endif
+                    </div>
+
+                    @if ($badge)
+                        <div class="shrink-0">
+                            <atom:_badge :color="$badgeColor" size="xs">@t($badge)</atom:_badge>
+                        </div>
+                    @elseif ($note)
+                        <div class="shrink-0 text-right text-sm">
+                            @t($note)
+                        </div>
+                    @endif
+                </div>
             @endif
         </div>
     </li>

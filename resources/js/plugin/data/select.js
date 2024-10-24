@@ -2,10 +2,12 @@ import { computePosition, flip, shift, offset } from '@floating-ui/dom'
 
 export default (config) => {
     return {
-        value: config.value,
+        value: config.value || null,
         multiple: config.multiple,
         text: null,
         visible: false,
+        loading: false,
+        selected: null,
 
         get options () {
             return Array.from(this.$refs.options.querySelectorAll('[data-atom-option]'))
@@ -16,60 +18,74 @@ export default (config) => {
         },
 
         get isEmpty () {
-            return !this.value || (Array.isArray(this.value) && !this.value.length) 
+            return !this.selected || (Array.isArray(this.selected) && !this.selected.length)
         },
 
         init () {
             this.$watch('text', () => this.search())
-            if (this.value) this.search()
+            this.$watch('value', () => this.getSelected())
+
+            if (this.value) {
+                this.search().then(() => this.getSelected())
+            }
         },
 
         open () {
-            this.visible = true
+            if (this.visible) return
 
-            if (config.name && !this.options.length) {
-                this.search()
-            }
+            this.visible = true
             
             this.$nextTick(() => {
+                this.positioning()
                 this.$refs.search?.focus()
-                this.$refs.options.addClass('opacity-100')
-                setTimeout(() => this.positioning(), 50)
             })
         },
 
         close () {
-            this.$refs.options.removeClass('opacity-100')
-            setTimeout(() => this.visible = false, 75)
+            this.visible = false
         },
 
         clear () {
-            this.$dispatch('input', this.multiple ? [] : '')
+            this.value = this.multiple ? [] : ''
+            this.$dispatch('input', this.value)
         },
 
         search () {
-            this.$wire.getOptions(config.id, config.name, {
-                search: this.text,
-                value: this.value,
-                ...config.filters,
-            })
+            if (config.name) {
+                this.loading = true
+
+                return this.$wire.getOptions(config.id, config.name, {
+                    search: this.text,
+                    value: this.value,
+                    ...config.filters,
+                }).then(() => this.loading = false)
+            }
+            else {
+                return new Promise((resolve) => resolve())
+            }
         },
 
         select (opt) {
             if (this.multiple) {
-                if (this.isSelected(opt)) this.deselect(opt)
+                if (this.isSelected(opt)) {
+                    this.deselect(opt)
+                }
                 else {
-                    this.$el.setAttribute('data-option-selected', true)
-                    this.$refs.trigger.dispatch('input', [...(this.value || []), ...[opt]])
+                    this.value = [
+                        ...(this.value || []),
+                        ...[opt],
+                    ]
                 }
             }
             else {
-                this.options.forEach(node => node.removeAttribute('data-option-selected'))
-                this.$el.setAttribute('data-option-selected', true)
-                this.$refs.trigger.dispatch('input', opt)
+                this.value = opt
             }
 
-            this.close()
+            this.$dispatch('input', this.value)
+            this.$nextTick(() => {
+                this.getSelected()
+                this.close()
+            })
         },
 
         deselect (opt) {
@@ -128,16 +144,16 @@ export default (config) => {
         },
 
         getSelected () {
-            if (this.multiple) {
-                return this.options
+            this.selected = this.multiple
+                ? this.options
                     .filter(opt => (opt.getAttribute('data-option-selected')))
                     .map(opt => ({
                         value: opt.getAttribute('data-option-value'),
                         label: opt.getAttribute('data-option-label'),
                     }))
-            }
-
-            return this.options.filter(opt => (opt.getAttribute('data-option-selected')))[0]?.querySelector('[data-option-content]').innerHTML
+                : this.options
+                    .filter(opt => (opt.getAttribute('data-option-selected')))[0]?.querySelector('[data-option-content]')
+                    .innerHTML
         },
 
         scroll () {
