@@ -3,9 +3,6 @@ $label = $attributes->get('label');
 
 $classes = $attributes->classes()
     ->add('space-y-1 py-3 md:space-y-0 md:grid md:grid-cols-5 md:items-start')
-    ->add('[[data-atom-card]>&:hover]:bg-zinc-50')
-    ->add('[[data-atom-card]:not([data-atom-card-inset])>&]:-mx-6')
-    ->add('[[data-atom-card]:not([data-atom-card-inset])>&]:px-6')
     ;
 
 $attrs = $attributes

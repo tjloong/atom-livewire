@@ -90,6 +90,7 @@ export default (config) => {
         remove (sheet) {
             return new Promise((resolve, reject) => {
                 sheet.el.removeClass('opacity-100')
+                sheet.el.removeAttribute('data-open')
 
                 setTimeout(() => {
                     sheet.el.addClass('hidden')
@@ -100,10 +101,16 @@ export default (config) => {
             })
         },
 
+        scroll () {
+            let navbar = document.querySelector('[data-atom-panel-navbar]')
+            if (navbar) navbar.dispatch('transparent', this.$el.scrollTop < 20)
+        },
+
         layering () {
             return new Promise((resolve, reject) => {
                 window.sheet.active.forEach((sheet, index) => {
                     sheet.el.style.zIndex = index + 1
+                    sheet.el.setAttribute('data-open', true)
 
                     if (index === window.sheet.active.lastIndex()) sheet.el.dispatch('awake')
                     else sheet.el.dispatch('sleep')
@@ -117,10 +124,5 @@ export default (config) => {
                 resolve()
             })
         },
-
-        // breadcrumb () {
-        //     let breadcrumb = window.sheet.active.last()?.el?.querySelector('[data-atom-breadcrumb]')
-        //     if (breadcrumb) breadcrumb.dispatch('refresh')
-        // },
     }
 }

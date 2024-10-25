@@ -12,7 +12,7 @@ $vite = $attributes->get('vite') ?: [
 ];
 
 $attrs = $attributes
-    ->class(['font-sans antialiased'])
+    ->class(['font-sans antialiased has-[[data-atom-sheet][data-open]]:overflow-hidden'])
     ->except(['noindex', 'no-index', 'analytics', 'cdn', 'vite'])
     ;
 @endphp

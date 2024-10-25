@@ -49,7 +49,7 @@
                         x-on:click="$wire.read({{ js(get($row, 'id')) }}).then(() => Atom.goto({{ js(get($row, 'href')) }}))">
                         <div class="group relative p-4 space-y-2 cursor-pointer">
                             <div class="absolute top-4 right-4 items-center hidden group-hover:block">
-                                <atom:buttons>
+                                <atom:group type="buttons">
                                     @if (get($row, 'archived_at'))
                                         <atom:_button icon="unarchive" size="sm" tooltip="restore"
                                             x-on:click.stop="$wire.archive({{ js(get($row, 'id')) }}, false)">
@@ -69,7 +69,7 @@
                                             x-on:click.stop="$wire.archive({{ js(get($row, 'id')) }}, true)">
                                         </atom:_button>
                                     @endif
-                                </atom:buttons>
+                                </atom:group>
                             </div>
                                 
                             <div class="flex items-center gap-2 text-muted">

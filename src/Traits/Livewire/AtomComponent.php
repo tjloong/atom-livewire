@@ -4,10 +4,12 @@ namespace Jiannius\Atom\Traits\Livewire;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Jiannius\Atom\Atom;
+use Livewire\WithPagination;
 
 trait AtomComponent
 {
     use AuthorizesRequests;
+    use WithPagination;
 
     public $errors;
     public $keyhash;

@@ -13,11 +13,12 @@ $min = $attributes->get('min');
 
 $classes = $attributes->classes()
     ->add('relative rounded-lg bg-white border shadow-sm')
-    ->add($inset ? '' : 'p-6')
+    ->add($inset || $variant === 'list' ? '' : 'p-6')
     ->add($subtle ? 'bg-zinc-100 border-transparent' : 'border-zinc-200')
     ->add(match ($variant) {
         'stats' => 'h-36 overflow-hidden',
         'chart' => 'h-[350px]',
+        'list' => 'overflow-auto',
         default => '',
     })
     ;
@@ -71,6 +72,18 @@ $attrs = $attributes
                     min: {{ js($min) }},
                 }"></div>
             </div>
+        </div>
+    @elseif ($variant === 'list')
+        <div class="{{ collect([
+            'pt-6 px-1 pb-3',
+            '[&>[data-atom-heading]]:px-5 hover:[&>[data-atom-heading]]:bg-transparent',
+            'first:[&>[data-atom-heading]]:pt-0 last:[&>[data-atom-heading]]:pb-0',
+            '[&>[data-atom-tabs]]:mb-3 hover:[&>[data-atom-tabs]]:bg-transparent',
+            'hover:[&>[data-atom-empty]]:bg-transparent',
+            '*:px-5 *:py-3',
+            '*:rounded hover:*:bg-zinc-100/60',
+        ])->join(' ') }}">
+            {{ $slot }}
         </div>
     @else
         @isset($cover)

@@ -8,6 +8,7 @@ $action = $attributes->get('action');
 $tooltip = $attributes->get('tooltip');
 $inverted = $attributes->get('inverted');
 $social = $attributes->get('social');
+$model = $attributes->get('model');
 
 $variant = $attributes->get('variant') ?? get($social, 'name') ?? match ($action) {
     'submit', 'save' => 'primary',
@@ -145,6 +146,7 @@ if (!$attributes->hasLike('wire:click*', 'x-on:click*') && $action && $action !=
         ...$merges,
         'x-on:click' => match ($action) {
             'delete', 'trash' => "Atom.confirm({ type: '$action' }).then(() => \$wire.{$action}())",
+            'footprint' => "\$wire.call('footprint', { model: '".get_class($model)."', id: '".$model->id."' })",
             default => "\$wire.call('".str()->camel($action)."')",
         },
     ];
@@ -153,7 +155,7 @@ if (!$attributes->hasLike('wire:click*', 'x-on:click*') && $action && $action !=
 $attrs = $attributes
     ->class($classes)
     ->merge($merges)
-    ->except(['variant', 'size', 'icon', 'icon-end', 'block', 'newtab', 'action', 'tooltip', 'inverted', 'social', 'wire:loading'])
+    ->except(['variant', 'size', 'icon', 'icon-end', 'block', 'newtab', 'action', 'tooltip', 'inverted', 'model', 'social', 'wire:loading'])
     ;
 @endphp
 

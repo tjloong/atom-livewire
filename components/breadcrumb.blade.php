@@ -7,7 +7,17 @@ $traces = collect($attributes->get('traces', []))
 $attrs = $attributes->except(['traces']);
 @endphp
 
-@if ($traces->count() > 1)
+@if ($slot->isNotEmpty())
+    <div class="flex items-center gap-3 flex-wrap overflow-hidden">
+        <div class="grow">
+            <atom:breadcrumb :attributes="$attributes"/>
+        </div>
+
+        <div class="shrink-0">
+            {{ $slot }}
+        </div>
+    </div>
+@elseif ($traces->count() > 1)
     <ol
         itemscope
         itemtype="https://schema.org/BreadcrumbList"

@@ -6,9 +6,10 @@ $breadcrumb = $attributes->get('breadcrumb', true);
 $transparent = $attributes->get('transparent');
 
 $classes = $attributes->classes()
-    ->add('group/sheet absolute top-0 left-0 right-0 min-h-dvh')
+    ->add('group/sheet fixed inset-0 overflow-auto')
     ->add('hidden opacity-0 transition-opacity duration-200 ease-in-out')
     ->add('group-has-[[data-atom-panel-navbar]]/panel:pt-20')
+    ->add('lg:ml-64 lg:group-has-[[data-atom-panel-sidebar-show]]/panel:ml-0')
     ->add($inset ? '' : 'px-6 pb-20')
     ->add($transparent ? '' : 'bg-white')
     ;
@@ -27,6 +28,7 @@ $attrs = $attributes
     x-on:sheet-show.window="show($event.detail)"
     x-on:sheet-label.window="setLabel($event.detail)"
     x-on:sheet-back.window="back()"
+    x-on:scroll="scroll()"
     data-atom-sheet="{{ $name }}"
     {{ $attrs }}>
     @if ($breadcrumb)

@@ -6,10 +6,10 @@ $subheading = $attributes->get('subheading', 'we-could-not-find-anything');
 @endphp
 
 @if ($size === 'sm')
-    <div class="flex items-center justify-center w-full">
+    <div class="flex items-center justify-center w-full" data-atom-empty>
         <div class="flex justify-center gap-3 py-5">
             <div class="shrink-0 flex justify-center text-gray-400">
-                <x-icon :name="$icon" size="24"/>
+                <atom:icon :name="$icon" size="24"/>
             </div>
 
             <div class="grow self-center">
@@ -23,9 +23,9 @@ $subheading = $attributes->get('subheading', 'we-could-not-find-anything');
         </div>
     </div>
 @else
-    <div class="flex flex-col items-center justify-center gap-3 py-8">
+    <div class="flex flex-col items-center justify-center gap-3 py-8" data-atom-empty>
         <div class="text-gray-300">
-            <x-icon :name="$icon" size="40"/>
+            <atom:icon :name="$icon" size="40"/>
         </div>
 
         @if ($slot->isNotEmpty())

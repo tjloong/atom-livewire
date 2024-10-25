@@ -114,10 +114,4 @@ class Atom
             ->filter(fn($val) => file_exists($val))
             ->isNotEmpty();
     }
-
-    public static function isEnum($value)
-    {
-        return $value instanceof \UnitEnum
-            || $value instanceof \BackedEnum;
-    }
 }

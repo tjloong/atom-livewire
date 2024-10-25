@@ -1,13 +1,14 @@
 @php
-$user = $attributes->get('user') ?? user();
+$user = $attributes->get('user');
 $size = $attributes->get('size');
-$avatar = get($user, 'avatar.url') ?? get($user, 'avatar') ?? $attributes->get('avatar');
-$name = get($user, 'name');
-$short = preg_replace('/\s+/', '', $name);
+$avatar = $attributes->get('avatar') ?? get($user, 'avatar.url') ?? get($user, 'avatar');
+$name = $attributes->get('name') ?? get($user, 'name');
+$caption = $attributes->get('caption') ?? get($user, 'email');
+$short = preg_replace('/\s+/', '', $name) ?: '-';
 $short = $size === 'lg' ? substr($short, 0, 2) : substr($short, 0, 1);
 
 $classes = $attributes->classes()
-    ->add('flex items-center justify-center gap-2 w-full')
+    ->add('flex justify-center gap-3 w-full')
     ->add(match ($size) {
         'lg' => '[&>[data-atom-profile-avatar]]:w-14 [&>[data-atom-profile-avatar]]:h-14 [&>[data-atom-profile-avatar]]:text-lg',
         'sm' => '[&>[data-atom-profile-avatar]]:w-6 [&>[data-atom-profile-avatar]]:h-6 [&>[data-atom-profile-avatar]]:text-sm',
@@ -29,14 +30,22 @@ $attrs = $attributes
             <img src="{{ $avatar }}" class="w-full h-full object-cover">
         @else
             <span class="font-medium text-zinc-500 uppercase">
-                {{ $short }}
+                @e($short)
             </span>
         @endif
     </div>
 
-    <div class="grow grid gap-1">
-        <div class="font-medium truncate">
-            {{ $name }}
+    <div class="grow flex items-center">
+        <div class="grid self-center">
+            <div class="font-medium truncate">
+                @e($name)
+            </div>
+
+            @if ($caption)
+                <div class="text-sm text-muted">
+                    @e($caption)
+                </div>
+            @endif
         </div>
     </div>
 

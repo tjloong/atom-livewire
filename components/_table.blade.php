@@ -37,13 +37,13 @@ $attrs = $attributes
 
                     @if ($rows)
                         <atom:_dropdown>
-                            <div class="text-sm text-zinc-400 flex items-center gap-1">
+                            <div class="text-sm text-muted flex items-center gap-1">
                                 <span x-text="$wire.get('table.max')"></span>
                                 <span>/ @t('page')</span>
                                 <x-icon down/>
                             </div>
 
-                            <atom:menu>
+                            <atom:menu wire:ignore>
                                 @foreach ($rows as $n)
                                     <atom:menu-item wire:click="$set('table.max', {{$n}})">@e($n) / @t('page')</atom:menu-item>
                                 @endforeach
@@ -65,11 +65,11 @@ $attrs = $attributes
                             placeholder="@t('search')"
                             x-bind:class="text ? 'w-40' : 'w-14'"
                             class="focus:outline-none focus:w-40 transition-all duration-100">
-                        <x-icon close
+                        <atom:icon close
                             x-show="text"
                             x-on:click="$wire.set('filters.search', null); text = ''"
                             class="shrink-0 text-zinc-400 cursor-pointer">
-                        </x-icon>
+                        </atom:icon>
                     </div>
                 @endif
 
@@ -85,7 +85,7 @@ $attrs = $attributes
                                         <div x-on:click="visible = true" class="pl-2 cursor-pointer">
                                             @t('filter-count', $filtered)
                                         </div>
-        
+
                                         <div x-on:click="$wire.filters = filters" class="shrink-0 px-1 cursor-pointer text-red-400 hover:text-red-600 flex items-center justify-center">
                                             <atom:icon close/>
                                         </div>
@@ -112,14 +112,14 @@ $attrs = $attributes
 
                         @if (get($count, 'trashed'))
                             <div class="relative">
-                                <div class="absolute w-2 h-2 rounded-full bg-red-500 top-1 right-1"></div>
+                                <div class="absolute w-2 h-2 z-1 rounded-full bg-red-500 top-1 right-1"></div>
                                 <atom:_button icon="delete" variant="link" :tooltip="@t('trashed')" wire:click="$set('table.trashed', true)"/>
                             </div>
                         @endif
 
                         @if (get($count, 'archived'))
                             <div class="relative">
-                                <div class="absolute w-2 h-2 rounded-full bg-red-500 top-1 right-1"></div>
+                                <div class="absolute w-2 h-2 z-1 rounded-full bg-red-500 top-1 right-1"></div>
                                 <atom:_button icon="archive" variant="link" :tooltip="@t('archived')"/>
                             </div>
                         @endif
@@ -194,7 +194,7 @@ $attrs = $attributes
     </div>
 
     @if ($paginate?->hasPages())
-        <div data-atom-table-paginate>
+        <div class="px-4" data-atom-table-paginate>
             @e($paginate->links())
         </div>
     @endif

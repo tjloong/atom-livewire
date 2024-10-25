@@ -74,13 +74,13 @@ $attrs = $attributes
     @if ($closeable)
         @if ($variant === 'full')
             <button type="button" x-on:click.stop="close()"
-                class="fixed top-6 right-6 z-1 uppercase flex items-center gap-2 border border-zinc-200 rounded-md text-sm py-1.5 px-3 bg-white/50">
+                class="absolute top-6 right-6 z-1 uppercase flex items-center gap-2 border border-zinc-200 rounded-md text-sm py-1.5 px-3 bg-white/50">
                 <atom:icon close/> @t('close')
             </button>
         @else
             <div
                 x-on:click="close()"
-                class="fixed top-6 right-6 z-1 cursor-pointer text-zinc-500 hover:text-zinc-800">
+                class="absolute top-6 right-6 z-1 cursor-pointer text-zinc-500 hover:text-zinc-800">
                 <atom:icon close size="20"/>
             </div>
         @endif

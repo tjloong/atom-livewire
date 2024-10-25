@@ -2,7 +2,7 @@
 $status = $attributes->get('status');
 $size = $attributes->get('size');
 $icon = $attributes->get('icon');
-$color = $attributes->get('color') ?? (atom()->isEnum($status) ? $status->color() : get($status, 'color'));
+$color = $attributes->get('color') ?? (is_enum($status) ? $status->color() : get($status, 'color'));
 
 $classes = $attributes->classes()
     ->add('inline-flex items-center justify-center font-medium whitespace-nowrap border max-w-xs')
@@ -31,7 +31,7 @@ $attrs = $attributes
     <div class="grow truncate">
         @if ($slot->isNotEmpty())
             {{ $slot }}
-        @elseif (atom()->isEnum($status))
+        @elseif (is_enum($status))
             {{ $status->label() }}
         @endif
     </div>

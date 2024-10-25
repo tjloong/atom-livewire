@@ -16,7 +16,7 @@ $attrs = $attributes
     ;
 @endphp
 
-<div class="w-full">
+<div class="w-full" data-atom-tabs>
     <div x-data="{ value: @entangle($attributes->wire('model')) }" {{ $attrs }}>
         @if ($slot->isNotEmpty())
             {{ $slot }}

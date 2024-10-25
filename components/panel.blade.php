@@ -42,6 +42,7 @@
             <nav
                 x-data="{ transparent: true }"
                 x-on:scroll.window="transparent = document.documentElement.scrollTop <= 20"
+                x-on:transparent="transparent = $event.detail"
                 x-bind:class="!transparent && 'bg-zinc-50 border-b border-zinc-200'"
                 class="fixed z-10 top-0 left-0 lg:left-64 lg:group-has-[[data-atom-panel-sidebar-show]]/panel:left-0 right-0"
                 data-atom-panel-navbar>

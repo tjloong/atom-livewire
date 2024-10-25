@@ -16,7 +16,7 @@ export default (align = 'left') => {
         open () {
             if (this.menu.hasClass('hidden')) {
                 this.menu.removeClass('hidden')
-                
+
                 this.$nextTick(() => {
                     this.positioning()
                     this.menu.addClass('opacity-100')

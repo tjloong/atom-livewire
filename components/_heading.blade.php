@@ -16,8 +16,6 @@ if ($subheading) {
 else {
     $classes
         ->add('[&:has(+[data-atom-subheading])]:mb-1.5 [[data-atom-subheading]+&]:mt-1.5')
-        ->add('[[data-atom-sheet]>&]:mb-5')
-        ->add('[[data-atom-card]>&]:mb-4')
         ->add('[&:has([data-atom-heading-actions])]:flex [&:has([data-atom-heading-actions])]:flex-wrap')
         ->add('[&:has([data-atom-heading-actions])]:items-center [&:has([data-atom-heading-actions])]:justify-between')
         ;
