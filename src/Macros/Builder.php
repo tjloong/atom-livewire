@@ -130,4 +130,19 @@ class Builder
             return $parsed;    
         };
     }
+
+    public function randomCode()
+    {
+        return function ($length = 6) {
+            $code = null;
+            $dup = true;
+    
+            while ($dup) {
+                $code = str()->upper(str()->random($length));
+                $dup = $this->where('code', $code)->count() > 0;
+            }
+    
+            return $code;                
+        };
+    }
 }
