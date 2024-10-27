@@ -43,11 +43,11 @@ $attrs = $attributes
                                 <x-icon down/>
                             </div>
 
-                            <atom:menu wire:ignore>
+                            <x-slot:content>
                                 @foreach ($rows as $n)
                                     <atom:menu-item wire:click="$set('table.max', {{$n}})">@e($n) / @t('page')</atom:menu-item>
                                 @endforeach
-                            </atom:menu>
+                            </x-slot:content>
                         </atom:_dropdown>
                     @endif
                 @endif
@@ -99,7 +99,7 @@ $attrs = $attributes
                                     x-show="visible"
                                     x-transition.duration.200
                                     class="absolute top-1 right-1 w-80 z-10">
-                                    <atom:menu class="p-5">
+                                    <atom:menu class="p-5 space-y-6">
                                         {{ $filters }}
                                     </atom:menu>
                                 </div>

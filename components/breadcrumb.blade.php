@@ -8,14 +8,12 @@ $attrs = $attributes->except(['traces']);
 @endphp
 
 @if ($slot->isNotEmpty())
-    <div class="flex items-center gap-3 flex-wrap overflow-hidden">
+    <div class="flex items-center flex-wrap overflow-hidden">
         <div class="grow">
             <atom:breadcrumb :attributes="$attributes"/>
         </div>
 
-        <div class="shrink-0">
-            {{ $slot }}
-        </div>
+        {{ $slot }}
     </div>
 @elseif ($traces->count() > 1)
     <ol

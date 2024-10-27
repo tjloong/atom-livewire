@@ -1,8 +1,10 @@
 @php
 $label = $attributes->get('label');
+$block = $attributes->get('block');
 
 $classes = $attributes->classes()
-    ->add('space-y-1 py-3 md:space-y-0 md:grid md:grid-cols-5 md:items-start')
+    ->add('space-y-1 py-3')
+    ->add($block ? '' : 'md:space-y-0 md:grid md:grid-cols-5 md:items-start')
     ;
 
 $attrs = $attributes

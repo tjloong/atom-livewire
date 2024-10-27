@@ -95,7 +95,6 @@ $attrs = $attributes
         </div>
 
         <div
-            x-ref="calendar"
             x-show="visible"
             x-transition.duration.200
             class="absolute z-10 rounded-lg">
@@ -138,9 +137,12 @@ $attrs = $attributes
                         </div>
                     </div>
                 @elseif ($time)
+                    <div x-ref="calendar"></div>
                     <div class="border-t p-2">
                         <atom:_time-picker x-model="time[0]"/>
                     </div>
+                @else
+                    <div x-ref="calendar"></div>
                 @endif
             </atom:menu>
         </div>

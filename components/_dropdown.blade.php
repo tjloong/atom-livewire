@@ -15,9 +15,24 @@ $attrs = $attributes
     wire:ignore.self
     x-cloak
     x-data="dropdown(@js($align))"
-    x-on:click="open()"
-    x-on:click.away="close()"
     data-atom-dropdown
     {{ $attrs }}>
-    {{ $slot }}
+    <div
+        x-ref="trigger"
+        x-on:click="open()"
+        x-on:click.away="close()">
+        {{ $slot }}
+    </div>
+
+    @isset ($content)
+        <div
+            x-ref="content"
+            x-show="visible"
+            x-transition.duration.200
+            class="absolute left-0 z-10">
+            <atom:menu>
+                {{ $content }}
+            </atom:menu>
+        </div>
+    @endisset
 </div>

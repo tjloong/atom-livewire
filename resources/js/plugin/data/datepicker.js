@@ -62,11 +62,13 @@ export default (config) => {
                 if (this.config.range) {
                     if (two.isValid()) {
                         two = this.config.utc ? two.utc().format(format) : two.format(format)
-                        this.$refs.trigger.dispatch('input', `${one} to ${two}`)
+                        this.value = `${one} to ${two}`
+                        this.$refs.trigger.dispatch('input', this.value)
                     }
                 }
                 else {
-                    this.$refs.trigger.dispatch('input', one)
+                    this.value = one
+                    this.$refs.trigger.dispatch('input', this.value)
                 }
             }
         },

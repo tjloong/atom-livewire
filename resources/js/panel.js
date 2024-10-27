@@ -51,4 +51,4 @@ Alpine.directive('tooltip', Tooltip)
 Atom.ulid = ulid
 Atom.sheet = SheetHelper
 Atom.color = (name) => new Color(name)
-Atom.upload = (files, config) => (new Uploader(files, config))
+Atom.upload = (files, config) => (new UploaderHelper(files, config))

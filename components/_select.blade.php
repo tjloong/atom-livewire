@@ -69,65 +69,7 @@ $attrs = $attributes
             {{ $slot }}
         </atom:_select>
     </atom:_input.prefix>
-@elseif ($variant === 'native')
-    <div
-        wire:ignore.self
-        {{ $attrs->only('wire:key') }}
-        @if ($options)
-        x-data
-        x-init="$wire.getOptions({{ js($id) }}, {{ js($options) }}, {{ js($filters) }})"
-        @endif
-        class="group/input relative w-full block"
-        data-atom-select-native>
-        @if ($icon)
-            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
-                <atom:icon :name="$icon" size="16"/>
-            </div>
-        @endif
-
-        <select {{ $attrs->except('wire:key') }}>
-            @if ($placeholder)
-                <atom:option value="" selected class="placeholder">
-                    {{ t($placeholder) }}
-                </atom:option>
-            @endif
-
-            @forelse ($this->options[$id] ?? [] as $option)
-                <atom:option :value="get($option, 'value')">
-                    {!! t(get($option, 'label')) !!}
-                </atom:option>
-            @empty
-                {{ $slot }}
-            @endforelse
-        </select>
-
-        @if ($clearable)
-            <div
-                x-cloak
-                x-data="{
-                    show: false,
-                    select: null,
-                }"
-                x-init="() => {
-                    select = $el.parentNode.querySelector('select')
-                    select.addEventListener('change', (e) => show = !empty(e.target.value))
-                }"
-                x-on:click.stop="() => {
-                    select.value = ''
-                    select.dispatch('change')
-                }"
-                x-bind:class="!show && 'pointer-events-none'"
-                class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
-                <atom:icon close x-show="show"/>
-                <atom:icon dropdown x-show="!show"/>
-            </div>
-        @else
-            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
-                <atom:icon dropdown/>
-            </div>
-        @endif
-    </div>
-@elseif ($variant === 'listbox')
+@elseif ($variant === 'listbox' || $multiple)
     <div
         wire:ignore.self
         x-data="select({
@@ -262,5 +204,63 @@ $attrs = $attributes
                 </ul>
             </atom:menu>
         </div>
+    </div>
+@elseif ($variant === 'native')
+    <div
+        wire:ignore.self
+        {{ $attrs->only('wire:key') }}
+        @if ($options)
+        x-data
+        x-init="$wire.getOptions({{ js($id) }}, {{ js($options) }}, {{ js($filters) }})"
+        @endif
+        class="group/input relative w-full block"
+        data-atom-select-native>
+        @if ($icon)
+            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
+                <atom:icon :name="$icon" size="16"/>
+            </div>
+        @endif
+
+        <select {{ $attrs->except('wire:key') }}>
+            @if ($placeholder)
+                <atom:option value="" selected class="placeholder">
+                    {{ t($placeholder) }}
+                </atom:option>
+            @endif
+
+            @forelse ($this->options[$id] ?? [] as $option)
+                <atom:option :value="get($option, 'value')">
+                    {!! t(get($option, 'label')) !!}
+                </atom:option>
+            @empty
+                {{ $slot }}
+            @endforelse
+        </select>
+
+        @if ($clearable)
+            <div
+                x-cloak
+                x-data="{
+                    show: false,
+                    select: null,
+                }"
+                x-init="() => {
+                    select = $el.parentNode.querySelector('select')
+                    select.addEventListener('change', (e) => show = !empty(e.target.value))
+                }"
+                x-on:click.stop="() => {
+                    select.value = ''
+                    select.dispatch('change')
+                }"
+                x-bind:class="!show && 'pointer-events-none'"
+                class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
+                <atom:icon close x-show="show"/>
+                <atom:icon dropdown x-show="!show"/>
+            </div>
+        @else
+            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
+                <atom:icon dropdown/>
+            </div>
+        @endif
     </div>
 @endif

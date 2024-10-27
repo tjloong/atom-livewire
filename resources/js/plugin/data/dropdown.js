@@ -2,48 +2,23 @@ import { computePosition, flip, shift, offset } from '@floating-ui/dom'
 
 export default (align = 'left') => {
     return {
-        show: false,
-        menu: null,
-        trigger: null,
-
-        init () {
-            let children = this.$root.querySelectorAll(':scope > *')
-            this.trigger = children[0]
-            this.menu = children[1]
-            this.close()
-        },
+        visible: false,
 
         open () {
-            if (this.menu.hasClass('hidden')) {
-                this.menu.removeClass('hidden')
-
-                this.$nextTick(() => {
-                    this.positioning()
-                    this.menu.addClass('opacity-100')
-                    this.$root.dispatch('open', null, false)
-                })
-            }
-            else this.close()
+            this.visible = true
+            this.$nextTick(() => this.positioning())
         },
 
         close () {
-            if (this.menu.hasClass('hidden')) return
-
-            this.menu.addClass('opacity-0')
-            this.menu.removeClass('opacity-100')
-
-            setTimeout(() => {
-                this.menu.addClass('hidden')
-                this.$root.dispatch('close', null, false)
-            }, 200)
+            this.visible = false
         },
 
         positioning () {
-            computePosition(this.trigger, this.menu, {
+            computePosition(this.$refs.trigger, this.$refs.content, {
                 placement: align === 'right' ? 'bottom-end' : 'bottom-start',
                 middleware: [offset(4), flip(), shift({ padding: 5 })],
             }).then(({x, y}) => {
-                Object.assign(this.menu.style, {
+                Object.assign(this.$refs.content.style, {
                     left: `${x}px`,
                     top: `${y}px`,
                 });

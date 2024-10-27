@@ -24,9 +24,11 @@ $permitted = !$attributes->has('can') || (
 
 $classes = $attributes->classes()
     ->add('flex items-center gap-2 w-full text-left text-zinc-800 py-2 px-3 rounded-md')
-    ->add('my-1 first:mt-0 last:mb-0')
     ->add('focus:outline-none focus:bg-zinc-800/5 hover:bg-zinc-800/5')
     ->add('disabled:pointer-events-none disabled:cursor-default')
+    ->add('group-[]/panel-sidebar:my-1')
+    ->add('group-[]/menu:my-1 first:group-[]/menu:mt-0 last:group-[]/menu:mb-0')
+    ->add('data-[active]:bg-white data-[active]:border data-[active]:shadow-sm')
     ;
 
 $el = $href ? 'a' : 'button';

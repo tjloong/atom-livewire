@@ -1,4 +1,4 @@
-@aware(['variant'])
+@aware(['variant', 'multiple'])
 
 @php
 $option = $attributes->get('option');
@@ -11,7 +11,7 @@ $badgeColor = $attributes->get('badge-color') ?? get($option, 'badge_color');
 $attrs = $attributes->except(['option', 'value', 'label', 'badge', 'badge-color']);
 @endphp
 
-@if ($variant === 'listbox')
+@if ($variant === 'listbox' || $multiple)
     <li
         x-on:click="select({{ js($value) }})"
         x-on:mouseover="focus($el)"
