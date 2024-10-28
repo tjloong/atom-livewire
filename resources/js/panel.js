@@ -7,6 +7,7 @@ import { ulid } from 'ulid'
 // data
 import Tel from './plugin/data/tel.js'
 import Color from './plugin/data/color.js'
+import Email from './plugin/data/email.js'
 import Sheet from './plugin/data/sheet.js'
 import Select from './plugin/data/select.js'
 import Uploader from './plugin/data/uploader.js'
@@ -32,6 +33,7 @@ import SheetHelper from './plugin/helper/sheet.js'
 
 Alpine.data('tel', Tel)
 Alpine.data('color', Color)
+Alpine.data('email', Email)
 Alpine.data('sheet', Sheet)
 Alpine.data('select', Select)
 Alpine.data('dropdown', Dropdown)

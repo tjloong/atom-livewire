@@ -485,6 +485,9 @@ return [
         'your-name' => 'Your name',
         'youtube-url' => 'Youtube URL',
 
+        // shareable
+        'regenerate' => 'Regenerate',
+
         // user
         'edit-user' => 'Edit User',
         'create-user' => 'Create User',

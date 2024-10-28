@@ -2,6 +2,7 @@
 
 @php
 $search = $attributes->get('search', true);
+$paginate = $paginate ?? null;
 
 $count = [
     'trashed' => $attributes->get('trashed', 0),

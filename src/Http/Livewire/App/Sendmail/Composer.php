@@ -3,24 +3,20 @@
 namespace Jiannius\Atom\Http\Livewire\App\Sendmail;
 
 use Illuminate\Support\Facades\Mail;
-use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Atom;
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
+use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class Composer extends Component
 {
+    use AtomComponent;
     use WithFileUploads;
-    use WithForm;
 
     public $model;
     public $email = [];
     public $uploads = [];
 
-    protected $listeners = [
-        'sendmail' => 'open',
-    ];
-
-    // validation
     protected function validation() : array
     {
         return [
@@ -42,11 +38,10 @@ class Composer extends Component
             ],
             'email.subject' => ['required' => 'Subject is required.'],
             'email.body' => ['required' => 'Body is required.'],
-            'email.attachments' => ['nullable'],
+            'email.attachments' => ['nullable', 'array'],
         ];
     }
 
-    // updated upload
     public function updatedUploads() : void
     {
         $attachments = collect(get($this->email, 'attachments'));
@@ -64,28 +59,27 @@ class Composer extends Component
         $this->email = [...$this->email, 'attachments' => $attachments->values()->all()];
     }
 
-    // open
-    public function open($data = []) : void
+    public function open($props = []) : void
     {
+        $this->resetValidation();
         $this->cleanup();
 
-        if (($id = get($data, 'id')) && ($model = get($data, 'model'))) {
+        if (get($props, 'shareable_id')) {
+            $shareable = model('shareable')->find(get($props, 'shareable_id'));
+            $this->model = $shareable->parent;
+            $data = $this->model->composeEmail();
+        }
+        else if (($id = get($props, 'id')) && ($model = get($props, 'model'))) {
             $this->model = str($model)->startsWith('App\\Models')
                 ? app($model)->find($id)
                 : model($model)->find($id);
 
-            $data = $this->model->composeEmail(get($data, 'data'));
-        }
-        else if (($id = get($data, 'share_id')) && ($share = model('share')->find($id))) {
-            $this->model = $share->parent;
-            $data = $this->model->composeEmail();
+            $data = $this->model->composeEmail(get($props, 'data'));
         }
 
         $this->compose($data);
-        $this->overlay();
     }
 
-    // compose
     public function compose($data) : void
     {
         $this->email = [
@@ -100,7 +94,6 @@ class Composer extends Component
             'body' => null,
             'tags' => [],
             'placeholders' => [],
-            'attachments' => [],
             ...$data,
         ];
 
@@ -109,7 +102,6 @@ class Composer extends Component
         $this->setAttachments();
     }
 
-    // sanitize email address
     public function sanitizeEmailAddress() : void
     {
         foreach (['to', 'cc', 'bcc'] as $field) {
@@ -132,7 +124,6 @@ class Composer extends Component
         }
     }
 
-    // set placeholders
     public function setPlaceholders() : void
     {
         foreach (['subject', 'body'] as $field) {
@@ -143,7 +134,6 @@ class Composer extends Component
         }
     }
 
-    // set attachments
     public function setAttachments() : void
     {
         $this->email['attachments'] = collect(get($this->email, 'attachments'))->map(function($attachment) {
@@ -151,7 +141,7 @@ class Composer extends Component
             $pdf = get($attachment, 'pdf');
             $path = get($attachment, 'path');
             $filename = get($attachment, 'filename', $id);
-            
+
             if ($pdf) {
                 $path = storage_path('app/mail/'.$filename);
                 $pdf->save($path);
@@ -165,7 +155,6 @@ class Composer extends Component
         })->toArray();
     }
 
-    // cleanup
     public function cleanup() : void
     {
         collect(get($this->email, 'attachments'))
@@ -177,7 +166,6 @@ class Composer extends Component
         $this->reset('model', 'email', 'uploads');
     }
 
-    // detach
     public function detach($i) : void
     {
         $attachments = collect(get($this->email, 'attachments'));
@@ -187,20 +175,19 @@ class Composer extends Component
         $this->email = [...$this->email, 'attachments' => $attachments->values()->all()];
     }
 
-    // send
-    public function send() : void
+    public function submit() : void
     {
-        $this->validateForm();
+        $this->validate();
 
         $to = $this->recipients('to');
         $cc = $this->recipients('cc');
         $bcc = $this->recipients('bcc');
 
         if (!$to) {
-            $this->popup([
-                'title' => 'app.label.unable-to-sendmail',
-                'message' => 'app.label.no-valid-email-recipients',
-            ], 'alert', 'error');
+            Atom::alert([
+                'title' => 'unable-to-sendmail',
+                'message' => 'no-valid-email-recipients',
+            ], 'error');
         }
         else {
             Mail::to($to)
@@ -212,12 +199,13 @@ class Composer extends Component
                 $this->model->emailSent();
             }
 
-            $this->popup(tr('app.alert.email-sent'));
-            $this->overlay(false);
+            $this->cleanup();
+
+            Atom::toast('email-sent', 'success');
+            Atom::modal('app.sendmail.composer')->close();
         }
     }
 
-    // get recipients
     public function recipients($field) : array
     {
         return collect(get($this->email, $field))

@@ -38,7 +38,7 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'auth.reset-password' => 'Auth\ResetPassword',
             'auth.forgot-password' => 'Auth\ForgotPassword',
 
-            'app.share' => 'App\Share',
+            'app.shareable' => 'App\Shareable',
             'app.footprint' => 'App\Footprint',
             'app.notification-center' => 'App\NotificationCenter',
 

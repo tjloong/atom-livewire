@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shares', function(Blueprint $table) {
+        Schema::create('shareables', function(Blueprint $table) {
             $table->ulid('id')->primary();
             $table->integer('valid_for')->nullable();
             $table->json('data')->nullable();
-            $table->boolean('is_enabled')->nullable();
             $table->string('parent_type')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->datetime('expired_at')->nullable();
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('shares');
+        Schema::dropIfExists('shareables');
     }
 };

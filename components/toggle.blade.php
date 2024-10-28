@@ -13,9 +13,20 @@ $attrs = $attributes->except(['label', 'caption', 'error', 'field']);
 
             <button
                 type="button"
-                class="group h-5 w-8 relative inline-flex items-center rounded-full transition bg-zinc-800/15 peer-disabled:bg-zinc-800/10 peer-checked:bg-primary-800 peer-disabled:peer-checked:bg-zinc-500 peer-checked:border-0 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-primary group-has-[.error]/toggle:ring-1 group-has-[.error]/toggle:ring-red-500"
-                x-on:click.stop="$el.parentNode.querySelector('input').click()">
-                <span class="size-3.5 rounded-full transition translate-x-[3px] bg-white group-has-[:disabled]:bg-white/90 group-has-[:checked]:translate-x-[13px] group-has-[:checked]:bg-white"></span>
+                class="{{ collect([
+                    'group h-5 w-8 relative inline-flex items-center rounded-full transition bg-zinc-800/15',
+                    'peer-disabled:bg-zinc-800/10 peer-disabled:peer-checked:bg-zinc-500',
+                    'peer-checked:bg-primary-800 peer-checked:border-0',
+                    '*:peer-checked:translate-x-[13px] *:peer-checked:bg-white',
+                    '*:peer-disabled:bg-white/90',
+                    'focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-primary',
+                    'group-has-[.error]/toggle:ring-1 group-has-[.error]/toggle:ring-red-500',
+                ])->join(' ') }}"
+                x-on:click.stop="() => {
+                    let checkbox = $el.parentNode.querySelector('input')
+                    checkbox.checked = !checkbox.checked
+                }">
+                <span class="size-3.5 rounded-full transition translate-x-[3px] bg-white"></span>
             </button>
         </div>
 

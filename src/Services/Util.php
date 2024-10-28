@@ -104,8 +104,11 @@ class Util
     {
         $range = $range ?? '1970-01-01 00:00:00 to '.now()->toDateTimeString();
 
-        $from = carbon(head(explode(' to ', $range)));
-        $to = carbon(last(explode(' to ', $range)));
+        $from = head(explode('to', $range));
+        $from = carbon($from ?: '1970-01-01 00:00:00');
+
+        $to = last(explode('to', $range));
+        $to = $to ? carbon($to) : now();
 
         $diff = [
             'd' => $from->diffInDays($to),

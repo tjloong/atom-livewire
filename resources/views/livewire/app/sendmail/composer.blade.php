@@ -1,53 +1,48 @@
-<x-drawer wire:close="cleanup">
-    <x-slot:heading title="app.label.send-email"></x-slot:heading>
-    
-    @if ($email)
-        <x-slot:buttons>
-            <x-button action="send" color="green" wire:loading/>
-        </x-slot:buttons>
+<atom:modal name="app.sendmail.composer" variant="slide" wire:open="open" wire:close="cleanup">
+@if ($email)
+    <atom:_form>
+        <atom:_heading size="xl">@t('send-email')</atom:_heading>
 
-        <x-inputs>
-            <x-input type="email" wire:model.defer="email.sender_email" label="app.label.sender-email"/>
-            <x-input wire:model.defer="email.sender_name" label="app.label.sender-name"/>
-            <x-input type="email" wire:model.defer="email.reply_to" label="app.label.reply-to"/>
-            <x-email wire:model.defer="email.to" label="app.label.to" :options="get($email, 'email_options', [])" multiple/>
-            <x-email wire:model.defer="email.cc" label="app.label.cc" :options="get($email, 'email_options', [])" multiple/>
-            <x-email wire:model.defer="email.bcc" label="app.label.bcc" multiple/>
-            <x-input wire:model.defer="email.subject" label="app.label.subject"/>
-            <x-textarea wire:model.defer="email.body" label="app.label.body" rows="10"/>
+        <atom:_input type="email" wire:model.defer="email.sender_email" label="sender-email"/>
+        <atom:_input wire:model.defer="email.sender_name" label="sender-name"/>
+        <atom:_input type="email" wire:model.defer="email.reply_to" label="reply-to"/>
+        <atom:_input type="email" wire:model.defer="email.to" label="to" :options="get($email, 'email_options')"/>
+        <atom:_input type="email" wire:model.defer="email.cc" label="cc" :options="get($email, 'email_options')"/>
+        <atom:_input type="email" wire:model.defer="email.bcc" label="bcc" multiple/>
+        <atom:_input wire:model.defer="email.subject" label="subject"/>
+        <atom:_textarea wire:model.defer="email.body" label="body" rows="10" autoresize/>
 
-            <x-field label="app.label.attachment" block>
-                <div class="flex items-center gap-2 flex-wrap">
-                    @foreach (get($email, 'attachments') as $i => $attachment)
-                        <div
-                            wire:key="{{ get($attachment, 'id') }}"
-                            class="h-10 max-w-72 border border-gray-300 rounded-md bg-white shadow-sm flex items-center gap-3 px-3">
-                            <div class="shrink-0 text-gray-400">
-                                <x-icon name="attachment"/>
-                            </div>
-
-                            <div class="grow truncate">
-                                {!! get($attachment, 'filename') !!}
-                            </div>
-
-                            <div
-                                wire:click="detach({{ $i }})"
-                                class="shrink-0 cursor-pointer text-red-500 flex items-center justify-center">
-                                <x-icon name="remove"/>
-                            </div>
-                        </div>
-                    @endforeach
-
+        <atom:_field>
+            <atom:_label>@t('attachment')</atom:_label>
+            <div class="flex items-center gap-2 flex-wrap">
+                @foreach (get($email, 'attachments') as $i => $attachment)
                     <div
-                        x-data
-                        x-on:click="$refs.file.click()"
-                        x-tooltip="{{ js(t('attach')) }}"
-                        class="cursor-pointer h-10 w-10 rounded-md border-2 border-dashed border-gray-500 flex items-center justify-center">
-                        <x-icon name="attachment"/>
-                        <input type="file" x-ref="file" wire:model="uploads" class="hidden" multiple>
+                        wire:key="{{ get($attachment, 'id') }}"
+                        class="h-10 max-w-72 border border-zinc-200 rounded-md bg-white shadow-sm flex items-center gap-3 px-3">
+                        <atom:icon attach class="shrink-0 text-muted-more"/>
+                        <div class="grow truncate">@ee(get($attachment, 'filename'))</div>
+                        <div
+                            wire:click="detach({{ $i }})"
+                            class="shrink-0 text-muted-more flex items-center justify-center">
+                            <atom:icon delete/>
+                        </div>
                     </div>
+                @endforeach
+
+                <div
+                    x-data
+                    x-on:click="$refs.file.click()"
+                    x-tooltip="{{ js(t('attach')) }}"
+                    class="h-10 w-10 rounded-md border border-dashed border-zinc-300 flex items-center justify-center">
+                    <atom:icon attach/>
+                    <input type="file" x-ref="file" wire:model="uploads" x-on:click.stop class="hidden" multiple>
                 </div>
-            </x-field>
-        </x-inputs>
-    @endif
-</x-drawer>
+            </div>
+        </atom:_field>
+
+        <atom:_button action="submit">@t('send')</atom:_button>
+    </atom:_form>
+@else
+    <atom:skeleton/>
+@endif
+</atom:modal>
