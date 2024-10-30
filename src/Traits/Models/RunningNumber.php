@@ -4,12 +4,10 @@ namespace Jiannius\Atom\Traits\Models;
 
 use Illuminate\Support\Facades\DB;
 
-trait HasRunningNumber
+trait RunningNumber
 {
-    // boot
-    protected static function bootHasRunningNumber()
+    protected static function bootRunningNumber()
     {
-        // listen to creating event
         static::saving(function ($model) {
             if ($model->number === 'temp') {
                 $model->number = collect(['TEMP', str()->random(), time()])->join('-');
@@ -17,7 +15,7 @@ trait HasRunningNumber
             else if (!$model->number) {
                 $dup = true;
                 $table = $model->getTable();
-                $prefix = $model->getPrefix();
+                $prefix = $model->runningNumberPrefix();
 
                 $last = optional(
                     DB::table($table)
@@ -35,9 +33,7 @@ trait HasRunningNumber
                     $n = $n + 1;
                     $postfix = str()->padLeft($n, 6, '0');
                     $number = collect([$prefix, $postfix])->filter()->join('-');
-                    $dup = DB::table($table)
-                        ->where('number', $number)
-                        ->count() > 0;
+                    $dup = DB::table($table)->where('number', $number)->count() > 0;
                 }
 
                 $model->number = $number;
@@ -45,9 +41,13 @@ trait HasRunningNumber
         });
     }
 
-    // get prefix
-    protected function getPrefix()
+    protected function runningNumberPrefix()
     {
-        return $this->prefix ?? null;
+        return '';
+    }
+
+    public function scopeTempNumber($query)
+    {
+        $query->where('number', 'like', 'TEMP-%');
     }
 }

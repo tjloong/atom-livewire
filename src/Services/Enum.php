@@ -9,14 +9,19 @@ class Enum
     // constructor
     public function __construct($name)
     {
-        $name = collect(explode('.', $name))
-            ->map(fn($val) => str($val)->singular()->studly()->toString())
-            ->join('\\');
+        if (str($name)->is('App\\Enums\\*') || str($name)->is('Jiannius\\Atom\\Enums\\*')) {
+            $this->ns = $name;
+        }
+        else {
+            $name = collect(explode('.', $name))
+                ->map(fn($val) => str($val)->singular()->studly()->toString())
+                ->join('\\');
 
-        $this->ns = collect([
-            'App\\Enums\\'.$name,
-            'Jiannius\\Atom\\Enums\\'.$name,
-        ])->first(fn($val) => file_exists(atom_ns_path($val)));
+            $this->ns = collect([
+                'App\\Enums\\'.$name,
+                'Jiannius\\Atom\\Enums\\'.$name,
+            ])->first(fn($val) => file_exists(atom_ns_path($val)));
+        }
     }
 
     // get

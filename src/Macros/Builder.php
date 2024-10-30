@@ -47,87 +47,97 @@ class Builder
 
     public function filter()
     {
-        return function ($filters) {
-            $table = $this->getModel()->getTable();
-            $filters = $this->parseFilters($filters);
+        return function (...$filters) {
+            if (count($filters) === 1 && is_array(head($filters))) {
+                foreach (head($filters) as $key => $value) {
+                    $this->filter($key, $value);
+                }
+            }
+            else {
+                $key = head($filters);
+                $value = last($filters);
+                $table = $this->getModel()->getTable();
 
-            foreach ($filters as $filter) {
-                $value = $filter['value'];
-
-                if ($scope = $filter['scope'] ?? null) {
-                    $this->$scope($value);
+                if ($key === 'search' && $this->hasNamedScope('search') && $value) {
+                    $this->search($value);
+                }
+                else if ($key !== 'search' && $this->hasNamedScope($key)) {
+                    $this->$key($value);
                 }
                 else {
-                    $column = $filter['column'];
-                    $operator = $filter['operator'] ?? null;
-                    $function = $filter['function'] ?? null;
-                    $json = $filter['json'] ?? false;
+                    $key = explode(':', $key);
+                    $col = head($key);
+                    $coltype = $this->tableColumnType(head(explode('.', $col)));
+                    $operator = count($key) > 1 ? last($key) : null;
 
-                    if ($json) $column = str($column)->replace('.', '->')->toString();
-                    
-                    if ($function) $column = DB::raw($function.'('.$table.'.'.$column.')');
-                    else $column = $table.'.'.$column;
+                    if (in_array($coltype, ['date', 'datetime', 'timestamp'])) {
+                        $col = $coltype === 'date'
+                            ? DB::raw("date($table.$col)")
+                            : "$table.$col";
 
-                    if ($operator) $this->where($column, $operator, $value);
-                    else if (is_array($value) && $value) {
-                        if ($json) $this->whereJsonContains($column, $value);
-                        else $this->whereIn($column, $value);
+                        if (str($value)->is('* to *') || str($value)->is('* to') || str($value)->is('to *')) {
+                            $split = collect(explode('to', $value))
+                                ->map(fn ($val) => str($val)->replace('to', ''))
+                                ->map(fn ($val) => trim($val));
+
+                            $from = $split->first();
+                            $to = $split->count() > 1 ? $split->last() : null;
+
+                            if ($from) $this->where($col, '>=', $from);
+                            if ($to) $this->where($col, '<=', $to);
+                        }
+                        else if ($value) {
+                            if ($operator) {
+                                $this->where($col, $operator, $value);
+                            }
+                            else {
+                                $this->where($col, $value);
+                            }
+                        }
                     }
-                    else if (!is_array($value)) {
-                        $this->where($column, $value);
+                    else if (
+                        ($cast = get($this->getModel()->getCasts(), $col))
+                        && ($enum = enum($cast))
+                        && $enum->ns
+                    ) {
+                        $value = is_array($value) ? $value : explode(',', $value);
+                        $value = collect($value)
+                            ->map(fn ($val) => trim($val))
+                            ->map(fn ($val) => $enum->get($val))
+                            ->filter()
+                            ->map(fn ($val) => $val->value);
+
+                        if ($value->count()) {
+                            $this->whereIn($col, $value->values()->all());
+                        }
+                    }
+                    // if got column type, means the column exists
+                    else if ($coltype) {
+                        $col = $coltype === 'json'
+                            ? $table.'.'.((string) str($col)->replace('.', '->'))
+                            : "$table.$col";
+
+                        if ($operator === 'like') {
+                            if (str($value)->is('%*', '*%')) $this->where($col, 'like', $value);
+                            else $this->where($col, 'like', "%$value%");
+                        }
+                        else if (is_array($value) && $value) {
+                            if ($coltype === 'json') $this->whereJsonContains($col, $value);
+                            else $this->whereIn($col, $value);
+                        }
+                        else if (!is_array($value)) {
+                            if ($operator) {
+                                $this->where($col, $operator, $value);
+                            }
+                            else {
+                                $this->where($col, $value);
+                            }
+                        }
                     }
                 }
             }
 
             return $this;
-        };
-    }
-
-    public function parseFilters()
-    {
-        return function ($filters) {
-            $parsed = [];
-
-            foreach (($filters ?? []) as $key => $value) {
-                if (is_null($value)) continue;
-    
-                $column = preg_replace('/^(from_|to_)/', '', $key);
-                $fn = str()->camel($column);
-    
-                if ($this->hasNamedScope($fn)) {
-                    array_push($parsed, ['column' => $column, 'value' => $value, 'scope' => $fn]);
-                }
-                else {
-                    if ($this->tableColumnType($column, ['date', 'datetime', 'timestamp'])) {
-                        if (str($value)->is('* to *')) {
-                            $from = head(explode(' to ', $value));
-                            $to = last(explode(' to ', $value));
-                            $function = $this->tableColumnType($column, 'date') ? 'date' : null;
-                            array_push($parsed, ['column' => $column, 'value' => $from, 'operator' => '>=', 'function' => $function]);
-                            array_push($parsed, ['column' => $column, 'value' => $to, 'operator' => '<=', 'function' => $function]);
-                        }
-                        else {
-                            if (str($key)->is('from_*')) {
-                                $value = format($value)->carbon()->startOfDay()->utc();
-                                array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '>=']);
-                            }
-
-                            if (str($key)->is('to_*')) {
-                                $value = format($value)->carbon()->endOfDay()->utc();
-                                array_push($parsed, ['column' => $column, 'value' => $value->toDatetimeString(), 'operator' => '<=']);
-                            }
-                        }
-                    }
-                    else if ($this->tableColumnType($column, 'json')) {
-                        array_push($parsed, ['column' => $column, 'value' => $value, 'json' => true]);
-                    }
-                    else if ($this->tableHasColumn($column)) {
-                        array_push($parsed, ['column' => $column, 'value' => $value]);
-                    }
-                }
-            }
-
-            return $parsed;    
         };
     }
 
