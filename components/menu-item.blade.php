@@ -2,10 +2,19 @@
 $route = (array) $attributes->get('route');
 $value = $attributes->get('value');
 $badge = $attributes->get('badge');
+$action = $attributes->get('action');
 $href = $attributes->get('href') ?? ($route ? route(...$route) : null);
 
+$variant = $attributes->get('variant') ?? match ($action) {
+    'delete', 'trash' => 'danger',
+    default => null,
+};
+
 $icon = [
-    'start' => $attributes->get('icon'),
+    'start' => $attributes->get('icon') ?? match ($action) {
+        'delete', 'trash' => 'delete',
+        default => null,
+    },
     'end' => $attributes->get('icon-end'),
 ];
 
@@ -24,11 +33,15 @@ $permitted = !$attributes->has('can') || (
 
 $classes = $attributes->classes()
     ->add('flex items-center gap-2 w-full text-left text-zinc-800 py-2 px-3 rounded-md')
-    ->add('focus:outline-none focus:bg-zinc-800/5 hover:bg-zinc-800/5')
+    ->add('focus:outline-none')
     ->add('disabled:pointer-events-none disabled:cursor-default')
     ->add('group-[]/panel-sidebar:my-1')
     ->add('group-[]/menu:my-1 first:group-[]/menu:mt-0 last:group-[]/menu:mb-0')
     ->add('data-[active]:bg-white data-[active]:border data-[active]:shadow-sm')
+    ->add(match ($variant) {
+        'danger' => 'focus:bg-red-100 hover:text-red-500 hover:bg-red-100',
+        default => 'focus:bg-zinc-800/5 hover:bg-zinc-800/5',
+    })
     ;
 
 $el = $href ? 'a' : 'button';
@@ -39,7 +52,10 @@ $attrs = $attributes
         'type' => $href ? null : 'button',
         'data-active' => $active,
         'data-atom-menu-item' => true,
-        'x-on:click' => $value ? "\$dispatch('input', '$value')" : null,
+        'x-on:click' => $value ? "\$dispatch('input', '$value')" : match ($action) {
+            'delete' => 'Atom.confirm({ type: \'delete\' }).then(() => $wire.delete())',
+            default => null,
+        },
     ])
     ->except(['icon', 'route', 'can', 'value', 'active'])
     ;

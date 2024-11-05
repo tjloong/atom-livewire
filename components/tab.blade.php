@@ -11,6 +11,7 @@ $element = $href ? 'a' : 'button';
 
 $classes = $attributes->classes()
     ->add('transition-colors duration-200 hover:bg-zinc-50 md:grow')
+    ->add($icon ? 'flex items-center gap-2' : '')
     ->add('data-[active]:bg-white')
     ->add('data-[active]:shadow-sm')
     ->add('data-[active]:font-medium')
@@ -39,6 +40,10 @@ $attrs = $attributes
     x-bind:data-inactive="value !== {{ js($value) }}"
     @endif
     {{ $attrs }}>
+    @if ($icon)
+        <atom:icon :name="$icon" class="shrink-0"/>
+    @endif
+
     @if ($slot->isNotEmpty())
         {{ $slot }}
     @else
