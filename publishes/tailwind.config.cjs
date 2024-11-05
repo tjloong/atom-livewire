@@ -91,5 +91,16 @@ module.exports = {
     
     plugins: [
         require('@tailwindcss/typography'),
+
+        plugin(function({ addUtilities }) {
+            addUtilities({
+                '.text-muted': {
+                    'color': colors.zinc['500'],
+                },
+                '.text-muted-more': {
+                    'color': colors.zinc['400'],
+                },
+            })
+        })
     ],
 }
