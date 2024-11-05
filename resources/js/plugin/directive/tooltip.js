@@ -36,6 +36,7 @@ function hideTooltip (tooltip) {
 
 export default (el, { modifiers, expression }, { evaluate, evaluateLater }) => {
     let content = evaluate(expression)
+    if (!content) return
     if (content === el.innerHTML.striptags().trim()) return
 
     let tooltip = createTooltip(content, modifiers)

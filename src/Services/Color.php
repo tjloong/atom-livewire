@@ -74,6 +74,13 @@ class Color
         return $this->options->collapse()->values()->all();
     }
 
+    public function minimal()
+    {
+        $options = $this->options;
+
+        return $options->keys()->map(fn ($key) => get($options->get($key), 5))->filter();
+    }
+
     // convert input to hex
     public function convertInputToHex() : void
     {
