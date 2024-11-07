@@ -17,6 +17,9 @@ elseif ($type === 'buttons') {
             ;
     }
 }
+elseif ($type === 'avatars') {
+    $classes->add('flex items-center *:-ml-2 first:*:-ml-0');
+}
 else {
     $classes->add('flex flex-col gap-6 [&>[data-atom-heading]]:-mb-3');
 }
