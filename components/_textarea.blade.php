@@ -12,11 +12,14 @@ $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
 
 $classes = $attributes->classes()
     ->add('w-full text-zinc-700')
-    ->add('border border-zinc-200 border-b-zinc-300/80 rounded-lg shadow-sm bg-white')
+    ->add($transparent
+        ? 'resize-none'
+        : 'py-2 px-3 border border-zinc-200 border-b-zinc-300/80 rounded-lg shadow-sm bg-white')
+    ->add($invalid && !$transparent
+        ? 'border-red-400'
+        : 'group-has-[[data-atom-error]]/field:border-red-400')
     ->add('focus:outline-none focus:border-primary group-focus/input:border-primary hover:border-primary-300')
     ->add('disabled:resize-none read-only:resize-none')
-    ->add($transparent ? 'resize-none' : 'py-2 px-3')
-    ->add($invalid ? 'border-red-400' : 'group-has-[[data-atom-error]]/field:border-red-400')
     ;
 
 $attrs = $attributes
@@ -24,6 +27,7 @@ $attrs = $attributes
     ->merge([
         'rows' => $transparent ? 1 : 3,
         'x-autosize' => $autoresize || $transparent,
+        'x-init' => $autoresize || $transparent ? '$autosize()' : null,
         'required' => $required,
     ])
     ->except(['label', 'caption', 'field', 'error', 'placeholder', 'invalid', 'transparent'])

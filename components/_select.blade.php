@@ -2,6 +2,7 @@
 $id = $attributes->wire('key')->value() ?: $attributes->wire('model')->value();
 $icon = $attributes->get('icon');
 $label = $attributes->get('label');
+$inline = $attributes->get('inline');
 $caption = $attributes->get('caption');
 $variant = $attributes->get('variant', 'native');
 $prefix = $attributes->get('prefix');
@@ -56,10 +57,11 @@ $attrs = $attributes
         :label="$label"
         :caption="$caption"
         :required="$required"
+        :inline="$inline"
         :error="$error">
         <atom:_select
             :placeholder="$placeholder"
-            :attributes="$attributes->except(['label', 'caption', 'placeholder'])">
+            :attributes="$attributes->except(['label', 'caption', 'placeholder', 'inline'])">
             {{ $slot }}
         </atom:_select>
     </atom:_input.field>

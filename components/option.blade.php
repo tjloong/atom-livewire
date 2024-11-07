@@ -4,6 +4,7 @@
 $option = $attributes->get('option');
 $value = $attributes->get('value') ?? get($option, 'value');
 $label = $attributes->get('label') ?? get($option, 'label');
+$color = $attributes->get('color') ?? get($option, 'color');
 $caption = $attributes->get('caption') ?? get($option, 'caption');
 $note = $attributes->get('note') ?? get($option, 'note');
 $badge = $attributes->get('badge') ?? get($option, 'badge');
@@ -30,6 +31,12 @@ $attrs = $attributes->except(['option', 'value', 'label', 'badge', 'badge-color'
                 {{ $slot }}
             @else
                 <div class="flex gap-2">
+                    @if ($color)
+                        <div class="shrink-0 flex items-center justify-center">
+                            <div class="size-4 rounded-md" style="background-color: {{ $color }}"></div>
+                        </div>
+                    @endif
+
                     <div class="grow">
                         <div class="truncate">@t($label)</div>
                         @if ($caption)
