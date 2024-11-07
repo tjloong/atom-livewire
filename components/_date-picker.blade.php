@@ -3,9 +3,14 @@ $utc = $attributes->get('utc', true);
 $size = $attributes->get('size');
 $time = $attributes->get('time');
 $label = $attributes->get('label');
+$inline = $attributes->get('inline');
 $caption = $attributes->get('caption');
 $variant = $attributes->get('variant', 'date');
-$placeholder = $attributes->get('placeholder', 'Select date');
+$placeholder = $attributes->get('placeholder', pick([
+    'select-date-time' => $time,
+    'select-date-range' => $variant === 'range',
+    'select-date' => true,
+]));
 
 $field = $attributes->get('field') ?? $attributes->wire('model')->value();
 $required = $attributes->get('required') ?? $this->form['required'][$field] ?? false;
@@ -29,9 +34,10 @@ $attrs = $attributes
     <atom:_input.field
         :label="$label"
         :caption="$caption"
+        :inline="$inline"
         :required="$required"
         :error="$error">
-        <atom:_date-picker :attributes="$attributes->except(['label', 'caption', 'error'])"/>
+        <atom:_date-picker :attributes="$attributes->except(['label', 'caption', 'error', 'inline'])"/>
     </atom:_input.field>
 @else
     <div
@@ -95,6 +101,7 @@ $attrs = $attributes
         </div>
 
         <div
+            x-ref="dropdown"
             x-show="visible"
             x-transition.duration.200
             class="absolute z-10 rounded-lg">

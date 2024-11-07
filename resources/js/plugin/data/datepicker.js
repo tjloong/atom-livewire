@@ -15,7 +15,6 @@ export default (config) => {
 
         init () {
             this.$watch('value', () => this.setRange())
-
             this.initTime()
             this.$watch('time', () => this.select())
         },
@@ -46,7 +45,6 @@ export default (config) => {
         },
 
         select () {
-            let format = 'YYYY-MM-DD HH:mm:ss'
             let one = this.picker[0]?.getDate()
             let two = this.picker[1]?.getDate()
 
@@ -57,11 +55,11 @@ export default (config) => {
             two = dayjs(two)
 
             if (one.isValid()) {
-                one = this.config.utc ? one.utc().format(format) : one.format(format)
+                one = this.config.utc ? one.utc().toISOString() : one.toISOString()
 
                 if (this.config.range) {
                     if (two.isValid()) {
-                        two = this.config.utc ? two.utc().format(format) : two.format(format)
+                        two = this.config.utc ? two.utc().toISOString() : two.toISOString()
                         this.value = `${one} to ${two}`
                         this.$refs.trigger.dispatch('input', this.value)
                     }
@@ -74,11 +72,8 @@ export default (config) => {
         },
 
         selectCustomRange (from, to) {
-            let format = 'YYYY-MM-DD HH:mm:ss'
-
-            from = this.config.utc ? from.utc().format(format) : from.format(format)
-            to = this.config.utc ? to.utc().format(format) : to.format(format)
-
+            from = this.config.utc ? from.utc().toISOString() : from.toISOString()
+            to = this.config.utc ? to.utc().toISOString() : to.toISOString()
             this.$refs.trigger.dispatch('input', `${from} to ${to}`)
         },
 
@@ -120,11 +115,8 @@ export default (config) => {
         },
  
         getSelected () {
-            let one = this.config.range ? this.value?.split(' to ')[0] : this.value
-            let two = this.config.range ? this.value?.split(' to ')[1] : null
-
-            if (one) one = this.config.utc ? dayjs(one).utc(true).local() : null
-            if (two) two = this.config.utc ? dayjs(two).utc(true).local() : null
+            let one = dayjs(this.config.range ? this.value?.split(' to ')[0] : this.value)
+            let two = dayjs(this.config.range ? this.value?.split(' to ')[1] : null)
 
             if (one?.isValid() && two?.isValid()) return [one, two]
             if (one?.isValid()) return [one]
@@ -134,7 +126,7 @@ export default (config) => {
 
         positioning () {
             let anchor = this.$refs.trigger
-            let body = this.$refs.calendar
+            let body = this.$refs.dropdown
 
             computePosition(anchor, body, {
                 placement: 'bottom-start',
