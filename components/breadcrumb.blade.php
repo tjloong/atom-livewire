@@ -62,11 +62,11 @@ $attrs = $attributes->except(['traces']);
         {{ $attrs->class(['flex flex-wrap items-center gap-2 py-3 overflow-hidden first:mb-4']) }}>
         <template x-for="(trace, i) in traces" hidden>
             <li class="shrink-0 max-w-40 lg:max-w-64">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 truncate">
                     <x-icon home x-show="i === 0" class="text-zinc-400 shrink-0"/>
 
                     <template x-if="i !== traces.lastIndex()" hidden>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 truncate">
                             <a
                                 x-text="trace.label"
                                 x-on:click="Atom.sheet(trace.name).show()"

@@ -32,7 +32,9 @@ $attrs = $attributes
     data-atom-sheet="{{ $name }}"
     {{ $attrs }}>
     @if ($breadcrumb)
-        <atom:breadcrumb/>
+        <atom:breadcrumb>
+            @isset ($actions) {{ $actions }} @endisset
+        </atom:breadcrumb>
     @endif
 
     {{ $slot }}

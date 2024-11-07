@@ -73,6 +73,8 @@
         <div class="relative min-h-dvh lg:ml-64 lg:group-has-[[data-atom-panel-sidebar-show]]/panel:ml-0 transition-all duration-200">
             {{ $slot }}
         </div>
+
+        @stack('sheets')
     </div>
 
     <atom:alert/>
