@@ -154,12 +154,6 @@ return [
         'fbpixel-id' => 'Facebook Pixel ID',
         'feature' => 'Feature|Features',
         'female' => 'Female',
-        'file-oversize' => 'File must be :max or smaller',
-        'file-size' => 'File Size',
-        'file-type' => 'File Type',
-        'file' => 'File',
-        'files-and-media' => 'Files and Media',
-        'files-library' => 'Files Library',
         'filter-count' => ':count Filter|:count Filters',
         'filter' => 'Filters',
         'finexus-settings' => 'Finexus Settings',
@@ -345,6 +339,7 @@ return [
         'select-color' => 'Select color',
         'select-country' => 'Select country',
         'select-date-range' => 'Select date range',
+        'select-date-time' => 'Select date and time',
         'select-date' => 'Select date',
         'select-datetime' => 'Select date & time',
         'select-gender' => 'Select Gender',
@@ -493,6 +488,15 @@ return [
         // user
         'edit-user' => 'Edit User',
         'create-user' => 'Create User',
+
+        // file
+        'file-oversize' => 'File must be :max or smaller',
+        'file-size' => 'File Size',
+        'file-type' => 'File Type',
+        'file' => 'File',
+        'files' => 'Files',
+        'files-and-media' => 'Files and Media',
+        'files-library' => 'Files Library',
 
         // announcement
         'announcement' => 'Announcement|Announcements',

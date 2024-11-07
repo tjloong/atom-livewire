@@ -103,12 +103,12 @@ class Builder
                         $value = is_array($value) ? $value : explode(',', $value);
                         $value = collect($value)
                             ->map(fn ($val) => trim($val))
-                            ->map(fn ($val) => $enum->get($val))
-                            ->filter()
-                            ->map(fn ($val) => $val->value);
+                            ->map(fn ($val) => optional($enum->get($val))->value ?? $val)
+                            ->filter();
 
                         if ($value->count()) {
-                            $this->whereIn($col, $value->values()->all());
+                            if (in_array($operator, ['!=', '<>'])) $this->whereNotIn($col, $value->values()->all());
+                            else $this->whereIn($col, $value->values()->all());
                         }
                     }
                     // if got column type, means the column exists
