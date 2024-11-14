@@ -155,5 +155,9 @@ document.addEventListener('alpine:initialized', () => {
 @endif
 
 {{ $slot }}
+
+<div data-tooltip popover>
+    <div class="py-1 px-2 pointer-events-none rounded-md bg-black/80 text-zinc-100 shadow text-sm w-max whitespace-nowrap"></div>
+</div>
 </body>
 </html>
