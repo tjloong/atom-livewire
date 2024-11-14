@@ -13,10 +13,20 @@
         <template x-if="config.type" hidden>
             <div class="shrink-0">
                 <div class="flex items-center justify-center">
-                    <x-icon check-circle size="24" x-show="config.type === 'success'" class="text-green-500"/>
-                    <x-icon close-circle size="24" x-show="config.type === 'error'" class="text-red-500"/>
-                    <x-icon warning size="24" x-show="config.type === 'warning'" class="text-yellow-500"/>
-                    <x-icon info size="24" x-show="config.type === 'info'" class="text-sky-500"/>
+                    <atom:icon size="24"
+                        x-html="icons[{
+                            success: 'check-circle',
+                            warning: 'warning',
+                            info: 'info',
+                            error: 'close-circle',
+                        }[config.type]]"
+                        x-bind:class="{
+                            success: 'text-green-500',
+                            warning: 'text-yellow-500',
+                            info: 'text-sky-500',
+                            error: 'text-red-500',
+                        }[config.type] || 'text-muted'">
+                    </atom:icon>
                 </div>
             </div>
         </template>
@@ -27,11 +37,21 @@
                 <div x-text="config.message" class="text-gray-500"></div>
             </div>
 
-            <div class="flex items-center gap-2 justify-end">
+            <template x-if="config.phrase" hidden>
+                <div class="space-y-2">
+                    <div x-text="t('please-enter-phrase-to-continue', { phrase: config.phrase })" class="text-sm font-medium"></div>
+                    <input type="text" 
+                        x-ref="phrase"
+                        x-model="phrase"
+                        class="w-full px-3 h-10 bg-white border border-zinc-200 shadow-sm rounded-lg focus:outline-none">
+                </div>
+            </template>
+
+            <div x-show="validatePhrase()" class="flex items-center gap-2 justify-end">
                 <button
                     type="button"
                     x-show="!accepting"
-                    x-text="config.buttons?.cancel || t('app.label.cancel')"
+                    x-text="config.buttons?.cancel || t('cancel')"
                     x-on:click="cancel()"
                     class="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-white text-black border hover:bg-zinc-50 h-9 px-4 py-2">
                 </button>
@@ -39,15 +59,14 @@
                 <button
                     type="button"
                     x-show="!canceling"
-                    x-text="config.buttons?.confirm || t('app.label.confirm')"
+                    x-text="config.buttons?.confirm || t('confirm')"
                     x-on:click="accept()"
                     x-bind:class="{
-                        'bg-sky-500 text-sky-100 border-sky-500 hover:bg-sky-600': config.type === 'info',
-                        'bg-red-500 text-red-100 border-red-500 hover:bg-red-600': config.type === 'error',
-                        'bg-green-500 text-green-100 border-green-500 hover:bg-green-600': config.type === 'success',
-                        'bg-yellow-500 text-yellow-100 border-yellow-500 hover:bg-yellow-600': config.type === 'warning',
-                        'bg-theme text-theme-light border-theme hover:bg-theme-dark': !config.type,
-                    }"
+                        info: 'bg-sky-500 text-sky-100 border-sky-500 hover:bg-sky-600',
+                        error: 'bg-red-500 text-red-100 border-red-500 hover:bg-red-600',
+                        success: 'bg-green-500 text-green-100 border-green-500 hover:bg-green-600',
+                        warning: 'bg-yellow-500 text-yellow-100 border-yellow-500 hover:bg-yellow-600',
+                    }[config.type] || 'bg-theme text-theme-light border-theme hover:bg-theme-dark'"
                     class="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border h-9 px-4 py-2">
                 </button>
             </div>

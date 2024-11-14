@@ -1,6 +1,7 @@
 export default () => {
     return {
         config: {},
+        phrase: null,
         visible: false,
         accepting: false,
         canceling: false,
@@ -31,7 +32,11 @@ export default () => {
             }
 
             this.$root.showModal()
-            this.$nextTick(() => this.visible = true)
+
+            this.$nextTick(() => {
+                this.visible = true
+                setTimeout(() => this.$refs.phrase?.focus(), 50)
+            })
         },
 
         close () {
@@ -68,6 +73,10 @@ export default () => {
 
                 resolve()
             })
+        },
+
+        validatePhrase () {
+            return !this.config.phrase || (this.config.phrase && this.phrase === this.config.phrase)
         },
     }
 }

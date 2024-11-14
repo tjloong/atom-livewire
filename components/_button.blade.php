@@ -5,6 +5,7 @@ $href = $attributes->get('href');
 $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
 $newtab = $attributes->has('newtab');
 $action = $attributes->get('action');
+$phrase = $attributes->get('phrase', '');
 $tooltip = $attributes->get('tooltip');
 $inverted = $attributes->get('inverted');
 $social = $attributes->get('social');
@@ -145,7 +146,7 @@ if (!$attributes->hasLike('wire:click*', 'x-on:click*') && $action && $action !=
     $merges = [
         ...$merges,
         'x-on:click' => match ($action) {
-            'delete', 'trash' => "Atom.confirm({ type: '$action' }).then(() => \$wire.{$action}())",
+            'delete', 'trash' => "Atom.confirm({ type: '$action', phrase: '$phrase' }).then(() => \$wire.{$action}())",
             'footprint' => "\$wire.call('footprint', { model: '".get_class($model)."', id: '".$model->id."' })",
             default => "\$wire.call('".str()->camel($action)."')",
         },
@@ -161,18 +162,18 @@ $attrs = $attributes
 
 <{{ $el }} {{ $attrs }}>
     <div class="absolute inset-0 items-center justify-center hidden group-[.is-loading]/button:flex">
-        <x-icon name="loading" :size="get($icon, 'size')"/>
+        <atom:icon name="loading" :size="get($icon, 'size')"/>
     </div>
 
     <div class="inline-flex items-center justify-center gap-2 group-[.is-loading]/button:opacity-0">
         @if (get($icon, 'start'))
-            <x-icon :name="get($icon, 'start')" :size="get($icon, 'size')" class="shrink-0"/>
+            <atom:icon :name="get($icon, 'start')" :size="get($icon, 'size')" class="shrink-0"/>
         @endif
 
         {{ $slot }}
 
         @if (get($icon, 'end'))
-            <x-icon :name="get($icon, 'end')" :size="get($icon, 'size')" class="shrink-0 -ml-0.5"/>
+            <atom:icon :name="get($icon, 'end')" :size="get($icon, 'size')" class="shrink-0 -ml-0.5"/>
         @endif
     </div>
 </{{ $el }}>
