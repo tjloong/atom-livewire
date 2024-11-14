@@ -175,6 +175,7 @@ trait AtomComponent
     // refresh component
     public function refresh()
     {
+        $this->resetValidation();
         $this->renewWirekey();
         $this->emit('$refresh');
     }

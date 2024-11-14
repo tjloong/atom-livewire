@@ -21,7 +21,7 @@ class Options
         $filters = collect($filters);
         $selected = $filters->pull('value');
 
-        $this->filters = $filters;
+        $this->filters = $filters->toArray();
         $this->selected = (array) $selected;
 
         return $this;
