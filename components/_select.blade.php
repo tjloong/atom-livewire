@@ -84,21 +84,23 @@ $attrs = $attributes
             @endif
         })"
         x-modelable="value"
-        x-on:keydown.up.prevent="keyUp()"
-        x-on:keydown.down.prevent="keyDown()"
-        x-on:keydown.enter.prevent="keyEnter()"
-        x-on:keydown.space.prevent="keyEnter()"
-        x-on:keydown.esc.prevent="close()"
+        x-on:keydown.up.prevent.stop="keyUp()"
+        x-on:keydown.down.prevent.stop="keyDown()"
+        x-on:keydown.enter.prevent.stop="keyEnter()"
+        x-on:keydown.space.prevent.stop="keyEnter()"
+        x-on:keydown.esc.prevent.stop="close()"
         x-on:click.away="close()"
         data-atom-select-listbox
         class="group/select w-full"
         {{ $attrs->whereDoesntStartWith('wire:model')->except('class') }}>
-        <div class="relative block" data-atom-select-listbox-trigger>
+        <div
+            wire:ignore
+            x-ref="trigger"
+            data-atom-select-listbox-trigger
+            class="relative block">
             <button
-                wire:ignore
                 type="button"
-                x-ref="trigger"
-                x-on:click="options.length ? open() : search().then(() => open())"
+                x-on:click="open()"
                 {{ $attrs->only('class') }}>
                 @if ($icon)
                     <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
@@ -162,12 +164,10 @@ $attrs = $attributes
             </button>
         </div>
 
-        <div
+        <atom:popover
+            wire:ignore.self
             x-ref="options"
-            x-show="visible"
-            x-transition.duration.200
-            data-atom-select-listbox-options
-            class="absolute z-10 w-full">
+            x-on:popover-open="setWidth()">
             <atom:menu>
                 @if ($options && $searchable)
                     <div class="py-3 px-4 flex items-center gap-2 border-b">
@@ -193,7 +193,7 @@ $attrs = $attributes
                     </div>
                 @endif
 
-                <ul class="p-1 max-h-[300px] overflow-auto">
+                <ul class="max-h-[300px] overflow-auto">
                     @if ($slot->isNotEmpty())
                         {{ $slot }}
                     @else
@@ -205,7 +205,7 @@ $attrs = $attributes
                     @endif
                 </ul>
             </atom:menu>
-        </div>
+        </atom:popover>
     </div>
 @elseif ($variant === 'native')
     <div

@@ -31,18 +31,18 @@ export default (config) => {
         },
 
         open () {
-            if (this.visible) return
-
-            this.visible = true
-            
-            this.$nextTick(() => {
-                this.positioning()
-                this.$refs.search?.focus()
-            })
+            if (this.options?.length) {
+                this.$refs.options.showPopover()
+            }
+            else {
+                this.search()
+                    .then(() => this.$refs.options.showPopover())
+                    .then(() => this.$refs.search?.focus())
+            }
         },
 
         close () {
-            this.visible = false
+            this.$refs.options.hidePopover()
         },
 
         clear () {
@@ -62,6 +62,12 @@ export default (config) => {
             }
             else {
                 return new Promise((resolve) => resolve())
+            }
+        },
+
+        setWidth () {
+            if (this.$refs.trigger.clientWidth > this.$refs.options.clientWidth) {
+                this.$refs.options.style.width = this.$refs.trigger.clientWidth+'px'
             }
         },
 

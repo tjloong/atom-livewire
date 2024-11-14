@@ -51,17 +51,16 @@ $attrs = $attributes
             @endif
         })"
         x-on:click.away="close()"
-        x-on:keydown.down.prevent="!visible && open()"
-        x-on:keydown.enter.prevent="visible ? close() : open()"
-        x-on:keydown.space.prevent="visible ? close() : open()"
+        x-on:keydown.down.prevent="open()"
+        x-on:keydown.enter.prevent="open()"
+        x-on:keydown.space.prevent="open()"
         x-on:keydown.esc.prevent="close()"
         class="group/datepicker relative w-full"
         data-atom-date-picker>
-        <div class="relative block">
+        <div data-anchor class="relative block">
             <button
                 type="button"
-                x-ref="trigger"
-                x-on:click="visible ? close() : open()"
+                x-on:click="open()"
                 {{ $attrs }}>
                 <template x-if="value" hidden>
                     <div
@@ -100,11 +99,7 @@ $attrs = $attributes
             </button>
         </div>
 
-        <div
-            x-ref="dropdown"
-            x-show="visible"
-            x-transition.duration.200
-            class="absolute z-10 rounded-lg">
+        <atom:popover>
             <atom:menu>
                 @if ($variant === 'range')
                     <div class="md:flex md:divide-x">
@@ -152,6 +147,6 @@ $attrs = $attributes
                     <div x-ref="calendar"></div>
                 @endif
             </atom:menu>
-        </div>
+        </atom:popover>
     </div>
 @endif

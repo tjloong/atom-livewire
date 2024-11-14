@@ -20,7 +20,19 @@ html {
 }
 
 dialog::backdrop {
-    @apply bg-black/20;
+    @apply bg-black/30;
+}
+dialog[data-atom-modal]::backdrop {
+    @apply bg-transparent;
+}
+
+[popover] {
+    @apply bg-transparent;
+}
+[popover]:popover-open {
+    position: absolute;
+    inset: unset;
+    margin: 0;
 }
 
 a {

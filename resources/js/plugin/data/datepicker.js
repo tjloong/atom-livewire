@@ -1,12 +1,10 @@
 import Pikaday from 'pikaday'
-import { computePosition, flip, shift, offset } from '@floating-ui/dom'
 
 export default (config) => {
     return {
         value: config.value,
         time: [],
         picker: null,
-        visible: false,
         config: {
             utc: config.utc,
             range: config.range,
@@ -20,28 +18,22 @@ export default (config) => {
         },
 
         open () {
-            if (this.visible) return
+            if (this.$refs.popover?.hasAttribute('data-open')) return
 
-            this.visible = true
-
-            this.$nextTick(() => {
-                this.positioning()
-                this.initPikaday()
-                setTimeout(() => this.setRange(), 50)
-            })
+            this.$refs.popover.showPopover()
+            this.initPikaday()
+            setTimeout(() => this.setRange(), 50)
         },
 
         close () {
-            if (!this.visible) return
+            if (!this.$refs.popover?.hasAttribute('data-open')) return
 
-            this.visible = false
-
-            this.$nextTick(() => {
-                if (this.picker) {
-                    this.picker[0]?.destroy()
-                    this.picker[1]?.destroy()
-                }
-            })
+            this.$refs.popover.hidePopover()
+            
+            if (this.picker) {
+                this.picker[0]?.destroy()
+                this.picker[1]?.destroy()
+            }
         },
 
         select () {
@@ -61,12 +53,12 @@ export default (config) => {
                     if (two.isValid()) {
                         two = this.config.utc ? two.utc().toISOString() : two.toISOString()
                         this.value = `${one} to ${two}`
-                        this.$refs.trigger.dispatch('input', this.value)
+                        this.$dispatch('input', this.value)
                     }
                 }
                 else {
                     this.value = one
-                    this.$refs.trigger.dispatch('input', this.value)
+                    this.$dispatch('input', this.value)
                 }
             }
         },
@@ -74,11 +66,13 @@ export default (config) => {
         selectCustomRange (from, to) {
             from = this.config.utc ? from.utc().toISOString() : from.toISOString()
             to = this.config.utc ? to.utc().toISOString() : to.toISOString()
-            this.$refs.trigger.dispatch('input', `${from} to ${to}`)
+            this.value = `${from} to ${to}`
+            this.$dispatch('input', this.value)
         },
 
         clear () {
-            this.$refs.trigger.dispatch('input', '')
+            this.value = ''
+            this.$dispatch('input', '')
         },
 
         initPikaday () {
@@ -88,6 +82,7 @@ export default (config) => {
             this.picker.push(new Pikaday({
                 defaultDate: sel[0]?.toDate(),
                 setDefaultDate: !empty(sel[0]),
+                keyboardInput: false,
                 onSelect: () => this.select()
             }))
 
@@ -95,6 +90,7 @@ export default (config) => {
                 this.picker.push(new Pikaday({
                     defaultDate: sel[1]?.toDate(),
                     setDefaultDate: !empty(sel[1]),
+                    keyboardInput: false,
                     onSelect: () => this.select(),
                 }))
 
@@ -124,23 +120,7 @@ export default (config) => {
             return []
         },
 
-        positioning () {
-            let anchor = this.$refs.trigger
-            let body = this.$refs.dropdown
-
-            computePosition(anchor, body, {
-                placement: 'bottom-start',
-                middleware: [offset(4), flip(), shift({ padding: 5 })],
-            }).then(({x, y}) => {
-                Object.assign(body.style, {
-                    left: `${x}px`,
-                    top: `${y}px`,
-                });
-            });
-        },
-
         setRange () {
-            if (!this.visible) return
             if (!this.config.range) return
             if (!this.picker && !this.picker.length) return
 

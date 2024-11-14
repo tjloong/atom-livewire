@@ -1,5 +1,6 @@
 @php
-$align = $attributes->get('align', 'left');
+$locked = $attributes->get('locked', false);
+$placement = $attributes->get('placement') ?? $attributes->get('align');
 
 $classes = $attributes->classes()
     ->add('group/dropdown relative cursor-pointer')
@@ -11,28 +12,21 @@ $attrs = $attributes
     ;
 @endphp
 
-<div
-    wire:ignore.self
-    x-cloak
-    x-data="dropdown(@js($align))"
-    data-atom-dropdown
-    {{ $attrs }}>
+<div x-data data-atom-dropdown {{ $attrs }}>
     <div
-        x-ref="trigger"
-        x-on:click="open()"
-        x-on:click.away="close()">
+        data-anchor
+        @if (!$locked)
+        x-on:click.away="$refs.popover?.hidePopover()"
+        @endif
+        x-on:click="$refs.popover?.showPopover()">
         {{ $slot }}
     </div>
 
-    @isset ($content)
-        <div
-            x-ref="content"
-            x-show="visible"
-            x-transition.duration.200
-            class="absolute left-0 z-10">
+    @isset ($popover)
+        <atom:popover :attributes="$popover->attributes">
             <atom:menu>
-                {{ $content }}
+                {{ $popover }}
             </atom:menu>
-        </div>
+        </atom:popover>
     @endisset
 </div>
