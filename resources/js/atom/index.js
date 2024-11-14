@@ -5,6 +5,7 @@ export default {
     json: (...args) => (JSON.stringify(...args)),
     random: () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
     dispatch: (name, detail) => dispatchEvent(new CustomEvent(name, { bubbles: true, detail })),
+    lightbox: (detail) => dispatchEvent(new CustomEvent('lightbox', { bubbles: true, detail })),
 
     goto: (url = null, newtab = false) => {
         if (!url) return
@@ -164,6 +165,8 @@ export default {
         if (!window.lang) return args[0]
 
         let key = args.shift()
+        if (!key.startsWith('app.')) key = `app.label.${key}`
+
         let lang = Atom.get(window.lang, key)
 
         if (!lang) return key
@@ -185,7 +188,7 @@ export default {
 
         if (typeof arg === 'object') {
             Object.keys(arg).forEach(key => {
-                singular = singular.replace(key, arg[key])
+                singular = singular.replace(`:${key}`, arg[key])
             })
 
             return singular

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->text('title')->nullable();
             $table->text('content')->nullable();
+            $table->text('href')->nullable();
             $table->foreignId('sender_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('receiver_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->datetime('read_at')->nullable();

@@ -6,12 +6,13 @@ import { ulid } from 'ulid'
 
 // data
 import Tel from './plugin/data/tel.js'
+import Chat from './plugin/data/chat.js'
 import Color from './plugin/data/color.js'
 import Email from './plugin/data/email.js'
 import Sheet from './plugin/data/sheet.js'
 import Select from './plugin/data/select.js'
+import Lightbox from './plugin/data/lightbox.js'
 import Uploader from './plugin/data/uploader.js'
-import Dropdown from './plugin/data/dropdown.js'
 import Breadcrumb from './plugin/data/breadcrumb.js'
 import Datepicker from './plugin/data/datepicker.js'
 import Timepicker from './plugin/data/timepicker.js'
@@ -32,11 +33,12 @@ import UploaderHelper from './atom/uploader.js'
 import SheetHelper from './plugin/helper/sheet.js'
 
 Alpine.data('tel', Tel)
+Alpine.data('chat', Chat)
 Alpine.data('color', Color)
 Alpine.data('email', Email)
 Alpine.data('sheet', Sheet)
 Alpine.data('select', Select)
-Alpine.data('dropdown', Dropdown)
+Alpine.data('lightbox', Lightbox)
 Alpine.data('uploader', Uploader)
 Alpine.data('breadcrumb', Breadcrumb)
 Alpine.data('datepicker', Datepicker)

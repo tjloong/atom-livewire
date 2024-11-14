@@ -122,12 +122,8 @@ else {
             if (this.callback) {
                 clearTimeout(this.timer)
                 this.timer = setTimeout(() => {
-                    return Atom.ajax('/__select')
-                        .post({
-                            name: this.callback,
-                            filters: { ...this.filters, search: this.props.query },
-                        })
-                        .then(res => this.filteredOptions = [...res])
+                    return this.$wire.getOptions('mention', this.callback, { ...this.filters, search: this.props.query })
+                        .then(() => this.filteredOptions = [...this.$wire.get('options')['mention']])
                         .then(() => this.align())
                 }, 300)
             }
