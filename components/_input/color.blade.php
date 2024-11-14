@@ -22,29 +22,37 @@ $attrs = $attributes
         @endif
     })"
     x-modelable="value"
-    class="group/input relative w-full block">
-    <div x-ref="trigger" class="relative">
-        <div class="absolute top-0 left-0 bottom-0 px-3 flex items-center justify-center">
-            <div
-                x-show="value"
-                class="w-4 h-4 rounded-full"
-                x-bind:style="{ backgroundColor: value }">
+    class="group/input relative w-full block"
+    {{ $attrs->whereStartsWith('wire:model') }}
+    {{ $attrs->whereStartsWith('x-model') }}>
+    <div
+        x-ref="trigger"
+        x-on:click="show()"
+        x-on:click.away="close()"
+        class="relative">
+        @if ($slot->isNotEmpty())
+            {{ $slot }}
+        @else
+            <div class="absolute top-0 left-0 bottom-0 px-3 flex items-center justify-center">
+                <div
+                    x-show="value"
+                    class="w-4 h-4 rounded-full"
+                    x-bind:style="{ backgroundColor: value }">
+                </div>
             </div>
-        </div>
 
-        <input
-            type="text"
-            x-ref="input"
-            x-model="value"
-            x-on:focus="show()"
-            x-on:blur="close()"
-            placeholder="{{ t($placeholder) }}"
-            readonly
-            {{ $attrs }}>
+            <input
+                type="text"
+                x-ref="input"
+                x-model="value"
+                placeholder="{{ t($placeholder) }}"
+                readonly
+                {{ $attrs->whereDoesntStartWith('wire:model')->whereDoesntStartWith('x-model') }}>
 
-        <div class="absolute top-0 right-0 bottom-0 flex items-center justify-center text-muted-more px-3">
-            <atom:icon brush/>
-        </div>
+            <div class="absolute top-0 right-0 bottom-0 flex items-center justify-center text-muted-more px-3">
+                <atom:icon brush/>
+            </div>
+        @endif
     </div>
 
     <div x-ref="options" x-show="visible" x-transition.duration.200 class="absolute z-1">
@@ -52,7 +60,10 @@ $attrs = $attributes
             <div class="grow grid grid-cols-11 gap-1 p-2 max-h-[300px] overflow-auto">
                 @foreach (atom()->color()->all() as $color)
                     <div
-                        x-on:click="value = {{ js($color) }}"
+                        x-on:click="() => {
+                            value = {{ js($color) }}
+                            $dispatch('input', value)
+                        }"
                         class="cursor-pointer w-6 h-6 border rounded hover:ring-1 hover:ring-offset-1 hover:ring-zinc-500"
                         style="background-color: {{ $color }};">
                     </div>

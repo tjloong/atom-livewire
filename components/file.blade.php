@@ -13,8 +13,8 @@ $attrs = $attributes->except(['file', 'variant']);
 
 @if ($variant === 'card')
     <div {{ $attrs }}>
-        <div class="group w-full rounded-md overflow-hidden shadow relative pt-[100%]">
-            <div class="absolute inset-0 bg-gray-100 flex items-center justify-center">
+        <div class="group w-full relative pt-[100%]">
+            <div class="absolute inset-0 bg-gray-100 rounded-md overflow-hidden shadow flex items-center justify-center">
                 @if ($type === 'image') <img src="{{ $src }}" class="w-full h-full object-cover">
                 @else <atom:icon :name="$icon" size="50%" class="text-muted-more"/>
                 @endif
@@ -23,8 +23,8 @@ $attrs = $attributes->except(['file', 'variant']);
             @if ($removeable)
                 <div
                     x-on:click.stop="$dispatch('remove')"
-                    class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white cursor-pointer transition-opacity duration-200">
-                    <atom:icon close size="40%"/>
+                    class="absolute -top-2 -right-2 w-5 h-5 border border-zinc-200 bg-white shadow-sm flex items-center justify-center rounded-md text-red-500 opacity-0 cursor-pointer group-hover:opacity-100">
+                    <atom:icon close size="14"/>
                 </div>
             @endif
         </div>

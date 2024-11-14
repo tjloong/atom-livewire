@@ -30,7 +30,9 @@ $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
 @elseif ($type === 'tel')
     <atom:_input.tel :required="$required" :attributes="$attributes->except(['type', 'required'])"/>
 @elseif ($type === 'color')
-    <atom:_input.color :required="$required" :attributes="$attributes->except(['type', 'required'])"/>
+    <atom:_input.color :required="$required" :attributes="$attributes->except(['type', 'required'])">
+        {{ $slot }}
+    </atom:_input.color>
 @elseif ($type === 'email' && ($attributes->has('options') || $attributes->get('multiple')))
     <atom:_input.email :requried="$required" :attributes="$attributes->except(['type', 'required'])"/>
 @else
