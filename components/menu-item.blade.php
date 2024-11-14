@@ -64,11 +64,8 @@ $attrs = $attributes
 @if ($permitted)
     <{{ $el }} {{ $attrs }}>
         @if (get($icon, 'start'))
-            <atom:icon
-                :name="get($icon, 'start')"
-                size="18"
-                class="shrink-0 opacity-40">
-            </atom:icon>
+            <atom:icon :name="get($icon, 'start')" size="18" class="shrink-0 opacity-40 group-hover/collapse:hidden"/>
+            <atom:icon down size="18" class="shrink-0 opacity-40 hidden group-hover/collapse:block"/>
         @endif
 
         <div class="grow font-medium leading-tight whitespace-nowrap truncate">
@@ -82,11 +79,7 @@ $attrs = $attributes
         @endif
 
         @if (get($icon, 'end'))
-            <atom:icon
-                :name="get($icon, 'end')"
-                size="18"
-                class="shrink-0 opacity-40">
-            </atom:icon>
+            <atom:icon :name="get($icon, 'end')" size="18" class="shrink-0 opacity-40"/>
         @endif
     </{{ $el }}>
 @endif
