@@ -5,6 +5,8 @@ export default (name = 'modal') => {
 
     return {
         show: (data = null) => dispatch('modal-show', { name, data }),
+        slide: (data = null) => dispatch('modal-show', { name, data, variant: 'slide' }),
+        full: (data = null) => dispatch('modal-show', { name, data, variant: 'full' }),
         close: () => dispatch('modal-close', { name }),
     }
 }

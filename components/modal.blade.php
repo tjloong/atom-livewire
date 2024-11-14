@@ -7,53 +7,7 @@ $inset = $attributes->get('inset', false);
 $visible = $attributes->get('visible', false);
 $closeable = $attributes->get('closeable', true);
 
-$classes = $attributes->classes()
-    ->add('bg-white focus:outline-none')
-    ->add(match ($variant) {
-        'slide' => 'fixed shadow-lg w-full m-0 ml-auto min-h-dvh max-h-dvh',
-        'full' => 'fixed m-0 min-h-dvh min-w-full',
-        default => 'rounded-xl shadow-lg w-full',
-    })
-    ->add(in_array($variant, ['default', 'slide']) ? $attributes->get('class', 'max-w-xl') : '')
-    ;
-
-$merges = match ($variant) {
-    'slide' => [
-        'x-transition:enter' => 'transition ease-in-out duration-150',
-        'x-transition:enter-start' => 'opacity-0 translate-x-full',
-        'x-transition:enter-end' => 'opacity-100 translate-x-0',
-        'x-transition:leave' => 'transition ease-in-out duration-150',
-        'x-transition:leave-start' => 'opacity-100 translate-x-0',
-        'x-transition:leave-end' => 'opacity-0 translate-x-full',
-        'data-atom-modal-slide' => true,
-    ],
-    'full' => [
-        'x-transition:enter' => 'transition ease-in-out duration-150',
-        'x-transition:enter-start' => 'opacity-0 translate-y-full',
-        'x-transition:enter-end' => 'opacity-100 translate-y-0',
-        'x-transition:leave' => 'transition ease-in-out duration-150',
-        'x-transition:leave-start' => 'opacity-100 translate-y-0',
-        'x-transition:leave-end' => 'opacity-0 translate-y-full',
-        'data-atom-modal-full' => $variant === 'full',
-    ],
-    default => [
-        'x-transition.duration.200' => '',
-        'data-atom-modal' => $variant === 'default',
-    ],
-};
-
-if (!$locked) {
-    $merges = [
-        ...$merges,
-        'x-on:backdrop-click' => 'close()',
-    ];
-}
-
-$attrs = $attributes
-    ->class($classes)
-    ->merge($merges)
-    ->except(['name', 'variant', 'locked', 'inset', 'closeable'])
-    ;
+$attrs = $attributes->except(['name', 'variant', 'locked', 'inset', 'closeable', 'class']);
 @endphp
 
 <dialog
@@ -62,31 +16,46 @@ $attrs = $attributes
         name: @js($name),
         locked: @js($locked),
         visible: @js($visible),
+        variant: @js($variant),
         @if ($entangle)
         entangle: @entangle($entangle),
         @endif
     })"
-    x-show="visible"
-    x-on:click="backdrop($event)"
-    x-on:modal-show.window="$event.detail.name === name && show($event.detail.data)"
+    x-on:modal-show.window="$event.detail.name === name && show($event.detail.data, $event.detail.variant)"
     x-on:modal-close.window="$event.detail.name === name && close()"
+    x-on:keydown.esc.prevent="close()"
+    data-atom-modal
+    class="relative min-w-full min-h-dvh m-0 bg-transparent overflow-hidden focus:outline-none"
     {{ $attrs }}>
-    @if ($closeable)
-        @if ($variant === 'full')
-            <button type="button" x-on:click.stop="close()"
-                class="absolute top-6 right-6 z-1 uppercase flex items-center gap-2 border border-zinc-200 rounded-md text-sm py-1.5 px-3 bg-white/50">
-                <atom:icon close/> @t('close')
-            </button>
-        @else
-            <div
-                x-on:click="close()"
-                class="absolute top-6 right-6 z-1 cursor-pointer text-zinc-500 hover:text-zinc-800">
-                <atom:icon close size="20"/>
-            </div>
-        @endif
-    @endisset
+    <div
+        wire:ignore
+        x-ref="backdrop"
+        x-on:click="!locked && close()"
+        class="absolute z-1 inset-0 bg-black/20 opacity-0 transition-opacity duration-100">
+    </div>
 
-    <div class="{{ $inset ? '' : 'p-6'}}">
-        {{ $slot }}
+    <div
+        wire:ignore.self
+        x-ref="modal"
+        x-bind:style="variant === 'full' ? { width: '100vw', maxWidth: '100vw' } : null"
+        class="absolute z-1 bg-white shadow-lg w-full overflow-hidden opacity-0 transition ease-in-out duration-150 {{ $attributes->get('class', 'max-w-xl') }}">
+        @if ($closeable)
+            <button
+                type="button"
+                x-on:click.stop="close()"
+                x-bind:class="variant === 'full'
+                    ? 'top-6 right-6 py-1.5 px-3 border border-zinc-200 bg-white/50 hover:bg-zinc-100'
+                    : 'top-5 right-5 w-8 h-8 hover:bg-zinc-100'"
+                class="absolute z-1 uppercase flex items-center justify-center gap-2 rounded-md text-sm">
+                <atom:icon close/>
+                <div x-show="variant === 'full'">@t('close')</div>
+            </button>
+        @endisset
+
+        <div class="overflow-auto {{ $inset ? '' : 'p-6' }}">
+            @if ($slot->isEmpty()) <atom:skeleton/>
+            @else {{ $slot }}
+            @endif
+        </div>
     </div>
 </dialog>
