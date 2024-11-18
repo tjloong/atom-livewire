@@ -23,8 +23,8 @@ $attrs = $attributes
             {{ $slot }}
         </atom:_label>
 
-        <div class="shrink-0 hidden group-hover:block">
-            @if ($actions->isEmpty())
+        @if ($actions->isEmpty())
+            <div class="shrink-0 {{ $actions->attributes->get('visible') ? '' : 'hidden group-hover:block' }}">
                 <div
                     @if ($actions->attributes->has('tooltip'))
                     x-tooltip="{{ js(t($actions->attributes->get('tooltip'))) }}"
@@ -33,10 +33,12 @@ $attrs = $attributes
                     {{ $actions->attributes->except(['tooltip', 'icon']) }}>
                     <atom:icon :name="$actions->attributes->get('icon')" size="13"/>
                 </div>
-            @else
+            </div>
+        @else
+            <div class="shrink-0">
                 {{ $actions }}
-            @endif
-        </div>
+            </div>
+        @endif
     </div>
 @else
     <label {{ $attrs }} data-atom-label>

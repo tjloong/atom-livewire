@@ -13,6 +13,7 @@ $variant = $attributes->get('variant') ?? match ($action) {
 $icon = [
     'start' => $attributes->get('icon') ?? match ($action) {
         'delete', 'trash' => 'delete',
+        'duplicate' => 'copy',
         default => null,
     },
     'end' => $attributes->get('icon-end'),
