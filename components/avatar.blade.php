@@ -34,7 +34,7 @@ $attrs = $attributes
 @endphp
 
 <figure {{ $attrs }}>
-    @if ($avatar)
+    @if (is_string($avatar))
         <img src="{{ $avatar }}" class="w-full h-full object-cover">
     @else
         <div class="w-full h-full flex items-center justify-center leading-none text-muted-more">

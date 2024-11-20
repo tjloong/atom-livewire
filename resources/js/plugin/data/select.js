@@ -96,12 +96,13 @@ export default (config) => {
 
         deselect (opt) {
             let values = [...this.value]
-            let index = values.indexOf(opt)
+            let index = values.findIndex(val => (val == opt))
 
             if (index > -1) {
                 values.splice(index, 1)
                 this.$el.removeAttribute('data-option-selected')
                 this.$refs.trigger.dispatch('input', values)
+                this.value = [...values]
             }
         },
 
@@ -150,16 +151,20 @@ export default (config) => {
         },
 
         getSelected () {
-            this.selected = this.multiple
-                ? this.options
-                    .filter(opt => (opt.getAttribute('data-option-selected')))
-                    .map(opt => ({
-                        value: opt.getAttribute('data-option-value'),
-                        label: opt.getAttribute('data-option-label'),
-                    }))
-                : this.options
-                    .filter(opt => (opt.getAttribute('data-option-selected')))[0]?.querySelector('[data-option-content]')
-                    .innerHTML
+            let options = this.options
+                .filter(opt => (opt.getAttribute('data-option-selected')))
+                .map(opt => ({
+                    value: opt.getAttribute('data-option-value'),
+                    label: opt.querySelector('[data-option-label]')?.innerHTML,
+                    badge: opt.querySelector('[data-option-badge]')?.innerHTML,
+                    caption: opt.querySelector('[data-option-caption]')?.innerHTML,
+                    color: opt.querySelector('[data-option-color]')?.style?.backgroundColor,
+                    note: opt.querySelector('[data-option-note]')?.innerHTML,
+                    avatar: opt.querySelector('[data-option-avatar]')?.innerHTML,
+                    content: opt.querySelector('[data-option-content]')?.innerHTML,
+                }))
+
+            this.selected = this.multiple ? options : options[0]
         },
 
         scroll () {

@@ -93,6 +93,33 @@ $attrs = $attributes
         data-atom-select-listbox
         class="group/select w-full"
         {{ $attrs->whereDoesntStartWith('wire:model')->except('class') }}>
+        @if ($multiple)
+            <template x-if="!isEmpty" hidden>
+                <div wire:ignore class="border-l border-zinc-200 pl-3 flex items-center gap-2 flex-wrap mb-3">
+                    <template x-for="item in selected" hidden>
+                        <div class="shrink-0 max-w-56 flex items-center border border-zinc-200 rounded-md shadow-sm cursor-default">
+                            <div
+                                x-on:click.stop="$dispatch('click-selected', item)"
+                                class="grow flex items-center gap-2 py-1 pl-3 truncate">
+                                <div x-show="item.avatar" x-html="item.avatar" class="shrink-0"></div>
+                                <div
+                                    x-show="item.color"
+                                    x-bind:style="{ backgroundColor: item.color }"
+                                    class="shrink-0 size-4 rounded-md">
+                                </div>
+                                <div x-text="item.label" class="grow truncate"></div>
+                            </div>
+                            <div
+                                x-on:click.stop="deselect(item.value)"
+                                class="shrink-0 flex items-center justify-center pl-2 pr-3 text-muted-more">
+                                <atom:icon delete size="14"/>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        @endif
+
         <div
             wire:ignore
             x-ref="trigger"
@@ -108,38 +135,42 @@ $attrs = $attributes
                     </div>
                 @endif
 
-                <template x-if="isEmpty" hidden>
+                @if ($multiple)
                     <div class="flex items-center text-zinc-400">
                         {{ t($placeholder) }}
                     </div>
-                </template>
+                @else
+                    <template x-if="isEmpty" hidden>
+                        <div class="flex items-center text-zinc-400">
+                            {{ t($placeholder) }}
+                        </div>
+                    </template>
 
-                <template x-if="!isEmpty" hidden>
-                    @isset ($selected)
-                        {{ $selected }}
-                    @else
+                    <template x-if="!isEmpty" hidden>
                         <div>
-                            <template x-if="multiple" hidden>
-                                <div class="-ml-1 w-full flex flex-wrap items-center gap-2">
-                                    <template x-for="item in selected" hidden>
-                                        <div class="max-w-40 text-sm bg-zinc-100 border rounded pl-2 inline-flex items-center">
-                                            <div x-text="item.label" class="truncate"></div>
-                                            <div
-                                                x-on:click.stop="deselect(item.value)"
-                                                class="px-2 shrink-0 flex items-center justify-center cursor-pointer">
-                                                <atom:icon close size="12"/>
-                                            </div>
-                                        </div>
-                                    </template>
+                        @isset ($selected)
+                            {{ $selected }}
+                        @else
+                            <template x-if="selected.label" hidden>
+                                <div class="flex">
+                                    <div x-show="selected.avatar" x-html="selected.avatar" class="shrink-0 mr-2"></div>
+                                    <div x-show="selected.color" class="shrink-0 py-1 mr-2">
+                                        <div x-bind:style="{ backgroundColor: selected.color }" class="size-4 rounded-md"></div>
+                                    </div>
+                                    <div class="grow truncate">
+                                        <div x-text="selected.label" class="truncate"></div>
+                                        <div x-show="selected.caption" x-text="selected.caption" class="text-sm text-muted truncate"></div>
+                                    </div>
                                 </div>
                             </template>
 
-                            <template x-if="!multiple" hidden>
-                                <div x-html="selected"></div>
+                            <template x-if="!selected.label" hidden>
+                                <div x-html="selected.content"></div>
                             </template>
+                        @endisset
                         </div>
-                    @endisset
-                </template>
+                    </template>
+                @endif
 
                 <template x-if="!visible && loading">
                     <div class="z-1 absolute top-0 bottom-0 pr-3 right-0 text-primary py-3">
@@ -149,16 +180,22 @@ $attrs = $attributes
 
                 <template x-if="!(!visible && loading)">
                     <div class="z-1 absolute top-0 bottom-0 pr-3 right-0">
-                        <div
-                            x-show="!isEmpty"
-                            x-on:click.stop="clear()"
-                            class="w-full h-full flex justify-center cursor-pointer py-3">
-                            <atom:icon close size="14"/>
-                        </div>
+                        @if ($multiple)
+                            <div class="w-full h-full pointer-events-none py-3">
+                                <atom:icon dropdown/>
+                            </div>
+                        @else
+                            <div
+                                x-show="!isEmpty"
+                                x-on:click.stop="clear()"
+                                class="w-full h-full flex justify-center cursor-pointer py-3">
+                                <atom:icon close size="14"/>
+                            </div>
 
-                        <div x-show="isEmpty" class="w-full h-full pointer-events-none py-3">
-                            <atom:icon dropdown/>
-                        </div>
+                            <div x-show="isEmpty" class="w-full h-full pointer-events-none py-3">
+                                <atom:icon dropdown/>
+                            </div>
+                        @endif
                     </div>
                 </template>
             </button>

@@ -94,12 +94,14 @@ Array.prototype.findIndexWhere = function (key, value) {
 }
 
 Array.prototype.max = function (key = null) {
+    if (!Array.isArray(this)) return
     if (key) return Math.max(...this.pluck(key))
 
     return Math.max(...this)
 }
 
 Array.prototype.min = function (key = null) {
+    if (!Array.isArray(this)) return
     if (key) return Math.min(...this.pluck(key))
 
     return Math.min(...this)
