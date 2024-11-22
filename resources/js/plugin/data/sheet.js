@@ -9,7 +9,7 @@ export default (config) => {
                 name: config.name,
                 label: config.label,
                 el: this.$root,
-                wire: this.$wire,
+                wire: this.$root.hasAttribute('wire:id') ? this.$wire : null,
             })
 
             if (!window.sheet.active.length) this.show(config.name)

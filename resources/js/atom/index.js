@@ -165,10 +165,9 @@ export default {
         if (!window.lang) return args[0]
 
         let key = args.shift()
-        if (!key.startsWith('app.')) key = `app.label.${key}`
-
         let lang = Atom.get(window.lang, key)
 
+        if (!lang && !key.startsWith('app.')) lang = Atom.get(window.lang, `app.label.${key}`)
         if (!lang) return key
         if (typeof lang !== 'string') return key
 

@@ -463,6 +463,7 @@ return [
         'update-popup' => 'Update Pop-Up',
         'updated-on' => 'Updated on :date',
         'upload' => 'Upload',
+        'uploaded' => 'Uploaded',
         'uploading' => 'Uploading',
         'uploading-count' => 'Uploading :count',
         'url' => 'URL',

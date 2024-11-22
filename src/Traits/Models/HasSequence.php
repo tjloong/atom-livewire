@@ -14,7 +14,7 @@ trait HasSequence
     // initialize
     protected function initializeHasSequence() : void
     {
-        $this->casts['seq'] = 'integer';
+        $this->casts['seq'] = 'float';
     }
 
     // scope for sequence

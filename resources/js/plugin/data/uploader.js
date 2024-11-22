@@ -48,7 +48,7 @@ export default (config) => {
         },
 
         progress (value) {
-            Atom.toast(`Uploading ${value}`, 'info')
+            Atom.toast(`${t('uploaded')} ${value}`, 'info')
         },
     }
 }
