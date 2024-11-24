@@ -17,6 +17,7 @@ class Edit extends Component
         return [
             'file.name' => ['required' => 'File name is required.'],
             'file.data' => ['nullable'],
+            'file.data.env' => ['nullable'],
             'file.data.alt' => ['nullable'],
             'file.data.description' => ['nullable'],
         ];

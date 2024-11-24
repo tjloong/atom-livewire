@@ -11,8 +11,9 @@ $attrs = $attributes->except(['label', 'caption', 'error', 'field']);
         <div class="shrink-0 pt-0.5">
             <input type="checkbox" class="hidden peer" {{ $attrs }}>
 
-            <button
-                type="button"
+            <div
+                tabindex="0"
+                role="checkbox"
                 class="{{ collect([
                     'group h-5 w-8 relative inline-flex items-center rounded-full transition bg-zinc-800/15',
                     'peer-disabled:bg-zinc-800/10 peer-disabled:peer-checked:bg-zinc-500',
@@ -21,13 +22,9 @@ $attrs = $attributes->except(['label', 'caption', 'error', 'field']);
                     '*:peer-disabled:bg-white/90',
                     'focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-primary',
                     'group-has-[.error]/toggle:ring-1 group-has-[.error]/toggle:ring-red-500',
-                ])->join(' ') }}"
-                x-on:click.stop="() => {
-                    let checkbox = $el.parentNode.querySelector('input')
-                    checkbox.checked = !checkbox.checked
-                }">
+                ])->join(' ') }}">
                 <span class="size-3.5 rounded-full transition translate-x-[3px] bg-white"></span>
-            </button>
+            </div>
         </div>
 
         @if ($slot->isNotEmpty())

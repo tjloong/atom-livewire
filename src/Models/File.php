@@ -238,6 +238,8 @@ class File extends Model
     // scope for mime
     public function scopeMime($query, $mime) : void
     {
+        if (!$mime) return;
+
         $mime = explode(',', $mime);
 
         $query->where(function($q) use ($mime) {
