@@ -1,21 +1,23 @@
-<div class="flex flex-col gap-4">
-    <x-form x-recaptcha:submit.reset_password.prevent="() => $wire.submit()">
-        <x-inputs>
-            <x-heading title="app.label.reset-password" xl/>
-    
-            <x-form.field label="app.label.email" :value="data_get($inputs, 'email')"/>
-    
-            <x-form.password label="app.label.password" autofocus
-                wire:model.defer="inputs.password"/>
-    
-            <x-form.password label="app.label.confirm-password"
-                wire:model.defer="inputs.password_confirmation"/>
-        </x-inputs>
+<div class="space-y-6">
+    <atom:card>
+        <atom:_form>
+            <atom:_heading size="xl">@t('reset-password')</atom:_heading>
 
-        <x-slot:foot>
-            <x-button action="submit" block label="app.label.reset-password"/>
-        </x-slot:foot>
-    </x-form>
+            <atom:dd label="email" block>@e(get($inputs, 'email'))</atom:dd>
 
-    <x-anchor label="app.label.back-to-login" icon="back" href="/login"/>
+            <atom:_input type="password" wire:model.defer="inputs.password" label="password"/>
+            <atom:_input type="password" wire:model.defer="inputs.password_confirmation" label="confirm-password"/>
+            
+            @if (!$errors->first('inputs.password') && !$errors->first('inputs.password_confirmation') && $errors->first())
+                <atom:inform variant="danger">
+                    @e($errors->first())
+                </atom:inform>
+            @endif
+
+            <atom:_button action="submit" block>@t('reset-password')</atom:_button>
+        </atom:_form>
+    </atom:card>
+
+
+    <atom:link icon="back" :href="route('login')">@t('back-to-login')</atom:link>
 </div>

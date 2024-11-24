@@ -2,16 +2,16 @@
 
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
-use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Atom;
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
+use Livewire\Component;
 
 class ForgotPassword extends Component
 {
-    use WithForm;
+    use AtomComponent;
 
     public $email;
 
-    // validation
     protected function validation() : array
     {
         return [
@@ -19,13 +19,12 @@ class ForgotPassword extends Component
                 'required' => 'Email is required.',
                 'email' => 'Invalid email.',
                 function ($attr, $value, $fail) {
-                    if (!$this->getUser()) $fail(tr('auth.alert.password-user'));
+                    if (!$this->getUser()) $fail(t('we-cant-find-user-with-that-email-address'));
                 },
             ],
         ];
     }
 
-    // get user
     public function getUser() : mixed
     {
         return model('user')
@@ -34,17 +33,16 @@ class ForgotPassword extends Component
             ->first();
     }
 
-    // submit
     public function submit() : mixed
     {
-        $this->validateForm();
+        $this->validate();
 
         if ($user = $this->getUser()) {
             if ($user->sendPasswordResetLink()) {
-                session()->flash('message', tr('auth.alert.password-sent'));
+                session()->flash('message', t('we-have-emailed-your-password-reset-link'));
                 return to_route('login');
             }
-            else return $this->popup('auth.alert.password-reset-failed', 'alert', 'error');
+            else Atom::alert('unable-to-reset-password', 'error');
         }
     }
 }

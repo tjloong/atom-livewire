@@ -74,8 +74,6 @@ return [
         'completion-date' => 'Completion Date',
         'configure' => 'Configure',
         'confirm' => 'Confirm',
-        'confirm-new-password' => 'Confirm New Password',
-        'confirm-password' => 'Confirm Password',
         'connection-ok' => 'Connection OK',
         'contact-email' => 'Contact email',
         'contact-information' => 'Contact information',
@@ -324,8 +322,6 @@ return [
         'report' => 'Report',
         'requested-on' => 'Requested on :date',
         'resend' => 'Resend',
-        'resend-activation-email' => 'Resend activation email',
-        'reset-password' => 'Reset Password',
         'reset' => 'Reset',
         'response' => 'Response',
         'restore-all' => 'Restore All',
@@ -362,7 +358,6 @@ return [
         'selected' => 'Selected',
         'send-email' => 'Send Email',
         'send-enquiry' => 'Send enquiry',
-        'send-request' => 'Send Request',
         'send-us-a-message' => 'Send us a message',
         'send' => 'Send',
         'sending' => 'Sending',
@@ -609,6 +604,17 @@ return [
         'write-comment' => 'Write comment...',
         'write-something' => 'Write something...',
         'suggestion' => 'Suggestion',
+
+        // auth
+        'confirm-new-password' => 'Confirm New Password',
+        'confirm-password' => 'Confirm Password',
+        'we-have-emailed-your-password-reset-link' => 'We have emailed your password reset link!',
+        'resend-activation-email' => 'Resend activation email',
+        'reset-password' => 'Reset Password',
+        'send-request' => 'Send Request',
+        'send-reset-password-request' => 'Send Reset Password Request',
+        'unable-to-reset-password' => 'Unable to reset password',
+        'we-cant-find-user-with-that-email-address' => "We can't find a user with that email address.",
     ],
 
     'alert' => [

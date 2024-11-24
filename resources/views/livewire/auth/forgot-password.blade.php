@@ -1,17 +1,15 @@
-<div class="flex flex-col gap-4">
-    <x-form  x-recaptcha:submit.forgot_password.prevent="() => $wire.submit()">
-        <x-group>
-            <div class="text-2xl font-bold">
-                {{ tr('auth.label.send-reset-password-request') }}
-            </div>
-    
-            <x-form.email wire:model.defer="email" label="app.label.login-email"/>
-        </x-group>
+<div class="space-y-6">
+    <atom:card>
+        <atom:_form x-recaptcha:submit.forgot_password.prevent="() => $wire.submit()">
+            <atom:_heading size="xl">
+                @t('send-reset-password-request')
+            </atom:_heading>
 
-        <x-slot:foot>
-            <x-button action="submit" block icon="send" label="app.label.send-request"/>
-        </x-slot:foot>
-    </x-form>
-    
-    <x-link icon="back" label="app.label.back-to-login" :href="route('login')"/>
+            <atom:_input type="email" wire:model.defer="email" label="login-email"/>
+
+            <atom:_button action="submit" block>@t('send-request')</atom:_button>
+        </atom:_form>
+    </atom:card>
+
+    <atom:link icon="back" :href="route('login')">@t('back-to-login')</atom:link>
 </div>

@@ -16,9 +16,9 @@
             <atom:_heading size="20" level="2">@t('signin')</atom:_heading>
 
             @if ($errors->first('failed'))
-                <x-inform :message="$errors->first('failed')" type="error"/>
+                <x-inform variant="danger">@e($errors->first('failed'))</x-inform>
             @elseif ($message = session('message'))
-                <x-inform :message="$message"/>
+                <x-inform>@e($message)</x-inform>
             @endif
 
             <atom:_input type="email" wire:model.defer="inputs.email" label="email" autofocus/>

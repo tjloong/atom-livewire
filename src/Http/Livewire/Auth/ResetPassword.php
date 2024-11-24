@@ -3,17 +3,16 @@
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
 use Illuminate\Support\Facades\Password;
-use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
+use Livewire\Component;
 
 class ResetPassword extends Component
 {
-    use WithForm;
+    use AtomComponent;
 
     public $token;
     public $inputs;
 
-    // validations
     protected function validation(): array
     {
         return [
@@ -35,7 +34,6 @@ class ResetPassword extends Component
         ];
     }
 
-    // mount
     public function mount()
     {
         $this->fill([
@@ -46,10 +44,9 @@ class ResetPassword extends Component
         ]);
     }
 
-    // submit
     public function submit()
     {
-        $this->validateForm();
+        $this->validate();
 
         $status = Password::reset(
             [
@@ -69,11 +66,11 @@ class ResetPassword extends Component
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return to_route('login')->with('flash', tr($status));
+            return to_route('login')->with('message', t($status));
         }
         else {
             $this->resetValidation();
-            $this->addError('email', tr($status));
+            $this->addError('email', t($status));
         }
     }
 }

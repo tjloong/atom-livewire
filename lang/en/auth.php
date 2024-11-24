@@ -5,7 +5,6 @@ return [
         'signin' => 'Sign-In',
         'signup-now' => 'Sign Up Now',
         'forgot-password' => 'Forgot Password',
-        'send-reset-password-request' => 'Send Reset Password Request',
         'sign-in-to-account' => 'Sign in to your account',
         'create-your-account' => 'Create your account',
         'dont-have-account' => 'Don\'t have an account?',
@@ -18,12 +17,9 @@ return [
         'password' => 'The provided password is incorrect.',
         'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
         'verification' => 'Incorrect verification code.',
-        'password-reset-failed' => 'Unable to reset password',
-        'password-reset' => 'Your password has been reset!',
-        'password-sent' => 'We have emailed your password reset link!',
-        'password-throttled' => 'Please wait before retrying.',
-        'password-token' => 'This password reset token is invalid.',
-        'password-user' => "We can't find a user with that email address.",
+        // 'password-reset' => 'Your password has been reset!',
+        // 'password-throttled' => 'Please wait before retrying.',
+        // 'password-token' => 'This password reset token is invalid.',
     ],
 
     'notification' => [
