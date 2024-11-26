@@ -1,18 +1,19 @@
-<atom:modal name="app.shareable" wire:open="open">
+<atom:modal name="app.shareable" wire:open="open" class="max-w-screen-sm">
     <div class="space-y-6">
         <atom:_heading size="xl">@t('share')</atom:_heading>
 
         <atom:toggle wire:model="enabled">@t('enable-sharing')</atom:toggle>
 
-        @if ($shareable)
-            <div>
-                <atom:_input :value="$shareable->url" label="share-link" readonly copyable/>
+        @if ($enabled)
+            <atom:_field>
+                <atom:_label>@t('share-link')</atom:_label>
+                <atom:_input :value="$shareable->url" readonly copyable/>
 
                 <div class="flex items-center justify-between">
                     <atom:link icon="refresh" class="text-sm" wire:click="regenerate">@t('regenerate')</atom:link>
                     <atom:link icon="eye" class="text-sm" :href="$shareable->url" newtab>@t('preview')</atom:link>
                 </div>
-            </div>
+            </atom:_field>
 
             <div>
                 <div class="md:w-1/2">

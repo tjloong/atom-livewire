@@ -156,7 +156,7 @@ $attrs = $attributes
                 @t('showing-archived', get($count, 'total'))
             </div>
 
-            <div x-on:click="restoreArchived" class="underline decoration-dashed text-sm text-zinc-800 cursor-pointer">
+            <div x-on:click="$wire.restoreArchived()" class="underline decoration-dashed text-sm text-zinc-800 cursor-pointer">
                 @t('restore')
             </div>
         </div>
@@ -171,11 +171,11 @@ $attrs = $attributes
 
             <div
                 x-on:click="Atom.confirm({
-                    title: 'app.alert.clear-trashed.title',
-                    message: 'app.alert.clear-trashed.message',
-                }, 'error').then(() => $wire.emptyTrashed())"
+                    title: 'clear-all-trashed',
+                    message: 'this-will-permanently-delete-all-selected-records',
+                }, 'error').then(() => $wire.set('table.trashed', false)).then(() => $wire.emptyTrashed())"
                 class="underline decoration-dashed text-sm text-zinc-800 cursor-pointer">
-                @t('clear')
+                @t('empty-trashed')
             </div>
         </div>
     @endif

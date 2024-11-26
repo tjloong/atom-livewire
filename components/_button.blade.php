@@ -142,7 +142,7 @@ else if ($slot->isEmpty() && $action && $tooltip !== false) {
     ];
 }
 
-if (!$attributes->hasLike('wire:click*', 'x-on:click*') && $action && $action !== 'submit') {
+if (!$attributes->hasLike('wire:click*', 'x-on:click*') && !$href && $action && $action !== 'submit') {
     $merges = [
         ...$merges,
         'x-on:click' => match ($action) {

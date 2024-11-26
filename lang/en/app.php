@@ -296,6 +296,7 @@ return [
         'press-enter-to-select' => 'Press enter to select',
         'preview' => 'Preview',
         'price' => 'Price',
+        'prices' => 'Prices',
         'priority' => 'Priority',
         'privacy-policy' => 'Privacy policy',
         'product' => 'Product',
@@ -620,6 +621,11 @@ return [
         'we-cant-find-user-with-that-email-address' => "We can't find a user with that email address.",
         'we-have-sent-a-verification-code-to-your-email' => 'We have sent a verification code to your email. Please fill in here.',
         'your-verification-code' => 'Your Verification Code',
+
+        // atom:table
+        'clear-all-trashed' => 'Clear All Trashed',
+        'empty-trashed' => 'Empty Trashed',
+        'this-will-permanently-delete-all-selected-records' => 'This will PERMANENTLY DELETE ALL THE SELECTED RECORDS! Are you sure?',
     ],
 
     'alert' => [
@@ -630,10 +636,6 @@ return [
         'trash' => [
             'title' => 'Move to Trash',
             'message' => 'Are you sure to move the record to trash? You can restore it later.|Are you sure to move :count records to trash? You can restore it later.',
-        ],
-        'clear-trashed' => [
-            'title' => 'Clear All Trashed',
-            'message' => 'This will PERMANENTLY DELETE ALL THE SELECTED RECORDS! Are you sure?',
         ],
         'submit' => [
             'title' => 'Submit Form',
