@@ -3,13 +3,14 @@
 namespace Jiannius\Atom\Http\Livewire\Auth;
 
 use Illuminate\Auth\Events\Registered;
-use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Atom;
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
 use Laravel\Socialite\Facades\Socialite;
+use Livewire\Component;
 
 class Register extends Component
 {
-    use WithForm;
+    use AtomComponent;
 
     public $utm;
     public $user;
@@ -30,7 +31,6 @@ class Register extends Component
 
     private $socialiteUser;
 
-    // validation
     protected function validation() : array
     {
         return [
@@ -55,7 +55,6 @@ class Register extends Component
         ];
     }
 
-    // mount
     public function mount()
     {
         $this->redirect = request()->query('redirect');
@@ -111,13 +110,11 @@ class Register extends Component
         }
     }
 
-    // get social logins property
     public function getSocialLoginsProperty() : mixed
     {
         return model('setting')->getSocialLogins();
     }
 
-    // get user
     public function getUser() : void
     {
         $this->user = model('user')
@@ -125,7 +122,6 @@ class Register extends Component
             ->first();
     }
 
-    // submit
     public function submit() : mixed
     {
         $this->getUser();
@@ -140,7 +136,7 @@ class Register extends Component
             }
         }
         else {
-            $this->validateForm();
+            $this->validate();
 
             if ($this->verify()) {
                 $this->createUser();
@@ -153,7 +149,6 @@ class Register extends Component
         }
     }
 
-    // verified
     public function verify() : bool
     {
         if (!config('atom.auth.verify')) return true;
@@ -170,8 +165,8 @@ class Register extends Component
                 $this->clearVerificationCode();
                 return true;
             }
-            
-            $this->popup('auth.alert.verification', 'alert', 'error');
+
+            Atom::alert('incorrect-verification-code', 'error');
         }
         else {
             $this->sendVerificationCode();
@@ -180,7 +175,6 @@ class Register extends Component
         return false;
     }
 
-    // send verification code
     public function sendVerificationCode() : void
     {
         if (config('atom.auth.verify')) {

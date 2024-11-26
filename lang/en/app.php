@@ -59,8 +59,6 @@ return [
         'change-password' => 'Change Password',
         'change' => 'Change',
         'channel' => 'Channel',
-        'checkbox-marketing' => 'I agree to be part of the website/app\'s database for future marketing and promotional opportunities.',
-        'checkbox-privacy' => 'I have read and agreed to the website/app\'s terms of use and privacy policy.',
         'city' => 'City',
         'clear' => 'Clear',
         'client' => 'Client',
@@ -468,7 +466,6 @@ return [
         'username' => 'Username',
         'value' => 'Value|Values',
         'vendor' => 'Vendor',
-        'verification-code' => 'Verification Code',
         'view-all' => 'View All',
         'view' => 'View',
         'we-are-excited-to-have-you-as-our-new-friend' => 'We are so excited to have you as our newest friend!',    
@@ -572,6 +569,7 @@ return [
         'heading-2' => 'Heading 2',
         'heading-3' => 'Heading 3',
         'heading-4' => 'Heading 4',
+        'hi' => 'Hi',
         'paragraph' => 'Paragraph',
         'link' => 'Link',
         'blockquote' => 'Blockquote',
@@ -606,15 +604,22 @@ return [
         'suggestion' => 'Suggestion',
 
         // auth
+        'i-agree-for-future-marketing' => 'I agree to be part of the website/app\'s database for future marketing and promotional opportunities.',
+        'i-agree-for-privacy-policy' => 'I have read and agreed to the website/app\'s terms of use and privacy policy.',
         'confirm-new-password' => 'Confirm New Password',
         'confirm-password' => 'Confirm Password',
+        'here-is-your-verification-code' => 'Here is your verification code.',
+        'incorrect-verification-code' => 'Incorrect verification code.',
         'we-have-emailed-your-password-reset-link' => 'We have emailed your password reset link!',
         'resend-activation-email' => 'Resend activation email',
         'reset-password' => 'Reset Password',
         'send-request' => 'Send Request',
         'send-reset-password-request' => 'Send Reset Password Request',
         'unable-to-reset-password' => 'Unable to reset password',
+        'verification-code' => 'Verification Code',
         'we-cant-find-user-with-that-email-address' => "We can't find a user with that email address.",
+        'we-have-sent-a-verification-code-to-your-email' => 'We have sent a verification code to your email. Please fill in here.',
+        'your-verification-code' => 'Your Verification Code',
     ],
 
     'alert' => [
@@ -634,7 +639,6 @@ return [
             'title' => 'Submit Form',
             'message' => 'Are you sure to submit?',    
         ],
-        'email-verification' => 'We have sent a verification code to your email. Please fill in here.',        
         'connection-ok' => 'Connection OK',
         'connection-failed' => 'Connection Failed',
         'recaptcha' => 'Google think you are a bot. Please refresh and try again.',
@@ -645,14 +649,6 @@ return [
         'user-delete-self' => [
             'title' => 'Unable To Delete User',
             'message' => 'You cannot delete yourself.',
-        ],
-    ],
-
-    'notification' => [
-        'verification' => [
-            'subject' => 'Your Verification Code',
-            'greeting' => 'Hi,',
-            'content' => 'Here is your verification code.',
         ],
     ],
 

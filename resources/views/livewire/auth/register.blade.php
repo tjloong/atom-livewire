@@ -16,8 +16,10 @@
                 <atom:_heading size="20">@t('email-verification')</atom:_heading>
 
                 <div class="flex flex-col gap-1">
-                    <atom:_input wire:model.defer="inputs.verification" caption="app.alert.email-verification">
-                        @t('verification-code')
+                    <atom:_input
+                        wire:model.defer="inputs.verification"
+                        caption="we-have-sent-a-verification-code-to-your-email"
+                        label="verification-code">
                     </atom:_input>
 
                     <div x-data="{
@@ -71,16 +73,18 @@
                 <atom:_checkbox wire:model="inputs.agree_tnc">
                     <div class="space-y-1">
                         <div>
-                            @t('checkbox-privacy')
+                            @t('i-agree-for-privacy-policy')
                         </div>
                         <div class="inline-flex items-center gap-3 flex-wrap text-sm">
-                            <atom:link label="app.label.terms-of-use" href="/terms"/>
-                            <atom:link label="app.label.privacy-policy" href="/privacy"/>
+                            <atom:link href="/terms">@t('terms-of-use')</atom:link>
+                            <atom:link href="/privacy">@t('privacy-policy')</atom:link>
                         </div>
                     </div>
                 </atom:_checkbox>
 
-                <atom:_checkbox wire:model="inputs.agree_promo">@t('checkbox-marketing')</atom:_checkbox>
+                <atom:_checkbox wire:model="inputs.agree_promo">
+                    @t('i-agree-for-future-marketing')
+                </atom:_checkbox>
             @endif
 
             <atom:_button action="submit" variant="primary" wire:loading block>

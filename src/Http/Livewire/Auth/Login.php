@@ -4,13 +4,13 @@ namespace Jiannius\Atom\Http\Livewire\Auth;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
-use Jiannius\Atom\Component;
-use Jiannius\Atom\Traits\Livewire\WithForm;
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
 use Laravel\Socialite\Facades\Socialite;
+use Livewire\Component;
 
 class Login extends Component
 {
-    use WithForm;
+    use AtomComponent;
 
     public $user;
     public $redirect;
@@ -24,7 +24,6 @@ class Login extends Component
     
     private $socialiteUser;
 
-    // validation
     protected function validation() : array
     {
         return [
@@ -61,13 +60,11 @@ class Login extends Component
         }
     }
 
-    // get social logins property
     public function getSocialLoginsProperty() : mixed
     {
         return model('setting')->getSocialLogins();
     }
 
-    // get user
     public function getUser() : void
     {
         $this->user = model('user')
@@ -77,7 +74,6 @@ class Login extends Component
             ->first();
     }
 
-    // submit
     public function submit() : mixed
     {
         if ($this->socialiteUser) {
@@ -88,7 +84,7 @@ class Login extends Component
             return $this->login();
         }
         else {
-            $this->validateForm();
+            $this->validate();
             $this->getUser();
 
             if (!$this->user) return $this->failed();
@@ -144,7 +140,7 @@ class Login extends Component
 
         $seconds = RateLimiter::availableIn($this->throttlekey);
 
-        return tr('auth.alert.throttle', [
+        return t('auth.throttle', [
             'seconds' => $seconds,
             'minutes' => ceil($seconds / 60),
         ]);
@@ -161,6 +157,6 @@ class Login extends Component
     // failed
     public function failed($e = null) : mixed
     {
-        return $this->addError('failed', $e ?? tr('auth.alert.failed'));
+        return $this->addError('failed', $e ?? t('auth.failed'));
     }
 }

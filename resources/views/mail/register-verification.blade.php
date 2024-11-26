@@ -1,7 +1,7 @@
 <x-mail::message>
-## {{ tr('app.notification.verification.greeting') }}
+## {{ t('hi') }}
     
-{{ tr('app.notification.verification.content') }}
+{{ t('here-is-your-verification-code') }}
 
 # {{ $verification->code }}
 </x-mail::message>

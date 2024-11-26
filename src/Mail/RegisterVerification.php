@@ -27,7 +27,7 @@ class RegisterVerification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: tr('app.notification.verification.subject'),
+            subject: t('your-verification-code'),
         );
     }
 
