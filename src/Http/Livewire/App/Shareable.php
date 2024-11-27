@@ -26,6 +26,7 @@ class Shareable extends Component
     {
         if (!$val && $this->shareable) {
             $this->shareable->delete();
+            $this->reset('shareable');
         }
         else if ($val && !$this->shareable) {
             $this->shareable = $this->model->shareable()->create([]);

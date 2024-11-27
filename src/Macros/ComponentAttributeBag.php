@@ -89,6 +89,15 @@ class ComponentAttributeBag
         };
     }
 
+    public function getLike()
+    {
+        return function ($value) {
+            $keys = collect($this->getAttributes())->keys();
+            $key = $keys->first(fn($key) => str($key)->is($value));
+            return $this->get($key);
+        };
+    }
+
     public function classes()
     {
         return function () {
