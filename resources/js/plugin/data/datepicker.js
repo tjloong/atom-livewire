@@ -20,14 +20,16 @@ export default (config) => {
         open () {
             if (this.$refs.popover?.hasAttribute('data-open')) return
 
+            this.close()
             this.$refs.popover.showPopover()
-            this.initPikaday()
-            setTimeout(() => this.setRange(), 50)
+
+            setTimeout(() => {
+                this.initPikaday()
+                this.setRange()
+            }, 50)
         },
 
         close () {
-            if (!this.$refs.popover?.hasAttribute('data-open')) return
-
             this.$refs.popover.hidePopover()
             
             if (this.picker) {
@@ -88,7 +90,7 @@ export default (config) => {
 
             if (this.config.range) {
                 this.picker.push(new Pikaday({
-                    defaultDate: sel[1]?.toDate(),
+                    defaultDate: sel[1]?.toDate() || dayjs().add(1, 'month').toDate(),
                     setDefaultDate: !empty(sel[1]),
                     keyboardInput: false,
                     onSelect: () => this.select(),
@@ -111,6 +113,8 @@ export default (config) => {
         },
  
         getSelected () {
+            if (!this.value) return []
+
             let one = dayjs(this.config.range ? this.value?.split(' to ')[0] : this.value)
             let two = dayjs(this.config.range ? this.value?.split(' to ')[1] : null)
 

@@ -110,6 +110,14 @@ class Atom
             atom_path("src/Http/Livewire/$namespace.php"),
         ];
 
+        if (!$namespace->is('*/Index')) {
+            $paths = [
+                ...$paths,
+                app_path("Http/Livewire/$namespace/Index.php"),
+                atom_path("src/Http/Livewire/$namespace/Index.php"),
+            ];
+        }
+
         return collect($paths)
             ->filter(fn($val) => file_exists($val))
             ->isNotEmpty();

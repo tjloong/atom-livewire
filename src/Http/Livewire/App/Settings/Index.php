@@ -15,12 +15,14 @@ class Index extends Component
     // get component property
     public function getComponentProperty() : mixed
     {
+        $portal = request()->portal();
+
         // look for app/settings/component or app/settings/component/index
         if (
             $component = collect([
+                "$portal.settings.$this->tab",
                 'app.settings.'.$this->tab,
-                'app.settings.'.$this->tab.'.index',
-            ])->filter(fn($val) => Atom::hasLivewireComponent($val))->first()
+            ])->filter(fn ($val) => Atom::hasLivewireComponent($val))->first()
         ) {
             $path = str()->dotpath($component);
             $key = $this->wirekey($this->tab);
@@ -31,9 +33,13 @@ class Index extends Component
         else {
             $name = head(explode('/', $this->tab));
             $slug = last(explode('/', $this->tab));
-            $path = 'app.settings.'.$name;
 
-            if (Atom::hasLivewireComponent($path)) {
+            if (
+                $path = collect([
+                    "$portal.settings.$name",
+                    "app.settings.$name",
+                ])->filter(fn ($val) => Atom::hasLivewireComponent($val))->first()
+            ) {
                 $key = $this->wirekey($name);
                 $props = ['slug' => $slug];
 
