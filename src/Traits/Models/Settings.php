@@ -35,7 +35,7 @@ trait Settings
     // settings helper
     public function settings($name = null, $default = null) : mixed
     {
-        if (!$name) return $this->settings;
+        if (!$name) return $this->settings ?? [];
 
         if (is_array($name)) {
             $settings = $this->settings ?? [];
