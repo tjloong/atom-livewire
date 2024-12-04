@@ -6,7 +6,6 @@
     <div
         x-data="{
             insert (file) {
-                dd(file.endpoint)
                 commands().setImage({ src: file.endpoint })
                 close()
             },

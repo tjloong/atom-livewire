@@ -29,6 +29,9 @@ $classes = $attributes->classes()
         '[[data-atom-input-prefix]+&>[data-atom-select-listbox-trigger]>button]:rounded-l-none',
         '[[data-atom-input-prefix]+&>[data-atom-select-listbox-trigger]>button]:-ml-px',
         '[&:has(+[data-atom-input-suffix])>[data-atom-select-listbox-trigger]>button]:rounded-r-none',
+        '[[data-atom-input-prefix]+&>[data-atom-date-picker]>[data-anchor]>input]:rounded-l-none',
+        '[[data-atom-input-prefix]+&>[data-atom-date-picker]>[data-anchor]>input]:-ml-px',
+        '[&:has(+[data-atom-input-suffix])>[data-atom-date-picker]>[data-anchor]>input]:rounded-r-none',
     ])->filter()->join(' ') }}">
         {{ $slot }}
     </div>

@@ -3,147 +3,208 @@ import Pikaday from 'pikaday'
 export default (config) => {
     return {
         value: config.value,
-        time: [],
-        picker: null,
+
         config: {
             utc: config.utc,
             range: config.range,
             time: config.time,
+            toggler: config.toggler,
+        },
+
+        picker: {
+            from: { pikaday: null, date: null, time: null,  iso: null, display: null },
+            to: { pikaday: null, date: null, time: null,  iso: null, display: null },
+        },
+
+        get display () {
+            let from = this.picker.from.display
+            let to = this.picker.to.display
+
+            return this.config.range ? [from, to].filter(Boolean).join(' - ') : from
+        },
+
+        get shortcuts () {
+            return {
+                'today': [dayjs().startOf('day'), dayjs().endOf('day')],
+                'yesterday': [dayjs().subtract(1, 'day').startOf('day'), dayjs().subtract(1, 'day').endOf('day')],
+                'this-month': [dayjs().startOf('month').startOf('day'), dayjs().endOf('month').endOf('day')],
+                'this-year': [dayjs().startOf('year').startOf('day'), dayjs().endOf('year').endOf('day')],
+                'last-7-days': [dayjs().subtract(6, 'day').startOf('day'), dayjs().endOf('day')],
+                'last-30-days': [dayjs().subtract(29, 'day').startOf('day'), dayjs().endOf('day')],
+                'last-month': [dayjs().startOf('month').subtract(1, 'day').startOf('month').startOf('day'), dayjs().startOf('month').subtract(1, 'day').endOf('month').endOf('day')],
+                'last-year': [dayjs().startOf('year').subtract(1, 'day').startOf('year').startOf('day'), dayjs().startOf('year').subtract(1, 'day').endOf('year').endOf('day')],
+            }
         },
 
         init () {
-            this.$watch('value', () => this.setRange())
-            this.initTime()
-            this.$watch('time', () => this.select())
+            this.$nextTick(() => this.sync())
+        },
+
+        sync () {
+            let from = this.config.range ? this.value?.split(' to ')[0] : this.value
+            let to = this.config.range ? this.value?.split(' to ')[1] : null
+            let dates = {
+                from: from ? dayjs(from) : null,
+                to: to ? dayjs(to) : null,
+            }
+
+            Object.keys(dates).forEach(key => {
+                if (dates[key]?.isValid()) {
+                    this.picker[key].date = dates[key].format('YYYY-MM-DD')
+                    this.picker[key].time = this.config.time ? dates[key].format('HH:mm:ss') : null
+                    this.picker[key].iso = dates[key].toISOString()
+                    this.picker[key].display = [
+                        dates[key].format('DD MMM YYYY'),
+                        this.config.time ? dates[key].format('hh:mm A') : null
+                    ].filter(Boolean).join(' ')
+
+                    
+                    if (
+                        this.picker[key].pikaday
+                        && this.picker[key].pikaday?.toString() !== this.picker[key].date
+                    ) {
+                        this.picker[key].pikaday.setDate(this.picker[key].date)
+                    }
+                }
+                else {
+                    this.picker[key].date = null
+                    this.picker[key].time = null
+                    this.picker[key].iso = null
+                    this.picker[key].display = null
+                    this.picker[key].pikaday?.clear()
+                }
+            })
+
+            this.setRange()
         },
 
         open () {
             if (this.$refs.popover?.hasAttribute('data-open')) return
 
-            this.close()
             this.$refs.popover.showPopover()
+            this.initPikaday()
 
-            setTimeout(() => {
-                this.initPikaday()
-                this.setRange()
-            }, 50)
+            setTimeout(() => this.setRange(), 50)
         },
 
         close () {
             this.$refs.popover.hidePopover()
-            
-            if (this.picker) {
-                this.picker[0]?.destroy()
-                this.picker[1]?.destroy()
-            }
+            this.destroyPikaday()
         },
 
         select () {
-            let one = this.picker[0]?.getDate()
-            let two = this.picker[1]?.getDate()
+            let fromDate = this.picker.from.pikaday?.getDate()
+            let fromTime, from
 
-            if (this.time[0] && one) one = `${one.getFullYear()}-${one.getMonth() + 1}-${one.getDate()} ${this.time[0]}`
-            if (this.time[1] && two) two = `${two.getFullYear()}-${two.getMonth() + 1}-${two.getDate()} ${this.time[1]}`
+            let toDate = this.picker.to.pikaday?.getDate()
+            let toTime, to
 
-            one = dayjs(one)
-            two = dayjs(two)
+            if (!fromDate && !toDate) return
 
-            if (one.isValid()) {
-                one = this.config.utc ? one.utc().toISOString() : one.toISOString()
+            if (fromDate) {
+                fromTime = this.picker.from.time
+                from = dayjs([`${fromDate.getFullYear()}-${fromDate.getMonth() + 1}-${fromDate.getDate()}`, fromTime].filter(Boolean).join(' '))
+            }
+
+            if (toDate) {
+                toTime = this.picker.to.time
+                to = dayjs([`${toDate.getFullYear()}-${toDate.getMonth() + 1}-${toDate.getDate()}`, toTime].filter(Boolean).join(' '))
+            }
+
+            if (from?.isValid()) {
+                from = from.utc().toISOString()
 
                 if (this.config.range) {
-                    if (two.isValid()) {
-                        two = this.config.utc ? two.utc().toISOString() : two.toISOString()
-                        this.value = `${one} to ${two}`
+                    if (to?.isValid()) {
+                        to = to.utc().toISOString()
+                        this.value = `${from} to ${to}`
+                        this.sync()
                         this.$dispatch('input', this.value)
                     }
                 }
                 else {
-                    this.value = one
+                    this.value = from
+                    this.sync()
                     this.$dispatch('input', this.value)
                 }
             }
         },
 
-        selectCustomRange (from, to) {
-            from = this.config.utc ? from.utc().toISOString() : from.toISOString()
-            to = this.config.utc ? to.utc().toISOString() : to.toISOString()
+        shortcut (from, to) {
+            from = dayjs(from).utc().toISOString()
+            to = dayjs(to).utc().toISOString()
             this.value = `${from} to ${to}`
+            this.sync()
             this.$dispatch('input', this.value)
         },
 
         clear () {
             this.value = ''
+            this.sync()
             this.$dispatch('input', '')
         },
 
+        toggleRange () {
+            this.$nextTick(() => {
+                this.initPikaday()
+                this.sync()
+            })
+        },
+
         initPikaday () {
-            let sel = this.getSelected()
+            this.destroyPikaday()
 
-            this.picker = []
-            this.picker.push(new Pikaday({
-                defaultDate: sel[0]?.toDate(),
-                setDefaultDate: !empty(sel[0]),
+            this.picker.from.pikaday = new Pikaday({
+                defaultDate: this.picker.from.iso ? new Date(this.picker.from.iso) : dayjs().toDate(),
+                setDefaultDate: !empty(this.picker.from.iso),
                 keyboardInput: false,
-                onSelect: () => this.select()
-            }))
+                onSelect: () => this.select(),
+                toString: (date) => (dayjs(date.toISOString()).format('YYYY-MM-DD')),
+            })
 
+            this.$refs.from.prepend(this.picker.from.pikaday.el)
+            
             if (this.config.range) {
-                this.picker.push(new Pikaday({
-                    defaultDate: sel[1]?.toDate() || dayjs().add(1, 'month').toDate(),
-                    setDefaultDate: !empty(sel[1]),
+                this.picker.to.pikaday = new Pikaday({
+                    defaultDate: this.picker.to.iso ? new Date(this.picker.to.iso) : dayjs().add(1, 'month').toDate(),
+                    setDefaultDate: !empty(this.picker.to.iso),
                     keyboardInput: false,
                     onSelect: () => this.select(),
-                }))
+                    toString: (date) => (dayjs(date.toISOString()).format('YYYY-MM-DD')),
+                })
 
-                this.$refs.from.prepend(this.picker[0].el)
-                this.$refs.to.prepend(this.picker[1].el)
-            }
-            else {
-                this.$refs.calendar.prepend(this.picker[0].el)
+                this.$refs.to.prepend(this.picker.to.pikaday.el)
             }
         },
 
-        initTime () {
-            if (!this.config.time) return
-
-            let sel = this.getSelected()
-
-            this.time = sel.map(val => (val.format('hh:mm A')))
-        },
- 
-        getSelected () {
-            if (!this.value) return []
-
-            let one = dayjs(this.config.range ? this.value?.split(' to ')[0] : this.value)
-            let two = dayjs(this.config.range ? this.value?.split(' to ')[1] : null)
-
-            if (one?.isValid() && two?.isValid()) return [one, two]
-            if (one?.isValid()) return [one]
-
-            return []
+        destroyPikaday () {
+            this.picker.from.pikaday?.destroy()
+            this.picker.to.pikaday?.destroy()
         },
 
         setRange () {
-            if (!this.config.range) return
-            if (!this.picker && !this.picker.length) return
+            let from = this.picker.from.pikaday
+            let to = this.picker.to.pikaday
 
-            let start = this.picker[0]?.getDate()
-            let end = this.picker[1]?.getDate()
+            if (!from && !to) return
+            if (!this.config.range) return
+
+            let start = from?.getDate()
+            let end = to?.getDate()
 
             if (start && end) {
-                this.picker[0].hide()
-                this.picker[0].setStartRange(start)
-                this.picker[0].setEndRange(end)
-                this.picker[0].setMaxDate(end)
+                from.hide()
+                from.setStartRange(start)
+                from.setEndRange(end)
+                from.setMaxDate(end)
 
-                this.picker[1].hide()
-                this.picker[1].setStartRange(start)
-                this.picker[1].setEndRange(end)
-                this.picker[1].setMinDate(start)
+                to.hide()
+                to.setStartRange(start)
+                to.setEndRange(end)
+                to.setMinDate(start)
 
-                this.picker[0].show()
-                this.picker[1].show()
+                from.show()
+                to.show()
             }
         },
    }

@@ -50,7 +50,6 @@ export default (config) => {
         remove (email) {
             let index = this.value.findIndexWhere('email', email)
             if (index > -1) this.value.splice(index, 1)
-                dd(this.value)
         },
 
         keyEnter () {

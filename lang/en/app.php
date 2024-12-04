@@ -137,6 +137,7 @@ return [
         'empty-autogen' => 'Leave empty to auto generate',
         'enable-sharing' => 'Enable sharing',
         'enabled' => 'Enabled',
+        'end' => 'End',
         'end-date' => 'End Date',
         'end-of-page' => 'End of page',
         'enquiry' => 'Enquiry|Enquiries',
@@ -209,10 +210,6 @@ return [
         'join-date' => 'Joined Date',
         'label-type' => 'Label Type',
         'label' => 'Label|Labels',
-        'last-30-days' => 'Last 30 days',
-        'last-7-days' => 'Last 7 days',
-        'last-month' => 'Last month',
-        'last-year' => 'Last year',
         'link-url' => 'Link URL',
         'linkedin-url' => 'Linkedin URL',
         'load-more' => 'Load more',
@@ -401,6 +398,7 @@ return [
         'sort' => 'Sort',
         'sorted' => 'Sorted',
         'spotify-url' => 'Spotify URL',
+        'start' => 'Start',
         'start-date' => 'Start Date',
         'state' => 'State',
         'status' => 'Status',
@@ -621,6 +619,12 @@ return [
         'we-cant-find-user-with-that-email-address' => "We can't find a user with that email address.",
         'we-have-sent-a-verification-code-to-your-email' => 'We have sent a verification code to your email. Please fill in here.',
         'your-verification-code' => 'Your Verification Code',
+
+        // atom:date-picker
+        'last-30-days' => 'Last 30 days',
+        'last-7-days' => 'Last 7 days',
+        'last-month' => 'Last month',
+        'last-year' => 'Last year',
 
         // atom:table
         'clear-all-trashed' => 'Clear All Trashed',

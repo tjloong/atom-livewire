@@ -40,7 +40,7 @@ $classes = $attributes->classes()
 if (in_array($variant, ['subtle', 'ghost', 'link'])) {
     match ($variant) {
         'subtle' => $classes->add('bg-zinc-800/5 text-zinc-800 border border-transparent shadow-sm hover:bg-zinc-800/10'),
-        'ghost' => $classes->add('bg-transparent text-zinc-800 border border-transparent hover:bg-zinc-800/10 hover:shadow-sm'),
+        'ghost' => $classes->add('bg-transparent text-zinc-500 border border-transparent hover:bg-zinc-100 hover:shadow-sm hover:text-zinc-800'),
         'link' => $classes->add('bg-tranparent text-zinc-800 border border-transparent'),
     };
 }

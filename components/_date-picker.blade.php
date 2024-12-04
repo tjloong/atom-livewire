@@ -1,14 +1,17 @@
 @php
 $utc = $attributes->get('utc', true);
 $size = $attributes->get('size');
-$time = $attributes->get('time');
+$time = $attributes->get('time', false);
+$range = $attributes->get('range', false);
+$toggler = $attributes->get('toggler', false);
 $label = $attributes->get('label');
 $inline = $attributes->get('inline');
 $caption = $attributes->get('caption');
-$variant = $attributes->get('variant', 'date');
+$prefix = $attributes->get('prefix');
+$suffix = $attributes->get('suffix');
 $placeholder = $attributes->get('placeholder', pick([
+    'select-date-range' => $range,
     'select-date-time' => $time,
-    'select-date-range' => $variant === 'range',
     'select-date' => true,
 ]));
 
@@ -17,7 +20,7 @@ $required = $attributes->get('required') ?? $this->form['required'][$field] ?? f
 $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
 
 $classes = $attributes->classes()
-    ->add('w-full py-2 pl-3 pr-10 text-zinc-700 text-left')
+    ->add('w-full py-2 pl-3 pr-10 text-zinc-700 text-left cursor-default')
     ->add('border border-zinc-200 border-b-zinc-300/80 rounded-lg shadow-sm bg-white')
     ->add('focus:outline-none focus:border-primary group-focus/input:border-primary hover:border-primary-300')
     ->add($size === 'sm' ? 'h-8 text-sm' : 'h-10')
@@ -39,113 +42,90 @@ $attrs = $attributes
         :error="$error">
         <atom:_date-picker :attributes="$attributes->except(['label', 'caption', 'error', 'inline'])"/>
     </atom:_input.field>
+@elseif ($prefix || $suffix)
+    <atom:_input.prefix :prefix="$prefix" :suffix="$suffix">
+        <atom:_date-picker :attributes="$attributes->except(['prefix', 'suffix'])"/>
+    </atom:_input.prefix>
 @else
     <div
         wire:ignore
         x-data="datepicker({
             utc: {{ js($utc) }},
             time: {{ js($time) }},
-            range: {{ js($variant === 'range') }},
+            range: {{ js($range) }},
+            toggler: {{ js($toggler) }},
             @if ($attributes->wire('model')->value())
             value: @entangle($attributes->wire('model')),
             @endif
         })"
+        x-modelable="value"
         x-on:click.away="close()"
         x-on:keydown.down.prevent="open()"
         x-on:keydown.enter.prevent="open()"
         x-on:keydown.space.prevent="open()"
         x-on:keydown.esc.prevent="close()"
         class="group/datepicker relative w-full"
-        data-atom-date-picker>
-        <div data-anchor class="relative block">
-            <button
-                type="button"
+        data-atom-date-picker
+        {{ $attrs->whereDoesntStartWith('wire:model')->except('class') }}>
+        <div data-anchor class="relative">
+            <input type="text" readonly
+                x-bind:value="display"
                 x-on:click="open()"
-                {{ $attrs }}>
-                <template x-if="value" hidden>
-                    <div
-                        x-text="() => {
-                            let sel = getSelected()
-                            let format = config.time ? 'DD MMM YYYY hh:mm A' : 'DD MMM YYYY'
+                placeholder="{{ t($placeholder) }}"
+                {{ $attrs->only('class') }}>
 
-                            if (!sel || !sel.length) return ''
-
-                            return config.range
-                                ? `${sel[0].format(format)} - ${sel[1].format(format)}`
-                                : sel[0].format(format)
-                        }"
-                        class="truncate">
-                    </div>
-                </template>
-
-                <template x-if="!value" hidden>
-                    <div class="text-zinc-400 text-left">
-                        {{ t($placeholder) }}
-                    </div>
-                </template>
-
-                <div class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
-                    <div
-                        x-show="value"
-                        x-on:click.stop="clear()"
-                        class="flex items-center justify-center w-full h-full">
-                        <atom:icon close size="14"/>
-                    </div>
-
-                    <div class="pointer-events-none flex items-center justify-center w-full h-full text-zinc-400">
-                        <atom:icon calendar x-show="!value"/>
-                    </div>
+            <div class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
+                <div
+                    x-show="value"
+                    x-on:click.stop="clear()"
+                    class="flex items-center justify-center w-full h-full">
+                    <atom:icon close size="14"/>
                 </div>
-            </button>
+
+                <div class="pointer-events-none flex items-center justify-center w-full h-full text-zinc-400">
+                    <atom:icon calendar x-show="!value"/>
+                </div>
+            </div>
         </div>
 
         <atom:popover>
             <atom:menu>
-                @if ($variant === 'range')
-                    <div class="md:flex md:divide-x">
-                        <div class="md:w-40 md:pr-1">
-                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('day'), dayjs().endOf('day'))">@t('today')</atom:menu-item>
-                            <atom:menu-item x-on:click="selectCustomRange(dayjs().subtract(1, 'day').startOf('day'), dayjs().subtract(1, 'day').endOf('day'))">@t('yesterday')</atom:menu-item>
-                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('month').startOf('day'), dayjs().endOf('month').endOf('day'))">@t('this-month')</atom:menu-item>
-                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('year').startOf('day'), dayjs().endOf('year').endOf('day'))">@t('this-year')</atom:menu-item>
-                            <atom:menu-item x-on:click="selectCustomRange(dayjs().subtract(6, 'day').startOf('day'), dayjs().endOf('day'))">@t('last-7-days')</atom:menu-item>
-                            <atom:menu-item x-on:click="selectCustomRange(dayjs().subtract(29, 'day').startOf('day'), dayjs().endOf('day'))">@t('last-30-days')</atom:menu-item>
-                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('month').subtract(1, 'day').startOf('month').startOf('day'), dayjs().startOf('month').subtract(1, 'day').endOf('month').endOf('day'))">@t('last-month')</atom:menu-item>
-                            <atom:menu-item x-on:click="selectCustomRange(dayjs().startOf('year').subtract(1, 'day').startOf('year').startOf('day'), dayjs().startOf('year').subtract(1, 'day').endOf('year').endOf('day'))">@t('last-year')</atom:menu-item>
+                <div class="divide-y">
+                    <div class="flex divide-x overflow-auto max-w-md md:max-w-full">
+                        <template x-if="config.range" hidden>
+                            <div class="max-w-sm min-w-56 pb-2">
+                                <template x-for="(item, key) in shortcuts" hidden>
+                                    <atom:menu-item x-on:click="shortcut(item[0], item[1])">
+                                        <div x-text="t(key)"></div>
+                                    </atom:menu-item>
+                                </template>
+                            </div>
+                        </template>
+
+                        <div>
+                            <div x-ref="from" class="w-[300px]"></div>
+                            <div x-show="config.time" x-on:input.stop.debounce="select()" class="px-2 pb-2">
+                                <atom:_time-picker x-model="picker.from.time"/>
+                            </div>
                         </div>
 
-                        <atom:separator class="mt-2 md:hidden">@t('custom-date-range')</atom:separator>
-
-                        <div class="divide-y md:flex md:divide-x md:divide-y-0">
-                            <div>
-                                <div x-ref="from" class="w-[300px]"></div>
-
-                                @if ($time)
-                                    <div class="border-t p-2">
-                                        <atom:_time-picker x-model="time[0]"/>
-                                    </div>
-                                @endif
-                            </div>
-
+                        <template x-if="config.range" hidden>
                             <div>
                                 <div x-ref="to" class="w-[300px]"></div>
-
-                                @if ($time)
-                                    <div class="border-t p-2">
-                                        <atom:_time-picker x-model="time[1]"/>
-                                    </div>
-                                @endif
+                                <div x-show="config.time" x-on:input.stop.debounce="select()" class="px-2 pb-2">
+                                    <atom:_time-picker x-model="picker.to.time"/>
+                                </div>
                             </div>
+                        </template>
+                    </div>
+
+                    <template x-if="config.toggler" hidden>
+                        <div class="pt-3 pb-2 px-3 flex items-center gap-4">
+                            <atom:toggle x-model="config.time">@t('time')</atom:toggle>
+                            <atom:toggle x-model="config.range" x-on:input.stop="toggleRange()">@t('date-range')</atom:toggle>
                         </div>
-                    </div>
-                @elseif ($time)
-                    <div x-ref="calendar"></div>
-                    <div class="border-t p-2">
-                        <atom:_time-picker x-model="time[0]"/>
-                    </div>
-                @else
-                    <div x-ref="calendar"></div>
-                @endif
+                    </template>
+                </div>
             </atom:menu>
         </atom:popover>
     </div>
