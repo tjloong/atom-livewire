@@ -5,7 +5,7 @@
         "dev": "vite",
         "build": "vite build"
     },
-    "devDependencies": {
+    "dependencies": {
         "@alpinejs/anchor": "^3",
         "@alpinejs/collapse": "^3",
         "@alpinejs/intersect": "^3",
@@ -42,7 +42,7 @@
         "dayjs": "^1",
         "laravel-echo": "^1",
         "laravel-vite-plugin": "^1.0.2",
-        "pikaday": "^1.8.2",
+        "pikaday": "^1",
         "pusher-js": "^8",
         "sharer.js": "^0.5.2",
         "tailwindcss": "^3",
