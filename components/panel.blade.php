@@ -29,7 +29,7 @@
                         </a>
                     @endisset
                 </div>
-    
+
                 @isset ($sidebar)
                     <nav class="{{ collect([
                         'grow',
@@ -38,7 +38,6 @@
                         '[&>[data-atom-collapse]>[data-atom-collapse-content]]:mb-3',
                         '[&>[data-atom-collapse]>[data-atom-collapse-content]]:border-l',
                     ])->join(' ') }}">
-                
                         {{ $sidebar }}
                     </nav>
                 @endisset
