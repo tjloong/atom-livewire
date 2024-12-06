@@ -53,7 +53,7 @@ $attrs = $attributes->except(['name', 'variant', 'locked', 'inset', 'closeable',
         @endisset
 
         <div
-            x-bind:class="variant === 'slide' && 'h-dvh'"
+            x-bind:style="{ maxHeight: variant === 'slide' ? '100vh' : '95vh' }"
             class="overflow-auto {{ $inset ? '' : 'p-6' }}">
             @if ($slot->isEmpty()) <atom:skeleton/>
             @else {{ $slot }}
