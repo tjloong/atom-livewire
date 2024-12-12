@@ -13,7 +13,8 @@ class Options
     public function __call($name, $arguments)
     {
         if (str($name)->startsWith('enum.')) return $this->getEnums($name);
-        elseif (str($name)->startsWith(['label', 'labels'])) return $this->getLabels($name);
+        else if (str($name)->startsWith(['label', 'labels'])) return $this->getLabels($name);
+        else return $this->getFromJson($name);
     }
 
     public function filter($filters)
@@ -99,5 +100,19 @@ class Options
             'label' => (string) $label,
             'color' => $label->color,
         ])->toArray();
+    }
+
+    public function getFromJson($name)
+    {
+        $options = cache('_options');
+
+        if (!$options) {
+            $path = resource_path('json/options.json');
+            $local = file_exists($path) ? json_decode(file_get_contents($path), true) : [];
+            $atom = json_decode(file_get_contents(atom_path('resources/json/options.json')), true);
+            $options = array_merge_recursive($atom, $local);
+        }
+
+        return get($options, $name);
     }
 }
