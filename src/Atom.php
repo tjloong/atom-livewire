@@ -122,4 +122,22 @@ class Atom
             ->filter(fn($val) => file_exists($val))
             ->isNotEmpty();
     }
+
+    public static function action($name, $props = null)
+    {
+        $split = explode('.', $name);
+        $name = str(get($split, '0'))->studly()->toString();
+        $method = get($split, '1');
+
+        $class = collect([
+            "App\Actions\\$name",
+            "Jiannius\Atom\Actions\\$name",
+        ])->first(fn ($ns) => class_exists($ns));
+
+        throw_if(!$class, \Exception::class, "\App\Actions\\$name not found");
+
+        $api = new $class($props);
+
+        return $method ? $api->$method() : $api->run();
+    }
 }
