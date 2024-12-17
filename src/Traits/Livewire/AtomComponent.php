@@ -103,7 +103,7 @@ trait AtomComponent
             'form.required' => collect($this->rules())
                 ->mapWithKeys(fn($rules, $key) => [
                     $key => collect($rules)
-                        ->filter(fn($val) => is_string($val) && str($val)->startsWith('required'))
+                        ->filter(fn($val) => is_string($val) && $val === 'required')
                         ->count() > 0,
                 ])
                 ->filter(fn($val) => $val === true)
@@ -152,11 +152,11 @@ trait AtomComponent
         $this->commandTo($component, 'fill', ['values' => $props]);
     }
 
-    // command to other component to perform action
-    public function commandTo($component, $action, $props = [])
+    // command to other component to run method
+    public function commandTo($component, $method, $props = [])
     {
         $data = [
-            'action' => $action,
+            'method' => $method,
             'props' => $props,
         ];
 
@@ -164,12 +164,27 @@ trait AtomComponent
         else $this->emitTo($component, 'execute', $data);
     }
 
-    // execute an action with arguments
+    // execute an method
     public function execute($props)
     {
-        $action = get($props, 'action');
+        $method = get($props, 'method');
         $props = get($props, 'props');
-        $this->$action(...$props);
+        $this->$method(...$props);
+    }
+
+    // perform an action
+    public function action($name, $props)
+    {
+        $response = Atom::action($name, $props);
+
+        if (
+            $response instanceof \Illuminate\Database\Eloquent\Model
+            || $response instanceof \Illuminate\Support\Collection
+        ) {
+            return $response->toArray();
+        }
+
+        return $response;
     }
 
     // refresh component
