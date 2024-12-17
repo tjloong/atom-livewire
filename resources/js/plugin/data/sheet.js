@@ -39,7 +39,7 @@ export default (config) => {
 
             if (!sheet) return
 
-            let active = window.sheet.active.where('name', name)
+            let active = window.sheet.active.firstWhere('name', name)
 
             if (active) {
                 if (label) active.label = label

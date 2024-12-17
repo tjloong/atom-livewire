@@ -82,6 +82,12 @@ Array.prototype.lastIndex = function (n = 1) {
 Array.prototype.where = function (key, value) {
     if (!Array.isArray(this)) return
 
+    return this.filter(item => (item[key] === value))
+}
+
+Array.prototype.firstWhere = function (key, value) {
+    if (!Array.isArray(this)) return
+
     let index = this.findIndex(item => (item[key] === value))
 
     return this[index]

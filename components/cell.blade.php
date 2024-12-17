@@ -34,7 +34,7 @@ $attrs = $attributes
         </div>
     </td>
 @else
-    <td {{ $attributes->only('colspan') }} valign="{{ $attributes->get('valign', 'top') }}">
+    <td {{ $attributes->only(['colspan', 'x-bind:colspan']) }} valign="{{ $attributes->get('valign', 'top') }}">
         <div {{ $attrs }}>
             {{ $slot }}
         </div>

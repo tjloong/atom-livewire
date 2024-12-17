@@ -129,7 +129,9 @@ $attrs = $attributes
             </div>
         </div>
     @elseif (isset($bar))
-        {{ $bar }}
+        <div data-atom-table-bar>
+            {{ $bar }}
+        </div>
     @endif
 
     @if (isset($actions) && $actions->isNotEmpty())
