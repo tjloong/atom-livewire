@@ -14,10 +14,10 @@ class Myinvois
     {
         $this->settings = collect([
             'client_id' => '337518d1-3ea9-42d4-8a97-b6e2a87d5766', // settings('myinvois_client_id') ?? env('MYINVOIS_CLIENT_ID'),
-            'client_secret' => 'ddc2d4ed-074f-4509-abdb-0b60512381fa', // settings('myinvois_client_secret') ?? env('MYINVOIS_CLIENT_SECRET'),
+            'client_secret' => 'dafb8ce4-add3-4446-b929-679baf1660e9', // settings('myinvois_client_secret') ?? env('MYINVOIS_CLIENT_SECRET'),
             'grant_type' => 'client_credentials',
             'scope' => 'InvoicingAPI',
-            'on_behalf_of' => null,
+            'on_behalf_of' => 'IG20877632100',
             'ca_path' => null,
             ...$settings,
         ]);
@@ -165,7 +165,7 @@ class Myinvois
             data: [
                 'documents' => collect($data)->map(function ($item) {
                     $document = $this->getDocumentUBLSchema($item);
-                    $base64 = base64_encode($document->toJson());
+                    $base64 = base64_encode(json_encode($document));
 
                     return [
                         'format' => 'JSON',
@@ -225,135 +225,125 @@ class Myinvois
 
     public function getDocumentUBLSchema($data)
     {
-        $schema = collect();
+        $schema = [];
 
-        $schema->put('_D', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
-        $schema->put('_A', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
-        $schema->put('_B', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
-        $schema->put('Invoice', [
-            [
-                ...$this->getDocumentEssentialSchema($data),
-                ...$this->getDocumentCurrencySchema($data),
-                ...$this->getDocumentSupplierSchema($data),
-                ...$this->getDocumentBuyerSchema($data),
-                ...$this->getDocumentBillingPeriodSchema($data),
-                ...$this->getDocumentReferencesSchema($data),
-                ...$this->getDocumentShippingSchema($data),
-                ...$this->getDocumentPrepaidSchema($data),
-                ...$this->getDocumentPaymentModeSchema($data),
-                ...$this->getDocumentChargesAndDiscountsSchema($data),
-                ...$this->getDocumentTotalsSchema($data),    
-            ],
-        ]);
+        data_set($schema, '_D', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
+        data_set($schema, '_A', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+        data_set($schema, '_B', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
 
-        dd($schema->toArray());
+        $schema = $this->getDocumentEssentialSchema($schema, $data);
+        $schema = $this->getDocumentCurrencySchema($schema, $data);
+        $schema = $this->getDocumentSupplierSchema($schema, $data);
+        $schema = $this->getDocumentBuyerSchema($schema, $data);
+        $schema = $this->getDocumentBillingPeriodSchema($schema, $data);
+        $schema = $this->getDocumentReferencesSchema($schema, $data);
+        $schema = $this->getDocumentShippingSchema($schema, $data);
+        $schema = $this->getDocumentPrepaidSchema($schema, $data);
+        $schema = $this->getDocumentPaymentModeSchema($schema, $data);
+        $schema = $this->getDocumentChargesAndDiscountsSchema($schema, $data);
+        $schema = $this->getDocumentTotalsSchema($schema, $data);
+        $schema = $this->getDocumentLineItemsSchema($schema, $data);
+
+        return $this->signDocument($schema);
+    }
+
+    public function getDocumentEssentialSchema($schema, $data)
+    {
+        data_set($schema, 'Invoice.0.ID.0._', get($data, 'number'));
+        data_set($schema, 'Invoice.0.IssueDate.0._', get($data, 'issued_at')->toDateString());
+        data_set($schema, 'Invoice.0.IssueTime.0._', get($data, 'issued_at')->format('H:i:sp'));
+        data_set($schema, 'Invoice.0.InvoiceTypeCode.0._', get($data, 'document_type'));
+        data_set($schema, 'Invoice.0.InvoiceTypeCode.0.listVersionID', get($data, 'document_version'));
 
         return $schema;
     }
 
-    public function getDocumentEssentialSchema($data)
+    public function getDocumentCurrencySchema($schema, $data)
     {
-        $schema = [];
-
-        data_set($schema, 'ID.0._', get($data, 'number'));
-        data_set($schema, 'IssueDate.0._', get($data, 'issued_at')->toDateString());
-        data_set($schema, 'IssueTime.0._', get($data, 'issued_at')->format('H:i:sp'));
-        data_set($schema, 'InvoiceTypeCode.0._', $this->getCode('document_types', get($data, 'document_type')));
-        data_set($schema, 'InvoiceTypeCode.0.listVersionID', $this->getCode('document_versions', get($data, 'document_type')));
-
-        return $schema;
-    }
-
-    public function getDocumentCurrencySchema($data)
-    {
-        $schema = [];
         $currency = get($data, 'currency');
         $rate = get($data, 'currency_rate');
 
-        data_set($schema, 'DocumentCurrencyCode.0._', $currency);
-        data_set($schema, 'TaxCurrencyCode.0._', $currency);
+        data_set($schema, 'Invoice.0.DocumentCurrencyCode.0._', $currency);
+        data_set($schema, 'Invoice.0.TaxCurrencyCode.0._', $currency);
 
         if ($rate) {
-            data_set($schema, 'TaxExchangeRate.0.CalculationRate.0._', $rate);
-            data_set($schema, 'TaxExchangeRate.0.SourceCurrencyCode.0._', 'DocumentCurrencyCode');
-            data_set($schema, 'TaxExchangeRate.0.TargetCurrencyCode.0._', 'MYR');
+            data_set($schema, 'Invoice.0.TaxExchangeRate.0.CalculationRate.0._', $rate);
+            data_set($schema, 'Invoice.0.TaxExchangeRate.0.SourceCurrencyCode.0._', 'DocumentCurrencyCode');
+            data_set($schema, 'Invoice.0.TaxExchangeRate.0.TargetCurrencyCode.0._', 'MYR');
         }
 
         return $schema;
     }
 
-    public function getDocumentSupplierSchema($data)
+    public function getDocumentSupplierSchema($schema, $data)
     {
-        $schema = [];
         $supplier = get($data, 'supplier');
 
-        data_set($schema, 'AccountingSupplierParty.0.Party.0.PartyLegalEntity.0.RegistrationName.0._', get($supplier, 'name'));
+        data_set($schema, 'Invoice.0.AccountingSupplierParty.0.Party.0.PartyLegalEntity.0.RegistrationName.0._', get($supplier, 'name'));
 
-        foreach ($this->getDocumentTINSchema($supplier) as $key => $val) {
-            data_set($schema, 'AccountingSupplierParty.0.Party.0.'.$key, $val);
+        foreach ($this->getDocumentTINSubschema($supplier) as $key => $val) {
+            data_set($schema, 'Invoice.0.AccountingSupplierParty.0.Party.0.'.$key, $val);
         }
 
-        foreach ($this->getDocumentAddressSchema($supplier) as $key => $val) {
-            data_set($schema, 'AccountingSupplierParty.0.Party.0.'.$key, $val);
+        foreach ($this->getDocumentAddressSubschema($supplier) as $key => $val) {
+            data_set($schema, 'Invoice.0.AccountingSupplierParty.0.Party.0.'.$key, $val);
         }
 
-        foreach ($this->getDocumentContactSchema($supplier) as $key => $val) {
-            data_set($schema, 'AccountingSupplierParty.0.Party.0.'.$key, $val);
+        foreach ($this->getDocumentContactSubschema($supplier) as $key => $val) {
+            data_set($schema, 'Invoice.0.AccountingSupplierParty.0.Party.0.'.$key, $val);
         }
 
         if ($acc = get($supplier, 'bank_account_number')) {
-            data_set($schema, 'PaymentMeans.0.PayeeFinancialAccount.0.ID.0._', $acc);
-        }    
+            data_set($schema, 'Invoice.0.PaymentMeans.0.PayeeFinancialAccount.0.ID.0._', $acc);
+        }
 
         if ($certex = get($supplier, 'certex')) { // authorized certified exporter
-            data_set($schema, 'AccountingSupplierParty.0.AdditionalAccountID.0._', $certex);
-            data_set($schema, 'AccountingSupplierParty.0.AdditionalAccountID.0.schemeAgencyName', 'CertEX');
+            data_set($schema, 'Invoice.0.AccountingSupplierParty.0.AdditionalAccountID.0._', $certex);
+            data_set($schema, 'Invoice.0.AccountingSupplierParty.0.AdditionalAccountID.0.schemeAgencyName', 'CertEX');
         }
 
         // Malaysia Standard Industrial Classification
         if ($msicCode = get($supplier, 'msic_code')) {
-            data_set($schema, 'AccountingSupplierParty.0.Party.0.IndustryClassificationCode.0._', $msicCode);
+            data_set($schema, 'Invoice.0.AccountingSupplierParty.0.Party.0.IndustryClassificationCode.0._', $msicCode);
 
             if ($msicDescription = get($supplier, 'msic_description')) {
-                data_set($schema, 'AccountingSupplierParty.0.Party.0.IndustryClassificationCode.0.name', $msicDescription);
+                data_set($schema, 'Invoice.0.AccountingSupplierParty.0.Party.0.IndustryClassificationCode.0.name', $msicDescription);
             }
         }
 
         return $schema;
     }
 
-    public function getDocumentBuyerSchema($data)
+    public function getDocumentBuyerSchema($schema, $data)
     {
-        $schema = [];
         $buyer = get($data, 'buyer');
 
-        data_set($document, 'AccountingCustomerParty.0.Party.0.PartyLegalEntity.0.RegistrationName.0._', get($buyer, 'name'));
+        data_set($schema, 'Invoice.0.AccountingCustomerParty.0.Party.0.PartyLegalEntity.0.RegistrationName.0._', get($buyer, 'name'));
 
-        foreach ($this->getDocumentTINSchema($buyer) as $key => $val) {
-            data_set($schema, 'AccountingCustomerParty.0.Party.0.'.$key, $val);
+        foreach ($this->getDocumentTINSubschema($buyer) as $key => $val) {
+            data_set($schema, 'Invoice.0.AccountingCustomerParty.0.Party.0.'.$key, $val);
         }
 
-        foreach ($this->getDocumentAddressSchema($buyer) as $key => $val) {
-            data_set($schema, 'AccountingCustomerParty.0.Party.0.'.$key, $val);
+        foreach ($this->getDocumentAddressSubschema($buyer) as $key => $val) {
+            data_set($schema, 'Invoice.0.AccountingCustomerParty.0.Party.0.'.$key, $val);
         }
 
-        foreach ($this->getDocumentContactSchema($buyer) as $key => $val) {
-            data_set($schema, 'AccountingCustomerParty.0.Party.0.'.$key, $val);
+        foreach ($this->getDocumentContactSubschema($buyer) as $key => $val) {
+            data_set($schema, 'Invoice.0.AccountingCustomerParty.0.Party.0.'.$key, $val);
         }
 
         return $schema;
     }
 
-    public function getDocumentBillingPeriodSchema($data)
+    public function getDocumentBillingPeriodSchema($schema, $data)
     {
-        $schema = [];
         $billing = get($data, 'billing');
 
         foreach(collect([
-            'InvoicePeriod.0.StartDate.0._' => optional(get($billing, 'start_at'))->toDateString(),
-            'InvoicePeriod.0.EndDate.0._' => optional(get($billing, 'end_at'))->toDateString(),
-            'InvoicePeriod.0.Description.0._' => get($billing, 'frequency'), // Daily, Weekly, Biweekly, Monthly, Bimonthly, Quarterly, Half-yearly, Yearly, Others / Not Applicable
-            'BillingReference.0.AdditionalDocumentReference.0.ID.0._' => get($billing, 'reference'),
+            'Invoice.0.InvoicePeriod.0.StartDate.0._' => optional(get($billing, 'start_at'))->toDateString(),
+            'Invoice.0.InvoicePeriod.0.EndDate.0._' => optional(get($billing, 'end_at'))->toDateString(),
+            'Invoice.0.InvoicePeriod.0.Description.0._' => get($billing, 'frequency'), // Daily, Weekly, Biweekly, Monthly, Bimonthly, Quarterly, Half-yearly, Yearly, Others / Not Applicable
+            'Invoice.0.BillingReference.0.AdditionalDocumentReference.0.ID.0._' => get($billing, 'reference'),
         ])->filter() as $key => $val) {
             data_set($schema, $key, $val);
         }
@@ -361,110 +351,100 @@ class Myinvois
         return $schema;
     }
 
-    public function getDocumentReferencesSchema($data)
+    public function getDocumentReferencesSchema($schema, $data)
     {
-        $schema = [];
         $refs = get($data, 'references');
 
         foreach ($refs as $i => $ref) {
             if ($num = get($ref, 'reference')) {
-                data_set($schema, 'AdditionalDocumentReference.'.$i.'.ID.0._', $num);
+                data_set($schema, 'Invoice.0.AdditionalDocumentReference.'.$i.'.ID.0._', $num);
             }
             if ($type = get($ref, 'type')) {
-                data_set($schema, 'AdditionalDocumentReference.'.$i.'.DocumentType.0._', match ($type) {
+                data_set($schema, 'Invoice.0.AdditionalDocumentReference.'.$i.'.DocumentType.0._', match ($type) {
                     'CUSTOMS' => 'CustomsImportForm',
                     'FTA' => 'FreeTradeAgreement',
                     default => $type,
                 });
             }
             if ($desc = get($ref, 'description')) {
-                data_set($schema, 'AdditionalDocumentReference.'.$i.'.DocumentDescription.0._', $desc);
+                data_set($schema, 'Invoice.0.AdditionalDocumentReference.'.$i.'.DocumentDescription.0._', $desc);
             }
         }
 
         return $schema;
     }
 
-    public function getDocumentShippingSchema($data)
+    public function getDocumentShippingSchema($schema, $data)
     {
-        $schema = [];
         $shipping = get($data, 'shipping');
+        $currency = get($data, 'currency');
 
         if ($name = get($shipping, 'name')) {
-            data_set($schema, 'Delivery.0.DeliveryParty.0.PartyLegalEntity.0.RegistrationName.0._', $name);
+            data_set($schema, 'Invoice.0.Delivery.0.DeliveryParty.0.PartyLegalEntity.0.RegistrationName.0._', $name);
         }
 
-        foreach ($this->getDocumentTINSchema($shipping) as $key => $val) {
-            data_set($schema, 'Delivery.0.DeliveryParty.0.'.$key, $val);
+        foreach ($this->getDocumentTINSubschema($shipping) as $key => $val) {
+            data_set($schema, 'Invoice.0.Delivery.0.DeliveryParty.0.'.$key, $val);
         }
 
-        foreach ($this->getDocumentAddressSchema($shipping) as $key => $val) {
-            data_set($schema, 'Delivery.0.DeliveryParty.0.'.$key, $val);
+        foreach ($this->getDocumentAddressSubschema($shipping) as $key => $val) {
+            data_set($schema, 'Invoice.0.Delivery.0.DeliveryParty.0.'.$key, $val);
         }
 
         if ($ref = get($shipping, 'reference')) {
-            data_set($schema, 'Delivery.0.Shipment.0.ID.0._', $ref);
+            data_set($schema, 'Invoice.0.Delivery.0.Shipment.0.ID.0._', $ref);
         }
 
         if ($amount = get($shipping, 'amount')) {
-            data_set($schema, 'Delivery.0.Shipment.0.FreightAllowanceCharge.0.ChargeIndicator.0._', true);
-            data_set($schema, 'Delivery.0.Shipment.0.FreightAllowanceCharge.0.Amount.0._', $amount);
-        }
-
-        if ($currency = get($shipping, 'currency')) {
-            data_set($schema, 'Delivery.0.Shipment.0.FreightAllowanceCharge.0.Amount.0.currencyID', $this->getCode('currency_codes', $currency));
+            data_set($schema, 'Invoice.0.Delivery.0.Shipment.0.FreightAllowanceCharge.0.ChargeIndicator.0._', true);
+            data_set($schema, 'Invoice.0.Delivery.0.Shipment.0.FreightAllowanceCharge.0.Amount.0._', $amount);
+            data_set($schema, 'Invoice.0.Delivery.0.Shipment.0.FreightAllowanceCharge.0.Amount.0.currencyID', $currency);
         }
 
         if ($desc = get($shipping, 'description')) {
-            data_set($schema, 'Delivery.0.Shipment.0.FreightAllowanceCharge.0.AllowanceChargeReason.0._', $desc);
+            data_set($schema, 'Invoice.0.Delivery.0.Shipment.0.FreightAllowanceCharge.0.AllowanceChargeReason.0._', $desc);
         }
 
         return $schema;
     }
 
-    public function getDocumentPrepaidSchema($data)
+    public function getDocumentPrepaidSchema($schema, $data)
     {
-        $schema = [];
         $prepaid = get($data, 'prepaid');
+        $currency = get($data, 'currency');
 
         if ($ref = get($prepaid, 'reference')) {
-            data_set($schema, 'PrepaidPayment.0.ID.0._', $ref);
+            data_set($schema, 'Invoice.0.PrepaidPayment.0.ID.0._', $ref);
         }
 
         if ($amount = get($prepaid, 'amount')) {
-            data_set($schema, 'PrepaidPayment.0.PaidAmount.0._', $amount);
-        }
-
-        if ($currency = get($prepaid, 'currency')) {
-            data_set($schema, 'PrepaidPayment.0.PaidAmount.0.currencyID', $this->getCode('currency_codes', $currency));
+            data_set($schema, 'Invoice.0.PrepaidPayment.0.PaidAmount.0._', $amount);
+            data_set($schema, 'Invoice.0.PrepaidPayment.0.PaidAmount.0.currencyID', $currency);
         }
 
         if ($dt = get($prepaid, 'paid_at')) {
-            data_set($schema, 'PrepaidPayment.0.PaidDate.0._', $dt->toDateString());
-            data_set($schema, 'PrepaidPayment.0.PaidTime.0._', $dt->format('H:i:sp'));
+            data_set($schema, 'Invoice.0.PrepaidPayment.0.PaidDate.0._', $dt->toDateString());
+            data_set($schema, 'Invoice.0.PrepaidPayment.0.PaidTime.0._', $dt->format('H:i:sp'));
         }
 
         return $schema;
     }
 
-    public function getDocumentPaymentModeSchema($data)
+    public function getDocumentPaymentModeSchema($schema, $data)
     {
-        $schema = [];
-
         if ($paymode = get($data, 'payment_mode')) {
-            data_set($schema, 'PaymentMeans.0.PaymentMeansCode.0._', $this->getCode('payment_modes', $paymode));
+            data_set($schema, 'Invoice.0.PaymentMeans.0.PaymentMeansCode.0._', $paymode);
         }
 
         if ($payterm = get($data, 'payment_term')) {
-            data_set($schema, 'PaymentTerms.0.Note.0._', $payterm);
+            data_set($schema, 'Invoice.0.PaymentTerms.0.Note.0._', $payterm);
         }
 
         return $schema;
     }
 
-    public function getDocumentChargesAndDiscountsSchema($data)
+    public function getDocumentChargesAndDiscountsSchema($schema, $data)
     {
-        $schema = [];
         $charges = get($data, 'charges', []);
         $discounts = get($data, 'discounts', []);
         $currency = get($data, 'currency');
@@ -473,93 +453,90 @@ class Myinvois
         );
 
         foreach ($items as $i => $item) {
-            data_set($schema, 'AllowanceCharge.'.$i.'.ChargeIndicator.0._', get($item, 'is_discount') ? false : true);
+            data_set($schema, 'Invoice.0.AllowanceCharge.'.$i.'.ChargeIndicator.0._', get($item, 'is_discount') ? false : true);
 
             if ($amount = get($item, 'amount')) {
-                data_set($schema, 'AllowanceCharge.'.$i.'.Amount.0._', $amount);
-                data_set($schema, 'AllowanceCharge.'.$i.'.Amount.0.currencyID', $this->getCode('currency_codes', $currency));
+                data_set($schema, 'Invoice.0.AllowanceCharge.'.$i.'.Amount.0._', $amount);
+                data_set($schema, 'Invoice.0.AllowanceCharge.'.$i.'.Amount.0.currencyID', $this->getCode('currency_codes', $currency));
             }
 
             if ($desc = get($item, 'description')) {
-                data_set($schema, 'AllowanceCharge.'.$i.'.AllowanceChargeReason.0._', $desc);
+                data_set($schema, 'Invoice.0.AllowanceCharge.'.$i.'.AllowanceChargeReason.0._', $desc);
             }
         }
 
         return $schema;
     }
 
-    public function getDocumentTotalsSchema($data)
+    public function getDocumentTotalsSchema($schema, $data)
     {
-        $schema = [];
-
         $currency = get($data, 'currency');
         $subtotal = get($data, 'subtotal');
         $grandTotal = get($data, 'grand_total');
         $payableTotal = get($data, 'payable_total') ?: $grandTotal;
 
-        data_set($schema, 'LegalMonetaryTotal.0.TaxExclusiveAmount.0._', $subtotal);
-        data_set($schema, 'LegalMonetaryTotal.0.TaxExclusiveAmount.0.currencyID', $currency);
+        data_set($schema, 'Invoice.0.LegalMonetaryTotal.0.TaxExclusiveAmount.0._', $subtotal);
+        data_set($schema, 'Invoice.0.LegalMonetaryTotal.0.TaxExclusiveAmount.0.currencyID', $currency);
 
-        data_set($schema, 'LegalMonetaryTotal.0.TaxInclusiveAmount.0._', $grandTotal);
-        data_set($schema, 'LegalMonetaryTotal.0.TaxInclusiveAmount.0.currencyID', $currency);
+        data_set($schema, 'Invoice.0.LegalMonetaryTotal.0.TaxInclusiveAmount.0._', $grandTotal);
+        data_set($schema, 'Invoice.0.LegalMonetaryTotal.0.TaxInclusiveAmount.0.currencyID', $currency);
 
-        data_set($schema, 'LegalMonetaryTotal.0.PayableAmount.0._', $payableTotal);
-        data_set($schema, 'LegalMonetaryTotal.0.PayableAmount.0.currencyID', $currency);
+        data_set($schema, 'Invoice.0.LegalMonetaryTotal.0.PayableAmount.0._', $payableTotal);
+        data_set($schema, 'Invoice.0.LegalMonetaryTotal.0.PayableAmount.0.currencyID', $currency);
 
-        foreach ($this->getDocumentTaxesSchema(get($data, 'taxes', []), $currency) as $key => $val) {
-            data_set($schema, $key, $val);
+        foreach ($this->getDocumentTaxesSubschema(get($data, 'taxes', []), $currency) as $key => $val) {
+            data_set($schema, 'Invoice.0.'.$key, $val);
         }
 
         return $schema;
     }
 
-    public function getDocumentLineItemsSchema($data)
+    public function getDocumentLineItemsSchema($schema, $data)
     {
-        $schema = [];
         $currency = get($data, 'currency');
 
         foreach (get($data, 'line_items', []) as $i => $item) {
-            data_set($schema, 'InvoiceLine.'.$i.'.ID.0._', (string) str($i + 1)->padLeft(3, '0'));
-            data_set($schema, 'InvoiceLine.'.$i.'.InvoicedQuantity.0._', number_format(get($item, 'qty'), 3));
-            data_set($schema, 'InvoiceLine.'.$i.'.InvoicedQuantity.0.unitCode', get($item, 'uom'));
-            data_set($schema, 'InvoiceLine.'.$i.'.Item.0.Description.0._', get($item, 'description'));
-            data_set($schema, 'InvoiceLine.'.$i.'.Price.0.PriceAmount.0._', get($item, 'unit_price'));
-            data_set($schema, 'InvoiceLine.'.$i.'.Price.0.PriceAmount.0.currencyID', $currency);
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.ID.0._', (string) str($i + 1)->padLeft(3, '0'));
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.InvoicedQuantity.0._', get($item, 'qty'));
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.InvoicedQuantity.0.unitCode', get($item, 'uom'));
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.Item.0.Description.0._', get($item, 'description'));
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.Price.0.PriceAmount.0._', get($item, 'unit_price'));
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.Price.0.PriceAmount.0.currencyID', $currency);
             
             if ($country = get($item, 'country')) {
-                data_set($schema, 'InvoiceLine.'.$i.'.Item.0.OriginCountry.0.IdentificationCode.0._', $country);
+                data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.Item.0.OriginCountry.0.IdentificationCode.0._', $country);
             }
 
             foreach (collect(get($item, 'classifications'))->concat(
                 collect(get($item, 'tariffs'))->map(fn ($tariff) => [...$tariff, 'is_tariff' => true])
             ) as $j => $classification) {
-                data_set($schema, 'InvoiceLine.'.$i.'.Item.0.CommodityClassification.'.$j.'.ItemClassificationCode.0._', get($classification, 'code'));
-                data_set($schema, 'InvoiceLine.'.$i.'.Item.0.CommodityClassification.'.$j.'.ItemClassificationCode.0.listID', get($classification, 'is_tariff') ? 'PTC' : 'CLASS');
+                data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.Item.0.CommodityClassification.'.$j.'.ItemClassificationCode.0._', get($classification, 'code'));
+                data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.Item.0.CommodityClassification.'.$j.'.ItemClassificationCode.0.listID', get($classification, 'is_tariff') ? 'PTC' : 'CLASS');
             }
 
-            foreach ($this->getDocumentTaxesSchema(get($item, 'taxes', []), $currency) as $key => $val) {
-                data_set($schema, 'InvoiceLine.'.$i.'.'.$key, $val);
+            foreach ($this->getDocumentTaxesSubschema(get($item, 'taxes', []), $currency) as $key => $val) {
+                data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.'.$key, $val);
             }
 
             // subtotal - qty * unit price
-            data_set($schema, 'InvoiceLine.'.$i.'.ItemPriceExtension.0.Amount.0._', get($item, 'subtotal'));
-            data_set($schema, 'InvoiceLine.'.$i.'.ItemPriceExtension.0.Amount.0.currencyID', $currency);
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.ItemPriceExtension.0.Amount.0._', get($item, 'subtotal'));
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.ItemPriceExtension.0.Amount.0.currencyID', $currency);
             
-            // total excluding tax - subtotal + discount
-            data_set($schema, 'InvoiceLine.'.$i.'.LineExtensionAmount.0._', get($item, 'subtotal') + get($item, 'discount'));
-            data_set($schema, 'InvoiceLine.'.$i.'.LineExtensionAmount.0.currencyID', $currency);
+            // total excluding tax - subtotal - discount
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.LineExtensionAmount.0._', get($item, 'subtotal') - get($item, 'discount.amount', 0));
+            data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.LineExtensionAmount.0.currencyID', $currency);
 
             if (get($item, 'discount')) {
-                data_set($schema, 'InvoiceLine.'.$i.'.AllowanceCharge.0.ChargeIndicator.0._', false);
-                data_set($schema, 'InvoiceLine.'.$i.'.AllowanceCharge.0.Amount.0._', get($item, 'discount.amount'));
-                data_set($schema, 'InvoiceLine.'.$i.'.AllowanceCharge.0.Amount.0.currencyID', $currency);
+                data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.AllowanceCharge.0.ChargeIndicator.0._', false);
+                data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.AllowanceCharge.0.Amount.0._', get($item, 'discount.amount'));
+                data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.AllowanceCharge.0.Amount.0.currencyID', $currency);
                 
                 if (get($item, 'discount.description')) {
-                    data_set($schema, 'InvoiceLine.'.$i.'.AllowanceCharge.0.AllowanceChargeReason.0._', get($item, 'discount.description'));
+                    data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.AllowanceCharge.0.AllowanceChargeReason.0._', get($item, 'discount.description'));
                 }
 
                 if (get($item, 'discount.rate')) {
-                    data_set($schema, 'InvoiceLine.'.$i.'.AllowanceCharge.0.MultiplierFactorNumeric.0._', get($item, 'discount.rate'));
+                    data_set($schema, 'Invoice.0.InvoiceLine.'.$i.'.AllowanceCharge.0.MultiplierFactorNumeric.0._', get($item, 'discount.rate'));
                 }
             }
         }
@@ -567,28 +544,32 @@ class Myinvois
         return $schema;
     }
 
-    public function getDocumentTINSchema($data)
+    public function getDocumentTINSubschema($data)
     {
         return collect([
             ['TIN', get($data, 'tin')],
-            ['BRN', get($data, 'brn')],
+            (
+                get($data, 'nric')
+                ? ['NRIC', get($data, 'nric')]
+                : ['BRN', get($data, 'brn')]
+            ),
             ['SST', get($data, 'sst')],
             ['TTX', get($data, 'ttx')],
-        ])->filter(fn ($val) => !empty($val[1]))->values()->mapWithKeys(fn ($val, $i) => [
-            'PartyIdentification.'.$i.'.ID.0._' => $val[0],
-            'PartyIdentification.'.$i.'.ID.0.schemaID' => $val[1],
+        ])->mapWithKeys(fn ($val, $i) => [
+            'PartyIdentification.'.$i.'.ID.0._' => get($val, 1) ?? 'NA',
+            'PartyIdentification.'.$i.'.ID.0.schemeID' => get($val, 0),
         ])->toArray();
     }
 
-    public function getDocumentContactSchema($data)
+    public function getDocumentContactSubschema($data)
     {
         return collect([
-            'Contact.0.Telephone.0._' => get($data, 'phone'),
-            'Contact.0.ElectronicMail.0._' => get($data, 'email'),
+            'Contact.0.Telephone.0._' => get($data, 'phone') ?? 'NA',
+            'Contact.0.ElectronicMail.0._' => get($data, 'email') ?? 'NA',
         ])->filter()->toArray();
     }
 
-    public function getDocumentAddressSchema($data)
+    public function getDocumentAddressSubschema($data)
     {
         $schema = collect([
             'PostalAddress.0.AddressLine.0.Line.0._' => get($data, 'address_line_1'),
@@ -608,7 +589,7 @@ class Myinvois
         return $schema->toArray();
     }
 
-    public function getDocumentTaxesSchema($taxes, $currency)
+    public function getDocumentTaxesSubschema($taxes, $currency)
     {
         if (!$taxes) return [];
 
@@ -648,6 +629,78 @@ class Myinvois
         return $schema;
     }
 
+    public function signDocument($schema)
+    {
+        // 1. get private key
+        $pkey = file_get_contents(storage_path('app/myinvois.key'));
+        $pkey = openssl_pkey_get_private($pkey);
+        if (!$pkey) return $schema;
+
+        // 2. create doc hash and digest
+        $dochash = hash('sha256', json_encode($schema));
+        $docdigest = base64_encode($dochash);
+
+        // 3. sign the doc hash
+        openssl_sign($dochash, $sign, $pkey, OPENSSL_ALGO_SHA256);
+        $signature = base64_encode($sign);
+
+        // 4. create cert hash and digest
+        $cert = file_get_contents(storage_path('app/myinvois.crt'));
+        $certhash = hash('sha256', $cert);
+        $certdigest = base64_encode($certhash);
+        $certdata = openssl_x509_parse($cert);
+        $issuer = get($certdata, 'name');
+        $serial = get($certdata, 'serialNumber');
+
+        // 5. create signed properties
+        $signedprop = [];
+        data_set($signedprop, 'Target', 'signature');
+        data_set($signedprop, 'SignedProperties.0.Id', 'id-xades-signed-props');
+        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningTime.0._', now()->toISOString());
+        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.CertDigest.0.DigestMethod.0._', '');
+        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.CertDigest.0.DigestMethod.0.Algorithm', 'http://www.w3.org/2001/04/xmlenc#sha256');
+        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.CertDigest.0.DigestValue.0._', $certdigest);
+        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.IssuerSerial.0.X509IssuerName.0._', $issuer);
+        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.IssuerSerial.0.X509SerialNumber.0._', $serial);
+
+        // 6. create signed properties hash and digest
+        $signedpropjson = json_encode($signedprop);
+        $signedprophash = hash('sha256', $signedpropjson);
+        $signedpropdigest = base64_encode($signedprophash);
+
+        // 7. populate ubl schema with all the data
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionURI.0._', 'urn:oasis:names:specification:ubl:dsig:enveloped:xades');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.ID.0._', 'urn:oasis:names:specification:ubl:signature:1');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.ReferencedSignatureID.0._', 'urn:oasis:names:specification:ubl:signature:Invoice');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Id', 'signature');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0', $signedprop);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.KeyInfo.0.X509Data.0.X509Certificate.0._', $cert);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.KeyInfo.0.X509Data.0.X509SubjectName.0._', $issuer);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.KeyInfo.0.X509Data.0.X509IssuerSerial.0.X509IssuerName.0._', $issuer);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.KeyInfo.0.X509Data.0.X509IssuerSerial.0.X509SerialNumber.0._', $serial);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignatureValue.0._', $signature);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.SignatureMethod.0.Algorithm', 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.Type', 'http://uri.etsi.org/01903/v1.3.2#SignedProperties');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.URI', '#id-xades-signed-props');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.DigestMethod.0._', '');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.DigestMethod.0.Algorithm', 'http://www.w3.org/2001/04/xmlenc#sha256');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.DigestValue.0._', $signedpropdigest);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.Type', '');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.URI', '');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.DigestMethod.0._', '');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.DigestMethod.0.Algorithm', 'http://www.w3.org/2001/04/xmlenc#sha256');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.DigestValue.0._', $docdigest);
+        data_set($schema, 'Invoice.0.Signature.0.ID.0._', 'urn:oasis:names:specification:ubl:signature:Invoice');
+        data_set($schema, 'Invoice.0.Signature.0.SignatureMethod.0._', 'urn:oasis:names:specification:ubl:dsig:enveloped:xades');
+
+        return $schema;
+    }
+
+    public function validateDocumentStructure($data)
+    {
+        return true;
+    }
+
     public function getSampleDocument()
     {
         return [
@@ -655,18 +708,19 @@ class Myinvois
                 'number' => 'INV9999900',
                 'issued_at' => now(),
                 'document_type' => $this->getCode('document_types', 'Invoice'),
+                'document_version' => $this->getCode('document_versions', 'Invoice'),
                 'currency' => $this->getCode('currency_codes', 'MYR'),
                 'payment_mode' => $this->getCode('payment_modes', 'Bank Transfer'),
-                'payment_term' => '30 days',
+                'payment_term' => 'Payment method is cash',
                 'billing' => [
                     'start_at' => now(),
                     'end_at' => now()->addDays(30),
                     'frequency' => 'Monthly',
-                    'reference' => 'BILREF28347923',
+                    'reference' => 'E12345678912',
                 ],
                 'references' => [
                     [
-                        'reference' => 'E32342348972394',
+                        'reference' => 'E12345678912',
                         'type' => 'CUSTOMS',
                     ],
                     [
@@ -683,42 +737,58 @@ class Myinvois
                     ],
                 ],
                 'supplier' => [
-                    'name' => 'Very Good Supplier Sdn Bhd',
-                    'email' => 'very_good@gmail.com',
-                    'phone' => '+6038875334',
-                    'tin' => 'SG234872894234',
-                    'brn' => 'OS2345872984234234',
-                    'sst' => '2348972398472984',
-                    'bank_account_number' => '234923984239423',
-                    'address_line_1' => 'Block 40-4, Faber Ria Condominium',
-                    'address_line_2' => 'Jalan Desa Sentosa',
-                    'address_line_3' => 'Taman Desa',
-                    'postcode' => '58100',
+                    'name' => 'Supplier\'s Name',
+                    'email' => 'supplier@email.com',
+                    'phone' => '+60-123456789',
+                    'tin' => 'IG20877632100',
+                    // 'brn' => 'OS2345872984234234',
+                    'nric' => '820904085005',
+                    'sst' => '202101001341',
+                    'ttx' => '123',
+                    'bank_account_number' => '1234567890123',
+                    'address_line_1' => 'Lot 66',
+                    'address_line_2' => 'Bangunan Merdeka',
+                    'address_line_3' => 'Persiaran Jaya',
+                    'postcode' => '50480',
+                    'city' => 'Kuala Lumpur',
+                    'state' => $this->getCode('state_codes', 'Kuala Lumpur'),
+                    'country' => $this->getCode('country_codes', 'Malaysia'),
+                    'certex' => 'CPT-CCN-W-211111-KL-000002',
+                    'msic_code' => '46510',
+                    'msic_description' => 'Wholesale of computer hardware, software and peripherals',
+
+                ],
+                'buyer' => [
+                    'name' => 'Buyer\'s Name',
+                    'email' => 'buyer@email.com',
+                    'phone' => '+60-123456789',
+                    'tin' => 'UU28934723894723894',
+                    'address_line_1' => 'Lot 66',
+                    'address_line_2' => 'Bangunan Merdeka',
+                    'address_line_3' => 'Persiaran Jaya',
+                    'postcode' => '50480',
                     'city' => 'Kuala Lumpur',
                     'state' => $this->getCode('state_codes', 'Kuala Lumpur'),
                     'country' => $this->getCode('country_codes', 'Malaysia'),
                 ],
-                'buyer' => [
-                    'name' => 'Wong Kim Fook',
-                    'email' => 'fook@gmail.com',
-                    'phone' => '+60128877553',
-                    'tin' => 'UU28934723894723894',
-                    'address_line_1' => '29, Jalan CJ4/15-3B',
-                    'address_line_2' => 'Taman Cheras Jaya',
-                    'postcode' => '43200',
-                    'city' => 'Cheras',
-                    'state' => $this->getCode('state_codes', 'Selangor'),
-                    'country' => $this->getCode('country_codes', 'Malaysia'),
-                ],
                 'shipping' => [
-                    'name' => 'Wong Kim Fook',
+                    'name' => 'Recipient\'s Name',
                     'tin' => 'UU28934723894723894',
-                    'address_line_1' => '29, Jalan CJ4/15-3B',
-                    'address_line_2' => 'Taman Cheras Jaya',
-                    'postcode' => '43200',
-                    'city' => 'Cheras',
-                    'state' => $this->getCode('state_codes', 'Selangor'),
+                    'address_line_1' => 'Lot 66',
+                    'address_line_2' => 'Bangunan Merdeka',
+                    'address_line_3' => 'Persiaran Jaya',
+                    'postcode' => '50480',
+                    'city' => 'Kuala Lumpur',
+                    'state' => $this->getCode('state_codes', 'Kuala Lumpur'),
                     'country' => $this->getCode('country_codes', 'Malaysia'),
+                    'amount' => 25.00,
+                    'description' => 'Lalamove',
+                    'reference' => 'L121321',
+                ],
+                'prepaid' => [
+                    'amount' => 50,
+                    'paid_at' => now()->subDays(10),
+                    'reference' => 'P92342394',
                 ],
                 'charges' => [
                     [
@@ -746,6 +816,37 @@ class Myinvois
                 'subtotal' => 500,
                 'grand_total' => 530,
                 'payable_total' => 530,
+                'line_items' => [
+                    [
+                        'qty' => 1,
+                        'uom' => $this->getCode('unit_of_measurements', 'outfit'),
+                        'description' => 'Line item 1 description',
+                        'unit_price' => 500.00,
+                        'country' => null,
+                        'classifications' => [
+                            ['code' => '111122223333'],
+                            ['code' => '111122224444'],
+                        ],
+                        'tariffs' => [
+                            ['code' => '22223334444'],
+                            ['code' => '22223337777'],
+                        ],
+                        'taxes' => [
+                            [
+                                'code' => $this->getCode('tax_types', 'Sales Tax'),
+                                'name' => 'Sales Tax',
+                                'amount' => 30,
+                                'taxable_amount' => 470,
+                            ],
+                        ],
+                        'subtotal' => 500.00,
+                        'discount' => [
+                            'amount' => 0,
+                            'description' => null,
+                            'rate' => null,
+                        ],            
+                    ],
+                ],
             ],
         ];
     }
