@@ -14,10 +14,6 @@ trait AtomComponent
     public $errors;
     public $keyhash;
 
-    public $form = [
-        'required' => [],
-    ];
-
     public $table = [
         'sort' => ['column' => null, 'direction' => null],
         'max' => 100,
@@ -65,10 +61,22 @@ trait AtomComponent
         return $this->listeners + ['execute'];
     }
 
-    // mount
-    public function mountAtomComponent()
+    public function getFormProperty()
     {
-        $this->setForm();
+        $form = ['required' => []];
+    
+        if (!$this->rules()) return $form;
+
+        $form['required'] = collect($this->rules())
+            ->mapWithKeys(fn($rules, $key) => [
+                $key => collect($rules)
+                    ->filter(fn($val) => is_string($val) && $val === 'required')
+                    ->count() > 0,
+            ])
+            ->filter(fn($val) => $val === true)
+            ->all();
+
+        return $form;
     }
 
     public function updated($attr, $value)
@@ -85,30 +93,13 @@ trait AtomComponent
                     $this->$key->fill([$field => null]);
                 }
                 else {
-                    $this->fill([$attr => null]);
+                    data_set($key, $field, null);
                 }
             }
             else {
                 $this->fill([$attr => null]);
             }
         }
-    }
-
-    // set form
-    public function setForm()
-    {
-        if (!$this->rules()) return;
-
-        $this->fill([
-            'form.required' => collect($this->rules())
-                ->mapWithKeys(fn($rules, $key) => [
-                    $key => collect($rules)
-                        ->filter(fn($val) => is_string($val) && $val === 'required')
-                        ->count() > 0,
-                ])
-                ->filter(fn($val) => $val === true)
-                ->all(),
-        ]);
     }
 
     // get table
