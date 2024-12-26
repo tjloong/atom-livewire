@@ -83,17 +83,6 @@ class Atom
         return app(Html::class);
     }
 
-    // options
-    public static function options($name, $filters = [])
-    {
-        $class = collect([
-            "App\Services\Options",
-            "Jiannius\Atom\Services\Options",
-        ])->first(fn($s) => class_exists($s));
-
-        return app($class)->filter($filters)->$name();
-    }
-
     // country
     public static function country($name = null, $field = null)
     {

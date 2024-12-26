@@ -54,10 +54,14 @@ export default (config) => {
             if (config.name) {
                 this.loading = true
 
-                return this.$wire.getOptions(config.id, config.name, {
-                    search: this.text,
-                    value: this.value,
-                    ...config.filters,
+                return this.$wire.getOptions({
+                    id: config.id,
+                    name: config.name,
+                    filters: {
+                        search: this.text,
+                        value: this.value,
+                        ...config.filters,
+                    },
                 }).then(() => this.loading = false)
             }
             else {

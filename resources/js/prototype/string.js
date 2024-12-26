@@ -43,6 +43,12 @@ String.prototype.slug = function() {
         .replace(/-+$/, '') // Trim - from end of text
 }
 
+String.prototype.headline = function () {
+    return this.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
 String.prototype.limit = function(length) {
     return this.length > length ? `${this.substring(0, length)}...` : this
 }

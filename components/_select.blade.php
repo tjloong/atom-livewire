@@ -250,7 +250,11 @@ $attrs = $attributes
         {{ $attrs->only('wire:key') }}
         @if ($options)
         x-data
-        x-init="$wire.getOptions({{ js($id) }}, {{ js($options) }}, {{ js($filters) }})"
+        x-init="$wire.getOptions({
+            id: @js($id),
+            name: @js($options),
+            filters: @js($filters),
+        })"
         @endif
         class="group/input relative w-full block"
         data-atom-select-native>

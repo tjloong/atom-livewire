@@ -208,7 +208,7 @@ class Myinvois
 
     public function getCode($name, $key)
     {
-        $codes = Atom::options('myinvois.'.$name);
+        $codes = Atom::action('get-options', ['name' => 'myinvois.'.$name]);
 
         $code = match ($name) {
             'document_types', 'product_categories', 'msic_codes', 'tax_types' => get(collect($codes)->firstWhere('Description', $key), 'Code'),

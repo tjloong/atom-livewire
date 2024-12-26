@@ -132,9 +132,14 @@ trait AtomComponent
     }
 
     // get select options
-    public function getOptions($id, $name, $filters = [])
+    public function getOptions($data)
     {
-        $this->options[$id] = Atom::options($name, $filters);
+        throw_if(!get($data, 'id'), \Exception::class, 'Missing option ID');
+
+        $this->options[get($data, 'id')] = Atom::action('get-options', [
+            'name' => get($data, 'name'),
+            'filters' => get($data, 'filters'),
+        ]);
     }
 
     // fill properties into other component
