@@ -1,5 +1,6 @@
 @php
 $align = $attributes->get('align', 'left');
+$valign = $attributes->get('valign', 'top');
 $checkbox = $attributes->get('checkbox');
 
 $classes = $attributes->classes()
@@ -18,9 +19,7 @@ $attrs = $attributes
 @endphp
 
 @if ($checkbox)
-    <td
-        x-on:click.stop
-        valign="{{ $attributes->get('valign', 'top') }}">
+    <td x-on:click.stop valign="{{ $valign }}">
         <div {{ $attrs }}>
             <div
                 x-on:click="checkboxes.toggle(@js($checkbox))"
@@ -34,7 +33,7 @@ $attrs = $attributes
         </div>
     </td>
 @else
-    <td {{ $attributes->only(['colspan', 'x-bind:colspan']) }} valign="{{ $attributes->get('valign', 'top') }}">
+    <td {{ $attributes->only(['colspan', 'x-bind:colspan']) }} valign="{{ $valign }}">
         <div {{ $attrs }}>
             {{ $slot }}
         </div>
