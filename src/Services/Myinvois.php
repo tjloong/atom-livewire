@@ -17,8 +17,61 @@ class Myinvois
             'client_secret' => 'dafb8ce4-add3-4446-b929-679baf1660e9', // settings('myinvois_client_secret') ?? env('MYINVOIS_CLIENT_SECRET'),
             'grant_type' => 'client_credentials',
             'scope' => 'InvoicingAPI',
-            'on_behalf_of' => 'IG20877632100',
-            'ca_path' => null,
+            'on_behalf_of' => null,
+            'pkey' => <<<EOL
+            -----BEGIN PRIVATE KEY-----
+            MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCPyn9sbAYxRjWH
+            /TkOZtAcH5qfxYd7IqCsLqceXfG5s+Up0CXSGplHhRKHz2+j/jDkmXlMVOf9XQjG
+            tqiLe5rUNJN4BUv2qTDt3/HzBtgt8Af9iGGNLlVAEnykB/i7qyIQa3OoWbFxUcRX
+            2ez+PscEe3O3OLbBcm7lmD5Ap9oj41Lu3DGCccv5ZHObVFveOXthn9mz55OnVBmd
+            ne0AiIkXePKfHOv/FC6mfY2M66jlQX0sSX/aub4FSNz2tM+0WoThvpz/SdzZCicl
+            0WgU9zl3ET97L2yN/LYY1IkQlc0oil5H9DAVgeqqFECLCtb3OZIRNMyeOKb0EPct
+            69e2aBuvAgMBAAECggEAMfxcoJXK700vZcdXEtUV6njoGTujNeCbR0/ug6V31y0c
+            8JSt2SSq/Uxa3UB02GcQmx9pJepsPU0etGmiHN8Ku1NNoo8A0c4ONts/clMCSrHj
+            LTVAaEJfm2bx0ln9E0xSCrA35CHOCA07OqkE9HthVwMNfnemPIhp2cG7fmF7eTbT
+            Ywwcz8+rocZamGNsteysxemdfG9+J1zxKMqi2qjkAqVUhefxugrb6xqZgpV7V0T+
+            jUuO4cPVpVzhop1Ck5z9WoIKToJfaE4FQP+348PzBzztAoxC4s17JK4CF1CeChj1
+            zvGXqHlMtSk5xCjUkExKCg/3yjMYzhifZxX4LnAGRQKBgQDBgLGSU7fab/ZGOv2G
+            wnAAY3zuOquOy4TehWgegAGIO044AP1LEAL/rm6kM6Yd5A5rGWyPTLKRbF6zXQCp
+            LRDjeJRvCTZ9R8616Ycv7OIc6iTYuOxLtzBcAVkP/nDa131IiNELnwSZLpxmukqe
+            qnc9trB67DjCsDy3j1eUkno/9QKBgQC+O4LwLW8vuKiKx1QyQy8l2H6m1tpr8hit
+            4tJCVnuF7h/8G6vn8y3FIvciJez4eEEOgiZop5J83UuYjTQ9thCzPlN4ieMC8mWO
+            imQQpJY8FYuZoK2ls3XYyg3d/sf5zD6fe0NczYppoWGroNeViO15gPaQc0tipcNp
+            C/sl50yakwKBgHPe6HZDA3keSk7LzD0B+aeB67GMGGctn6bQJAT/ietV+AS5MvPb
+            5q/MeByDgRmtEqU3WDaHKvbB+gNV0at8fPx5nAjRb3udoD52VKlyJAREgUP1mCnO
+            zHqLpBVbu6CQIUlqBCP9WPeRXb52F3Djivu9hfhVs7eBaRpSD5O8EtBxAoGALVzr
+            oHJ1LSAPsOhPf5zdxVyW9xoNA+i7Udvg38jXs9xQ7EF9ANbQd04bOJ1qoOWsPdVz
+            a0lqeTQcLsidSIn9+YBHT1syMyWyagc+TWmyGanZnEzgm77rv0KPg/yZm0vFMyql
+            qZ+p/f5p2A+G2TXJy0uhgFi+BUwaCRa+UQ+TCNkCgYAznyehJapcYr2QXqzttUA2
+            0U3txHWfHxX2KhNjCguNENN3CCyPDJdwYljxG8aT3bWa4rzJNxKoB5cfnS1hmAHR
+            1ZA4KAL/Di3ITvJiEB8bHkuYsRGL736VQ8I4jwYBYNByTNKOuxBO8ARLPyfPzB0I
+            JQmIRXOMJO/4caPURZKdgg==
+            -----END PRIVATE KEY-----
+            EOL,
+            'cert' => <<<EOL
+            -----BEGIN CERTIFICATE-----
+            MIIDmzCCAoOgAwIBAgIUVSbPCDbUICDm4VHCeR7RfC2nLPYwDQYJKoZIhvcNAQEL
+            BQAwdjELMAkGA1UEBhMCTVkxFjAUBgNVBGEMDUlHMjA4Nzc2MzIxMDAxGzAZBgNV
+            BAoMElNPTyBUSE8gSE9DSyBTRU9ORzEVMBMGA1UEBRMMODIwOTA0MDg1MDA1MRsw
+            GQYDVQQDDBJTT08gVEhPIEhPQ0sgU0VPTkcwHhcNMjQxMjI4MTcxNTE5WhcNMjUx
+            MjI4MTcxNTE5WjB2MQswCQYDVQQGEwJNWTEWMBQGA1UEYQwNSUcyMDg3NzYzMjEw
+            MDEbMBkGA1UECgwSU09PIFRITyBIT0NLIFNFT05HMRUwEwYDVQQFEww4MjA5MDQw
+            ODUwMDUxGzAZBgNVBAMMElNPTyBUSE8gSE9DSyBTRU9ORzCCASIwDQYJKoZIhvcN
+            AQEBBQADggEPADCCAQoCggEBAI/Kf2xsBjFGNYf9OQ5m0Bwfmp/Fh3sioKwupx5d
+            8bmz5SnQJdIamUeFEofPb6P+MOSZeUxU5/1dCMa2qIt7mtQ0k3gFS/apMO3f8fMG
+            2C3wB/2IYY0uVUASfKQH+LurIhBrc6hZsXFRxFfZ7P4+xwR7c7c4tsFybuWYPkCn
+            2iPjUu7cMYJxy/lkc5tUW945e2Gf2bPnk6dUGZ2d7QCIiRd48p8c6/8ULqZ9jYzr
+            qOVBfSxJf9q5vgVI3Pa0z7RahOG+nP9J3NkKJyXRaBT3OXcRP3svbI38thjUiRCV
+            zSiKXkf0MBWB6qoUQIsK1vc5khE0zJ44pvQQ9y3r17ZoG68CAwEAAaMhMB8wHQYD
+            VR0OBBYEFIYs1fPqIFyWrUOGukhesj66jWLsMA0GCSqGSIb3DQEBCwUAA4IBAQCE
+            il77RXgIGrMF4o8/MNkgCauIBmfAD2EhwRwMpkdIhNyyb2/hIckhfouKrZhRgeJX
+            g8EaDi5VLt0RCxt86LwVah6bzXrfiUQqEHytciO3/OChMWqgA9UURXO/ALs6iih3
+            47gknTefvfXqUYkvpS0r2n3y40WttaGn1IOZk6YTg8hPes/XpDCG3cKMfc/cFOVF
+            jiKzkpMGnaSJE3RTAh7EZ0Ju4416ChGQa5feym+0jWWgNsuhjfhbyoW48fFpmQSr
+            LIALaEXkuQLPsB8QyudqqvFdrwNZOW4HHBsm8LEtz+tQz357GrMuzPhFn5VZtbpO
+            +cSn2AXD7OhvLzaNvCoj
+            -----END CERTIFICATE-----
+            EOL,
             ...$settings,
         ]);
     }
@@ -165,12 +218,14 @@ class Myinvois
             data: [
                 'documents' => collect($data)->map(function ($item) {
                     $document = $this->getDocumentUBLSchema($item);
-                    $base64 = base64_encode(json_encode($document));
+                    $json = json_encode($document);
+                    $hash = hash('sha256', $json);
+                    $base64 = base64_encode($json);
 
                     return [
                         'format' => 'JSON',
                         'document' => $base64,
-                        'documentHash' => hash('sha256', $base64),
+                        'documentHash' => $hash,
                         'codeNumber' => get($item, 'number'),
                     ];
                 })->toArray(),
@@ -211,7 +266,7 @@ class Myinvois
         $codes = Atom::action('get-options', ['name' => 'myinvois.'.$name]);
 
         $code = match ($name) {
-            'document_types', 'product_categories', 'msic_codes', 'tax_types' => get(collect($codes)->firstWhere('Description', $key), 'Code'),
+            'document_types', 'product_classifications', 'msic_codes', 'tax_types' => get(collect($codes)->firstWhere('Description', $key), 'Code'),
             'document_versions' => get(collect($codes)->firstWhere('Description', $key), 'Version'),
             'state_codes' => get(collect($codes)->firstWhere('State', $key), 'Code'),
             'country_codes' => get(collect($codes)->firstWhere('Country', strtoupper($key)), 'Code'),
@@ -225,30 +280,31 @@ class Myinvois
 
     public function getDocumentUBLSchema($data)
     {
+        // $schema = json_decode(file_get_contents(atom_path('resources/json/myinvois-sample.json')), true);
+
         $schema = [];
-
-        data_set($schema, '_D', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
-        data_set($schema, '_A', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
-        data_set($schema, '_B', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
-
         $schema = $this->getDocumentEssentialSchema($schema, $data);
         $schema = $this->getDocumentCurrencySchema($schema, $data);
-        $schema = $this->getDocumentSupplierSchema($schema, $data);
-        $schema = $this->getDocumentBuyerSchema($schema, $data);
         $schema = $this->getDocumentBillingPeriodSchema($schema, $data);
         $schema = $this->getDocumentReferencesSchema($schema, $data);
+        $schema = $this->getDocumentSupplierSchema($schema, $data);
+        $schema = $this->getDocumentBuyerSchema($schema, $data);
         $schema = $this->getDocumentShippingSchema($schema, $data);
-        $schema = $this->getDocumentPrepaidSchema($schema, $data);
         $schema = $this->getDocumentPaymentModeSchema($schema, $data);
+        $schema = $this->getDocumentPrepaidSchema($schema, $data);
         $schema = $this->getDocumentChargesAndDiscountsSchema($schema, $data);
         $schema = $this->getDocumentTotalsSchema($schema, $data);
         $schema = $this->getDocumentLineItemsSchema($schema, $data);
+        $schema = $this->getDocumentSignature($schema);
 
-        return $this->signDocument($schema);
+        return $schema;
     }
 
     public function getDocumentEssentialSchema($schema, $data)
     {
+        data_set($schema, '_D', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
+        data_set($schema, '_A', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+        data_set($schema, '_B', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
         data_set($schema, 'Invoice.0.ID.0._', get($data, 'number'));
         data_set($schema, 'Invoice.0.IssueDate.0._', get($data, 'issued_at')->toDateString());
         data_set($schema, 'Invoice.0.IssueTime.0._', get($data, 'issued_at')->format('H:i:sp'));
@@ -379,6 +435,8 @@ class Myinvois
         $shipping = get($data, 'shipping');
         $currency = get($data, 'currency');
 
+        if (!$shipping) return $schema;
+
         if ($name = get($shipping, 'name')) {
             data_set($schema, 'Invoice.0.Delivery.0.DeliveryParty.0.PartyLegalEntity.0.RegistrationName.0._', $name);
         }
@@ -471,6 +529,11 @@ class Myinvois
     public function getDocumentTotalsSchema($schema, $data)
     {
         $currency = get($data, 'currency');
+
+        foreach ($this->getDocumentTaxesSubschema(get($data, 'taxes', []), $currency) as $key => $val) {
+            data_set($schema, 'Invoice.0.'.$key, $val);
+        }
+
         $subtotal = get($data, 'subtotal');
         $grandTotal = get($data, 'grand_total');
         $payableTotal = get($data, 'payable_total') ?: $grandTotal;
@@ -483,10 +546,6 @@ class Myinvois
 
         data_set($schema, 'Invoice.0.LegalMonetaryTotal.0.PayableAmount.0._', $payableTotal);
         data_set($schema, 'Invoice.0.LegalMonetaryTotal.0.PayableAmount.0.currencyID', $currency);
-
-        foreach ($this->getDocumentTaxesSubschema(get($data, 'taxes', []), $currency) as $key => $val) {
-            data_set($schema, 'Invoice.0.'.$key, $val);
-        }
 
         return $schema;
     }
@@ -609,10 +668,10 @@ class Myinvois
                 $schema->put('TaxTotal.0.TaxSubtotal.'.$i.'.TaxCategory.0.TaxExemptionReason.0._', $reason);
             }
     
-            $schema->put('TaxTotal.0.TaxSubtotal.'.$i.'.TaxableAmount.0._', get($tax, 'taxable_amount'));
+            $schema->put('TaxTotal.0.TaxSubtotal.'.$i.'.TaxableAmount.0._', get($tax, 'taxable_amount') ?? 0);
             $schema->put('TaxTotal.0.TaxSubtotal.'.$i.'.TaxableAmount.0.currencyID', $currency);
     
-            $schema->put('TaxTotal.0.TaxSubtotal.'.$i.'.TaxAmount.0._', get($tax, 'amount'));
+            $schema->put('TaxTotal.0.TaxSubtotal.'.$i.'.TaxAmount.0._', get($tax, 'amount') ?? 0);
             $schema->put('TaxTotal.0.TaxSubtotal.'.$i.'.TaxAmount.0.currencyID', $currency);
     
             if ($rate = get($tax, 'rate')) {
@@ -629,67 +688,71 @@ class Myinvois
         return $schema;
     }
 
-    public function signDocument($schema)
+    public function getDocumentSignature($schema)
     {
         // 1. get private key
-        $pkey = file_get_contents(storage_path('app/myinvois.key'));
+        $pkey = get($this->settings, 'pkey') ?? (file_exists(storage_path('app/myinvois.key')) ? file_get_contents(storage_path('app/myinvois.key')) : null);
         $pkey = openssl_pkey_get_private($pkey);
         if (!$pkey) return $schema;
 
         // 2. create doc hash and digest
-        $dochash = hash('sha256', json_encode($schema));
+        $docjson = json_encode($schema);
+        $dochash = hash('sha256', $docjson);
         $docdigest = base64_encode($dochash);
 
         // 3. sign the doc hash
         openssl_sign($dochash, $sign, $pkey, OPENSSL_ALGO_SHA256);
         $signature = base64_encode($sign);
+        $signtime = now()->toDateString().'T'.now()->format('H:i:sp');
 
         // 4. create cert hash and digest
-        $cert = file_get_contents(storage_path('app/myinvois.crt'));
+        $cert = get($this->settings, 'cert') ?? (file_exists(storage_path('app/myinvois.crt')) ? file_get_contents(storage_path('app/myinvois.crt')) : null);
         $certhash = hash('sha256', $cert);
         $certdigest = base64_encode($certhash);
         $certdata = openssl_x509_parse($cert);
-        $issuer = get($certdata, 'name');
+        $subject = collect(get($certdata, 'subject'))->map(fn ($val, $key) => "$key=$val")->join(', ');
+        $issuer = collect(get($certdata, 'issuer'))->map(fn ($val, $key) => "$key=$val")->join(', ');
         $serial = get($certdata, 'serialNumber');
 
-        // 5. create signed properties
-        $signedprop = [];
-        data_set($signedprop, 'Target', 'signature');
-        data_set($signedprop, 'SignedProperties.0.Id', 'id-xades-signed-props');
-        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningTime.0._', now()->toISOString());
-        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.CertDigest.0.DigestMethod.0._', '');
-        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.CertDigest.0.DigestMethod.0.Algorithm', 'http://www.w3.org/2001/04/xmlenc#sha256');
-        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.CertDigest.0.DigestValue.0._', $certdigest);
-        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.IssuerSerial.0.X509IssuerName.0._', $issuer);
-        data_set($signedprop, 'SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.IssuerSerial.0.X509SerialNumber.0._', $serial);
-
-        // 6. create signed properties hash and digest
-        $signedpropjson = json_encode($signedprop);
-        $signedprophash = hash('sha256', $signedpropjson);
-        $signedpropdigest = base64_encode($signedprophash);
-
-        // 7. populate ubl schema with all the data
+        // 5. populate signed properties section
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionURI.0._', 'urn:oasis:names:specification:ubl:dsig:enveloped:xades');
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.ID.0._', 'urn:oasis:names:specification:ubl:signature:1');
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.ReferencedSignatureID.0._', 'urn:oasis:names:specification:ubl:signature:Invoice');
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Id', 'signature');
-        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0', $signedprop);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0.Target', 'signature');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0.SignedProperties.0.Id', 'id-xades-signed-props');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0.SignedProperties.0.SignedSignatureProperties.0.SigningTime.0._', $signtime);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0.SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.CertDigest.0.DigestMethod.0._', '');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0.SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.CertDigest.0.DigestMethod.0.Algorithm', 'http://www.w3.org/2001/04/xmlenc#sha256');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0.SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.CertDigest.0.DigestValue.0._', $certdigest);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0.SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.IssuerSerial.0.X509IssuerName.0._', $issuer);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0.SignedProperties.0.SignedSignatureProperties.0.SigningCertificate.0.Cert.0.IssuerSerial.0.X509SerialNumber.0._', $serial);
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.KeyInfo.0.X509Data.0.X509Certificate.0._', $cert);
-        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.KeyInfo.0.X509Data.0.X509SubjectName.0._', $issuer);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.KeyInfo.0.X509Data.0.X509SubjectName.0._', $subject);
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.KeyInfo.0.X509Data.0.X509IssuerSerial.0.X509IssuerName.0._', $issuer);
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.KeyInfo.0.X509Data.0.X509IssuerSerial.0.X509SerialNumber.0._', $serial);
+
+        // 7. create signed properties hash and digest
+        $prop = get($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.Object.0.QualifyingProperties.0');
+        $propjson = json_encode($prop);
+        $prophash = hash('sha256', $propjson);
+        $propdigest = base64_encode($prophash);
+
+        // 8. populate ubl schema with remaining the data
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignatureValue.0._', $signature);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.SignatureMethod.0._', '');
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.SignatureMethod.0.Algorithm', 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256');
-        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.Type', 'http://uri.etsi.org/01903/v1.3.2#SignedProperties');
-        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.URI', '#id-xades-signed-props');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.Id', 'id-doc-signed-data');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.URI', '');
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.DigestMethod.0._', '');
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.DigestMethod.0.Algorithm', 'http://www.w3.org/2001/04/xmlenc#sha256');
-        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.DigestValue.0._', $signedpropdigest);
-        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.Type', '');
-        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.URI', '');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.0.DigestValue.0._', $docdigest);    
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.Id', 'id-xades-signed-props');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.Type', 'http://uri.etsi.org/01903/v1.3.2#SignedProperties');
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.URI', '#id-xades-signed-props');
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.DigestMethod.0._', '');
         data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.DigestMethod.0.Algorithm', 'http://www.w3.org/2001/04/xmlenc#sha256');
-        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.DigestValue.0._', $docdigest);
+        data_set($schema, 'Invoice.0.UBLExtensions.0.UBLExtension.0.ExtensionContent.0.UBLDocumentSignatures.0.SignatureInformation.0.Signature.0.SignedInfo.0.Reference.1.DigestValue.0._', $propdigest);
         data_set($schema, 'Invoice.0.Signature.0.ID.0._', 'urn:oasis:names:specification:ubl:signature:Invoice');
         data_set($schema, 'Invoice.0.Signature.0.SignatureMethod.0._', 'urn:oasis:names:specification:ubl:dsig:enveloped:xades');
 
@@ -705,7 +768,7 @@ class Myinvois
     {
         return [
             [
-                'number' => 'INV9999900',
+                'number' => 'INV'.time(),
                 'issued_at' => now(),
                 'document_type' => $this->getCode('document_types', 'Invoice'),
                 'document_version' => $this->getCode('document_versions', 'Invoice'),
@@ -737,11 +800,13 @@ class Myinvois
                     ],
                 ],
                 'supplier' => [
-                    'name' => 'Supplier\'s Name',
-                    'email' => 'supplier@email.com',
+                    // 'name' => 'JIANNIUS TECHNOLOGIES SDN. BHD.',
+                    // 'tin' => 'C26561325060',
+                    // 'brn' => '202101001341',
+                    'name' => 'SOO THO HOCK SEONG',
+                    'email' => 'hello@jiannius.com',
                     'phone' => '+60-123456789',
                     'tin' => 'IG20877632100',
-                    // 'brn' => 'OS2345872984234234',
                     'nric' => '820904085005',
                     'sst' => '202101001341',
                     'ttx' => '123',
@@ -751,7 +816,7 @@ class Myinvois
                     'address_line_3' => 'Persiaran Jaya',
                     'postcode' => '50480',
                     'city' => 'Kuala Lumpur',
-                    'state' => $this->getCode('state_codes', 'Kuala Lumpur'),
+                    'state' => $this->getCode('state_codes', 'Wilayah Persekutuan Kuala Lumpur'),
                     'country' => $this->getCode('country_codes', 'Malaysia'),
                     'certex' => 'CPT-CCN-W-211111-KL-000002',
                     'msic_code' => '46510',
@@ -759,32 +824,32 @@ class Myinvois
 
                 ],
                 'buyer' => [
-                    'name' => 'Buyer\'s Name',
+                    'name' => 'Foreign Country Buyer',
                     'email' => 'buyer@email.com',
                     'phone' => '+60-123456789',
-                    'tin' => 'UU28934723894723894',
+                    'tin' => 'EI00000000020',
                     'address_line_1' => 'Lot 66',
                     'address_line_2' => 'Bangunan Merdeka',
                     'address_line_3' => 'Persiaran Jaya',
                     'postcode' => '50480',
                     'city' => 'Kuala Lumpur',
-                    'state' => $this->getCode('state_codes', 'Kuala Lumpur'),
+                    'state' => $this->getCode('state_codes', 'Wilayah Persekutuan Kuala Lumpur'),
                     'country' => $this->getCode('country_codes', 'Malaysia'),
                 ],
-                'shipping' => [
-                    'name' => 'Recipient\'s Name',
-                    'tin' => 'UU28934723894723894',
-                    'address_line_1' => 'Lot 66',
-                    'address_line_2' => 'Bangunan Merdeka',
-                    'address_line_3' => 'Persiaran Jaya',
-                    'postcode' => '50480',
-                    'city' => 'Kuala Lumpur',
-                    'state' => $this->getCode('state_codes', 'Kuala Lumpur'),
-                    'country' => $this->getCode('country_codes', 'Malaysia'),
-                    'amount' => 25.00,
-                    'description' => 'Lalamove',
-                    'reference' => 'L121321',
-                ],
+                // 'shipping' => [
+                //     'name' => 'Recipient\'s Name',
+                //     'tin' => 'UU28934723894723894',
+                //     'address_line_1' => 'Lot 66',
+                //     'address_line_2' => 'Bangunan Merdeka',
+                //     'address_line_3' => 'Persiaran Jaya',
+                //     'postcode' => '50480',
+                //     'city' => 'Kuala Lumpur',
+                //     'state' => $this->getCode('state_codes', 'Wilayah Persekutuan Kuala Lumpur'),
+                //     'country' => $this->getCode('country_codes', 'Malaysia'),
+                //     'amount' => 25.00,
+                //     'description' => 'Lalamove',
+                //     'reference' => 'L121321',
+                // ],
                 'prepaid' => [
                     'amount' => 50,
                     'paid_at' => now()->subDays(10),
@@ -824,13 +889,12 @@ class Myinvois
                         'unit_price' => 500.00,
                         'country' => null,
                         'classifications' => [
-                            ['code' => '111122223333'],
-                            ['code' => '111122224444'],
+                            ['code' => $this->getCode('product_classifications', 'Others')],
                         ],
-                        'tariffs' => [
-                            ['code' => '22223334444'],
-                            ['code' => '22223337777'],
-                        ],
+                        // 'tariffs' => [
+                        //     ['code' => '22223334444'],
+                        //     ['code' => '22223337777'],
+                        // ],
                         'taxes' => [
                             [
                                 'code' => $this->getCode('tax_types', 'Sales Tax'),
