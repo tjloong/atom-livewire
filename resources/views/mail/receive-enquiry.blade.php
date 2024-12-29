@@ -3,9 +3,9 @@
     
 You have a new enquiry:
 
-**Name:** {{ get($enquiry, 'name') }}<br>
-**Phone:** {{ get($enquiry, 'phone') }}<br>
-**Email:** {{ get($enquiry, 'email') }}<br>
+**Name:** @ee($enquiry->name)<br>
+**Phone:** @ee($enquiry->phone)<br>
+**Email:** @ee($enquiry->email)<br>
 **Message:**<br>
-*{{ nl2br(get($enquiry, 'message')) }}*
+*@ee(nl2br(get($enquiry, 'message')))*
 </x-mail::message>
