@@ -2,9 +2,9 @@
 
 @php
 $classes = $attributes->classes()
-    ->add('py-3 px-4 flex')
+    ->add('flex')
     ->add(match ($variant) {
-        'card' => 'border border-zinc-200 shadow-sm rounded-lg hover:bg-zinc-50 has-[:checked]:bg-zinc-100',
+        'card' => 'py-3 px-4 border border-zinc-200 shadow-sm rounded-lg hover:bg-zinc-50 has-[:checked]:bg-zinc-100',
         default => '',
     });
 
@@ -12,8 +12,8 @@ $attrs = $attributes->class($classes);
 @endphp
 
 <label {{ $attrs->only('class') }}>
-    <div class="shrink-0 py-[0.1rem] {{ match ($variant) {
-        'card' => 'order-last pl-2',
+    <div class="shrink-0 {{ match ($variant) {
+        'card' => 'order-last py-[0.1rem] pl-2',
         default => 'pr-3',
     } }}">
         <input type="radio"

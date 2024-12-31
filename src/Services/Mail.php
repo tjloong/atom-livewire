@@ -18,23 +18,35 @@ class Mail
         $metadata = [],
         $attachments = [],
         $track = null,
+        $queue = false,
+        $later = null,
     )
     {
         if (!$to) abort('Missing recipient "to"');
         if (!$view) abort('Missing mail view');
 
-        \Illuminate\Support\Facades\Mail::to($to)
-            ->cc($cc)
-            ->bcc($bcc)
-            ->send(new \Jiannius\Atom\Mail\Mail([
-                'subject' => $subject,
-                'view' => $view,
-                'markdown' => $markdown,
-                'with' => $with,
-                'tags' => $tags,
-                'metadata' => $metadata,
-                'attachments' => $attachments,
-                'track' => $track ?? Schema::hasTable('sendmails'),
-            ]));
+        $mail = \Illuminate\Support\Facades\Mail::to($to)->cc($cc)->bcc($bcc);
+
+        $message = new \Jiannius\Atom\Mail\Mail([
+            'subject' => $subject,
+            'view' => $view,
+            'markdown' => $markdown,
+            'with' => $with,
+            'tags' => $tags,
+            'metadata' => $metadata,
+            'attachments' => $attachments,
+            'track' => $track ?? Schema::hasTable('sendmails'),
+        ]);
+
+        if ($queue) {
+            if (is_string($queue)) $message = $message->onQueue($queue);
+            $mail->queue($message);
+        }
+        else if ($later) {
+            $mail->later($later, $message);
+        }
+        else {
+            $mail->send($message);
+        }
     }
 }

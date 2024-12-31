@@ -17,9 +17,9 @@ else {
         props: null,
         timer: null,
         pointer: 0,
-        options: {{ Js::from($options) }},
-        filters: {{ Js::from($filters) }},
-        callback: {{ Js::from($callback) }},
+        options: @js($options),
+        filters: @js($filters),
+        callback: @js($callback),
         filteredOptions: [],
 
         init () {
@@ -121,11 +121,14 @@ else {
 
             if (this.callback) {
                 clearTimeout(this.timer)
-                this.timer = setTimeout(() => {
-                    return this.$wire.getOptions('mention', this.callback, { ...this.filters, search: this.props.query })
-                        .then(() => this.filteredOptions = [...this.$wire.get('options')['mention']])
-                        .then(() => this.align())
-                }, 300)
+                this.timer = setTimeout(() => (this.$wire.getOptions({
+                    id: 'mention',
+                    name: this.callback,
+                    filters: { ...this.filters, search: this.props.query },
+                })
+                    .then(() => this.filteredOptions = [...this.$wire.get('options')['mention']])
+                    .then(() => this.align())
+                ), 300)
             }
             else {
                 this.filteredOptions = this.options.filter(opt => {

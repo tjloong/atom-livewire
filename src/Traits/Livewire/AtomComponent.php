@@ -58,7 +58,7 @@ trait AtomComponent
 
     protected function getListeners()
     {
-        return $this->listeners + ['execute'];
+        return [...$this->listeners ?? [], 'execute'];
     }
 
     public function getFormProperty()
