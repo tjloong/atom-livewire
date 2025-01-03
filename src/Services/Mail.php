@@ -11,8 +11,10 @@ class Mail
         $cc = [],
         $bcc = [],
         $subject = '',
-        $view = 'atom:mail.sendmail',
-        $markdown = '',
+        $view = '',
+        $markdown = 'atom::mail.generic',
+        $content = '',
+        $cta = null,
         $with = [],
         $tags = [],
         $metadata = [],
@@ -23,15 +25,17 @@ class Mail
     )
     {
         if (!$to) abort('Missing recipient "to"');
-        if (!$view) abort('Missing mail view');
+        if (!$view && !$markdown && !$content) abort('Empty mail content or missing view');
 
         $mail = \Illuminate\Support\Facades\Mail::to($to)->cc($cc)->bcc($bcc);
 
-        $message = new \Jiannius\Atom\Mail\Mail([
+        $message = new \Jiannius\Atom\Mail\Generic([
             'subject' => $subject,
             'view' => $view,
-            'markdown' => $markdown,
-            'with' => $with,
+            'markdown' => $view ? '' : $markdown,
+            'with' => $content
+                ? ['cta' => $cta, 'content' => $content]
+                : $with,
             'tags' => $tags,
             'metadata' => $metadata,
             'attachments' => $attachments,
@@ -47,6 +51,6 @@ class Mail
         }
         else {
             $mail->send($message);
-        }
+        }    
     }
 }

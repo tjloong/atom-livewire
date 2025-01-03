@@ -12,7 +12,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Schema;
 
-class Mail extends Mailable
+class Generic extends Mailable
 {
     use Queueable, SerializesModels;
 
