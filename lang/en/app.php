@@ -368,6 +368,7 @@ return [
         'send-enquiry' => 'Send enquiry',
         'send-us-a-message' => 'Send us a message',
         'send' => 'Send',
+        'send-notification-to' => 'Send notification to',
         'sending' => 'Sending',
         'sender-email' => 'Sender Email',
         'sender-name' => 'Sender Name',
