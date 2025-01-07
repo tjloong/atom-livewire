@@ -28,39 +28,57 @@ class GetOptions
         else return $this->getFromJson();
     }
 
-    public function countries()
+    public function countries() : array
     {
-        return collect($this->getFromJson('myinvois.country_codes'))
-            ->map(fn ($val) => get($val, 'Country'))
-            ->map(fn ($val) => [
-                'value' => $val,
-                'label' => (string) str($val)->lower()->headline(),
+        return collect($this->getFromJson('countries'))
+            ->map(fn ($item) => [
+                'value' => get($item, 'iso_code'),
+                'label' => get($item, 'name'),
             ])
             ->sortBy('label')
             ->values()
             ->toArray();
     }
 
-    public function states()
+    public function states() : array
     {
-        return collect($this->getFromJson('myinvois.state_codes'))
-            ->map(fn ($val) => get($val, 'State'))
-            ->filter(fn ($val) => $val !== 'Not Applicable')
-            ->values()
-            ->map(fn ($val) => [
-                'value' => $val,
-                'label' => $val,
+        $countries = collect($this->getFromJson('countries'));
+        $country = $countries->firstWhere('iso_code', get($this->filters, 'country') ?? 'MY');
+        $states = get($country, 'states');
+
+        return collect($states)
+            ->map(fn ($item) => [
+                'value' => get($item, 'name'),
+                'label' => get($item, 'name'),
             ])
+            ->sortBy('label')
+            ->values()
+            ->toArray();
+    }
+
+    public function dialcodes() : array
+    {
+        return collect($this->getFromJson('countries'))
+            ->map(fn ($item) => [
+                'value' => get($item, 'dial_code'),
+                'label' => get($item, 'iso_code').' ('.get($item, 'dial_code').')',
+            ])
+            ->sortBy('label')
+            ->values()
             ->toArray();
     }
 
     public function currencies() : array
     {
-        return collect($this->getFromJson('myinvois.currency_codes'))
-            ->map(fn ($val) => [
-                'value' => get($val, 'Code'),
-                'label' => get($val, 'Currency'),
+        $countries = collect($this->getFromJson('countries'));
+
+        return $countries
+            ->map(fn ($item) => [
+                'value' => get($item, 'currency.code'),
+                'label' => collect([get($item, 'currency.code'), get($item, 'name')])->filter()->join(' - '),
             ])
+            ->filter(fn ($item) => !empty(get($item, 'value')))
+            ->values()
             ->sortBy('label')
             ->values()
             ->toArray();
@@ -98,15 +116,19 @@ class GetOptions
     public function getFromJson($name = null)
     {
         $name = $name ?? $this->name;
-        $options = cache('_options');
+        $cached = cache('_options') ?? [];
+        $options = get($cached, $name);
 
-        if (!$options) {
-            $path = resource_path('json/options.json');
-            $local = file_exists($path) ? json_decode(file_get_contents($path), true) : [];
-            $atom = json_decode(file_get_contents(atom_path('resources/json/options.json')), true);
-            $options = array_merge_recursive($atom, $local);
-        }
+        if ($options) return $options;
 
-        return get($options, $name);
+        $path = resource_path('json/options/'.$name.'.json');
+        $local = file_exists($path) ? json_decode(file_get_contents($path), true) : [];
+        $atom = json_decode(file_get_contents(atom_path('resources/json/options/'.$name.'.json')), true);
+        $options = array_merge_recursive($atom, $local);
+        $cached[$name] = $options;
+
+        cache(['_options' => $cached]);
+
+        return $options;
     }
 }
