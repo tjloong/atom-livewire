@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Services;
 
+use Jiannius\Atom\Atom;
+
 class Route
 {
     // __call
@@ -102,6 +104,11 @@ class Route
         $this->prefix('__file')->as('__file')->group(function() {
             $this->post('upload', 'FileController@upload')->name('.upload');
             $this->get('{name?}', 'FileController');
+        });
+
+        // action
+        $this->post('__action/{action}', function ($action) {
+            return response()->json(Atom::action($action, request()->all()));
         });
 
         // icons

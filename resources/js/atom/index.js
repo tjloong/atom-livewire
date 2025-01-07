@@ -6,6 +6,7 @@ export default {
     random: () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
     dispatch: (name, detail) => dispatchEvent(new CustomEvent(name, { bubbles: true, detail })),
     lightbox: (detail) => dispatchEvent(new CustomEvent('lightbox', { bubbles: true, detail })),
+    action: (name, payload) => (new Ajax('/__action/'+name).post(payload)),
 
     goto: (url = null, newtab = false) => {
         if (!url) return

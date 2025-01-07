@@ -1,6 +1,8 @@
 @aware(['size', 'invalid', 'placeholder'])
 
 @php
+$dialcodes = \Jiannius\Atom\Atom::action('get-options', ['name' => 'dialcodes']);
+
 $classes = $attributes->classes()
     ->add('w-full py-2 pl-[9.5rem] pr-10 text-zinc-700')
     ->add('border border-zinc-200 border-b-zinc-300/80 rounded-lg shadow-sm bg-white')
@@ -40,9 +42,9 @@ $attrs = $attributes
                 x-on:input.stop
                 data-atom-input-tel-country
                 class="appearance-none bg-transparent pl-3 pr-6 w-full focus:outline-none">
-                @foreach (atom()->country()->sortBy('iso_code') as $country)
-                    <option value="{{ get($country, 'dial_code') }}">
-                        {{ get($country, 'iso_code') }} ({{ get($country, 'dial_code') }})
+                @foreach ($dialcodes as $dialcode)
+                    <option value="{{ get($dialcode, 'value') }}">
+                        {{ get($dialcode, 'label') }}
                     </option>
                 @endforeach
             </select>
