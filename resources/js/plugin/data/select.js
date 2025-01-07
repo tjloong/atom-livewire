@@ -24,10 +24,11 @@ export default (config) => {
         init () {
             this.$watch('text', () => this.search())
             this.$watch('value', () => this.getSelected())
-
-            if ((this.multiple && this.value?.length) || (!this.multiple && this.value)) {
-                this.search().then(() => this.getSelected())
-            }
+            this.$nextTick(() => {
+                if ((this.multiple && this.value?.length) || (!this.multiple && this.value)) {
+                    this.search().then(() => this.getSelected())
+                }
+            })
         },
 
         open () {
