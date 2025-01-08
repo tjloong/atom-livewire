@@ -2,6 +2,7 @@
 
 @php
 $dialcodes = \Jiannius\Atom\Atom::action('get-options', ['name' => 'dialcodes']);
+$lazy = $attributes->has('wire:model.lazy') || $attributes->has('x-model.lazy');
 
 $classes = $attributes->classes()
     ->add('w-full py-2 pl-[9.5rem] pr-10 text-zinc-700')
@@ -22,16 +23,21 @@ $attrs = $attributes
 <div
     x-data="tel({
         code: {{ js($attributes->get('code', '+60')) }},
+        lazy: {{ js($lazy) }},
         @if ($attributes->wire('model')->value())
         value: @entangle($attributes->wire('model')),
         @endif
     })"
     class="group/input relative w-full block">
-    <input
-        type="hidden"
-        x-ref="hidden"
-        {{ $attributes->whereStartsWith('wire:model') }}
-        {{ $attributes->whereStartsWith('x-model') }}>
+    @if ($attributes->has('wire:model.lazy'))
+        <input type="hidden" x-ref="hidden" wire:model="{{ $attributes->wire('model')->value() }}">
+    @elseif ($attributes->has('x-model.lazy'))
+        <input type="hidden" x-ref="hidden" x-model="{{ $attributes->get('x-model.lazy') }}">
+    @else
+        <input type="hidden" x-ref="hidden"
+            {{ $attributes->whereStartsWith('wire:model') }}
+            {{ $attributes->whereStartsWith('x-model') }}>
+    @endif
 
     <div class="absolute top-0 bottom-0 left-0 w-[9rem] flex items-center gap-2">
         <div class="relative w-full">
@@ -58,7 +64,11 @@ $attrs = $attributes
     <input
         type="tel"
         x-model="tel"
+        @if ($lazy)
+        x-on:blur="format()"
+        @else
         x-on:input.stop="format()"
+        @endif
         placeholder="{{ t($placeholder) }}"
         {{ $attrs }}>
 
