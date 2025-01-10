@@ -1,11 +1,11 @@
 Array.prototype.pluck = function (attr) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
 
     return this.map(val => (val[attr]))
 }
 
 Array.prototype.unique = function (attr = null) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
 
     if (typeof attr === 'function') {
         let values = this.map(row => (attr(row)))
@@ -26,7 +26,7 @@ Array.prototype.unique = function (attr = null) {
 }
 
 Array.prototype.sum = function (attr = null) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
 
     return this.reduce((acc, value) => {
         if (typeof attr === 'function') value = attr(value)
@@ -37,7 +37,7 @@ Array.prototype.sum = function (attr = null) {
 }
 
 Array.prototype.toggle = function (value) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
 
     const index = this.indexOf(value)
     
@@ -48,7 +48,7 @@ Array.prototype.toggle = function (value) {
 }
 
 Array.prototype.take = function (n) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
 
     let array = [...this]
 
@@ -56,13 +56,13 @@ Array.prototype.take = function (n) {
 }
 
 Array.prototype.prepend = function (value) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
 
     this.unshift(value)
 }
 
 Array.prototype.last = function (n = 1) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
     if (!this.length) return
 
     let index = this.length - n
@@ -71,7 +71,7 @@ Array.prototype.last = function (n = 1) {
 }
 
 Array.prototype.lastIndex = function (n = 1) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
     if (!this.length) return -1
 
     let index = this.length - n
@@ -80,13 +80,13 @@ Array.prototype.lastIndex = function (n = 1) {
 }
 
 Array.prototype.where = function (key, value) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
 
     return this.filter(item => (item[key] === value))
 }
 
 Array.prototype.firstWhere = function (key, value) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
 
     let index = this.findIndex(item => (item[key] === value))
 
@@ -94,21 +94,46 @@ Array.prototype.firstWhere = function (key, value) {
 }
 
 Array.prototype.findIndexWhere = function (key, value) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
 
     return this.findIndex(item => (item[key] === value))
 }
 
 Array.prototype.max = function (key = null) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
     if (key) return Math.max(...this.pluck(key))
 
     return Math.max(...this)
 }
 
 Array.prototype.min = function (key = null) {
-    if (!Array.isArray(this)) return
+    if (!Array.isArray(this)) return this
     if (key) return Math.min(...this.pluck(key))
 
     return Math.min(...this)
+}
+
+Array.prototype.sortBy = function (key, order = 'asc', lang = 'en') {
+    if (!Array.isArray(this)) return this
+    if (!this.length) return this
+
+    // numeric sort
+    if (typeof +this[0][key] === 'number') {
+        return order === 'desc'
+            ? this.sort((a, b) => +b[key] - +a[key])
+            : this.sort((a, b) => +a[key] - +b[key])
+    }
+
+    const collator = new Intl.Collator(lang, { sensitivity: 'base' });
+
+    return order === 'desc'
+        ? this.sort((a, b) => collator.compare(b[key], a[key]))
+        : this.sort((a, b) => collator.compare(a[key], b[key]))
+}
+
+Array.prototype.sortByDesc = function (key, lang = 'en') {
+    if (!Array.isArray(this)) return this
+    if (!this.length) return this
+
+    return this.sortBy(key, 'desc', lang)
 }

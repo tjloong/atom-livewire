@@ -50,7 +50,7 @@ $attrs = $attributes->except(['option', 'value', 'label', 'badge', 'badge-color'
                     @endif
 
                     <div class="grow">
-                        <div class="truncate" data-option-label>@t($label)</div>
+                        <div class="text-wrap" data-option-label>@t($label)</div>
                         @if ($caption)
                             <div class="text-sm text-muted truncate" data-option-caption>@t($caption)</div>
                         @endif
