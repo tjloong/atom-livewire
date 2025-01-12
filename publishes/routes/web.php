@@ -3,7 +3,6 @@
 $route = app('route');
 
 $route->default();
-$route->integration(stripe: true);
 $route->auth(login: true, register: true, socialite: true);
 $route->onboarding();
 

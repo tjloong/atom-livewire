@@ -15,7 +15,6 @@
         "torann/geoip": "^3.0",
         "jenssegers/agent": "^2.0",
         "sentry/sentry-laravel": "^3",
-        "stripe/stripe-php": "^10.0",
         "symfony/http-client": "^6.0",
         "symfony/mailgun-mailer": "^6.0",
         "laravel/sanctum": "^3.2",

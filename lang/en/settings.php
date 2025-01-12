@@ -12,7 +12,6 @@ return [
         'email' => 'Email Settings',
         'storage' => 'Storage Settings',
         'ipay' => 'iPay88 Settings',
-        'stripe' => 'Stripe Settings',
         'social' => 'Social Login Settings',
     ],
 
@@ -32,7 +31,6 @@ return [
         'social-login' => 'Social Login',
         'site' => 'Site',
         'storage' => 'Storage',
-        'stripe' => 'Stripe',
         'system' => 'System',
         'user' =>  'Users',
     ],

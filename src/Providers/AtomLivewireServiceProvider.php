@@ -100,7 +100,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.integration.storage' => 'App\Settings\Integration\Storage',
             'app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',
             'app.settings.integration.finexus' => 'App\Settings\Integration\Finexus',
-            'app.settings.integration.stripe' => 'App\Settings\Integration\Stripe',
             'app.settings.integration.ipay' => 'App\Settings\Integration\Ipay',
         ];
 

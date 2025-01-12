@@ -151,7 +151,7 @@ class Route
     }
 
     // create integration routes
-    public function integration($senangpay = false, $finexus = false, $stripe = false, $ipay = false, $gkash = false, $ozopay = false) : void
+    public function integration($senangpay = false, $finexus = false, $ipay = false, $gkash = false, $ozopay = false) : void
     {
         if ($senangpay) {
             $this->prefix('__senangpay')->as('__senangpay')->withoutMiddleware('web')->group(function () {
@@ -167,14 +167,6 @@ class Route
                 $this->get('failed', 'FinexusController@failed')->name('.failed');
                 $this->get('cancel', 'FinexusController@cancel')->name('.cancel');
                 $this->get('query', 'FinexusController@query')->name('.query');
-            });
-        }
-
-        if ($stripe) {
-            $this->prefix('__stripe')->as('__stripe')->withoutMiddleware('web')->group(function () {
-                $this->get('success', 'StripeController@success')->name('.success');
-                $this->get('cancel', 'StripeController@cancel')->name('.cancel');
-                $this->post('webhook', 'StripeController@webhook')->name('.webhook');
             });
         }
 
