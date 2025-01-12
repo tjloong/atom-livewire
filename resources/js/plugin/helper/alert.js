@@ -7,7 +7,7 @@ export default (message, type = null) => {
     detail = {
         ...detail,
         title: detail.title ? t(detail.title) : null,
-        message: t(detail.message),
+        message: Array.isArray(detail.message) ? detail.message.map(item => t(item)) : t(detail.message),
     }
 
     dispatchEvent(new CustomEvent('alert', { bubbles: true, detail }))

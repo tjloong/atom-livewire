@@ -20,6 +20,22 @@ export default (config) => {
             this.am = parser?.isValid() ? parser.format('A') : 'AM'
         },
 
+        upHr () {
+            this.hr = +this.hr < 12 ? (+this.hr + 1) : '00'
+        },
+
+        downHr () {
+            this.hr = +this.hr > 0 ? (this.hr - 1) : '12'
+        },
+
+        upMin () {
+            this.min = +this.min < 59 ? (+this.min + 1) : '00'
+        },
+
+        downMin () {
+            this.min = +this.min > 0 ? (this.min - 1) : '59'
+        },
+
         setAm () {
             this.am = this.am === 'AM' ? 'PM' : 'AM'
         },

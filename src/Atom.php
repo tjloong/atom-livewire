@@ -112,8 +112,10 @@ class Atom
             ->isNotEmpty();
     }
 
-    public static function action($name, $props = null)
+    public static function action(...$args)
     {
+        $args = collect($args);
+        $name = $args->shift();
         $split = explode('.', $name);
         $name = str(get($split, '0'))->studly()->toString();
         $method = get($split, '1');
@@ -125,7 +127,7 @@ class Atom
 
         throw_if(!$class, \Exception::class, "\App\Actions\\$name not found");
 
-        $api = new $class($props);
+        $api = new $class(...$args);
 
         return $method ? $api->$method() : $api->run();
     }

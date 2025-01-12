@@ -51,9 +51,24 @@ $attrs = $attributes
         {{ $attrs }}
         data-atom-time-picker>
         <div x-on:input.stop class="grow flex items-center gap-2">
-            <input type="number" x-model.lazy="hr" maxlength="2" class="appearance-none w-8 text-center no-spinner focus:outline-none">
+            <input type="number"
+                x-model.lazy="hr"
+                x-on:click.stop="upHr()"
+                x-on:keydown.up.prevent="upHr()"
+                x-on:keydown.down.prevent="downHr()"
+                maxlength="2"
+                class="appearance-none w-8 text-center no-spinner focus:outline-none">
+
             <span class="font-bold">:</span>
-            <input type="number" x-model.lazy="min" maxlength="2" class="appearance-none w-8 text-center no-spinner focus:outline-none">
+
+            <input type="number"
+                x-model.lazy="min"
+                x-on:click.stop="upMin()"
+                x-on:keydown.up.prevent="upMin()"
+                x-on:keydown.down.prevent="downMin()"
+                maxlength="2"
+                class="appearance-none w-8 text-center no-spinner focus:outline-none">
+
             <input type="text"
                 x-bind:value="am"
                 x-on:input="setAm()"

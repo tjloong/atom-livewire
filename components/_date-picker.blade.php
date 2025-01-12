@@ -104,8 +104,11 @@ $attrs = $attributes
 
                         <div>
                             <div x-ref="from" class="w-[300px]"></div>
-                            <div x-show="config.time" x-on:input.stop.debounce="select()" class="px-2 pb-2">
-                                <atom:_time-picker x-model="picker.from.time"/>
+                            <div x-show="config.time" x-on:input.stop.debounce="select()">
+                                <atom:separator/>
+                                <div class="p-2">
+                                    <atom:_time-picker x-model="picker.from.time"/>
+                                </div>
                             </div>
                         </div>
 
@@ -113,7 +116,10 @@ $attrs = $attributes
                             <div>
                                 <div x-ref="to" class="w-[300px]"></div>
                                 <div x-show="config.time" x-on:input.stop.debounce="select()" class="px-2 pb-2">
-                                    <atom:_time-picker x-model="picker.to.time"/>
+                                    <atom:separator/>
+                                    <div class="p-2">
+                                        <atom:_time-picker x-model="picker.to.time"/>
+                                    </div>
                                 </div>
                             </div>
                         </template>
