@@ -151,16 +151,8 @@ class Route
     }
 
     // create integration routes
-    public function integration($senangpay = false, $finexus = false, $ipay = false, $gkash = false, $ozopay = false) : void
+    public function integration($finexus = false, $ipay = false, $gkash = false, $ozopay = false) : void
     {
-        if ($senangpay) {
-            $this->prefix('__senangpay')->as('__senangpay')->withoutMiddleware('web')->group(function () {
-                $this->get('redirect', 'SenangpayController@redirect')->name('.redirect');
-                $this->get('recurring', 'SenangpayController@recurring')->name('.recurring');
-                $this->post('webhook', 'SenangpayController@webhook')->name('.webhook');
-            });
-        }
-
         if ($finexus) {
             $this->prefix('__finexus')->as('__finexus')->withoutMiddleware('web')->group(function () {
                 $this->get('success', 'FinexusController@success')->name('.success');
