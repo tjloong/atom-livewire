@@ -96,11 +96,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.settings.file' => 'App\Settings\File',
             'app.settings.label' => 'App\Settings\Label',
             'app.settings.profile' => 'App\Settings\Profile',
-            'app.settings.integration.email' => 'App\Settings\Integration\Email',
-            'app.settings.integration.storage' => 'App\Settings\Integration\Storage',
-            'app.settings.integration.social-login' => 'App\Settings\Integration\SocialLogin',
-            'app.settings.integration.finexus' => 'App\Settings\Integration\Finexus',
-            'app.settings.integration.ipay' => 'App\Settings\Integration\Ipay',
         ];
 
         foreach ($components as $name => $class) {

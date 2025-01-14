@@ -121,10 +121,7 @@ class Setting extends Model
                 'site_whatsapp_number' => settings('whatsapp'),
             ][$key] ?? settings($key);
 
-            $value = (empty($current) || (
-                !app()->environment('production')
-                && in_array($key, ['mailer', 'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password', 'smtp_encryption'])
-            )) ? $value : $current;
+            $value = (empty($current) || !app()->environment('production')) ? $value : $current;
 
             $inserts->push([
                 'name' => $key,

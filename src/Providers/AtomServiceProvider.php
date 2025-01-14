@@ -278,29 +278,6 @@ class AtomServiceProvider extends ServiceProvider
                 'endpoint' => settings('do_spaces_endpoint'),
                 'use_path_style_endpoint' => false,
             ]]);
-
-            // smtp
-            config(['mail.mailers.smtp' => [
-                'transport' => 'smtp',
-                'host' => settings('smtp_host'),
-                'port' => settings('smtp_port'),
-                'username' => settings('smtp_username'),
-                'password' => settings('smtp_password'),
-                'encryption' => settings('smtp_encryption'),
-            ]]);
-
-            // mailgun
-            config(['services.mailgun' => [
-                'domain' => settings('mailgun_domain'),
-                'secret' => settings('mailgun_secret'),
-            ]]);
-
-            // default mailer
-            config([
-                'mail.default' => settings('mailer'),
-                'mail.from.address' => settings('notify_from'),
-                'mail.from.name' => config('app.name'),
-            ]);
         }
     }
 
