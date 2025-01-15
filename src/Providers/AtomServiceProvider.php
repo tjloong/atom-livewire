@@ -13,6 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
 use Illuminate\View\ComponentAttributeBag;
+use Livewire\Livewire;
 
 class AtomServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,7 @@ class AtomServiceProvider extends ServiceProvider
     // boot
     public function boot() : void
     {
+        $this->registerRoutes();
         $this->registerHelpers();
         $this->registerViews();
         $this->registerTranslation();
@@ -38,8 +40,15 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerTagCompiler();
         $this->registerMorphMap();
         $this->registerMacros();
+        $this->registerLivewire();
         $this->registerPublishes();
         $this->registerCommands();
+    }
+
+    public function registerRoutes()
+    {
+        $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../../routes/channels.php');
     }
 
     // register publishes
@@ -252,6 +261,20 @@ class AtomServiceProvider extends ServiceProvider
             ]]);
         }
 
+        // digital ocean spaces
+        if (env('FILESYSTEM_DISK') === 'do') {
+            config(['filesystems.disks.do' => [
+                'driver' => 's3',
+                'key' => env('DO_SPACES_KEY'),
+                'secret' => env('DO_SPACES_SECRET'),
+                'region' => env('DO_SPACES_REGION'),
+                'bucket' => env('DO_SPACES_BUCKET'),
+                'folder' => env('DO_SPACES_FOLDER'),
+                'endpoint' => env('DO_SPACES_ENDPOINT'),
+                'use_path_style_endpoint' => false,
+            ]]);
+        }
+
         if (!$this->app->runningInConsole() || ($this->app->runningInConsole() && Schema::hasTable('settings'))) {
             // socialite
             foreach (model('setting')->getSocialLogins() as $provider) {
@@ -266,18 +289,6 @@ class AtomServiceProvider extends ServiceProvider
                     'redirect' => $redirect,
                 ]]);
             }
-
-            // digital ocean spaces
-            config(['filesystems.disks.do' => [
-                'driver' => 's3',
-                'key' => settings('do_spaces_key'),
-                'secret' => settings('do_spaces_secret'),
-                'region' => settings('do_spaces_region'),
-                'bucket' => settings('do_spaces_bucket'),
-                'folder' => settings('do_spaces_folder'),
-                'endpoint' => settings('do_spaces_endpoint'),
-                'use_path_style_endpoint' => false,
-            ]]);
         }
     }
 
@@ -290,5 +301,23 @@ class AtomServiceProvider extends ServiceProvider
         Request::mixin(new \Jiannius\Atom\Macros\Request());
         Str::mixin(new \Jiannius\Atom\Macros\Str());
         Stringable::mixin(new \Jiannius\Atom\Macros\Stringable());
+    }
+
+    public function registerLivewire()
+    {
+        Livewire::component('atom.auth.login', \Jiannius\Atom\Livewire\Auth\Login::class);
+        Livewire::component('atom.auth.logout', \Jiannius\Atom\Livewire\Auth\Logout::class);
+        Livewire::component('atom.auth.register', \Jiannius\Atom\Livewire\Auth\Register::class);
+        Livewire::component('atom.auth.reset-password', \Jiannius\Atom\Livewire\Auth\ResetPassword::class);
+        Livewire::component('atom.auth.forgot-password', \Jiannius\Atom\Livewire\Auth\ForgotPassword::class);
+        Livewire::component('atom.file.edit', \Jiannius\Atom\Livewire\File\Edit::class);
+        Livewire::component('atom.file.manager', \Jiannius\Atom\Livewire\File\Manager::class);
+        Livewire::component('atom.user', \Jiannius\Atom\Livewire\User\Index::class);
+        Livewire::component('atom.user.edit', \Jiannius\Atom\Livewire\User\Edit::class);
+        Livewire::component('atom.user.permission', \Jiannius\Atom\Livewire\User\Permission::class);
+        Livewire::component('atom.enquiry', \Jiannius\Atom\Livewire\Enquiry::class);
+        Livewire::component('atom.profile', \Jiannius\Atom\Livewire\Profile::class);
+        Livewire::component('atom.generic-page', \Jiannius\Atom\Livewire\GenericPage::class);
+        Livewire::component('atom.notification-center', \Jiannius\Atom\Livewire\NotificationCenter::class);
     }
 }

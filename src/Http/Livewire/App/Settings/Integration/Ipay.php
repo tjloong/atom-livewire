@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
 class Ipay extends Component

@@ -213,7 +213,7 @@ trait AtomComponent
         $class = static::class;
 
         $viewPath = str($class)
-            ->replaceFirst('Jiannius\Atom\Http\\', '')
+            ->replaceFirst('Jiannius\Atom\\', '')
             ->replaceFirst('App\Http\\', '')
             ->split('/\\\/')
             ->map(fn($s) => str()->kebab($s))

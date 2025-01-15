@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Blog;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 
 class Index extends Component
 {

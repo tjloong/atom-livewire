@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Label;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
 class Edit extends Component

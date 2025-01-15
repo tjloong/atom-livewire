@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Settings;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 
 class Label extends Component
 {

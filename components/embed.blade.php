@@ -1,31 +1,50 @@
 @php
 $file = $attributes->get('file');
-$url = $attributes->get('url') ?? $file?->endpoint;
+$src = $attributes->get('src') ?? $file?->endpoint;
+$srcsm = $attributes->get('src-sm');
 $icon = $attributes->get('icon') ?? $file?->icon;
 
 $type = pick([
-    'image' => $file?->is_image || str($url)->endsWith(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.tiff']),
-    'video' => $file?->is_video || str($url)->endsWith(['.mp4', '.ogg', '.mpeg', '.avi']),
-    'youtube' => $file?->is_youtube || str($url)->startsWith(['https://www.youtube.com', 'https://youtube.com']),
+    'image' => $file?->is_image || str($src)->endsWith(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.tiff']),
+    'video' => $file?->is_video || str($src)->endsWith(['.mp4', '.ogg', '.mpeg', '.avi']),
+    'youtube' => $file?->is_youtube || str($src)->startsWith(['https://www.youtube.com', 'https://youtube.com']),
     'icon' => !empty($icon),
 ]);
+
+$attrs = $attributes->merge([
+    'class' => match ($type) {
+        'image', 'video' => 'w-full h-full object-contain',
+        'youtube' => 'w-full h-full',
+        'icon' => 'flex items-center justify-center w-full h-full text-muted',
+        default => '',
+    },
+    ...($type === 'youtube' ? [
+        'frameborder' => '0',
+        'referrerpolicy' => 'strict-origin-when-cross-origin',
+        'allowfullscreen' => true,
+    ] : []),
+    ...($type === 'video' ? [
+        'controls' => true,
+    ] : []),
+])->except(['file', 'src', 'src-sm', 'icon']);
 @endphp
 
 @if ($type === 'image')
-    <img src="{{ $url }}" class="w-full h-full object-contain">
+    @if ($srcsm)
+        <object data="{!! $srcsm !!}" {{ $attrs }}>
+            <img src="{!! $src !!}" {{ $attrs->only('class') }}>
+        </object>
+    @else
+        <img src="{!! $src !!}" {{ $attrs }}>
+    @endif
 @elseif ($type === 'video')
-    <video class="w-full h-full object-contain" controls>
-        <source src="{{ $url }}" type="video/mp4">
+    <video {{ $attrs }}>
+        <source src="{{ $src }}" type="video/mp4">
     </video>
 @elseif ($type === 'youtube')
-    <iframe src="https://www.youtube.com/embed/g5PBtcrm7Aw"
-        frameborder="0"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen
-        class="w-full h-full">
-    </iframe>
+    <iframe src="{{ $src }}" {{ $attrs }}></iframe>
 @elseif ($type === 'icon')
-    <div class="flex items-center justify-center w-full h-full text-muted">
+    <div {{ $attrs }}>
         <atom:icon :name="$icon" size="64"/>
     </div>
 @endif

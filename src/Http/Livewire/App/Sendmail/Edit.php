@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Sendmail;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 
 class Edit extends Component
 {

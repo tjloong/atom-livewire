@@ -4,7 +4,8 @@ $variant = $attributes->get('variant', 'inline');
 $removeable = $attributes->has('wire:remove') || $attributes->has('x-on:remove');
 
 $name = get($file, 'name');
-$src = get($file, 'endpoint_sm') ?? get($file, 'endpoint');
+$src = get($file, 'endpoint');
+$srcsm = get($file, 'endpoint_sm');
 $type = get($file, 'is_image') ? 'image' : get($file, 'type');
 $icon = get($file, 'icon') ?? 'file';
 
@@ -32,8 +33,12 @@ $attrs = $attributes->except(['file', 'variant']);
 @elseif ($variant === 'inline')
     <div {{ $attrs->class(['flex gap-3']) }}>
         <div class="shrink-0 w-12 h-12 rounded-lg bg-zinc-100 border shadow-sm flex items-center justify-center overflow-hidden">
-            @if ($type === 'image') <img src="{{ $src }}" class="w-full h-full object-cover">
-            @else <atom:icon :name="$icon" class="text-muted"/>
+            @if ($type === 'image')
+                <object data="{{ $srcsm }}" class="w-full h-full object-cover">
+                    <img src="{{ $src }}" class="w-full h-full object-cover">
+                </object>
+            @else
+                <atom:icon :name="$icon" class="text-muted"/>
             @endif
         </div>
 

@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Audit;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 
 class Show extends Component
 {

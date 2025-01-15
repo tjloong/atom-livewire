@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 
 class Footprint extends Component
 {

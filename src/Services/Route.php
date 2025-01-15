@@ -9,10 +9,7 @@ class Route
     // __call
     public function __call($name, $arguments)
     {
-        if ($name === 'channel') {
-            return $this->channel($name, $arguments);
-        }
-        else if ($name === 'has') {
+        if ($name === 'has') {
             return \Illuminate\Support\Facades\Route::has($arguments);
         }
         else if ($name === 'is') {
@@ -63,19 +60,6 @@ class Route
         else return $name;
     }
 
-    // broadcast channel
-    public function channel($name, $arguments = null)
-    {
-        if ($name === 'notification' && !$arguments) {
-            return \Illuminate\Support\Facades\Broadcast::channel('notification.{id}', function ($user, $id) {
-                return $user && $user->id === model('user')->find($id)?->id;
-            });
-        }
-        else {
-            return \Illuminate\Support\Facades\Broadcast::channel($name, $arguments);
-        }
-    }
-
     // check is current route
     public function isCurrentRoute(...$name)
     {
@@ -92,62 +76,6 @@ class Route
     {
         $this->get('__sitemap', 'SitemapController')->name('__sitemap');
         $this->post('__recaptcha', 'RecaptchaController')->withoutMiddleware('web')->name('__recaptcha');
-        $this->post('__select/get', 'SelectController@get')->name('__select.get');
-
-        $this->post('__select', function() {
-            return app('select')
-                ->filters(request()->filters)
-                ->selected(request()->selected)
-                ->get(request()->name);
-        })->name('__select');
-
-        $this->prefix('__file')->as('__file')->group(function() {
-            $this->post('upload', 'FileController@upload')->name('.upload');
-            $this->get('{name?}', 'FileController');
-        });
-
-        // action
-        $this->post('__action/{action}', function ($action) {
-            return response()->json(Atom::action($action, request()->all()));
-        });
-
-        // icons
-        $this->get('__icons.js', function () {
-            return \Jiannius\Atom\Services\Icon::jsResponse();
-        })->name('__icons.js');
-
-        // lang
-        $this->get('__lang/{lang?}', function ($lang = null) {
-            session()->put('__lang', $lang ?? user()?->settings('locale') ?? config('atom.locale') ?? 'en');
-            return redirect(user()?->home() ?? '/');
-        })->name('__lang');
-    
-        $this->get('__lang.js', function () {
-            return \Jiannius\Atom\Services\Lang::jsResponse();
-        })->withoutMiddleware('web')->name('__lang.js');
-    }
-
-    // create auth routes
-    public function auth($login = true, $password = true, $register = false, $socialite = false) : void
-    {
-        if ($login) {
-            $this->get('login', 'Auth\Login')->name('login');
-            $this->get('logout', 'Auth\Logout')->middleware('auth')->name('logout');
-        }
-
-        if ($password) {
-            $this->get('reset-password', 'Auth\ResetPassword')->name('password.reset');
-            $this->get('forgot-password', 'Auth\ForgotPassword')->middleware('guest')->name('password.forgot');
-        }
-
-        if ($register) {
-            $this->get('register', 'Auth\Register')->middleware('guest')->name('register');
-        }
-
-        if ($socialite) {
-            $this->get('__auth/{provider}/redirect', 'SocialiteController@redirect')->name('socialite.redirect');
-            $this->get('__auth/{provider}/callback', 'SocialiteController@callback')->name('socialite.callback');
-        }
     }
 
     // create integration routes
@@ -222,11 +150,5 @@ class Route
     public function root($closure) : mixed
     {
         return $this->prefix('root')->as('root')->middleware('auth')->group($closure);
-    }
-
-    // create wrapper for web
-    public function web($closure) : mixed
-    {
-        return $this->as('web')->group($closure);
     }
 }

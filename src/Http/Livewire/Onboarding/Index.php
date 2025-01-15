@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\Onboarding;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 
 class Index extends Component
 {

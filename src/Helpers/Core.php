@@ -422,14 +422,6 @@ if (!function_exists('color')) {
     }
 }
 
-// youtube
-if (!function_exists('youtube')) {
-    function youtube($url)
-    {
-        return new \Jiannius\Atom\Services\Youtube($url);
-    }
-}
-
 // format
 if (!function_exists('format')) {
     function format($value, $options = null)

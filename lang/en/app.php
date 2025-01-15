@@ -507,6 +507,7 @@ return [
         'files' => 'Files',
         'files-and-media' => 'Files and Media',
         'files-library' => 'Files Library',
+        'files-manager' => 'Files Manager',
 
         // announcement
         'announcement' => 'Announcement|Announcements',
@@ -538,7 +539,8 @@ return [
         'payment-gateway' => 'Payment Gateway',
 
         // profile
-        'my-profile' => 'My Profile',
+        'profile' => 'Profile',
+        'personal-profile' => 'Personal Profile',
 
         // interval
         'daily' => 'Daily',

@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\App\Banner;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 
 class Listing extends Component

@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\Web;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 class Blog extends Component

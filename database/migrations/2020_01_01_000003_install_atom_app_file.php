@@ -16,7 +16,7 @@ return new class extends Migration
             $table->ulid()->unique();
             $table->string('name');
             $table->string('mime')->nullable();
-            $table->decimal('size', 20, 2)->nullable();
+            $table->decimal('kb', 20, 2)->nullable();
             $table->string('disk')->nullable();
             $table->text('path')->nullable();
             $table->text('url')->nullable();

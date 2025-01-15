@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Http\Livewire\App\Enquiry;
 
-use Jiannius\Atom\Component;
+use Livewire\Component;
 use Jiannius\Atom\Traits\Livewire\WithTable;
 
 class Listing extends Component

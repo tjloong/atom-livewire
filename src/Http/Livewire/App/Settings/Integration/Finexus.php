@@ -3,7 +3,7 @@
 namespace Jiannius\Atom\Http\Livewire\App\Settings\Integration;
 
 use Illuminate\Support\Facades\Storage;
-use Jiannius\Atom\Component;
+use Livewire\Component;
 use Jiannius\Atom\Traits\Livewire\WithForm;
 
 class Finexus extends Component

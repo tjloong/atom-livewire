@@ -33,7 +33,9 @@ $attrs = $attributes
     @if ($paginate || $search || isset($filters))
         <div class="relative py-3 px-4 flex flex-wrap justify-between items-center gap-2" data-atom-table-bar>
             <div class="shrink-0 text-gray-800 flex items-center gap-3">
-                @if ($total = get($count, 'total'))
+                @if (isset($total) && $total instanceof \Illuminate\View\ComponentSlot)
+                    {{ $total }}
+                @elseif ($total = get($count, 'total'))
                     <div class="font-medium leading-snug">@t('row-count', $total)</div>
 
                     @if ($rows)
@@ -192,6 +194,12 @@ $attrs = $attributes
                 <table class="min-w-full table-fixed text-zinc-800 divide-y divide-zinc-800/10">
                     {{ $slot }}
                 </table>
+
+                @isset ($footer)
+                    <div class="border-t border-zinc-200 p-3">
+                        {{ $footer }}
+                    </div>
+                @endisset
             @endif
         </div>
     </div>
