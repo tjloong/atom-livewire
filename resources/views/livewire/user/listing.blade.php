@@ -7,7 +7,7 @@
         </x-slot:total>
 
         <x-slot:bar>
-            <atom:_button icon="add" size="sm" x-on:click="Atom.modal('atom.user').slide()">
+            <atom:_button icon="add" size="sm" x-on:click="Atom.modal('atom.user.edit').slide()">
                 @t('new-user')
             </atom:_button>
         </x-slot:bar>

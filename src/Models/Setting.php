@@ -12,7 +12,6 @@ class Setting extends Model
 
     public $timestamps = false;
 
-    // booted
     protected static function booted()
     {
         static::saving(function($setting) {
@@ -22,13 +21,11 @@ class Setting extends Model
         });
     }
 
-    // scope for group
     public function scopeGroup($query, $group): void
     {
         $query->where('name', 'like', $group.'_%');
     }
 
-    // generate settings array
     public function generate()
     {
         return cache()->remember('settings', now()->addDays(7), function() {
@@ -49,7 +46,6 @@ class Setting extends Model
         });
     }
 
-    // cast settings value
     public function castSettingsValue() : array
     {
         return [
@@ -57,33 +53,6 @@ class Setting extends Model
         ];
     }
 
-    // get social logins
-    public function getSocialLogins($filtered = true) : mixed
-    {
-        return collect([
-            'bitbucket' => 'Bitbucket',
-            'facebook' => 'Facebook',
-            'google' => 'Google',
-            'linkedin_openid' => 'LinkedIn',
-            'github' => 'Github',
-            'gitlab' => 'Gitlab',
-            'slack' => 'Slack',
-            'twitter' => 'Twitter',
-            'twitter_oauth_2' => 'Twitter',
-        ])
-        ->map(fn($label, $name) => [
-            'name' => $name,
-            'label' => $label,
-            'client_id' => settings($name.'_client_id'),
-            'client_secret' => settings($name.'_client_secret'),
-        ])
-        ->when($filtered, fn($collection) => $collection
-            ->filter(fn($val) => !empty(get($val, 'client_id')) && !empty(get($val, 'client_secret')))
-            ->values()
-        );
-    }
-
-    // reset
     public function reset()
     {
         $path = collect([

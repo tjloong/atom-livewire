@@ -6,7 +6,7 @@ use Jiannius\Atom\Atom;
 use Jiannius\Atom\Traits\Livewire\AtomComponent;
 use Livewire\Component;
 
-class Index extends Component
+class Listing extends Component
 {
     use AtomComponent;
 
@@ -18,7 +18,11 @@ class Index extends Component
     public function getUsersProperty() : mixed
     {
         return $this->getTable(
-            query: model('user')->query(),
+            query: model('user')->when(
+                user()->isTier('root'),
+                fn ($q) => $q->where('tier', 'root'),
+                fn ($q) => $q->where('tier', '<>', 'signup'),
+            ),
         );
     }
 

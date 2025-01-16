@@ -6,13 +6,11 @@ class Html
 {
     public $config = [];
 
-    // __call
     public function __call($name, $args)
     {
         return $this->setConfig($name, ...$args);
     }
 
-    // set config
     public function setConfig($key, $value)
     {
         $this->config[$key] = $value;
@@ -20,7 +18,6 @@ class Html
         return $this;
     }
 
-    // favicon
     public function favicon()
     {
         $favicon = collect([
@@ -36,7 +33,6 @@ class Html
         ] : null;
     }
 
-    // gfonts
     public function gfonts()
     {
         return str(app()->currentLocale())->is('zh*')
@@ -44,7 +40,6 @@ class Html
             : 'Inter:wght@100;300;400;500;700;900';
     }
 
-    // cdn
     public function cdn($name)
     {
         $libs = [
@@ -94,7 +89,6 @@ class Html
         return $this;
     }
 
-    // get
     public function get()
     {
         $title = collect([
@@ -119,10 +113,10 @@ class Html
             'jsonld' => config('atom.jsonld') ?? $jsonld,
             'favicon' => $this->favicon(),
             'gfonts' => $this->gfonts(),
-            'gtm' => settings('gtm_id') ?? config('atom.gtm_id'),
-            'ga' => settings('ga_id') ?? config('atom.ga_id'),
-            'fbp' => settings('fbp_id') ?? config('atom.fbp_id'),
-            'recaptcha' => settings('recaptcha_site_key'),
+            'gtm' => env('GOOGLE_TAG_MANAGER_ID'),
+            'ga' => env('GOOGLE_ANALYTICS_ID'),
+            'fbp' => env('FACEBOOK_PIXEL_ID'),
+            'recaptcha' => env('RECAPTCHA_SITE_KEY'),
             'cdn' => [],
             ...$this->config,
         ];

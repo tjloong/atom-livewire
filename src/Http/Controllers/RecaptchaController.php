@@ -13,13 +13,14 @@ class RecaptchaController extends Controller
 
         if (!$token || !app()->environment('production')) return response()->json(true);
 
+        $sk = env('RECAPTCHA_SECRET_KEY');
         $api = env('RECAPTCHA_API_ENDPOINT');
         $min = env('RECAPTCHA_MIN_SCORE');
 
         $res = Http::asForm()->post(
             empty($api) ? 'https://www.google.com/recaptcha/api/siteverify' : $api,
             [
-                'secret' => settings('recaptcha_secret_key'),
+                'secret' => $sk,
                 'response' => $token,
                 'remoteip' => request()->ip(),
             ],

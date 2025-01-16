@@ -44,7 +44,6 @@ class User extends Authenticatable
         'status' => \Jiannius\Atom\Enums\UserStatus::class,
     ];
 
-    // boot
     protected static function booted() : void
     {
         static::saving(function($user) {
@@ -62,31 +61,26 @@ class User extends Authenticatable
         });
     }
 
-    // get role for user
     public function role(): BelongsTo
     {
         return $this->belongsTo(model('role'));
     }
 
-    // get signup for user
     public function signup(): HasOne
     {
         return $this->hasOne(model('signup'));
     }
 
-    // get notifications for user
     public function notifications() : HasMany
     {
         return $this->hasMany(model('notification'), 'receiver_id');
     }
 
-    // scope for search
     public function scopeSearch($query, $search) : void
     {
         $query->whereAny(['name', 'email'], 'like', "%$search%");
     }
 
-    // scope for with role
     public function scopeWithRole($query, $roles) : void
     {
         $id = collect($roles)->map(function($role) {
@@ -98,7 +92,6 @@ class User extends Authenticatable
         $query->whereIn('role_id', $id);
     }
 
-    // ping
     public function ping($login = false, $interval = 5) : void
     {
         if ($login) $this->fill(['login_at' => now()]);
@@ -108,7 +101,6 @@ class User extends Authenticatable
         }
     }
 
-    // get user home
     public function home() : string
     {
         return pick([
@@ -117,7 +109,6 @@ class User extends Authenticatable
         ]);
     }
 
-    // check user is recently active
     public function isRecentlyActive($duration = '7 days') : bool
     {
         $split = explode(' ', $duration);
@@ -128,25 +119,21 @@ class User extends Authenticatable
         return optional($this->last_active_at)->$method(now()) >= $n;
     }
 
-    // check user is authenticated
     public function isAuth() : bool
     {
         return $this->id === user('id');
     }
 
-    // check user is not authenticated
     public function isNotAuth() : bool
     {
         return !$this->isAuth();
     }
 
-    // check user is tier
     public function isTier(...$tiers) : bool
     {
         return collect($tiers)->contains($this->tier);
     }
 
-    // check user is role
     public function isRole(...$slugs) : bool
     {
         if ($this->isTier('root')) return true;
@@ -164,13 +151,11 @@ class User extends Authenticatable
         return $roles->some(fn($val) => $val);
     }
 
-    // check user is blocked
     public function isBlocked() : bool
     {
         return $this->blocked_at && $this->blocked_at->lessThan(now());
     }
 
-    // block user
     public function block() : void
     {
         $this->fill([
@@ -179,7 +164,6 @@ class User extends Authenticatable
         ])->save();
     }
 
-    // unblock user
     public function unblock() : void
     {
         $this->fill([
@@ -188,7 +172,6 @@ class User extends Authenticatable
         ])->save();
     }
 
-    // send password reset link
     public function sendPasswordResetLink() : mixed
     {
         $status = Password::sendResetLink(['email' => $this->email]);
@@ -197,7 +180,6 @@ class User extends Authenticatable
         else return false;
     }
 
-    // send activation mail
     public function sendActivationMail() : void
     {
         if ($this->status->isNot('INACTIVE')) return;
@@ -211,7 +193,6 @@ class User extends Authenticatable
         Mail::to($this->email)->send(new $mail($this));
     }
 
-    // fill tier
     public function fillTier() : mixed
     {
         return $this->fill([
@@ -219,7 +200,6 @@ class User extends Authenticatable
         ]);
     }
 
-    // fill status
     public function fillStatus() : mixed
     {
         return $this->fill([
