@@ -1,15 +1,5 @@
 <div class="space-y-6">
-    @if ($this->socialLogins->count())
-        <div class="space-y-3">
-            @foreach ($this->socialLogins as $item)
-                <atom:_button variant="default" :social="$item" block>
-                    @t('continue-with-social-login', ['provider' => get($item, 'label')])
-                </atom:_button>
-            @endforeach
-        </div>
-
-        <atom:separator>OR</atom:separator>
-    @endif
+    <atom:social-logins separator-bottom="OR"/>
 
     <atom:card>
         <atom:_form x-recaptcha:submit.login.prevent="() => $wire.submit()">

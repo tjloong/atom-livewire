@@ -110,11 +110,6 @@ class Register extends Component
         }
     }
 
-    public function getSocialLoginsProperty() : mixed
-    {
-        return model('setting')->getSocialLogins();
-    }
-
     public function getUser() : void
     {
         $this->user = model('user')

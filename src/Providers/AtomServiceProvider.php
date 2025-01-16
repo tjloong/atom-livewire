@@ -274,22 +274,6 @@ class AtomServiceProvider extends ServiceProvider
                 'use_path_style_endpoint' => false,
             ]]);
         }
-
-        if (!$this->app->runningInConsole() || ($this->app->runningInConsole() && Schema::hasTable('settings'))) {
-            // socialite
-            foreach (model('setting')->getSocialLogins() as $provider) {
-                $name = get($provider, 'name');
-                $id = settings($name.'_client_id');
-                $secret = settings($name.'_client_secret');
-                $redirect = url('__auth/'.str()->slug($name).'/callback');
-
-                config(['services.'.$name => [
-                    'client_id' => $id,
-                    'client_secret' => $secret,
-                    'redirect' => $redirect,
-                ]]);
-            }
-        }
     }
 
     // register macros
@@ -312,12 +296,13 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.auth.forgot-password', \Jiannius\Atom\Livewire\Auth\ForgotPassword::class);
         Livewire::component('atom.file.edit', \Jiannius\Atom\Livewire\File\Edit::class);
         Livewire::component('atom.file.manager', \Jiannius\Atom\Livewire\File\Manager::class);
-        Livewire::component('atom.user', \Jiannius\Atom\Livewire\User\Index::class);
+        Livewire::component('atom.user.listing', \Jiannius\Atom\Livewire\User\Listing::class);
         Livewire::component('atom.user.edit', \Jiannius\Atom\Livewire\User\Edit::class);
         Livewire::component('atom.user.permission', \Jiannius\Atom\Livewire\User\Permission::class);
         Livewire::component('atom.enquiry', \Jiannius\Atom\Livewire\Enquiry::class);
         Livewire::component('atom.profile', \Jiannius\Atom\Livewire\Profile::class);
         Livewire::component('atom.generic-page', \Jiannius\Atom\Livewire\GenericPage::class);
+        Livewire::component('atom.site-settings', \Jiannius\Atom\Livewire\SiteSettings::class);
         Livewire::component('atom.notification-center', \Jiannius\Atom\Livewire\NotificationCenter::class);
     }
 }
