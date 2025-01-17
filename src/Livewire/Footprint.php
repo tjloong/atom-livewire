@@ -1,14 +1,16 @@
 <?php
 
-namespace Jiannius\Atom\Http\Livewire\App;
+namespace Jiannius\Atom\Livewire;
 
+use Jiannius\Atom\Traits\Livewire\AtomComponent;
 use Livewire\Component;
 
 class Footprint extends Component
 {
+    use AtomComponent;
+
     public $footprint = [];
 
-    // load
     public function load($data) : void
     {
         $id = get($data, 'id');
@@ -21,7 +23,6 @@ class Footprint extends Component
         ])->sortByDesc('timestamp')->values()->all();
     }
 
-    // cleanup
     public function cleanup() : void
     {
         $this->reset('footprint');

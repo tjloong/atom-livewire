@@ -10,6 +10,9 @@ class Mail
         $to = [],
         $cc = [],
         $bcc = [],
+        $senderName = null,
+        $senderEmail = null,
+        $replyTo = null,
         $subject = '',
         $view = '',
         $markdown = 'atom::mail.generic',
@@ -22,6 +25,7 @@ class Mail
         $track = null,
         $queue = false,
         $later = null,
+        $logo = null,
     )
     {
         if (!$to) abort('Missing recipient "to"');
@@ -30,6 +34,9 @@ class Mail
         $mail = \Illuminate\Support\Facades\Mail::to($to)->cc($cc)->bcc($bcc);
 
         $message = new \Jiannius\Atom\Mail\Generic([
+            'sender_name' => $senderName,
+            'sender_email' => $senderEmail,
+            'reply_to' => $replyTo,
             'subject' => $subject,
             'view' => $view,
             'markdown' => $view ? '' : $markdown,
@@ -40,6 +47,7 @@ class Mail
             'metadata' => $metadata,
             'attachments' => $attachments,
             'track' => $track ?? Schema::hasTable('sendmails'),
+            'logo' => $logo,
         ]);
 
         if ($queue) {

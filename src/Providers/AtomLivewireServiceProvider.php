@@ -30,9 +30,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'onboarding' => 'Onboarding\Index',
             'onboarding.completed' => 'Onboarding\Completed',
 
-            'app.shareable' => 'App\Shareable',
-            'app.footprint' => 'App\Footprint',
-
             'app.signup' => 'App\Signup\Index',
             'app.signup.edit' => 'App\Signup\Edit',
             'app.signup.listing' => 'App\Signup\Listing',
@@ -68,7 +65,6 @@ class AtomLivewireServiceProvider extends ServiceProvider
             'app.sendmail' => 'App\Sendmail\Index',
             'app.sendmail.edit' => 'App\Sendmail\Edit',
             'app.sendmail.listing' => 'App\Sendmail\Listing',
-            'app.sendmail.composer' => 'App\Sendmail\Composer',
 
             'app.label.edit' => 'App\Label\Edit',
             'app.label.listing' => 'App\Label\Listing',

@@ -56,9 +56,12 @@ class Generic extends Mailable
      */
     public function content(): Content
     {
-        $with = get($this->settings, 'with') ?? [];
         $view = get($this->settings, 'view');
         $markdown = get($this->settings, 'markdown');
+        $with = [
+            ...get($this->settings, 'with') ?? [],
+            'logo' => get($this->settings, 'logo'),
+        ];
 
         return $markdown
             ? new Content(markdown: $markdown, with: $with)

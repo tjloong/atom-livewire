@@ -294,13 +294,17 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.auth.register', \Jiannius\Atom\Livewire\Auth\Register::class);
         Livewire::component('atom.auth.reset-password', \Jiannius\Atom\Livewire\Auth\ResetPassword::class);
         Livewire::component('atom.auth.forgot-password', \Jiannius\Atom\Livewire\Auth\ForgotPassword::class);
+
         Livewire::component('atom.file.edit', \Jiannius\Atom\Livewire\File\Edit::class);
         Livewire::component('atom.file.manager', \Jiannius\Atom\Livewire\File\Manager::class);
+
         Livewire::component('atom.user.listing', \Jiannius\Atom\Livewire\User\Listing::class);
         Livewire::component('atom.user.edit', \Jiannius\Atom\Livewire\User\Edit::class);
         Livewire::component('atom.user.permission', \Jiannius\Atom\Livewire\User\Permission::class);
+
         Livewire::component('atom.enquiry', \Jiannius\Atom\Livewire\Enquiry::class);
         Livewire::component('atom.profile', \Jiannius\Atom\Livewire\Profile::class);
+        Livewire::component('atom.footprint', \Jiannius\Atom\Livewire\Footprint::class);
         Livewire::component('atom.generic-page', \Jiannius\Atom\Livewire\GenericPage::class);
         Livewire::component('atom.site-settings', \Jiannius\Atom\Livewire\SiteSettings::class);
         Livewire::component('atom.notification-center', \Jiannius\Atom\Livewire\NotificationCenter::class);
