@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <atom:modal name="passcode">
+    <atom:modal name="passcode" :closeable="false" locked>
         <div
             x-data="{
                 timer: null,
@@ -47,7 +47,6 @@
                 seconds: null,
                 loading: false,
                 passcode: @entangle('passcode').defer,
-                sendable: false,
 
                 init () {
                     this.$watch('passcode', () => {
@@ -60,25 +59,20 @@
                     this.$wire.verify(this.passcode).then(() => this.loading = false)
                 },
 
-                send () {
+                resend () {
                     this.loading = true
-                    this.$wire.send().then(() => {
-                        this.timer = 120 * 1000
-                        this.countdown()
-                    }).then(() => this.loading = false)
+                    this.$wire.resend().then(() => this.countdown()).then(() => this.loading = false)
                 },
 
                 countdown () {
+                    if (this.timer === null) this.timer = 120 * 1000
+                    if (this.timer <= 0) return
+
                     setTimeout(() => {
-                        if (this.timer <= 0) {
-                            this.show = true
-                        }
-                        else {
-                            this.timer = this.timer - 1000
-                            this.minutes = Math.floor(this.timer / 60000)
-                            this.seconds = ((this.timer % 60000) / 1000).toFixed(0)
-                            this.countdown()
-                        }
+                        this.timer = this.timer - 1000
+                        this.minutes = Math.floor(this.timer / 60000)
+                        this.seconds = ((this.timer % 60000) / 1000).toFixed(0)
+                        this.countdown()
                     }, 1000)
                 },
             }"
@@ -96,10 +90,10 @@
 
             <template x-if="!loading" hidden>
                 <div class="text-sm">
-                    <atom:link x-show="sendable" x-on:click.stop="send()">@t('resend')</atom:link>
+                    <atom:link x-show="!timer" x-on:click.stop="resend()">@t('resend')</atom:link>
 
                     <span 
-                        x-show="!sendable && (minutes || seconds)"
+                        x-show="timer && (minutes || seconds)"
                         x-text="`${minutes}:${seconds}`"
                         class="text-gray-500 font-medium">
                     </span>
