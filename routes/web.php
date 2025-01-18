@@ -5,7 +5,7 @@ use Jiannius\Atom\Atom;
 
 Route::middleware('web')->group(function () {
     if (config('atom.auth.login') !== false) {
-        Route::get('login', \Jiannius\Atom\Livewire\Auth\Login::class)->name('login');
+        Route::get('login', \Jiannius\Atom\Livewire\Auth\Login::class)->middleware('guest')->name('login');
         Route::get('logout', \Jiannius\Atom\Livewire\Auth\Logout::class)->middleware('auth')->name('logout');
     }
 

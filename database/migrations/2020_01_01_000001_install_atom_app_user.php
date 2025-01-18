@@ -33,8 +33,8 @@ return new class extends Migration
             $table->json('footprint')->nullable();
         });
 
-        Schema::create('verifications', function (Blueprint $table) {
-            $table->id();
+        Schema::create('passcodes', function (Blueprint $table) {
+            $table->ulid('id')->primary();
             $table->string('code')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();

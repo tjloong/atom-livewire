@@ -2,7 +2,7 @@
 
 namespace Jiannius\Atom\Livewire\Auth;
 
-use Illuminate\Support\Facades\Password;
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Traits\Livewire\AtomComponent;
 use Livewire\Component;
 
@@ -48,29 +48,14 @@ class ResetPassword extends Component
     {
         $this->validate();
 
-        $status = Password::reset(
-            [
-                'token' => $this->token,
-                'email' => data_get($this->inputs, 'email'),
-                'password' => data_get($this->inputs, 'password'),
-                'password_confirmation' => data_get($this->inputs, 'password_confirmation'),
-            ],
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => bcrypt($password),
-                    'email_verified_at' => now(),
-                ])->setRememberToken(str()->random(60));
-    
-                $user->save();
-            }
-        );
+        if (Atom::action('reset-password', [
+            'token' => $this->token,
+            ...$this->inputs,
+        ])) {
+            return to_route('login')->with('message', t('passwords.reset'));
+        }
 
-        if ($status === Password::PASSWORD_RESET) {
-            return to_route('login')->with('message', t($status));
-        }
-        else {
-            $this->resetValidation();
-            $this->addError('email', t($status));
-        }
+        $this->addError('reset', t('failed'));
+        $this->refresh();
     }
 }

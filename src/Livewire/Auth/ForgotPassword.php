@@ -19,30 +19,22 @@ class ForgotPassword extends Component
                 'required' => 'Email is required.',
                 'email' => 'Invalid email.',
                 function ($attr, $value, $fail) {
-                    if (!$this->getUser()) $fail(t('we-cant-find-user-with-that-email-address'));
+                    if (!model('user')->loginable()->where('email', $this->email)->count()) {
+                        $fail(t('we-cant-find-user-with-that-email-address'));
+                    }
                 },
             ],
         ];
     }
 
-    public function getUser() : mixed
-    {
-        return model('user')
-            ->where('email', $this->email)
-            ->whereNull('blocked_at')
-            ->first();
-    }
-
-    public function submit() : mixed
+    public function submit()
     {
         $this->validate();
 
-        if ($user = $this->getUser()) {
-            if ($user->sendPasswordResetLink()) {
-                session()->flash('message', t('we-have-emailed-your-password-reset-link'));
-                return to_route('login');
-            }
-            else Atom::alert('unable-to-reset-password', 'error');
+        if (Atom::action('send-password-reset-link', ['email' => $this->email])) {
+            session()->flash('message', t('we-have-emailed-your-password-reset-link'));
+            return to_route('login');
         }
+        else Atom::alert('unable-to-reset-password', 'error');
     }
 }

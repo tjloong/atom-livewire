@@ -5,10 +5,10 @@
         <atom:_form x-recaptcha:submit.login.prevent="() => $wire.submit()">
             <atom:_heading size="20" level="2">@t('signin')</atom:_heading>
 
-            @if ($errors->first('failed'))
-                <x-inform variant="danger">@e($errors->first('failed'))</x-inform>
+            @if ($errors->first('login'))
+                <atom:inform variant="danger" :closeable="false">@e($errors->first('login'))</atom:inform>
             @elseif ($message = session('message'))
-                <x-inform>@e($message)</x-inform>
+                <atom:inform>@e($message)</atom:inform>
             @endif
 
             <atom:_input type="email" wire:model.defer="inputs.email" label="email" autofocus/>

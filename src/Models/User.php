@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
 use Jiannius\Atom\Traits\Models\Footprint;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Jiannius\Atom\Traits\Models\Settings;
@@ -92,6 +91,11 @@ class User extends Authenticatable
         $query->whereIn('role_id', $id);
     }
 
+    public function scopeLoginable($query) : void
+    {
+        $query->whereNotNull('password')->whereNull('blocked_at');
+    }
+
     public function ping($login = false, $interval = 5) : void
     {
         if ($login) $this->fill(['login_at' => now()]);
@@ -170,14 +174,6 @@ class User extends Authenticatable
             'blocked_at' => null,
             'blocked_by' => null,
         ])->save();
-    }
-
-    public function sendPasswordResetLink() : mixed
-    {
-        $status = Password::sendResetLink(['email' => $this->email]);
-
-        if ($status === Password::RESET_LINK_SENT) return $status;
-        else return false;
     }
 
     public function sendActivationMail() : void

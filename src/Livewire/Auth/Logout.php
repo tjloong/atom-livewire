@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Livewire\Auth;
 
+use Jiannius\Atom\Atom;
 use Jiannius\Atom\Traits\Livewire\AtomComponent;
 use Livewire\Component;
 
@@ -11,12 +12,7 @@ class Logout extends Component
 
     public function mount()
     {
-        auth()->logout();
-        request()->session()->flush();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
-
-        return redirect('/');
+        return Atom::action('logout');
     }
 
     public function render()

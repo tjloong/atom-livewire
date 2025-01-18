@@ -292,6 +292,7 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.auth.login', \Jiannius\Atom\Livewire\Auth\Login::class);
         Livewire::component('atom.auth.logout', \Jiannius\Atom\Livewire\Auth\Logout::class);
         Livewire::component('atom.auth.register', \Jiannius\Atom\Livewire\Auth\Register::class);
+        Livewire::component('atom.auth.verification', \Jiannius\Atom\Livewire\Auth\Verification::class);
         Livewire::component('atom.auth.reset-password', \Jiannius\Atom\Livewire\Auth\ResetPassword::class);
         Livewire::component('atom.auth.forgot-password', \Jiannius\Atom\Livewire\Auth\ForgotPassword::class);
 

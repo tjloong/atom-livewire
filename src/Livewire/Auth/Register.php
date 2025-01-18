@@ -2,10 +2,9 @@
 
 namespace Jiannius\Atom\Livewire\Auth;
 
-use Illuminate\Auth\Events\Registered;
 use Jiannius\Atom\Atom;
+use Jiannius\Atom\Models\Passcode;
 use Jiannius\Atom\Traits\Livewire\AtomComponent;
-use Laravel\Socialite\Facades\Socialite;
 use Livewire\Component;
 
 class Register extends Component
@@ -13,23 +12,18 @@ class Register extends Component
     use AtomComponent;
 
     public $utm;
-    public $user;
-    public $signup;
     public $refcode;
+    public $passcode;
     public $redirect;
-    public $verification;
-    public $hasValidSignature;
-    
+    public $signature = false;
+
     public $inputs = [
         'name' => null,
         'email' => null,
         'password' => null,
         'agree_tnc' => false,
         'agree_promo' => true,
-        'verification' => null,
     ];
-
-    private $socialiteUser;
 
     protected function validation() : array
     {
@@ -43,7 +37,9 @@ class Register extends Component
                 'required' => 'Login email is required.',
                 'email' => 'Invalid email.',
                 function ($attr, $value, $fail) {
-                    if ($this->user) $fail('Email is taken');
+                    if (model('user')->where('email', $value)->count()) {
+                        $fail('Email is taken');
+                    }
                 },
             ],
             'inputs.password' => [
@@ -52,184 +48,96 @@ class Register extends Component
             ],
             'inputs.agree_tnc' => ['accepted' => 'Please accept the terms and conditions to proceed.'],
             'inputs.agree_promo' => ['nullable'],
+
+            'passcode' => [
+                'nullable',
+                function ($attr, $value, $fail) {
+                    if (!Passcode::verify(
+                        email: get($this->inputs, 'email'),
+                        code: $value,
+                    )) {
+                        $fail(t('incorrect-verification-code'));
+                    }
+                }
+            ]
         ];
     }
 
     public function mount()
     {
-        $this->redirect = request()->query('redirect');
+        $this->refcode = request()->query('refcode') ?? request()->query('ref');
+        $this->signature = request()->hasValidSignature();
+        $this->utm = [
+            'campaign' => request()->query('utm_campaign'),
+            'medium' => request()->query('utm_medium'),
+            'source' => request()->query('utm_source'),
+        ];
 
-        if (
-            ($token = request()->query('token'))
-            && ($provider = request()->query('provider'))
-            && ($user = rescue(fn() => optional(Socialite::driver($provider))->userFromToken($token)))
-        ) {
-            $this->socialiteUser = $user;
+        if ($user = Atom::action('get-socialite-user', [
+            'token' => request()->query('token'),
+            'provider' => request()->query('provider'),
+        ])) {
+            if ($user->exists) return to_route('login', request()->query());
 
-            $this->fill([
-                'inputs' => [
-                    'name' => $user->getName(),
-                    'email' => $user->getEmail(),
-                    'password' => str()->snake($user->getName()).'_oauth',
-                    'email_verified_at' => now(),
-                    'agree_tnc' => true,
-                    'agree_promo' => true,
-                    'data' => ['oauth' => [
-                        'provider' => $provider,
-                        'id' => $user->getId(),
-                        'nickname' => $user->getNickname(),
-                        'avatar' => $user->getAvatar(),
-                        'token' => $user->token,
-                        'token_secret' => $user->tokenSecret,
-                        'refresh_token' => $user->refreshToken,
-                        'expires_in' => $user->expiresIn,
-                    ]],
-                ],
-            ]);
+            $this->inputs = $user->toArray();
 
-            return $this->submit();
+            return $this->register();
         }
-        else {
-            $this->fill([
-                'refcode' => request()->query('refcode') ?? request()->query('ref'),
-                'utm' => [
-                    'campaign' => request()->query('utm_campaign'),
-                    'medium' => request()->query('utm_medium'),
-                    'source' => request()->query('utm_source'),
-                ],
-                'hasValidSignature' => request()->hasValidSignature(),
-                'inputs' => [
-                    ...$this->inputs,
-                    ...(
-                        request()->query('email')
-                        ? ['email' => request()->query('email')]
-                        : request()->query('fill', [])
-                    ),
-                ],
-            ]);
-        }
+
+        $this->inputs = [
+            ...$this->inputs,
+            ...(
+                request()->query('email')
+                ? ['email' => request()->query('email')]
+                : request()->query('fill', [])
+            ),
+        ];
     }
 
-    public function getUser() : void
+    public function resend()
     {
-        $this->user = model('user')
-            ->where('email', get($this->inputs, 'email'))
-            ->first();
+        Passcode::resend(
+            email: get($this->inputs, 'email')
+        );
     }
 
-    public function submit() : mixed
+    public function submit()
     {
-        $this->getUser();
+        $this->validate();
 
-        if ($this->socialiteUser) {
-            if ($this->user) return to_route('login', request()->query());
-            else {
-                $this->createUser();
-                $this->createSignup();
+        if ($this->signature) return $this->register();
 
-                return $this->registered();
-            }
-        }
-        else {
-            $this->validate();
-
-            if ($this->verify()) {
-                $this->createUser();
-                $this->createSignup();
-
-                return $this->registered();
-            }
-
-            return null;
-        }
-    }
-
-    public function verify() : bool
-    {
-        if (!config('atom.auth.verify')) return true;
-        if ($this->hasValidSignature) return true;
-
-        if ($code = get($this->inputs, 'verification')) {
-            $verified = model('verification')
-                ->where('email', get($this->inputs, 'email'))
-                ->where('code', $code)
-                ->where(fn($q) => $q->whereNull('expired_at')->orWhere('expired_at', '>', now()))
-                ->count() > 0;
-
-            if ($verified) {
-                $this->clearVerificationCode();
-                return true;
-            }
-
-            Atom::alert('incorrect-verification-code', 'error');
-        }
-        else {
-            $this->sendVerificationCode();
-        }
-
-        return false;
-    }
-
-    public function sendVerificationCode() : void
-    {
-        if (config('atom.auth.verify')) {
-            $this->clearVerificationCode();
-
-            $this->verification = model('verification')->create([
+        if (config('atom.auth.verify_method')) {
+            Passcode::create([
                 'email' => get($this->inputs, 'email'),
-                'expired_at' => now()->addDay(),
+                'phone' => get($this->inputs, 'phone'),
             ]);
+
+            return Atom::modal('passcode')->show();
         }
-        else if (config('atom.auth.otp')) {
-            //
-        }
+
+        return $this->register();
     }
 
-    // clear verification code
-    public function clearVerificationCode() : void
+    public function verify()
     {
-        model('verification')
-            ->where('email', get($this->inputs, 'email'))
-            ->delete();
-
-        $this->fill(['inputs.verification' => null]);
+        $this->validateOnly('passcode');
+        $this->register();
     }
 
-    // create user
-    public function createUser() : void
+    public function register()
     {
-        $this->user = model('user')->forceFill([
-            'name' => get($this->inputs, 'name'),
-            'email' => get($this->inputs, 'email'),
-            'password' => bcrypt(get($this->inputs, 'password')),
-            'tier' => 'signup',
-            'data' => get($this->inputs, 'data'),
-            'email_verified_at' => now(),
-            'login_at' => now(),
-        ]);
-
-        $this->user->save();
-    }
-
-    // create signup
-    public function createSignup() : void
-    {
-        $this->signup = $this->user->signup()->create([
-            'refcode' => $this->refcode,
+        $response = Atom::action('register', [
+            'data' => $this->inputs,
+            'redirect' => $this->redirect,
             'utm' => $this->utm,
-            'geo' => geoip()->getLocation()->toArray(),
-            'agree_tnc' => get($this->inputs, 'agree_tnc'),
-            'agree_promo' => get($this->inputs, 'agree_promo'),
+            'refcode' => $this->refcode,
         ]);
-    }
 
-    // post registration
-    public function registered() : mixed
-    {
-        auth()->login($this->user);
+        if ($err = get($response, 'error')) {
+            return $this->addError('register', $err);
+        }
 
-        event(new Registered($this->user->fresh()));
-
-        return redirect($this->redirect ?? $this->user->home());
+        return $response;
     }
 }
