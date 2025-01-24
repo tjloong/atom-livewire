@@ -4,6 +4,7 @@ $value = $attributes->get('value');
 $badge = $attributes->get('badge');
 $action = $attributes->get('action');
 $href = $attributes->get('href') ?? ($route ? route(...$route) : null);
+$newtab = $attributes->get('newtab');
 
 $variant = $attributes->get('variant') ?? match ($action) {
     'delete', 'trash' => 'danger',
@@ -51,6 +52,7 @@ $attrs = $attributes
     ->merge([
         'href' => $href,
         'type' => $href ? null : 'button',
+        'target' => $href && $newtab ? '_blank' : null,
         'data-active' => $active,
         'data-atom-menu-item' => true,
         'x-on:click' => $value ? "\$dispatch('input', '$value')" : match ($action) {

@@ -6,6 +6,7 @@ $classes = $attributes->classes()
     ->add(match ($size) {
         'lg' => 'py-4 text-lg',
         'xl' => 'py-8 text-xl',
+        'sm' => 'text-sm',
         default => 'py-0',
     })
     ;

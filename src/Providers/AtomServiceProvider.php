@@ -2,11 +2,13 @@
 
 namespace Jiannius\Atom\Providers;
 
+use Carbon\CarbonImmutable;
 use \Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -43,6 +45,7 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerLivewire();
         $this->registerPublishes();
         $this->registerCommands();
+        $this->configureDate();
     }
 
     public function registerRoutes()
@@ -280,7 +283,7 @@ class AtomServiceProvider extends ServiceProvider
     public function registerMacros()
     {
         Builder::mixin(new \Jiannius\Atom\Macros\Builder());
-        Carbon::mixin(new \Jiannius\Atom\Macros\Carbon());
+        CarbonImmutable::mixin(new \Jiannius\Atom\Macros\Carbon());
         ComponentAttributeBag::mixin(new \Jiannius\Atom\Macros\ComponentAttributeBag());
         Request::mixin(new \Jiannius\Atom\Macros\Request());
         Str::mixin(new \Jiannius\Atom\Macros\Str());
@@ -292,7 +295,6 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.auth.login', \Jiannius\Atom\Livewire\Auth\Login::class);
         Livewire::component('atom.auth.logout', \Jiannius\Atom\Livewire\Auth\Logout::class);
         Livewire::component('atom.auth.register', \Jiannius\Atom\Livewire\Auth\Register::class);
-        Livewire::component('atom.auth.verification', \Jiannius\Atom\Livewire\Auth\Verification::class);
         Livewire::component('atom.auth.reset-password', \Jiannius\Atom\Livewire\Auth\ResetPassword::class);
         Livewire::component('atom.auth.forgot-password', \Jiannius\Atom\Livewire\Auth\ForgotPassword::class);
 
@@ -309,5 +311,10 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.generic-page', \Jiannius\Atom\Livewire\GenericPage::class);
         Livewire::component('atom.site-settings', \Jiannius\Atom\Livewire\SiteSettings::class);
         Livewire::component('atom.notification-center', \Jiannius\Atom\Livewire\NotificationCenter::class);
+    }
+
+    public function configureDate()
+    {
+        Date::use(CarbonImmutable::class);
     }
 }

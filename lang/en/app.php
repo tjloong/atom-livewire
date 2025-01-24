@@ -537,6 +537,7 @@ return [
         'payment-gateway' => 'Payment Gateway',
 
         // profile
+        'my-profile' => 'My Profile',
         'profile' => 'Profile',
         'personal-profile' => 'Personal Profile',
 

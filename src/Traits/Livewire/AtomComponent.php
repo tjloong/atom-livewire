@@ -70,7 +70,7 @@ trait AtomComponent
         $form['required'] = collect($this->rules())
             ->mapWithKeys(fn($rules, $key) => [
                 $key => collect($rules)
-                    ->filter(fn($val) => is_string($val) && $val === 'required')
+                    ->filter(fn($val) => is_string($val) && str($val)->startsWith('required'))
                     ->count() > 0,
             ])
             ->filter(fn($val) => $val === true)
