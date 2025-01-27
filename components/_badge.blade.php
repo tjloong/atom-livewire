@@ -15,9 +15,12 @@ $classes = $attributes->classes()
         'red' => 'bg-red-100 text-red-500 border-red-300',
         'blue' => 'bg-sky-100 text-sky-500 border-sky-300',
         'yellow' => 'bg-yellow-100 text-yellow-500 border-yellow-300',
+        'orange' => 'bg-orange-100 text-orange-500 border-orange-300',
         'green' => 'bg-green-100 text-green-500 border-green-300',
+        'purple' => 'bg-purple-100 text-purple-500 border-purple-300',
         'black' => 'bg-black text-zinc-100 border-black',
-        default => 'bg-zinc-100 text-zinc-500 border-zinc-200'
+        'gray' => 'bg-zinc-100 text-zinc-500 border-zinc-200',
+        default => 'bg-zinc-100 text-zinc-500 border-zinc-200',
     })
     ;
 

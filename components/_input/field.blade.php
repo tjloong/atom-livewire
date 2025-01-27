@@ -16,6 +16,12 @@ $error = $attributes->get('error');
                         <atom:icon asterisk size="12" class="text-red-500 shrink-0"/>
                     @endif
                 </div>
+
+                @isset ($actions)
+                    <x-slot:actions>
+                        {{ $actions }}
+                    </x-slot:actions>
+                @endisset
             </atom:_label>
         </div>
     @endif

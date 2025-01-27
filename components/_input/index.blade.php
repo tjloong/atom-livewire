@@ -52,9 +52,10 @@ $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
 
     $classes = $attributes->classes()
         ->add('w-full py-2 text-zinc-700 no-spinner')
-        ->add('border border-zinc-200 border-b-zinc-300/80 rounded-lg shadow-sm bg-white')
+        ->add('border rounded-lg shadow-sm bg-white')
         ->add('focus:outline-none focus:border-primary group-focus/input:border-primary hover:border-primary-300')
-        ->add($invalid ? 'border-red-400' : 'group-has-[[data-atom-error]]/field:border-red-400')
+        ->add($invalid || $error ? 'border-red-400' : 'border-zinc-200 border-b-zinc-300/80')
+        ->add('group-has-[[data-atom-error]]/field:border-red-400')
         ->add($size === 'sm' ? 'h-8 text-sm' : 'h-10')
         ->add(get($icon, 'start') ? 'pl-10' : 'pl-3')
         ->add(get($icon, 'end') ? 'pr-10' : 'pr-3')

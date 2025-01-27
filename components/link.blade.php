@@ -1,12 +1,13 @@
 @php
 $href = $attributes->get('href');
 $icon = $attributes->get('icon');
+$iconsuffix = $attributes->get('icon-suffix');
 $rel = $attributes->get('rel', 'noopener noreferrer nofollow');
 $newtab = $attributes->get('newtab', false);
 
 $classes = $attributes->classes()
-    ->add('text-sky-600 underline decoration-dashed')
-    ->add($icon ? 'inline-flex items-center gap-2' : '')
+    ->add('text-sky-600 underline decoration-dotted')
+    ->add($icon || $iconsuffix ? 'inline-flex items-center gap-2' : '')
     ;
 
 $attrs = $attributes
@@ -27,5 +28,9 @@ $attrs = $attributes
         {{ $href }}
     @else
         {{ $slot }}
+    @endif
+
+    @if ($iconsuffix)
+        <atom:icon :name="$iconsuffix" class="shrink-0"/>
     @endif
 </a>

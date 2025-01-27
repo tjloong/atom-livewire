@@ -28,10 +28,11 @@ $size = $multiple || $variant === 'listbox'
 
 $classes = $attributes->classes()
     ->add('appearance-none w-full py-2 pr-10 text-zinc-700 text-left')
-    ->add('border border-zinc-200 border-b-zinc-300/80 rounded-lg shadow-sm bg-white')
+    ->add('border rounded-lg shadow-sm bg-white')
     ->add('focus:outline-none focus:border-primary group-focus/input:border-primary hover:border-primary-300')
     ->add('has-[option.placeholder:checked]:text-zinc-400')
-    ->add($invalid ? 'border-red-400' : 'group-has-[[data-atom-error]]/field:border-red-400')
+    ->add($invalid || $error ? 'border-red-400' : 'border-zinc-200 border-b-zinc-300/80')
+    ->add('group-has-[[data-atom-error]]/field:border-red-400')
     ->add($icon ? 'pl-10' : 'pl-3')
     ->add($size)
     ->add('[[data-atom-input-prefix]+[data-atom-select-native]>&]:rounded-l-none')

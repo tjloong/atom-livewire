@@ -1,6 +1,9 @@
+@php
+$visible = $attributes->get('visible', false);
+@endphp
+
 <div
-    x-data="{ visible: false }"
-    x-init="visible = $el.querySelectorAll('[data-active]').length > 0"
+    x-data="{ visible: @js($visible) }"
     class="group/collapse"
     data-atom-collapse>
     <div
