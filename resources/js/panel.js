@@ -13,7 +13,6 @@ import Sheet from './plugin/data/sheet.js'
 import Select from './plugin/data/select.js'
 import Lightbox from './plugin/data/lightbox.js'
 import Uploader from './plugin/data/uploader.js'
-import Addresses from './plugin/data/addresses.js'
 import Breadcrumb from './plugin/data/breadcrumb.js'
 import Datepicker from './plugin/data/datepicker.js'
 import Timepicker from './plugin/data/timepicker.js'
@@ -41,7 +40,6 @@ Alpine.data('sheet', Sheet)
 Alpine.data('select', Select)
 Alpine.data('lightbox', Lightbox)
 Alpine.data('uploader', Uploader)
-Alpine.data('addresses', Addresses)
 Alpine.data('breadcrumb', Breadcrumb)
 Alpine.data('datepicker', Datepicker)
 Alpine.data('timepicker', Timepicker)
