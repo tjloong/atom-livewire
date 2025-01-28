@@ -2,8 +2,6 @@
 
 namespace Jiannius\Atom\Services;
 
-use Illuminate\Support\Facades\Schema;
-
 class Mail
 {
     public function __construct(
@@ -22,7 +20,7 @@ class Mail
         $tags = [],
         $metadata = [],
         $attachments = [],
-        $track = null,
+        $track = false,
         $queue = false,
         $later = null,
         $logo = null,
@@ -46,7 +44,7 @@ class Mail
             'tags' => $tags,
             'metadata' => $metadata,
             'attachments' => $attachments,
-            'track' => $track ?? Schema::hasTable('sendmails'),
+            'track' => $track,
             'logo' => $logo,
         ]);
 
