@@ -137,3 +137,13 @@ Array.prototype.sortByDesc = function (key, lang = 'en') {
 
     return this.sortBy(key, 'desc', lang)
 }
+
+Array.prototype.removeWhere = function (key, value) {
+    if (!Array.isArray(this)) return this
+    if (!this.length) return this
+
+    let index = this.findIndexWhere(key, value)
+    if (index > -1) this.splice(index, 1)
+
+    return this
+}
