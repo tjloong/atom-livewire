@@ -2,8 +2,6 @@
 
 namespace Jiannius\Atom\Services;
 
-use Jiannius\Atom\Atom;
-
 class Route
 {
     // __call

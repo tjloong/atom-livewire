@@ -22,10 +22,11 @@ Route::middleware('web')->group(function () {
         Route::get('__auth/{provider}/redirect', [\Jiannius\Atom\Http\Controllers\SocialiteController::class, 'redirect'])->name('socialite.redirect');
         Route::get('__auth/{provider}/callback', [\Jiannius\Atom\Http\Controllers\SocialiteController::class, 'callback'])->name('socialite.callback');
     }
+
+    Route::post('__file/upload', [\Jiannius\Atom\Http\Controllers\FileController::class, 'upload'])->name('__file.upload');
+    Route::post('__action/{action}', fn ($action) => response()->json(Atom::action($action, request()->all())));
 });
 
-Route::post('__file/upload', [\Jiannius\Atom\Http\Controllers\FileController::class, 'upload'])->name('__file.upload');
-Route::post('__action/{action}', fn ($action) => response()->json(Atom::action($action, request()->all())));
 Route::get('__icons.js', fn () => \Jiannius\Atom\Services\Icon::jsResponse())->name('__icons.js');
 Route::get('__lang.js', fn () => \Jiannius\Atom\Services\Lang::jsResponse())->withoutMiddleware('web')->name('__lang.js');
 Route::get('__lang/{lang?}', function ($lang = null) {
