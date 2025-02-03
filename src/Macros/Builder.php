@@ -61,8 +61,8 @@ class Builder
                 if ($key === 'search' && $this->hasNamedScope('search') && $value) {
                     $this->search($value);
                 }
-                else if ($key !== 'search' && $this->hasNamedScope($key)) {
-                    $this->$key($value);
+                else if ($key !== 'search' && ($scope = (string) str($key)->camel()) && $this->hasNamedScope($scope)) {
+                    $this->$scope($value);
                 }
                 else {
                     $key = explode(':', $key);

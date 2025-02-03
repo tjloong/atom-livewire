@@ -1,7 +1,7 @@
 @php
 $file = $attributes->get('file');
 $src = $attributes->get('src') ?? $file?->endpoint;
-$srcsm = $attributes->get('src-sm');
+$srcsm = $attributes->get('src-sm') ?? $file?->endpoint_sm;
 $icon = $attributes->get('icon') ?? $file?->icon;
 
 $type = pick([
