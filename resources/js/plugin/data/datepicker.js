@@ -37,10 +37,38 @@ export default (config) => {
         },
 
         init () {
-            this.$nextTick(() => this.sync())
+            this.$nextTick(() => this.syncValueToPicker())
         },
 
-        sync () {
+        open () {
+            if (this.$refs.popover?.hasAttribute('data-open')) return
+
+            this.$refs.popover.showPopover()
+            this.initPikaday()
+
+            setTimeout(() => this.setPikadayRange(), 50)
+        },
+
+        close () {
+            this.$refs.popover.hidePopover()
+            this.destroyPikaday()
+        },
+
+        clear () {
+            this.value = ''
+            this.syncValueToPicker()
+            this.$dispatch('input', '')
+        },
+
+        selectShortcut (from, to) {
+            from = dayjs(from).utc().toISOString()
+            to = dayjs(to).utc().toISOString()
+            this.value = `${from} to ${to}`
+            this.syncValueToPicker()
+            this.$dispatch('input', this.value)
+        },
+
+        syncValueToPicker () {
             let from = this.config.range ? this.value?.split(' to ')[0] : this.value
             let to = this.config.range ? this.value?.split(' to ')[1] : null
             let dates = {
@@ -51,18 +79,14 @@ export default (config) => {
             Object.keys(dates).forEach(key => {
                 if (dates[key]?.isValid()) {
                     this.picker[key].date = dates[key].format('YYYY-MM-DD')
-                    this.picker[key].time = this.config.time ? dates[key].format('HH:mm:ss') : null
+                    this.picker[key].time = dates[key].format('HH:mm:ss')
                     this.picker[key].iso = dates[key].toISOString()
                     this.picker[key].display = [
                         dates[key].format('DD MMM YYYY'),
                         this.config.time ? dates[key].format('hh:mm A') : null
                     ].filter(Boolean).join(' ')
 
-                    
-                    if (
-                        this.picker[key].pikaday
-                        && this.picker[key].pikaday?.toString() !== this.picker[key].date
-                    ) {
+                    if (this.picker[key].pikaday && this.picker[key].pikaday?.toString() !== this.picker[key].date) {
                         this.picker[key].pikaday.setDate(this.picker[key].date)
                     }
                 }
@@ -75,24 +99,12 @@ export default (config) => {
                 }
             })
 
-            this.setRange()
-        },
-
-        open () {
-            if (this.$refs.popover?.hasAttribute('data-open')) return
-
-            this.$refs.popover.showPopover()
-            this.initPikaday()
-
-            setTimeout(() => this.setRange(), 50)
-        },
-
-        close () {
-            this.$refs.popover.hidePopover()
-            this.destroyPikaday()
+            this.setPikadayRange()
         },
 
         select () {
+            let value
+
             let fromDate = this.picker.from.pikaday?.getDate()
             let fromTime, from
 
@@ -117,38 +129,19 @@ export default (config) => {
                 if (this.config.range) {
                     if (to?.isValid()) {
                         to = to.utc().toISOString()
-                        this.value = `${from} to ${to}`
-                        this.sync()
-                        this.$dispatch('input', this.value)
+                        value = `${from} to ${to}`
                     }
                 }
                 else {
-                    this.value = from
-                    this.sync()
-                    this.$dispatch('input', this.value)
+                    value = from
+                }
+
+                if (value !== this.value) {
+                    this.value = value
+                    this.syncValueToPicker()
+                    this.$dispatch('input', value)
                 }
             }
-        },
-
-        shortcut (from, to) {
-            from = dayjs(from).utc().toISOString()
-            to = dayjs(to).utc().toISOString()
-            this.value = `${from} to ${to}`
-            this.sync()
-            this.$dispatch('input', this.value)
-        },
-
-        clear () {
-            this.value = ''
-            this.sync()
-            this.$dispatch('input', '')
-        },
-
-        toggleRange () {
-            this.$nextTick(() => {
-                this.initPikaday()
-                this.sync()
-            })
         },
 
         initPikaday () {
@@ -182,7 +175,7 @@ export default (config) => {
             this.picker.to.pikaday?.destroy()
         },
 
-        setRange () {
+        setPikadayRange () {
             let from = this.picker.from.pikaday
             let to = this.picker.to.pikaday
 
@@ -206,6 +199,13 @@ export default (config) => {
                 from.show()
                 to.show()
             }
+        },
+
+        toggleRange () {
+            this.$nextTick(() => {
+                this.initPikaday()
+                this.syncValueToPicker()
+            })
         },
    }
 }

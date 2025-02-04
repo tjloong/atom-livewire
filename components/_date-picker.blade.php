@@ -95,7 +95,7 @@ $attrs = $attributes
                         <template x-if="config.range" hidden>
                             <div class="max-w-sm min-w-56 pb-2">
                                 <template x-for="(item, key) in shortcuts" hidden>
-                                    <atom:menu-item x-on:click="shortcut(item[0], item[1])">
+                                    <atom:menu-item x-on:click="selectShortcut(item[0], item[1])">
                                         <div x-text="t(key)"></div>
                                     </atom:menu-item>
                                 </template>
@@ -104,7 +104,9 @@ $attrs = $attributes
 
                         <div>
                             <div x-ref="from" class="w-[300px]"></div>
-                            <div x-show="config.time" x-on:input.stop.debounce="select()">
+                            <div
+                                x-show="config.time"
+                                x-on:input.stop.debounce="config.time && select()">
                                 <atom:separator/>
                                 <div class="p-2">
                                     <atom:_time-picker x-model="picker.from.time"/>
@@ -115,7 +117,10 @@ $attrs = $attributes
                         <template x-if="config.range" hidden>
                             <div>
                                 <div x-ref="to" class="w-[300px]"></div>
-                                <div x-show="config.time" x-on:input.stop.debounce="select()" class="px-2 pb-2">
+                                <div
+                                    x-show="config.time"
+                                    x-on:input.stop.debounce="config.time && select()"
+                                    class="px-2 pb-2">
                                     <atom:separator/>
                                     <div class="p-2">
                                         <atom:_time-picker x-model="picker.to.time"/>
