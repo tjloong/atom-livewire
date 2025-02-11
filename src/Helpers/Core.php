@@ -554,6 +554,6 @@ if (!function_exists('atom')) {
 if (!function_exists('carbon')) {
     function carbon(...$args)
     {
-        return new \Carbon\CarbonImmutable(...$args);
+        return new \Jiannius\Atom\Services\Carbon(...$args);
     }
 }

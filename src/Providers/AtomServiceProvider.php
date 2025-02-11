@@ -281,7 +281,6 @@ class AtomServiceProvider extends ServiceProvider
     public function registerMacros()
     {
         Builder::mixin(new \Jiannius\Atom\Macros\Builder());
-        CarbonImmutable::mixin(new \Jiannius\Atom\Macros\Carbon());
         ComponentAttributeBag::mixin(new \Jiannius\Atom\Macros\ComponentAttributeBag());
         Request::mixin(new \Jiannius\Atom\Macros\Request());
         Str::mixin(new \Jiannius\Atom\Macros\Str());
@@ -313,6 +312,6 @@ class AtomServiceProvider extends ServiceProvider
 
     public function configureDate()
     {
-        Date::use(CarbonImmutable::class);
+        Date::use(\Jiannius\Atom\Services\Carbon::class);
     }
 }

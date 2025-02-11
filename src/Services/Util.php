@@ -100,41 +100,6 @@ class Util
         return round($value, 2).' '.$units[$index];
     }
 
-    public static function daterange($range) : array
-    {
-        $range = $range ?? '1970-01-01 00:00:00 to '.now()->toDateTimeString();
-
-        $from = head(explode('to', $range));
-        $from = carbon($from ?: '1970-01-01 00:00:00');
-
-        $to = last(explode('to', $range));
-        $to = $to ? carbon($to) : now();
-
-        $diff = [
-            'd' => $from->diffInDays($to),
-            'm' => $from->diffInMonths($to),
-            'y' => $from->diffInYears($to),
-        ];
-
-        $past = get($diff, 'd') > 0 ? [
-            'from' => $from->copy()->subDays(get($diff, 'd')),
-            'to' => $to->copy()->subDays(get($diff, 'd')),
-        ] : null;
-
-        $tz = now()->timezone(
-            optional(user())->settings('timezone') ?? config('atom.timezone')
-        )->format('P');
-
-        return [
-            'range' => $range,
-            'from' => $from,
-            'to' => $to,
-            'diff' => $diff,
-            'past' => $past,
-            'tz' => $tz,
-        ];
-    }
-
     public static function queryBreakdown(
         $query,
         $diff,
