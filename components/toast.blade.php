@@ -83,7 +83,7 @@ $position = [
 
                     <button
                         type="button"
-                        x-on:click="close(toast)"
+                        x-on:click.stop="close(toast)"
                         class="appearance-none absolute top-4 right-4 flex items-center justify-center">
                         <atom:icon close/>
                     </button>
