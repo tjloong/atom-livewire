@@ -245,65 +245,96 @@ $attrs = $attributes
             </atom:menu>
         </atom:popover>
     </div>
-@elseif ($variant === 'native')
+@elseif ($variant === 'native' && $options)
     <div
         wire:ignore.self
-        {{ $attrs->only('wire:key') }}
-        @if ($options)
-        x-data
-        x-init="$wire.getOptions({
-            id: @js($id),
-            name: @js($options),
-            filters: @js($filters),
-        })"
-        @endif
+        x-data="{
+            options: [],
+            clearable: false,
+
+            init () {
+                Atom.action('get-options', { name: @js($options), filters: @js($filters) })
+                    .then(res => this.options = [...res])
+                    .then(() => this.$nextTick(() => this.setClearable()))
+                    .then(() => setTimeout(() => {
+                        if (!this.$refs.select.value) this.$refs.select.value = ''
+                    }, 200))
+            },
+
+            setClearable () {
+                this.clearable = !empty(this.$refs.select.value)
+            },
+        }"
+        x-on:change="setClearable()"
         class="group/input relative w-full block"
-        data-atom-select-native>
+        data-atom-select-native
+        {{ $attrs->only('wire:key') }}>
         @if ($icon)
             <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
                 <atom:icon :name="$icon" size="16"/>
             </div>
         @endif
 
-        <select {{ $attrs->except('wire:key') }}>
+        <select x-ref="select" {{ $attrs->except('wire:key') }}>
             @if ($placeholder)
-                <atom:option value="" selected class="placeholder">
-                    {{ t($placeholder) }}
-                </atom:option>
+                <atom:option value="" selected class="placeholder">@t($placeholder)</atom:option>
             @endif
 
-            @forelse ($this->options[$id] ?? [] as $option)
-                <atom:option :value="get($option, 'value')">
-                    {!! t(get($option, 'label')) !!}
+            <template x-for="opt in options" hidden>
+                <atom:option
+                    x-bind:value="opt.value"
+                    x-bind:disabled="opt.is_group || false"
+                    x-bind:class="opt.is_group && 'py-3'">
+                    <template x-text="opt.label"></template>
                 </atom:option>
-            @empty
-                {{ $slot }}
-            @endforelse
+            </template>
         </select>
 
         @if ($clearable)
             <div
-                x-cloak
-                x-data="{
-                    show: false,
-                    select: null,
-                }"
-                x-init="() => {
-                    select = $el.parentNode.querySelector('select')
-                    select.addEventListener('change', (e) => show = !empty(e.target.value))
-                }"
                 x-on:click.stop="() => {
-                    select.value = ''
-                    select.dispatch('change')
+                    $refs.select.value = ''
+                    $refs.select.dispatch('change')
                 }"
-                x-bind:class="!show && 'pointer-events-none'"
+                x-bind:class="!clearable && 'pointer-events-none'"
                 class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
-                <atom:icon close x-show="show"/>
-                <atom:icon dropdown x-show="!show"/>
+                <atom:icon close x-show="clearable"/>
+                <atom:icon dropdown x-show="!clearable"/>
             </div>
-        @else
-            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
-                <atom:icon dropdown/>
+        @endif
+    </div>
+@elseif ($variant === 'native')
+    <div
+        x-data="{ clearable: false }"
+        x-init="clearable = !empty($refs.select.value)"
+        x-on:change="clearable = !empty($refs.select.value)"
+        class="group/input relative w-full block"
+        data-atom-select-native
+        {{ $attrs->only('wire:key') }}>
+        @if ($icon)
+            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
+                <atom:icon :name="$icon" size="16"/>
+            </div>
+        @endif
+
+        <select x-ref="select" {{ $attrs->except('wire:key') }}>
+            @if ($placeholder)
+                <atom:option value="" selected class="placeholder">@t($placeholder)</atom:option>
+            @endif
+
+            {{ $slot }}
+        </select>
+
+        @if ($clearable)
+            <div
+                x-on:click.stop="() => {
+                    $refs.select.value = ''
+                    $refs.select.dispatch('change')
+                }"
+                x-bind:class="!clearable && 'pointer-events-none'"
+                class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
+                <atom:icon close x-show="clearable"/>
+                <atom:icon dropdown x-show="!clearable"/>
             </div>
         @endif
     </div>

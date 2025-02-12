@@ -10,7 +10,7 @@ $caption = $attributes->get('caption') ?? get($option, 'caption');
 $note = $attributes->get('note') ?? get($option, 'note');
 $badge = $attributes->get('badge') ?? get($option, 'badge');
 $badgeColor = $attributes->get('badge-color') ?? get($option, 'badge_color');
-$attrs = $attributes->except(['option', 'value', 'label', 'badge', 'badge-color']);
+$attrs = $attributes->except(['option', 'label', 'badge', 'badge-color']);
 @endphp
 
 @if ($variant === 'listbox' || $multiple)
@@ -70,10 +70,7 @@ $attrs = $attributes->except(['option', 'value', 'label', 'badge', 'badge-color'
         </div>
     </li>
 @else
-    <option
-        value="{{ $value }}"
-        data-atom-option
-        {{ $attrs }}>
+    <option data-atom-option {{ $attrs }}>
         @if ($slot->isNotEmpty())
             {{ $slot }}
         @else
