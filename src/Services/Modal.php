@@ -18,15 +18,15 @@ class Modal
             foreach (app(self::class)->modals as $name => $modal) {
                 $action = get($modal, 'action');
                 $data = get($modal, 'data');
+                $variant = get($modal, 'variant');
 
                 $response->effects['dispatches'][] = $action === 'show'
-                    ? ['event' => 'modal-show', 'data' => ['name' => $name, 'data' => $data,]]
+                    ? ['event' => 'modal-show', 'data' => ['name' => $name, 'data' => $data, 'variant' => $variant]]
                     : ['event' => 'modal-close', 'data' => ['name' => $name]];
             }
         });
     }
 
-    // set name
     public function name($name)
     {
         $this->name = $name ?? 'modal';
@@ -34,24 +34,32 @@ class Modal
         return $this;
     }
 
-    // show
     public function show($data = [])
     {
         return $this->make('show', $data);
     }
 
-    // close
+    public function slide($data = [])
+    {
+        return $this->make('show', $data, 'slide');
+    }
+
+    public function full($data = [])
+    {
+        return $this->make('show', $data, 'full');
+    }
+
     public function close()
     {
         return $this->make('close');
     }
 
-    // make modal
-    public function make($action, $data = [])
+    public function make($action, $data = [], $variant = null)
     {
         $this->modals[$this->name] = [
             'action' => $action,
             'data' => $data,
+            'variant' => $variant,
         ];
 
         if (!request()->isLivewireRequest()) {
