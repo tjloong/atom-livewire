@@ -76,10 +76,11 @@ $attrs = $attributes
     <div
         wire:ignore.self
         x-data="select({
-            id: {{ js($id) }},
-            name: {{ js($options) }},
-            filters: {{ js($filters) }},
-            multiple: {{ js($multiple) }},
+            id: @js($id),
+            options: @js($options),
+            filters: @js($filters),
+            multiple: @js($multiple),
+            searchable: @js($searchable),
             @if ($attributes->wire('model')->value())
             value: @entangle($attributes->wire('model')),
             @endif
@@ -121,15 +122,8 @@ $attrs = $attributes
             </template>
         @endif
 
-        <div
-            wire:ignore
-            x-ref="trigger"
-            data-atom-select-listbox-trigger
-            class="relative block">
-            <button
-                type="button"
-                x-on:click="open()"
-                {{ $attrs->only('class') }}>
+        <div wire:ignore x-ref="trigger" data-atom-select-listbox-trigger class="relative block">
+            <button type="button" x-on:click="open()" {{ $attrs->only('class') }}>
                 @if ($icon)
                     <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
                         <atom:icon :name="$icon"/>
@@ -137,38 +131,34 @@ $attrs = $attributes
                 @endif
 
                 @if ($multiple)
-                    <div class="flex items-center text-zinc-400">
-                        {{ t($placeholder) }}
-                    </div>
+                    <div class="flex items-center text-zinc-400">@t($placeholder)</div>
                 @else
                     <template x-if="isEmpty" hidden>
-                        <div class="flex items-center text-zinc-400">
-                            {{ t($placeholder) }}
-                        </div>
+                        <div class="flex items-center text-zinc-400">@t($placeholder)</div>
                     </template>
 
                     <template x-if="!isEmpty" hidden>
                         <div>
-                        @isset ($selected)
-                            {{ $selected }}
-                        @else
-                            <template x-if="selected.label" hidden>
-                                <div class="flex">
-                                    <div x-show="selected.avatar" x-html="selected.avatar" class="shrink-0 mr-2"></div>
-                                    <div x-show="selected.color" class="shrink-0 py-1 mr-2">
-                                        <div x-bind:style="{ backgroundColor: selected.color }" class="size-4 rounded-md"></div>
+                            @isset ($selected)
+                                {{ $selected }}
+                            @else
+                                <template x-if="selected.label" hidden>
+                                    <div class="flex">
+                                        <div x-show="selected.avatar" x-html="selected.avatar" class="shrink-0 mr-2"></div>
+                                        <div x-show="selected.color" class="shrink-0 py-1 mr-2">
+                                            <div x-bind:style="{ backgroundColor: selected.color }" class="size-4 rounded-md"></div>
+                                        </div>
+                                        <div class="grow truncate">
+                                            <div x-text="selected.label" class="truncate"></div>
+                                            <div x-show="selected.caption" x-text="selected.caption" class="text-sm text-muted truncate"></div>
+                                        </div>
                                     </div>
-                                    <div class="grow truncate">
-                                        <div x-text="selected.label" class="truncate"></div>
-                                        <div x-show="selected.caption" x-text="selected.caption" class="text-sm text-muted truncate"></div>
-                                    </div>
-                                </div>
-                            </template>
+                                </template>
 
-                            <template x-if="!selected.label" hidden>
-                                <div x-html="selected.content"></div>
-                            </template>
-                        @endisset
+                                <template x-if="!selected.label" hidden>
+                                    <div x-html="selected.content"></div>
+                                </template>
+                            @endisset
                         </div>
                     </template>
                 @endif
@@ -202,12 +192,9 @@ $attrs = $attributes
             </button>
         </div>
 
-        <atom:popover
-            wire:ignore.self
-            x-ref="options"
-            x-on:popover-open="setWidth()">
+        <atom:popover wire:ignore.self x-ref="options" x-on:popover-open="setWidth()">
             <atom:menu>
-                @if ($options && $searchable)
+                <template x-if="searchable" hidden>
                     <div class="py-3 px-4 flex items-center gap-2 border-b">
                         <atom:icon search class="text-zinc-400 shrink-0"/>
                         <input
@@ -229,107 +216,72 @@ $attrs = $attributes
                             <atom:icon loading/>
                         </div>
                     </div>
-                @endif
+                </template>
 
-                <ul class="max-h-[300px] overflow-auto">
+                <ul class="max-h-[300px] overflow-auto space-y-1 mt-1">
                     @if ($slot->isNotEmpty())
                         {{ $slot }}
                     @else
-                        @forelse ($this->options[$id] ?? [] as $item)
-                            <atom:option :option="$item"/>
-                        @empty
+                        <template x-if="!options.length" hidden>
                             <atom:empty size="sm"/>
-                        @endforelse
+                        </template>
+
+                        <template x-for="(option, i) in options" x-bind:key="`option-${option.value}-${i}`" hidden>
+                            <atom:option x-model="option"/>
+                        </template>
                     @endif
                 </ul>
             </atom:menu>
         </atom:popover>
     </div>
-@elseif ($variant === 'native' && $options)
-    <div
-        wire:ignore.self
-        x-data="{
-            options: [],
-            clearable: false,
-
-            init () {
-                Atom.action('get-options', { name: @js($options), filters: @js($filters) })
-                    .then(res => this.options = [...res])
-                    .then(() => this.$nextTick(() => this.setClearable()))
-                    .then(() => setTimeout(() => {
-                        if (!this.$refs.select.value) this.$refs.select.value = ''
-                    }, 200))
-            },
-
-            setClearable () {
-                this.clearable = !empty(this.$refs.select.value)
-            },
-        }"
-        x-on:change="setClearable()"
-        class="group/input relative w-full block"
-        data-atom-select-native
-        {{ $attrs->only('wire:key') }}>
-        @if ($icon)
-            <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
-                <atom:icon :name="$icon" size="16"/>
-            </div>
-        @endif
-
-        <select x-ref="select" {{ $attrs->except('wire:key') }}>
-            @if ($placeholder)
-                <atom:option value="" selected class="placeholder">@t($placeholder)</atom:option>
-            @endif
-
-            <template x-for="opt in options" hidden>
-                <atom:option
-                    x-bind:value="opt.value"
-                    x-bind:disabled="opt.is_group || false"
-                    x-bind:class="opt.is_group && 'py-3'">
-                    <template x-text="opt.label"></template>
-                </atom:option>
-            </template>
-        </select>
-
-        @if ($clearable)
-            <div
-                x-on:click.stop="() => {
-                    $refs.select.value = ''
-                    $refs.select.dispatch('change')
-                }"
-                x-bind:class="!clearable && 'pointer-events-none'"
-                class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
-                <atom:icon close x-show="clearable"/>
-                <atom:icon dropdown x-show="!clearable"/>
-            </div>
-        @endif
-    </div>
 @elseif ($variant === 'native')
-    <div
-        x-data="{ clearable: false }"
-        x-init="clearable = !empty($refs.select.value)"
-        x-on:change="clearable = !empty($refs.select.value)"
-        class="group/input relative w-full block"
-        data-atom-select-native
-        {{ $attrs->only('wire:key') }}>
+    <div wire:ignore.self class="group/input relative w-full block" data-atom-select-native {{ $attrs->only('wire:key') }}>
         @if ($icon)
             <div class="z-1 pointer-events-none absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pl-3 left-0">
                 <atom:icon :name="$icon" size="16"/>
             </div>
         @endif
 
-        <select x-ref="select" {{ $attrs->except('wire:key') }}>
+        <select {{ $attrs->except('wire:key') }}>
             @if ($placeholder)
                 <atom:option value="" selected class="placeholder">@t($placeholder)</atom:option>
             @endif
 
-            {{ $slot }}
+            @if ($slot->isNotEmpty())
+                {{ $slot }}
+            @elseif ($options)
+                @foreach (\Jiannius\Atom\Atom::action('get-options', ['name' => $options]) as $item)
+                    <atom:option
+                        :value="get($item, 'value')"
+                        :disabled="get($item, 'is_group') ?? false"
+                        class="{{ get($item, 'is_group') ? 'py-3' : '' }}">
+                        @e(get($item, 'label'))
+                    </atom:option>
+                @endforeach
+            @endif
         </select>
 
         @if ($clearable)
             <div
+                x-data="{
+                    clearable: false,
+
+                    init () {
+                        this.setClearable()
+                        this.getSelect().addEventListener('change', () => this.setClearable())
+                    },
+
+                    getSelect () {
+                        return $el.parentNode.querySelector('select')
+                    },
+
+                    setClearable () {
+                        this.clearable = !empty(this.getSelect().value)
+                    },
+                }"
                 x-on:click.stop="() => {
-                    $refs.select.value = ''
-                    $refs.select.dispatch('change')
+                    getSelect().value = ''
+                    getSelect().dispatch('change')
                 }"
                 x-bind:class="!clearable && 'pointer-events-none'"
                 class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">

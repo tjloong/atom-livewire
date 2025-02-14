@@ -3,47 +3,48 @@ import { computePosition, flip, shift, offset } from '@floating-ui/dom'
 export default (config) => {
     return {
         value: config.value || null,
+        options: [],
+        callback: typeof config.options === 'string' ? config.options : null,
         multiple: config.multiple,
         text: null,
         visible: false,
         loading: false,
         selected: null,
 
-        get options () {
-            return Array.from(this.$refs.options.querySelectorAll('[data-atom-option]'))
-        },
-
-        get activeIndex () {
-            return this.options.findIndex(node => (node.getAttribute('data-option-focus')))
-        },
-
         get isEmpty () {
             return !this.selected || (Array.isArray(this.selected) && !this.selected.length)
         },
 
+        get searchable () {
+            return config.searchable && (
+                !empty(this.text)
+                || (Array.isArray(this.options) && this.options.length > 0)
+                || !empty(this.callback)
+            )
+        },
+
         init () {
-            this.$watch('text', () => this.search())
-            this.$watch('value', () => this.getSelected())
+            this.$watch('text', () => this.fetch())
+            this.$watch('value', () => this.$nextTick(() => this.getSelected()))
             this.$nextTick(() => {
                 if ((this.multiple && this.value?.length) || (!this.multiple && this.value)) {
-                    this.search().then(() => this.getSelected())
+                    this.fetch().then(() => this.getSelected())
                 }
             })
         },
 
         open () {
-            if (this.options?.length) {
-                this.$refs.options.showPopover()
-            }
-            else {
-                this.search()
-                    .then(() => this.$refs.options.showPopover())
-                    .then(() => this.$refs.search?.focus())
-            }
+            this.fetch()
+                .then(() => this.$refs.options.showPopover())
+                .then(() => this.$refs.search?.focus())
+                .then(() => this.visible = true)
         },
 
         close () {
             this.$refs.options.hidePopover()
+            this.text = null
+            this.visible = false
+            this.loading = false
         },
 
         clear () {
@@ -51,22 +52,25 @@ export default (config) => {
             this.$dispatch('input', this.value)
         },
 
-        search () {
-            if (config.name) {
+        fetch () {
+            if (this.callback) {
                 this.loading = true
-
-                return this.$wire.getOptions({
-                    id: config.id,
-                    name: config.name,
-                    filters: {
-                        search: this.text,
-                        value: this.value,
-                        ...config.filters,
-                    },
-                }).then(() => this.loading = false)
+                return Atom.action('get-options', { name: this.callback, filters: {
+                    search: this.text,
+                    value: this.value,
+                    ...config.filters,
+                }}).then(res => this.options = [...res]).then(() => this.loading = false)
             }
             else {
-                return new Promise((resolve) => resolve())
+                return new Promise((resolve) => {
+                    this.options = [...(config.options || [])]
+
+                    if (this.text && this.options.length) {
+                        this.options = this.options.filter(opt => (opt.label.toLowerCase().includes(this.text.toLowerCase())))
+                    }
+
+                    resolve()
+                })
             }
         },
 
@@ -93,10 +97,7 @@ export default (config) => {
             }
 
             this.$dispatch('input', this.value)
-            this.$nextTick(() => {
-                this.getSelected()
-                this.close()
-            })
+            this.$nextTick(() => this.close())
         },
 
         deselect (opt) {
@@ -111,22 +112,34 @@ export default (config) => {
             }
         },
 
-        focus (el) {
-            if (this.activeIndex > -1) this.blur(this.options[this.activeIndex])
-            el.setAttribute('data-option-focus', true)
+        moveTo (el, focus = true) {
+            if (focus) {
+                let focused = this.getFocusedElementIndex()
+                if (focused > -1) this.moveTo(this.getOptionsElements(focused), false)
+                el.setAttribute('data-option-focus')
+            }
+            else {
+                el.removeAttribute('data-option-focus')
+            }
         },
 
-        blur (el) {
-            el.removeAttribute('data-option-focus')
+        getOptionsElements (index = -1) {
+            let els = Array.from(this.$refs.options.querySelectorAll('[data-atom-option]'))
+            return index > -1 ? els[index] : els
+        },
+
+        getFocusedElementIndex () {
+            return this.getOptionsElements().findIndex(node => (node.getAttribute('data-option-focus')))
         },
 
         keyUp () {
             if (!this.visible) this.open()
             else {
-                let active = this.activeIndex
-                let prev = active <= 0 ? (this.options.length - 1) : (active - 1)
+                let els = this.getOptionsElements()
+                let active = this.getFocusedElementIndex()
+                let prev = active <= 0 ? (els.length - 1) : (active - 1)
                 if (prev > -1) {
-                    this.focus(this.options[prev])
+                    this.moveTo(els[prev])
                     this.scroll()
                 }
             }
@@ -135,10 +148,11 @@ export default (config) => {
         keyDown () {
             if (!this.visible) this.open()
             else {
-                let active = this.activeIndex
-                let next = active >= this.options.length - 1 ? 0 : (active + 1)
+                let els = this.getOptionsElements()
+                let active = this.getFocusedElementIndex()
+                let next = active >= els.length - 1 ? 0 : (active + 1)
                 if (next > -1) {
-                    this.focus(this.options[next])
+                    this.moveTo(els[next])
                     this.scroll()
                 }
             }
@@ -146,7 +160,11 @@ export default (config) => {
 
         keyEnter () {
             if (!this.visible) this.open()
-            else if (this.activeIndex > -1) this.options[this.activeIndex].click()
+            else {
+                let els = this.getOptionsElements()
+                let active = this.getFocusedElementIndex()
+                if (active > -1) els[active].querySelector('* > div').click()
+            }
         },
 
         isSelected (value) {
@@ -156,31 +174,33 @@ export default (config) => {
         },
 
         getSelected () {
-            let options = this.options
-                .filter(opt => (opt.getAttribute('data-option-selected')))
-                .map(opt => ({
-                    value: opt.getAttribute('data-option-value'),
-                    label: opt.querySelector('[data-option-label]')?.innerHTML,
-                    badge: opt.querySelector('[data-option-badge]')?.innerHTML,
-                    caption: opt.querySelector('[data-option-caption]')?.innerHTML,
-                    color: opt.querySelector('[data-option-color]')?.style?.backgroundColor,
-                    note: opt.querySelector('[data-option-note]')?.innerHTML,
-                    avatar: opt.querySelector('[data-option-avatar]')?.innerHTML,
-                    content: opt.querySelector('[data-option-content]')?.innerHTML,
+            let els = this.getOptionsElements()
+                .map(node => (node.querySelector('* > div')))
+                .filter(node => node.getAttribute('data-option-value') === this.value)
+                .map(node => ({
+                    value: node.getAttribute('data-option-value'),
+                    label: node.querySelector('[data-option-label]')?.innerHTML,
+                    badge: node.querySelector('[data-option-badge]')?.innerHTML,
+                    caption: node.querySelector('[data-option-caption]')?.innerHTML,
+                    color: node.querySelector('[data-option-color]')?.style?.backgroundColor,
+                    note: node.querySelector('[data-option-note]')?.innerHTML,
+                    avatar: node.querySelector('[data-option-avatar]')?.innerHTML,
+                    content: node.querySelector('[data-option-content]')?.innerHTML,
                 }))
 
-            this.selected = this.multiple ? options : options[0]
+            this.selected = this.multiple ? els : els[0]
         },
 
         scroll () {
             let ul = this.$refs.options.querySelector('ul')
-            let index = this.options.findIndex(opt => (opt.getAttribute('data-option-focus', true)))
-            let focus = index > -1 ? this.options[index] : null
+            let els = this.getOptionsElements()
+            let index = els.findIndex(node => (node.getAttribute('data-option-focus', true)))
+            let focus = index > -1 ? els[index] : null
 
             if (!focus) return
 
             if (index === 0) ul.scrollTop = 0
-            else if (index === this.options.length - 1) ul.scrollTop = ul.scrollHeight
+            else if (index === els.length - 1) ul.scrollTop = ul.scrollHeight
             else {
                 let ceiling = 0
                 let floor = ul.getBoundingClientRect().height
