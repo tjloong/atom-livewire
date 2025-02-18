@@ -64,12 +64,24 @@ $attrs = $attributes
             :placeholder="$placeholder"
             :attributes="$attributes->except(['label', 'caption', 'placeholder', 'inline'])">
             {{ $slot }}
+
+            @isset ($actions)
+                <x-slot:actions>
+                    {{ $actions }}
+                </x-slot:actions>
+            @endisset
         </atom:_select>
     </atom:_input.field>
 @elseif ($prefix || $suffix)
     <atom:_input.prefix :prefix="$prefix" :suffix="$suffix">
         <atom:_select :attributes="$attributes->except(['prefix', 'suffix'])">
             {{ $slot }}
+
+            @isset ($actions)
+                <x-slot:actions>
+                    {{ $actions }}
+                </x-slot:actions>
+            @endisset
         </atom:_select>
     </atom:_input.prefix>
 @elseif ($variant === 'listbox' || $multiple)
@@ -231,6 +243,20 @@ $attrs = $attributes
                         </template>
                     @endif
                 </ul>
+
+                @if (isset($actions))
+                    <div class="border-t pt-1">
+                        {{ $actions }}
+                    </div>
+                @elseif ($attributes->has('x-on:add') || $attributes->wire('add')->value())
+                    <div class="border-t pt-1">
+                        <atom:menu-item x-on:click.stop="$dispatch('add')">
+                            <div class="flex items-center gap-2 justify-center">
+                                <atom:icon add/> @t('add-new')
+                            </div>
+                        </atom:menu-item>
+                    </div>
+                @endif
             </atom:menu>
         </atom:popover>
     </div>
@@ -250,7 +276,10 @@ $attrs = $attributes
             @if ($slot->isNotEmpty())
                 {{ $slot }}
             @elseif ($options)
-                @foreach (\Jiannius\Atom\Atom::action('get-options', ['name' => $options]) as $item)
+                @foreach (\Jiannius\Atom\Atom::action('get-options', [
+                    'name' => $options,
+                    'filters' => $filters,
+                ]) as $item)
                     <atom:option
                         :value="get($item, 'value')"
                         :disabled="get($item, 'is_group') ?? false"

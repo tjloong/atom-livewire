@@ -18,11 +18,12 @@
         x-init="$wire.getCount()"
         x-on:click="Atom.modal('app.notification-center').show()"
         class="flex items-center justify-center cursor-pointer">
-        <atom:icon notification size="18"/>
+        <atom:icon notification size="20"/>
         <span
             x-show="count > 0"
-            x-text="count"
-            class="bg-red-500 text-red-100 text-xs w-5 h-5 rounded-full flex items-center justify-center -ml-2">
+            x-text="count > 99 ? 99 : count"
+            style="font-size: 8px; width: 15px; height: 15px; margin-left: -10px; margin-top: -10px"
+            class="bg-red-500 text-red-100 rounded-full flex items-center justify-center">
         </span>
     </div>
 

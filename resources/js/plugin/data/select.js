@@ -176,7 +176,10 @@ export default (config) => {
         getSelected () {
             let els = this.getOptionsElements()
                 .map(node => (node.querySelector('* > div')))
-                .filter(node => node.getAttribute('data-option-value') === this.value)
+                .filter(node => {
+                    let nodeValue = node.getAttribute('data-option-value')
+                    return Array.isArray(this.value) ? this.value.includes(nodeValue) : this.value === nodeValue
+                })
                 .map(node => ({
                     value: node.getAttribute('data-option-value'),
                     label: node.querySelector('[data-option-label]')?.innerHTML,

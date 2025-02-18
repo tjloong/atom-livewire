@@ -230,6 +230,7 @@ return [
         'mailgun-domain' => 'Mailgun Domain',
         'mailgun-secret' => 'Mailgun Secret',
         'male' => 'Male',
+        'manage' => 'Manage',
         'managed-by' => 'Managed By',
         'max' => 'Max',
         'message' => 'Message',
