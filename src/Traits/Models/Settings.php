@@ -17,16 +17,19 @@ trait Settings
         ])->saveQuietly();
     }
 
-    public function getDefaultSettings() : array
+    public function getDefaultSettings($key = null)
     {
         $model = str($this->getTable())->singular()->toString();
         $filename = $model.'-settings.json';
+
         $path = collect([
             base_path('resources/json/'.$filename),
             atom_path('resources/json/'.$filename),
         ])->first(fn($path) => file_exists($path));
 
-        return json_decode(file_get_contents($path), true);
+        $settings = json_decode(file_get_contents($path), true);
+
+        return $key ? get($settings, $key) : $settings;
     }
 
     // $model->settings('name') to get setting value
