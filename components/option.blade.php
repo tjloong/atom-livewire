@@ -10,6 +10,7 @@ $caption = $attributes->get('caption') ?? get($option, 'caption');
 $note = $attributes->get('note') ?? get($option, 'note');
 $badge = $attributes->get('badge') ?? get($option, 'badge');
 $badgeColor = $attributes->get('badge-color') ?? get($option, 'badge_color');
+$meta = $attributes->get('meta') ?? get($option, 'meta');
 $attrs = $attributes->except(['option', 'label', 'badge', 'badge-color']);
 @endphp
 
@@ -26,6 +27,7 @@ $attrs = $attributes->except(['option', 'label', 'badge', 'badge-color']);
                 optBadge: option.badge,
                 optBadgeColor: option.badge_color,
                 optNote: option.note,
+                optMeta: JSON.stringify(option.meta),
             }"
             @else
             x-data="{
@@ -37,10 +39,12 @@ $attrs = $attributes->except(['option', 'label', 'badge', 'badge-color']);
                 optBadge: @js($badge),
                 optBadgeColor: @js($badgeColor),
                 optNote: @js($note),
+                optMeta: @js($meta),
             }"
             @endif
             x-on:click="select(optValue)"
             x-bind:data-option-value="optValue"
+            x-bind:data-option-meta="optMeta"
             x-bind:data-option-selected="isSelected(@if ($value) {{ js($value) }} @else option.value @endif)"
             class="p-2 flex gap-3 cursor-default rounded-md data-[option-selected]:bg-zinc-800/5 [[data-option-focus]>&]:bg-zinc-800/5">
             <div class="shrink-0 w-6 h-6 flex items-center justify-center text-transparent [[data-option-selected]>&]:text-zinc-400">

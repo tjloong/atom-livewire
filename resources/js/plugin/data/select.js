@@ -189,6 +189,7 @@ export default (config) => {
                     note: node.querySelector('[data-option-note]')?.innerHTML,
                     avatar: node.querySelector('[data-option-avatar]')?.innerHTML,
                     content: node.querySelector('[data-option-content]')?.innerHTML,
+                    meta: JSON.parse(node.getAttribute('data-option-meta') || 'null'),
                 }))
 
             this.selected = this.multiple ? els : els[0]

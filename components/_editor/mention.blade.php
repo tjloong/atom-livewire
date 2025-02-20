@@ -121,12 +121,11 @@ else {
 
             if (this.callback) {
                 clearTimeout(this.timer)
-                this.timer = setTimeout(() => (this.$wire.getOptions({
-                    id: 'mention',
+                this.timer = setTimeout(() => (Atom.action('get-options', {
                     name: this.callback,
                     filters: { ...this.filters, search: this.props.query },
                 })
-                    .then(() => this.filteredOptions = [...this.$wire.get('options')['mention']])
+                    .then(res => this.filteredOptions = [...res])
                     .then(() => this.align())
                 ), 300)
             }
