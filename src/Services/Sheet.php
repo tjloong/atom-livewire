@@ -35,12 +35,17 @@ class Sheet
                     'back' => [
                         'event' => 'sheet-back',
                     ],
+                    'refresh' => [
+                        'event' => 'sheet-refresh',
+                        'data' => [
+                            'name' => get($sheet, 'name'),
+                        ],
+                    ],
                 };
             }
         });
     }
 
-    // set name
     public function name($name)
     {
         $this->name = $name ?? 'modal';
@@ -48,25 +53,31 @@ class Sheet
         return $this;
     }
 
-    // show
     public function show($data = null, $label = null)
     {
         return $this->make('show', $data, $label);
     }
 
-    // label
     public function label($label)
     {
         return $this->make('label', null, $label);
     }
 
-    // back
     public function back()
     {
         return $this->make('back');
     }
 
-    // make modal
+    public function close()
+    {
+        return $this->make('back');
+    }
+
+    public function refresh()
+    {
+        return $this->make('refresh');
+    }
+
     public function make($action, $data = null, $label = null)
     {
         $this->sheet = [

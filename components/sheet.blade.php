@@ -28,6 +28,7 @@ $attrs = $attributes
     x-on:sheet-show.window="show($event.detail)"
     x-on:sheet-label.window="setLabel($event.detail)"
     x-on:sheet-back.window="back()"
+    x-on:sheet-refresh.window="refresh($event.detail)"
     x-on:scroll="scroll()"
     data-atom-sheet="{{ $name }}"
     {{ $attrs }}>

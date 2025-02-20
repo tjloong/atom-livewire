@@ -87,6 +87,11 @@ export default (config) => {
                 .then(() => this.layering())
         },
 
+        refresh (args) {
+            if (args.name !== config.name) return
+            this.$wire.refresh()
+        },
+
         remove (sheet) {
             return new Promise((resolve, reject) => {
                 sheet.el.removeClass('opacity-100')
