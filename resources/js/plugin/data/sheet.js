@@ -100,7 +100,7 @@ export default (config) => {
                 setTimeout(() => {
                     sheet.el.addClass('hidden')
                     let index = window.sheet.active.findIndexWhere('name', sheet.name)
-                    window.sheet.active.splice(index, 1)
+                    if (index > -1) window.sheet.active.splice(index, 1)
                     resolve()
                 }, 200)
             })
