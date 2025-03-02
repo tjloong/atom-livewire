@@ -1,37 +1,21 @@
 <div
-    wire:ignore.self
-    x-cloak
-    x-data="{ count: @entangle('count') }"
-    x-init="() => {
-        Echo
-        .private(`notification.{{ js(user('id')) }}`)
-        .listen('.notification-created', (notification) => $wire.getCount().then(() => {
-            Atom.toast({
-                title: notification.title,
-                message: notification.content,
-                user: notification.sender,
-            })
-        }))
-    }"
-    class="w-14">
-    <div
-        x-init="$wire.getCount()"
-        x-on:click="Atom.modal('app.notification-center').show()"
-        class="flex items-center justify-center cursor-pointer">
-        <atom:icon notification size="20"/>
-        <span
-            x-show="count > 0"
-            x-text="count > 99 ? 99 : count"
-            style="font-size: 8px; width: 15px; height: 15px; margin-left: -10px; margin-top: -10px"
-            class="bg-red-500 text-red-100 rounded-full flex items-center justify-center">
-        </span>
-    </div>
+wire:ignore.self
+x-cloak
+x-data
+x-init="() => {
+    Echo
+    .private(`notification.{{ js(user('id')) }}`)
+    .listen('.notification-created', (notification) => {
+        Atom.toast({
+            title: notification.title,
+            message: notification.content,
+            user: notification.sender,
+        })
 
-    <atom:modal
-        name="app.notification-center"
-        variant="slide"
-        wire:open="open"
-        class="max-w-lg">
+        $dispatch('notification-created', notification)
+    })
+}">
+    <atom:modal name="atom.notification-center" wire:open="open" class="max-w-lg">
         <div class="space-y-6">
             <atom:_heading size="xl">
                 @t('notification-center')

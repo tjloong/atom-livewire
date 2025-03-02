@@ -64,6 +64,7 @@ return [
         'close' => 'Close',
         'closed-on' => 'Closed on :date',
         'code' => 'Code',
+        'collapse' => 'Collapse',
         'color' => 'Color',
         'company' => 'Company',
         'completed-ago' => 'Completed :ago',

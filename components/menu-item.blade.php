@@ -2,6 +2,7 @@
 $route = (array) $attributes->get('route');
 $value = $attributes->get('value');
 $badge = $attributes->get('badge');
+$badgeColor = $attributes->get('badge-color');
 $action = $attributes->get('action');
 $href = $attributes->get('href') ?? ($route ? route(...$route) : null);
 $newtab = $attributes->get('newtab');
@@ -75,17 +76,17 @@ $attrs = $attributes
         </div>
 
         @if ($badge)
-            <div class="shrink-0 w-5 h-5 rounded flex items-center justify-center text-xs text-zinc-500 bg-zinc-200">
+            <div class="shrink-0 min-w-5 h-5 px-1 rounded flex items-center justify-center text-xs {{ $badgeColor ?? 'text-zinc-500 bg-zinc-200' }}">
                 {{ $badge }}
             </div>
         @endif
 
         @if (get($icon, 'end'))
             <atom:icon :name="get($icon, 'end')" size="18" class="shrink-0 opacity-40 group-hover/collapse:hidden"/>
-            <atom:icon down size="18" class="shrink-0 opacity-40 hidden group-hover/collapse:block"/>
+            <atom:icon right size="18" class="shrink-0 opacity-40 hidden group-hover/collapse:block"/>
         @else
-            <atom:icon down size="14" class="shrink-0 opacity-40 hidden [[data-atom-collapse-trigger-invisible]>*>&]:block"/>
-            <atom:icon up size="14" class="shrink-0 opacity-40 hidden [[data-atom-collapse-trigger-visible]>*>&]:block"/>
+            <atom:icon right size="14" class="shrink-0 opacity-40 -mr-1 hidden [[data-atom-collapse-trigger-invisible]>*>&]:block"/>
+            <atom:icon down size="14" class="shrink-0 opacity-40 -mr-1 hidden [[data-atom-collapse-trigger-visible]>*>&]:block"/>
         @endif
     </{{ $el }}>
 @endif

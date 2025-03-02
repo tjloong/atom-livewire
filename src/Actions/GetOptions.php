@@ -8,6 +8,7 @@ class GetOptions
     public $filters;
     public $selected = [];
     public $options = [];
+    public $exclude = [];
 
     public function __construct($params)
     {
@@ -18,6 +19,7 @@ class GetOptions
 
         $this->filters = $filters->toArray();
         $this->selected = (array) $selected;
+        $this->exclude = get($this->filters, 'exclude');
     }
 
     public function run()
@@ -87,10 +89,11 @@ class GetOptions
     public function getEnums() : array
     {
         $name = (string) str($this->name)->replaceFirst('enum.', '');
-        
-        return enum($name)->all()
-            ->map(fn ($val) => $val->option())
-            ->toArray();
+        $enums = enum($name)->all();
+
+        if ($this->exclude) $enums = $enums->reject(fn ($item) => $item->is($this->exclude))->values();
+   
+        return $enums->map(fn ($val) => $val->option())->toArray();
     }
 
     public function getLabels() : array

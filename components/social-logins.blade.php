@@ -1,5 +1,7 @@
 @php
-$brands = [
+$enabled = app('route')->has('socialite.redirect') && app('route')->has('socialite.callback');
+
+$brands = $enabled ? [
     [
         'slug' => 'bitbucket',
         'name' => 'Bitbucket',
@@ -54,7 +56,7 @@ $brands = [
         'icon' => '',
         'color' => '',
     ],
-];
+] : [];
 
 $brands = collect($brands)
     ->map(fn($brand) => [

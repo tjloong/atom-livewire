@@ -60,6 +60,7 @@ class Lang
 
         if (is_array($count)) return __($key, $count);
         if (!is_numeric($count)) return __($key, $params);
+        if ($count <= 1) return __($key, $params);
 
         return trans_choice($key, $count, $params);
     }

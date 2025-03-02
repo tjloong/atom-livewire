@@ -11,7 +11,6 @@ class NotificationCenter extends Component
 
     public $tab = 'unread';
     public $page = 1;
-    public $count = 0;
     public $notifications = [];
 
     public function updatedTab() : void
@@ -24,14 +23,6 @@ class NotificationCenter extends Component
     {
         $this->reset('tab', 'page', 'notifications');
         $this->getNotifications();
-    }
-
-    public function getCount() : void
-    {
-        $this->count = model('notification')
-            ->where('receiver_id', user('id'))
-            ->status('UNREAD')
-            ->count();
     }
 
     public function getNotifications() : void
@@ -56,8 +47,6 @@ class NotificationCenter extends Component
         $this->notifications = $this->page === 1
             ? $result->toArray()
             : collect($this->notifications)->concat($result)->toArray();
-
-        $this->getCount();
     }
 
     public function read($id, $bool = true) : void
@@ -79,7 +68,5 @@ class NotificationCenter extends Component
         $notifications->splice($index, 1);
 
         $this->notifications = $notifications->values()->all();
-
-        $this->getCount();
     }
 }

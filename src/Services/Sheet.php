@@ -6,6 +6,7 @@ class Sheet
 {
     public $name;
     public $sheet;
+    public $footer;
 
     // to be register in service provider
     public static function boot()
@@ -48,7 +49,14 @@ class Sheet
 
     public function name($name)
     {
-        $this->name = $name ?? 'modal';
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function footer($footer)
+    {
+        session()->put('__sheet_footer', $footer);
 
         return $this;
     }
