@@ -29,11 +29,15 @@ export default (config) => {
 
         position () {
             this.$refs.modal.removeClass('top-0 bottom-0 right-0 translate-x-full')
+            this.$refs.modal.removeClass('top-0 bottom-0 left-0 -translate-x-full')
             this.$refs.modal.removeClass('top-0 bottom-0 left-0 right-0 translate-y-full')
             this.$refs.modal.removeClass('rounded-xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2')
 
             if (this.variant === 'slide') {
                 this.$refs.modal.addClass('top-0 bottom-0 right-0 translate-x-full')
+            }
+            else if (this.variant === 'slide-left') {
+                this.$refs.modal.addClass('top-0 bottom-0 left-0 -translate-x-full')
             }
             else if (this.variant === 'full') {
                 this.$refs.modal.addClass('top-0 bottom-0 left-0 right-0 translate-y-full')
@@ -43,7 +47,7 @@ export default (config) => {
             }
 
             this.$refs.backdrop.removeClass('opacity-0')
-            setTimeout(() => this.$refs.modal.removeClass('opacity-0 translate-x-full translate-y-full'), 150)
+            setTimeout(() => this.$refs.modal.removeClass('opacity-0 translate-x-full -translate-x-full translate-y-full'), 150)
         },
     }
 }

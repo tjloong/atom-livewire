@@ -44,6 +44,11 @@ class Modal
         return $this->make('show', $data, 'slide');
     }
 
+    public function slideLeft($data = [])
+    {
+        return $this->make('show', $data, 'slide-left');
+    }
+
     public function full($data = [])
     {
         return $this->make('show', $data, 'full');
