@@ -24,7 +24,7 @@ noindex>
             </div>
             
             <div class="absolute top-0 bottom-0 left-0 w-64 bg-zinc-50 border-r shadow lg:shadow-none flex flex-col overflow-y-auto">
-                <div class="h-20 flex items-center px-4">
+                <div class="shrink-0 h-20 flex items-center px-4">
                     @isset ($brand)
                         {{ $brand }}
                     @else
