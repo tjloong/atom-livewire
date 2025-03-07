@@ -233,12 +233,13 @@ trait AtomComponent
         $this->errors = collect($this->getErrorBag()->toArray())->map(fn($e) => head($e))->toArray();
 
         $view = $this->view();
-        $name = get($view, 'name');
+        $viewName = get($view, 'name');
+        $viewData = get($view, 'data', []);
         $layout = get($view, 'layout');
-        $data = get($view, 'data', []);
+        $layoutData = get($view, 'layout_data', []);
 
         return empty($layout)
-            ? view($name, $data)
-            : view($name, $data)->layout($layout);
+            ? view($viewName, $viewData)
+            : view($viewName, $viewData)->layout($layout, $layoutData);
     }
 }
