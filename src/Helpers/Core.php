@@ -506,23 +506,6 @@ if (!function_exists('js')) {
     }
 }
 
-// worker
-if (!function_exists('worker')) {
-    function worker($name)
-    {
-        $name = str($name)->studly()->toString();
-
-        if (
-            $class = collect([
-                'App\\Workers\\'.$name,
-                'Jiannius\\Atom\\Workers\\'.$name,
-            ])->first(fn($ns) => file_exists(atom_ns_path($ns)))
-        ) {
-            return app($class);
-        }
-    }
-}
-
 // seo
 if (!function_exists('seo')) {
     function seo($seo)

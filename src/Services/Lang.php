@@ -53,15 +53,21 @@ class Lang
             if (get($app, $str)) $key = $str;
             else if (get($atom, $str)) $key = 'atom::'.$str;
         }
-        else if (get($app, 'app.label.'.$str)) $key = 'app.label.'.$str;
-        else if (get($atom, 'app.label.'.$str)) $key = 'atom::app.label.'.$str;
+        else {
+            foreach ([
+                'app',
+                'app.label',
+            ] as $prefix) {
+                if (get($app, "$prefix.$str")) $key = "$prefix.$str";
+                else if (get($atom, "$prefix.$str")) $key = 'atom::'."$prefix.$str";
+            }
+        }
 
         if (!$key) $key = $str;
 
+        if (is_numeric($count)) return trans_choice($key, $count, $params);
         if (is_array($count)) return __($key, $count);
-        if (!is_numeric($count)) return __($key, $params);
-        if ($count <= 1) return __($key, $params);
 
-        return trans_choice($key, $count, $params);
+        return __($key, $params);
     }
 }
