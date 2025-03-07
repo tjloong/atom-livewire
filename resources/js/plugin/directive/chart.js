@@ -45,7 +45,7 @@ function generateBarChart(el, props) {
         plotOptions: {
             bar: {
                 columnWidth: '85%',
-                borderRadius: 4,
+                borderRadius: 2,
                 borderRadiusApplication: 'end',
             },
         },
@@ -55,14 +55,14 @@ function generateBarChart(el, props) {
         legend: {
             show: false,
         },
-        colors: [
+        colors: props.color ? [
             {
                 red: '#fda4af',
                 green: '#0f766e',
                 gray: '#d4d4d8',
                 orange: '#ea580c',
-            }[props.color || 'gray'],
-        ],
+            }[props.color] || props.color,
+        ] : '#d4d4d8',
         tooltip: {
             custom: ({ series, seriesIndex, dataPointIndex, w }) => {
                 let data = props.data[dataPointIndex]
@@ -129,14 +129,14 @@ function generateAreaChart(el, props) {
             width: 1,
             curve: 'smooth',
         },
-        colors: [
+        colors: props.color ? [
             {
                 red: '#fda4af',
-                green: '#6ee7b7',
+                green: '#0f766e',
                 gray: '#d4d4d8',
-                orange: '#fdba74',
-            }[props.color || 'gray'],
-        ],
+                orange: '#ea580c',
+            }[props.color] || props.color,
+        ] : '#d4d4d8',
         tooltip: {
             custom: ({ series, seriesIndex, dataPointIndex, w }) => {
                 let data = props.data[dataPointIndex]

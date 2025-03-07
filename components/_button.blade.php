@@ -49,6 +49,7 @@ else if ($inverted) {
 
     match ($variant) {
         'primary' => $classes->add('bg-primary-100 text-primary border border-transparent hover:bg-primary hover:text-primary-100'),
+        'accent' => $classes->add('bg-accent-100 text-accent-900 border border-transparent hover:bg-accent'),
         'warning' => $classes->add('bg-yellow-100 text-yellow-500 border border-transparent hover:bg-yellow-500 hover:text-yellow-100'),
         'danger', 'error' => $classes->add('bg-red-100 text-red-500 border border-transparent hover:bg-red-500 hover:text-red-100'),
         'facebook' => $classes->add('bg-blue-100 text-blue-600 border border-transparent hover:bg-blue-600 hover:text-blue-100'),
@@ -64,6 +65,7 @@ else {
 
     match ($variant) {
         'primary' => $classes->add('bg-primary text-primary-100 border border-transparent hover:bg-primary-600'),
+        'accent' => $classes->add('bg-accent text-accent-900 border border-transparent hover:bg-accent-600'),
         'warning' => $classes->add('bg-yellow-500 text-yellow-100 border border-transparent hover:bg-yellow-600'),
         'danger', 'error' => $classes->add('bg-red-500 text-red-100 border border-transparent hover:bg-red-600'),
         'facebook' => $classes->add('bg-blue-600 text-blue-100 border border-transparent hover:bg-blue-700'),
@@ -150,6 +152,13 @@ if (!$attributes->hasLike('wire:click*', 'x-on:click*') && !$href && $action && 
             'footprint' => "\$wire.call('footprint', { model: '".get_class($model)."', id: '".$model->id."' })",
             default => "\$wire.call('".str()->camel($action)."')",
         },
+    ];
+}
+
+if ($slot->isNotEmpty()) {
+    $merges = [
+        ...$merges,
+        'aria-label' => strip_tags($slot->toHtml()),
     ];
 }
 

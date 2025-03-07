@@ -2,7 +2,6 @@
 $html = atom()->html()
     ->noindex(app()->environment('staging') || $attributes->get('noindex') || $attributes->get('no-index'))
     ->analytics($attributes->get('analytics'))
-    ->cdn(['fontawesome', ...$attributes->get('cdn', [])])
     ->get()
     ;
 
@@ -54,28 +53,7 @@ $attrs = $attributes
 <link rel="icon" type="{{ $html->favicon->mime }}" href="{{ $html->favicon->url }}">
 @endif
 
-@if ($gfonts = $attributes->get('gfonts') ?? $html->gfonts)
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ $gfonts }}&display=swap">
-@endif
-
 @vite ($vite)
-
-@if (atom('route')->has('__lang.js'))
-<script src="{{ route('__lang.js') }}"></script>
-@endif
-@if (atom('route')->has('__icons.js'))
-<script src="{{ route('__icons.js') }}"></script>
-@endif
-
-@foreach ($html->cdn as $cdn)
-@if (str($cdn)->endsWith('.css'))
-<link href="{{ $cdn }}" rel="stylesheet" type="text/css"/>
-@else
-<script src="{{ $cdn}}"></script>
-@endif
-@endforeach
 
 @if ($html->gtm)
 <!-- Google Tag Manager -->
@@ -138,8 +116,6 @@ document.addEventListener('alpine:initialized', () => {
 </script>
 @endif
 
-@stack('scripts')
-@livewireScripts
 @livewireStyles
 </head>
 
@@ -160,4 +136,25 @@ document.addEventListener('alpine:initialized', () => {
     <div class="py-1 px-2 pointer-events-none rounded-md bg-black/80 text-zinc-100 shadow text-sm w-max whitespace-nowrap"></div>
 </div>
 </body>
+
+@if ($gfonts = $attributes->get('gfonts') ?? $html->gfonts)
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ $gfonts }}&display=swap" media="screen">
+@endif
+
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css" media="screen">
+@stack('cdn')
+
+@if (atom('route')->has('__lang.js'))
+<script src="{{ route('__lang.js') }}"></script>
+@endif
+
+@if (atom('route')->has('__icons.js'))
+<script src="{{ route('__icons.js') }}"></script>
+@endif
+
+@stack('scripts')
+@livewireScripts
 </html>

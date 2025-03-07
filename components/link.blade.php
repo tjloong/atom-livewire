@@ -15,6 +15,7 @@ $attrs = $attributes
     ->merge([
         'ref' => $rel,
         'target' => $newtab ? '_blank' : null,
+        'aria-label' => strip_tags($slot->toHtml()),
     ])
     ;
 @endphp

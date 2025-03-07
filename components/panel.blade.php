@@ -50,8 +50,8 @@ noindex>
                 @endisset
 
                 <div class="shrink-0 pb-2 px-2">
-                    @isset ($sidebarfoot)
-                        {{ $sidebarfoot }}
+                    @isset ($sidebarFoot)
+                        {{ $sidebarFoot }}
                     @endisset
 
                     <atom:menu-item
@@ -79,11 +79,9 @@ noindex>
                 x-on:scroll.window="transparent = document.documentElement.scrollTop <= 20"
                 x-on:transparent="transparent = $event.detail"
                 x-bind:class="!transparent && 'bg-zinc-50 border-b border-zinc-200'"
-                class="h-20 fixed z-10 top-0 left-0 lg:left-64 lg:group-has-[[data-atom-panel-sidebar-show]]/panel:left-0 right-0"
+                class="h-20 fixed z-10 top-0 left-0 lg:left-64 lg:group-has-[[data-atom-panel-sidebar-show]]/panel:left-0 right-0 px-3 transition-colors duration-300"
                 data-atom-panel-navbar>
-                <div class="px-3 transition-colors duration-300">
-                    {{ $navbar }}
-                </div>
+                {{ $navbar }}
             </nav>
         @endisset
 

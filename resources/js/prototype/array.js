@@ -147,3 +147,9 @@ Array.prototype.removeWhere = function (key, value) {
 
     return this
 }
+
+Array.prototype.random = function () {
+    if (!Array.isArray(this)) return this
+
+    return this[Math.floor(Math.random() * this.length)]
+}
