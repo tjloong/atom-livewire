@@ -508,14 +508,9 @@ if (!function_exists('js')) {
 
 // seo
 if (!function_exists('seo')) {
-    function seo($seo)
+    function seo($value)
     {
-        if ($title = get($seo, 'title')) config(['atom.meta_title' => $title]);
-        if ($description = get($seo, 'description')) config(['atom.meta_description' => $description]);
-        if ($image = get($seo, 'image')) config(['atom.meta_image' => $image]);
-        if ($hreflang = get($seo, 'hreflang')) config(['atom.hreflang' => $hreflang]);
-        if ($canonical = get($seo, 'canonical')) config(['atom.canonical' => $canonical]);
-        if ($jsonld = get($seo, 'jsonld')) config(['atom.jsonld' => $jsonld]);
+        config(['app.html_meta' => $value]);
     }
 }
 

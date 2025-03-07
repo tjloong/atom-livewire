@@ -93,8 +93,11 @@ class Html
     {
         $title = collect([
             !app()->environment('production') ? '['.app()->environment().']' : null,
-            config('atom.meta_title') ?? settings('meta_title') ?? config('app.name') ?? '',
+            env('HTML_META_TITLE') ?? config('app.html_meta.title') ?? settings('meta_title') ?? config('app.name') ?? '',
         ])->filter()->join(' ');
+
+        $description = env('HTML_META_DESCRIPTION') ?? config('app.html_meta.description') ?? settings('meta_description') ?? '';
+        $image = env('HTML_META_IMAGE') ?? config('app.html_meta.image') ?? settings('meta_image') ?? '';
 
         $jsonld = [
             '@context' => 'http://schema.org',
@@ -106,11 +109,11 @@ class Html
         $config = (object) [
             'lang' => (string) str(app()->currentLocale())->replace('_', '-'),
             'title' => $title,
-            'description' => strip_tags(config('atom.meta_description') ?? settings('meta_description') ?? ''),
-            'image' => config('atom.meta_image') ?? settings('meta_image') ?? '',
-            'hreflang' => config('atom.hreflang'),
-            'canonical' => config('atom.canonical'),
-            'jsonld' => config('atom.jsonld') ?? $jsonld,
+            'description' => str()->limit(strip_tags($description), 255),
+            'image' => $image,
+            'hreflang' => env('HTML_META_HREFLANG') ?? config('app.html_meta.hreflang'),
+            'canonical' => env('HTML_META_CANONICAL') ?? config('app.html_meta.canonical'),
+            'jsonld' => env('HTML_META_JSONLD') ?? config('app.html_meta.jsonld') ?? $jsonld,
             'favicon' => $this->favicon(),
             'gfonts' => $this->gfonts(),
             'gtm' => env('GOOGLE_TAG_MANAGER_ID'),
