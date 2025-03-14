@@ -438,8 +438,21 @@ if (!function_exists('util')) {
             public function __construct(public $value) {}
 
             public function __call($name, $args) {
-                if ($this->value) $args['value'] = $this->value;
+                if ($this->value) $args = [$this->value, ...$args];
                 return \Jiannius\Atom\Services\Util::$name(...$args);
+            }
+        };
+    }
+}
+
+if (!function_exists('num')) {
+    function num($value = null)
+    {
+        return new class ($value) {
+            public function __construct(public $value) {}
+            public function __call($name, $args) {
+                if ($this->value) $args = [$this->value, ...$args];
+                return \Jiannius\Atom\Services\Number::$name(...$args);
             }
         };
     }

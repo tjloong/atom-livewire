@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Traits;
 
+use Illuminate\Support\Stringable;
+
 trait Enum
 {
     // option
@@ -37,6 +39,11 @@ trait Enum
     public function isNot(...$val) : bool
     {
         return !$this->is(...$val);
+    }
+
+    public function str() : Stringable
+    {
+        return new Stringable($this->value);
     }
 
     // snake

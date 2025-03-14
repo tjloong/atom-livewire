@@ -95,16 +95,9 @@ class Builder
                             }
                         }
                     }
-                    else if (
-                        ($cast = get($this->getModel()->getCasts(), $col))
-                        && ($enum = enum($cast))
-                        && $enum->ns
-                    ) {
-                        $value = is_array($value) ? $value : explode(',', $value);
-                        $value = collect($value)
-                            ->map(fn ($val) => trim($val))
-                            ->map(fn ($val) => optional($enum->get($val))->value ?? $val)
-                            ->filter();
+                    else if (($cast = get($this->getModel()->getCasts(), $col)) && enum_exists($cast)) {
+                        $value = is_string($value) ? collect(explode(',', $value)) : collect($value);
+                        $value = $value->map(fn ($val) => is_enum($val) ? $val->value : trim($val))->filter();
 
                         if ($value->count()) {
                             if (in_array($operator, ['!=', '<>'])) $this->whereNotIn($col, $value->values()->all());

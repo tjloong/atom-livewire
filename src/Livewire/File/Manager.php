@@ -27,7 +27,7 @@ class Manager extends Component
     public function getStorageProperty() : string
     {
         $sum = model('file')->sum('kb');
-        return util($sum)->filesize(unit: 'KB');
+        return num()->filesize($sum, 'KB');
     }
 
     public function getFilesProperty()

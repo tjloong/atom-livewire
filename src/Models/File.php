@@ -104,7 +104,7 @@ class File extends Model
     protected function size() : Attribute
     {
         return Attribute::make(
-            get: fn() => util($this->kb)->filesize(unit: 'KB'),
+            get: fn() => num()->filesize($this->kb, 'KB'),
         );
     }
 
