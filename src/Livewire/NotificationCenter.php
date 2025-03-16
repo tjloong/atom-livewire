@@ -51,14 +51,28 @@ class NotificationCenter extends Component
 
     public function read($id, $bool = true) : void
     {
-        model('notification')->find($id)->read($bool);
-        $this->remove($id);
+        $notification = model('notification')->find($id);
+
+        if ($notification && $notification->status->is('READ', 'UNREAD')) {
+            $notification->read($bool);
+            $this->remove($id);
+        }
     }
 
     public function archive($id, $bool = true) : void
     {
-        model('notification')->find($id)->archive($bool);
-        $this->remove($id);
+        if ($notification = model('notification')->find($id)) {
+            $notification->archive($bool);
+            $this->remove($id);
+        }
+    }
+
+    public function delete($id) : void
+    {
+        if ($notification = model('notification')->find($id)) {
+            $notification->delete();
+            $this->remove($id);
+        }
     }
 
     public function remove($id) : void

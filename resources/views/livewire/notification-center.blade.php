@@ -55,6 +55,10 @@ x-init="() => {
                                             x-on:click.stop="$wire.archive({{ js(get($row, 'id')) }}, true)">
                                         </atom:_button>
                                     @endif
+
+                                    <atom:_button icon="delete" size="sm" tooltip="delete"
+                                        x-on:click.stop="$wire.delete({{ js(get($row, 'id')) }})">
+                                    </atom:_button>
                                 </atom:group>
                             </div>
 
