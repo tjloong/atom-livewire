@@ -89,11 +89,11 @@ $attrs = $attributes
         </div>
 
         <atom:popover>
-            <atom:menu>
+            <atom:menu class="max-w-screen-md">
                 <div class="divide-y">
-                    <div class="flex divide-x overflow-auto max-w-md md:max-w-full">
+                    <div class="flex divide-x overflow-auto max-w-xl md:max-w-full">
                         <template x-if="config.range" hidden>
-                            <div class="max-w-sm min-w-56 pb-2">
+                            <div class="shrink-0 w-40 pb-2">
                                 <template x-for="(item, key) in shortcuts" hidden>
                                     <atom:menu-item x-on:click="selectShortcut(item[0], item[1])">
                                         <div x-text="t(key)"></div>

@@ -1,6 +1,6 @@
 @php
 $classes = $attributes->classes()
-    ->add('group/menu p-1 rounded-lg shadow-sm border border-zinc-200 bg-white min-w-56 max-w-screen-md')
+    ->add('group/menu p-1 rounded-lg shadow-sm border border-zinc-200 bg-white min-w-56')
     ;
 
 $attrs = $attributes->class($classes);
