@@ -21,18 +21,19 @@ x-init="() => {
                 @t('notification-center')
             </atom:_heading>
 
-            <atom:tabs wire:model="tab">
+            <atom:tabs wire:model="tab" class="text-sm w-full">
                 <atom:tab value="unread">@t('unread')</atom:tab>
                 <atom:tab value="read">@t('read')</atom:tab>
                 <atom:tab value="archived">@t('archived')</atom:tab>
             </atom:tabs>
 
-            <div class="space-y-4">
+            <div class="space-y-3">
                 @forelse ($notifications as $row)
-                    <atom:card inset
-                        wire:key="notification-{{ get($row, 'id') }}"
-                        x-on:click="$wire.read({{ js(get($row, 'id')) }}).then(() => Atom.goto({{ js(get($row, 'href')) }}))">
-                        <div class="group relative p-4 space-y-2 cursor-pointer">
+                    <atom:card
+                    inset
+                    wire:key="notification-{{ get($row, 'id') }}"
+                    x-on:click="$wire.read({{ js(get($row, 'id')) }}).then(() => Atom.goto({{ js(get($row, 'href')) }}))">
+                        <div class="group relative p-4 cursor-pointer">
                             <div class="absolute top-4 right-4 items-center hidden group-hover:block">
                                 <atom:group type="buttons">
                                     @if (get($row, 'archived_at'))
@@ -56,31 +57,27 @@ x-init="() => {
                                     @endif
                                 </atom:group>
                             </div>
-                                
-                            <div class="flex items-center gap-2 text-muted">
-                                <div class="grow flex items-center gap-2">
-                                    <div class="shrink-0 w-5 h-5 rounded-full bg-zinc-200 flex items-center justify-center text-xs leading-none border">
-                                        @e(substr(get($row, 'sender.name'), 0, 1))
-                                    </div>
 
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-muted-more">
                                     <div class="grow font-medium text-sm">
                                         @e(get($row, 'sender.name'))
                                     </div>
+
+                                    <div class="shrink-0 text-sm group-hover:hidden">
+                                        @e(get($row, 'timestamp'))
+                                    </div>
                                 </div>
 
-                                <div class="shrink-0 text-sm group-hover:hidden">
-                                    @e(get($row, 'timestamp'))
-                                </div>
-                            </div>
+                                @if ($title = get($row, 'title'))
+                                    <div class="font-medium">
+                                        @ee(str()->limit($title, 80))
+                                    </div>
+                                @endif
 
-                            @if ($title = get($row, 'title'))
-                                <div class="font-medium">
-                                    @ee(str()->limit($title, 80))
+                                <div class="text-muted">
+                                    @ee(str()->limit(strip_tags(get($row, 'content')), 100))
                                 </div>
-                            @endif
-
-                            <div class="text-muted">
-                                @ee(str()->limit(strip_tags(get($row, 'content')), 100))
                             </div>
                         </div>
                     </atom:card>
