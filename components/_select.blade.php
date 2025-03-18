@@ -204,7 +204,11 @@ $attrs = $attributes
             </button>
         </div>
 
-        <atom:popover wire:ignore.self x-ref="options" x-on:popover-open="setWidth()">
+        <atom:popover
+        wire:ignore.self
+        x-ref="options"
+        x-on:popover-open="setWidth()"
+        class="max-w-screen-lg">
             <atom:menu>
                 <template x-if="searchable" hidden>
                     <div class="py-3 px-4 flex items-center gap-2 border-b">

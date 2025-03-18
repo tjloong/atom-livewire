@@ -7,7 +7,6 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
 {
-    // redirect
     public function redirect() : mixed
     {        
         $provider = request()->provider;
@@ -20,7 +19,6 @@ class SocialiteController extends Controller
         return Socialite::driver($provider)->with($qs)->redirect();
     }
 
-    // callback
     public function callback() : mixed
     {
         $provider = request()->provider;
@@ -41,14 +39,19 @@ class SocialiteController extends Controller
         }
     }
 
-    // check is enabled
     public function enabled($provider) : void
     {
-        if (
-            empty(config('services.'.$provider.'.client_id'))
-            || empty(config('services.'.$provider.'.client_secret'))
-        ) {
+        $clientId = env(strtoupper($provider.'_client_id'));
+        $clientSecret = env(strtoupper($provider.'_client_secret'));
+
+        if (!$clientId || !$clientSecret) {
             abort(404);
         }
+
+        config(['services.'.$provider => [
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
+            'redirect' => route('socialite.callback', ['provider' => $provider]),
+        ]]);
     }
 }
