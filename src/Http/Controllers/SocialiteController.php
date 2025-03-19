@@ -3,6 +3,7 @@
 namespace Jiannius\Atom\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Jiannius\Atom\Atom;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
@@ -12,46 +13,37 @@ class SocialiteController extends Controller
         $provider = request()->provider;
         $qs = request()->query();
 
-        $this->enabled($provider);
+        if (Atom::action('configure-socialite', $provider)) {
+            if ($qs) {
+                session(['socialite-qs' => $qs]);
+                return Socialite::driver($provider)->with($qs)->redirect();
+            }
 
-        if ($qs) session(['socialite-qs' => $qs]);
+            return Socialite::driver($provider)->redirect();
+        }
 
-        return Socialite::driver($provider)->with($qs)->redirect();
+        abort(404);
     }
 
     public function callback() : mixed
     {
         $provider = request()->provider;
 
-        $this->enabled($provider);
+        if (Atom::action('configure-socialite', $provider)) {
+            try {
+                $user = Socialite::driver($provider)->user();
+                $token = $user->token;
+                $route = model('user')->where('email', $user->getEmail())->count() ? 'login' : 'register';
+                $query = session('socialite-query', []);
 
-        try {
-            $user = Socialite::driver($provider)->user();
-            $token = $user->token;
-            $route = model('user')->where('email', $user->getEmail())->count() ? 'login' : 'register';
-            $query = session('socialite-query', []);
-    
-            session()->forget('socialite-query');
-    
-            return to_route($route, array_merge(compact('token', 'provider'), $query));
-        } catch (\Exception $e) {
-            return to_route('web.home');
-        }
-    }
+                session()->forget('socialite-query');
 
-    public function enabled($provider) : void
-    {
-        $clientId = env(strtoupper($provider.'_client_id'));
-        $clientSecret = env(strtoupper($provider.'_client_secret'));
-
-        if (!$clientId || !$clientSecret) {
-            abort(404);
+                return to_route($route, array_merge(compact('token', 'provider'), $query));
+            } catch (\Exception $e) {
+                return to_route('web.home');
+            }
         }
 
-        config(['services.'.$provider => [
-            'client_id' => $clientId,
-            'client_secret' => $clientSecret,
-            'redirect' => route('socialite.callback', ['provider' => $provider]),
-        ]]);
+        return to_route('web.home');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Actions;
 
+use Jiannius\Atom\Atom;
 use Laravel\Socialite\Facades\Socialite;
 
 class GetSocialiteUser
@@ -17,6 +18,7 @@ class GetSocialiteUser
         $provider = get($this->params, 'provider');
 
         if (!$token || !$provider) return;
+        if (!Atom::action('configure-socialite', $provider)) return;
 
         $socialite = Socialite::driver($provider)->userFromToken($token);
         $email = $socialite?->getEmail();

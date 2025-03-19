@@ -140,6 +140,10 @@ $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
                     </div>
                 @endif
             </div>
+        @elseif (isset($actions))
+            <div {{ $actions->attributes->class('z-1 absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pr-3 right-0') }}>
+                {{ $actions }}
+            </div>
         @endif
     </div>
 @endif

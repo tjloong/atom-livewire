@@ -4,7 +4,6 @@ namespace Jiannius\Atom\Actions;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
-use Laravel\Socialite\Facades\Socialite;
 
 class Login
 {
