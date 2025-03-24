@@ -68,7 +68,12 @@ $attrs = $attributes->except(['option', 'label', 'badge', 'badge-color']);
                     </template>
 
                     <div class="grow">
+                        @if ($slot->isNotEmpty())
+                        <div class="text-wrap" data-option-label>{{ $slot }}</div>
+                        @else
                         <div x-text="optLabel" class="text-wrap" data-option-label></div>
+                        @endif
+
                         <template x-if="optCaption" hidden>
                             <div x-text="optCaption" class="text-sm text-muted truncate" data-option-caption></div>
                         </template>
