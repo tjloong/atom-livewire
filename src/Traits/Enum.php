@@ -14,8 +14,11 @@ trait Enum
     {
         if (!is_string($name)) return $name;
 
-        return static::tryFrom($name)
-            ?? static::all()->first(fn ($case) => $case->is(strtoupper($name)));
+        if ($value = static::tryFrom($name)) return $value;
+
+        $name = str($name)->upper()->replace('-', '_')->replace(' ', '_')->toString();
+
+        return static::all()->first(fn ($case) => $case->is($name));
     }
 
     /**
