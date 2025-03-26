@@ -25,9 +25,8 @@ $attrs = $attributes->except('type');
         {{ $slot }}
     </div>
 @elseif ($type === 'badges')
-    <div
-        @if ($max)
-        x-data="{
+    @if ($max)
+        <div x-data="{
             get badges () {
                 return Array.from(this.$root.querySelectorAll(':scope > *'))
                     .filter(child => (!child.hasAttribute('data-overlimit-badge')))
@@ -36,15 +35,9 @@ $attrs = $attributes->except('type');
             isOverLimit () {
                 return this.badges.length > @js($max)
             },
-        }"
-        @endif
-        {{ $attrs->class([
-            'group/group flex items-center gap-2 flex-wrap',
-            $max ? '[&>*:nth-child(n+'.($max + 1).')]:hidden' : '',
-        ]) }}>
-        {{ $slot }}
+        }" class="group/group flex items-center gap-2 flex-wrap [&>[data-atom-badge]:nth-child(n+{{ $max + 1 }})]:hidden">
+            {{ $slot }}
 
-        @if ($max)
             <div style="display: inherit" data-overlimit-badge>
                 <div
                     x-show="isOverLimit()"
@@ -52,8 +45,12 @@ $attrs = $attributes->except('type');
                     class="text-sm text-muted font-medium">
                 </div>
             </div>
-        @endif
-    </div>
+        </div>
+    @else
+        <div class="group/group flex items-center gap-2 flex-wrap">
+            {{ $slot }}
+        </div>
+    @endif
 @else
     <div {{ $attrs->class(['group/group flex flex-col gap-6 [&>[data-atom-heading]]:-mb-3']) }}>
         {{ $slot }}

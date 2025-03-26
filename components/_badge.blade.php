@@ -30,7 +30,7 @@ $attrs = $attributes
     ;
 @endphp
 
-<div {{ $attrs }}>
+<div {{ $attrs }} data-atom-badge>
     <div class="grow truncate">
         @if ($slot->isNotEmpty())
             {{ $slot }}
