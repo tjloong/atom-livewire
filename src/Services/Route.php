@@ -72,7 +72,6 @@ class Route
     // create default route
     public function default() : void
     {
-        $this->get('__sitemap', 'SitemapController')->name('__sitemap');
         $this->post('__recaptcha', 'RecaptchaController')->withoutMiddleware('web')->name('__recaptcha');
     }
 

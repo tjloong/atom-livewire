@@ -28,8 +28,13 @@ Route::middleware('web')->group(function () {
 });
 
 Route::get('__icons.js', fn () => \Jiannius\Atom\Services\Icon::jsResponse())->name('__icons.js');
+
 Route::get('__lang.js', fn () => \Jiannius\Atom\Services\Lang::jsResponse())->withoutMiddleware('web')->name('__lang.js');
 Route::get('__lang/{lang?}', function ($lang = null) {
     session()->put('__lang', $lang ?? user()?->settings('locale') ?? config('atom.locale') ?? 'en');
     return redirect(user()?->home() ?? '/');
 })->name('__lang');
+
+Route::get('__sitemap', function () {
+    return response()->view('sitemap')->header('Content-Type', 'application/xml');
+})->name('__sitemap');
