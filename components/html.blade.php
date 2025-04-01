@@ -105,13 +105,16 @@ document.addEventListener('alpine:initialized', () => {
 </script>
 @endif
 
-@if ($sheet = session()->pull('__sheet'))
+@if ($sheets = session()->pull('__sheets'))
 <script>
 document.addEventListener('alpine:initialized', () => {
-    let name = {{ js($sheet['name']) }}
-    let action = {{ js($sheet['action']) }}
-    let data = {{ js($sheet['data']) }}
-    Atom.sheet(name)[action](data)
+    {{ js($sheets) }}.forEach(sheet => {
+        let name = sheet.name
+        let action = sheet.action
+        let data = sheet.data
+        let silent = sheet.silent
+        Atom.sheet(name)[action](data, silent)
+    })
 })
 </script>
 @endif

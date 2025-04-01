@@ -4,10 +4,10 @@ export default (name, label = null) => {
     }
 
     return {
-        show: (data) => dispatch('sheet-show', { name, label, data }),
+        show: (data, silent = false) => dispatch('sheet-show', { name, label, data, silent }),
         label: (label) => dispatch('sheet-label', { name, label }),
-        back: () => dispatch('sheet-back'),
-        close: () => dispatch('sheet-back'),
+        back: (silent = false) => dispatch('sheet-back', { silent }),
+        close: (silent = false) => dispatch('sheet-back', { silent }),
         refresh: () => dispatch('sheet-refresh', { name }),
     }
 }

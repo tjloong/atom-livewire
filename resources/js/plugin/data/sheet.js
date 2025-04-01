@@ -31,6 +31,7 @@ export default (config) => {
             let name = typeof args === 'string' ? args : args.name
             let label = typeof args === 'string' ? null : args.label
             let data = typeof args === 'string' ? null : args.data
+            let silent = typeof args === 'string' ? null : args.silent
 
             if (name !== config.name) return
 
@@ -43,21 +44,24 @@ export default (config) => {
 
             if (active) {
                 if (label) active.label = label
-                this.moveTo(active).then(() => this.layering())
+                this.moveTo(active).then(() => !silent && active.el.dispatch('open', data))
             }
             else {
                 window.sheet.active.push({ ...sheet, label: label || sheet.label })
                 this.layering()
-                    .then(() => sheet.el.dispatch('open', data))
+                    .then(() => !silent && sheet.el.dispatch('open', data))
                     .then(() => Atom.dispatch('sheet-changed', data))
                     .then(() => Livewire.emit('sheetChanged', data))
             }
         },
 
         moveTo (sheet) {
-            return new Promise((resolve, reject) => {
-                if (+sheet.el.style.zIndex - 1 === window.sheet.active.lastIndex()) return
+            // already at the sheet, no need move
+            if (+sheet.el.style.zIndex - 1 === window.sheet.active.lastIndex()) {
+                return new Promise((resolve) => resolve())
+            }
 
+            return new Promise((resolve, reject) => {
                 let from = window.sheet.active.findIndexWhere('name', sheet.name) + 1
                 let to = window.sheet.active.lastIndex()
                 let removables = window.sheet.active.filter((s, i) => (i >= from && i <= to))
@@ -73,16 +77,16 @@ export default (config) => {
                             }
                         })
                 })
-            })
+            }).then(() => this.layering())
         },
 
-        back () {
+        back (args) {
             if (window.sheet.active.lastIndex() !== +this.$root.style.zIndex - 1) return
             if (window.sheet.active.length <= 1) return
 
             let sheet = window.sheet.active.last()
             this.remove(sheet)
-                .then(() => sheet.el.dispatch('close'))
+                .then(() => !args?.silent && sheet.el.dispatch('close'))
                 .then(() => Atom.dispatch('sheet-changed'))
                 .then(() => this.layering())
         },
