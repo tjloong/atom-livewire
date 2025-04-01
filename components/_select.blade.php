@@ -27,7 +27,8 @@ $size = $multiple || $variant === 'listbox'
     : ($size === 'sm' ? 'h-8 text-sm' : 'h-10');
 
 $classes = $attributes->classes()
-    ->add('appearance-none w-full pr-10 text-zinc-700 text-left')
+    ->add('appearance-none w-full text-zinc-700 text-left')
+    ->add($hasAddButton || isset($addButton) ? 'pr-20' : 'pr-10')
     ->add($variant === 'native' && $multiple ? '' : 'py-2')
     ->add('border rounded-lg shadow-sm bg-white')
     ->add('focus:outline-none focus:border-primary has-[:focus]:border-primary group-focus/input:border-primary hover:border-primary-300')
@@ -169,7 +170,7 @@ $attrs = $attributes
                         @isset ($selected)
                             {{ $selected }}
                         @else
-                            <div x-html="selected.html"></div>
+                            <div x-html="selected.html" class="group/select-selected"></div>
                         @endisset
                     </template>
                 @endif
@@ -181,35 +182,37 @@ $attrs = $attributes
                 </template>
 
                 <template x-if="!(!visible && loading)">
-                    <div class="z-1 absolute top-0 bottom-0 right-0 flex items-center">
+                    <div class="z-1 absolute top-0 bottom-0 right-0 flex">
                         @if ($multiple === 'list')
-                            <div class="h-full pointer-events-none py-3 pl-3 pr-2 last:pr-3">
+                            <div class="pointer-events-none py-3 pl-3 pr-2 last:pr-3">
                                 <atom:icon dropdown/>
                             </div>
                         @else
                             <template x-if="isEmpty" hidden>
-                                <div class="h-full pointer-events-none py-3 pr-2 last:pr-3">
+                                <div class="pointer-events-none py-3 pr-2 last:pr-3">
                                     <atom:icon dropdown/>
                                 </div>
                             </template>
 
                             <template x-if="!isEmpty" hidden>
-                                <div x-on:click.stop="clear()" class="h-full flex items-center justify-center cursor-pointer py-3 pl-3 pr-2 last:pr-3">
+                                <div x-on:click.stop="clear()" class="cursor-pointer py-3 pl-3 pr-2 last:pr-3">
                                     <atom:icon close size="14"/>
                                 </div>
                             </template>
                         @endif
 
                         @if (isset($addButton))
-                            <div x-on:click.stop>
+                            <div x-on:click.stop class="p-1 cursor-pointer">
                                 {{ $addButton }}
                             </div>
                         @elseif ($hasAddButton)
                             <div
                             x-tooltip="t('add-new')"
                             x-on:click.stop="$dispatch('add')"
-                            class="h-10 p-3 flex items-center justify-center cursor-pointer border-l">
-                                <atom:icon add/>
+                            class="p-1 cursor-pointer">
+                                <div class="p-2 h-[2.15rem] bg-zinc-100 rounded">
+                                    <atom:icon add/>
+                                </div>
                             </div>
                         @endif
                     </div>

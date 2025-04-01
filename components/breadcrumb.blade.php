@@ -80,7 +80,7 @@ $attrs = $attributes->except(['traces']);
                         <div class="flex items-center gap-2 truncate">
                             <a
                             x-text="trace.label"
-                            x-on:click="Atom.sheet(trace.name).show()"
+                            x-on:click="Atom.sheet(trace.name).show({}, true)"
                             class="font-medium truncate whitespace-nowrap"></a>
                             <atom:icon right class="shrink-0 text-muted-more"/>
                         </div>

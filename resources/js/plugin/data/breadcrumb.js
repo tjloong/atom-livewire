@@ -10,10 +10,7 @@ export default () => {
 
         build () {
             let target = window.sheet.active.findIndexWhere('name', this.sheet)
-
-            this.traces = window.sheet.active
-                .filter((value, index) => (index <= target))
-                .map(({ name, label }) => ({ name, label }))
+            this.traces = window.sheet.active.filter((value, index) => (index <= target))
         },
     }
 }

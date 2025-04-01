@@ -131,17 +131,6 @@ trait AtomComponent
         return $query->paginate($max);
     }
 
-    // get select options
-    public function getOptions($data)
-    {
-        throw_if(!get($data, 'id'), \Exception::class, 'Missing option ID');
-
-        $this->options[get($data, 'id')] = Atom::action('get-options', [
-            'name' => get($data, 'name'),
-            'filters' => get($data, 'filters'),
-        ]);
-    }
-
     // fill properties into other component
     public function fillTo($component, $props)
     {
@@ -166,21 +155,6 @@ trait AtomComponent
         $method = get($props, 'method');
         $props = get($props, 'props');
         $this->$method(...$props);
-    }
-
-    // perform an action
-    public function action($name, $props)
-    {
-        $response = Atom::action($name, $props);
-
-        if (
-            $response instanceof \Illuminate\Database\Eloquent\Model
-            || $response instanceof \Illuminate\Support\Collection
-        ) {
-            return $response->toArray();
-        }
-
-        return $response;
     }
 
     // refresh component

@@ -26,11 +26,10 @@ export default (config) => {
         init () {
             this.$watch('text', () => this.fetch())
             this.$watch('value', () => this.$nextTick(() => this.getSelected()))
-            this.$nextTick(() => {
-                if ((this.multiple && this.value?.length) || (!this.multiple && this.value)) {
-                    this.fetch().then(() => this.getSelected())
-                }
-            })
+
+            if ((this.multiple && this.value?.length) || (!this.multiple && this.value)) {
+                this.$nextTick(() => this.getSelected())
+            }
         },
 
         open () {
@@ -63,7 +62,12 @@ export default (config) => {
             }
             else {
                 return new Promise((resolve) => {
-                    this.options = [...(config.options || [])]
+                    this.options = [...(
+                        config.options
+                        || this.getOptionsElements()
+                            .map(node => (node.querySelector('* > div')))
+                            .map(node => (JSON.parse(node.getAttribute('data-option-body') || 'null')))
+                    )]
 
                     if (this.text && this.options.length) {
                         this.options = this.options.filter(opt => (opt.label.toLowerCase().includes(this.text.toLowerCase())))
@@ -174,16 +178,18 @@ export default (config) => {
         },
 
         getSelected () {
-            let els = this.getOptionsElements()
-                .map(node => (node.querySelector('* > div')))
-                .map(node => (JSON.parse(node.getAttribute('data-option-body') || 'null')))
-                .filter(option => {
-                    return Array.isArray(this.value)
-                        ? this.value.some(val => (val == option.value))
-                        : this.value == option.value
-                })
+            let getter = () => this.options.filter(option => {
+                return Array.isArray(this.value)
+                    ? this.value.some(val => (val == option.value))
+                    : this.value == option.value
+            })
 
-            this.selected = this.multiple ? els : els[0]
+            let setter = (items) => this.selected = this.multiple ? items : items[0]
+
+            let sel = getter()
+
+            if (sel.length) setter(sel)
+            else this.fetch().then(() => setter(getter()))
         },
 
         scroll () {
