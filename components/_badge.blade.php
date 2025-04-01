@@ -3,6 +3,7 @@ $status = $attributes->get('status');
 $size = $attributes->get('size');
 $icon = $attributes->get('icon');
 $color = $attributes->get('color') ?? (is_enum($status) ? $status->color() : get($status, 'color'));
+$label = $attributes->get('label') ?? (is_enum($status) ? $status->label() : get($status, 'label')) ?? $slot->toHTML();
 
 $classes = $attributes->classes()
     ->add('inline-flex items-center justify-center font-medium whitespace-nowrap border max-w-xs')
@@ -32,10 +33,6 @@ $attrs = $attributes
 
 <div {{ $attrs }} data-atom-badge>
     <div class="grow truncate">
-        @if ($slot->isNotEmpty())
-            {{ $slot }}
-        @elseif (is_enum($status))
-            {{ $status->label() }}
-        @endif
+        {!! $label !!}
     </div>
 </div>

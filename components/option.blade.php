@@ -1,6 +1,7 @@
 @aware(['variant', 'multiple'])
 
 @php
+$variant = $variant ?? 'native';
 $option = $attributes->get('option');
 $value = $attributes->get('value') ?? get($option, 'value');
 $label = $attributes->get('label') ?? get($option, 'label');
@@ -10,89 +11,13 @@ $caption = $attributes->get('caption') ?? get($option, 'caption');
 $note = $attributes->get('note') ?? get($option, 'note');
 $badge = $attributes->get('badge') ?? get($option, 'badge');
 $badgeColor = $attributes->get('badge-color') ?? get($option, 'badge_color');
+$tag = $attributes->get('tag') ?? get($option, 'tag');
 $meta = $attributes->get('meta') ?? get($option, 'meta');
+$html = $slot->toHTML();
 $attrs = $attributes->except(['option', 'label', 'badge', 'badge-color']);
 @endphp
 
-@if ($variant === 'listbox' || $multiple)
-    <li x-on:mouseover="moveTo($el)" x-on:mouseout="moveTo($el, false)" data-atom-option {{ $attrs->except('value') }}>
-        <div
-            @if ($attributes->get('x-model') === 'option')
-            x-data="{
-                optValue: option.value,
-                optLabel: option.label,
-                optCaption: option.caption,
-                optAvatar: option.avatar,
-                optColor: option.color,
-                optBadge: option.badge,
-                optBadgeColor: option.badge_color,
-                optNote: option.note,
-                optMeta: JSON.stringify(option.meta),
-            }"
-            @else
-            x-data="{
-                optValue: @js($value),
-                optLabel: @js($label),
-                optCaption: @js($caption),
-                optAvatar: @js($avatar),
-                optColor: @js($color),
-                optBadge: @js($badge),
-                optBadgeColor: @js($badgeColor),
-                optNote: @js($note),
-                optMeta: @js($meta),
-            }"
-            @endif
-            x-on:click="select(optValue)"
-            x-bind:data-option-value="optValue"
-            x-bind:data-option-meta="optMeta"
-            x-bind:data-option-selected="isSelected(@if ($value) {{ js($value) }} @else option.value @endif)"
-            class="p-2 flex gap-3 cursor-default rounded-md data-[option-selected]:bg-zinc-800/5 [[data-option-focus]>&]:bg-zinc-800/5">
-            <div class="shrink-0 w-6 h-6 flex items-center justify-center text-transparent [[data-option-selected]>&]:text-zinc-400">
-                <atom:icon check/>
-            </div>
-
-            <div class="grow" data-option-content>
-                <div class="flex gap-2">
-                    {{-- <template x-if="optAvatar" hidden>
-                        <div class="shrink-0" data-option-avatar>
-                            <atom:avatar :avatar="$avatar" size="20">
-                                @t($label)
-                            </atom:avatar>
-                        </div>
-                    </template> --}}
-
-                    <template x-if="optColor" hidden>
-                        <div class="shrink-0 flex items-center justify-center">
-                            <div x-bind:style="{ backgroundColor: optColor }" class="size-4 rounded-md" data-option-color></div>
-                        </div>
-                    </template>
-
-                    <div class="grow">
-                        @if ($slot->isNotEmpty())
-                        <div class="text-wrap" data-option-label>{{ $slot }}</div>
-                        @else
-                        <div x-text="optLabel" class="text-wrap" data-option-label></div>
-                        @endif
-
-                        <template x-if="optCaption" hidden>
-                            <div x-text="optCaption" class="text-sm text-muted truncate" data-option-caption></div>
-                        </template>
-                    </div>
-
-                    {{-- @if ($badge)
-                        <div class="shrink-0" data-option-badge>
-                            <atom:_badge :color="$badgeColor" size="xs">@t($badge)</atom:_badge>
-                        </div>
-                    @elseif ($note)
-                        <div class="shrink-0 text-right text-sm" data-option-note>
-                            @t($note)
-                        </div>
-                    @endif --}}
-                </div>
-            </div>
-        </div>
-    </li>
-@else
+@if ($variant === 'native')
     <option data-atom-option {{ $attrs }}>
         @if ($slot->isNotEmpty())
             {{ $slot }}
@@ -100,4 +25,46 @@ $attrs = $attributes->except(['option', 'label', 'badge', 'badge-color']);
             {{ t($label) }}
         @endif
     </option>
+@else
+    <li x-on:mouseover="moveTo($el)" x-on:mouseout="moveTo($el, false)" data-atom-option {{ $attrs->except('value') }}>
+        <div
+            @if (!$attributes->get('x-model'))
+            x-data="{
+                option: @js([
+                    'value' => $value,
+                    'label' => $label,
+                    'caption' => $caption,
+                    'avatar' => $avatar,
+                    'color' => $color,
+                    'badge' => $badge,
+                    'badgeColor' => $badgeColor,
+                    'note' => $note,
+                    'tag' => $tag,
+                    'meta' => $meta,
+                    'html' => $html,
+                ]),
+
+                init () {
+                    if (!this.option.html) {
+                        let color = this.option.color ? `<div style='background-color: ${this.option.color}' class='shrink-0 w-3 h-3 rounded-full bg-zinc-100 flex items-center justify-center'></div>` : ''
+                        this.option.html = `<div class='flex items-center gap-2'>${color}<span>${this.option.label}</span></div>`
+                    }
+                },
+            }"
+            @elseif ($attributes->get('x-model') !== 'option')
+            x-data="{
+                option: { ...{{ $attributes->get('x-model') }}},
+            }"
+            @endif
+            x-on:click="select(option.value)"
+            x-bind:data-option-body="Atom.json(option)"
+            x-bind:data-option-selected="isSelected(option.value)"
+            class="p-2 flex gap-3 cursor-default rounded-md data-[option-selected]:bg-zinc-800/5 [[data-option-focus]>&]:bg-zinc-800/5">
+            <div class="shrink-0 w-6 h-6 flex items-center justify-center text-transparent [[data-option-selected]>&]:text-zinc-400">
+                <atom:icon check/>
+            </div>
+
+            <div x-html="option.html" class="grow" data-option-content></div>
+        </div>
+    </li>
 @endif

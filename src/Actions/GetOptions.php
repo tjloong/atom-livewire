@@ -2,6 +2,8 @@
 
 namespace Jiannius\Atom\Actions;
 
+use Illuminate\Support\Facades\Blade;
+
 class GetOptions
 {
     public $name;
@@ -24,10 +26,29 @@ class GetOptions
 
     public function run()
     {
-        if (str($this->name)->startsWith('enum.')) return $this->getEnums();
-        else if (str($this->name)->startsWith(['label', 'labels'])) return $this->getLabels();
-        else if (method_exists($this, $this->name)) return $this->{$this->name}();
-        else return $this->getFromJson();
+        $options = match (true) {
+            str($this->name)->startsWith('enum.') =>  $this->getEnums(),
+            str($this->name)->startsWith(['label', 'labels']) =>  $this->getLabels(),
+            method_exists($this, $this->name) => $this->{$this->name}(),
+            default => $this->getFromJson(),
+        };
+
+        return collect($options)->map(function ($option) {
+            if (get($option, 'html')) return $option;
+
+            $label = '<div class="text-wrap">'.get($option, 'label').'</div>';
+            $caption = get($option, 'caption') ? '<div class="text-muted text-wrap">'.get($option, 'caption').'</div>' : '';
+
+            return [
+                ...$option,
+                'html' => <<<EOF
+                <div class="w-full">
+                    {$label}
+                    {$caption}
+                </div>
+                EOF,
+            ];
+        })->toArray();
     }
 
     public function countries() : array

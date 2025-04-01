@@ -176,23 +176,12 @@ export default (config) => {
         getSelected () {
             let els = this.getOptionsElements()
                 .map(node => (node.querySelector('* > div')))
-                .filter(node => {
-                    let nodeValue = node.getAttribute('data-option-value')
+                .map(node => (JSON.parse(node.getAttribute('data-option-body') || 'null')))
+                .filter(option => {
                     return Array.isArray(this.value)
-                        ? this.value.some(val => (val == nodeValue))
-                        : this.value == nodeValue
+                        ? this.value.some(val => (val == option.value))
+                        : this.value == option.value
                 })
-                .map(node => ({
-                    value: node.getAttribute('data-option-value'),
-                    label: node.querySelector('[data-option-label]')?.innerHTML,
-                    badge: node.querySelector('[data-option-badge]')?.innerHTML,
-                    caption: node.querySelector('[data-option-caption]')?.innerHTML,
-                    color: node.querySelector('[data-option-color]')?.style?.backgroundColor,
-                    note: node.querySelector('[data-option-note]')?.innerHTML,
-                    avatar: node.querySelector('[data-option-avatar]')?.innerHTML,
-                    content: node.querySelector('[data-option-content]')?.innerHTML,
-                    meta: JSON.parse(node.getAttribute('data-option-meta') || 'null'),
-                }))
 
             this.selected = this.multiple ? els : els[0]
         },
