@@ -13,7 +13,7 @@ $searchable = $attributes->get('searchable', false);
 $clearable = $attributes->get('clearable', true);
 $placeholder = $attributes->get('placeholder', 'Please select...');
 $transparent = $attributes->get('transparent');
-$hasAddButton = $attributes->has('x-on:add') || $attributes->wire('add')->value();
+$hasAddButton = $attributes->get('x-on:add') || $attributes->wire('add')->value();
 
 $field = $attributes->get('field') ?? $attributes->wire('model')->value();
 $required = $attributes->get('required') ?? $this->form['required'][$field] ?? false;

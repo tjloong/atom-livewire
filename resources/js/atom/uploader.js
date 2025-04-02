@@ -52,12 +52,12 @@ export default class {
 
         if (job) {
             let formdata = new FormData()            
-            
+
             formdata.append('files[]', job.file)
             if (this.config.path) formdata.append('path', this.config.path)
             if (this.config.visibility) formdata.append('visibility', this.config.visibility)
 
-            return Atom.ajax('/__file/upload').post(formdata).then(res => {
+            return Atom.action('upload-file', formdata).then(res => {
                 job.res = res
                 job.completed = true
                 this.progress()

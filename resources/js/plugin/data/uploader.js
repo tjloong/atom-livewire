@@ -4,6 +4,7 @@ export default (config) => {
         max: config.max,
         accept: config.accept,
         multiple: config.multiple,
+        visibility: config.visibility,
         trigger: null,
 
         init () {
@@ -14,7 +15,11 @@ export default (config) => {
                 if (children.length === 1 && children[0].tagName === 'BUTTON') this.trigger = children[0]
             }
 
-            this.trigger?.addEventListener('click', () => this.$refs.input.click())
+            this.trigger?.addEventListener('click', (e) => {
+                if (!this.trigger.hasClass('is-loading')) {
+                    this.$refs.input.click()
+                }
+            })
         },
 
         read (files) {
@@ -25,6 +30,7 @@ export default (config) => {
                     max: this.max,
                     accept: this.accept,
                     multiple: this.multiple,
+                    visibility: this.visibility,
                     progress: (value) => this.progress(value),
                 })
                 .then(res => {

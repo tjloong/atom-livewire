@@ -43,13 +43,6 @@ class File extends Model
 
     protected static function booted() : void
     {
-        static::creating(function ($file) {
-            $file->data = [
-                ...($file->data ??  []),
-                'env' => app()->environment(),
-            ];
-        });
-
         static::deleting(function($file) {
             $file->preventProductionDelete();
             $file->deleteFromDisk();
@@ -234,11 +227,19 @@ class File extends Model
         if ($this->is_image) {
             $endpoint = $this->getThumbnailName($endpoint, $size);
 
-            if ($isDo) $endpoint = $this->getDisk()->temporaryUrl($endpoint, now()->addHour());
+            if ($isDo) {
+                $endpoint = get($this->data, 'visibility') === 'public'
+                    ? $this->url
+                    : $this->getDisk()->temporaryUrl($endpoint, now()->addHour());
+            }
 
             return $endpoint ?? $e404;
         }
-        else if ($isDo) return $this->getDisk()->temporaryUrl($endpoint, now()->addHour());
+        else if ($isDo) {
+            return get($this->data, 'visibility') === 'public'
+                ? $this->url
+                : $this->getDisk()->temporaryUrl($endpoint, now()->addHour());
+        }
         else return $endpoint;
     }
 
@@ -358,6 +359,10 @@ class File extends Model
             'kb' => round($content->getSize()/1024, 5),
             'mime' => $content->getMimeType(),
             'disk' => env('FILESYSTEM_DISK', 'local'),
+            'data' => [
+                'env' => app()->environment(),
+                'visibility' => $visibility,
+            ],
         ]);
 
         $disk = $file->getDisk();

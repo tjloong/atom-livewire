@@ -23,7 +23,6 @@ Route::middleware('web')->group(function () {
         Route::get('__auth/{provider}/callback', [\Jiannius\Atom\Http\Controllers\SocialiteController::class, 'callback'])->name('socialite.callback');
     }
 
-    Route::post('__file/upload', [\Jiannius\Atom\Http\Controllers\FileController::class, 'upload'])->name('__file.upload');
     Route::post('__action/{action}', fn ($action) => response()->json(Atom::action($action, request()->all())));
 });
 

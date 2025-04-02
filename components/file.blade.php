@@ -49,9 +49,8 @@ $attrs = $attributes->except(['file', 'variant']);
 
         @if ($removeable)
             <div
-                x-tooltip="{{ js(t('remove')) }}"
-                x-on:click.stop="$dispatch('remove')"
-                class="shrink-0 text-muted-more flex justify-center cursor-pointer">
+            x-on:click.stop="$dispatch('remove')"
+            class="shrink-0 text-muted-more flex justify-center cursor-pointer">
                 <atom:icon delete/>
             </div>
         @endif
