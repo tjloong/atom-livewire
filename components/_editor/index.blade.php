@@ -37,68 +37,68 @@ $attrs = $attributes
 
 @if ($label || $caption)
     <atom:_input.field
-        :label="$label"
-        :caption="$caption"
-        :inline="$inline"
-        :required="$required"
-        :error="$error">
+    :label="$label"
+    :caption="$caption"
+    :inline="$inline"
+    :required="$required"
+    :error="$error">
         <atom:_editor :attributes="$attributes->except(['label', 'caption', 'error', 'inline'])"/>
     </atom:_input.field>
 @else
     <div
-        wire:ignore
-        x-cloak
-        x-data="{
-            content: @entangle($attributes->wire('model')),
-            lazy: {{ js($lazy) }},
-            transparent: {{ js($transparent) }},
+    wire:ignore
+    x-cloak
+    x-data="{
+        content: @entangle($attributes->wire('model')),
+        lazy: {{ js($lazy) }},
+        transparent: {{ js($transparent) }},
 
-            init () {
-                if (this.transparent) this.$refs.buttons.addClass('hidden')
+        init () {
+            if (this.transparent) this.$refs.buttons.addClass('hidden')
 
-                this.$watch('content', value => {
-                    if (!this.editor()) return
-                    if (value === this.getHtmlContent()) return
-                    this.commands().setContent(value, false)
-                })
-            },
+            this.$watch('content', value => {
+                if (!this.editor()) return
+                if (value === this.getHtmlContent()) return
+                this.commands().setContent(value, false)
+            })
+        },
 
-            sync () {
-                if (!this.editor().isEditable) return
-                if (this.editor().isEmpty) this.content = null
-                else this.content = this.getHtmlContent()
-            },
+        sync () {
+            if (!this.editor().isEditable) return
+            if (this.editor().isEmpty) this.content = null
+            else this.content = this.getHtmlContent()
+        },
 
-            editor () {
-                return this.$refs.editor?.editor
-            },
+        editor () {
+            return this.$refs.editor?.editor
+        },
 
-            can () {
-                return this.editor().can()
-            },
+        can () {
+            return this.editor().can()
+        },
 
-            commands () {
-                this.editor().chain().focus()
-                return this.editor().commands
-            },
+        commands () {
+            this.editor().chain().focus()
+            return this.editor().commands
+        },
 
-            getHtmlContent () {
-                return this.editor().getHTML()
-            },
+        getHtmlContent () {
+            return this.editor().getHTML()
+        },
 
-            getJsonContent () {
-                return this.editor().getJson()
-            },
+        getJsonContent () {
+            return this.editor().getJson()
+        },
 
-            isEmpty () {
-                if (typeof this.content === 'string') return empty(this.content.striptags())
-                else return empty(this.content)
-            },
-        }"
-        x-on:editor-focus="() => transparent && $refs.buttons.removeClass('hidden')"
-        x-on:click.away="() => transparent && $refs.buttons.addClass('hidden')"
-        x-modelable="content"
-        {{ $attrs }}>
+        isEmpty () {
+            if (typeof this.content === 'string') return empty(this.content.striptags())
+            else return empty(this.content)
+        },
+    }"
+    x-on:editor-focus="() => transparent && $refs.buttons.removeClass('hidden')"
+    x-on:click.away="() => transparent && $refs.buttons.addClass('hidden')"
+    x-modelable="content"
+    {{ $attrs }}>
         <div x-bind:class="transparent && 'editor-transparent'" class="editor">
             @if ($buttons)
                 @if ($buttons->count() && !$readonly)
@@ -132,31 +132,31 @@ $attrs = $attributes
             @endif
 
             <div
-                x-init="Editor({
-                    element: $refs.editor,
-                    tiptapConfig: {
-                        content,
-                        placeholder: {{ js(t($placeholder).'...') }},
-                        editable: {{ js(!$readonly) }},
-                        autofocus: {{ js($autofocus) }},
-                        editorProps: {
-                            attributes: {
-                                class: {{ js(collect(['editor-content', $attributes->get('class')])->filter()->join(' ')) }}
-                            },
+            x-init="Editor({
+                element: $refs.editor,
+                tiptapConfig: {
+                    content,
+                    placeholder: {{ js(t($placeholder).'...') }},
+                    editable: {{ js(!$readonly) }},
+                    autofocus: {{ js($autofocus) }},
+                    editorProps: {
+                        attributes: {
+                            class: {{ js(collect(['editor-content', $attributes->get('class')])->filter()->join(' ')) }}
                         },
                     },
-                    bubbleMenus: {
-                        linkMenu: $root.querySelector('.editor-menu .link-menu'),
-                        imageMenu: $root.querySelector('.editor-menu .image-menu'),
-                        tableMenu: $root.querySelector('.editor-menu .table-menu'),
-                        youtubeMenu: $root.querySelector('.editor-menu .youtube-menu'),
-                    },
-                    mentionTemplate: $root.querySelector('.editor-mention'),
-                })"
-                x-on:editor-update="!lazy && sync()"
-                x-on:editor-blur="lazy && sync()"
-                x-on:click.away="sync()"
-                class="editor-container">
+                },
+                bubbleMenus: {
+                    linkMenu: $root.querySelector('.editor-menu .link-menu'),
+                    imageMenu: $root.querySelector('.editor-menu .image-menu'),
+                    tableMenu: $root.querySelector('.editor-menu .table-menu'),
+                    youtubeMenu: $root.querySelector('.editor-menu .youtube-menu'),
+                },
+                mentionTemplate: $root.querySelector('.editor-mention'),
+            })"
+            x-on:editor-update="!lazy && sync()"
+            x-on:editor-blur="lazy && sync()"
+            x-on:click.away="sync()"
+            class="editor-container">
                 <div x-ref="editor"></div>
             </div>
         </div>

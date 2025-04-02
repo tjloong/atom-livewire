@@ -14,11 +14,11 @@ $attrs = $attributes
 
 <div x-data data-atom-dropdown {{ $attrs }}>
     <div
-        data-anchor
-        @if (!$locked)
-        x-on:click.away="$refs.popover?.hidePopover()"
-        @endif
-        x-on:click="$refs.popover?.showPopover()">
+    data-anchor
+    @if (!$locked)
+    x-on:click.away="$refs.popover?.hidePopover()"
+    @endif
+    x-on:click="$refs.popover?.showPopover()">
         {{ $slot }}
     </div>
 
