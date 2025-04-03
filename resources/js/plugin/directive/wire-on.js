@@ -19,7 +19,6 @@ function generateLivewireEventHandler(expression, evaluateLater) {
 }
 
 export default (el, { value, expression }, { evaluateLater }) => {
-    let eventName = value.camel()
     let handler = generateLivewireEventHandler(expression, evaluateLater)
-    Livewire.on(eventName, (args) => handler(args))
+    Livewire.on(value, (args) => handler(args))
 }

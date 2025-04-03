@@ -37,6 +37,7 @@ export default (config) => {
         },
 
         init () {
+            this.$watch('value', (val) => this.syncValueToPicker())
             this.$nextTick(() => this.syncValueToPicker())
         },
 

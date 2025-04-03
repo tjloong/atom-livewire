@@ -251,19 +251,23 @@ $attrs = $attributes
                     </div>
                 </template>
 
-                <ul class="max-h-[300px] overflow-auto space-y-1 mt-1">
-                    @if ($slot->isNotEmpty())
-                        {{ $slot }}
-                    @else
-                        <template x-if="!options.length" hidden>
-                            <atom:empty size="sm"/>
-                        </template>
+                <template x-if="!options.length" hidden>
+                    <div class="px-10">
+                        <atom:empty size="sm"/>
+                    </div>
+                </template>
 
-                        <template x-for="(option, i) in options" x-bind:key="`option-${option.value}-${i}`" hidden>
-                            <atom:option x-model="option"/>
-                        </template>
-                    @endif
-                </ul>
+                <template x-if="options.length" hidden>
+                    <ul class="max-h-[300px] overflow-auto space-y-1 mt-1">
+                        @if ($slot->isNotEmpty())
+                            {{ $slot }}
+                        @else
+                            <template x-for="(option, i) in options" x-bind:key="`option-${option.value}-${i}`" hidden>
+                                <atom:option x-model="option"/>
+                            </template>
+                        @endif
+                    </ul>
+                </template>
 
                 @isset ($actions)
                     <div class="border-t pt-1">
