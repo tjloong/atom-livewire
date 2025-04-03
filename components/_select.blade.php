@@ -150,6 +150,18 @@ $attrs = $attributes
                                             x-bind:style="'background-color: '+item.color"
                                             class="w-3 h-3 rounded-full bg-zinc-100 flex items-center justify-center"></div>
                                         </template>
+
+                                        <template x-if="item.avatar" hidden>
+                                            <div class="relative flex items-center justify-center size-6 rounded-full bg-zinc-200 text-muted text-xs overflow-hidden">
+                                                <div x-text="item.label.charAt(0).toUpperCase()"></div>
+                                                <template x-if="typeof item.avatar === 'string'" hidden>
+                                                    <div class="absolute inset-0 z-1">
+                                                        <img x-bind:src="item.avatar" class="w-full h-full object-cover"/>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+
                                         <div x-text="item.label" class="grow truncate"></div>
                                     </div>
                                     <div x-on:click.stop="deselect(item.value)" class="shrink-0 flex items-center justify-center text-muted-more pl-2 pr-3">

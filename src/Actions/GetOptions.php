@@ -38,15 +38,30 @@ class GetOptions
 
             $label = '<div class="text-wrap">'.get($option, 'label').'</div>';
             $caption = get($option, 'caption') ? '<div class="text-muted text-sm text-wrap">'.get($option, 'caption').'</div>' : '';
+            $avatar = get($option, 'avatar')
+                ? Blade::render('<atom:avatar size="xs" :avatar="$avatar">{{ $name }}</atom:avatar>', ['name' => get($option, 'label'), 'avatar' => get($option, 'avatar')])
+                : '';
 
             return [
                 ...$option,
-                'html' => <<<EOF
-                <div class="w-full">
-                    {$label}
-                    {$caption}
-                </div>
-                EOF,
+                'html' => $avatar
+                    ? <<<EOL
+                    <div class="w-full flex items-center gap-2">
+                        <div class="shrink-0">
+                        {$avatar}
+                        </div>
+                        <div class="grow">
+                        {$label}
+                        {$caption}
+                        </div>
+                    </div>
+                    EOL
+                    : <<<EOL
+                    <div class="w-full">
+                        {$label}
+                        {$caption}
+                    </div>
+                    EOL,
             ];
         })->toArray();
     }
