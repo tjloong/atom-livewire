@@ -37,7 +37,7 @@ class GetOptions
             if (get($option, 'html')) return $option;
 
             $label = '<div class="text-wrap">'.get($option, 'label').'</div>';
-            $caption = get($option, 'caption') ? '<div class="text-muted text-wrap">'.get($option, 'caption').'</div>' : '';
+            $caption = get($option, 'caption') ? '<div class="text-muted text-sm text-wrap">'.get($option, 'caption').'</div>' : '';
 
             return [
                 ...$option,

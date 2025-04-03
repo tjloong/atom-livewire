@@ -92,7 +92,7 @@ $attrs = $attributes
             @endisset
         </atom:_select>
     </atom:_input.prefix>
-@elseif ($variant === 'listbox' || $searchable)
+@elseif ($variant === 'listbox')
     <div
     wire:ignore.self
     x-data="select({
@@ -340,7 +340,7 @@ $attrs = $attributes
 
                 <select
                 x-on:input.stop="select($event)"
-                class="py-2 grow appearance-none focus:outline-none no-spinner"
+                class="py-2 grow appearance-none bg-transparent focus:outline-none no-spinner"
                 {{ $attrs->whereDoesntStartWith('wire:model')->whereDoesntStartWith('x-model')->except(['wire:key', 'class']) }}>
                     @if ($placeholder)
                     <atom:option value="" selected class="placeholder">@t($placeholder)</atom:option>
