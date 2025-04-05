@@ -17,7 +17,7 @@ class File extends Model
     use Footprint;
     use HasFilters;
     use HasUlid;
-    
+
     protected $guarded = [];
 
     protected $casts = [
@@ -43,7 +43,11 @@ class File extends Model
 
     protected static function booted() : void
     {
-        static::deleting(function($file) {
+        static::saving(function ($file) {
+            if ($file->isDirty('data')) $file->setVisibility();
+        });
+
+        static::deleting(function ($file) {
             $file->preventProductionDelete();
             $file->deleteFromDisk();
         });
@@ -210,6 +214,11 @@ class File extends Model
         return true;
     }
 
+    public function getDefaultVisibility()
+    {
+        return 'private';
+    }
+
     public function getEndpoint($size = null, $noauth = false)
     {
         if ($this->is_youtube) return util($this->url)->getYoutubeEmbedUrl();
@@ -307,7 +316,7 @@ class File extends Model
             ?? $this->storeUploaded(
                 content: $content,
                 path: $path ?? 'uploads',
-                visibility: $visibility ?? 'private',
+                visibility: $visibility ?? $this->getDefaultVisibility(),
             );
     }
 
@@ -401,5 +410,12 @@ class File extends Model
         }
 
         $this->getDisk()->delete($this->path);
+    }
+
+    public function setVisibility()
+    {
+        if ($visibility = get($this->data, 'visibility')) {
+            $this->getDisk()->setVisibility($this->path, $visibility);
+        }
     }
 }

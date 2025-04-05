@@ -29,7 +29,10 @@
     
         <atom:rows>
             @foreach ($this->files as $file)
-                <atom:row x-on:click="Atom.modal('atom.file.edit').slide({{ js($file->id) }})">
+                <atom:row x-on:click="Atom.modal('atom.file.edit').slide({{ js([
+                    'id' => $file->id,
+                    'can_edit_visibility' => $canEditVisibility,
+                ]) }})">
                     <atom:cell :checkbox="$file->id"></atom:cell>
     
                     <atom:cell>

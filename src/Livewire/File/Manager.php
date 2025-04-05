@@ -10,6 +10,7 @@ class Manager extends Component
     use AtomComponent;
 
     public $filters = [];
+    public $canEditVisibility = true;
 
     protected $listeners = [
         'uploaded' => '$refresh',

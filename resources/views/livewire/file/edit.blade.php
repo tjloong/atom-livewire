@@ -37,6 +37,13 @@
         @if ($file->is_image)
             <atom:_input wire:model.defer="file.data.alt" label="Alt Text"/>
             <atom:_input wire:model.defer="file.data.description" label="Description"/>
+
+            @if ($this->canEditVisibility)
+            <atom:_select wire:model.defer="file.data.visibility" label="Visibility">
+                <atom:option value="public">Public</atom:option>
+                <atom:option value="private">Private</atom:option>
+            </atom:_select>                
+            @endif
         @endif
 
         <div class="flex items-center gap-2">
