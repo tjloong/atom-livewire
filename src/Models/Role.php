@@ -3,7 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Jiannius\Atom\Traits\Models\HasSlug;
+use Jiannius\Atom\Traits\Models\Slugify;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +15,7 @@ class Role extends Model
     use Footprint;
     use HasFilters;
     use HasSequence;
-    use HasSlug;
+    use Slugify;
     
     protected $guarded = [];
 

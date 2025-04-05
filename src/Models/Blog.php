@@ -3,7 +3,7 @@
 namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Jiannius\Atom\Traits\Models\HasSlug;
+use Jiannius\Atom\Traits\Models\Slugify;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +16,7 @@ class Blog extends Model
 {
     use Footprint;
     use HasFilters;
-    use HasSlug;
+    use Slugify;
     use Seo;
     use SoftDeletes;
 

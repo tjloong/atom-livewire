@@ -4,7 +4,7 @@ namespace Jiannius\Atom\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Jiannius\Atom\Traits\Models\HasSlug;
+use Jiannius\Atom\Traits\Models\Slugify;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +17,7 @@ class Banner extends Model
     use Footprint;
     use HasFactory;
     use HasFilters;
-    use HasSlug;
+    use Slugify;
     use HasSequence;
     use HasUlid;
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Jiannius\Atom\Traits\Models\Footprint;
-use Jiannius\Atom\Traits\Models\HasSlug;
+use Jiannius\Atom\Traits\Models\Slugify;
 use Jiannius\Atom\Traits\Models\HasLocale;
 use Jiannius\Atom\Traits\Models\HasSequence;
 
@@ -15,7 +15,7 @@ class Label extends Model
 {
     use Footprint;
     use HasLocale;
-    use HasSlug;
+    use Slugify;
     use HasSequence;
 
     protected $guarded = [];

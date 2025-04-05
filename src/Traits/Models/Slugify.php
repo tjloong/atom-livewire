@@ -4,20 +4,24 @@ namespace Jiannius\Atom\Traits\Models;
 
 use Illuminate\Support\Facades\DB;
 
-trait HasSlug
+trait Slugify
 {
-    public $enabledHasSlugTrait = true;
-
-    /**
-     * The "booted" method of the model.
-     */
-    protected static function bootHasSlug()
+    protected static function bootSlugify()
     {
-        // listen to saving event
         static::saving(function ($model) {
-            $fields = $model->slugify ?? ['name' => 'slug'];
+            $fields = $model->slugify ?? [
+                [
+                    'column' => 'slug',
+                    'source_column' => 'name',
+                    'unique' => true,
+                ],
+            ];
 
-            foreach ($fields as $from => $to) {
+            foreach ($fields as $field) {
+                $from = data_get($field, 'source_column');
+                $to = data_get($field, 'column');
+                $unique = data_get($field, 'unique', true);
+
                 if ($model->$to && $model->isDirty($to)) $source = data_get($model, $to);
                 else if (!$model->$to) $source = data_get($model, $from);
 
@@ -30,33 +34,29 @@ trait HasSlug
                     else {
                         $slug = str()->slug($source);
                     }
-        
+
                     // if the generated slug is empty
                     if (!$slug) $slug = strtolower(str()->random(10));
                     // if the generated slug is a number, append something
                     else if (is_numeric($slug)) $slug = $slug . '-' . strtolower(str()->random(5));
                     // remove head and tail dash
                     else $slug = trim($slug, '-');
-        
+
                     // check for uniqueness
-                    if (($model->slugMustUnique ?? true)
-                        && DB::table($model->getTable())
-                            ->where($to, $slug)
-                            ->when($model->usesHasTenant, fn($q) => $q->where('tenant_id', $model->tenant_id))
-                            ->count() > 0
+                    if ($unique && DB::table($model->getTable())
+                        ->where($to, $slug)
+                        ->when($model->usesHasTenant, fn($q) => $q->where('tenant_id', $model->tenant_id))
+                        ->count() > 0
                     ) {
                         $slug = $slug.'-'.strtolower(str()->random(5));
                     }
-                    
+
                     $model->$to = $slug;
                 }
             }
         });
     }
 
-    /**
-     * Scope for find by slug
-     */
     public function scopeFindBySlug($query, $slug)
     {
         $table = $this->getTable();
@@ -67,9 +67,6 @@ trait HasSlug
         return $query->first();
     }
 
-    /**
-     * Scope for find by slug or failed
-     */
     public function scopeFindBySlugOrFail($query, $slug)
     {
         $table = $this->getTable();

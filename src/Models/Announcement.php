@@ -5,7 +5,7 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Jiannius\Atom\Traits\Models\HasSlug;
+use Jiannius\Atom\Traits\Models\Slugify;
 use Jiannius\Atom\Traits\Models\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 use Jiannius\Atom\Traits\Models\Footprint;
@@ -16,7 +16,7 @@ class Announcement extends Model
     use Footprint;
     use HasFactory;
     use HasFilters;
-    use HasSlug;
+    use Slugify;
     use HasUlids;
     use Seo;
 
