@@ -148,7 +148,7 @@ class AtomServiceProvider extends ServiceProvider
 
         app('blade.compiler')->precompiler(function ($in) use ($compiler) {
             return $compiler->compile($in);
-        });        
+        });
     }
 
     // register services

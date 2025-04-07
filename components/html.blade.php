@@ -55,7 +55,7 @@ $attrs = $attributes
 
 @vite ($vite)
 
-@if ($html->gtm)
+@if (!$html->noindex && $html->gtm)
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -65,7 +65,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 @endif
 
-@if ($html->ga)
+@if (!$html->noindex && $html->ga)
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ $html->ga }}"></script>
 <script>
@@ -75,7 +75,7 @@ gtag('js', new Date());
 </script>
 @endif
 
-@if ($html->fbp)
+@if (!$html->noindex && $html->fbp)
 <!-- Facebook Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -123,13 +123,13 @@ document.addEventListener('alpine:initialized', () => {
 </head>
 
 <body {{ $attrs }}>
-@if ($html->gtm)
+@if (!$html->noindex && $html->gtm)
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $html->gtm }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 @endif
 
-@if ($html->fbp)
+@if (!$html->noindex && $html->fbp)
 <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $html->fbp }}&ev=PageView&noscript=1" />
 @endif
 

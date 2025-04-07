@@ -41,7 +41,7 @@ trait RunningNumber
         });
     }
 
-    protected function runningNumberPrefix()
+    public function runningNumberPrefix()
     {
         return '';
     }

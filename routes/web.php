@@ -23,7 +23,11 @@ Route::middleware('web')->group(function () {
         Route::get('__auth/{provider}/callback', [\Jiannius\Atom\Http\Controllers\SocialiteController::class, 'callback'])->name('socialite.callback');
     }
 
-    Route::post('__action/{action}', fn ($action) => response()->json(Atom::action($action, request()->all())));
+    Route::post('__action/{action}', function ($action) {
+        $result = Atom::action($action, request()->all());
+        $isResponseObject = $result instanceof \Illuminate\Http\JsonResponse || $result instanceof \Illuminate\Http\Response;
+        return $isResponseObject ? $result : response()->json($result);
+    });
 });
 
 Route::get('__icons.js', fn () => \Jiannius\Atom\Services\Icon::jsResponse())->name('__icons.js');
