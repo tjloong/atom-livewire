@@ -109,7 +109,6 @@ $attrs = $attributes
     x-on:keydown.up.prevent.stop="keyUp()"
     x-on:keydown.down.prevent.stop="keyDown()"
     x-on:keydown.enter.prevent.stop="keyEnter()"
-    x-on:keydown.space.prevent.stop="keyEnter()"
     x-on:keydown.esc.prevent.stop="close()"
     x-on:click.away="close()"
     data-atom-select-listbox
