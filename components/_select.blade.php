@@ -29,7 +29,7 @@ $size = $multiple || $variant === 'listbox'
 $classes = $attributes->classes()
     ->add('appearance-none w-full text-zinc-700 text-left')
     ->add($hasAddButton || isset($addButton) ? 'pr-20' : 'pr-10')
-    ->add($variant === 'native' && $multiple ? '' : 'py-2')
+    ->add($variant === 'native' && $multiple ? '' : 'py-1.5')
     ->add('border rounded-lg shadow-sm bg-white')
     ->add('focus:outline-none focus:border-primary has-[:focus]:border-primary group-focus/input:border-primary hover:border-primary-300')
     ->add('has-[option.placeholder:checked]:text-zinc-400')
@@ -221,7 +221,7 @@ $attrs = $attributes
                             x-tooltip="t('add-new')"
                             x-on:click.stop="$dispatch('add')"
                             class="p-1 cursor-pointer">
-                                <div class="p-2 h-[2.15rem] bg-zinc-100 rounded">
+                                <div class="p-2 h-[2.05rem] bg-zinc-100 rounded">
                                     <atom:icon add/>
                                 </div>
                             </div>

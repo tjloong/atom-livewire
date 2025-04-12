@@ -1,5 +1,5 @@
 @php
-$name = $attributes->get('name');
+$name = $attributes->get('name') ?? (method_exists($this, 'componentName') ? $this->componentName() : null);
 $label = t($attributes->get('label'));
 $inset = $attributes->get('inset');
 $header = $header ?? $attributes->get('header');
@@ -42,7 +42,9 @@ class="{{ collect([
         @endif
 
         <div class="grow w-full mx-auto {{ $attributes->get('class', 'max-w-screen-xl') }} {{ $inset ? '' : 'px-6 pb-6 first:pt-6' }}">
-            {{ $slot }}
+            @if ($slot->isEmpty()) <atom:skeleton/>
+            @else {{ $slot }}
+            @endif
         </div>
 
         @if ($footer)

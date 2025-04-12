@@ -131,6 +131,36 @@ trait AtomComponent
         return $query->paginate($max);
     }
 
+    public function componentName()
+    {
+        $class = self::class;
+
+        $class = (string) str($class)
+            ->replaceFirst('App\Livewire\\', '')
+            ->replaceFirst('App\Http\Livewire\\', '')
+            ->replaceFirst('Jiannius\Atom\Livewire\\', '')
+            ->replaceFirst('Jiannius\Atom\Http\Livewire\\', '');
+
+        return collect(explode('\\', $class))
+            ->map(fn ($val) => str()->slug($val))
+            ->join('.');
+    }
+
+    public function sheet($name = null)
+    {
+        return Atom::sheet($name ?? $this->componentName());
+    }
+
+    public function modal($name = null)
+    {
+        return Atom::modal($name ?? $this->componentName());
+    }
+
+    public function alert($alert, $type = 'info')
+    {
+        return Atom::alert($alert, $type);
+    }
+
     // fill properties into other component
     public function fillTo($component, $props)
     {
@@ -181,8 +211,7 @@ trait AtomComponent
         $this->keyhash = uniqid();
     }
 
-    // get view configuration
-    public function view()
+    public function getViewConfiguration()
     {
         $class = static::class;
 
@@ -206,7 +235,7 @@ trait AtomComponent
         // expose error bag so front end can use
         $this->errors = collect($this->getErrorBag()->toArray())->map(fn($e) => head($e))->toArray();
 
-        $view = $this->view();
+        $view = $this->getViewConfiguration();
         $viewName = get($view, 'name');
         $viewData = get($view, 'data', []);
         $layout = get($view, 'layout');
