@@ -124,7 +124,7 @@ class Notification
             'content' => $notification->content,
             'href' => $notification->href,
             'timestamp' => $notification->created_at->toDatetimeString(),
-            'sender' => $notification->sender->toArray(),
+            'sender' => $notification->sender?->toArray(),
             'receiver' => $notification->receiver->toArray(),
         ];
     }

@@ -166,6 +166,11 @@ trait AtomComponent
         return Atom::alert($alert, $type);
     }
 
+    public function toast($toast, $type = 'info')
+    {
+        return Atom::toast($toast, $type);
+    }
+
     // fill properties into other component
     public function fillTo($component, $props)
     {

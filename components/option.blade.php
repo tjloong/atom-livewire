@@ -43,19 +43,18 @@ $attrs = $attributes->except(['option', 'label', 'badge', 'badge-color']);
                     'meta' => $meta,
                     'html' => $html,
                 ]),
-
-                init () {
-                    if (!this.option.html) {
-                        let color = this.option.color ? `<div style='background-color: ${this.option.color}' class='shrink-0 w-3 h-3 rounded-full bg-zinc-100 flex items-center justify-center'></div>` : ''
-                        this.option.html = `<div class='flex items-center gap-2'>${color}<span>${this.option.label}</span></div>`
-                    }
-                },
             }"
             @elseif ($attributes->get('x-model') !== 'option')
             x-data="{
                 option: { ...{{ $attributes->get('x-model') }}},
             }"
             @endif
+            x-init="() => {
+                if (!option.html) {
+                    let color = option.color ? `<div style='background-color: ${option.color}' class='shrink-0 w-3 h-3 rounded-full bg-zinc-100 flex items-center justify-center'></div>` : ''
+                    option.html = `<div class='flex items-center gap-2'>${color}<span>${option.label}</span></div>`
+                }
+            }"
             x-on:click="select(option.value)"
             x-bind:data-option-body="Atom.json(option)"
             x-bind:data-option-selected="isSelected(option.value)"

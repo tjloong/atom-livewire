@@ -33,54 +33,58 @@ x-init="() => {
                     inset
                     wire:key="notification-{{ get($row, 'id') }}"
                     x-on:click="$wire.read({{ js(get($row, 'id')) }}).then(() => Atom.goto({{ js(get($row, 'href')) }}))">
-                        <div class="group relative p-4 cursor-pointer">
-                            <div class="absolute top-4 right-4 items-center hidden group-hover:block">
-                                <atom:group type="buttons">
-                                    @if (get($row, 'archived_at'))
-                                        <atom:_button icon="unarchive" size="sm" tooltip="restore"
-                                            x-on:click.stop="$wire.archive({{ js(get($row, 'id')) }}, false)">
-                                        </atom:_button>
-                                    @else
-                                        @if (get($row, 'read_at'))
-                                            <atom:_button icon="chat-unread" size="sm" tooltip="mark-unread"
-                                                x-on:click.stop="$wire.read({{ js(get($row, 'id')) }}, false)">
-                                            </atom:_button>
-                                        @else
-                                            <atom:_button icon="double-check" size="sm" tooltip="mark-read"
-                                                x-on:click.stop="$wire.read({{ js(get($row, 'id')) }}, true)">
-                                            </atom:_button>
-                                        @endif
-
-                                        <atom:_button icon="archive" size="sm" tooltip="archive"
-                                            x-on:click.stop="$wire.archive({{ js(get($row, 'id')) }}, true)">
-                                        </atom:_button>
+                        <div class="group p-4 cursor-pointer">
+                            <div class="flex gap-2">
+                                <div class="grow space-y-1">
+                                    @if ($sender = get($row, 'sender.name'))
+                                    <div class="grow font-medium text-sm">
+                                        @e($sender)
+                                    </div>                                        
                                     @endif
 
-                                    <atom:_button icon="delete" size="sm" tooltip="delete"
-                                        x-on:click.stop="$wire.delete({{ js(get($row, 'id')) }})">
-                                    </atom:_button>
-                                </atom:group>
-                            </div>
-
-                            <div class="space-y-1">
-                                <div class="flex items-center gap-2 text-muted-more">
-                                    <div class="grow font-medium text-sm">
-                                        @e(get($row, 'sender.name'))
-                                    </div>
-
-                                    <div class="shrink-0 text-sm group-hover:hidden">
-                                        @e(get($row, 'timestamp'))
-                                    </div>
-                                </div>
-
-                                @if ($title = get($row, 'title'))
+                                    @if ($title = get($row, 'title'))
                                     <div class="font-medium">
                                         @ee(str()->limit($title, 80))
                                     </div>
-                                @endif
+                                    @endif
 
-                                <div class="text-muted">
-                                    @ee(str()->limit(strip_tags(get($row, 'content')), 100))
+                                    <div class="text-muted">
+                                        @ee(str()->limit(strip_tags(get($row, 'content')), 100))
+                                    </div>
+                                </div>
+
+                                <div class="shrink-0">
+                                    <div class="text-sm text-muted group-hover:hidden">
+                                        @e(get($row, 'timestamp'))
+                                    </div>
+
+                                    <div class="hidden group-hover:block">
+                                        <atom:group type="buttons">
+                                            @if (get($row, 'archived_at'))
+                                                <atom:_button icon="unarchive" size="sm" tooltip="restore"
+                                                    x-on:click.stop="$wire.archive({{ js(get($row, 'id')) }}, false)">
+                                                </atom:_button>
+                                            @else
+                                                @if (get($row, 'read_at'))
+                                                    <atom:_button icon="chat-unread" size="sm" tooltip="mark-unread"
+                                                        x-on:click.stop="$wire.read({{ js(get($row, 'id')) }}, false)">
+                                                    </atom:_button>
+                                                @else
+                                                    <atom:_button icon="double-check" size="sm" tooltip="mark-read"
+                                                        x-on:click.stop="$wire.read({{ js(get($row, 'id')) }}, true)">
+                                                    </atom:_button>
+                                                @endif
+
+                                                <atom:_button icon="archive" size="sm" tooltip="archive"
+                                                    x-on:click.stop="$wire.archive({{ js(get($row, 'id')) }}, true)">
+                                                </atom:_button>
+                                            @endif
+
+                                            <atom:_button icon="delete" size="sm" tooltip="delete"
+                                                x-on:click.stop="$wire.delete({{ js(get($row, 'id')) }})">
+                                            </atom:_button>
+                                        </atom:group>
+                                    </div>
                                 </div>
                             </div>
                         </div>
