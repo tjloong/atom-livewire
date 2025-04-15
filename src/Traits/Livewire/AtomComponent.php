@@ -156,6 +156,11 @@ trait AtomComponent
         return Atom::modal($name ?? $this->componentName());
     }
 
+    public function action($name, $params = null)
+    {
+        return Atom::action($name, $params);
+    }
+
     public function alert($alert, $type = 'info')
     {
         return Atom::alert($alert, $type);

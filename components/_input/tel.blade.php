@@ -21,14 +21,14 @@ $attrs = $attributes
 @endphp
 
 <div
-    x-data="tel({
-        code: {{ js($attributes->get('code', '+60')) }},
-        lazy: {{ js($lazy) }},
-        @if ($attributes->wire('model')->value())
-        value: @entangle($attributes->wire('model')),
-        @endif
-    })"
-    class="group/input relative w-full block">
+x-data="tel({
+    code: {{ js($attributes->get('code', '+60')) }},
+    lazy: {{ js($lazy) }},
+    @if ($attributes->wire('model')->value())
+    value: @entangle($attributes->wire('model')),
+    @endif
+})"
+class="group/input relative w-full block">
     @if ($attributes->has('wire:model.lazy'))
         <input type="hidden" x-ref="hidden" wire:model="{{ $attributes->wire('model')->value() }}">
     @elseif ($attributes->has('x-model.lazy'))
@@ -42,12 +42,12 @@ $attrs = $attributes
     <div class="absolute top-0 bottom-0 left-0 w-[9rem] flex items-center gap-2">
         <div class="relative w-full">
             <select
-                x-ref="options"
-                x-model="code"
-                x-on:change="format()"
-                x-on:input.stop
-                data-atom-input-tel-country
-                class="appearance-none bg-transparent pl-3 pr-6 w-full focus:outline-none">
+            x-ref="options"
+            x-model="code"
+            x-on:change="format()"
+            x-on:input.stop
+            data-atom-input-tel-country
+            class="appearance-none bg-transparent pl-3 pr-6 w-full focus:outline-none">
                 @foreach ($dialcodes as $dialcode)
                     <option value="{{ get($dialcode, 'value') }}">
                         {{ get($dialcode, 'label') }}
@@ -62,17 +62,13 @@ $attrs = $attributes
     </div>
 
     <input
-        type="tel"
-        x-model="tel"
-        @if ($lazy)
-        x-on:blur="format()"
-        @else
-        x-on:input.stop="format()"
-        @endif
-        placeholder="{{ t($placeholder) }}"
-        {{ $attrs }}>
-
-    <div class="absolute top-0 right-0 bottom-0 flex items-center justify-center text-muted-more px-3">
-        <atom:icon phone/>
-    </div>
+    type="tel"
+    x-model="tel"
+    @if ($lazy)
+    x-on:blur="format()"
+    @else
+    x-on:input.stop="format()"
+    @endif
+    placeholder="{{ t($placeholder) }}"
+    {{ $attrs }}>
 </div>

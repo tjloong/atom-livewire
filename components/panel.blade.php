@@ -52,14 +52,14 @@ noindex>
                 <div class="shrink-0 pb-2 px-2">
                     @isset ($sidebarFoot)
                         {{ $sidebarFoot }}
+                    @else
+                        <atom:menu-item
+                        icon="arrow-left"
+                        x-on:click="$dispatch('toggle-sidebar')"
+                        class="hidden lg:flex">
+                            @t('collapse')
+                        </atom:menu-item>
                     @endisset
-
-                    <atom:menu-item
-                    icon="arrow-left"
-                    x-on:click="$dispatch('toggle-sidebar')"
-                    class="hidden lg:flex">
-                        @t('collapse')
-                    </atom:menu-item>
                 </div>
             </div>
         </aside>

@@ -1,5 +1,5 @@
 @php
-$name = $attributes->get('name') ?? 'modal';
+$name = $attributes->get('name') ?? (method_exists($this, 'componentName') ? $this->componentName() : 'modal');
 $variant = $attributes->get('variant', 'default');
 $locked = $attributes->get('locked', false);
 $entangle = $attributes->wire('model')->value();
