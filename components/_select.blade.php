@@ -142,8 +142,8 @@ $attrs = $attributes
                     <template x-if="!isEmpty" hidden>
                         <div class="flex items-center gap-2 flex-wrap">
                             <template x-for="item in selected" hidden>
-                                <div class="shrink-0 max-w-56 flex items-center text-sm border-r border-zinc-300 last:border-0">
-                                    <div class="flex items-center gap-2">
+                                <div class="shrink-0 max-w-56 truncate flex items-center text-sm border-r border-zinc-300 last:border-0">
+                                    <div class="flex items-center gap-2 truncate">
                                         <template x-if="item.color" hidden>
                                             <div
                                             x-bind:style="'background-color: '+item.color"
@@ -381,28 +381,28 @@ $attrs = $attributes
 
             @if ($clearable)
                 <div
-                    x-data="{
-                        clearable: false,
+                x-data="{
+                    clearable: false,
 
-                        init () {
-                            this.setClearable()
-                            this.getSelect().addEventListener('change', () => this.setClearable())
-                        },
+                    init () {
+                        this.setClearable()
+                        this.getSelect().addEventListener('change', () => this.setClearable())
+                    },
 
-                        getSelect () {
-                            return $el.parentNode.querySelector('select')
-                        },
+                    getSelect () {
+                        return $el.parentNode.querySelector('select')
+                    },
 
-                        setClearable () {
-                            this.clearable = !empty(this.getSelect().value)
-                        },
-                    }"
-                    x-on:click.stop="() => {
-                        getSelect().value = ''
-                        getSelect().dispatch('change')
-                    }"
-                    x-bind:class="!clearable && 'pointer-events-none'"
-                    class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
+                    setClearable () {
+                        this.clearable = !empty(this.getSelect().value)
+                    },
+                }"
+                x-on:click.stop="() => {
+                    getSelect().value = ''
+                    getSelect().dispatch('change')
+                }"
+                x-bind:class="!clearable && 'pointer-events-none'"
+                class="z-1 absolute top-0 bottom-0 flex items-center justify-center pr-3 right-0">
                     <atom:icon close x-show="clearable"/>
                     <atom:icon dropdown x-show="!clearable"/>
                 </div>
