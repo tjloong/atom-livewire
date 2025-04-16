@@ -133,26 +133,14 @@ class User extends Authenticatable
         return !$this->isAuth();
     }
 
+    public function isRoot() : bool
+    {
+        return $this->tier === 'root';
+    }
+
     public function isTier(...$tiers) : bool
     {
         return collect($tiers)->contains($this->tier);
-    }
-
-    public function isRole(...$slugs) : bool
-    {
-        if ($this->isTier('root')) return true;
-
-        $roles = collect($slugs)->mapWithKeys(function($slug) {
-            $substr = str()->slug(str_replace('*', '', $slug));
-            $roleslug = optional($this->role)->slug;
-
-            if ($slug === 'admin') return ['admin' => in_array($roleslug, ['admin', 'administrator'])];
-            else if (str()->startsWith($slug, '*')) return [$slug => str()->endsWith($roleslug, $substr)];
-            else if (str()->endsWith($slug, '*')) return [$slug => str()->startsWith($roleslug, $substr)];
-            else return [$slug => $roleslug === $slug];
-        });
-
-        return $roles->some(fn($val) => $val);
     }
 
     public function isBlocked() : bool

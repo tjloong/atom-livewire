@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
@@ -32,7 +31,6 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerTranslation();
         $this->registerBindings();
         $this->registerConfigs();
-        $this->registerGates();
         $this->registerBladeIfs();
         $this->registerBladeDirectives();
         $this->registerBladeComponents();
@@ -201,22 +199,6 @@ class AtomServiceProvider extends ServiceProvider
         Blade::if('notroute', function() {
             return !current_route(func_get_args());
         });
-
-        Blade::if('tier', function($value) {
-            return tier($value);
-        });
-
-        Blade::if('nottier', function($value) {
-            return !tier($value);
-        });
-
-        Blade::if('role', function($value) {
-            return user()->can('role', $value);
-        });
-
-        Blade::if('notrole', function($value) {
-            return !user()->can('role', $value);
-        });
     }
 
     // register blade directives
@@ -236,17 +218,6 @@ class AtomServiceProvider extends ServiceProvider
         Blade::directive('ee', function ($expression) {
             return "<?php echo $expression; ?>";
         });
-    }
-
-    // register gates
-    public function registerGates()
-    {
-        $policy = find_class('policy');
-
-        Gate::define('tier', [$policy, 'tier']);
-        Gate::define('role', [$policy, 'role']);
-        Gate::define('permission', [$policy, 'permission']);
-        Gate::define('perm', [$policy, 'permission']);
     }
 
     // register configs
@@ -300,7 +271,6 @@ class AtomServiceProvider extends ServiceProvider
 
         Livewire::component('atom.user.listing', \Jiannius\Atom\Livewire\User\Listing::class);
         Livewire::component('atom.user.edit', \Jiannius\Atom\Livewire\User\Edit::class);
-        Livewire::component('atom.user.permission', \Jiannius\Atom\Livewire\User\Permission::class);
 
         Livewire::component('atom.enquiry', \Jiannius\Atom\Livewire\Enquiry::class);
         Livewire::component('atom.profile', \Jiannius\Atom\Livewire\Profile::class);
