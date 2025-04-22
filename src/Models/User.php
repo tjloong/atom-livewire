@@ -5,7 +5,6 @@ namespace Jiannius\Atom\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -60,11 +59,6 @@ class User extends Authenticatable
         });
     }
 
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(model('role'));
-    }
-
     public function signup(): HasOne
     {
         return $this->hasOne(model('signup'));
@@ -78,17 +72,6 @@ class User extends Authenticatable
     public function scopeSearch($query, $search) : void
     {
         $query->whereAny(['name', 'email'], 'like', "%$search%");
-    }
-
-    public function scopeWithRole($query, $roles) : void
-    {
-        $id = collect($roles)->map(function($role) {
-            if (is_numeric($role)) return $role;
-            else if (is_string($role)) return optional(model('role')->findBySlug($role))->id;
-            else return optional($role)->id;
-        })->toArray();
-        
-        $query->whereIn('role_id', $id);
     }
 
     public function scopeLoginable($query) : void

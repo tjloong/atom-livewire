@@ -142,7 +142,7 @@ trait AtomComponent
             ->replaceFirst('Jiannius\Atom\Http\Livewire\\', '');
 
         return collect(explode('\\', $class))
-            ->map(fn ($val) => str()->slug($val))
+            ->map(fn ($val) => (string) str($val)->snake()->slug())
             ->join('.');
     }
 

@@ -3,7 +3,7 @@ $date = $attributes->get('date');
 $utc = $attributes->get('utc');
 $format = $attributes->get('format');
 $human = $attributes->get('human');
-$carbon = is_string($date) ? new \Carbon\Carbon($date) : $date;
+$carbon = is_string($date) ? carbon($date) : $date;
 
 if (!$utc) $carbon->local();
 
