@@ -77,7 +77,12 @@ $attrs = $attributes
                 @endif
 
                 @if (!get($this->table, 'trashed') && !get($this->table, 'archived'))
-                    <div class="flex flex-wrap items-center gap-1">
+                    <div @class([
+                        'flex items-center gap-1 flex-wrap',
+                        '[&_button]:flex [&_button]:items-center [&_button]:justify-center',
+                        '[&_button]:rounded [&_button]:p-0.5 [&_button]:mx-1 [&_button]:border-zinc-300',
+                        '[&_button]:focus:outline-none [&_button]:focus:border-zinc-400',
+                    ])>
                         @isset ($filters)
                             <div
                                 x-data="{ visible: false, filters: null }"
@@ -94,7 +99,9 @@ $attrs = $attributes
                                         </div>
                                     </div>
                                 @else
-                                    <atom:_button icon="filter" variant="link" :tooltip="@t('filter')" x-on:click="visible = true"></atom:_button>
+                                    <button type="button" x-tooltip="t('filter')" x-on:click="visible = true">
+                                        <atom:icon filter/>
+                                    </button>
                                 @endif
 
                                 <div
