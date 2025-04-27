@@ -1,13 +1,12 @@
 @php
-$file = $attributes->get('file');
-$src = $attributes->get('src') ?? $file?->endpoint;
-$srcsm = $attributes->get('src-sm') ?? $file?->endpoint_sm;
-$icon = $attributes->get('icon') ?? $file?->icon;
+$src = $attributes->get('src');
+$srcsm = $attributes->get('src-sm');
+$icon = $attributes->get('icon', 'file');
 
 $type = pick([
-    'image' => $file?->is_image || str($src)->endsWith(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.tiff']),
-    'video' => $file?->is_video || str($src)->endsWith(['.mp4', '.ogg', '.mpeg', '.avi']),
-    'youtube' => $file?->is_youtube || str($src)->startsWith(['https://www.youtube.com', 'https://youtube.com']),
+    'image' => str($src)->endsWith(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.tiff']),
+    'video' => str($src)->endsWith(['.mp4', '.ogg', '.mpeg', '.avi']),
+    'youtube' => str($src)->startsWith(['https://www.youtube.com', 'https://youtube.com']),
     'icon' => !empty($icon),
 ]);
 
@@ -26,7 +25,7 @@ $attrs = $attributes->merge([
     ...($type === 'video' ? [
         'controls' => true,
     ] : []),
-])->except(['file', 'src', 'src-sm', 'icon']);
+])->except(['src', 'src-sm', 'icon']);
 @endphp
 
 @if ($type === 'image')
