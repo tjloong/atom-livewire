@@ -9,6 +9,7 @@ $upload = $upload === true || is_array($upload) ? [
     'accept' => '*',
     'multiple' => true,
     ...(is_array($upload) ? $upload : []),
+    'route' => app('route')->has('__filesystem.upload') ? route('__filesystem.upload') : null,
 ] : false;
 
 $attrs = $attributes
@@ -17,15 +18,15 @@ $attrs = $attributes
 @endphp
 
 <div
-    x-cloak
-    x-data="chat({ upload: {{ js($upload) }} })"
-    x-init="$nextTick(() => scroll())"
-    x-on:drop.prevent="drop($event)"
-    x-on:paste.stop="paste($event)"
-    x-on:editor-enter="submit()"
-    x-on:scroll-chat="$nextTick(() => scroll())"
-    data-atom-chat
-    {{ $attrs->except('class') }}>
+x-cloak
+x-data="chat({ upload: {{ js($upload) }} })"
+x-init="$nextTick(() => scroll())"
+x-on:drop.prevent="drop($event)"
+x-on:paste.stop="paste($event)"
+x-on:editor-enter="submit()"
+x-on:scroll-chat="$nextTick(() => scroll())"
+data-atom-chat
+{{ $attrs->except('class') }}>
     @if ($slot->isEmpty())
         <atom:empty size="sm"/>
     @else
@@ -36,14 +37,14 @@ $attrs = $attributes
 
     @if (!$readonly)
         <div
-            wire:ignore
-            x-init="$nextTick(() => createEditor({ placeholder: {{ js(t($placeholder)) }} }))"
-            class="p-3 border-t border-zinc-200">
+        wire:ignore
+        x-init="$nextTick(() => createEditor({ placeholder: {{ js(t($placeholder)) }} }))"
+        class="p-3 border-t border-zinc-200">
             <div class="editor editor-transparent">
                 @isset($mention)
                     <atom:_editor.mention
-                        :options="$mention->attributes->get('options', [])"
-                        :filters="$mention->attributes->get('filters', [])">
+                    :options="$mention->attributes->get('options', [])"
+                    :filters="$mention->attributes->get('filters', [])">
                         {{ $mention }}
                     </atom:_editor.mention>
                 @endisset
@@ -53,19 +54,19 @@ $attrs = $attributes
                         <div x-ref="editor" class="grow px-3"></div>
 
                         <div class="shrink-0 p-2">
-                            <template x-if="upload.uploading" hidden>
+                            <template x-if="uploading" hidden>
                                 <div class="bg-black rounded-md shadow flex items-center gap-3 py-1.5 px-3">
-                                    <div class="shrink-0 text-theme">
+                                    <div class="shrink-0 text-zinc-100 flex items-center justify-center">
                                         <atom:icon loading/>
                                     </div>
 
                                     <div class="font-medium text-zinc-100 text-sm">
-                                        @t('uploading') <span x-text="upload.progress"></span></span>
+                                        @t('uploading')
                                     </div>
                                 </div>
                             </template>
 
-                            <template x-if="!upload.uploading" hidden>
+                            <template x-if="!uploading" hidden>
                                 <div class="flex items-center divide-x border border-zinc-200 rounded-md shadow-sm">
                                     @if ($formatting)
                                         <atom:chat.formatting/>
@@ -76,10 +77,10 @@ $attrs = $attributes
                                     @endif
 
                                     <button
-                                        type="button"
-                                        x-tooltip="{{ js(t('submit')) }}"
-                                        x-on:click="submit()"
-                                        class="p-1.5 flex items-center justify-center">
+                                    type="button"
+                                    x-tooltip="{{ js(t('submit')) }}"
+                                    x-on:click="submit()"
+                                    class="p-1.5 flex items-center justify-center">
                                         <atom:icon line-break size="15"/>
                                     </button>
                                 </div>
@@ -87,9 +88,9 @@ $attrs = $attributes
                         </div>
                     </div>
 
-                    <template x-if="upload.files.length">
+                    <template x-if="files.length">
                         <div class="py-2 px-3 flex items-center gap-3 flex-wrap">
-                            <template x-for="(file, i) in upload.files" hidden>
+                            <template x-for="(file, i) in files" hidden>
                                 <div class="group shrink-0 w-14 space-y-2">
                                     <figure class="relative w-14 h-14 bg-zinc-200 rounded-md overflow-hidden border border-zinc-300 flex items-center justify-center">
                                         <template x-if="file.src">
@@ -100,9 +101,9 @@ $attrs = $attributes
                                             <atom:icon file/>
                                         </template>
 
-                                        <template x-if="!upload.uploading">
+                                        <template x-if="!uploading">
                                             <div
-                                                x-on:click="upload.files.splice(i, 1)"
+                                                x-on:click="files.splice(i, 1)"
                                                 class="absolute inset-0 bg-black/50 cursor-pointer items-center justify-center text-white hidden group-hover:flex">
                                                 <atom:icon delete/>
                                             </div>
@@ -110,7 +111,7 @@ $attrs = $attributes
                                     </figure>
 
                                     <div class="grid text-center">
-                                        <div x-text="file.name" class="text-xs text-muted-more truncate"></div>
+                                        <div x-text="file.file.name" class="text-xs text-muted-more truncate"></div>
                                     </div>
                                 </div>
                             </template>

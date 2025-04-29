@@ -3,10 +3,12 @@ $src = $attributes->get('src');
 $srcsm = $attributes->get('src-sm');
 $icon = $attributes->get('icon', 'file');
 
+$url = parse_url($src);
+$urlpath = $url['path'];
 $type = pick([
-    'image' => str($src)->endsWith(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.tiff']),
-    'video' => str($src)->endsWith(['.mp4', '.ogg', '.mpeg', '.avi']),
-    'youtube' => str($src)->startsWith(['https://www.youtube.com', 'https://youtube.com']),
+    'image' => str($urlpath)->endsWith(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.tiff']),
+    'video' => str($urlpath)->endsWith(['.mp4', '.ogg', '.mpeg', '.avi']),
+    'youtube' => str($urlpath)->startsWith(['/watch']),
     'icon' => !empty($icon),
 ]);
 

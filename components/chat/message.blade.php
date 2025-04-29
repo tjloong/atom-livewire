@@ -58,12 +58,12 @@ $attrs = $attributes
                 <div class="py-2 flex items-center gap-3">
                     @foreach ($files as $file)
                         <div
-                            x-on:click="Atom.lightbox({
-                                gallery: {{ js($files) }},
-                                slide: {{ js($file) }},
-                            })"
-                            class="w-14 cursor-pointer space-y-2">
-                            <atom:file :file="$file" variant="card"/>
+                        x-on:click="Atom.lightbox({
+                            gallery: {{ js($files) }},
+                            slide: {{ js($file) }},
+                        })"
+                        class="w-14 cursor-pointer space-y-2">
+                            <filesystem:card :file="$file" class="size-8"/>
                             <div class="text-xs text-muted truncate">@e($file->name)</div>
                         </div>
                     @endforeach

@@ -1,35 +1,31 @@
 export default (config) => {
     return {
-        upload: {
-            files: [],
-            uploading: false,
-            progress: null,
-            ...config.upload,
+        files: [],
+        uploading: false,
+        uploadConfig: config.upload,
 
-            run () {
-                return new Promise((resolve, reject) => {
-                    if (!this.files.length) resolve()
-                    else {
-                        this.uploading = true
+        upload () {
+            if (!this.files.length || !this.uploadConfig.route) return new Promise((resolve) => resolve())
+                
+            this.uploading = true
 
-                        Atom.upload(this.files, {
-                            max: this.max,
-                            accept: this.accept,
-                            multiple: this.multiple,
-                            progress: (value) => this.progress = value,
-                        })
-                            .then(res => {
-                                this.files = []
-                                resolve(res.id)
-                            })
-                            .catch(({ message }) => {
-                                Atom.alert({ title: tr('app.label.unable-to-upload'), message }, 'error')
-                                reject()
-                            })
-                            .finally(() => this.uploading = false)
-                    }
+            let job = this.files.firstWhere('done', false)
+
+            if (job) {
+                let formdata = new FormData()
+                formdata.append('file', job.file)
+
+                return Atom.ajax(this.uploadConfig.route).post(formdata).then(res => {
+                    Object.assign(job, { done: true, response: res })
+                    return this.upload()
                 })
-            },
+            }
+            else {
+                let res = this.files.map(file => (file.response))
+                this.files = []
+                this.uploading = false
+                return new Promise((resolve) => resolve(res))
+            }
         },
 
         editor () {
@@ -53,11 +49,14 @@ export default (config) => {
         attach (files) {
             if (!files || !files.length) return
 
-            Array.from(files).forEach(file => {
-                file.src = file.type.startsWith('image/') ? URL.createObjectURL(file) : null
-            })
-
-            this.upload.files = [...this.upload.files, ...files]
+            this.files = [
+                ...this.files,
+                ...Array.from(files).map(file => ({
+                    file,
+                    src: file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
+                    done: false,
+                })),
+            ]
 
             this.$nextTick(() => this.editor().commands.focus())
         },
@@ -93,19 +92,23 @@ export default (config) => {
         },
 
         submit () {
-            if (this.upload.uploading) return
+            if (this.uploading) return
 
             let content = this.editor().getHTML()
             content = content.replace(new RegExp('<p></p>$'), '');
 
-            if (empty(content) && !this.upload.files.length) return
+            if (empty(content) && !this.files.length) return
 
-            this.editor().setEditable(false)
-
-            this.upload.run()
-                .then(files => this.$dispatch('submit-chat', { content, files }))
-                .then(() => this.editor().chain().setContent('', false).focus().run())
-                .then(() => this.editor().setEditable(true))
+            if (this.uploadConfig.route) {
+                this.editor().setEditable(false)
+                this.upload()
+                    .then(files => this.$dispatch('submit-chat', { content, files }))
+                    .then(() => this.editor().chain().setContent('', false).focus().run())
+                    .then(() => this.editor().setEditable(true))
+            }
+            else {
+                this.$dispatch('submit-chat', { content, files: this.files })
+            }
         },
     }
 }
