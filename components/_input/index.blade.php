@@ -17,6 +17,12 @@ $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
         :error="$error">
         <atom:_input :attributes="$attributes->except(['label', 'caption', 'error'])">
             {{ $slot }}
+
+            @isset ($actions)
+                <x-slot:actions>
+                    {{ $actions }}
+                </x-slot:actions>
+            @endisset
         </atom:_input>
     </atom:_input.field>
 @elseif ($prefix || $suffix)
