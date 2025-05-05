@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Actions;
 
+use App\Models\User;
 use Jiannius\Atom\Atom;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -25,7 +26,7 @@ class GetSocialiteUser
 
         if (!$email) return;
 
-        return model('user')->firstOrNew(['email' => $email], [
+        return User::firstOrNew(['email' => $email], [
             'name' => $socialite->getName(),
             'email' => $socialite->getEmail(),
             'password' => str()->snake($socialite->getName()).'_oauth',

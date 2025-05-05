@@ -2,6 +2,7 @@
 
 namespace Jiannius\Atom\Actions;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,7 +30,7 @@ class Register
 
     public function createUser() : void
     {
-        $this->user = model('user')->firstOrNew(['email' => get($this->params, 'data.email')], [
+        $this->user = User::firstOrNew(['email' => get($this->params, 'data.email')], [
             'name' => get($this->params, 'data.name'),
             'tier' => 'signup',
             'data' => get($this->params, 'data.data'),

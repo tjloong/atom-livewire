@@ -43,8 +43,7 @@
         "laravel": {
             "providers": [
                 "Jiannius\\Atom\\Providers\\AtomServiceProvider",
-                "Jiannius\\Atom\\Providers\\AtomEventServiceProvider",
-                "Jiannius\\Atom\\Providers\\AtomLivewireServiceProvider"
+                "Jiannius\\Atom\\Providers\\AtomEventServiceProvider"
             ]
         }
     },
