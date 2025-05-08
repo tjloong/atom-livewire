@@ -77,17 +77,12 @@ $attrs = $attributes
                 @endif
 
                 @if (!get($this->table, 'trashed') && !get($this->table, 'archived'))
-                    <div @class([
-                        'flex items-center gap-1 flex-wrap',
-                        '[&_button]:flex [&_button]:items-center [&_button]:justify-center',
-                        '[&_button]:rounded [&_button]:p-0.5 [&_button]:mx-1 [&_button]:border-zinc-300',
-                        '[&_button]:focus:outline-none [&_button]:focus:border-zinc-400',
-                    ])>
+                    <div class="flex items-center gap-1 flex-wrap">
                         @isset ($filters)
                             <div
-                                x-data="{ visible: false, filters: null }"
-                                x-init="filters = $wire.get('filters')"
-                                x-on:click.away="visible = false">
+                            x-data="{ visible: false, filters: null }"
+                            x-init="filters = $wire.get('filters')"
+                            x-on:click.away="visible = false">
                                 @if ($filtered)
                                     <div class="flex items-center bg-red-100 border border-red-100 text-red-500 font-medium text-sm rounded-md">
                                         <div x-on:click="visible = true" class="pl-2 cursor-pointer">
@@ -99,7 +94,11 @@ $attrs = $attributes
                                         </div>
                                     </div>
                                 @else
-                                    <button type="button" x-tooltip="t('filter')" x-on:click="visible = true">
+                                    <button
+                                    type="button"
+                                    x-tooltip="t('filter')"
+                                    x-on:click="visible = true"
+                                    class="flex items-center justify-center rounded p-0.5 mx-1 hover:bg-zinc-100 focus:bg-zinc-100">
                                         <atom:icon filter/>
                                     </button>
                                 @endif
@@ -116,23 +115,34 @@ $attrs = $attributes
                             </div>
                         @endisset
 
-                        @isset ($bar)
-                            {{ $bar }}
-                        @endisset
+                        <div @class([
+                            'flex items-center gap-1',
+                            '[&_button]:flex [&_button]:items-center [&_button]:justify-center',
+                            '[&_button]:rounded [&_button]:p-0.5 [&_button]:mx-1',
+                            '[&_button]:focus:outline-none [&_button]:focus:bg-zinc-100 [&_button]:hover:bg-zinc-100',
+                        ])>
+                            @isset ($bar)
+                                {{ $bar }}
+                            @endisset
 
-                        @if (get($count, 'trashed'))
-                            <div class="relative">
-                                <div class="absolute w-2 h-2 z-1 rounded-full bg-red-500 top-1 right-1"></div>
-                                <atom:_button icon="delete" variant="link" :tooltip="@t('trashed')" wire:click="$set('table.trashed', true)"/>
-                            </div>
-                        @endif
+                            @if (get($count, 'trashed'))
+                                <div class="relative">
+                                    <div class="absolute size-2 z-1 rounded-full bg-red-500 top-1 right-1"></div>
+                                    <button type="button" x-tooltip="t('trashed')" wire:click="$set('table.trashed', true)">
+                                        <atom:icon delete/>
+                                    </button>
+                                </div>
+                            @endif
 
-                        @if (get($count, 'archived'))
-                            <div class="relative">
-                                <div class="absolute w-2 h-2 z-1 rounded-full bg-red-500 top-1 right-1"></div>
-                                <atom:_button icon="archive" variant="link" :tooltip="@t('archived')"/>
-                            </div>
-                        @endif
+                            @if (get($count, 'archived'))
+                                <div class="relative">
+                                    <div class="absolute size-2 z-1 rounded-full bg-red-500 top-1 right-1"></div>
+                                    <button type="button" x-tooltip="t('archived')" wire:click="$set('table.archived', true)">
+                                        <atom:icon archive/>
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 @endif
             </div>
