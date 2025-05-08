@@ -29,6 +29,7 @@ class AtomServiceProvider extends ServiceProvider
         $this->registerHelpers();
         $this->registerViews();
         $this->registerTranslation();
+        $this->registerMigrations();
         $this->registerBindings();
         $this->registerConfigs();
         $this->registerBladeIfs();
@@ -103,6 +104,11 @@ class AtomServiceProvider extends ServiceProvider
     public function registerTranslation()
     {
         $this->loadTranslationsFrom(__DIR__.'/../../lang', 'atom');
+    }
+
+    public function registerMigrations()
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
     }
 
     // register bindings
