@@ -98,7 +98,7 @@ $attrs = $attributes
                                     type="button"
                                     x-tooltip="t('filter')"
                                     x-on:click="visible = true"
-                                    class="flex items-center justify-center rounded p-0.5 mx-1 hover:bg-zinc-100 focus:bg-zinc-100">
+                                    class="flex items-center justify-center rounded p-0.5 mx-1">
                                         <atom:icon filter/>
                                     </button>
                                 @endif
@@ -119,7 +119,7 @@ $attrs = $attributes
                             'flex items-center gap-1',
                             '[&_button]:flex [&_button]:items-center [&_button]:justify-center',
                             '[&_button]:rounded [&_button]:p-0.5 [&_button]:mx-1',
-                            '[&_button]:focus:outline-none [&_button]:focus:bg-zinc-100 [&_button]:hover:bg-zinc-100',
+                            '[&_button]:focus:outline-none',
                         ])>
                             @isset ($bar)
                                 {{ $bar }}
