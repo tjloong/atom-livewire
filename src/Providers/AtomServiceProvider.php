@@ -275,7 +275,6 @@ class AtomServiceProvider extends ServiceProvider
         Livewire::component('atom.user.listing', \Jiannius\Atom\Livewire\User\Listing::class);
         Livewire::component('atom.user.edit', \Jiannius\Atom\Livewire\User\Edit::class);
 
-        Livewire::component('atom.enquiry', \Jiannius\Atom\Livewire\Enquiry::class);
         Livewire::component('atom.profile', \Jiannius\Atom\Livewire\Profile::class);
         Livewire::component('atom.footprint', \Jiannius\Atom\Livewire\Footprint::class);
         Livewire::component('atom.generic-page', \Jiannius\Atom\Livewire\GenericPage::class);
