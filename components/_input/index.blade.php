@@ -147,7 +147,11 @@ $error = $attributes->get('error') ?? $this->errors[$field] ?? null;
                 @endif
             </div>
         @elseif (isset($actions))
-            <div {{ $actions->attributes->class('z-1 absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pr-3 right-0') }}>
+            <div {{ $actions->attributes->class([
+                'z-1 absolute top-0 bottom-0 flex items-center justify-center text-zinc-400 pr-3 right-0',
+                '[&_button]:flex [&_button]:items-center [&_button]:justify-center [&_button]:text-muted [&_button]:rounded-md  [&_button]:p-1',
+                '[&_button:focus]:outline-none [&_button:focus]:bg-zinc-100',
+            ]) }}>
                 {{ $actions }}
             </div>
         @endif
