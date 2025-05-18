@@ -22,13 +22,13 @@ $attrs = $attributes
     <td x-on:click.stop valign="{{ $valign }}">
         <div {{ $attrs }}>
             <div
-                x-on:click="checkboxes.toggle(@js($checkbox))"
-                x-on:select="checkboxes.push(@js($checkbox))"
-                x-bind:class="checkboxes.includes(@js($checkbox)) ? 'border-primary bg-primary' : 'border-zinc-300 bg-white'"
-                x-bind:data-checked="checkboxes.includes(@js($checkbox))"
-                data-atom-cell-checkbox
-                class="w-6 h-6 rounded-md border flex items-center justify-center cursor-pointer">
-                <x-icon check size="14" class="text-white"/>
+            x-on:click="checkboxes.toggle(@js($checkbox))"
+            x-on:select="checkboxes.push(@js($checkbox))"
+            x-bind:class="checkboxes.includes(@js($checkbox)) ? 'border-primary bg-primary' : 'border-zinc-300 bg-white'"
+            x-bind:data-checked="checkboxes.includes(@js($checkbox))"
+            data-atom-cell-checkbox
+            class="w-6 h-6 rounded-md border flex items-center justify-center cursor-pointer">
+                <atom:icon check size="14" class="text-white"/>
             </div>
         </div>
     </td>

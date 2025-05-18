@@ -20,16 +20,16 @@ $attrs = $attributes
 @endphp
 
 <div
-    x-data="{
-        sort: @entangle('table.sort'),
-        checkboxes: @entangle('table.checkboxes').defer,
+x-data="{
+    sort: @entangle('table.sort'),
+    checkboxes: @entangle('table.checkboxes').defer,
 
-        get checkables () {
-            return Array.from($root.querySelectorAll('table [data-atom-cell-checkbox]'))
-        },
-    }"
-    data-atom-table
-    {{ $attrs }}>
+    get checkables () {
+        return Array.from($root.querySelectorAll('table [data-atom-cell-checkbox]'))
+    },
+}"
+data-atom-table
+{{ $attrs }}>
     @if ($paginate || $search || isset($filters))
         <div class="relative py-3 px-4 flex flex-wrap justify-between items-center gap-2" data-atom-table-bar>
             <div class="shrink-0 text-gray-800 flex items-center gap-3">
@@ -58,21 +58,21 @@ $attrs = $attributes
 
             <div class="flex flex-wrap items-center gap-3">
                 @if ($search)
-                    <div
-                        x-data="{ text: '' }"
-                        class="flex items-center justify-center gap-2">
-                        <x-icon search class="shrink-0 text-zinc-400"/>
-                        <input type="text"
-                            x-model="text"
-                            x-on:keydown.enter.prevent="$wire.set('filters.search', text)"
-                            placeholder="@t('search')"
-                            x-bind:class="text ? 'w-40' : 'w-14'"
-                            class="focus:outline-none focus:w-40 transition-all duration-100">
+                    <div x-data="{ text: '' }" class="flex items-center justify-center gap-2">
+                        <atom:icon search class="shrink-0 text-zinc-400"/>
+
+                        <input
+                        type="text"
+                        x-model="text"
+                        x-on:keydown.enter.prevent="$wire.set('filters.search', text)"
+                        placeholder="@t('search')"
+                        x-bind:class="text ? 'w-40' : 'w-14'"
+                        class="focus:outline-none focus:w-40 transition-all duration-100">
+
                         <atom:icon close
-                            x-show="text"
-                            x-on:click="$wire.set('filters.search', null); text = ''"
-                            class="shrink-0 text-zinc-400 cursor-pointer">
-                        </atom:icon>
+                        x-show="text"
+                        x-on:click="$wire.set('filters.search', null); text = ''"
+                        class="shrink-0 text-zinc-400 cursor-pointer"/>
                     </div>
                 @endif
 
@@ -104,10 +104,10 @@ $attrs = $attributes
                                 @endif
 
                                 <div
-                                    wire:key="filters"
-                                    x-show="visible"
-                                    x-transition.duration.200
-                                    class="absolute top-1 right-1 w-80 z-10">
+                                wire:key="table-filters"
+                                x-show="visible"
+                                x-transition.duration.200
+                                class="absolute top-1 right-1 w-80 z-10">
                                     <atom:menu class="p-5 space-y-6">
                                         {{ $filters }}
                                     </atom:menu>
@@ -117,9 +117,9 @@ $attrs = $attributes
 
                         <div @class([
                             'flex items-center gap-1',
-                            '[&_button]:flex [&_button]:items-center [&_button]:justify-center',
+                            '[&_button]:flex [&_button]:items-center [&_button]:justify-center [&_button]:gap-2',
                             '[&_button]:rounded [&_button]:p-0.5 [&_button]:mx-1',
-                            '[&_button]:focus:outline-none',
+                            '[&_button]:text-sm [&_button]:focus:outline-none',
                         ])>
                             @isset ($bar)
                                 {{ $bar }}
@@ -157,7 +157,7 @@ $attrs = $attributes
         <template x-if="checkboxes.length" hidden>
             <div class="py-3 px-4 flex items-center gap-3" data-atom-table-actions>
                 <div class="flex items-center gap-2 text-sm font-medium text-zinc-400">
-                    <x-icon double-check/>
+                    <atom:icon double-check/>
                     <div>
                         <span x-text="checkboxes.length"></span> @t('selected')
                     </div>
@@ -170,10 +170,10 @@ $attrs = $attributes
         </template>
     @elseif (get($this->table, 'archived'))
         <div class="py-3 px-4 text-zinc-400 font-medium flex items-center gap-3">
-            <x-icon back class="shrink-0 cursor-pointer" wire:click="$set('table.archived', false)"/>
+            <atom:icon back class="shrink-0 cursor-pointer" wire:click="$set('table.archived', false)"/>
 
             <div class="flex items-center gap-2 font-medium">
-                <x-icon archive/>
+                <atom:icon archive/>
                 @t('showing-archived', get($count, 'total'))
             </div>
 
@@ -183,27 +183,27 @@ $attrs = $attributes
         </div>
     @elseif (get($this->table, 'trashed'))
         <div class="py-3 px-4 text-zinc-400 font-medium flex items-center gap-3">
-            <x-icon back class="shrink-0 cursor-pointer" wire:click="$set('table.trashed', false)"/>
+            <atom:icon back class="shrink-0 cursor-pointer" wire:click="$set('table.trashed', false)"/>
 
             <div class="flex items-center gap-2 font-medium">
-                <x-icon delete/>
+                <atom:icon delete/>
                 @t('showing-trashed', get($count, 'total'))
             </div>
 
             <div
-                x-on:click="Atom.confirm({
-                    title: 'clear-all-trashed',
-                    message: 'this-will-permanently-delete-all-selected-records',
-                }, 'error').then(() => $wire.set('table.trashed', false)).then(() => $wire.emptyTrashed())"
-                class="underline decoration-dashed text-sm text-zinc-800 cursor-pointer">
+            x-on:click="Atom.confirm({
+                title: 'clear-all-trashed',
+                message: 'this-will-permanently-delete-all-selected-records',
+            }, 'error').then(() => $wire.set('table.trashed', false)).then(() => $wire.emptyTrashed())"
+            class="underline decoration-dashed text-sm text-zinc-800 cursor-pointer">
                 @t('empty-trashed')
             </div>
         </div>
     @endif
 
     <div
-        x-bind:class="checkboxes.length && 'rounded-t-none'"
-        class="overflow-hidden last:rounded-b-lg rounded-t-lg group-has-[[data-atom-table-bar]]/table:rounded-t-none">
+    x-bind:class="checkboxes.length && 'rounded-t-none'"
+    class="overflow-hidden last:rounded-b-lg rounded-t-lg group-has-[[data-atom-table-bar]]/table:rounded-t-none">
         <div class="overflow-x-auto">
             @if ($paginate && !get($count, 'total'))
                 <atom:empty/>
