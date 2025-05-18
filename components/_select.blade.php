@@ -341,7 +341,7 @@ $attrs = $attributes
 
             <div {{ $attrs->class(['flex items-center gap-1 flex-wrap'])->only('class') }}>
                 @if ($multiple === true)
-                    <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center gap-2 flex-wrap py-2">
                         <template x-for="item in selected" hidden>
                             <div class="shrink-0 max-w-56 flex items-center text-sm border-r border-zinc-300 last:border-0">
                                 <div x-text="item.label" class="grow truncate text-zinc-700"></div>
