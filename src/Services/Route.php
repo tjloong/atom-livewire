@@ -76,7 +76,7 @@ class Route
     }
 
     // create integration routes
-    public function integration($finexus = false, $ipay = false, $gkash = false, $ozopay = false) : void
+    public function integration($finexus = false, $gkash = false, $ozopay = false) : void
     {
         if ($finexus) {
             $this->prefix('__finexus')->as('__finexus')->withoutMiddleware('web')->group(function () {
@@ -84,16 +84,6 @@ class Route
                 $this->get('failed', 'FinexusController@failed')->name('.failed');
                 $this->get('cancel', 'FinexusController@cancel')->name('.cancel');
                 $this->get('query', 'FinexusController@query')->name('.query');
-            });
-        }
-
-        if ($ipay) {
-            $this->prefix('__ipay')->as('__ipay')->withoutMiddleware('web')->group(function () {
-                $this->post('redirect', 'IpayController@redirect')->name('.redirect');
-                $this->post('webhook', 'IpayController@webhook')->name('.webhook');
-                $this->get('checkout', function () {
-                    return \Jiannius\Atom\Services\Ipay::getCheckoutForm();
-                })->name('.checkout');
             });
         }
 

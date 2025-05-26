@@ -1,10 +1,11 @@
 <?php
  
 namespace Jiannius\Atom\Rules;
- 
-use Illuminate\Contracts\Validation\Rule;
- 
-class MyIcNumber implements Rule
+
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
+
+class NRIC implements ValidationRule
 {
     public $codes = [
         'johor' => ['01', '21', '22', '23', '24'],
@@ -62,7 +63,7 @@ class MyIcNumber implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (str($value)->is('*-*-*')) [$head, $body, $tail] = explode('-', $value);
         else {
@@ -72,20 +73,10 @@ class MyIcNumber implements Rule
         }
         
         $codes = collect($this->codes)->values()->flatten()->all();
+        $valid = $head && $body && $tail && in_array($body, $codes) && strlen($head) === 6 && strlen($tail) === 4;
 
-        return $head && $body && $tail 
-            && in_array($body, $codes)
-            && strlen($head) === 6
-            && strlen($tail) === 4;
-    }
- 
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message()
-    {
-        return __('Invalid I/C number.');
+        if (!$valid) {
+            $fail('Invalid I/C number.')->translate();
+        }
     }
 }
