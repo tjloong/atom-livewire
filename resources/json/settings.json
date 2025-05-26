@@ -34,14 +34,5 @@
     "github_client_secret": null,
     "twitter_client_id": null,
     "twitter_client_secret": null,
-    "gkash_mid": null,
-    "gkash_signature_key": null,
-    "gkash_api_version": "1.5.5",
-    "gkash_sandbox_url": "https://api-staging.pay.asia/api/PaymentForm.aspx",
-    "gkash_url": "https://api.gkash.my/api/PaymentForm.aspx",
-    "ozopay_tid": null,
-    "ozopay_secret": null,
-    "ozopay_sandbox_url": "https://uatpayment.ozopay.com/PaymentEntry/PaymentOption",
-    "ozopay_url": "https://checkout.ozopay.com/Paymententry/PaymentOption",
     "currency": "MYR"
 }

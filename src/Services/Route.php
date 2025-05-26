@@ -75,26 +75,6 @@ class Route
         $this->post('__recaptcha', 'RecaptchaController')->withoutMiddleware('web')->name('__recaptcha');
     }
 
-    // create integration routes
-    public function integration($gkash = false, $ozopay = false) : void
-    {
-        if ($gkash) {
-            $this->prefix('__gkash')->as('__gkash')->withoutMiddleware('web')->group(function () {
-                $this->get('checkout', 'GkashController@checkout')->name('.checkout');
-                $this->post('redirect', 'GkashController@redirect')->name('.redirect');
-                $this->post('webhook', 'GkashController@webhook')->name('.webhook');
-            });
-        }
-
-        if ($ozopay) {
-            $this->prefix('__ozopay')->as('__ozopay')->withoutMiddleware('web')->group(function () {
-                $this->get('checkout', 'OzopayController@checkout')->name('.checkout');
-                $this->post('redirect', 'OzopayController@redirect')->name('.redirect');
-                $this->post('webhook', 'OzopayController@webhook')->name('.webhook');
-            });
-        }
-    }
-
     // create onboarding routes
     public function onboarding() : void
     {
