@@ -76,17 +76,8 @@ class Route
     }
 
     // create integration routes
-    public function integration($finexus = false, $gkash = false, $ozopay = false) : void
+    public function integration($gkash = false, $ozopay = false) : void
     {
-        if ($finexus) {
-            $this->prefix('__finexus')->as('__finexus')->withoutMiddleware('web')->group(function () {
-                $this->get('success', 'FinexusController@success')->name('.success');
-                $this->get('failed', 'FinexusController@failed')->name('.failed');
-                $this->get('cancel', 'FinexusController@cancel')->name('.cancel');
-                $this->get('query', 'FinexusController@query')->name('.query');
-            });
-        }
-
         if ($gkash) {
             $this->prefix('__gkash')->as('__gkash')->withoutMiddleware('web')->group(function () {
                 $this->get('checkout', 'GkashController@checkout')->name('.checkout');

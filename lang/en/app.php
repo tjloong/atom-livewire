@@ -163,7 +163,6 @@ return [
         'filter-count' => ':count Filter|:count Filters',
         'filter' => 'Filter',
         'filters' => 'Filters',
-        'finexus-settings' => 'Finexus Settings',
         'footer' => 'Footer',
         'footprint-approved' => 'Approved by :user on :timestamp',
         'footprint-archived' => 'Archived by :user on :timestamp',
