@@ -48,25 +48,25 @@ $attrs = $attributes
     </atom:_input.prefix>
 @else
     <div
-        wire:ignore
-        x-data="datepicker({
-            utc: {{ js($utc) }},
-            time: {{ js($time) }},
-            range: {{ js($range) }},
-            toggler: {{ js($toggler) }},
-            @if ($attributes->wire('model')->value())
-            value: @entangle($attributes->wire('model')),
-            @endif
-        })"
-        x-modelable="value"
-        x-on:click.away="close()"
-        x-on:keydown.down.prevent="open()"
-        x-on:keydown.enter.prevent="open()"
-        x-on:keydown.space.prevent="open()"
-        x-on:keydown.esc.prevent="close()"
-        class="group/datepicker relative w-full"
-        data-atom-date-picker
-        {{ $attrs->whereDoesntStartWith('wire:model')->except('class') }}>
+    wire:ignore
+    x-data="datepicker({
+        utc: {{ js($utc) }},
+        time: {{ js($time) }},
+        range: {{ js($range) }},
+        toggler: {{ js($toggler) }},
+        @if ($attributes->wire('model')->value())
+        value: @entangle($attributes->wire('model')),
+        @endif
+    })"
+    x-modelable="value"
+    x-on:click.away="close()"
+    x-on:keydown.down.prevent="open()"
+    x-on:keydown.enter.prevent="open()"
+    x-on:keydown.space.prevent="open()"
+    x-on:keydown.esc.prevent="close()"
+    class="group/datepicker relative w-full"
+    data-atom-date-picker
+    {{ $attrs->whereDoesntStartWith('wire:model')->except('class') }}>
         <div data-anchor class="relative">
             <input type="text" readonly
                 x-bind:value="display"

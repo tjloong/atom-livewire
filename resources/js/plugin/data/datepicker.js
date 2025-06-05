@@ -129,7 +129,7 @@ export default (config) => {
 
                 if (this.config.range) {
                     if (to?.isValid()) {
-                        to = to.utc().toISOString()
+                        to = to.endOf('day').utc().toISOString()
                         value = `${from} to ${to}`
                     }
                 }
