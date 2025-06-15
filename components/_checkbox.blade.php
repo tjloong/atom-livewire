@@ -20,20 +20,19 @@ $attrs = $attributes->except(['label', 'caption', 'error', 'field']);
             </div>
         </div>
 
-        @if ($slot->isNotEmpty())
-            <div class="grow">
+        <div @class([
+            'grow',
+            'text-sm' => $size === 'sm',
+        ])>
+            @if ($slot->isNotEmpty())
                 {{ $slot }}
-            </div>
-        @elseif ($label && $caption)
-            <div class="grow {{ $size === 'sm' ? 'text-sm' : '' }}">
+            @elseif ($label && $caption)
                 <div>{!! t($label) !!}</div>
                 <atom:caption>{!! t($caption) !!}</atom:caption>
-            </div>
-        @elseif ($label)
-            <div class="grow {{ $size === 'sm' ? 'text-sm' : '' }}">
+            @elseif ($label)
                 {!! t($label) !!}
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
 
     <atom:_error>@t($error)</atom:_error>
