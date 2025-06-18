@@ -19,7 +19,7 @@ $variant = $attributes->get('variant') ?? get($social, 'name') ?? match ($action
 
 $icon = [
     'start' => $attributes->get('icon') ?? get($social, 'name') ?? $action ?? null,
-    'end' => $attributes->get('icon-end'),
+    'end' => $attributes->get('icon-suffix'),
     'size' => match ($size) {
         'lg' => 22,
         'sm' => 15,
@@ -165,7 +165,7 @@ if ($slot->isNotEmpty()) {
 $attrs = $attributes
     ->class($classes)
     ->merge($merges)
-    ->except(['variant', 'size', 'icon', 'icon-end', 'block', 'newtab', 'action', 'tooltip', 'inverted', 'model', 'social', 'wire:loading'])
+    ->except(['variant', 'size', 'icon', 'icon-suffix', 'block', 'newtab', 'action', 'tooltip', 'inverted', 'model', 'social', 'wire:loading'])
     ;
 @endphp
 
