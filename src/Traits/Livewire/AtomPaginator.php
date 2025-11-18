@@ -46,4 +46,9 @@ trait AtomPaginator
 
         return $query->paginate($max);
     }
+
+    public function resetFilters()
+    {
+        $this->reset('filters');
+    }
 }

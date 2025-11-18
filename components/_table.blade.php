@@ -89,7 +89,7 @@ data-atom-table
                                             @t('filter-count', $filtered)
                                         </div>
 
-                                        <div x-on:click="$wire.filters = filters" class="shrink-0 px-1 cursor-pointer text-red-400 hover:text-red-600 flex items-center justify-center">
+                                        <div x-on:click="$wire.resetFilters()" class="shrink-0 px-1 cursor-pointer text-red-400 hover:text-red-600 flex items-center justify-center">
                                             <atom:icon close/>
                                         </div>
                                     </div>
