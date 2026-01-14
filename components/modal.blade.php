@@ -23,7 +23,7 @@ x-data="modal({
 })"
 x-on:modal-show.window="$event.detail.name === name && show($event.detail.data, $event.detail.variant)"
 x-on:modal-close.window="$event.detail.name === name && close()"
-x-on:keydown.esc.prevent="close()"
+x-on:keydown.esc.prevent.stop="close()"
 data-atom-modal
 class="relative min-w-full min-h-dvh m-0 bg-transparent overflow-hidden focus:outline-none"
 {{ $attrs }}>
