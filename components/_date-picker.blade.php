@@ -67,10 +67,9 @@ $attrs = $attributes
     class="group/datepicker relative w-full"
     data-atom-date-picker
     {{ $attrs->whereDoesntStartWith('wire:model')->except('class') }}>
-        <div data-anchor class="relative">
+        <div data-anchor x-on:click="open()" class="relative">
             <input type="text" readonly
                 x-bind:value="display"
-                x-on:click="open()"
                 placeholder="{{ t($placeholder) }}"
                 {{ $attrs->only('class') }}>
 

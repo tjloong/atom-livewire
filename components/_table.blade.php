@@ -82,7 +82,8 @@ data-atom-table
                             <div
                             x-data="{ visible: false, filters: null }"
                             x-init="filters = $wire.get('filters')"
-                            x-on:click.away="visible = false">
+                            x-on:click.away="visible = false"
+                            {{ $filters->attributes }}>
                                 @if ($filtered)
                                     <div class="flex items-center bg-red-100 border border-red-100 text-red-500 font-medium text-sm rounded-md">
                                         <div x-on:click="visible = true" class="pl-2 cursor-pointer">
