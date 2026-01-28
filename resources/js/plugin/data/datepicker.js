@@ -152,7 +152,7 @@ export default (config) => {
                 defaultDate: this.picker.from.iso ? new Date(this.picker.from.iso) : dayjs().toDate(),
                 setDefaultDate: !empty(this.picker.from.iso),
                 keyboardInput: false,
-                onSelect: () => this.select(),
+                onSelect: () => { this.select(); this.close(); },
                 toString: (date) => (dayjs(date.toISOString()).format('YYYY-MM-DD')),
             })
 
@@ -163,7 +163,7 @@ export default (config) => {
                     defaultDate: this.picker.to.iso ? new Date(this.picker.to.iso) : dayjs().add(1, 'month').toDate(),
                     setDefaultDate: !empty(this.picker.to.iso),
                     keyboardInput: false,
-                    onSelect: () => this.select(),
+                    onSelect: () => { this.select(); this.close(); },
                     toString: (date) => (dayjs(date.toISOString()).format('YYYY-MM-DD')),
                 })
 
