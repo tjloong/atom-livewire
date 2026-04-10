@@ -118,6 +118,7 @@ trait AtomComponent
 
     public function action($name, $params = null)
     {
+        $this->skipRender();
         return Atom::action($name, $params);
     }
 
