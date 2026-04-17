@@ -10,7 +10,7 @@ $count = [
     'total' => $paginate?->total() ?? 0,
 ];
 
-$rows = collect([50, 100, 200, 400, 600])->filter(fn($n) => $n <= get($count, 'total'))->values()->all();
+$rows = [50, 100, 200, 400, 600];
 $filtered = collect($this->filters ?? null)->filter()->values()->count();
 
 $attrs = $attributes
@@ -46,11 +46,11 @@ data-atom-table
                                 <x-icon down/>
                             </div>
 
-                            <x-slot:content>
+                            <x-slot:popover>
                                 @foreach ($rows as $n)
                                     <atom:menu-item wire:click="$set('table.max', {{$n}})">@e($n) / @t('page')</atom:menu-item>
                                 @endforeach
-                            </x-slot:content>
+                            </x-slot:popover>
                         </atom:_dropdown>
                     @endif
                 @endif
@@ -223,7 +223,7 @@ data-atom-table
     </div>
 
     @if ($paginate?->hasPages())
-        <div class="px-4" data-atom-table-paginate>
+        <div x-bind:class="checkboxes.length && 'opacity-40 cursor-not-allowed pointer-events-none'" class="px-4" data-atom-table-paginate>
             @e($paginate->links())
         </div>
     @endif
