@@ -28,7 +28,7 @@ class="{{ collect([
 {{ $attributes->except(['name', 'label', 'inset', 'class']) }}>
     <div class="flex flex-col w-full min-h-full">
         @if ($header !== false)
-            <div class="shrin-0 h-20 px-6 w-full">
+            <div class="shrink-0 h-20 px-6 w-full">
                 @if ($breadcrumb)
                     <div class="flex items-center w-full h-full">
                         <atom:breadcrumb :hide-single-trace="false">
