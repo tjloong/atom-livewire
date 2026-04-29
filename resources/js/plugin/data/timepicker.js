@@ -15,9 +15,9 @@ export default (config) => {
 
         parse () {
             let parser = dayjs('1970-01-01 '+this.value)
-            this.hr = parser?.isValid() ? parser.format('hh') : '12'
-            this.min = parser?.isValid() ? parser.format('mm') : '00'
-            this.am = parser?.isValid() ? parser.format('A') : 'AM'
+            this.hr = parser?.isValid() ? parser.format('hh') : dayjs().format('hh')
+            this.min = parser?.isValid() ? parser.format('mm') : dayjs().format('mm')
+            this.am = parser?.isValid() ? parser.format('A') : dayjs().format('A')
         },
 
         upHr () {
